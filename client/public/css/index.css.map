@@ -1,0 +1,9 @@
+{
+	"version": 3,
+	"file": "index.css",
+	"sources": [
+		"../../src/styles/scss/index.scss"
+	],
+	"names": [],
+	"mappings": "AAAA,sBAAsB"
+}
