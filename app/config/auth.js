@@ -3,6 +3,8 @@ const User = require("../../db/models/users");
 
 const user = {
   serialize: (user, done) => {
+    console.log("app/config/auth.js > 6");
+    console.log(`serializing user: ${user.name}`);
     done(null, user.id);
   },
 

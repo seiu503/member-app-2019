@@ -83,7 +83,7 @@ module.exports = passport => {
   const googleOptions = {
     clientID: Auth.googleAuth.clientID,
     clientSecret: Auth.googleAuth.clientSecret,
-    redirect_uri: Auth.googleAuth.callbackURL,
+    callbackURL: Auth.googleAuth.callbackURL,
     passReqToCallback: true,
     scope: ["profile", "email"]
   };
