@@ -8,15 +8,16 @@ const { db, TABLES } = require("../../app/config/knex");
 /* ============================ PUBLIC METHODS ============================= */
 
 /** Create a user
- *  @param    {String}   username       New user username.
+ *  @param    {String}   name           New user full name.
  *  @param    {String}   email          New user email.
- *  @param    {String}   github_id      New user github id.
- *  @param    {String}   github_token   New user github token.
+ *  @param    {String}   avatar_url     New user avatar url.
+ *  @param    {String}   google_id      New user google id.
+ *  @param    {String}   google_token   New user google token.
  *  @returns  {Array}    Array of 1 newly-created User object.
  */
-const createUser = (username, email, github_id, github_token) => {
+const createUser = (name, email, avatar_url, google_id, google_token) => {
   return db
-    .insert({ id: uuid.v4(), username, email, github_id, github_token })
+    .insert({ id: uuid.v4(), name, email, avatar_url, google_id, google_token })
     .into(TABLES.USERS)
     .returning("*");
 };
@@ -24,9 +25,10 @@ const createUser = (username, email, github_id, github_token) => {
 /** Update a user
  *  @param    {String}   id             The id of the user to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
- ****  @param    {String}   username        Updated username.
- ****  @param    {String}   email           Updated email.
- *  @returns  {Object}        User object.
+ ****  @param    {String}   name        Updated name.
+ ****  @param    {String}   email       Updated email.
+ ****  @param    {String}   avatar_url  Updated avatar url.
+ *  @returns  {Object}   User object.
  */
 const updateUser = (id, updates) => {
   return db(TABLES.USERS)
@@ -57,14 +59,14 @@ const getUserById = id => {
     .returning("*");
 };
 
-/** Find a user by github_id
- *  @param    {String}   github_id   The github_id of the user to return.
+/** Find a user by google_id
+ *  @param    {String}   google_id   The google_id of the user to return.
  *  @returns  {Object}        User object.
  */
 
-const getUserByGithubId = github_id => {
+const getUserByGoogleId = google_id => {
   return db(TABLES.USERS)
-    .where({ github_id })
+    .where({ google_id })
     .first()
     .returning("*");
 };
@@ -90,7 +92,7 @@ module.exports = {
   createUser,
   updateUser,
   getUserById,
-  getUserByGithubId,
+  getUserByGoogleId,
   getUsers,
   deleteUser
 };

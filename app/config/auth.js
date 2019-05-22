@@ -17,10 +17,10 @@ const user = {
   }
 };
 
-const githubAuth = {
-  clientID: process.env.GITHUB_KEY,
-  clientSecret: process.env.GITHUB_SECRET,
-  callbackURL: `${process.env.SERVER_URL}/api/auth/github/callback`
+const googleAuth = {
+  clientID: process.env.GOOGLE_KEY,
+  clientSecret: process.env.GOOGLE_SECRET,
+  callbackURL: `${process.env.SERVER_URL}/api/auth/google/callback`
 };
 
-module.exports = { user, githubAuth };
+module.exports = { user, googleAuth };
