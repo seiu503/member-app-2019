@@ -16,6 +16,7 @@ exports.db = knex(config[environment]);
 // • contacts (form submission)
 // • users (for admin back-end)
 // • employers (for employer picklist, linked to salesforce)
+// • membership app submissions
 // • images (for form intro content)
 // • text (for form headlines and body copy)
 exports.TABLES = {
