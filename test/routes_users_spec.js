@@ -32,6 +32,15 @@ let id2;
 chai.use(chaiHttp);
 
 suite("routes : user", function() {
+  before(() => {
+    return db.migrate.rollback().then(() => {
+      return db.migrate.latest();
+    });
+  });
+
+  after(() => {
+    return db.migrate.rollback();
+  });
   suite("POST /api/user/", function() {
     test("creates and returns new user", function(done) {
       chai
