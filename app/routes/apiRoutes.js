@@ -52,7 +52,11 @@ const requireAuth = (req, res, next) => {
 //
 router.get(
   "/auth/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate(
+    "google",
+    { session: false },
+    { scope: ["profile", "email"] }
+  )
 );
 
 // GOOGLE CALLBACK ROUTE
@@ -63,7 +67,7 @@ router.get(
 //
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google"),
+  passport.authenticate("google", { session: false }),
   authCtrl.googleCallback
 );
 

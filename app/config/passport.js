@@ -64,7 +64,7 @@ module.exports = passport => {
     const google_id = profile.id;
     const google_token = token;
     const email = profile.emails ? profile.emails[0].value : "";
-    const name = profile.name;
+    const name = `${profile.name.givenName} ${profile.name.familyName}`;
     const avatar_url = profile.picture;
 
     // save new user to database
