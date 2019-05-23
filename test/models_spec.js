@@ -21,12 +21,28 @@ const updatedEmail = "updatedEmail@email.com";
 const google_id = "1234";
 const google_token = "5678";
 
+const truncate = () => {
+  return Promise.all(
+    Object.values(TABLES).map(table => {
+      return db(table).truncate();
+    })
+  );
+};
+
 /* ================================= TESTS ================================= */
 
 let id;
 let userId;
 
 describe("models tests", () => {
+  beforeEach(() => {
+    return truncate();
+  });
+
+  afterEach(() => {
+    return truncate();
+  });
+
   it("POST creates a new user", () => {
     return users
       .createUser(name, email, avatar_url, google_id, google_token)
