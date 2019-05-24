@@ -7,7 +7,7 @@ import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
-import * as apiContactActions from "../store/actions/apiContactActions";
+import * as apiContentActions from "../store/actions/apiContentActions";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -18,7 +18,7 @@ const styles = theme => ({
     padding: "80px 0 140px 0"
   },
   head: {
-    color: theme.palette.secondary.main
+    color: theme.palette.primary.light
   },
   form: {
     maxWidth: 600,
@@ -38,39 +38,38 @@ const styles = theme => ({
   }
 });
 
-class ContactForm extends React.Component {
+class TextInputForm extends React.Component {
   componentDidMount() {}
 
-  sendEmail = () => {
-    const { name, fromEmail, subject, message } = this.props.contact.form;
+  submit = () => {
+    const { headline, bodyCopy, image } = this.props.content.form;
     const body = {
-      name,
-      fromEmail,
-      subject,
-      message
+      headline,
+      bodyCopy,
+      image
     };
-    this.props.apiContact
-      .sendEmail(body)
+    this.props.apiContent
+      .addContent(body)
       .then(result => {
         console.log(result.type);
-        if (result.type === "SEND_EMAIL_FAILURE" || this.props.contact.error) {
+        if (result.type === "ADD_CONTENT_FAILURE" || this.props.content.error) {
           openSnackbar(
             "error",
             this.props.contact.error ||
-              "An error occured while trying to send your messagee."
+              "An error occured while trying to save your content."
           );
         } else {
-          openSnackbar("success", "Message sent.");
-          this.props.apiContact.clearForm();
+          openSnackbar("success", "Content Saved.");
+          this.props.apiContent.clearForm();
         }
       })
       .catch(err => openSnackbar("error", err));
   };
 
   render() {
-    const { forwardedRef, classes } = this.props;
+    const { classes } = this.props;
     return (
-      <div className={classes.container} ref={forwardedRef}>
+      <div className={classes.container}>
         <Typography
           variant="h2"
           align="center"
@@ -78,63 +77,52 @@ class ContactForm extends React.Component {
           className={classes.head}
           style={{ paddingTop: 20 }}
         >
-          Say Hello
+          Admin Dashboard
         </Typography>
         <form className={classes.form} onError={errors => console.log(errors)}>
           <TextField
-            name="name"
-            id="name"
-            label="Your Name"
+            name="headline"
+            id="headline"
+            label="Headline"
             type="text"
             variant="outlined"
             required
-            value={this.props.contact.form.name}
-            onChange={this.props.apiContact.handleInput}
+            value={this.props.content.form.headline}
+            onChange={this.props.apiContent.handleInput}
             className={classes.input}
           />
           <TextField
-            name="fromEmail"
-            id="fromEmail"
-            label="Your Email Address"
-            type="email"
-            variant="outlined"
-            required
-            value={this.props.contact.form.fromEmail}
-            onChange={this.props.apiContact.handleInput}
-            className={classes.input}
-          />
-          <TextField
-            name="subject"
-            id="subject"
-            label="Subject"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.contact.form.subject}
-            onChange={this.props.apiContact.handleInput}
-            className={classes.input}
-          />
-          <TextField
-            name="message"
-            id="message"
-            label="Message"
+            name="bodyCopy"
+            id="bodyCopy"
+            label="Body Copy"
             multiline
             rows="5"
             variant="outlined"
             required
-            value={this.props.contact.form.body}
-            onChange={this.props.apiContact.handleInput}
+            value={this.props.content.form.bodyCopy}
+            onChange={this.props.apiContent.handleInput}
             className={classes.textarea}
+          />
+          <TextField
+            name="imageUrl"
+            id="imageUrl"
+            label="Image URL"
+            type="text"
+            variant="outlined"
+            required
+            value={this.props.content.form.imageUrl}
+            onChange={this.props.apiContent.handleInput}
+            className={classes.input}
           />
           <ButtonWithSpinner
             type="button"
             color="secondary"
             className={classes.formButton}
             variant="contained"
-            onClick={() => this.sendEmail()}
-            loading={this.props.contact.loading}
+            onClick={() => this.submit()}
+            loading={this.props.content.loading}
           >
-            Send email
+            Save Content
           </ButtonWithSpinner>
         </form>
       </div>
@@ -142,36 +130,35 @@ class ContactForm extends React.Component {
   }
 }
 
-ContactForm.propTypes = {
+TextInputForm.propTypes = {
   type: PropTypes.string,
-  contact: PropTypes.shape({
+  content: PropTypes.shape({
     form: PropTypes.shape({
-      name: PropTypes.string,
-      fromEmail: PropTypes.string,
-      subject: PropTypes.string,
-      body: PropTypes.string
+      headline: PropTypes.string,
+      bodyCopy: PropTypes.string,
+      imageUrl: PropTypes.string
     }),
     loading: PropTypes.bool
   }).isRequired,
-  apiContact: PropTypes.shape({
+  apiContent: PropTypes.shape({
     handleInput: PropTypes.func,
-    sendEmail: PropTypes.func,
+    addContent: PropTypes.func,
     clearForm: PropTypes.func
   }),
   classes: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  contact: state.contact
+  content: state.content
 });
 
 const mapDispatchToProps = dispatch => ({
-  apiContact: bindActionCreators(apiContactActions, dispatch)
+  apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
 export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(ContactForm)
+  )(TextInputForm)
 );
