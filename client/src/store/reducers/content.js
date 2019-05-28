@@ -28,6 +28,7 @@ const INITIAL_STATE = {
   moreContents: [],
   deleteDialogOpen: false,
   currentContent: {
+    contentType: null,
     headline: "",
     bodyCopy: "",
     imageUrl: "",
@@ -35,6 +36,7 @@ const INITIAL_STATE = {
     updated_at: ""
   },
   form: {
+    contentType: null,
     headline: "",
     bodyCopy: "",
     imageUrl: "",

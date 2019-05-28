@@ -6,6 +6,11 @@ import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 
@@ -39,11 +44,27 @@ const styles = theme => ({
 });
 
 class TextInputForm extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      contentType: null
+    };
+  }
+
+  handleInput = e => {
+    const newState = this.state;
+    newState.contentType = e.target.value;
+    this.setState(newState);
+  };
+
   componentDidMount() {}
 
   submit = () => {
     const { headline, bodyCopy, image } = this.props.content.form;
+    const { contentType } = this.state;
     const body = {
+      contentType,
       headline,
       bodyCopy,
       image
@@ -68,6 +89,7 @@ class TextInputForm extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { contentType } = this.state;
     return (
       <div className={classes.container}>
         <Typography
@@ -80,40 +102,69 @@ class TextInputForm extends React.Component {
           Admin Dashboard
         </Typography>
         <form className={classes.form} onError={errors => console.log(errors)}>
-          <TextField
-            name="headline"
-            id="headline"
-            label="Headline"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.content.form.headline}
-            onChange={this.props.apiContent.handleInput}
-            className={classes.input}
-          />
-          <TextField
-            name="bodyCopy"
-            id="bodyCopy"
-            label="Body Copy"
-            multiline
-            rows="5"
-            variant="outlined"
-            required
-            value={this.props.content.form.bodyCopy}
-            onChange={this.props.apiContent.handleInput}
-            className={classes.textarea}
-          />
-          <TextField
-            name="imageUrl"
-            id="imageUrl"
-            label="Image URL"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.content.form.imageUrl}
-            onChange={this.props.apiContent.handleInput}
-            className={classes.input}
-          />
+          <FormControl component="fieldset" className={classes.formControl}>
+            <FormLabel component="legend">Content Type</FormLabel>
+            <RadioGroup
+              aria-label="Content Type"
+              name="contentType"
+              className={classes.group}
+              value={this.state.contentType}
+              onChange={this.handleInput}
+            >
+              <FormControlLabel
+                value="headline"
+                control={<Radio />}
+                label="Headline"
+              />
+              <FormControlLabel value="body" control={<Radio />} label="Body" />
+              <FormControlLabel
+                value="image"
+                control={<Radio />}
+                label="Image"
+              />
+            </RadioGroup>
+          </FormControl>
+
+          {contentType === "headline" ? (
+            <TextField
+              name="headline"
+              id="headline"
+              label="Headline"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.content.form.headline}
+              onChange={this.props.apiContent.handleInput}
+              className={classes.input}
+            />
+          ) : contentType === "body" ? (
+            <TextField
+              name="bodyCopy"
+              id="bodyCopy"
+              label="Body Copy"
+              multiline
+              rows="5"
+              variant="outlined"
+              required
+              value={this.props.content.form.bodyCopy}
+              onChange={this.props.apiContent.handleInput}
+              className={classes.textarea}
+            />
+          ) : contentType === "image" ? (
+            <TextField
+              name="imageUrl"
+              id="imageUrl"
+              label="Image URL"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.content.form.imageUrl}
+              onChange={this.props.apiContent.handleInput}
+              className={classes.input}
+            />
+          ) : (
+            ""
+          )}
           <ButtonWithSpinner
             type="button"
             color="secondary"
