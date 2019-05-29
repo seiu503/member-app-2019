@@ -25,7 +25,7 @@ exports.up = function(knex, Promise) {
       table.date("503_cba_app_date").notNullable();
       table.date("direct_pay_auth");
       table.date("direct_deposit_auth");
-      table.string("immediate_past_member_status").notNullable();
+      table.string("immediate_past_member_status");
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table.timestamp("updated_at").defaultTo(knex.fn.now());
     })
