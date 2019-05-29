@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
       table.string("display_name");
       table.string("account_name").notNullable();
       table.string("agency_number").notNullable();
-      table.string("mail_to_city").defaultTo("OR");
+      table.string("mail_to_city");
       table.string("mail_to_state");
       table.string("mail_to_street");
       table.string("mail_to_postal_code", 5);
@@ -15,16 +15,10 @@ exports.up = function(knex, Promise) {
       table.string("mm", 2);
       table.string("yyyy", 4);
       table.date("dob").notNullable();
-      table
-        .string("preferred_language")
-        .notNullable()
-        .defaultTo("english");
+      table.string("preferred_language").notNullable();
       table.string("home_street").notNullable();
       table.string("home_postal_code", 5).notNullable();
-      table
-        .string("home_state")
-        .notNullable()
-        .defaultTo("OR");
+      table.string("home_state").notNullable();
       table.string("home_city").notNullable();
       table.string("home_email").notNullable();
       table.string("mobile_phone").notNullable();
