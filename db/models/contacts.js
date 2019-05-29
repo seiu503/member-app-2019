@@ -221,6 +221,50 @@ const deleteContact = contact_id => {
     });
 };
 
+/** Create entry in join table for Contacts and Submissions
+ * @param   {String}   contact_id     primary id of contact
+ * @param   {String}   submission_id  primary id of submission
+ * @returns {Object}   Joined contact and submission object
+ */
+
+const attachContactSubmission = (contact_id, submission_id) => {
+  return db
+    .insert({ contact_id, submission_id })
+    .into(TABLES.CONTACTS_SUBMISSIONS)
+    .returning("*");
+};
+
+/** Get results from join table with an array of all submissions for a given contact
+ * @param {String} id primary id of contact
+ * @returns {Object} Object with contact_id and an array of all associated submissions
+ */
+
+const getContactSubmissionsById = id => {
+  return db
+    .select(`${TABLES.CONTACTS}.*`, `${TABLES.SUBMISSIONS}.*`)
+    .from(TABLES.CONTACTS)
+    .leftJoin(
+      TABLES.CONTACTS_SUBMISSIONS,
+      `${TABLES.CONTACTS_SUBMISSIONS}.contact_id`,
+      `${TABLES.CONTACTS}.contact_id`
+    )
+    .leftJoin(
+      TABLES.SUBMISSIONS,
+      `${TABLES.CONTACTS_SUBMISSIONS}.submission_id`,
+      `${TABLES.SUBMISSIONS}.submission_id`
+    )
+    .where(`${TABLES.CONTACTS}.contact_id`, id)
+    .then(results => {
+      return results.reduce((memo, submission) => {
+        if (!memo.submissions) {
+          memo.submissions = [];
+        }
+        memo.submissions.push(submission.submission_id);
+        return memo;
+      }, {});
+    });
+};
+
 /* ================================ exports ================================ */
 
 module.exports = {
@@ -228,5 +272,7 @@ module.exports = {
   updateContact,
   getContactById,
   getContacts,
-  deleteContact
+  deleteContact,
+  attachContactSubmission,
+  getContactSubmissionsById
 };
