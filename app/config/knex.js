@@ -20,7 +20,8 @@ exports.db = knex(config[environment]);
 // • images (for form intro content => image url, title, alt text)
 // • text (for form headlines and body copy)
 exports.TABLES = {
-  CONTACTS: "contacts",
   USERS: "users",
-  SUBMISSIONS: "submissions"
+  CONTACTS: "contacts",
+  SUBMISSIONS: "submissions",
+  CONTACTS_SUBMISSIONS: "contacts_submissions"
 };
