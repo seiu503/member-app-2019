@@ -51,7 +51,8 @@ const styles = theme => ({
 class TextInputForm extends React.Component {
   componentDidMount() {}
 
-  submit = () => {
+  submit = e => {
+    e.preventDefault();
     const { formMetaType, content } = this.props.formMeta.form;
     const body = {
       formMetaType,
@@ -98,7 +99,11 @@ class TextInputForm extends React.Component {
         >
           Admin Dashboard
         </Typography>
-        <form className={classes.form} onError={errors => console.log(errors)}>
+        <form
+          className={classes.form}
+          onError={errors => console.log(errors)}
+          onSubmit={this.submit}
+        >
           <FormControl component="fieldset" className={classes.formControl}>
             <FormLabel component="legend">Form Meta Type</FormLabel>
             <RadioGroup
@@ -144,11 +149,10 @@ class TextInputForm extends React.Component {
             className={classes.input}
           />
           <ButtonWithSpinner
-            type="button"
+            type="submit"
             color="secondary"
             className={classes.formButton}
             variant="contained"
-            onClick={() => this.submit()}
             loading={this.props.formMeta.loading}
           >
             Save {labelsObj[formMetaType]}
