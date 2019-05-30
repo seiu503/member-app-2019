@@ -65,7 +65,7 @@ const createSubmission = (
 ) => {
   return db
     .insert({
-      id: uuid.v4(),
+      submission_id: uuid.v4(),
       ip_address,
       submission_date,
       agency_number,
@@ -97,13 +97,13 @@ const createSubmission = (
 };
 
 /** Update a Submission
- *  @param    {String}   id             The id of the user to update.
+ *  @param    {String}   submission_id             The id of the submission to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = (id, updates) => {
+const updateSubmission = (submission_id, updates) => {
   return db(TABLES.SUBMISSIONS)
-    .where({ id })
+    .where({ submission_id })
     .first()
     .update(updates)
     .update("updated_at", db.fn.now())
@@ -118,12 +118,12 @@ const getSubmissions = () => {
   return db(TABLES.SUBMISSIONS).returning("*");
 };
 
-/** Find Submission by submission_id
+/** Find Submission by id
  *  @param    {String}   submission_id   The id of the Submission to delete.
  *  @returns  {Object}                   Submission Object.
  */
 
-const getSubmissionsByContactId = submission_id => {
+const getSubmissionById = submission_id => {
   return db(TABLES.SUBMISSIONS)
     .where({ submission_id })
     .first()
@@ -143,13 +143,13 @@ const getSubmissionsByContactId = contact_id => {
 };
 
 /** Delete Submission
- *  @param    {String}   id   The id of the Submission to delete.
+ *  @param    {String}   submission_id   The id of the Submission to delete.
  *  @returns  success message
  */
 
-const deleteSubmission = id => {
+const deleteSubmission = submission_id => {
   return db(TABLES.SUBMISSIONS)
-    .where({ id })
+    .where({ submission_id })
     .del()
     .then(() => {
       // then return success message to client
@@ -162,6 +162,7 @@ const deleteSubmission = id => {
 module.exports = {
   createSubmission,
   updateSubmission,
+  getSubmissionById,
   getSubmissionsByContactId,
   getSubmissions,
   deleteSubmission
