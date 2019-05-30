@@ -4,7 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-// import model and mail utilities
+// import model
 const users = require("../../db/models/users");
 
 /* ============================ ROUTE HANDLERS ============================= */
