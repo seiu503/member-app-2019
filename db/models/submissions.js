@@ -8,31 +8,31 @@ const { db, TABLES } = require("../../app/config/knex");
 /* ============================ PUBLIC METHODS ============================= */
 
 /** Create a Submission
- *  @param    {String}   ip_address                     New Submission ip_address
- *  @param    {String}   submission_date                New Submission submission_date
- *  @param    {String}   agency_number                  New Submission agency_number
- *  @param    {String}   birthdate                      New Submission birthdate
- *  @param    {String}   cell_phone                     New Submission cell_phone
- *  @param    {String}   employer_name                  New Submission employer_name
- *  @param    {String}   first_name                     New Submission first_name
- *  @param    {String}   last_name                      New Submission last_name
- *  @param    {String}   home_street                    New Submission home_street
- *  @param    {String}   home_city                      New Submission home_city
- *  @param    {String}   home_state                     New Submission home_state
- *  @param    {String}   home_zip                       New Submission home_zip
- *  @param    {String}   home_email                     New Submission home_email
- *  @param    {String}   preferred_language             New Submission preferred_language
- *  @param    {String}   terms_agree                    New Submission terms_agree
- *  @param    {String}   signature                      New Submission signature
- *  @param    {String}   text_auth_opt_out              New Submission text_auth_opt_out
- *  @param    {String}   online_campaign_source         New Submission online_campaign_source
- *  @param    {String}   contact_id                     New Submission contact_id
- *  @param    {String}   legal_language                 New Submission legal_language
- *  @param    {String}   maintenance_of_effort          New Submission maintenance_of_effort
- *  @param    {String}   seiu503_cba_app_date           New Submission seiu503_cba_app_date
- *  @param    {String}   direct_pay_auth                New Submission direct_pay_auth
- *  @param    {String}   direct_deposit_auth            New Submission direct_deposit_auth
- *  @param    {String}   immediate_past_member_status   New Submission immediate_past_member_status
+ *  @param    {String}   ip_address             IP address
+ *  @param    {Timestamp} submission_date       Submission timestamp
+ *  @param    {String}   agency_number          Agency number
+ *  @param    {String}   birthdate              Birthdate
+ *  @param    {String}   cell_phone             Cell phone
+ *  @param    {String}   employer_name          Employer name
+ *  @param    {String}   first_name             First name
+ *  @param    {String}   last_name              Last name
+ *  @param    {String}   home_street            Home street
+ *  @param    {String}   home_city              Home city
+ *  @param    {String}   home_state             Home state
+ *  @param    {String}   home_zip               Home zip
+ *  @param    {String}   home_email             Home email
+ *  @param    {String}   preferred_language     Preferred language
+ *  @param    {Boolean}  terms_agree            Agreement to membership terms
+ *  @param    {String}   Signature              URL of signature image
+ *  @param    {Boolean}  text_auth_opt_out      Text authorization opt out
+ *  @param    {String}   online_campaign_source Online campaign source
+ *  @param    {String}   contact_id             Contact id
+ *  @param    {String}   legal_language         Dynamic dump of html legal language on form at time of submision
+ *  @param    {Date}  maintenance_of_effort     Date of submission; confirmation of MOE checkbox
+ *  @param    {Date}   seiu503_cba_app_date     Date of submission; confirmation of submitting membership form
+ *  @param    {Date}   direct_pay_auth          Date of submission; confirmation of direct pay authorization
+ *  @param    {Date}   direct_deposit_auth      Date of submission; confirmation of direct deposit authorization
+ *  @param    {String}   immediate_past_member_status   Immediate past member status (populated from SF for existing contact matches)
  *  @returns  {Array}    Array of 1 newly-created Submission Object.
  */
 
@@ -99,31 +99,6 @@ const createSubmission = (
 /** Update a Submission
  *  @param    {String}   id             The id of the user to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
- ****  @param    {String}   ip_address                     New Submission ip_address
- ****  @param    {String}   submission_date                New Submission submission_date
- ****  @param    {String}   agency_number                  New Submission agency_number
- ****  @param    {String}   birthdate                      New Submission birthdate
- ****  @param    {String}   cell_phone                     New Submission cell_phone
- ****  @param    {String}   employer_name                  New Submission employer_name
- ****  @param    {String}   first_name                     New Submission first_name
- ****  @param    {String}   last_name                      New Submission last_name
- ****  @param    {String}   home_street                    New Submission home_street
- ****  @param    {String}   home_city                      New Submission home_city
- ****  @param    {String}   home_state                     New Submission home_state
- ****  @param    {String}   home_zip                       New Submission home_zip
- ****  @param    {String}   home_email                     New Submission home_email
- ****  @param    {String}   preferred_language             New Submission preferred_language
- ****  @param    {String}   terms_agree                    New Submission terms_agree
- ****  @param    {String}   signature                      New Submission signature
- ****  @param    {String}   text_auth_opt_out              New Submission text_auth_opt_out
- ****  @param    {String}   online_campaign_source         New Submission online_campaign_source
- ****  @param    {String}   contact_id                     New Submission contact_id
- ****  @param    {String}   legal_language                 New Submission legal_language
- ****  @param    {String}   maintenance_of_effort          New Submission maintenance_of_effort
- ****  @param    {String}   seiu503_cba_app_date           New Submission seiu503_cba_app_date
- ****  @param    {String}   direct_pay_auth                New Submission direct_pay_auth
- ****  @param    {String}   direct_deposit_auth            New Submission direct_deposit_auth
- ****  @param    {String}   immediate_past_member_status   New Submission immediate_past_member_status
  *  @returns  {Object}      Updated Submission object.
  */
 const updateSubmission = (id, updates) => {
@@ -136,7 +111,7 @@ const updateSubmission = (id, updates) => {
 };
 
 /** Get all SUBMISSIONS
- *  @returns   {Array}   Array of user objects.
+ *  @returns   {Array}   Array of Submission objects.
  */
 
 const getSubmissions = () => {
@@ -178,7 +153,7 @@ const deleteSubmission = id => {
     .del()
     .then(() => {
       // then return success message to client
-      return { message: "Contact deleted successfully" };
+      return { message: "Submission deleted successfully" };
     });
 };
 
