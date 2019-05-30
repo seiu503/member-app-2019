@@ -29,7 +29,7 @@ const users = require("../../db/models/users");
  *  @param    {Boolean}  text_auth_opt_out      Text authorization opt out
  *  @param    {String}   online_campaign_source Online campaign source
  *  @param    {String}   contact_id             Contact id
- *  @param    {String}   legal_language         Dynamic dump of html legal language on form at time of submision
+ *  @param    {String}   legal_language         Dynamic dump of html legal language on form at time of submission
  *  @param    {Date}  maintenance_of_effort     Date of submission; confirmation of MOE checkbox
  *  @param    {Date}   seiu503_cba_app_date     Date of submission; confirmation of submitting membership form
  *  @param    {Date}   direct_pay_auth          Date of submission; confirmation of direct pay authorization
@@ -224,13 +224,10 @@ const getSubmissionsByContactId = (req, res, next) => {
     .getSubmissionsByContactId(req.params.id)
     .then(submissions => {
       if (!submissions || submission.message) {
-        return res
-          .status(404)
-          .json({
-            message:
-              submissions.message ||
-              "Submissions not found for requested contact"
-          });
+        return res.status(404).json({
+          message:
+            submissions.message || "Submissions not found for requested contact"
+        });
       } else {
         res.status(200).json(submissions);
       }
