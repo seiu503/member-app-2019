@@ -51,7 +51,7 @@ const styles = theme => ({
   },
   title: {
     flexGrow: 1,
-    color: theme.palette.secondary.main,
+    color: theme.palette.secondary.light,
     fontFamily: '"Source Sans Pro", sans-serif',
     fontSize: "1.7em",
     textDecoration: "none",

@@ -26,7 +26,7 @@ const google_token = "5678";
 let id;
 let userId;
 
-describe("models tests", () => {
+describe("user model tests", () => {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();

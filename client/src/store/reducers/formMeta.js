@@ -2,48 +2,46 @@ import update from "immutability-helper";
 
 import { LOGOUT } from "../actions";
 import {
-  GET_CONTENT_BY_ID_REQUEST,
-  GET_CONTENT_BY_ID_SUCCESS,
-  GET_CONTENT_BY_ID_FAILURE,
-  ADD_CONTENT_REQUEST,
-  ADD_CONTENT_SUCCESS,
-  ADD_CONTENT_FAILURE,
-  UPDATE_CONTENT_REQUEST,
-  UPDATE_CONTENT_SUCCESS,
-  UPDATE_CONTENT_FAILURE,
-  DELETE_CONTENT_REQUEST,
-  DELETE_CONTENT_SUCCESS,
-  DELETE_CONTENT_FAILURE,
+  GET_FORM_META_BY_ID_REQUEST,
+  GET_FORM_META_BY_ID_SUCCESS,
+  GET_FORM_META_BY_ID_FAILURE,
+  ADD_FORM_META_REQUEST,
+  ADD_FORM_META_SUCCESS,
+  ADD_FORM_META_FAILURE,
+  UPDATE_FORM_META_REQUEST,
+  UPDATE_FORM_META_SUCCESS,
+  UPDATE_FORM_META_FAILURE,
+  DELETE_FORM_META_REQUEST,
+  DELETE_FORM_META_SUCCESS,
+  DELETE_FORM_META_FAILURE,
   HANDLE_INPUT,
   HANDLE_SWITCH,
   HANDLE_DELETE_OPEN,
   HANDLE_DELETE_CLOSE,
   CLEAR_FORM,
-  SET_EDIT_CONTENT
-} from "../actions/apiContentActions";
+  SET_EDIT_FORM_META
+} from "../actions/apiFormMetaActions";
 
 const INITIAL_STATE = {
   loading: false,
-  featuredContents: [],
-  moreContents: [],
+  featuredFormMetas: [],
+  moreFormMetas: [],
   deleteDialogOpen: false,
-  currentContent: {
-    headline: "",
-    bodyCopy: "",
-    imageUrl: "",
+  currentFormMeta: {
+    formMetaType: null,
+    content: "",
     created_at: "",
     updated_at: ""
   },
   form: {
-    headline: "",
-    bodyCopy: "",
-    imageUrl: "",
+    formMetaType: null,
+    content: "",
     dialogOpen: false
   },
   error: null
 };
 
-function content(state = INITIAL_STATE, action) {
+function formMeta(state = INITIAL_STATE, action) {
   let error;
 
   switch (action.type) {
@@ -69,18 +67,17 @@ function content(state = INITIAL_STATE, action) {
     case HANDLE_DELETE_OPEN:
       return update(state, {
         deleteDialogOpen: { $set: true },
-        currentContent: { $set: { ...action.payload.selectedContent } }
+        currentFormMeta: { $set: { ...action.payload.selectedFormMeta } }
       });
 
     case HANDLE_DELETE_CLOSE:
-    case DELETE_CONTENT_SUCCESS:
+    case DELETE_FORM_META_SUCCESS:
       return update(state, {
         deleteDialogOpen: { $set: false },
-        currentContent: {
+        currentFormMeta: {
           id: { $set: "" },
-          headline: { $set: "" },
-          bodyCopy: { $set: "" },
-          imageUrl: { $set: "" },
+          formMetaType: { $set: "" },
+          content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" }
         },
@@ -88,12 +85,11 @@ function content(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
-    case SET_EDIT_CONTENT:
+    case SET_EDIT_FORM_META:
       return update(state, {
         form: {
-          headline: { $set: action.payload.headline },
-          bodyCopy: { $set: action.payload.bodyCopy },
-          imageUrl: { $set: action.payload.imageUrl },
+          formMetaType: { $set: action.payload.formMetaType },
+          content: { $set: action.payload.content },
           dialogOpen: { $set: false }
         }
       });
@@ -101,37 +97,36 @@ function content(state = INITIAL_STATE, action) {
     case CLEAR_FORM:
       return update(state, {
         form: {
-          headline: { $set: "" },
-          bodyCopy: { $set: "" },
-          imageUrl: { $set: "" },
+          formMetaType: { $set: "" },
+          content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" },
           dialogOpen: { $set: false }
         }
       });
 
-    case GET_CONTENT_BY_ID_REQUEST:
-    case ADD_CONTENT_REQUEST:
-    case UPDATE_CONTENT_REQUEST:
-    case DELETE_CONTENT_REQUEST:
+    case GET_FORM_META_BY_ID_REQUEST:
+    case ADD_FORM_META_REQUEST:
+    case UPDATE_FORM_META_REQUEST:
+    case DELETE_FORM_META_REQUEST:
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
       });
 
-    case GET_CONTENT_BY_ID_SUCCESS:
-    case ADD_CONTENT_SUCCESS:
-    case UPDATE_CONTENT_SUCCESS:
+    case GET_FORM_META_BY_ID_SUCCESS:
+    case ADD_FORM_META_SUCCESS:
+    case UPDATE_FORM_META_SUCCESS:
       return update(state, {
         loading: { $set: false },
-        currentContent: { $set: action.payload[0] },
+        currentFormMeta: { $set: action.payload[0] },
         error: { $set: null }
       });
 
-    case GET_CONTENT_BY_ID_FAILURE:
-    case ADD_CONTENT_FAILURE:
-    case UPDATE_CONTENT_FAILURE:
-    case DELETE_CONTENT_FAILURE:
+    case GET_FORM_META_BY_ID_FAILURE:
+    case ADD_FORM_META_FAILURE:
+    case UPDATE_FORM_META_FAILURE:
+    case DELETE_FORM_META_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
@@ -147,4 +142,4 @@ function content(state = INITIAL_STATE, action) {
   }
 }
 
-export default content;
+export default formMeta;
