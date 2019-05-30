@@ -21,5 +21,6 @@ exports.db = knex(config[environment]);
 // • text (for form headlines and body copy)
 exports.TABLES = {
   CONTACTS: "contacts",
-  USERS: "users"
+  USERS: "users",
+  CONTACTS_SUBMISSIONS: "contacts_submissions"
 };
