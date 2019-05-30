@@ -49,36 +49,13 @@ const styles = theme => ({
 });
 
 class TextInputForm extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      formMetaType: null
-    };
-  }
-
-  handleInput = e => {
-    const newState = this.state;
-    newState.formMetaType = e.target.value;
-    this.setState(newState);
-  };
-
   componentDidMount() {}
 
   submit = () => {
-    const {
-      headline,
-      bodyCopy,
-      imageUrl,
-      redirectUrl
-    } = this.props.formMeta.form;
-    const { formMetaType } = this.state;
+    const { formMetaType, content } = this.props.formMeta.form;
     const body = {
       formMetaType,
-      headline,
-      bodyCopy,
-      imageUrl,
-      redirectUrl
+      content
     };
     this.props.apiFormMeta
       .addFormMeta(body)
@@ -103,7 +80,13 @@ class TextInputForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { formMetaType } = this.state;
+    const { formMetaType } = this.props.formMeta.form;
+    const labelsObj = {
+      headline: "Headline",
+      bodyCopy: "Body Copy",
+      imageUrl: "Image URL",
+      redirectUrl: "Redirect Url"
+    };
     return (
       <div className={classes.container}>
         <Typography
@@ -122,17 +105,21 @@ class TextInputForm extends React.Component {
               aria-label="FormMeta Type"
               name="formMetaType"
               className={classes.group}
-              value={this.state.formMetaType}
-              onChange={this.handleInput}
+              value={formMetaType}
+              onChange={this.props.apiFormMeta.handleInput}
             >
               <FormControlLabel
                 value="headline"
                 control={<Radio />}
                 label="Headline"
               />
-              <FormControlLabel value="body" control={<Radio />} label="Body" />
               <FormControlLabel
-                value="image"
+                value="bodyCopy"
+                control={<Radio />}
+                label="Body"
+              />
+              <FormControlLabel
+                value="imageUrl"
                 control={<Radio />}
                 label="Image"
               />
@@ -143,59 +130,19 @@ class TextInputForm extends React.Component {
               />
             </RadioGroup>
           </FormControl>
-
-          {formMetaType === "headline" ? (
-            <TextField
-              name="headline"
-              id="headline"
-              label="Headline"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.formMeta.form.headline}
-              onChange={this.props.apiFormMeta.handleInput}
-              className={classes.input}
-            />
-          ) : formMetaType === "body" ? (
-            <TextField
-              name="bodyCopy"
-              id="bodyCopy"
-              label="Body Copy"
-              multiline
-              rows="5"
-              variant="outlined"
-              required
-              value={this.props.formMeta.form.bodyCopy}
-              onChange={this.props.apiFormMeta.handleInput}
-              className={classes.textarea}
-            />
-          ) : formMetaType === "image" ? (
-            <TextField
-              name="imageUrl"
-              id="imageUrl"
-              label="Image URL"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.formMeta.form.imageUrl}
-              onChange={this.props.apiFormMeta.handleInput}
-              className={classes.input}
-            />
-          ) : formMetaType === "redirectUrl" ? (
-            <TextField
-              name="redirectUrl"
-              id="redirectUrl"
-              label="Redirect URL"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.formMeta.form.redirectUrl}
-              onChange={this.props.apiFormMeta.handleInput}
-              className={classes.input}
-            />
-          ) : (
-            ""
-          )}
+          <TextField
+            name="content"
+            id="content"
+            label={labelsObj[formMetaType]}
+            type="text"
+            multiline={formMetaType === "bodyCopy"}
+            rows={formMetaType === "bodyCopy" ? 5 : 1}
+            variant="outlined"
+            required
+            value={this.props.formMeta.form.content}
+            onChange={this.props.apiFormMeta.handleInput}
+            className={classes.input}
+          />
           <ButtonWithSpinner
             type="button"
             color="secondary"
@@ -204,7 +151,7 @@ class TextInputForm extends React.Component {
             onClick={() => this.submit()}
             loading={this.props.formMeta.loading}
           >
-            Save FormMeta
+            Save {labelsObj[formMetaType]}
           </ButtonWithSpinner>
         </form>
       </div>
@@ -216,9 +163,8 @@ TextInputForm.propTypes = {
   type: PropTypes.string,
   formMeta: PropTypes.shape({
     form: PropTypes.shape({
-      headline: PropTypes.string,
-      bodyCopy: PropTypes.string,
-      imageUrl: PropTypes.string
+      formMetaType: PropTypes.string,
+      content: PropTypes.string
     }),
     loading: PropTypes.bool
   }).isRequired,

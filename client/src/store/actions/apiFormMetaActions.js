@@ -74,7 +74,7 @@ export function setEditFormMeta(formMeta) {
 export function getFormMetaById(id) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/formMeta/${id}`,
+      endpoint: `${BASE_URL}/api/form-meta/${id}`,
       method: "GET",
       types: [
         GET_FORM_META_BY_ID_REQUEST,
@@ -103,9 +103,8 @@ export function getFormMetaById(id) {
 /*
  * Function: addFormMeta -- add new formMeta to db
  * @param {object} body (formMeta object)
- *  --  @param {string} headline,
- *  --  @param {string} bodyCopy,
- *  --  @param {string} imageUrl
+ *  --  @param {string} formMetaType,
+ *  --  @param {string} content
  * This action dispatches additional actions as it executes:
  *   ADD_FORM_META_REQUEST:
  *     Initiates a spinner on the home page.
@@ -117,7 +116,7 @@ export function getFormMetaById(id) {
 export function addFormMeta(token, body) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/formMeta/`,
+      endpoint: `${BASE_URL}/api/form-meta/`,
       method: "POST",
       types: [
         ADD_FORM_META_REQUEST,
@@ -153,9 +152,6 @@ export function addFormMeta(token, body) {
  * @param {string} id formMeta id
  * @param {object} body (formMeta object)
  *  --  @param {object} updates
- *  --  -- @param {string} headline,
- *  --  -- @param {string} bodyCopy,
- *  --  -- @param {string} imageUrl
  * This action dispatches additional actions as it executes:
  *   UDPATE_FORM_META_REQUEST:
  *     Initiates a spinner on the home page.
@@ -167,7 +163,7 @@ export function addFormMeta(token, body) {
 export function updateFormMeta(token, id, body) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/formMeta/${id}`,
+      endpoint: `${BASE_URL}/api/form-meta/${id}`,
       method: "PUT",
       types: [
         UPDATE_FORM_META_REQUEST,
@@ -212,7 +208,7 @@ export function updateFormMeta(token, id, body) {
 export function deleteFormMeta(token, id) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/formMeta/${id}`,
+      endpoint: `${BASE_URL}/api/form-meta/${id}`,
       method: "DELETE",
       types: [
         DELETE_FORM_META_REQUEST,

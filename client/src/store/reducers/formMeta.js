@@ -29,19 +29,13 @@ const INITIAL_STATE = {
   deleteDialogOpen: false,
   currentFormMeta: {
     formMetaType: null,
-    headline: "",
-    bodyCopy: "",
-    imageUrl: "",
-    redirectUrl: "",
+    content: "",
     created_at: "",
     updated_at: ""
   },
   form: {
     formMetaType: null,
-    headline: "",
-    bodyCopy: "",
-    imageUrl: "",
-    redirectUrl: "",
+    content: "",
     dialogOpen: false
   },
   error: null
@@ -82,10 +76,8 @@ function formMeta(state = INITIAL_STATE, action) {
         deleteDialogOpen: { $set: false },
         currentFormMeta: {
           id: { $set: "" },
-          headline: { $set: "" },
-          bodyCopy: { $set: "" },
-          imageUrl: { $set: "" },
-          redirectUrl: { $set: "" },
+          formMetaType: { $set: "" },
+          content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" }
         },
@@ -96,10 +88,8 @@ function formMeta(state = INITIAL_STATE, action) {
     case SET_EDIT_FORM_META:
       return update(state, {
         form: {
-          headline: { $set: action.payload.headline },
-          bodyCopy: { $set: action.payload.bodyCopy },
-          imageUrl: { $set: action.payload.imageUrl },
-          redirectUrl: { $set: action.payload.redirectUrl },
+          formMetaType: { $set: action.payload.formMetaType },
+          content: { $set: action.payload.content },
           dialogOpen: { $set: false }
         }
       });
@@ -107,10 +97,8 @@ function formMeta(state = INITIAL_STATE, action) {
     case CLEAR_FORM:
       return update(state, {
         form: {
-          headline: { $set: "" },
-          bodyCopy: { $set: "" },
-          imageUrl: { $set: "" },
-          redirectUrl: { $set: "" },
+          formMetaType: { $set: "" },
+          content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" },
           dialogOpen: { $set: false }
