@@ -64,12 +64,9 @@ export default createMuiTheme({
     MuiFormLabel: {
       root: {
         "&$focused": {
-          color: "secondary"
-        }
-      },
-      focused: {
-        "&$focused": {
-          color: "secondary"
+          "&$focused": {
+            color: "secondary"
+          }
         }
       }
     },

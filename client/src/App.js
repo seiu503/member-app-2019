@@ -194,7 +194,7 @@ App.propTypes = {
   apiProfile: PropTypes.shape({
     validateToken: PropTypes.func
   }).isRequired,
-  apiFormMeta: PropTypes.shape({
+  apiFormMetaActions: PropTypes.shape({
     addFormMeta: PropTypes.func,
     deleteFormMeta: PropTypes.func,
     clearForm: PropTypes.func
