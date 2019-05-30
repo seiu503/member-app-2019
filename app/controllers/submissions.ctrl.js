@@ -1,11 +1,11 @@
 /*
-   Route handlers for fetching and updating users.
+   Route handlers for fetching and updating submissions.
 */
 
 /* ================================= SETUP ================================= */
 
 // import model and mail utilities
-const users = require("../../db/models/users");
+const submissions = require("../../db/models/submissions");
 
 /* ============================ ROUTE HANDLERS ============================= */
 
