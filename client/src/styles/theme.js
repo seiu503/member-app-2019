@@ -7,7 +7,8 @@ export default createMuiTheme({
       light: "#531078" // medium purple
     },
     secondary: {
-      main: "#ffce04" // yellow/gold
+      main: "#ffce04", // yellow/gold
+      light: "#ffffff" //white
     },
     textColor: "#333", // dark gray
     secondaryTextColor: "#531078", // medium purple
@@ -63,12 +64,9 @@ export default createMuiTheme({
     MuiFormLabel: {
       root: {
         "&$focused": {
-          color: "secondary"
-        }
-      },
-      focused: {
-        "&$focused": {
-          color: "secondary"
+          "&$focused": {
+            color: "secondary"
+          }
         }
       }
     },

@@ -6,8 +6,13 @@ import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 
-import * as apiContentActions from "../store/actions/apiContentActions";
+import * as apiFormMetaActions from "../store/actions/apiFormMetaActions";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -23,6 +28,11 @@ const styles = theme => ({
   form: {
     maxWidth: 600,
     margin: "auto"
+  },
+  group: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row"
   },
   input: {
     width: "100%",
@@ -41,26 +51,29 @@ const styles = theme => ({
 class TextInputForm extends React.Component {
   componentDidMount() {}
 
-  submit = () => {
-    const { headline, bodyCopy, image } = this.props.content.form;
+  submit = e => {
+    e.preventDefault();
+    const { formMetaType, content } = this.props.formMeta.form;
     const body = {
-      headline,
-      bodyCopy,
-      image
+      formMetaType,
+      content
     };
-    this.props.apiContent
-      .addContent(body)
+    this.props.apiFormMeta
+      .addFormMeta(body)
       .then(result => {
         console.log(result.type);
-        if (result.type === "ADD_CONTENT_FAILURE" || this.props.content.error) {
+        if (
+          result.type === "ADD_FORM_META_FAILURE" ||
+          this.props.formMeta.error
+        ) {
           openSnackbar(
             "error",
             this.props.contact.error ||
-              "An error occured while trying to save your content."
+              "An error occured while trying to save your formMeta."
           );
         } else {
-          openSnackbar("success", "Content Saved.");
-          this.props.apiContent.clearForm();
+          openSnackbar("success", "FormMeta Saved.");
+          this.props.apiFormMeta.clearForm();
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -68,6 +81,13 @@ class TextInputForm extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { formMetaType } = this.props.formMeta.form;
+    const labelsObj = {
+      headline: "Headline",
+      bodyCopy: "Body Copy",
+      imageUrl: "Image URL",
+      redirectUrl: "Redirect Url"
+    };
     return (
       <div className={classes.container}>
         <Typography
@@ -79,50 +99,63 @@ class TextInputForm extends React.Component {
         >
           Admin Dashboard
         </Typography>
-        <form className={classes.form} onError={errors => console.log(errors)}>
+        <form
+          className={classes.form}
+          onError={errors => console.log(errors)}
+          onSubmit={this.submit}
+        >
+          <FormControl component="fieldset" className={classes.formControl}>
+            <FormLabel component="legend">Form Meta Type</FormLabel>
+            <RadioGroup
+              aria-label="FormMeta Type"
+              name="formMetaType"
+              className={classes.group}
+              value={formMetaType}
+              onChange={this.props.apiFormMeta.handleInput}
+            >
+              <FormControlLabel
+                value="headline"
+                control={<Radio />}
+                label="Headline"
+              />
+              <FormControlLabel
+                value="bodyCopy"
+                control={<Radio />}
+                label="Body"
+              />
+              <FormControlLabel
+                value="imageUrl"
+                control={<Radio />}
+                label="Image"
+              />
+              <FormControlLabel
+                value="redirectUrl"
+                control={<Radio />}
+                label="Redirect URL"
+              />
+            </RadioGroup>
+          </FormControl>
           <TextField
-            name="headline"
-            id="headline"
-            label="Headline"
+            name="content"
+            id="content"
+            label={labelsObj[formMetaType]}
             type="text"
+            multiline={formMetaType === "bodyCopy"}
+            rows={formMetaType === "bodyCopy" ? 5 : 1}
             variant="outlined"
             required
-            value={this.props.content.form.headline}
-            onChange={this.props.apiContent.handleInput}
-            className={classes.input}
-          />
-          <TextField
-            name="bodyCopy"
-            id="bodyCopy"
-            label="Body Copy"
-            multiline
-            rows="5"
-            variant="outlined"
-            required
-            value={this.props.content.form.bodyCopy}
-            onChange={this.props.apiContent.handleInput}
-            className={classes.textarea}
-          />
-          <TextField
-            name="imageUrl"
-            id="imageUrl"
-            label="Image URL"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.content.form.imageUrl}
-            onChange={this.props.apiContent.handleInput}
+            value={this.props.formMeta.form.content}
+            onChange={this.props.apiFormMeta.handleInput}
             className={classes.input}
           />
           <ButtonWithSpinner
-            type="button"
+            type="submit"
             color="secondary"
             className={classes.formButton}
             variant="contained"
-            onClick={() => this.submit()}
-            loading={this.props.content.loading}
+            loading={this.props.formMeta.loading}
           >
-            Save Content
+            Save {labelsObj[formMetaType]}
           </ButtonWithSpinner>
         </form>
       </div>
@@ -132,28 +165,27 @@ class TextInputForm extends React.Component {
 
 TextInputForm.propTypes = {
   type: PropTypes.string,
-  content: PropTypes.shape({
+  formMeta: PropTypes.shape({
     form: PropTypes.shape({
-      headline: PropTypes.string,
-      bodyCopy: PropTypes.string,
-      imageUrl: PropTypes.string
+      formMetaType: PropTypes.string,
+      content: PropTypes.string
     }),
     loading: PropTypes.bool
   }).isRequired,
-  apiContent: PropTypes.shape({
+  apiFormMeta: PropTypes.shape({
     handleInput: PropTypes.func,
-    addContent: PropTypes.func,
+    addFormMeta: PropTypes.func,
     clearForm: PropTypes.func
   }),
   classes: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  content: state.content
+  formMeta: state.formMeta
 });
 
 const mapDispatchToProps = dispatch => ({
-  apiContent: bindActionCreators(apiContentActions, dispatch)
+  apiFormMeta: bindActionCreators(apiFormMetaActions, dispatch)
 });
 
 export default withStyles(styles)(

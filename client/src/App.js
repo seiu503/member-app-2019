@@ -9,7 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
-import * as apiContentActions from "./store/actions/apiContentActions";
+import * as apiFormMetaActions from "./store/actions/apiFormMetaActions";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -194,23 +194,21 @@ App.propTypes = {
   apiProfile: PropTypes.shape({
     validateToken: PropTypes.func
   }).isRequired,
-  apiContent: PropTypes.shape({
-    addContent: PropTypes.func,
-    deleteContent: PropTypes.func,
+  apiFormMetaActions: PropTypes.shape({
+    addFormMeta: PropTypes.func,
+    deleteFormMeta: PropTypes.func,
     clearForm: PropTypes.func
   }).isRequired,
-  content: PropTypes.shape({
+  formMeta: PropTypes.shape({
     form: PropTypes.shape({
-      headline: PropTypes.string,
-      bodyCopy: PropTypes.string,
-      imageUrl: PropTypes.string
+      formMetaType: PropTypes.string,
+      content: PropTypes.string
     }),
     error: PropTypes.string,
     deleteDialogOpen: PropTypes.bool,
-    currentContent: PropTypes.shape({
-      headline: PropTypes.string,
-      bodyCopy: PropTypes.string,
-      imageUrl: PropTypes.string
+    currentFormMeta: PropTypes.shape({
+      formMetaType: PropTypes.string,
+      content: PropTypes.string
     })
   }).isRequired,
   profile: PropTypes.shape({
@@ -224,12 +222,12 @@ App.propTypes = {
 const mapStateToProps = state => ({
   appState: state.appState,
   profile: state.profile,
-  content: state.content
+  formMeta: state.formMeta
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
-  apiContent: bindActionCreators(apiContentActions, dispatch),
+  apiFormMetaActions: bindActionCreators(apiFormMetaActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch)
 });
 

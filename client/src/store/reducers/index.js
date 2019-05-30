@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
 import appState from "../reducers/appState";
 import profile from "../reducers/profile";
-import content from "../reducers/content";
+import formMeta from "../reducers/formMeta";
 
 const rootReducer = combineReducers({
   appState,
   profile,
-  content
+  formMeta
 });
 
 export default rootReducer;
