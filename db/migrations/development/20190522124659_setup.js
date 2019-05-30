@@ -6,10 +6,7 @@ exports.up = function(knex, Promise) {
       table.string("email").notNullable();
       table.string("avatar_url");
       table.string("google_id").notNullable();
-      table
-        .string("google_token")
-        .notNullable()
-        .defaultTo("OR");
+      table.string("google_token").notNullable();
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table.timestamp("updated_at").defaultTo(knex.fn.now());
     })
