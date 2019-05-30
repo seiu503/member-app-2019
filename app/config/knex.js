@@ -11,17 +11,14 @@ exports.db = knex(config[environment]);
 // expose a TABLES object; holds string name values of the tables
 // we're interacting with.
 
-// fill this in as we build out the tables
-// probably we're going to need
-// • contacts (people who submit forms. fields in google doc)
-// • users (for admin back-end)
+// fill this in as we build out the tables. still missing:
 // • employers (for employer picklist. needs name, SF Acct ID, Agency Number)
-// • submissions (one contact => many submissions. fields in google doc)
-// • images (for form intro content => image url, title, alt text)
-// • text (for form headlines and body copy)
+// • payments (for unioni.se payment processing. data structure is WIP)
+
 exports.TABLES = {
   USERS: "users",
   CONTACTS: "contacts",
   SUBMISSIONS: "submissions",
-  CONTACTS_SUBMISSIONS: "contacts_submissions"
+  CONTACTS_SUBMISSIONS: "contacts_submissions",
+  FORM_META: "form_meta"
 };
