@@ -12,7 +12,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 
-import * as apiContentActions from "../store/actions/apiContentActions";
+import * as apiFormMetaActions from "../store/actions/apiFormMetaActions";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -28,6 +28,11 @@ const styles = theme => ({
   form: {
     maxWidth: 600,
     margin: "auto"
+  },
+  group: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row"
   },
   input: {
     width: "100%",
@@ -48,40 +53,49 @@ class TextInputForm extends React.Component {
     super(props);
 
     this.state = {
-      contentType: null
+      formMetaType: null
     };
   }
 
   handleInput = e => {
     const newState = this.state;
-    newState.contentType = e.target.value;
+    newState.formMetaType = e.target.value;
     this.setState(newState);
   };
 
   componentDidMount() {}
 
   submit = () => {
-    const { headline, bodyCopy, image } = this.props.content.form;
-    const { contentType } = this.state;
-    const body = {
-      contentType,
+    const {
       headline,
       bodyCopy,
-      image
+      imageUrl,
+      redirectUrl
+    } = this.props.formMeta.form;
+    const { formMetaType } = this.state;
+    const body = {
+      formMetaType,
+      headline,
+      bodyCopy,
+      imageUrl,
+      redirectUrl
     };
-    this.props.apiContent
-      .addContent(body)
+    this.props.apiFormMeta
+      .addFormMeta(body)
       .then(result => {
         console.log(result.type);
-        if (result.type === "ADD_CONTENT_FAILURE" || this.props.content.error) {
+        if (
+          result.type === "ADD_FORM_META_FAILURE" ||
+          this.props.formMeta.error
+        ) {
           openSnackbar(
             "error",
             this.props.contact.error ||
-              "An error occured while trying to save your content."
+              "An error occured while trying to save your formMeta."
           );
         } else {
-          openSnackbar("success", "Content Saved.");
-          this.props.apiContent.clearForm();
+          openSnackbar("success", "FormMeta Saved.");
+          this.props.apiFormMeta.clearForm();
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -89,7 +103,7 @@ class TextInputForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { contentType } = this.state;
+    const { formMetaType } = this.state;
     return (
       <div className={classes.container}>
         <Typography
@@ -103,12 +117,12 @@ class TextInputForm extends React.Component {
         </Typography>
         <form className={classes.form} onError={errors => console.log(errors)}>
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Content Type</FormLabel>
+            <FormLabel component="legend">Form Meta Type</FormLabel>
             <RadioGroup
-              aria-label="Content Type"
-              name="contentType"
+              aria-label="FormMeta Type"
+              name="formMetaType"
               className={classes.group}
-              value={this.state.contentType}
+              value={this.state.formMetaType}
               onChange={this.handleInput}
             >
               <FormControlLabel
@@ -122,10 +136,15 @@ class TextInputForm extends React.Component {
                 control={<Radio />}
                 label="Image"
               />
+              <FormControlLabel
+                value="redirectUrl"
+                control={<Radio />}
+                label="Redirect URL"
+              />
             </RadioGroup>
           </FormControl>
 
-          {contentType === "headline" ? (
+          {formMetaType === "headline" ? (
             <TextField
               name="headline"
               id="headline"
@@ -133,11 +152,11 @@ class TextInputForm extends React.Component {
               type="text"
               variant="outlined"
               required
-              value={this.props.content.form.headline}
-              onChange={this.props.apiContent.handleInput}
+              value={this.props.formMeta.form.headline}
+              onChange={this.props.apiFormMeta.handleInput}
               className={classes.input}
             />
-          ) : contentType === "body" ? (
+          ) : formMetaType === "body" ? (
             <TextField
               name="bodyCopy"
               id="bodyCopy"
@@ -146,11 +165,11 @@ class TextInputForm extends React.Component {
               rows="5"
               variant="outlined"
               required
-              value={this.props.content.form.bodyCopy}
-              onChange={this.props.apiContent.handleInput}
+              value={this.props.formMeta.form.bodyCopy}
+              onChange={this.props.apiFormMeta.handleInput}
               className={classes.textarea}
             />
-          ) : contentType === "image" ? (
+          ) : formMetaType === "image" ? (
             <TextField
               name="imageUrl"
               id="imageUrl"
@@ -158,8 +177,20 @@ class TextInputForm extends React.Component {
               type="text"
               variant="outlined"
               required
-              value={this.props.content.form.imageUrl}
-              onChange={this.props.apiContent.handleInput}
+              value={this.props.formMeta.form.imageUrl}
+              onChange={this.props.apiFormMeta.handleInput}
+              className={classes.input}
+            />
+          ) : formMetaType === "redirectUrl" ? (
+            <TextField
+              name="redirectUrl"
+              id="redirectUrl"
+              label="Redirect URL"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.formMeta.form.redirectUrl}
+              onChange={this.props.apiFormMeta.handleInput}
               className={classes.input}
             />
           ) : (
@@ -171,9 +202,9 @@ class TextInputForm extends React.Component {
             className={classes.formButton}
             variant="contained"
             onClick={() => this.submit()}
-            loading={this.props.content.loading}
+            loading={this.props.formMeta.loading}
           >
-            Save Content
+            Save FormMeta
           </ButtonWithSpinner>
         </form>
       </div>
@@ -183,7 +214,7 @@ class TextInputForm extends React.Component {
 
 TextInputForm.propTypes = {
   type: PropTypes.string,
-  content: PropTypes.shape({
+  formMeta: PropTypes.shape({
     form: PropTypes.shape({
       headline: PropTypes.string,
       bodyCopy: PropTypes.string,
@@ -191,20 +222,20 @@ TextInputForm.propTypes = {
     }),
     loading: PropTypes.bool
   }).isRequired,
-  apiContent: PropTypes.shape({
+  apiFormMeta: PropTypes.shape({
     handleInput: PropTypes.func,
-    addContent: PropTypes.func,
+    addFormMeta: PropTypes.func,
     clearForm: PropTypes.func
   }),
   classes: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  content: state.content
+  formMeta: state.formMeta
 });
 
 const mapDispatchToProps = dispatch => ({
-  apiContent: bindActionCreators(apiContentActions, dispatch)
+  apiFormMeta: bindActionCreators(apiFormMetaActions, dispatch)
 });
 
 export default withStyles(styles)(
