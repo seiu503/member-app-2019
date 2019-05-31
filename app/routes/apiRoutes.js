@@ -11,6 +11,7 @@ const passport = require("passport");
 
 const userCtrl = require("../controllers/users.ctrl");
 const authCtrl = require("../controllers/auth.ctrl");
+const submissionCtrl = require("../controllers/submissions.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
@@ -124,6 +125,117 @@ router.get("/user/", userCtrl.getUsers);
 //
 router.delete("/user/:id", userCtrl.deleteUser);
 // router.delete("/user/:id", requireAuth, userCtrl.deleteUser);
+
+/* ============================== SUBMISSION ROUTES =========================== */
+
+// CREATE A SUBMISSION
+//   Example: POST >> /api/submission/
+//   Secured: yes
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              ip_address                       : String
+//              submission_date                  : Timestamp
+//              agency_number                    : String
+//              birthdate                        : String
+//              cell_phone                       : String
+//              employer_name                    : String
+//              first_name                       : String
+//              last_name                        : String
+//              home_street                      : String
+//              home_city                        : String
+//              home_state                       : String
+//              home_zip                         : String
+//              home_email                       : String
+//              preferred_language               : String
+//              terms_agree                      : Boolean
+//              Signature                        : String
+//              text_auth_opt_out                : Boolean
+//              online_campaign_source           : String
+//              contact_id                       : String
+//              legal_language                   : String
+//              maintenance_of_effort            : Date
+//              seiu503_cba_app_date             : Date
+//              direct_pay_auth                  : Date
+//              direct_deposit_auth              : Date
+//              immediate_past_member_status     : String
+//             }
+//        }
+//   Returns: JSON created submission object on success.
+//
+router.post("/submission", submissionCtrl.createSubmission);
+
+// UPDATE A SUBMISSION
+//   Example: PUT >> /api/submission/:id
+//   Secured: yes
+//   Expects:
+//     1) request body properties : {
+//          updates         : Object {
+//              ip_address         : String
+//              submission_date    : Timestamp
+//              agency_number      : String
+//              birthdate          : String
+//             }
+//        }
+//      2) request params         : {
+//          id              : String
+//      }
+//   Returns: JSON updated submission object on success.
+//
+router.put("/submission/:id", submissionCtrl.updateSubmission);
+// router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
+
+// GET ONE SUBMISSION
+//   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: yes
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON submission object on success.
+//
+router.get("/submission/:id", submissionCtrl.getSubmissionById);
+// router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
+
+// GET ALL SUBMISSIONS
+//   Example: GET >> /api/submission/
+//   Secured: no
+//   Expects: null
+//   Returns: Array of submission objects on success.
+//
+router.get("/submission/", userCtrl.getSubmissions);
+
+// GET SUBMISSIONS BY CONTACT_ID
+//   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: yes
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Array of submission objects on success.
+//
+router.get("/submission/contact/:id", submissionCtrl.getSubmissionsByContactId);
+// router.get("/submission/contact/:id", requireAuth, submissionCtrl.getSubmissionsById);
+
+// GET ALL SUBMISSIONS
+//   Example: GET >> /api/submission/
+//   Secured: no
+//   Expects: null
+//   Returns: Array of submission objects on success.
+//
+router.get("/submission/", userCtrl.getSubmissions);
+
+// DELETE SUBMISSION
+//   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: yes
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: success message on success.
+//
+router.delete("/submission/:id", submissionCtrl.deleteSubmission);
+// router.delete("/submission/:id", requireAuth, submission.deleteSubmission);
 
 /* ================================ EXPORT ================================= */
 
