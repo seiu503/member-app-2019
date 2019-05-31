@@ -6,6 +6,7 @@
 
 // import model and mail utilities
 const submissions = require("../../db/models/submissions");
+const contacts = require("../../db/models/contacts");
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -126,10 +127,14 @@ const createSubmission = (req, res, next) => {
       )
       .then(submissions => {
         const submission = submissions[0];
+        attachContactSubmissions(
+          submission.contact_id,
+          submission.submission_id
+        );
         res.status(200).json(submission);
       })
       .catch(err => {
-        console.log(`submissions.ctrl.js > 125: ${err}`);
+        console.log(`submissions.ctrl.js > 134: ${err}`);
         res.status(500).json({ message: err.message });
       });
   } else {
@@ -137,6 +142,23 @@ const createSubmission = (req, res, next) => {
       .status(500)
       .json({ message: "There was an error creating the user account" });
   }
+};
+// helper function for attaching submission to join table
+const attachContactSubmissions = (contact_id, submission_id) => {
+  return contacts
+    .attachContactSubmissions(contact_id, submission_id)
+    .then(contact_submissions => {
+      if (!contact_submissions || contact_submissions.message) {
+        return res.status(404).json({
+          message:
+            contact_submissions.message ||
+            "Error adding Submission to contacts_submissions table"
+        });
+      } else {
+        res.status(200).json(contact_submissions);
+      }
+    })
+    .catch(err => res.status(404).json({ message: err.message }));
 };
 
 /** Update a Submission

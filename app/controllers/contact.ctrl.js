@@ -256,24 +256,6 @@ const getContactById = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
-const attachContactSubmissions = (req, res, next) => {
-  return contacts
-    .attachContactSubmissions(contact_id, req.params.id)
-    .then(contact_submissions => {
-      if (!contact_submissions || contact_submissions.message) {
-        return res
-          .status(404)
-          .json({
-            message:
-              contact_submissions.message || "Submission not added to Contact"
-          });
-      } else {
-        res.status(200).json(contact_submissions);
-      }
-    })
-    .catch(err => res.status(404).json({ message: err.message }));
-};
-
 /** Get Joined Contact_Submissions by Contact Id
  *
  * @param {String} id   Id of contact to view submissions
@@ -284,12 +266,10 @@ const getContactSubmissionsById = (req, res, next) => {
     .getContactSubmissionsById(req.params.id)
     .then(contact_submissions => {
       if (!contact_submissions || contact_submissions.message) {
-        return res
-          .status(404)
-          .json({
-            message:
-              contact_submissions.message || "Contact/Submissions not found"
-          });
+        return res.status(404).json({
+          message:
+            contact_submissions.message || "Contact/Submissions not found"
+        });
       } else {
         res.status(200).json(contact_submissions);
       }
