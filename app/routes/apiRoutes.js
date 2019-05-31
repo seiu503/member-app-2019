@@ -12,6 +12,7 @@ const passport = require("passport");
 const userCtrl = require("../controllers/users.ctrl");
 const authCtrl = require("../controllers/auth.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
+const contactCtrl = require("../controllers/contacts.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
