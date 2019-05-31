@@ -205,26 +205,6 @@ router.get("/submission/:id", submissionCtrl.getSubmissionById);
 //
 router.get("/submission/", userCtrl.getSubmissions);
 
-// GET SUBMISSIONS BY CONTACT_ID
-//   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
-//   Secured: yes
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Array of submission objects on success.
-//
-router.get("/submission/contact/:id", submissionCtrl.getSubmissionsByContactId);
-// router.get("/submission/contact/:id", requireAuth, submissionCtrl.getSubmissionsById);
-
-// GET ALL SUBMISSIONS
-//   Example: GET >> /api/submission/
-//   Secured: no
-//   Expects: null
-//   Returns: Array of submission objects on success.
-//
-router.get("/submission/", userCtrl.getSubmissions);
-
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
 //   Secured: yes
@@ -236,6 +216,123 @@ router.get("/submission/", userCtrl.getSubmissions);
 //
 router.delete("/submission/:id", submissionCtrl.deleteSubmission);
 // router.delete("/submission/:id", requireAuth, submission.deleteSubmission);
+
+/* ============================== CONTACT ROUTES =========================== */
+
+// CREATE A CONTACT
+//   Example: POST >> /api/contact/
+//   Secured: yes
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              display_name                  : String
+//              account_name                  : String
+//              agency_number                 : String
+//              mail_to_city                  : String
+//              mail_to_state                 : String
+//              mail_to_street                : String
+//              mail_to_postal_code           : String
+//              first_name                    : String
+//              last_name                     : String
+//              dd                            : String
+//              mm                            : String
+//              yyyy                          : String
+//              dob                           : String
+//              preferred_language            : String
+//              home_street                   : String
+//              home_postal_code              : String
+//              home_state                    : String
+//              home_city                     : String
+//              home_email                    : String
+//              mobile_phone                  : String
+//              text_auth_opt_out             : Boolean
+//              terms_agree                   : Boolean
+//              signature                     : String
+//              online_campaign_source        : String
+//              signed_application            : Boolean
+//              ethnicity                     : String
+//              lgbtq_id                      : Boolean
+//              trans_id                      : Boolean
+//              disability_id                 : Boolean
+//              deaf_or_hard_of_hearing       : Boolean
+//              blind_or_visually_impaired    : Boolean
+//              gender                        : String
+//              gender_other_description      : String
+//              gender_pronoun                : String
+//              job_title                     : String
+//              hire_date                     : Date
+//              worksite                      : String
+//              work_email                    : String
+//             }
+//        }
+//   Returns: JSON created contact object on success.
+//
+router.post("/contact", contactCtrl.createContact);
+
+// UPDATE A CONTACT
+//   Example: PUT >> /api/contact/:id
+//   Secured: yes
+//   Expects:
+//     1) request body properties : {
+//          updates         : Object {
+//              account_name          : String
+//              agency_number         : String
+//              mail_to_city          : String
+//              first_name            : String
+//              text_auth_opt_out     : Boolean
+//             }
+//        }
+//      2) request params         : {
+//          id              : String
+//      }
+//   Returns: JSON updated contact object on success.
+//
+router.put("/contact/:id", contactCtrl.updateContact);
+// router.put("/contact/:id", requireAuth, contactCtrl.updateContact);
+
+// GET ONE CONTACT
+//   Example: GET >> /api/contact/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: yes
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON contact object on success.
+//
+router.get("/contact/:id", contactCtrl.getContactById);
+// router.get("/contact/:id", requireAuth, contactCtrl.getContactById);
+
+// GET ALL CONTACTS
+//   Example: GET >> /api/contact/
+//   Secured: no
+//   Expects: null
+//   Returns: Array of contact objects on success.
+//
+router.get("/contact/", userCtrl.getContacts);
+
+// GET CONTACT_SUBMISSIONS BY CONTACT_ID
+//   Example: GET >> /api/contacts/submissions/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: yes
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Object with contact and Array of related submission objects on success.
+//
+router.get("/contact/submissions/:id", contactCtrl.getContactSubmissionsById);
+// router.get("/contact/submissions/:id", requireAuth, contactCtrl.getContactSubmissionsById);
+
+// DELETE CONTACT
+//   Example: DELETE >> /api/contact/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: yes
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: success message on success.
+//
+router.delete("/contact/:id", contactCtrl.deleteContact);
+// router.delete("/contact/:id", requireAuth, contact.deleteContact);
 
 /* ================================ EXPORT ================================= */
 

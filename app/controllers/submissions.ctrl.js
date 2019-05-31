@@ -237,26 +237,6 @@ const getSubmissionById = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
-/** Get submissions by contact_id
- *  @param    {String}   id   Id of the requested contact.
- *  @returns  {Array}        Array of Submissions objects OR error message.
- */
-const getSubmissionsByContactId = (req, res, next) => {
-  return submissions
-    .getSubmissionsByContactId(req.params.id)
-    .then(submissions => {
-      if (!submissions || submission.message) {
-        return res.status(404).json({
-          message:
-            submissions.message || "Submissions not found for requested contact"
-        });
-      } else {
-        res.status(200).json(submissions);
-      }
-    })
-    .catch(err => res.status(404).json({ message: err.message }));
-};
-
 /* ================================ EXPORT ================================= */
 
 module.exports = {
@@ -264,6 +244,5 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   getSubmissionById,
-  getSubmissions,
-  getSubmissionsByContactId
+  getSubmissions
 };
