@@ -107,7 +107,7 @@ describe("form_meta model tests", () => {
 
     it("DELETE deletes a content item", () => {
       return form_meta.deleteFormMeta(contentId).then(result => {
-        assert.equal(result.message, "Form meta deleted successfully");
+        assert.equal(result.message, "Content deleted successfully");
       });
     });
   });

@@ -1,4 +1,4 @@
-// test/routes_users_spec.js
+// test/routes_form_meta_spec.js
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */
@@ -16,14 +16,19 @@ require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 const users = require("../db/models/users");
 
+const form_meta_type = "headline";
+const form_meta_type2 = "image_url";
+const content = "Join SEIU Today!";
+const content2 = "http://example.com/image.png";
+
+const updated_form_meta_type = "body_copy";
+const updated_form_meta_type2 = "redirect_url";
+const updated_content = "Here's why you should join the union";
+const updated_content2 = "http://example.com/redirect";
+
 const name = `firstname ${utils.randomText()}`;
-const name2 = `firstname2 ${utils.randomText()}`;
 const email = "fakeemail@test.com";
 const avatar_url = "http://example.com/avatar.png";
-
-const updatedName = `updatedFirstName ${utils.randomText()}`;
-const updatedAvatar_url = "http://example.com/updated-avatr.png";
-const updatedEmail = "updatedEmail@email.com";
 const google_id = "1234";
 const google_token = "5678";
 
@@ -36,7 +41,7 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
 
-suite("routes : user", function() {
+suite("routes : form-meta", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -46,27 +51,51 @@ suite("routes : user", function() {
   after(() => {
     return db.migrate.rollback();
   });
-  suite("POST /api/user/", function() {
+
+  suite("GET /api/form-meta/:id", function() {
     const app = require("../server");
-    test("creates and returns new user", function(done) {
+
+    after(() => {
+      authenticateMock.restore();
+      userStub.restore();
+    });
+
+    test("gets one form meta record by id", function(done) {
+      // seed with one record before GET and save id
+      // mock auth is needed to POST the record
+      // even though the GET route is unsecured
+      authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+      const user = [{ name, email, avatar_url, google_token, google_id }];
+      userStub = sinon.stub(users, "createUser").resolves(user);
+      authenticateMock.yields(null, { id: 1 });
       chai
         .request(app)
-        .post("/api/user/")
-        .send({ name, email, avatar_url, google_id, google_token })
+        .post("/api/form-meta/")
+        .send({ form_meta_type, content })
         .end(function(err, res) {
-          userId = res.body.id;
-          assert.equal(res.status, 200);
-          assert.isNull(err);
-          done();
+          id = res.body.id;
+          // after id is saved, then run GET test
+          chai
+            .request(app)
+            .get(`/api/form-meta/${id}`)
+            .end(function(err, res) {
+              assert.equal(res.status, 200);
+              assert.isNull(err);
+              assert.property(res.body, "id");
+              assert.property(res.body, "created_at");
+              assert.property(res.body, "updated_at");
+              assert.property(res.body, "form_meta_type");
+              assert.property(res.body, "content");
+              done();
+            });
         });
     });
-    test("returns an error if request body is malformed", function(done) {
+    test("returns error if id is missing or malformed", function(done) {
       chai
         .request(app)
-        .post("/api/user/")
-        .send({ username: "user" })
+        .get("/api/form-meta/123456789")
         .end(function(err, res) {
-          assert.equal(res.status, 500);
+          assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
           done();
@@ -83,32 +112,37 @@ suite("routes : user", function() {
       authenticateMock.restore();
     });
 
-    suite("GET /api/user/:id", function() {
+    suite("POST /api/form-meta/", function() {
+      beforeEach(() => {
+        const user = [{ name, email, avatar_url, google_token, google_id }];
+        userStub = sinon.stub(users, "createUser").resolves(user);
+        authenticateMock.yields(null, { id: 1 });
+      });
+
+      afterEach(() => {
+        userStub.restore();
+      });
+
       const app = require("../server");
-      test("gets one user by id", function(done) {
+      test("creates and returns new form meta", function(done) {
         chai
           .request(app)
-          .get(`/api/user/${userId}`)
+          .post("/api/form-meta/")
+          .send({ form_meta_type, content })
           .end(function(err, res) {
+            id = res.body.id;
             assert.equal(res.status, 200);
             assert.isNull(err);
-            assert.property(res.body, "id");
-            assert.property(res.body, "created_at");
-            assert.property(res.body, "updated_at");
-            assert.property(res.body, "email");
-            assert.property(res.body, "name");
-            assert.property(res.body, "avatar_url");
-            assert.property(res.body, "google_id");
-            assert.property(res.body, "google_token");
             done();
           });
       });
-      test("returns error if user id missing or malformed", function(done) {
+      test("returns an error if request body is malformed", function(done) {
         chai
           .request(app)
-          .get("/api/user/123456789")
+          .post("/api/form-meta/")
+          .send({ username: "user" })
           .end(function(err, res) {
-            assert.equal(res.status, 404);
+            assert.equal(res.status, 500);
             assert.equal(res.type, "application/json");
             assert.isNotNull(res.body.message);
             done();
@@ -116,26 +150,26 @@ suite("routes : user", function() {
       });
     });
 
-    suite("PUT /api/user/:id", function() {
+    suite("PUT /api/form-meta/:id", function() {
       beforeEach(() => {
         const user = [{ name, email, avatar_url, google_token, google_id }];
         userStub = sinon.stub(users, "createUser").resolves(user);
         authenticateMock.yields(null, { id: 1 });
       });
+
       afterEach(() => {
         userStub.restore();
       });
 
-      test("updates a user", function(done) {
+      test("updates a form meta record", function(done) {
         const app = require("../server");
         const updates = {
-          email: updatedEmail,
-          name: updatedName,
-          avatar_url: updatedAvatar_url
+          form_meta_type: updated_form_meta_type,
+          content: updated_content
         };
         chai
           .request(app)
-          .put(`/api/user/${userId}`)
+          .put(`/api/form-meta/${id}`)
           .send({ updates })
           .end(function(err, res) {
             assert.equal(res.status, 200);
@@ -143,23 +177,20 @@ suite("routes : user", function() {
             assert.property(res.body[0], "id");
             assert.property(res.body[0], "created_at");
             assert.property(res.body[0], "updated_at");
-            assert.property(res.body[0], "email");
-            assert.property(res.body[0], "name");
-            assert.property(res.body[0], "google_id");
-            assert.property(res.body[0], "google_token");
+            assert.property(res.body[0], "form_meta_type");
+            assert.property(res.body[0], "content");
             done();
           });
       });
-      test("returns error if user id missing or malformed", function(done) {
+      test("returns error if id missing or malformed", function(done) {
         const app = require("../server");
         const updates = {
-          email: updatedEmail,
-          name: updatedName,
-          avatar_url: updatedAvatar_url
+          form_meta_type: updated_form_meta_type,
+          content: updated_content
         };
         chai
           .request(app)
-          .put("/api/user/123456789")
+          .put("/api/form-meta/123456789")
           .send({ updates })
           .end(function(err, res) {
             assert.equal(res.status, 500);
@@ -172,7 +203,7 @@ suite("routes : user", function() {
         const app = require("../server");
         chai
           .request(app)
-          .put(`/api/user/${userId}`)
+          .put(`/api/form-meta/${id}`)
           .send({ name: undefined })
           .end(function(err, res) {
             assert.equal(res.status, 404);
@@ -189,25 +220,27 @@ suite("routes : user", function() {
         userStub = sinon.stub(users, "createUser").resolves(user);
         authenticateMock.yields(null, { id: 1 });
       });
+
       afterEach(() => {
         userStub.restore();
       });
-      test("delete a user", function(done) {
+
+      test("delete a content record", function(done) {
         const app = require("../server");
         chai
           .request(app)
-          .delete(`/api/user/${userId}`)
+          .delete(`/api/form-meta/${id}`)
           .end(function(err, res) {
-            assert.equal(res.body.message, "User deleted successfully");
+            assert.equal(res.body.message, "Content deleted successfully");
             assert.isNull(err);
             done();
           });
       });
-      test("returns error if user id missing or malformed", function(done) {
+      test("returns error if id missing or malformed", function(done) {
         const app = require("../server");
         chai
           .request(app)
-          .delete("/api/user/123456789")
+          .delete("/api/form-meta/123456789")
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");

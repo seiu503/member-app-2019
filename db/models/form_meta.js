@@ -75,7 +75,7 @@ const deleteFormMeta = id => {
     .del()
     .then(() => {
       // then return success message to client
-      return { message: "Form meta deleted successfully" };
+      return { message: "Content deleted successfully" };
     });
 };
 
