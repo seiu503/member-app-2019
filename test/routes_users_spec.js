@@ -10,10 +10,11 @@ const { db, TABLES } = require("../app/config/knex");
 const { assert } = chai;
 const chaiHttp = require("chai-http");
 const { suite, test } = require("mocha");
-// const sinon = require('sinon');
-// const passport = require("passport");
-// require("../app/config/passport")(passport);
+const sinon = require("sinon");
+const passport = require("passport");
+require("../app/config/passport")(passport);
 const utils = require("../app/utils");
+const users = require("../db/models/users");
 
 const name = `firstname ${utils.randomText()}`;
 const name2 = `firstname2 ${utils.randomText()}`;
@@ -25,6 +26,7 @@ const updatedAvatar_url = "http://example.com/updated-avatr.png";
 const updatedEmail = "updatedEmail@email.com";
 const google_id = "1234";
 const google_token = "5678";
+// const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1NTkzMjg0NTUsImV4cCI6MTU1OTkzMzI1NX0.roRUOYAvV8xmRkbLCwBbxV9DWITe4t-og1xozErRVpY"
 
 let id;
 let id2;
@@ -32,6 +34,8 @@ let id2;
 /* ================================= TESTS ================================= */
 
 chai.use(chaiHttp);
+let authenticateMock;
+let userStub;
 
 suite("routes : user", function() {
   before(() => {
@@ -72,39 +76,15 @@ suite("routes : user", function() {
   });
 
   suite("secured routes", function() {
-    // beforeEach(() => {
-    //   // stub passport authentication to test secured routes
-    //   sinon
-    //     .stub(passport, 'authenticate')
-    //     .callsFake(function (test, args) {
-    //       console.log('Auth stub');
-    //     });
-    //   console.log('stub registered');
-    //   passport.authenticate('jwt', { session: false });
-    // });
+    beforeEach(() => {
+      authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+    });
 
-    // afterEach(() => {
-    //   passport.authenticate.restore();
-    // });
+    afterEach(() => {
+      authenticateMock.restore();
+    });
 
     suite("GET /api/user/:id", function() {
-      //   beforeEach(() => {
-      //   // stub passport authentication to test secured routes
-      //   sinon
-      //     .stub(passport, 'authenticate')
-      //     .callsFake(function (test, ...args) {
-      //       console.log('Auth stub 96');
-      //       console.log(test);
-      //       console.log(args);
-      //     })
-      //     .returns(() => {});
-      //   console.log('stub registered');
-      //   passport.authenticate('jwt', { session: false });
-      // });
-
-      //   afterEach(() => {
-      //     passport.authenticate.restore();
-      //   });
       const app = require("../server");
       test("gets one user by id", function(done) {
         chai
@@ -138,23 +118,14 @@ suite("routes : user", function() {
     });
 
     suite("PUT /api/user/:id", function() {
-      // beforeEach(() => {
-      // // stub passport authentication to test secured routes
-      //   sinon
-      //     .stub(passport, 'authenticate')
-      //     // .returns(function() {})
-      //     .callsFake(function (test, args) {
-      //       console.log('Auth stub 147');
-      //       console.log(test);
-      //       console.log(args);
-      //     });
-      //     .yields(new Error('fails here'));
-      //   // console.log('stub registered');
-      //   // passport.authenticate('jwt', { session: false });
-      // });
-      // afterEach(() => {
-      //   passport.authenticate.restore();
-      // });
+      beforeEach(() => {
+        const user = [{ name, email, avatar_url, google_token, google_id }];
+        userStub = sinon.stub(users, "createUser").resolves(user);
+        authenticateMock.yields(null, { id: 1 });
+      });
+      afterEach(() => {
+        userStub.restore();
+      });
 
       test("updates a user", function(done) {
         const app = require("../server");
@@ -166,6 +137,7 @@ suite("routes : user", function() {
         chai
           .request(app)
           .put(`/api/user/${userId}`)
+          // .set('Authorization', `Bearer ${token}`)
           .send({ updates })
           .end(function(err, res) {
             assert.equal(res.status, 200);
@@ -214,6 +186,14 @@ suite("routes : user", function() {
     });
 
     suite("DELETE", function() {
+      beforeEach(() => {
+        const user = [{ name, email, avatar_url, google_token, google_id }];
+        userStub = sinon.stub(users, "createUser").resolves(user);
+        authenticateMock.yields(null, { id: 1 });
+      });
+      afterEach(() => {
+        userStub.restore();
+      });
       test("delete a user", function(done) {
         const app = require("../server");
         chai
