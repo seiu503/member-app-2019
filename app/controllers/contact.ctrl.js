@@ -285,6 +285,5 @@ module.exports = {
   deleteContact,
   getContactById,
   getContacts,
-  attachContactSubmissions,
   getContactSubmissionsById
 };
