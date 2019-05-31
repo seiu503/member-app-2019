@@ -10,7 +10,9 @@ const { db, TABLES } = require("../app/config/knex");
 const { assert } = chai;
 const chaiHttp = require("chai-http");
 const { suite, test } = require("mocha");
-const app = require("../server");
+// const sinon = require('sinon');
+// const passport = require("passport");
+// require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 
 const name = `firstname ${utils.randomText()}`;
@@ -42,6 +44,7 @@ suite("routes : user", function() {
     return db.migrate.rollback();
   });
   suite("POST /api/user/", function() {
+    const app = require("../server");
     test("creates and returns new user", function(done) {
       chai
         .request(app)
@@ -68,114 +71,172 @@ suite("routes : user", function() {
     });
   });
 
-  suite("GET /api/user/:id", function() {
-    test("gets one user by id", function(done) {
-      chai
-        .request(app)
-        .get(`/api/user/${userId}`)
-        .end(function(err, res) {
-          assert.equal(res.status, 200);
-          assert.isNull(err);
-          assert.property(res.body, "id");
-          assert.property(res.body, "created_at");
-          assert.property(res.body, "updated_at");
-          assert.property(res.body, "email");
-          assert.property(res.body, "name");
-          assert.property(res.body, "avatar_url");
-          assert.property(res.body, "google_id");
-          assert.property(res.body, "google_token");
-          done();
-        });
-    });
-    test("returns error if user id missing or malformed", function(done) {
-      chai
-        .request(app)
-        .get("/api/user/123456789")
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-  });
+  suite("secured routes", function() {
+    // beforeEach(() => {
+    //   // stub passport authentication to test secured routes
+    //   sinon
+    //     .stub(passport, 'authenticate')
+    //     .callsFake(function (test, args) {
+    //       console.log('Auth stub');
+    //     });
+    //   console.log('stub registered');
+    //   passport.authenticate('jwt', { session: false });
+    // });
 
-  suite("PUT /api/user/:id", function() {
-    test("updates a user", function(done) {
-      const updates = {
-        email: updatedEmail,
-        name: updatedName,
-        avatar_url: updatedAvatar_url
-      };
-      chai
-        .request(app)
-        .put(`/api/user/${userId}`)
-        .send({ updates })
-        .end(function(err, res) {
-          assert.equal(res.status, 200);
-          assert.isNull(err);
-          assert.property(res.body[0], "id");
-          assert.property(res.body[0], "created_at");
-          assert.property(res.body[0], "updated_at");
-          assert.property(res.body[0], "email");
-          assert.property(res.body[0], "name");
-          assert.property(res.body[0], "google_id");
-          assert.property(res.body[0], "google_token");
-          done();
-        });
-    });
-    test("returns error if user id missing or malformed", function(done) {
-      const updates = {
-        email: updatedEmail,
-        name: updatedName,
-        avatar_url: updatedAvatar_url
-      };
-      chai
-        .request(app)
-        .put("/api/user/123456789")
-        .send({ updates })
-        .end(function(err, res) {
-          assert.equal(res.status, 500);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-    test("returns error if updates missing or malformed", function(done) {
-      chai
-        .request(app)
-        .put(`/api/user/${userId}`)
-        .send({ name: undefined })
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-  });
+    // afterEach(() => {
+    //   passport.authenticate.restore();
+    // });
 
-  suite("DELETE", function() {
-    test("delete a user", function(done) {
-      chai
-        .request(app)
-        .delete(`/api/user/${userId}`)
-        .end(function(err, res) {
-          assert.equal(res.body.message, "User deleted successfully");
-          assert.isNull(err);
-          done();
-        });
+    suite("GET /api/user/:id", function() {
+      //   beforeEach(() => {
+      //   // stub passport authentication to test secured routes
+      //   sinon
+      //     .stub(passport, 'authenticate')
+      //     .callsFake(function (test, ...args) {
+      //       console.log('Auth stub 96');
+      //       console.log(test);
+      //       console.log(args);
+      //     })
+      //     .returns(() => {});
+      //   console.log('stub registered');
+      //   passport.authenticate('jwt', { session: false });
+      // });
+
+      //   afterEach(() => {
+      //     passport.authenticate.restore();
+      //   });
+      const app = require("../server");
+      test("gets one user by id", function(done) {
+        chai
+          .request(app)
+          .get(`/api/user/${userId}`)
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.property(res.body, "id");
+            assert.property(res.body, "created_at");
+            assert.property(res.body, "updated_at");
+            assert.property(res.body, "email");
+            assert.property(res.body, "name");
+            assert.property(res.body, "avatar_url");
+            assert.property(res.body, "google_id");
+            assert.property(res.body, "google_token");
+            done();
+          });
+      });
+      test("returns error if user id missing or malformed", function(done) {
+        chai
+          .request(app)
+          .get("/api/user/123456789")
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
     });
-    test("returns error if user id missing or malformed", function(done) {
-      chai
-        .request(app)
-        .delete("/api/user/123456789")
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
+
+    suite("PUT /api/user/:id", function() {
+      // beforeEach(() => {
+      // // stub passport authentication to test secured routes
+      //   sinon
+      //     .stub(passport, 'authenticate')
+      //     // .returns(function() {})
+      //     .callsFake(function (test, args) {
+      //       console.log('Auth stub 147');
+      //       console.log(test);
+      //       console.log(args);
+      //     });
+      //     .yields(new Error('fails here'));
+      //   // console.log('stub registered');
+      //   // passport.authenticate('jwt', { session: false });
+      // });
+      // afterEach(() => {
+      //   passport.authenticate.restore();
+      // });
+
+      test("updates a user", function(done) {
+        const app = require("../server");
+        const updates = {
+          email: updatedEmail,
+          name: updatedName,
+          avatar_url: updatedAvatar_url
+        };
+        chai
+          .request(app)
+          .put(`/api/user/${userId}`)
+          .send({ updates })
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.property(res.body[0], "id");
+            assert.property(res.body[0], "created_at");
+            assert.property(res.body[0], "updated_at");
+            assert.property(res.body[0], "email");
+            assert.property(res.body[0], "name");
+            assert.property(res.body[0], "google_id");
+            assert.property(res.body[0], "google_token");
+            done();
+          });
+      });
+      test("returns error if user id missing or malformed", function(done) {
+        const app = require("../server");
+        const updates = {
+          email: updatedEmail,
+          name: updatedName,
+          avatar_url: updatedAvatar_url
+        };
+        chai
+          .request(app)
+          .put("/api/user/123456789")
+          .send({ updates })
+          .end(function(err, res) {
+            assert.equal(res.status, 500);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+      test("returns error if updates missing or malformed", function(done) {
+        const app = require("../server");
+        chai
+          .request(app)
+          .put(`/api/user/${userId}`)
+          .send({ name: undefined })
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+    });
+
+    suite("DELETE", function() {
+      test("delete a user", function(done) {
+        const app = require("../server");
+        chai
+          .request(app)
+          .delete(`/api/user/${userId}`)
+          .end(function(err, res) {
+            assert.equal(res.body.message, "User deleted successfully");
+            assert.isNull(err);
+            done();
+          });
+      });
+      test("returns error if user id missing or malformed", function(done) {
+        const app = require("../server");
+        chai
+          .request(app)
+          .delete("/api/user/123456789")
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
     });
   });
 });

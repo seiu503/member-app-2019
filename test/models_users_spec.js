@@ -1,4 +1,4 @@
-// test/models_spec.js
+// test/models_users_spec.js
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */
@@ -6,6 +6,8 @@
 process.env.NODE_ENV = "testing";
 
 const { assert } = require("chai");
+const sinon = require("sinon");
+const passport = require("passport");
 const { db, TABLES } = require("../app/config/knex");
 const users = require("../db/models/users");
 const utils = require("../app/utils");
@@ -58,7 +60,7 @@ describe("user model tests", () => {
       });
   });
 
-  describe("", () => {
+  describe("secured routes", () => {
     let userId;
 
     // seed with a user before each test
@@ -68,7 +70,21 @@ describe("user model tests", () => {
         .then(user => {
           userId = user[0].id;
         });
+      // .then(() => {
+      //   // stub passport authentication to test secured routes
+      //   sinon
+      //     .stub(passport, 'authenticate')
+      //     .callsFake(function (test, args) {
+      //       console.log('Auth stub');
+      //     });
+      //   console.log('stub registered');
+      //   passport.authenticate('jwt', { session: false });
+      // });
     });
+
+    // afterEach(() => {
+    //   passport.authenticate.restore();
+    // });
 
     it("PUT updates a user", () => {
       const updates = {

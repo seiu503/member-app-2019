@@ -140,7 +140,7 @@ export function addFormMeta(token, body) {
       ],
       headers: {
         Authorization: `Bearer ${token}`,
-        "FormMeta-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
     }
@@ -187,7 +187,7 @@ export function updateFormMeta(token, id, body) {
       ],
       headers: {
         Authorization: `Bearer ${token}`,
-        "FormMeta-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
     }
