@@ -4,7 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-// import model and mail utilities
+// import model
 const contacts = require("../../db/models/contacts");
 
 /* ============================ ROUTE HANDLERS ============================= */
@@ -166,8 +166,8 @@ const createContact = (req, res, next) => {
         work_email
       )
       .then(contacts => {
-        const contacts = contacts[0];
-        res.status(200).json(contacts);
+        const contact = contacts[0];
+        res.status(200).json(contact);
       })
       .catch(err => {
         console.log(`contacts.ctrl.js > 173: ${err}`);
@@ -257,9 +257,8 @@ const getContactById = (req, res, next) => {
 };
 
 /** Get Joined Contact_Submissions by Contact Id
- *
  * @param {String} id   Id of contact to view submissions
- * @returns {Object}    Object of contact and all submissions as an array
+ * @returns {Object}    Object containing contact id and array of all related submissions
  */
 const getContactSubmissionsById = (req, res, next) => {
   return contacts

@@ -4,7 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-// import model and mail utilities
+// import models
 const submissions = require("../../db/models/submissions");
 const contacts = require("../../db/models/contacts");
 
@@ -140,10 +140,15 @@ const createSubmission = (req, res, next) => {
   } else {
     return res
       .status(500)
-      .json({ message: "There was an error creating the user account" });
+      .json({ message: "There was an error creating the submission" });
   }
 };
-// helper function for attaching submission to join table
+
+/** Attach submission to join table
+ *
+ * @param {String} id   Id of contact to view submissions
+ * @returns {Object}    Object containing contact id and array of all related submissions
+ */
 const attachContactSubmissions = (contact_id, submission_id) => {
   return contacts
     .attachContactSubmissions(contact_id, submission_id)
