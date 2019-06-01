@@ -68,7 +68,7 @@ class TextInputForm extends React.Component {
         ) {
           openSnackbar(
             "error",
-            this.props.contact.error ||
+            this.props.formMeta.error ||
               "An error occured while trying to save your formMeta."
           );
         } else {

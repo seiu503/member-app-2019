@@ -40,9 +40,7 @@ exports.googleCallback = (req, res) => {
       // return user ID & google redirect flag as URL params
       const userInfo = utils.setUserInfo(userObj);
       const token = utils.generateToken(userInfo);
-      return res.redirect(
-        `${CLIENT_URL}/#/redirect=admin/${userObj.id}/${token}`
-      );
+      return res.redirect(`${CLIENT_URL}/admin/${userObj.id}/${token}`);
     } else {
       return res.redirect("/login");
     }

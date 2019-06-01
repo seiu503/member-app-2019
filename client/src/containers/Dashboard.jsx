@@ -16,6 +16,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Avatar from "@material-ui/core/Avatar";
 import { withStyles } from "@material-ui/core/styles";
 
+import PurpleBokeh from "../img/purple_bokeh.jpg";
+
 const styles = theme => ({
   root: {
     margin: 20,
@@ -55,6 +57,7 @@ const styles = theme => ({
 
 class Dashboard extends React.Component {
   componentWillMount() {
+    console.log("dashboard");
     let userId, token;
     // check route params for user id and token
     if (this.props.match && this.props.match.params.id) {
@@ -118,7 +121,11 @@ class Dashboard extends React.Component {
       <div className={classes.container}>
         {loggedIn && !redirect && (
           <Card className={classes.card}>
-            <CardMedia className={classes.media} title="Placeholder">
+            <CardMedia
+              className={classes.media}
+              title="Purple lights"
+              image={PurpleBokeh}
+            >
               <Avatar
                 alt={`${name}`}
                 className={classes.avatar}

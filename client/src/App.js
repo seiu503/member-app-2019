@@ -10,6 +10,7 @@ import { withStyles } from "@material-ui/core/styles";
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiFormMetaActions from "./store/actions/apiFormMetaActions";
+// import BASE_URL from "./store/actions/apiConfig.js";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -17,7 +18,6 @@ import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
-
 import Notifier from "./containers/Notifier";
 
 const styles = theme => ({
@@ -95,6 +95,7 @@ class App extends Component {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
+      console.log("not logged in");
       let token = window.localStorage.getItem("authToken");
       if (token && token !== "undefined") {
         token = JSON.parse(token);
@@ -102,16 +103,18 @@ class App extends Component {
         if (userId) {
           this.props.apiProfile.validateToken(token, userId).then(result => {
             if (result === "VALIDATE_TOKEN_FAILURE") {
+              console.log("validate token failed");
               window.localStorage.clear();
             } else if (result === "VALIDATE_TOKEN_SUCESS") {
+              console.log("token validated");
             }
           });
         }
       } else {
-        // console.log("no token found in local storage");
+        console.log("no token found in local storage");
       }
     } else {
-      // console.log("logged in");
+      console.log("logged in");
     }
   }
 
@@ -135,7 +138,8 @@ class App extends Component {
               path="/"
               render={routeProps => (
                 <React.Fragment>
-                  <TextInputForm {...routeProps} />
+                  Home
+                  {/* <TextInputForm {...routeProps} /> */}
                 </React.Fragment>
               )}
             />

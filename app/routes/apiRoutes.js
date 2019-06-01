@@ -18,9 +18,11 @@ const formMetaCtrl = require("../controllers/formMeta.ctrl");
 const requireAuth = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (err) {
+      console.log(`apiRoutes.js > 21: ${err}`);
       return res.status(422).send({ success: false, message: err.message });
     }
     if (!user) {
+      console.log(`apiRoutes.js > 25: no user found`);
       return res.status(422).send({
         success: false,
         message: "Sorry, you must log in to view this page."
