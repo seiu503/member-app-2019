@@ -16,10 +16,10 @@ const formMeta = require("../../db/models/form_meta");
  *  @returns  {Object}                   New form meta object OR error message.
  */
 const createFormMeta = (req, res, next) => {
-  const { form_meta_type, content } = req.body;
-  if (form_meta_type && content) {
+  const { formMetaType, content } = req.body;
+  if (formMetaType && content) {
     return formMeta
-      .createFormMeta(form_meta_type, content)
+      .createFormMeta(formMetaType, content)
       .then(records => {
         const record = records[0];
         res.status(200).json(record);

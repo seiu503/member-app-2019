@@ -95,20 +95,19 @@ class App extends Component {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
-      console.log("not logged in");
       let token = window.localStorage.getItem("authToken");
       if (token && token !== "undefined") {
         token = JSON.parse(token);
         const userId = JSON.parse(window.localStorage.getItem("userId"));
-        if (userId) {
+        if (userId && userId !== "undefined") {
           this.props.apiProfile.validateToken(token, userId).then(result => {
             if (result === "VALIDATE_TOKEN_FAILURE") {
-              console.log("validate token failed");
               window.localStorage.clear();
             } else if (result === "VALIDATE_TOKEN_SUCESS") {
-              console.log("token validated");
             }
           });
+        } else {
+          console.log("could not parse userId");
         }
       } else {
         console.log("no token found in local storage");

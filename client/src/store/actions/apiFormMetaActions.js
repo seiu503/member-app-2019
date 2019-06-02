@@ -130,7 +130,6 @@ export function addFormMeta(token, body) {
                 if (data.message) {
                   message = data.message;
                 }
-                console.log(message);
                 return { message };
               } else {
                 return { message };

@@ -27,7 +27,7 @@ const handleError = (res, err) => {
 /** Extract id from user object for use in generating JWT */
 const setUserInfo = req => {
   const getUserInfo = {
-    _id: req._id
+    id: req.id
   };
 
   return getUserInfo;
