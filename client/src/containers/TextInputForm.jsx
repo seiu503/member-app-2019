@@ -140,7 +140,7 @@ class TextInputForm extends React.Component {
             name="content"
             id="content"
             label={labelsObj[formMetaType]}
-            type="text"
+            type={formMetaType && formMetaType.includes("Url") ? "url" : "text"}
             multiline={formMetaType === "bodyCopy"}
             rows={formMetaType === "bodyCopy" ? 5 : 1}
             variant="outlined"
