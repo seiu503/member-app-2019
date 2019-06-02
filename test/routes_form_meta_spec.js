@@ -42,199 +42,173 @@ let authenticateMock;
 let userStub;
 
 suite("routes : form-meta", function() {
+  // this runs once before the whole suite
+  // rollback and migrate testing database
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
     });
   });
 
+  // rollback to cleanup after tests are over
   after(() => {
     return db.migrate.rollback();
   });
 
-  suite("secured routes", function() {
-    beforeEach(() => {
-      authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+  // these run before and after each test
+  // mock passport auth and stub returned user to test secured routes
+  beforeEach(() => {
+    authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+    const user = [{ name, email, avatar_url, google_token, google_id }];
+    userStub = sinon.stub(users, "createUser").resolves(user);
+    authenticateMock.yields(null, {
+      id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
     });
+  });
 
-    afterEach(() => {
-      authenticateMock.restore();
-    });
+  // cleanup after each test
+  afterEach(() => {
+    authenticateMock.restore();
+    userStub.restore();
+  });
 
-    suite("POST /api/form-meta/", function() {
-      beforeEach(() => {
-        const user = [{ name, email, avatar_url, google_token, google_id }];
-        userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, {
-          id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+  suite("POST /api/form-meta/", function() {
+    const app = require("../server");
+    test("creates and returns new form meta", function(done) {
+      chai
+        .request(app)
+        .post("/api/form-meta/")
+        .send({ formMetaType, content })
+        .end(function(err, res) {
+          id = res.body.id;
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          done();
         });
-      });
+    });
+    test("returns an error if request body is malformed", function(done) {
+      chai
+        .request(app)
+        .post("/api/form-meta/")
+        .send({ username: "user" })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+  });
 
-      afterEach(() => {
-        userStub.restore();
-      });
+  suite("GET /api/form-meta/:id", function() {
+    const app = require("../server");
 
+    test("gets one form meta record by id", function(done) {
+      chai
+        .request(app)
+        .get(`/api/form-meta/${id}`)
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.property(res.body, "id");
+          assert.property(res.body, "created_at");
+          assert.property(res.body, "updated_at");
+          assert.property(res.body, "form_meta_type");
+          assert.property(res.body, "content");
+          done();
+        });
+    });
+
+    test("returns error if id is missing or malformed", function(done) {
+      chai
+        .request(app)
+        .get("/api/form-meta/123456789")
+        .end(function(err, res) {
+          assert.equal(res.status, 404);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+  });
+
+  suite("PUT /api/form-meta/:id", function() {
+    test("updates a form meta record", function(done) {
       const app = require("../server");
-      test("creates and returns new form meta", function(done) {
-        chai
-          .request(app)
-          .post("/api/form-meta/")
-          .send({ formMetaType, content })
-          .end(function(err, res) {
-            id = res.body.id;
-            assert.equal(res.status, 200);
-            assert.isNull(err);
-            done();
-          });
-      });
-      test("returns an error if request body is malformed", function(done) {
-        chai
-          .request(app)
-          .post("/api/form-meta/")
-          .send({ username: "user" })
-          .end(function(err, res) {
-            assert.equal(res.status, 500);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
+      const updates = {
+        form_meta_type: updatedFormMetaType,
+        content: updated_content
+      };
+      chai
+        .request(app)
+        .put(`/api/form-meta/${id}`)
+        .send({ updates })
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.property(res.body[0], "id");
+          assert.property(res.body[0], "created_at");
+          assert.property(res.body[0], "updated_at");
+          assert.property(res.body[0], "form_meta_type");
+          assert.property(res.body[0], "content");
+          done();
+        });
     });
-
-    suite("GET /api/form-meta/:id", function() {
+    test("returns error if id missing or malformed", function(done) {
       const app = require("../server");
-
-      test("gets one form meta record by id", function(done) {
-        chai
-          .request(app)
-          .get(`/api/form-meta/${id}`)
-          .end(function(err, res) {
-            assert.equal(res.status, 200);
-            assert.isNull(err);
-            assert.property(res.body, "id");
-            assert.property(res.body, "created_at");
-            assert.property(res.body, "updated_at");
-            assert.property(res.body, "form_meta_type");
-            assert.property(res.body, "content");
-            done();
-          });
-      });
-
-      test("returns error if id is missing or malformed", function(done) {
-        chai
-          .request(app)
-          .get("/api/form-meta/123456789")
-          .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
-    });
-
-    suite("PUT /api/form-meta/:id", function() {
-      beforeEach(() => {
-        const user = [{ name, email, avatar_url, google_token, google_id }];
-        userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, {
-          id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+      const updates = {
+        form_meta_type: updatedFormMetaType,
+        content: updated_content
+      };
+      chai
+        .request(app)
+        .put("/api/form-meta/123456789")
+        .send({ updates })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
         });
-      });
-
-      afterEach(() => {
-        userStub.restore();
-      });
-
-      test("updates a form meta record", function(done) {
-        const app = require("../server");
-        const updates = {
-          form_meta_type: updatedFormMetaType,
-          content: updated_content
-        };
-        chai
-          .request(app)
-          .put(`/api/form-meta/${id}`)
-          .send({ updates })
-          .end(function(err, res) {
-            assert.equal(res.status, 200);
-            assert.isNull(err);
-            assert.property(res.body[0], "id");
-            assert.property(res.body[0], "created_at");
-            assert.property(res.body[0], "updated_at");
-            assert.property(res.body[0], "form_meta_type");
-            assert.property(res.body[0], "content");
-            done();
-          });
-      });
-      test("returns error if id missing or malformed", function(done) {
-        const app = require("../server");
-        const updates = {
-          form_meta_type: updatedFormMetaType,
-          content: updated_content
-        };
-        chai
-          .request(app)
-          .put("/api/form-meta/123456789")
-          .send({ updates })
-          .end(function(err, res) {
-            assert.equal(res.status, 500);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
-      test("returns error if updates missing or malformed", function(done) {
-        const app = require("../server");
-        chai
-          .request(app)
-          .put(`/api/form-meta/${id}`)
-          .send({ name: undefined })
-          .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
     });
-
-    suite("DELETE", function() {
-      beforeEach(() => {
-        const user = [{ name, email, avatar_url, google_token, google_id }];
-        userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, {
-          id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+    test("returns error if updates missing or malformed", function(done) {
+      const app = require("../server");
+      chai
+        .request(app)
+        .put(`/api/form-meta/${id}`)
+        .send({ name: undefined })
+        .end(function(err, res) {
+          assert.equal(res.status, 404);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
         });
-      });
+    });
+  });
 
-      afterEach(() => {
-        userStub.restore();
-      });
-
-      test("delete a content record", function(done) {
-        const app = require("../server");
-        chai
-          .request(app)
-          .delete(`/api/form-meta/${id}`)
-          .end(function(err, res) {
-            assert.equal(res.body.message, "Content deleted successfully");
-            assert.isNull(err);
-            done();
-          });
-      });
-      test("returns error if id missing or malformed", function(done) {
-        const app = require("../server");
-        chai
-          .request(app)
-          .delete("/api/form-meta/123456789")
-          .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
+  suite("DELETE", function() {
+    test("delete a content record", function(done) {
+      const app = require("../server");
+      chai
+        .request(app)
+        .delete(`/api/form-meta/${id}`)
+        .end(function(err, res) {
+          assert.equal(res.body.message, "Content deleted successfully");
+          assert.isNull(err);
+          done();
+        });
+    });
+    test("returns error if id missing or malformed", function(done) {
+      const app = require("../server");
+      chai
+        .request(app)
+        .delete("/api/form-meta/123456789")
+        .end(function(err, res) {
+          assert.equal(res.status, 404);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
     });
   });
 });
