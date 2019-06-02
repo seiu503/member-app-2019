@@ -132,6 +132,7 @@ function formMeta(state = INITIAL_STATE, action) {
       } else {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
+      console.log(error);
       return update(state, {
         loading: { $set: false },
         error: { $set: error }

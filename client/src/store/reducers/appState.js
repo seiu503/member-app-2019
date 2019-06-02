@@ -34,12 +34,12 @@ function appState(state = INITIAL_STATE, action) {
     case VALIDATE_TOKEN_SUCCESS:
       return update(state, {
         loggedIn: { $set: true },
-        authToken: { $set: action.meta.token } // meta or payload??
+        authToken: { $set: action.meta.token }
       });
 
     case GET_PROFILE_SUCCESS:
       return update(state, {
-        authToken: { $set: action.payload.token } // meta or payload??
+        authToken: { $set: action.payload.token }
       });
 
     case VALIDATE_TOKEN_FAILURE:

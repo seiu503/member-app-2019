@@ -10,6 +10,7 @@ import { withStyles } from "@material-ui/core/styles";
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiFormMetaActions from "./store/actions/apiFormMetaActions";
+// import BASE_URL from "./store/actions/apiConfig.js";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -17,7 +18,6 @@ import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
-
 import Notifier from "./containers/Notifier";
 
 const styles = theme => ({
@@ -99,19 +99,21 @@ class App extends Component {
       if (token && token !== "undefined") {
         token = JSON.parse(token);
         const userId = JSON.parse(window.localStorage.getItem("userId"));
-        if (userId) {
+        if (userId && userId !== "undefined") {
           this.props.apiProfile.validateToken(token, userId).then(result => {
             if (result === "VALIDATE_TOKEN_FAILURE") {
               window.localStorage.clear();
             } else if (result === "VALIDATE_TOKEN_SUCESS") {
             }
           });
+        } else {
+          console.log("could not parse userId");
         }
       } else {
-        // console.log("no token found in local storage");
+        console.log("no token found in local storage");
       }
     } else {
-      // console.log("logged in");
+      console.log("logged in");
     }
   }
 
@@ -135,7 +137,8 @@ class App extends Component {
               path="/"
               render={routeProps => (
                 <React.Fragment>
-                  <TextInputForm {...routeProps} />
+                  Home
+                  {/* <TextInputForm {...routeProps} /> */}
                 </React.Fragment>
               )}
             />

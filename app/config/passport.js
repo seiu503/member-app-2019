@@ -20,8 +20,7 @@ module.exports = passport => {
   passport.use(
     "jwt",
     new JwtStrategy(jwtOptions, (req, payload, done) => {
-      // console.log(payload);
-      const id = payload._id;
+      const id = payload.id;
       User.getUserById(id)
         .then(user => {
           done(null, user);
@@ -39,12 +38,10 @@ module.exports = passport => {
   // helper methods for updating existing profile with social login info
 
   const findExistingUser = (profile, token, done) => {
-    console.log("findExistingUser");
     const google_id = profile.id;
     User.getUserByGoogleId(google_id)
       .then(user => {
         if (!user) {
-          console.log("user not found, going to saveNewUser");
           return saveNewUser(profile, token, done);
         } else {
           return done(null, user);
@@ -57,10 +54,6 @@ module.exports = passport => {
 
   // save new user
   const saveNewUser = (profile, token, done) => {
-    console.log("saveNewUser");
-    console.log("#########################");
-    console.log("google profile data structure");
-    console.log(profile);
     const google_id = profile.id;
     const google_token = token;
     const email = profile.emails ? profile.emails[0].value : "";
@@ -70,7 +63,6 @@ module.exports = passport => {
     // save new user to database
     User.createUser(name, email, avatar_url, google_id, google_token)
       .then(user => {
-        console.log(`saving new user to db`);
         return done(null, user);
       })
       .catch(err => {
@@ -96,14 +88,11 @@ module.exports = passport => {
       (req, token, refreshToken, profile, done) => {
         console.log(`Google login by ${profile.name}, ID: ${profile.id}`);
         process.nextTick(() => {
-          console.log(req.user);
           // check if user is already logged in
           if (!req.user) {
             findExistingUser(profile, token, done);
           } else {
             // found logged-in user. Return
-            console.log("google found user");
-            console.log(req.user);
             return done(null, req.user);
           }
         }); // process.nextTick()

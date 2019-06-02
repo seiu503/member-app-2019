@@ -48,31 +48,38 @@ const styles = theme => ({
   }
 });
 
+const labelsObj = {
+  headline: "Headline",
+  bodyCopy: "Body Copy",
+  imageUrl: "Image URL",
+  redirectUrl: "Redirect Url"
+};
+
 class TextInputForm extends React.Component {
   componentDidMount() {}
 
   submit = e => {
     e.preventDefault();
     const { formMetaType, content } = this.props.formMeta.form;
+    const { authToken } = this.props.appState;
     const body = {
       formMetaType,
       content
     };
     this.props.apiFormMeta
-      .addFormMeta(body)
+      .addFormMeta(authToken, body)
       .then(result => {
-        console.log(result.type);
         if (
           result.type === "ADD_FORM_META_FAILURE" ||
           this.props.formMeta.error
         ) {
           openSnackbar(
             "error",
-            this.props.contact.error ||
+            this.props.formMeta.error ||
               "An error occured while trying to save your formMeta."
           );
         } else {
-          openSnackbar("success", "FormMeta Saved.");
+          openSnackbar("success", `${labelsObj[formMetaType]} Saved.`);
           this.props.apiFormMeta.clearForm();
         }
       })
@@ -82,12 +89,6 @@ class TextInputForm extends React.Component {
   render() {
     const { classes } = this.props;
     const { formMetaType } = this.props.formMeta.form;
-    const labelsObj = {
-      headline: "Headline",
-      bodyCopy: "Body Copy",
-      imageUrl: "Image URL",
-      redirectUrl: "Redirect Url"
-    };
     return (
       <div className={classes.container}>
         <Typography
@@ -139,7 +140,7 @@ class TextInputForm extends React.Component {
             name="content"
             id="content"
             label={labelsObj[formMetaType]}
-            type="text"
+            type={formMetaType && formMetaType.includes("Url") ? "url" : "text"}
             multiline={formMetaType === "bodyCopy"}
             rows={formMetaType === "bodyCopy" ? 5 : 1}
             variant="outlined"
@@ -165,6 +166,9 @@ class TextInputForm extends React.Component {
 
 TextInputForm.propTypes = {
   type: PropTypes.string,
+  appState: PropTypes.shape({
+    authToken: PropTypes.string
+  }),
   formMeta: PropTypes.shape({
     form: PropTypes.shape({
       formMetaType: PropTypes.string,
@@ -181,7 +185,8 @@ TextInputForm.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  formMeta: state.formMeta
+  formMeta: state.formMeta,
+  appState: state.appState
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -4,7 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-// import model and mail utilities
+// import model
 const users = require("../../db/models/users");
 
 /* ============================ ROUTE HANDLERS ============================= */
@@ -23,7 +23,11 @@ const createUser = (req, res, next) => {
     return users
       .createUser(name, email, avatar_url, google_id, google_token)
       .then(users => {
+        console.log("users.ctrl.js > 26");
+        console.log(users);
         const user = users[0];
+        console.log("where is the id???");
+        console.log(user);
         res.status(200).json(user);
       })
       .catch(err => {
