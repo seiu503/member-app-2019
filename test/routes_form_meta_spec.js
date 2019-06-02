@@ -16,13 +16,13 @@ require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 const users = require("../db/models/users");
 
-const form_meta_type = "headline";
-const form_meta_type2 = "image_url";
+const formMetaType = "headline";
+const formMetaType2 = "image_url";
 const content = "Join SEIU Today!";
 const content2 = "http://example.com/image.png";
 
-const updated_form_meta_type = "body_copy";
-const updated_form_meta_type2 = "redirect_url";
+const updatedFormMetaType = "body_copy";
+const updatedFormMetaType2 = "redirect_url";
 const updated_content = "Here's why you should join the union";
 const updated_content2 = "http://example.com/redirect";
 
@@ -52,57 +52,6 @@ suite("routes : form-meta", function() {
     return db.migrate.rollback();
   });
 
-  suite("GET /api/form-meta/:id", function() {
-    const app = require("../server");
-
-    after(() => {
-      authenticateMock.restore();
-      userStub.restore();
-    });
-
-    test("gets one form meta record by id", function(done) {
-      // seed with one record before GET and save id
-      // mock auth is needed to POST the record
-      // even though the GET route is unsecured
-      authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
-      const user = [{ name, email, avatar_url, google_token, google_id }];
-      userStub = sinon.stub(users, "createUser").resolves(user);
-      authenticateMock.yields(null, { id: 1 });
-      chai
-        .request(app)
-        .post("/api/form-meta/")
-        .send({ form_meta_type, content })
-        .end(function(err, res) {
-          id = res.body.id;
-          // after id is saved, then run GET test
-          chai
-            .request(app)
-            .get(`/api/form-meta/${id}`)
-            .end(function(err, res) {
-              assert.equal(res.status, 200);
-              assert.isNull(err);
-              assert.property(res.body, "id");
-              assert.property(res.body, "created_at");
-              assert.property(res.body, "updated_at");
-              assert.property(res.body, "form_meta_type");
-              assert.property(res.body, "content");
-              done();
-            });
-        });
-    });
-    test("returns error if id is missing or malformed", function(done) {
-      chai
-        .request(app)
-        .get("/api/form-meta/123456789")
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-  });
-
   suite("secured routes", function() {
     beforeEach(() => {
       authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
@@ -116,7 +65,9 @@ suite("routes : form-meta", function() {
       beforeEach(() => {
         const user = [{ name, email, avatar_url, google_token, google_id }];
         userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, { id: 1 });
+        authenticateMock.yields(null, {
+          id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+        });
       });
 
       afterEach(() => {
@@ -128,7 +79,7 @@ suite("routes : form-meta", function() {
         chai
           .request(app)
           .post("/api/form-meta/")
-          .send({ form_meta_type, content })
+          .send({ formMetaType, content })
           .end(function(err, res) {
             id = res.body.id;
             assert.equal(res.status, 200);
@@ -150,11 +101,45 @@ suite("routes : form-meta", function() {
       });
     });
 
+    suite("GET /api/form-meta/:id", function() {
+      const app = require("../server");
+
+      test("gets one form meta record by id", function(done) {
+        chai
+          .request(app)
+          .get(`/api/form-meta/${id}`)
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.property(res.body, "id");
+            assert.property(res.body, "created_at");
+            assert.property(res.body, "updated_at");
+            assert.property(res.body, "form_meta_type");
+            assert.property(res.body, "content");
+            done();
+          });
+      });
+
+      test("returns error if id is missing or malformed", function(done) {
+        chai
+          .request(app)
+          .get("/api/form-meta/123456789")
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+    });
+
     suite("PUT /api/form-meta/:id", function() {
       beforeEach(() => {
         const user = [{ name, email, avatar_url, google_token, google_id }];
         userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, { id: 1 });
+        authenticateMock.yields(null, {
+          id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+        });
       });
 
       afterEach(() => {
@@ -164,7 +149,7 @@ suite("routes : form-meta", function() {
       test("updates a form meta record", function(done) {
         const app = require("../server");
         const updates = {
-          form_meta_type: updated_form_meta_type,
+          form_meta_type: updatedFormMetaType,
           content: updated_content
         };
         chai
@@ -185,7 +170,7 @@ suite("routes : form-meta", function() {
       test("returns error if id missing or malformed", function(done) {
         const app = require("../server");
         const updates = {
-          form_meta_type: updated_form_meta_type,
+          form_meta_type: updatedFormMetaType,
           content: updated_content
         };
         chai
@@ -218,7 +203,9 @@ suite("routes : form-meta", function() {
       beforeEach(() => {
         const user = [{ name, email, avatar_url, google_token, google_id }];
         userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, { id: 1 });
+        authenticateMock.yields(null, {
+          id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+        });
       });
 
       afterEach(() => {
