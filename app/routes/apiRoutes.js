@@ -13,7 +13,7 @@ const userCtrl = require("../controllers/users.ctrl");
 const authCtrl = require("../controllers/auth.ctrl");
 const formMetaCtrl = require("../controllers/formMeta.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
-const contactCtrl = require("../controllers/contacts.ctrl");
+const contactCtrl = require("../controllers/contact.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
