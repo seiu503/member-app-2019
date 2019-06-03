@@ -288,7 +288,7 @@ router.get("/submission/:id", submissionCtrl.getSubmissionById);
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", userCtrl.getSubmissions);
+router.get("/submission/", submissionCtrl.getSubmissions);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -393,7 +393,7 @@ router.get("/contact/:id", contactCtrl.getContactById);
 //   Expects: null
 //   Returns: Array of contact objects on success.
 //
-router.get("/contact/", userCtrl.getContacts);
+router.get("/contact/", contactCtrl.getContacts);
 
 // GET CONTACT_SUBMISSIONS BY CONTACT_ID
 //   Example: GET >> /api/contacts/submissions/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
