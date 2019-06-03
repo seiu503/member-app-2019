@@ -27,7 +27,7 @@ const LastName = "lastname";
 const Dd = "01";
 const Mm = "01";
 const Yyyy = "2001";
-const Dob = "01/01/2001";
+const Dob = new Date("01/01/2001");
 const PreferredLanguage = "English";
 const HomeStreet = "homestreet";
 const HomePostalCode = "12345";
@@ -50,7 +50,7 @@ const Gender = "female";
 const GenderOtherDescription = "";
 const GenderPronoun = "She/Her";
 const JobTitle = "jobtitle";
-const HireDate = "1999-01-08";
+const HireDate = new Date("01/08/2003");
 const Worksite = "worksite";
 const WorkEmail = "lastnamef@seiu.com";
 
@@ -140,10 +140,7 @@ describe.only("contact model tests", () => {
         assert.deepEqual(result[0].dd, Dd);
         assert.deepEqual(result[0].mm, Mm);
         assert.deepEqual(result[0].yyyy, Yyyy);
-        assert.deepEqual(
-          result[0].dob.moment().format(),
-          Dob.moment().format()
-        );
+        assert.deepEqual(result[0].dob, Dob);
         assert.deepEqual(result[0].preferred_language, PreferredLanguage);
         assert.deepEqual(result[0].home_street, HomeStreet);
         assert.deepEqual(result[0].home_postal_code, HomePostalCode);
@@ -181,6 +178,8 @@ describe.only("contact model tests", () => {
         assert.deepEqual(result[0].hire_date, HireDate);
         assert.deepEqual(result[0].worksite, Worksite);
         assert.deepEqual(result[0].work_email, WorkEmail);
+        console.log("ContactID = ", contactId);
+        console.log("contact = ", result[0]);
         return db.select("*").from(TABLES.CONTACTS);
       })
       .then(([result]) => {

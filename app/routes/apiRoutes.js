@@ -215,7 +215,7 @@ router.delete("/form-meta/:id", requireAuth, formMetaCtrl.deleteFormMeta);
 
 // CREATE A SUBMISSION
 //   Example: POST >> /api/submission/
-//   Secured: yes
+//   Secured: No
 //   Expects:
 //     1) request body properties : {
 //          Object {
@@ -267,8 +267,8 @@ router.post("/submission", submissionCtrl.createSubmission);
 //      }
 //   Returns: JSON updated submission object on success.
 //
-router.put("/submission/:id", submissionCtrl.updateSubmission);
-// router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
+// router.put("/submission/:id", submissionCtrl.updateSubmission);
+router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
 //   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -279,16 +279,16 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 //        }
 //   Returns: JSON submission object on success.
 //
-router.get("/submission/:id", submissionCtrl.getSubmissionById);
-// router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
+// router.get("/submission/:id", submissionCtrl.getSubmissionById);
+router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
 
 // GET ALL SUBMISSIONS
 //   Example: GET >> /api/submission/
-//   Secured: no
+//   Secured: yes
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", submissionCtrl.getSubmissions);
+router.get("/submission/", requireAuth, submissionCtrl.getSubmissions);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -299,8 +299,8 @@ router.get("/submission/", submissionCtrl.getSubmissions);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/submission/:id", submissionCtrl.deleteSubmission);
-// router.delete("/submission/:id", requireAuth, submission.deleteSubmission);
+// router.delete("/submission/:id", submissionCtrl.deleteSubmission);
+router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
 
 /* ============================== CONTACT ROUTES =========================== */
 
