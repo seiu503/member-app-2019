@@ -3,7 +3,7 @@ const User = require("../../db/models/users");
 
 const user = {
   serialize: (user, done) => {
-    console.log(`serializing user: ${user.id}`);
+    // console.log(`serializing user: ${user.id}`);
     done(null, user.id);
   },
 
