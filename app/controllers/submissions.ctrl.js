@@ -68,23 +68,23 @@ const createSubmission = (req, res, next) => {
   } = req.body;
 
   const requiredFields = [
-    submission_date,
-    birthdate,
-    cell_phone,
-    employer_name,
-    first_name,
-    last_name,
-    home_street,
-    home_city,
-    home_state,
-    home_zip,
-    home_email,
-    preferred_language,
-    terms_agree,
-    signature,
-    legal_language,
-    maintenance_of_effort,
-    seiu503_cba_app_date
+    "submission_date",
+    "birthdate",
+    "cell_phone",
+    "employer_name",
+    "first_name",
+    "last_name",
+    "home_street",
+    "home_city",
+    "home_state",
+    "home_zip",
+    "home_email",
+    "preferred_language",
+    "terms_agree",
+    "signature",
+    "legal_language",
+    "maintenance_of_effort",
+    "seiu503_cba_app_date"
   ];
 
   const missingField = requiredFields.find(field => !(field in req.body));

@@ -128,7 +128,7 @@ describe("contact model tests", () => {
         work_email
       )
       .then(result => {
-        assert.deepEqual(result[0].display_name, display_name);
+        // assert.deepEqual(result[0].display_name, display_name);
         assert.deepEqual(result[0].account_name, account_name);
         assert.deepEqual(result[0].agency_number, agency_number);
         assert.deepEqual(result[0].mail_to_city, mail_to_city);
