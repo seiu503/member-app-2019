@@ -421,7 +421,7 @@ router.get(
 //   Returns: success message on success.
 //
 // router.delete("/contact/:id", contactCtrl.deleteContact);
-router.delete("/contact/:id", requireAuth, contact.deleteContact);
+router.delete("/contact/:id", requireAuth, contactCtrl.deleteContact);
 
 /* ================================ EXPORT ================================= */
 

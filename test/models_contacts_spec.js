@@ -178,8 +178,7 @@ describe.only("contact model tests", () => {
         assert.deepEqual(result[0].hire_date, HireDate);
         assert.deepEqual(result[0].worksite, Worksite);
         assert.deepEqual(result[0].work_email, WorkEmail);
-        console.log("ContactID = ", contactId);
-        console.log("contact = ", result[0]);
+        contactId = result[0].contact_id;
         return db.select("*").from(TABLES.CONTACTS);
       })
       .then(([result]) => {
@@ -224,7 +223,6 @@ describe.only("contact model tests", () => {
         assert.equal(result.hire_date, HireDate);
         assert.equal(result.worksite, Worksite);
         assert.equal(result.work_email, WorkEmail);
-        contactId = result.contact_id;
       });
   });
 
@@ -255,6 +253,7 @@ describe.only("contact model tests", () => {
     // });
 
     it("PUT updates a contact", () => {
+      console.log("contactID in PUT =", contactId);
       const updates = {
         first_name: updatedFirstName,
         job_title: updatedJobTitle,
@@ -286,7 +285,7 @@ describe.only("contact model tests", () => {
         assert.include(arrayOfKeys("mail_to_state"), MailToState);
         assert.include(arrayOfKeys("mail_to_street"), MailToStreet);
         assert.include(arrayOfKeys("mail_to_postal_code"), MailToPostalCode);
-        assert.include(arrayOfKeys("first_name"), FirstName);
+        assert.include(arrayOfKeys("first_name"), updatedFirstName);
         assert.include(arrayOfKeys("last_name"), LastName);
         assert.include(arrayOfKeys("dd"), Dd);
         assert.include(arrayOfKeys("mm"), Mm);
@@ -299,7 +298,7 @@ describe.only("contact model tests", () => {
         assert.include(arrayOfKeys("home_city"), HomeCity);
         assert.include(arrayOfKeys("home_email"), HomeEmail);
         assert.include(arrayOfKeys("mobile_phone"), MobilePhone);
-        assert.include(arrayOfKeys("text_auth_opt_out"), TextAuthOptOut);
+        assert.include(arrayOfKeys("text_auth_opt_out"), updatedTextAuthOptOut);
         assert.include(arrayOfKeys("terms_agree"), TermsAgree);
         assert.include(arrayOfKeys("signature"), Signature);
         assert.include(
@@ -319,13 +318,13 @@ describe.only("contact model tests", () => {
           arrayOfKeys("blind_or_visually_impaired"),
           BlindOrVisuallyImpaired
         );
-        assert.include(arrayOfKeys("gender"), Gender);
+        assert.include(arrayOfKeys("gender"), updatedGender);
         assert.include(
           arrayOfKeys("gender_other_description"),
-          GenderOtherDescription
+          updatedGenderOtherDescription
         );
         assert.include(arrayOfKeys("gender_pronoun"), GenderPronoun);
-        assert.include(arrayOfKeys("job_title"), JobTitle);
+        assert.include(arrayOfKeys("job_title"), updatedJobTitle);
         assert.include(arrayOfKeys("hire_date"), HireDate);
         assert.include(arrayOfKeys("worksite"), Worksite);
         assert.include(arrayOfKeys("work_email"), WorkEmail);
@@ -341,7 +340,7 @@ describe.only("contact model tests", () => {
         assert.equal(result.mail_to_state, MailToState);
         assert.equal(result.mail_to_street, MailToStreet);
         assert.equal(result.mail_to_postal_code, MailToPostalCode);
-        assert.equal(result.first_name, FirstName);
+        assert.equal(result.first_name, updatedFirstName);
         assert.equal(result.last_name, LastName);
         assert.equal(result.dd, Dd);
         assert.equal(result.mm, Mm);
@@ -368,10 +367,13 @@ describe.only("contact model tests", () => {
           result.blind_or_visually_impaired,
           BlindOrVisuallyImpaired
         );
-        assert.equal(result.gender, Gender);
-        assert.equal(result.gender_other_description, GenderOtherDescription);
+        assert.equal(result.gender, updatedGender);
+        assert.equal(
+          result.gender_other_description,
+          updatedGenderOtherDescription
+        );
         assert.equal(result.gender_pronoun, GenderPronoun);
-        assert.equal(result.job_title, JobTitle);
+        assert.equal(result.job_title, updatedJobTitle);
         assert.equal(result.hire_date, HireDate);
         assert.equal(result.worksite, Worksite);
         assert.equal(result.work_email, WorkEmail);
