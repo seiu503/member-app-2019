@@ -389,7 +389,7 @@ router.get("/contact/:id", requireAuth, contactCtrl.getContactById);
 
 // GET ALL CONTACTS
 //   Example: GET >> /api/contact/
-//   Secured: no
+//   Secured: yes
 //   Expects: null
 //   Returns: Array of contact objects on success.
 //
@@ -405,11 +405,7 @@ router.get("/contact/:id", requireAuth, contactCtrl.getContactById);
 //   Returns: Object with contact and Array of related submission objects on success.
 //
 // router.get("/contact/submissions/:id", contactCtrl.getContactSubmissionsById);
-router.get(
-  "/contact/submissions/:id",
-  requireAuth,
-  contactCtrl.getContactSubmissionsById
-);
+router.get("/contact/", requireAuth, contactCtrl.getContacts);
 
 // DELETE CONTACT
 //   Example: DELETE >> /api/contact/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3

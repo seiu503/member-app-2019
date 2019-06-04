@@ -97,21 +97,21 @@ const createContact = (req, res, next) => {
   } = req.body;
 
   const requiredFields = [
-    account_name,
-    agency_number,
-    first_name,
-    last_name,
-    dob,
-    preferred_language,
-    home_street,
-    home_postal_code,
-    home_state,
-    home_city,
-    home_email,
-    mobile_phone,
-    text_auth_opt_out,
-    terms_agree,
-    signature
+    "account_name",
+    "agency_number",
+    "first_name",
+    "last_name",
+    "dob",
+    "preferred_language",
+    "home_street",
+    "home_postal_code",
+    "home_state",
+    "home_city",
+    "home_email",
+    "mobile_phone",
+    "text_auth_opt_out",
+    "terms_agree",
+    "signature"
   ];
 
   const missingField = requiredFields.find(field => !(field in req.body));
@@ -119,7 +119,7 @@ const createContact = (req, res, next) => {
   if (missingField) {
     return res.status(422).json({
       reason: "ValidationError",
-      message: "Missing required fields"
+      message: `Missing required fields ${missingField}`
     });
   }
 
@@ -202,7 +202,7 @@ const updateContact = (req, res, next) => {
             "An error occured while trying to update this contact"
         });
       } else {
-        return res.status(200).json(contact);
+        return res.status(200).json(contact[0]);
       }
     })
     .catch(err => res.status(500).json({ message: err.message }));
@@ -230,7 +230,7 @@ const deleteContact = (req, res, next) => {
 /** Get all contacts
  *  @returns  {Array|Object}   Array of contact objects OR error message
  */
-const getContacts = () => {
+const getContacts = (req, res, next) => {
   return contacts
     .getContacts()
     .then(contacts => res.status(200).json(contacts))

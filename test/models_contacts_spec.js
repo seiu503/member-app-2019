@@ -256,7 +256,6 @@ describe("contact model tests", () => {
     // });
 
     it("PUT updates a contact", () => {
-      console.log("contactID in PUT =", contactId);
       const updates = {
         first_name: updatedFirstName,
         job_title: updatedJobTitle,
