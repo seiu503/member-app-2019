@@ -74,7 +74,7 @@ const google_token = "5678";
 let id;
 let contactId;
 
-describe.only("contact model tests", () => {
+describe("contact model tests", () => {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -140,7 +140,7 @@ describe.only("contact model tests", () => {
         assert.deepEqual(result[0].dd, Dd);
         assert.deepEqual(result[0].mm, Mm);
         assert.deepEqual(result[0].yyyy, Yyyy);
-        assert.deepEqual(result[0].dob, Dob);
+        assert.deepEqual(moment(result[0].dob), moment(Dob));
         assert.deepEqual(result[0].preferred_language, PreferredLanguage);
         assert.deepEqual(result[0].home_street, HomeStreet);
         assert.deepEqual(result[0].home_postal_code, HomePostalCode);
@@ -175,7 +175,7 @@ describe.only("contact model tests", () => {
         );
         assert.deepEqual(result[0].gender_pronoun, GenderPronoun);
         assert.deepEqual(result[0].job_title, JobTitle);
-        assert.deepEqual(result[0].hire_date, HireDate);
+        assert.deepEqual(moment(result[0].hire_date), moment(HireDate));
         assert.deepEqual(result[0].worksite, Worksite);
         assert.deepEqual(result[0].work_email, WorkEmail);
         contactId = result[0].contact_id;
@@ -194,7 +194,7 @@ describe.only("contact model tests", () => {
         assert.equal(result.dd, Dd);
         assert.equal(result.mm, Mm);
         assert.equal(result.yyyy, Yyyy);
-        assert.equal(result.dob, Dob);
+        assert.equal(moment(result.dob).format(), moment(Dob).format());
         assert.equal(result.preferred_language, PreferredLanguage);
         assert.equal(result.home_street, HomeStreet);
         assert.equal(result.home_postal_code, HomePostalCode);
@@ -220,7 +220,10 @@ describe.only("contact model tests", () => {
         assert.equal(result.gender_other_description, GenderOtherDescription);
         assert.equal(result.gender_pronoun, GenderPronoun);
         assert.equal(result.job_title, JobTitle);
-        assert.equal(result.hire_date, HireDate);
+        assert.equal(
+          moment(result.hire_date).format("mm-dd-yyyy"),
+          moment(HireDate).format("mm-dd-yyyy")
+        );
         assert.equal(result.worksite, Worksite);
         assert.equal(result.work_email, WorkEmail);
       });
@@ -290,7 +293,7 @@ describe.only("contact model tests", () => {
         assert.include(arrayOfKeys("dd"), Dd);
         assert.include(arrayOfKeys("mm"), Mm);
         assert.include(arrayOfKeys("yyyy"), Yyyy);
-        assert.include(arrayOfKeys("dob"), Dob);
+        assert.include(arrayOfKeys("dob").toString(), Dob);
         assert.include(arrayOfKeys("preferred_language"), PreferredLanguage);
         assert.include(arrayOfKeys("home_street"), HomeStreet);
         assert.include(arrayOfKeys("home_postal_code"), HomePostalCode);
@@ -325,7 +328,7 @@ describe.only("contact model tests", () => {
         );
         assert.include(arrayOfKeys("gender_pronoun"), GenderPronoun);
         assert.include(arrayOfKeys("job_title"), updatedJobTitle);
-        assert.include(arrayOfKeys("hire_date"), HireDate);
+        assert.include(arrayOfKeys("hire_date").toString(), HireDate);
         assert.include(arrayOfKeys("worksite"), Worksite);
         assert.include(arrayOfKeys("work_email"), WorkEmail);
       });
@@ -345,7 +348,7 @@ describe.only("contact model tests", () => {
         assert.equal(result.dd, Dd);
         assert.equal(result.mm, Mm);
         assert.equal(result.yyyy, Yyyy);
-        assert.equal(result.dob, Dob);
+        assert.equal(moment(result.dob).format(), moment(Dob).format());
         assert.equal(result.preferred_language, PreferredLanguage);
         assert.equal(result.home_street, HomeStreet);
         assert.equal(result.home_postal_code, HomePostalCode);
@@ -353,7 +356,7 @@ describe.only("contact model tests", () => {
         assert.equal(result.home_city, HomeCity);
         assert.equal(result.home_email, HomeEmail);
         assert.equal(result.mobile_phone, MobilePhone);
-        assert.equal(result.text_auth_opt_out, TextAuthOptOut);
+        assert.equal(result.text_auth_opt_out, updatedTextAuthOptOut);
         assert.equal(result.terms_agree, TermsAgree);
         assert.equal(result.signature, Signature);
         assert.equal(result.online_campaign_source, OnlineCampaignSource);
@@ -374,7 +377,10 @@ describe.only("contact model tests", () => {
         );
         assert.equal(result.gender_pronoun, GenderPronoun);
         assert.equal(result.job_title, updatedJobTitle);
-        assert.equal(result.hire_date, HireDate);
+        assert.equal(
+          moment(result.hire_date).format(),
+          moment(HireDate).format()
+        );
         assert.equal(result.worksite, Worksite);
         assert.equal(result.work_email, WorkEmail);
         return db.select("*").from(TABLES.CONTACTS);
