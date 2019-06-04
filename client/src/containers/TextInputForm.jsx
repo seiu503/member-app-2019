@@ -11,6 +11,7 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import { DropzoneDialog } from "material-ui-dropzone";
 
 import * as apiFormMetaActions from "../store/actions/apiFormMetaActions";
 
@@ -56,7 +57,71 @@ const labelsObj = {
 };
 
 class TextInputForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: false,
+      files: []
+    };
+  }
+
   componentDidMount() {}
+
+  handleClose = () => {
+    const newState = { ...this.state };
+    newState.open = false;
+    this.setState({ ...newState });
+  };
+
+  handleSave = files => {
+    // save files to component state; close modal
+    const newState = { ...this.state };
+    newState.open = false;
+    newState.files = files;
+    this.setState({ ...newState }, () => {
+      console.log("files saved to state");
+      console.log(this.state.files);
+      this.handleUpload(this.state.files[0]);
+    });
+  };
+
+  handleOpen = () => {
+    const newState = { ...this.state };
+    newState.open = true;
+    this.setState({ ...newState });
+  };
+
+  handleChange = files => {
+    const newState = { ...this.state };
+    newState.files = files;
+    this.setState({ ...newState });
+  };
+
+  handleUpload = file => {
+    const { authToken } = this.props.appState;
+    console.log(file);
+    const filename = file ? file.name.split(".")[0] : "";
+    const fileType = file ? file.name.split(".")[1] : "";
+    this.props.apiFormMeta
+      .uploadImage(authToken, file, fileType)
+      .then(result => {
+        console.log(result);
+        if (
+          result.type === "UPLOAD_IMAGE_FAILURE" ||
+          this.props.formMeta.error
+        ) {
+          openSnackbar(
+            "error",
+            this.props.formMeta.error ||
+              "An error occured while trying to upload your image."
+          );
+        } else {
+          openSnackbar("success", `${filename} Saved.`);
+          this.props.apiFormMeta.clearForm();
+        }
+      })
+      .catch(err => openSnackbar("error", err));
+  };
 
   submit = e => {
     e.preventDefault();
@@ -136,28 +201,80 @@ class TextInputForm extends React.Component {
               />
             </RadioGroup>
           </FormControl>
-          <TextField
-            name="content"
-            id="content"
-            label={labelsObj[formMetaType]}
-            type={formMetaType && formMetaType.includes("Url") ? "url" : "text"}
-            multiline={formMetaType === "bodyCopy"}
-            rows={formMetaType === "bodyCopy" ? 5 : 1}
-            variant="outlined"
-            required
-            value={this.props.formMeta.form.content}
-            onChange={this.props.apiFormMeta.handleInput}
-            className={classes.input}
-          />
-          <ButtonWithSpinner
-            type="submit"
-            color="secondary"
-            className={classes.formButton}
-            variant="contained"
-            loading={this.props.formMeta.loading}
-          >
-            Save {labelsObj[formMetaType]}
-          </ButtonWithSpinner>
+          {formMetaType !== "imageUrl" ? (
+            <React.Fragment>
+              <TextField
+                name="content"
+                id="content"
+                label={labelsObj[formMetaType]}
+                type={
+                  formMetaType && formMetaType.includes("Url") ? "url" : "text"
+                }
+                multiline={formMetaType === "bodyCopy"}
+                rows={formMetaType === "bodyCopy" ? 5 : 1}
+                variant="outlined"
+                required
+                value={this.props.formMeta.form.content}
+                onChange={this.props.apiFormMeta.handleInput}
+                className={classes.input}
+              />
+              <ButtonWithSpinner
+                type="submit"
+                color="secondary"
+                className={classes.formButton}
+                variant="contained"
+                loading={this.props.formMeta.loading}
+              >
+                Save {labelsObj[formMetaType]}
+              </ButtonWithSpinner>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <ButtonWithSpinner
+                onClick={this.handleUpload}
+                name="image"
+                variant="contained"
+                color="secondary"
+                component="label"
+                className={classes.formButton}
+                loading={this.props.formMeta.loading}
+              >
+                Choose Image
+                <input
+                  accept="image/*"
+                  type="file"
+                  id="raised-button-file"
+                  multiple
+                  ref={ref => (this.uploadInput = ref)}
+                  style={{ display: "none" }}
+                />
+              </ButtonWithSpinner>
+              <ButtonWithSpinner
+                onClick={this.handleOpen.bind(this)}
+                variant="contained"
+                color="secondary"
+                component="label"
+                className={classes.formButton}
+                loading={this.props.formMeta.loading}
+              >
+                Add Image
+              </ButtonWithSpinner>
+              <DropzoneDialog
+                open={this.state.open}
+                onSave={this.handleSave}
+                acceptedFiles={[
+                  "image/jpeg",
+                  "image/jpg",
+                  "image/png",
+                  "image/gif"
+                ]}
+                showPreviews={true}
+                maxFileSize={2000000}
+                filesLimit={1} // until add server support for multiupload
+                onClose={this.handleClose}
+              />
+            </React.Fragment>
+          )}
         </form>
       </div>
     );
@@ -179,7 +296,8 @@ TextInputForm.propTypes = {
   apiFormMeta: PropTypes.shape({
     handleInput: PropTypes.func,
     addFormMeta: PropTypes.func,
-    clearForm: PropTypes.func
+    clearForm: PropTypes.func,
+    uploadImage: PropTypes.func
   }),
   classes: PropTypes.object
 };
