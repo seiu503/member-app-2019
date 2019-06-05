@@ -13,7 +13,7 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { DropzoneDialog } from "material-ui-dropzone";
 
-import * as apiFormMetaActions from "../store/actions/apiFormMetaActions";
+import * as apiContentActions from "../store/actions/apiContentActions";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -71,15 +71,7 @@ class TextInputForm extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState }, () => {
-      console.log("clearing form");
-      // clearing radio buttons programmatically cuz for some reason they won't clear otherwise ?? so dirty!!
-      let els = document.getElementsByName("formMetaType");
-      console.log(els);
-      for (let i = 0; i < els.length; i++) {
-        console.log(els[i]);
-        els[i].checked = false;
-      }
-      this.props.apiFormMeta.clearForm();
+      this.props.apiContent.clearForm();
     });
   };
 
@@ -108,21 +100,21 @@ class TextInputForm extends React.Component {
   handleUpload = file => {
     const { authToken } = this.props.appState;
     const filename = file ? file.name.split(".")[0] : "";
-    this.props.apiFormMeta
+    this.props.apiContent
       .uploadImage(authToken, file)
       .then(result => {
         if (
           result.type === "UPLOAD_IMAGE_FAILURE" ||
-          this.props.formMeta.error
+          this.props.content.error
         ) {
           openSnackbar(
             "error",
-            this.props.formMeta.error ||
+            this.props.content.error ||
               "An error occured while trying to upload your image."
           );
         } else {
           openSnackbar("success", `${filename} Saved.`);
-          this.props.apiFormMeta.clearForm();
+          this.props.apiContent.clearForm();
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -131,27 +123,24 @@ class TextInputForm extends React.Component {
   submit = e => {
     e.preventDefault();
     e.target.reset();
-    const { formMetaType, content } = this.props.formMeta.form;
+    const { contentType, content } = this.props.content.form;
     const { authToken } = this.props.appState;
     const body = {
-      formMetaType,
+      contentType,
       content
     };
-    this.props.apiFormMeta
-      .addFormMeta(authToken, body)
+    this.props.apiContent
+      .addContent(authToken, body)
       .then(result => {
-        if (
-          result.type === "ADD_FORM_META_FAILURE" ||
-          this.props.formMeta.error
-        ) {
+        if (result.type === "ADD_CONTENT_FAILURE" || this.props.content.error) {
           openSnackbar(
             "error",
-            this.props.formMeta.error ||
-              "An error occured while trying to save your formMeta."
+            this.props.content.error ||
+              "An error occured while trying to save your content."
           );
         } else {
-          openSnackbar("success", `${labelsObj[formMetaType]} Saved.`);
-          this.props.apiFormMeta.clearForm();
+          openSnackbar("success", `${labelsObj[contentType]} Saved.`);
+          this.props.apiContent.clearForm();
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -159,7 +148,7 @@ class TextInputForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { formMetaType } = this.props.formMeta.form;
+    const { contentType } = this.props.content.form;
     return (
       <div className={classes.container}>
         <Typography
@@ -181,10 +170,10 @@ class TextInputForm extends React.Component {
             <FormLabel component="legend">Content Type</FormLabel>
             <RadioGroup
               aria-label="Content Type"
-              name="formMetaType"
+              name="contentType"
               className={classes.group}
-              value={this.props.formMeta.form.formMetaType}
-              onChange={this.props.apiFormMeta.handleInput}
+              value={this.props.content.form.contentType}
+              onChange={this.props.apiContent.handleInput}
             >
               <FormControlLabel
                 value="headline"
@@ -208,21 +197,21 @@ class TextInputForm extends React.Component {
               />
             </RadioGroup>
           </FormControl>
-          {formMetaType !== "imageUrl" ? (
+          {contentType !== "imageUrl" ? (
             <React.Fragment>
               <TextField
                 name="content"
                 id="content"
-                label={labelsObj[formMetaType]}
+                label={labelsObj[contentType]}
                 type={
-                  formMetaType && formMetaType.includes("Url") ? "url" : "text"
+                  contentType && contentType.includes("Url") ? "url" : "text"
                 }
-                multiline={formMetaType === "bodyCopy"}
-                rows={formMetaType === "bodyCopy" ? 5 : 1}
+                multiline={contentType === "bodyCopy"}
+                rows={contentType === "bodyCopy" ? 5 : 1}
                 variant="outlined"
                 required
-                value={this.props.formMeta.form.content}
-                onChange={this.props.apiFormMeta.handleInput}
+                value={this.props.content.form.content}
+                onChange={this.props.apiContent.handleInput}
                 className={classes.input}
               />
               <ButtonWithSpinner
@@ -230,9 +219,9 @@ class TextInputForm extends React.Component {
                 color="secondary"
                 className={classes.formButton}
                 variant="contained"
-                loading={this.props.formMeta.loading}
+                loading={this.props.content.loading}
               >
-                Save {labelsObj[formMetaType]}
+                Save {labelsObj[contentType]}
               </ButtonWithSpinner>
             </React.Fragment>
           ) : (
@@ -243,7 +232,7 @@ class TextInputForm extends React.Component {
                 color="secondary"
                 component="label"
                 className={classes.formButton}
-                loading={this.props.formMeta.loading}
+                loading={this.props.content.loading}
               >
                 Choose Image
               </ButtonWithSpinner>
@@ -274,16 +263,16 @@ TextInputForm.propTypes = {
   appState: PropTypes.shape({
     authToken: PropTypes.string
   }),
-  formMeta: PropTypes.shape({
+  content: PropTypes.shape({
     form: PropTypes.shape({
-      formMetaType: PropTypes.string,
+      contentType: PropTypes.string,
       content: PropTypes.string
     }),
     loading: PropTypes.bool
   }).isRequired,
-  apiFormMeta: PropTypes.shape({
+  apiContent: PropTypes.shape({
     handleInput: PropTypes.func,
-    addFormMeta: PropTypes.func,
+    addContent: PropTypes.func,
     clearForm: PropTypes.func,
     uploadImage: PropTypes.func
   }),
@@ -291,12 +280,12 @@ TextInputForm.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  formMeta: state.formMeta,
+  content: state.content,
   appState: state.appState
 });
 
 const mapDispatchToProps = dispatch => ({
-  apiFormMeta: bindActionCreators(apiFormMetaActions, dispatch)
+  apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
 export default withStyles(styles)(

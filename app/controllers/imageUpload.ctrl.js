@@ -5,7 +5,7 @@
 /* ================================= SETUP ================================= */
 
 // import model
-const formMeta = require("../../db/models/form_meta");
+const content = require("../../db/models/content");
 
 const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
@@ -81,8 +81,8 @@ const singleImgUpload = (req, res, next) => {
         s3config.region
       }.amazonaws.com/${req.file.originalname}`;
       // save url to postgres DB
-      return formMeta
-        .createFormMeta("image", imageUrl)
+      return content
+        .newContent("image", imageUrl)
         .then(records => {
           const record = records[0];
           res.status(200).json(record);

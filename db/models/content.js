@@ -1,4 +1,4 @@
-// db/models/form_meta.js
+// db/models/content.js
 
 /* ================================= SETUP ================================= */
 
@@ -7,26 +7,26 @@ const { db, TABLES } = require("../../app/config/knex");
 
 /* ============================ PUBLIC METHODS ============================= */
 
-/** Create a form meta record
- *  @param    {String}   form_meta_type Content Type.
+/** Create a content record
+ *  @param    {String}   content_type Content Type.
  ***  [headline|body_copy|image_url|redirect_url]
  *  @param    {String}   content        Content.
- *  @returns  {Array}    Array of 1 newly-created User object.
+ *  @returns  {Array}    Array of 1 newly-created Content object.
  */
-const createFormMeta = (form_meta_type, content) => {
+const newContent = (content_type, content) => {
   return db
-    .insert({ id: uuid.v4(), form_meta_type, content })
-    .into(TABLES.FORM_META)
+    .insert({ id: uuid.v4(), content_type, content })
+    .into(TABLES.CONTENT)
     .returning("*");
 };
 
-/** Update a form meta record
+/** Update a content record
  *  @param    {String}   id             The id of the user to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}   User object.
  */
-const updateFormMeta = (id, updates) => {
-  return db(TABLES.FORM_META)
+const updateContent = (id, updates) => {
+  return db(TABLES.CONTENT)
     .where({ id })
     .first()
     .update(updates)
@@ -34,43 +34,43 @@ const updateFormMeta = (id, updates) => {
     .returning("*");
 };
 
-/** Get all form meta
- *  @returns   {Array}   Array of form meta objects.
+/** Get all content
+ *  @returns   {Array}   Array of content objects.
  */
 
-const getFormMeta = () => {
-  return db(TABLES.FORM_META).returning("*");
+const getContent = () => {
+  return db(TABLES.CONTENT).returning("*");
 };
 
-/** Get all form meta by type
- *  @returns   {Array}   Array of form meta objects.
+/** Get all content by type
+ *  @returns   {Array}   Array of content objects.
  */
 
-const getFormMetaByType = form_meta_type => {
-  return db(TABLES.FORM_META)
-    .where({ form_meta_type })
+const getContentByType = content_type => {
+  return db(TABLES.CONTENT)
+    .where({ content_type })
     .returning("*");
 };
 
-/** Find a form meta record by id
+/** Find a content record by id
  *  @param    {String}   id   The id of the content to return.
- *  @returns  {Object}        Form meta object.
+ *  @returns  {Object}        Content object.
  */
 
-const getFormMetaById = id => {
-  return db(TABLES.FORM_META)
+const getContentById = id => {
+  return db(TABLES.CONTENT)
     .where({ id })
     .first()
     .returning("*");
 };
 
-/** Delete form meta
+/** Delete content
  *  @param    {String}   id   The id of the content to delete.
  *  @returns  success message
  */
 
-const deleteFormMeta = id => {
-  return db(TABLES.FORM_META)
+const deleteContent = id => {
+  return db(TABLES.CONTENT)
     .where({ id })
     .del()
     .then(() => {
@@ -82,10 +82,10 @@ const deleteFormMeta = id => {
 /* ================================ exports ================================ */
 
 module.exports = {
-  createFormMeta,
-  updateFormMeta,
-  getFormMeta,
-  getFormMetaByType,
-  getFormMetaById,
-  deleteFormMeta
+  newContent,
+  updateContent,
+  getContent,
+  getContentByType,
+  getContentById,
+  deleteContent
 };

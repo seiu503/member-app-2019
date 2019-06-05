@@ -9,8 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
-import * as apiFormMetaActions from "./store/actions/apiFormMetaActions";
-// import BASE_URL from "./store/actions/apiConfig.js";
+import * as apiContentActions from "./store/actions/apiContentActions";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -19,6 +18,7 @@ import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
 import Notifier from "./containers/Notifier";
+import ContentLibrary from "./containers/ContentLibrary";
 
 const styles = theme => ({
   root: {
@@ -147,6 +147,15 @@ class App extends Component {
               render={routeProps => <Dashboard {...routeProps} />}
             />
             <Route
+              path="/library"
+              render={routeProps => (
+                <ContentLibrary
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
               path="/new"
               render={routeProps => (
                 <TextInputForm setRedirect={this.setRedirect} {...routeProps} />
@@ -197,20 +206,20 @@ App.propTypes = {
   apiProfile: PropTypes.shape({
     validateToken: PropTypes.func
   }).isRequired,
-  apiFormMetaActions: PropTypes.shape({
-    addFormMeta: PropTypes.func,
-    deleteFormMeta: PropTypes.func,
+  apiContentActions: PropTypes.shape({
+    addContent: PropTypes.func,
+    deleteContent: PropTypes.func,
     clearForm: PropTypes.func
   }).isRequired,
-  formMeta: PropTypes.shape({
+  content: PropTypes.shape({
     form: PropTypes.shape({
-      formMetaType: PropTypes.string,
+      contentType: PropTypes.string,
       content: PropTypes.string
     }),
     error: PropTypes.string,
     deleteDialogOpen: PropTypes.bool,
-    currentFormMeta: PropTypes.shape({
-      formMetaType: PropTypes.string,
+    currentContent: PropTypes.shape({
+      contentType: PropTypes.string,
       content: PropTypes.string
     })
   }).isRequired,
@@ -225,12 +234,12 @@ App.propTypes = {
 const mapStateToProps = state => ({
   appState: state.appState,
   profile: state.profile,
-  formMeta: state.formMeta
+  content: state.content
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
-  apiFormMetaActions: bindActionCreators(apiFormMetaActions, dispatch),
+  apiContentActions: bindActionCreators(apiContentActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch)
 });
 

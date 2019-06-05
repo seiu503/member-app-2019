@@ -1,4 +1,4 @@
-// test/routes_form_meta_spec.js
+// test/routes_content_spec.js
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */
@@ -16,13 +16,13 @@ require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 const users = require("../db/models/users");
 
-const formMetaType = "headline";
-const formMetaType2 = "image_url";
+const contentType = "headline";
+const contentType2 = "image_url";
 const content = "Join SEIU Today!";
 const content2 = "http://example.com/image.png";
 
-const updatedFormMetaType = "body_copy";
-const updatedFormMetaType2 = "redirect_url";
+const updatedContentType = "body_copy";
+const updatedContentType2 = "redirect_url";
 const updated_content = "Here's why you should join the union";
 const updated_content2 = "http://example.com/redirect";
 
@@ -41,7 +41,7 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
 
-suite("routes : form-meta", function() {
+suite("routes : content", function() {
   // this runs once before the whole suite
   // rollback and migrate testing database
   before(() => {
@@ -72,13 +72,13 @@ suite("routes : form-meta", function() {
     userStub.restore();
   });
 
-  suite("POST /api/form-meta/", function() {
+  suite("POST /api/content/", function() {
     const app = require("../server");
-    test("creates and returns new form meta", function(done) {
+    test("creates and returns new content", function(done) {
       chai
         .request(app)
-        .post("/api/form-meta/")
-        .send({ formMetaType, content })
+        .post("/api/content/")
+        .send({ contentType, content })
         .end(function(err, res) {
           id = res.body.id;
           assert.equal(res.status, 200);
@@ -89,7 +89,7 @@ suite("routes : form-meta", function() {
     test("returns an error if request body is malformed", function(done) {
       chai
         .request(app)
-        .post("/api/form-meta/")
+        .post("/api/content/")
         .send({ username: "user" })
         .end(function(err, res) {
           assert.equal(res.status, 500);
@@ -100,20 +100,20 @@ suite("routes : form-meta", function() {
     });
   });
 
-  suite("GET /api/form-meta/:id", function() {
+  suite("GET /api/content/:id", function() {
     const app = require("../server");
 
-    test("gets one form meta record by id", function(done) {
+    test("gets one content record by id", function(done) {
       chai
         .request(app)
-        .get(`/api/form-meta/${id}`)
+        .get(`/api/content/${id}`)
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
           assert.property(res.body, "id");
           assert.property(res.body, "created_at");
           assert.property(res.body, "updated_at");
-          assert.property(res.body, "form_meta_type");
+          assert.property(res.body, "content_type");
           assert.property(res.body, "content");
           done();
         });
@@ -122,7 +122,7 @@ suite("routes : form-meta", function() {
     test("returns error if id is missing or malformed", function(done) {
       chai
         .request(app)
-        .get("/api/form-meta/123456789")
+        .get("/api/content/123456789")
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
@@ -132,16 +132,16 @@ suite("routes : form-meta", function() {
     });
   });
 
-  suite("PUT /api/form-meta/:id", function() {
-    test("updates a form meta record", function(done) {
+  suite("PUT /api/content/:id", function() {
+    test("updates a content record", function(done) {
       const app = require("../server");
       const updates = {
-        form_meta_type: updatedFormMetaType,
+        content_type: updatedContentType,
         content: updated_content
       };
       chai
         .request(app)
-        .put(`/api/form-meta/${id}`)
+        .put(`/api/content/${id}`)
         .send({ updates })
         .end(function(err, res) {
           assert.equal(res.status, 200);
@@ -149,7 +149,7 @@ suite("routes : form-meta", function() {
           assert.property(res.body[0], "id");
           assert.property(res.body[0], "created_at");
           assert.property(res.body[0], "updated_at");
-          assert.property(res.body[0], "form_meta_type");
+          assert.property(res.body[0], "content_type");
           assert.property(res.body[0], "content");
           done();
         });
@@ -157,12 +157,12 @@ suite("routes : form-meta", function() {
     test("returns error if id missing or malformed", function(done) {
       const app = require("../server");
       const updates = {
-        form_meta_type: updatedFormMetaType,
+        content_type: updatedContentType,
         content: updated_content
       };
       chai
         .request(app)
-        .put("/api/form-meta/123456789")
+        .put("/api/content/123456789")
         .send({ updates })
         .end(function(err, res) {
           assert.equal(res.status, 500);
@@ -175,7 +175,7 @@ suite("routes : form-meta", function() {
       const app = require("../server");
       chai
         .request(app)
-        .put(`/api/form-meta/${id}`)
+        .put(`/api/content/${id}`)
         .send({ name: undefined })
         .end(function(err, res) {
           assert.equal(res.status, 404);
@@ -191,7 +191,7 @@ suite("routes : form-meta", function() {
       const app = require("../server");
       chai
         .request(app)
-        .delete(`/api/form-meta/${id}`)
+        .delete(`/api/content/${id}`)
         .end(function(err, res) {
           assert.equal(res.body.message, "Content deleted successfully");
           assert.isNull(err);
@@ -202,7 +202,7 @@ suite("routes : form-meta", function() {
       const app = require("../server");
       chai
         .request(app)
-        .delete("/api/form-meta/123456789")
+        .delete("/api/content/123456789")
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
