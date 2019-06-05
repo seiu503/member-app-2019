@@ -33,7 +33,8 @@ const styles = theme => ({
   group: {
     display: "flex",
     width: "100%",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "center"
   },
   input: {
     width: "100%",
@@ -46,6 +47,13 @@ const styles = theme => ({
   formButton: {
     width: "100%",
     padding: 20
+  },
+  formControl: {
+    width: "100%"
+  },
+  radioLabel: {
+    width: "100%",
+    textAlign: "center"
   }
 });
 
@@ -167,7 +175,9 @@ class TextInputForm extends React.Component {
           id="form"
         >
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Content Type</FormLabel>
+            <FormLabel component="legend" className={classes.radioLabel}>
+              Content Type
+            </FormLabel>
             <RadioGroup
               aria-label="Content Type"
               name="contentType"
@@ -197,7 +207,7 @@ class TextInputForm extends React.Component {
               />
             </RadioGroup>
           </FormControl>
-          {contentType !== "imageUrl" ? (
+          {contentType && contentType !== "imageUrl" ? (
             <React.Fragment>
               <TextField
                 name="content"
@@ -224,7 +234,7 @@ class TextInputForm extends React.Component {
                 Save {labelsObj[contentType]}
               </ButtonWithSpinner>
             </React.Fragment>
-          ) : (
+          ) : contentType && contentType === "imageUrl" ? (
             <React.Fragment>
               <ButtonWithSpinner
                 onClick={this.handleOpen.bind(this)}
@@ -251,6 +261,8 @@ class TextInputForm extends React.Component {
                 onClose={this.handleClose}
               />
             </React.Fragment>
+          ) : (
+            ""
           )}
         </form>
       </div>

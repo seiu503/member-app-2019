@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
 import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
+import FAB from "@material-ui/core/Fab";
 import Create from "@material-ui/icons/Create";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
@@ -23,7 +23,7 @@ const styles = theme => ({
     padding: "60px 0 0 0"
   },
   head: {
-    color: theme.palette.secondary.main
+    color: theme.palette.primary.main
   },
   buttonEdit: {
     position: "absolute",
@@ -75,8 +75,27 @@ const styles = theme => ({
 });
 
 class ContentLibrary extends React.Component {
+  componentDidMount() {
+    const { authToken } = this.props.appState;
+    console.log(authToken);
+    this.props.apiContent.getAllContent(authToken).then(result => {
+      console.log(result);
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (!prevProps.appState.authToken && this.props.appState.authToken) {
+      console.log(this.props.appState.authToken);
+      this.props.apiContent
+        .getAllContent(this.props.appState.authToken)
+        .then(result => {
+          console.log(result);
+        });
+    }
+  }
+
   render() {
-    const { classes, data } = this.props;
+    const { classes } = this.props;
     return (
       <div className={classes.section}>
         <Typography
@@ -89,26 +108,25 @@ class ContentLibrary extends React.Component {
           Content Library
         </Typography>
         <div className={classes.gridWrapper}>
-          {data.map(tile => {
+          {this.props.content.allContent.map(tile => {
             const { content } = tile;
             return (
               <div className={classes.card} key={tile.id}>
                 <div
                   className={classes.actionArea}
                   tabIndex={0}
-                  onClick={this.props.history.push(`/edit/${tile.id}`)}
+                  onClick={() => this.props.history.push(`/edit/${tile.id}`)}
                 >
-                  <Button
+                  <FAB
                     className={classes.buttonEdit}
                     onClick={() => this.props.history.push(`/edit/${tile.id}`)}
                     color="primary"
-                    variant="fab"
                     aria-label="Edit Content"
                   >
                     <Create />
-                  </Button>
+                  </FAB>
                 </div>
-                <ContentTile content={content} />
+                <ContentTile content={content} classes={classes} />
               </div>
             );
           })}
@@ -130,7 +148,7 @@ ContentLibrary.propTypes = {
         id: PropTypes.string,
         contentType: PropTypes.string,
         content: PropTypes.string,
-        updated_at: PropTypes.instanceOf(Date)
+        updated_at: PropTypes.string
       })
     ),
     allContent: PropTypes.arrayOf(
@@ -138,17 +156,18 @@ ContentLibrary.propTypes = {
         id: PropTypes.string,
         contentType: PropTypes.string,
         content: PropTypes.string,
-        updated_at: PropTypes.instanceOf(Date)
+        updated_at: PropTypes.string
       })
     ),
-    currentContent: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string,
-        contentType: PropTypes.string,
-        content: PropTypes.string,
-        updated_at: PropTypes.instanceOf(Date)
-      })
-    )
+    currentContent: PropTypes.shape({
+      id: PropTypes.string,
+      contentType: PropTypes.string,
+      content: PropTypes.string,
+      updated_at: PropTypes.string
+    }),
+    apiContent: PropTypes.shape({
+      getAllContent: PropTypes.func
+    })
   })
 };
 

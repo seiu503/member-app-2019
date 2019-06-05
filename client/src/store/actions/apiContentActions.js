@@ -117,7 +117,7 @@ export function getContentById(id) {
  *   GET_ALL_CONTENT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function getAllContent() {
+export function getAllContent(token) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/content`,
@@ -141,7 +141,11 @@ export function getAllContent() {
             });
           }
         }
-      ]
+      ],
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json"
+      }
     }
   };
 }

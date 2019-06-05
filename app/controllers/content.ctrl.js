@@ -85,7 +85,8 @@ const deleteContent = (req, res, next) => {
 /** Get all content
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
-const getContent = () => {
+const getContent = (req, res, next) => {
+  console.log("getContent");
   return contentModel
     .getContent()
     .then(records => res.status(200).json(records))
