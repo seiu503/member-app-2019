@@ -18,9 +18,9 @@ const utils = require("../app/utils");
 /*  Sample Data for new contact */
 let contact_id;
 const ip_address = "192.0.2.0";
-const submission_date = new Date();
+const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
-const birthdate = "01/02/1999";
+const birthdate = new Date("01/02/1999");
 const cell_phone = "123-456-7890";
 const employer_name = "employer_name";
 const first_name = "firstname";
@@ -44,13 +44,18 @@ const immediate_past_member_status = "In Good Standing";
 
 /*  Sample Data for contact info updates */
 const updatedFirstName = `updatedFirstName ${utils.randomText()}`;
-const updatedEmployer_name = `updatedEmployerName ${utils.randomText()}`;
+const updatedEmployerName = `updatedEmployerName ${utils.randomText()}`;
 const updatedTextAuthOptOut = true;
 
 /* Sample Contact Data */
-const contact = {
+const sampleContact = {
+  display_name: "testuser",
   account_name: "testuser",
   agency_number: "123456",
+  mail_to_city: "mailToCity",
+  mail_to_state: "OR",
+  mail_to_street: "Multnomah Blvd",
+  mail_to_postal_code: "97221",
   first_name: "firstname",
   last_name: "lastname",
   dd: "01",
@@ -66,7 +71,22 @@ const contact = {
   mobile_phone: "123-546-7890",
   text_auth_opt_out: false,
   terms_agree: true,
-  signature: "http://example.com/avatar.png"
+  signature: "http://example.com/avatar.png",
+  online_campaign_source: "email",
+  signed_application: true,
+  ethnicity: "other",
+  lgbtq_id: false,
+  trans_id: false,
+  disability_id: false,
+  deaf_or_hard_of_hearing: false,
+  blind_or_visually_impaired: false,
+  gender: "female",
+  gender_other_description: "",
+  gender_pronoun: "She/Her",
+  job_title: "jobtitle",
+  hire_date: new Date("01/08/2003"),
+  worksite: "worksite",
+  work_email: "lastnamef@seiu.com"
 };
 
 /*  Test user Data for secured routes */
@@ -82,7 +102,7 @@ const google_token = "5678";
 let id;
 let submissionId;
 
-describe.only("submissions model tests", () => {
+describe("submissions model tests", () => {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -96,24 +116,44 @@ describe.only("submissions model tests", () => {
   beforeEach(() => {
     return contacts
       .createContact(
-        contact.account_name,
-        contact.agency_number,
-        contact.first_name,
-        contact.last_name,
-        contact.dd,
-        contact.mm,
-        contact.yyyy,
-        contact.dob,
-        contact.preferred_language,
-        contact.home_street,
-        contact.home_postal_code,
-        contact.home_state,
-        contact.home_city,
-        contact.home_email,
-        contact.mobile_phone,
-        contact.text_auth_opt_out,
-        contact.terms_agree,
-        contact.signature
+        sampleContact.display_name,
+        sampleContact.account_name,
+        sampleContact.agency_number,
+        sampleContact.mail_to_city,
+        sampleContact.mail_to_state,
+        sampleContact.mail_to_street,
+        sampleContact.mail_to_postal_code,
+        sampleContact.first_name,
+        sampleContact.last_name,
+        sampleContact.dd,
+        sampleContact.mm,
+        sampleContact.yyyy,
+        sampleContact.dob,
+        sampleContact.preferred_language,
+        sampleContact.home_street,
+        sampleContact.home_postal_code,
+        sampleContact.home_state,
+        sampleContact.home_city,
+        sampleContact.home_email,
+        sampleContact.mobile_phone,
+        sampleContact.text_auth_opt_out,
+        sampleContact.terms_agree,
+        sampleContact.signature,
+        sampleContact.online_campaign_source,
+        sampleContact.signed_application,
+        sampleContact.ethnicity,
+        sampleContact.lgbtq_id,
+        sampleContact.trans_id,
+        sampleContact.disability_id,
+        sampleContact.deaf_or_hard_of_hearing,
+        sampleContact.blind_or_visually_impaired,
+        sampleContact.gender,
+        sampleContact.gender_other_description,
+        sampleContact.gender_pronoun,
+        sampleContact.job_title,
+        sampleContact.hire_date,
+        sampleContact.worksite,
+        sampleContact.work_email
       )
       .then(contact => {
         contact_id = contact[0].contact_id;
@@ -123,7 +163,6 @@ describe.only("submissions model tests", () => {
   it("POST creates a new submission", () => {
     return submissions
       .createSubmission(
-        contact_id,
         ip_address,
         submission_date,
         agency_number,
@@ -142,6 +181,7 @@ describe.only("submissions model tests", () => {
         signature,
         text_auth_opt_out,
         online_campaign_source,
+        contact_id,
         legal_language,
         maintenance_of_effort,
         seiu503_cba_app_date,
@@ -152,11 +192,14 @@ describe.only("submissions model tests", () => {
       .then(result => {
         assert.deepEqual(result[0].ip_address, ip_address);
         assert.deepEqual(
-          result[0].moment(submission_date),
+          moment(result[0].submission_date),
           moment(submission_date)
         );
         assert.deepEqual(result[0].agency_number, agency_number);
-        assert.deepEqual(result[0].birthdate, birthdate);
+        assert.deepEqual(
+          moment(result[0].birthdate).format(),
+          moment(birthdate).format()
+        );
         assert.deepEqual(result[0].cell_phone, cell_phone);
         assert.deepEqual(result[0].employer_name, employer_name);
         assert.deepEqual(result[0].first_name, first_name);
@@ -194,7 +237,7 @@ describe.only("submissions model tests", () => {
         );
         assert.deepEqual(
           result[0].immediate_past_member_status,
-          immediate_past_member_statuS
+          immediate_past_member_status
         );
         submissionId = result[0].submission_id;
         return db.select("*").from(TABLES.SUBMISSIONS);
@@ -202,11 +245,14 @@ describe.only("submissions model tests", () => {
       .then(([result]) => {
         assert.equal(result.ip_address, ip_address);
         assert.equal(
-          result.moment(submission_date).format(),
+          moment(result.submission_date).format(),
           moment(submission_date).format()
         );
         assert.equal(result.agency_number, agency_number);
-        assert.equal(result.birthdate, birthdate);
+        assert.equal(
+          moment(result.birthdate).format(),
+          moment(birthdate).format()
+        );
         assert.equal(result.cell_phone, cell_phone);
         assert.equal(result.employer_name, employer_name);
         assert.equal(result.first_name, first_name);
@@ -241,7 +287,7 @@ describe.only("submissions model tests", () => {
         );
         assert.equal(
           result.immediate_past_member_status,
-          immediate_past_member_statuS
+          immediate_past_member_status
         );
       });
   });
@@ -272,140 +318,89 @@ describe.only("submissions model tests", () => {
     //   passport.authenticate.restore();
     // });
 
-    it("PUT updates a contact", () => {
+    it("PUT updates a submission", () => {
       const updates = {
         first_name: updatedFirstName,
-        job_title: updatedJobTitle,
-        text_auth_opt_out: updatedTextAuthOptOut,
-        gender: updatedGender,
-        gender_other_description: updatedGenderOtherDescription
+        employer_name: updatedEmployerName,
+        text_auth_opt_out: updatedTextAuthOptOut
       };
-      return contacts.updateContact(contactId, updates).then(results => {
-        assert.equal(results[0].first_name, updatedFirstName);
-        assert.equal(results[0].job_title, updatedJobTitle);
-        assert.equal(results[0].text_auth_opt_out, updatedTextAuthOptOut);
-        assert.equal(results[0].gender, updatedGender);
-        assert.equal(
-          results[0].gender_other_description,
-          updatedGenderOtherDescription
-        );
-        assert.isAbove(results[0].updated_at, results[0].created_at);
-      });
+      return submissions
+        .updateSubmission(submissionId, updates)
+        .then(results => {
+          assert.equal(results[0].first_name, updatedFirstName);
+          assert.equal(results[0].employer_name, updatedEmployerName);
+          assert.equal(results[0].text_auth_opt_out, updatedTextAuthOptOut);
+          assert.isAbove(results[0].updated_at, results[0].created_at);
+        });
     });
 
-    it("GET gets all contacts", () => {
-      return contacts.getContacts().then(results => {
+    it("GET gets all submissions", () => {
+      return submissions.getSubmissions().then(results => {
         const arrayOfKeys = key => results.map(obj => obj[key]);
         assert.equal(Array.isArray(results), true);
-        // assert.include(arrayOfKeys("display_name"), display_name);
-        assert.include(arrayOfKeys("account_name"), account_name);
-        assert.include(arrayOfKeys("agency_number"), agency_number);
-        // assert.include(arrayOfKeys("mail_to_city"), mail_to_city);
-        // assert.include(arrayOfKeys("mail_to_state"), mail_to_state);
-        // assert.include(arrayOfKeys("mail_to_street"), mail_to_street);
-        // assert.include(arrayOfKeys("mail_to_postal_code"), mail_to_postal_code);
+        assert.include(arrayOfKeys("submission_id"), submissionId);
+        assert.include(arrayOfKeys("ip_address"), ip_address);
+        assert.include(
+          arrayOfKeys("submission_date").toString(),
+          submission_date
+        );
+        assert.include(arrayOfKeys("birthdate").toString(), birthdate);
+        assert.include(arrayOfKeys("cell_phone"), cell_phone);
+        assert.include(arrayOfKeys("employer_name"), updatedEmployerName);
         assert.include(arrayOfKeys("first_name"), updatedFirstName);
         assert.include(arrayOfKeys("last_name"), last_name);
-        assert.include(arrayOfKeys("dd"), dd);
-        assert.include(arrayOfKeys("mm"), mm);
-        assert.include(arrayOfKeys("yyyy"), yyyy);
-        assert.include(arrayOfKeys("dob").toString(), dob);
-        assert.include(arrayOfKeys("preferred_language"), preferred_language);
         assert.include(arrayOfKeys("home_street"), home_street);
-        assert.include(arrayOfKeys("home_postal_code"), home_postal_code);
-        assert.include(arrayOfKeys("home_state"), home_state);
         assert.include(arrayOfKeys("home_city"), home_city);
+        assert.include(arrayOfKeys("home_state"), home_state);
+        assert.include(arrayOfKeys("home_zip"), home_zip);
         assert.include(arrayOfKeys("home_email"), home_email);
-        assert.include(arrayOfKeys("mobile_phone"), mobile_phone);
-        assert.include(arrayOfKeys("text_auth_opt_out"), updatedTextAuthOptOut);
+        assert.include(arrayOfKeys("preferred_language"), preferred_language);
         assert.include(arrayOfKeys("terms_agree"), terms_agree);
-        assert.include(arrayOfKeys("signature"), signature);
-        // assert.include(
-        //   arrayOfKeys("online_campaign_source"),
-        //   online_campaign_source
-        // );
-        // assert.include(arrayOfKeys("signed_application"), signed_application);
-        // assert.include(arrayOfKeys("ethnicity"), ethnicity);
-        // assert.include(arrayOfKeys("lgbtq_id"), lgbtq_id);
-        // assert.include(arrayOfKeys("trans_id"), trans_id);
-        // assert.include(arrayOfKeys("disability_id"), disability_id);
-        // assert.include(
-        //   arrayOfKeys("deaf_or_hard_of_hearing"),
-        //   deaf_or_hard_of_hearing
-        // );
-        // assert.include(
-        //   arrayOfKeys("blind_or_visually_impaired"),
-        //   blind_or_visually_impaired
-        // );
-        assert.include(arrayOfKeys("gender"), updatedGender);
+        assert.include(arrayOfKeys("legal_language"), legal_language);
         assert.include(
-          arrayOfKeys("gender_other_description"),
-          updatedGenderOtherDescription
+          arrayOfKeys("maintenance_of_effort").toString(),
+          maintenance_of_effort
         );
-        // assert.include(arrayOfKeys("gender_pronoun"), gender_pronoun);
-        assert.include(arrayOfKeys("job_title"), updatedJobTitle);
-        // assert.include(arrayOfKeys("hire_date").toString(), hire_date);
-        // assert.include(arrayOfKeys("worksite"), worksite);
-        // assert.include(arrayOfKeys("work_email"), work_email);
+        assert.include(
+          arrayOfKeys("seiu503_cba_app_date").toString(),
+          seiu503_cba_app_date
+        );
       });
     });
 
     it("GET gets one contact by id", () => {
-      return contacts.getContactById(contactId).then(result => {
-        // assert.equal(result.display_name, display_name);
-        assert.equal(result.account_name, account_name);
-        assert.equal(result.agency_number, agency_number);
-        // assert.equal(result.mail_to_city, mail_to_city);
-        // assert.equal(result.mail_to_state, mail_to_state);
-        // assert.equal(result.mail_to_street, mail_to_street);
-        // assert.equal(result.mail_to_postal_code, mail_to_postal_code);
+      return submissions.getSubmissionById(submissionId).then(result => {
+        assert.equal(result.submission_id, submissionId);
+        assert.equal(result.ip_address, ip_address);
+        assert.equal(result.submission_date.toString(), submission_date);
+        assert.equal(result.birthdate.toString(), birthdate);
+        assert.equal(result.cell_phone, cell_phone);
+        assert.equal(result.employer_name, updatedEmployerName);
         assert.equal(result.first_name, updatedFirstName);
         assert.equal(result.last_name, last_name);
-        assert.equal(result.dd, dd);
-        assert.equal(result.mm, mm);
-        assert.equal(result.yyyy, yyyy);
-        assert.equal(moment(result.dob).format(), moment(dob).format());
-        assert.equal(result.preferred_language, preferred_language);
         assert.equal(result.home_street, home_street);
-        assert.equal(result.home_postal_code, home_postal_code);
-        assert.equal(result.home_state, home_state);
         assert.equal(result.home_city, home_city);
+        assert.equal(result.home_state, home_state);
+        assert.equal(result.home_zip, home_zip);
         assert.equal(result.home_email, home_email);
-        assert.equal(result.mobile_phone, mobile_phone);
-        assert.equal(result.text_auth_opt_out, updatedTextAuthOptOut);
+        assert.equal(result.preferred_language, preferred_language);
         assert.equal(result.terms_agree, terms_agree);
-        assert.equal(result.signature, signature);
-        // assert.equal(result.online_campaign_source, online_campaign_source);
-        // assert.equal(result.signed_application, signed_application);
-        // assert.equal(result.ethnicity, ethnicity);
-        // assert.equal(result.lgbtq_id, lgbtq_id);
-        // assert.equal(result.trans_id, trans_id);
-        // assert.equal(result.disability_id, disability_id);
-        // assert.equal(result.deaf_or_hard_of_hearing, deaf_or_hard_of_hearing);
-        // assert.equal(
-        //   result.blind_or_visually_impaired,
-        //   blind_or_visually_impaired
-        // );
-        // assert.equal(result.gender, updatedGender);
-        // assert.equal(
-        //   result.gender_other_description,
-        //   updatedGenderOtherDescription
-        // );
-        // assert.equal(result.gender_pronoun, gender_pronoun);
-        // assert.equal(result.job_title, updatedJobTitle);
-        // assert.equal(
-        //   moment(result.hire_date).format(),
-        //   moment(hire_date).format()
-        // );
-        // assert.equal(result.worksite, worksite);
-        // assert.equal(result.work_email, work_email);
-        return db.select("*").from(TABLES.CONTACTS);
+        assert.equal(result.legal_language, legal_language);
+        assert.equal(
+          result.maintenance_of_effort.toString(),
+          maintenance_of_effort
+        );
+        assert.equal(
+          result.seiu503_cba_app_date.toString(),
+          seiu503_cba_app_date
+        );
+        return db.select("*").from(TABLES.SUBMISSIONS);
       });
     });
 
     it("DELETE deletes a contact", () => {
-      return contacts.deleteContact(contactId).then(result => {
-        assert.equal(result.message, "Contact deleted successfully");
+      return submissions.deleteSubmission(submissionId).then(result => {
+        assert.equal(result.message, "Submission deleted successfully");
       });
     });
   });
