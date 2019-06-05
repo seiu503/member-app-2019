@@ -63,7 +63,7 @@ const styles = theme => ({
     padding: 20,
     margin: "10px",
     position: "relative",
-    border: `1px solid ${theme.palette.secondary.main}`,
+    border: `1px solid ${theme.palette.primary.main}`,
     [theme.breakpoints.down("md")]: {
       width: "47%"
     },
@@ -79,17 +79,16 @@ class ContentLibrary extends React.Component {
     const { authToken } = this.props.appState;
     console.log(authToken);
     this.props.apiContent.getAllContent(authToken).then(result => {
-      console.log(result);
+      // console.log(result);
     });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevProps.appState.authToken && this.props.appState.authToken) {
-      console.log(this.props.appState.authToken);
       this.props.apiContent
         .getAllContent(this.props.appState.authToken)
         .then(result => {
-          console.log(result);
+          // console.log(result);
         });
     }
   }
@@ -109,7 +108,6 @@ class ContentLibrary extends React.Component {
         </Typography>
         <div className={classes.gridWrapper}>
           {this.props.content.allContent.map(tile => {
-            const { content } = tile;
             return (
               <div className={classes.card} key={tile.id}>
                 <div
@@ -126,7 +124,7 @@ class ContentLibrary extends React.Component {
                     <Create />
                   </FAB>
                 </div>
-                <ContentTile content={content} classes={classes} />
+                <ContentTile contentTile={tile} />
               </div>
             );
           })}
