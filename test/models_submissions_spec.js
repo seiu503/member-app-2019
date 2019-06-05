@@ -406,9 +406,9 @@ describe.only("submissions model tests", () => {
         });
     });
 
-    it("GETS all contact_submission Objects", () => {
-      //NEED TO WRITE THIS STILL
-    });
+    // it("GETS all contact_submission Objects", () => {
+    //   //NEED TO WRITE THIS STILL
+    // });
 
     it("DELETE deletes a submission", () => {
       return submissions.deleteSubmission(submissionId).then(result => {
