@@ -17,7 +17,7 @@ const s3config = require("../config/aws");
 const s3 = new aws.S3(s3config);
 
 /**
- * Single Upload
+ * Upload to s3 bucket with multer
  */
 const upload = multer({
   storage: multerS3({
@@ -43,18 +43,6 @@ const upload = multer({
   }
 }).single("image");
 
-// const upload = multer({
-//     storage: multerS3({
-//         s3: s3,
-//         acl: 'public-read',
-//         bucket: s3config.bucket,
-//         key: function (req, file, cb) {
-//             console.log(file);
-//             cb(null, file.originalname); //use Date.now() for unique file keys
-//         }
-//     })
-// }).single('image');
-
 /**
  * Check File Type
  * @param file
@@ -71,7 +59,7 @@ const checkFileType = (file, cb) => {
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb("Error: Only jpeg, jpg, png, and gif files accepted.");
+    cb({ message: "Error: Only jpeg, jpg, png, and gif files accepted." });
   }
 };
 
@@ -80,8 +68,7 @@ const checkFileType = (file, cb) => {
  *  @returns  {Object}                 Image name and URL OR error message.
  */
 const singleImgUpload = (req, res, next) => {
-  console.log("singleImgUpload");
-
+  // upload image to s3 bucket
   upload(req, res, err => {
     if (err) {
       console.log(err);
@@ -89,57 +76,23 @@ const singleImgUpload = (req, res, next) => {
         message: err
       });
     } else {
-      const imageUrl = `https://member-app-images.s3-us-west-2.amazonaws.com/${
-        req.file.originalname
-      }`;
-      console.log();
-      res.status(200).json({
-        message: "Successful upload",
-        imageUrl: imageUrl
-      });
+      // generate url of uploaded image
+      const imageUrl = `https://${s3config.bucket}.s3-${
+        s3config.region
+      }.amazonaws.com/${req.file.originalname}`;
+      // save url to postgres DB
+      return formMeta
+        .createFormMeta("image", imageUrl)
+        .then(records => {
+          const record = records[0];
+          res.status(200).json(record);
+        })
+        .catch(err => {
+          console.log(`imageUpload.ctrl.js > 90: ${err}`);
+          res.status(500).json({ message: err.message });
+        });
     }
   });
-
-  // .then((returnVal) => {
-  //   console.log('upload complete');
-  //   console.log(returnVal);
-  //   res.status(200).json({
-  //     message: 'Successful upload',
-  //     returnVal: returnVal
-  //   });
-  // })
-  // .catch(err => {
-  //   console.log(err);
-  //   res.status(500).json({
-  //     message: err
-  //   });
-  // });
-
-  // if (req.body.file && req.body.file !== undefined && !req.error) {
-  //   const imageName = req.body.file.key;
-  //   const imageLocation = req.body.file.location;
-
-  //   return formMeta
-  //     .createFormMeta("image", imageLocation)
-  //     .then(records => {
-  //       const record = records[0];
-  //       res.status(200).json(record);
-  //     })
-  //     .catch(err => {
-  //       console.log(`formMeta.ctrl.js > 28: ${err}`);
-  //       res.status(500).json({ message: err.message });
-  //     });
-
-  //   // Return file name and location
-  //   res.status(201).json({
-  //     image: imageName,
-  //     location: imageLocation
-  //   });
-  // } else {
-  //   console.log(`imageUpload.ctrl > 76`);
-  //   console.log(res);
-  //   res.status(500).json({ message: "Error: Please select a file to upload" });
-  // }
 };
 
 /* ================================ EXPORT ================================= */

@@ -225,7 +225,7 @@ router.delete("/form-meta/:id", requireAuth, formMetaCtrl.deleteFormMeta);
 //     location: imageLocation
 //   }
 //
-router.post("/image/single", imageCtrl.singleImgUpload);
+router.post("/image/single", requireAuth, imageCtrl.singleImgUpload);
 
 /* =========================== SUBMISSION ROUTES =========================== */
 

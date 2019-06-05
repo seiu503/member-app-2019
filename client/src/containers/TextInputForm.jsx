@@ -70,7 +70,17 @@ class TextInputForm extends React.Component {
   handleClose = () => {
     const newState = { ...this.state };
     newState.open = false;
-    this.setState({ ...newState });
+    this.setState({ ...newState }, () => {
+      console.log("clearing form");
+      // clearing radio buttons programmatically cuz for some reason they won't clear otherwise ?? so dirty!!
+      let els = document.getElementsByName("formMetaType");
+      console.log(els);
+      for (let i = 0; i < els.length; i++) {
+        console.log(els[i]);
+        els[i].checked = false;
+      }
+      this.props.apiFormMeta.clearForm();
+    });
   };
 
   handleSave = files => {
@@ -120,6 +130,7 @@ class TextInputForm extends React.Component {
 
   submit = e => {
     e.preventDefault();
+    e.target.reset();
     const { formMetaType, content } = this.props.formMeta.form;
     const { authToken } = this.props.appState;
     const body = {
@@ -164,14 +175,15 @@ class TextInputForm extends React.Component {
           className={classes.form}
           onError={errors => console.log(errors)}
           onSubmit={this.submit}
+          id="form"
         >
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Form Meta Type</FormLabel>
+            <FormLabel component="legend">Content Type</FormLabel>
             <RadioGroup
-              aria-label="FormMeta Type"
+              aria-label="Content Type"
               name="formMetaType"
               className={classes.group}
-              value={formMetaType}
+              value={this.props.formMeta.form.formMetaType}
               onChange={this.props.apiFormMeta.handleInput}
             >
               <FormControlLabel

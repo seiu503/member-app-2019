@@ -98,9 +98,10 @@ function formMeta(state = INITIAL_STATE, action) {
       });
 
     case CLEAR_FORM:
+      console.log("clearing form in redux store");
       return update(state, {
         form: {
-          formMetaType: { $set: "" },
+          formMetaType: { $set: null },
           content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" },
