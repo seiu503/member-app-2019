@@ -368,7 +368,7 @@ describe.only("submissions model tests", () => {
       });
     });
 
-    it("GET gets one contact by id", () => {
+    it("GET gets one submission by id", () => {
       return submissions.getSubmissionById(submissionId).then(result => {
         assert.equal(result.submission_id, submissionId);
         assert.equal(result.ip_address, ip_address);
@@ -402,13 +402,19 @@ describe.only("submissions model tests", () => {
       return contacts
         .attachContactSubmission(contact_id, submissionId)
         .then(result => {
-          console.log(result);
+          assert.equal(result[0].contact_id, contact_id);
+          assert.equal(result[0].submission_id, submissionId);
+          return db.select("*").from(TABLES.CONTACTS_SUBMISSIONS);
         });
     });
 
-    // it("GETS all contact_submission Objects", () => {
-    //   //NEED TO WRITE THIS STILL
-    // });
+    it("GETS a contact_submission Object by contact_id", () => {
+      return contacts.getContactSubmissionsById(contact_id).then(result => {
+        console.log(result);
+        assert.include(result.submissions, submissionId);
+        return db.select("*").from(TABLES.CONTACTS_SUBMISSIONS);
+      });
+    });
 
     it("DELETE deletes a submission", () => {
       return submissions.deleteSubmission(submissionId).then(result => {
