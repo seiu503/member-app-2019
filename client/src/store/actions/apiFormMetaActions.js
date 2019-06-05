@@ -19,6 +19,9 @@ export const HANDLE_DELETE_OPEN = "HANDLE_DELETE_OPEN";
 export const HANDLE_DELETE_CLOSE = "HANDLE_DELETE_CLOSE";
 export const CLEAR_FORM = "CLEAR_FORM";
 export const SET_EDIT_FORM_META = "SET_EDIT_FORM_META";
+export const UPLOAD_IMAGE_REQUEST = "UPLOAD_IMAGE_REQUEST";
+export const UPLOAD_IMAGE_SUCCESS = "UPLOAD_IMAGE_SUCCESS";
+export const UPLOAD_IMAGE_FAILURE = "UPLOAD_IMAGE_FAILURE";
 
 export function handleInput({ target: { name, value } }) {
   return {
@@ -143,6 +146,52 @@ export function addFormMeta(token, body) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
+    }
+  };
+}
+
+/*
+ * Function: uploadImage -- uploads image file to Amazon S3 bucket and adds new formMeta record with image URL to db
+ * @param {file} image (image file)
+ * This action dispatches additional actions as it executes:
+ *   UPLOAD_IMAGE_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   UPLOAD_IMAGE_SUCCESS:
+ *     If image successfully uploaded, hides spinner
+ *   UPLOAD_IMAGE_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function uploadImage(token, image) {
+  const data = new FormData();
+  data.append("image", image);
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/image/single`,
+      method: "POST",
+      types: [
+        UPLOAD_IMAGE_REQUEST,
+        UPLOAD_IMAGE_SUCCESS,
+        {
+          type: UPLOAD_IMAGE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data) {
+                if (data.message) {
+                  message = data.message;
+                }
+                return { message };
+              } else {
+                return { message };
+              }
+            });
+          }
+        }
+      ],
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: data
     }
   };
 }
