@@ -195,7 +195,7 @@ const deleteContact = contact_id => {
 
 const attachContactSubmission = (contact_id, submission_id) => {
   return db
-    .insert({ contact_id, submission_id })
+    .insert({ id: uuid.v4(), contact_id, submission_id })
     .into(TABLES.CONTACTS_SUBMISSIONS)
     .returning("*");
 };

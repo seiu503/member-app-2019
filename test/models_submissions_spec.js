@@ -102,7 +102,7 @@ const google_token = "5678";
 let id;
 let submissionId;
 
-describe("submissions model tests", () => {
+describe.only("submissions model tests", () => {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -398,7 +398,19 @@ describe("submissions model tests", () => {
       });
     });
 
-    it("DELETE deletes a contact", () => {
+    it("ATTACH a submission to contact in JOIN table", () => {
+      return contacts
+        .attachContactSubmission(contact_id, submissionId)
+        .then(result => {
+          console.log(result);
+        });
+    });
+
+    it("GETS all contact_submission Objects", () => {
+      //NEED TO WRITE THIS STILL
+    });
+
+    it("DELETE deletes a submission", () => {
       return submissions.deleteSubmission(submissionId).then(result => {
         assert.equal(result.message, "Submission deleted successfully");
       });
