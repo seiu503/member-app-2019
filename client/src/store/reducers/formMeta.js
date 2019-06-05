@@ -11,6 +11,9 @@ import {
   UPDATE_FORM_META_REQUEST,
   UPDATE_FORM_META_SUCCESS,
   UPDATE_FORM_META_FAILURE,
+  UPLOAD_IMAGE_REQUEST,
+  UPLOAD_IMAGE_SUCCESS,
+  UPLOAD_IMAGE_FAILURE,
   DELETE_FORM_META_REQUEST,
   DELETE_FORM_META_SUCCESS,
   DELETE_FORM_META_FAILURE,
@@ -95,9 +98,10 @@ function formMeta(state = INITIAL_STATE, action) {
       });
 
     case CLEAR_FORM:
+      console.log("clearing form in redux store");
       return update(state, {
         form: {
-          formMetaType: { $set: "" },
+          formMetaType: { $set: null },
           content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" },
@@ -109,6 +113,7 @@ function formMeta(state = INITIAL_STATE, action) {
     case ADD_FORM_META_REQUEST:
     case UPDATE_FORM_META_REQUEST:
     case DELETE_FORM_META_REQUEST:
+    case UPLOAD_IMAGE_REQUEST:
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
@@ -117,6 +122,7 @@ function formMeta(state = INITIAL_STATE, action) {
     case GET_FORM_META_BY_ID_SUCCESS:
     case ADD_FORM_META_SUCCESS:
     case UPDATE_FORM_META_SUCCESS:
+    case UPLOAD_IMAGE_SUCCESS:
       return update(state, {
         loading: { $set: false },
         currentFormMeta: { $set: action.payload[0] },
@@ -127,6 +133,7 @@ function formMeta(state = INITIAL_STATE, action) {
     case ADD_FORM_META_FAILURE:
     case UPDATE_FORM_META_FAILURE:
     case DELETE_FORM_META_FAILURE:
+    case UPLOAD_IMAGE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

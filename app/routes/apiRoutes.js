@@ -14,6 +14,7 @@ const authCtrl = require("../controllers/auth.ctrl");
 const formMetaCtrl = require("../controllers/formMeta.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const contactCtrl = require("../controllers/contacts.ctrl");
+const imageCtrl = require("../controllers/imageUpload.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
@@ -138,7 +139,7 @@ router.get("/user/", userCtrl.getUsers);
 
 router.delete("/user/:id", requireAuth, userCtrl.deleteUser);
 
-/* ============================== FORM META ROUTES ========================= */
+/* ============================= FORM META (CONTENT) ROUTES ================ */
 
 // CREATE A FORM META RECORD
 //   Example: POST >> /api/form-meta
@@ -211,7 +212,22 @@ router.get("/form-meta/", requireAuth, formMetaCtrl.getFormMeta);
 //
 router.delete("/form-meta/:id", requireAuth, formMetaCtrl.deleteFormMeta);
 
-/* ============================== SUBMISSION ROUTES =========================== */
+/* ========================= IMAGE UPLOAD ROUTES =========================== */
+
+// UPLOAD A SINGLE IMAGE
+//   Example: POST >> /api/image/single
+//   Secured: yes
+//   Expects:
+//     file upload
+//   Returns: Object
+//   {
+//     image: imageName,
+//     location: imageLocation
+//   }
+//
+router.post("/image/single", requireAuth, imageCtrl.singleImgUpload);
+
+/* =========================== SUBMISSION ROUTES =========================== */
 
 // CREATE A SUBMISSION
 //   Example: POST >> /api/submission/
