@@ -79,8 +79,6 @@ class TextInputForm extends React.Component {
     newState.open = false;
     newState.files = files;
     this.setState({ ...newState }, () => {
-      console.log("files saved to state");
-      console.log(this.state.files);
       this.handleUpload(this.state.files[0]);
     });
   };
@@ -99,13 +97,10 @@ class TextInputForm extends React.Component {
 
   handleUpload = file => {
     const { authToken } = this.props.appState;
-    console.log(file);
     const filename = file ? file.name.split(".")[0] : "";
-    const fileType = file ? file.name.split(".")[1] : "";
     this.props.apiFormMeta
-      .uploadImage(authToken, file, fileType)
+      .uploadImage(authToken, file)
       .then(result => {
-        console.log(result);
         if (
           result.type === "UPLOAD_IMAGE_FAILURE" ||
           this.props.formMeta.error
@@ -231,25 +226,6 @@ class TextInputForm extends React.Component {
           ) : (
             <React.Fragment>
               <ButtonWithSpinner
-                onClick={this.handleUpload}
-                name="image"
-                variant="contained"
-                color="secondary"
-                component="label"
-                className={classes.formButton}
-                loading={this.props.formMeta.loading}
-              >
-                Choose Image
-                <input
-                  accept="image/*"
-                  type="file"
-                  id="raised-button-file"
-                  multiple
-                  ref={ref => (this.uploadInput = ref)}
-                  style={{ display: "none" }}
-                />
-              </ButtonWithSpinner>
-              <ButtonWithSpinner
                 onClick={this.handleOpen.bind(this)}
                 variant="contained"
                 color="secondary"
@@ -257,7 +233,7 @@ class TextInputForm extends React.Component {
                 className={classes.formButton}
                 loading={this.props.formMeta.loading}
               >
-                Add Image
+                Choose Image
               </ButtonWithSpinner>
               <DropzoneDialog
                 open={this.state.open}

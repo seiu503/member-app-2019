@@ -161,9 +161,7 @@ export function addFormMeta(token, body) {
  *   UPLOAD_IMAGE_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function uploadImage(token, image, fileType) {
-  console.log("uploadImage apiFormMetaAction");
-  console.log(image);
+export function uploadImage(token, image) {
   const data = new FormData();
   data.append("image", image);
   return {
@@ -190,9 +188,9 @@ export function uploadImage(token, image, fileType) {
           }
         }
       ],
-      // headers: {
-      //   Authorization: `Bearer ${token}`
-      // },
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
       body: data
     }
   };
