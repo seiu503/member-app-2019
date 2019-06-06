@@ -68,7 +68,7 @@ const styles = theme => ({
     position: "fixed",
     backgroundColor: theme.palette.primary.main,
     bottom: 0,
-    padding: 5,
+    padding: 25,
     height: 73,
     [theme.breakpoints.down("sm")]: {
       height: 53
@@ -77,7 +77,8 @@ const styles = theme => ({
     justifyContent: "center",
     alignItems: "middle",
     boxShadow: "0 1px 5px 2px rgba(0,0,0,.2)",
-    zIndex: 2
+    zIndex: 2,
+    color: "white"
   },
   footerIcon: {
     width: 30,
@@ -87,6 +88,13 @@ const styles = theme => ({
       marginTop: 5
     },
     fill: theme.palette.secondary.main
+  },
+  spinner: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    display: "block"
   }
 });
 

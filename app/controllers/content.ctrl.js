@@ -16,10 +16,11 @@ const contentModel = require("../../db/models/content");
  *  @returns  {Object}                   New content object OR error message.
  */
 const createContent = (req, res, next) => {
-  const { contentType, content } = req.body;
-  if (contentType && content) {
+  console.log(req.body);
+  const { content_type, content } = req.body;
+  if (content_type && content) {
     return contentModel
-      .newContent(contentType, content)
+      .newContent(content_type, content)
       .then(records => {
         const record = records[0];
         res.status(200).json(record);

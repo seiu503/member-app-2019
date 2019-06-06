@@ -14,6 +14,9 @@ import {
   UPLOAD_IMAGE_REQUEST,
   UPLOAD_IMAGE_SUCCESS,
   UPLOAD_IMAGE_FAILURE,
+  DELETE_IMAGE_REQUEST,
+  DELETE_IMAGE_SUCCESS,
+  DELETE_IMAGE_FAILURE,
   DELETE_CONTENT_REQUEST,
   DELETE_CONTENT_SUCCESS,
   DELETE_CONTENT_FAILURE,
@@ -118,6 +121,8 @@ function Content(state = INITIAL_STATE, action) {
     case DELETE_CONTENT_REQUEST:
     case UPLOAD_IMAGE_REQUEST:
     case GET_ALL_CONTENT_REQUEST:
+    case DELETE_IMAGE_REQUEST:
+      console.log("loading");
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
@@ -139,6 +144,12 @@ function Content(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case DELETE_IMAGE_SUCCESS:
+      return update(state, {
+        loading: { $set: false },
+        error: { $set: null }
+      });
+
     case GET_ALL_CONTENT_SUCCESS:
       return update(state, {
         loading: { $set: false },
@@ -152,6 +163,7 @@ function Content(state = INITIAL_STATE, action) {
     case DELETE_CONTENT_FAILURE:
     case UPLOAD_IMAGE_FAILURE:
     case GET_ALL_CONTENT_FAILURE:
+    case DELETE_IMAGE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

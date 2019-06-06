@@ -13,6 +13,7 @@ import Delete from "@material-ui/icons/Delete";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
 import ContentTile from "../components/ContentTile";
+import Spinner from "../components/Spinner";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
 
@@ -170,6 +171,7 @@ class ContentLibrary extends React.Component {
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
       <React.Fragment>
+        {this.props.content.loading && <Spinner />}
         {this.props.content.deleteDialogOpen && (
           <AlertDialog
             open={this.props.content.deleteDialogOpen}
