@@ -38,7 +38,7 @@ const contacts = require("../../db/models/contacts");
  *  @param    {String}   immediate_past_member_status   Immediate past member status (populated from SF for existing contact matches)
  *  @returns  {Object}    New Submission Object or error message.
  */
-const createSubmission = (req, res, next) => {
+const createSubmission = async (req, res, next) => {
   const {
     ip_address,
     submission_date,
@@ -94,69 +94,75 @@ const createSubmission = (req, res, next) => {
       reason: "ValidationError",
       message: "Missing required fields"
     });
-  }
-
-  if (!missingField) {
-    return submissions
-      .createSubmission(
-        ip_address,
-        submission_date,
-        agency_number,
-        birthdate,
-        cell_phone,
-        employer_name,
-        first_name,
-        last_name,
-        home_street,
-        home_city,
-        home_state,
-        home_zip,
-        home_email,
-        preferred_language,
-        terms_agree,
-        signature,
-        text_auth_opt_out,
-        online_campaign_source,
-        contact_id,
-        legal_language,
-        maintenance_of_effort,
-        seiu503_cba_app_date,
-        direct_pay_auth,
-        direct_deposit_auth,
-        immediate_past_member_status
-      )
-      .then(submissions => {
-        const submission = submissions[0];
-        attachContactSubmissions(
-          submission.contact_id,
-          submission.submission_id
-        )
-          .then(result => {
-            if (!result.message) {
-              return res.status(200).json(submission);
-            } else {
-              return res.status(500).json({ message: result.message });
-            }
-          })
-          .catch(err => {
-            console.log(`submissions.ctrl.js > 139: ${err}`);
-            res.status(500).json({ message: err.message });
-          });
-      })
-      .catch(err => {
-        console.log(`submissions.ctrl.js > 134: ${err}`);
-        res.status(500).json({ message: err.message });
-      });
   } else {
-    return res
-      .status(500)
-      .json({ message: "There was an error creating the submission" });
+    const createSubmissionResult = await submissions.createSubmission(
+      ip_address,
+      submission_date,
+      agency_number,
+      birthdate,
+      cell_phone,
+      employer_name,
+      first_name,
+      last_name,
+      home_street,
+      home_city,
+      home_state,
+      home_zip,
+      home_email,
+      preferred_language,
+      terms_agree,
+      signature,
+      text_auth_opt_out,
+      online_campaign_source,
+      contact_id,
+      legal_language,
+      maintenance_of_effort,
+      seiu503_cba_app_date,
+      direct_pay_auth,
+      direct_deposit_auth,
+      immediate_past_member_status
+    );
+
+    if (!createSubmissionResult || createSubmissionResult.message) {
+      return res
+        .status(500)
+        .json({
+          message:
+            createSubmissionResult.message ||
+            "There was an error creating submission"
+        });
+    }
+
+    const newSubmissionId = createSubmissionResult[0].submission_id;
+    const newContactId = createSubmissionResult[0].contact_id;
+
+    const attachResult = await attachContactSubmissions(
+      newContactId,
+      newSubmissionId
+    );
+
+    if (!attachResult || attachResult.message) {
+      return res
+        .status(500)
+        .json({
+          message:
+            attachResult.message ||
+            "Error adding Submission to contacts_submissions table"
+        });
+    } else {
+      const totalResult = {
+        newSubmission: createSubmissionResult[0],
+        attachedSubmission: attachResult[0]
+      };
+      return res.status(200).json(totalResult);
+    }
   }
 };
 
 /** Attach submission to join table
  *
- * @param {String} id   Id of contact to view submissions
+ * @param {String} contact_id   Id of contact to add submissions to
+ * @param {String} submission_id   Id of submission to attach
  * @returns {Object}    Object containing contact id and array of all related submissions
  */
 const attachContactSubmissions = (contact_id, submission_id) => {

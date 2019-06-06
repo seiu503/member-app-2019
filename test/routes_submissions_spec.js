@@ -110,7 +110,7 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub, contactStub, submissionStub;
 
-suite("routes : submissions", function() {
+suite.only("routes : submissions", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -204,9 +204,9 @@ suite("routes : submissions", function() {
           immediate_past_member_status
         })
         .end(function(err, res) {
-          submissionId = res.body.submission_id;
-          createdAt = res.body.created_at;
-          updatedAt = res.body.updated_at;
+          submissionId = res.body.newSubmission.submission_id;
+          createdAt = res.body.newSubmission.created_at;
+          updatedAt = res.body.newSubmission.updated_at;
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();
@@ -218,6 +218,7 @@ suite("routes : submissions", function() {
         .post("/api/submission/")
         .send({ fullname: "firstname lastname" })
         .end(function(err, res) {
+          console.log(res.body.message);
           assert.equal(res.status, 422);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
