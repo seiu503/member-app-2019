@@ -401,7 +401,6 @@ describe("submissions model tests", () => {
     });
 
     it("ATTACH a submission to contact in JOIN table", () => {
-      console.log("contact_id:", contact_id, "submissionId", submissionId);
       return contacts
         .attachContactSubmission(contact_id, submissionId)
         .then(result => {
@@ -419,9 +418,17 @@ describe("submissions model tests", () => {
     });
 
     it("DELETE deletes a submission", () => {
-      return submissions.deleteSubmission(submissionId).then(result => {
-        assert.equal(result.message, "Submission deleted successfully");
-      });
+      return submissions
+        .deleteSubmission(submissionId)
+        .then(result => {
+          assert.equal(result.message, "Submission deleted successfully");
+        })
+        .then(() => {
+          return contacts.getContactSubmissionsById(contact_id).then(result => {
+            assert.equal(result.contact_id, null);
+            assert.equal(result.submission_id, null);
+          });
+        });
     });
   });
 });
