@@ -115,10 +115,25 @@ class TextInputForm extends React.Component {
     this.setState({ ...newState });
   };
 
-  handleChange = files => {
-    const newState = { ...this.state };
-    newState.files = files;
-    this.setState({ ...newState });
+  onDropRejected = rejected => {
+    let errors = [];
+    if (rejected[0].size > 2000000) {
+      errors.push("File too large. File size limit 2MB.");
+    }
+    if (
+      rejected[0].type !== "image/jpeg" &&
+      rejected[0].type !== "image/jpg" &&
+      rejected[0].type !== "image/png" &&
+      rejected[0].type !== "image/gif"
+    ) {
+      errors.push(
+        "Invalid file type. Accepted file types are .jpeg, .jpg, .png, and .gif."
+      );
+    }
+    // display errors
+    if (errors.length) {
+      openSnackbar("error", errors.join(" "));
+    }
   };
 
   handleUpload = file => {
@@ -141,6 +156,7 @@ class TextInputForm extends React.Component {
         } else {
           openSnackbar("success", `${filename} Saved.`);
           this.props.apiContent.clearForm();
+          this.props.apiContent.getAllContent(authToken);
           this.props.history.push("/library");
         }
       })
@@ -311,6 +327,7 @@ class TextInputForm extends React.Component {
               </ButtonWithSpinner>
               <DropzoneDialog
                 open={this.state.open}
+                onDropRejected={this.onDropRejected}
                 onSave={this.handleSave}
                 acceptedFiles={[
                   "image/jpeg",

@@ -1,5 +1,5 @@
 /*
-   Route handler for image uploads to AWS S3 storage.
+   Route handler for image uploads to / deletes from AWS S3 storage.
 */
 
 /* ================================= SETUP ================================= */
@@ -39,27 +39,33 @@ const upload = multer({
   }),
   limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
   fileFilter: function(req, file, cb) {
-    checkFileType(file, cb);
+    checkFile(file, cb);
   }
 }).single("image");
 
 /**
- * Check File Type
+ * Check File Type and Size
  * @param file
  * @param cb
  * @return {*}
  */
-const checkFileType = (file, cb) => {
+const checkFile = (file, cb) => {
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check mime
   const mimetype = filetypes.test(file.mimetype);
+  // Check size
+  if (file.size > 2000000) {
+    return cb({ message: "Error: File too large. File size limit 2MB." });
+  }
   if (mimetype && extname) {
     return cb(null, true);
   } else {
-    cb({ message: "Error: Only jpeg, jpg, png, and gif files accepted." });
+    return cb({
+      message: "Error: Only jpeg, jpg, png, and gif files accepted."
+    });
   }
 };
 
@@ -114,8 +120,30 @@ const singleImgUpload = (req, res, next) => {
   });
 };
 
+/**
+ * Delete file from S3 bucket
+ */
+deleteImage = (req, res, next) => {
+  console.log("DELETE IMAGE ##########");
+  const params = { Bucket: s3config.bucket, Key: req.params.key };
+  console.log("#############");
+  console.log(req.params.key);
+  console.log(params);
+  s3.deleteObject(params, (err, data) => {
+    if (err) {
+      console.log(err, err.stack);
+      res.status(500).json({
+        message: err
+      });
+    } else {
+      return res.status(200).json({ message: "Image deleted." });
+    }
+  });
+};
+
 /* ================================ EXPORT ================================= */
 
 module.exports = {
-  singleImgUpload
+  singleImgUpload,
+  deleteImage
 };

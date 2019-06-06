@@ -14,7 +14,7 @@ const authCtrl = require("../controllers/auth.ctrl");
 const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const contactCtrl = require("../controllers/contact.ctrl");
-const imageCtrl = require("../controllers/imageUpload.ctrl");
+const imageCtrl = require("../controllers/image.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
@@ -212,7 +212,7 @@ router.get("/content/", requireAuth, contentCtrl.getContent);
 //
 router.delete("/content/:id", requireAuth, contentCtrl.deleteContent);
 
-/* ========================= IMAGE UPLOAD ROUTES =========================== */
+/* ========================= IMAGE ROUTES =========================== */
 
 // UPLOAD A SINGLE IMAGE
 //   Example: POST >> /api/image/single
@@ -226,6 +226,18 @@ router.delete("/content/:id", requireAuth, contentCtrl.deleteContent);
 //   }
 //
 router.post("/image/single", requireAuth, imageCtrl.singleImgUpload);
+
+// DELETE AN IMAGE FROM S3 BUCKET
+// (this route is hit after the content is delete from the postgres database)
+//   Example: DELETE >> /api/image/
+//   Secured: yes
+//   Expects:
+//     request body: {
+//        key: S3 object key
+//     }
+//   Returns: Success or Error message
+//
+router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 
 /* =========================== SUBMISSION ROUTES =========================== */
 

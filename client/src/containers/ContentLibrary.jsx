@@ -130,8 +130,32 @@ class ContentLibrary extends React.Component {
       .deleteContent(token, contentData.id)
       .then(result => {
         if (result.type === "DELETE_CONTENT_SUCCESS") {
-          openSnackbar("success", `Deleted ${contentData.content_type}.`);
-          this.props.apiContent.getAllContent(token);
+          // if the deleted content is an image
+          // then we also have to delete it from S3 storage
+          // after deleting from the postgres db
+          if (contentData.content_type === "image") {
+            const keyParts = contentData.content.split("/");
+            const key = keyParts[keyParts.length - 1];
+            console.log(key);
+            this.props.apiContent
+              .deleteImage(token, key)
+              .then(result => {
+                if (result.type === "DELETE_IMAGE_SUCCESS") {
+                  openSnackbar(
+                    "success",
+                    `Deleted ${contentData.content_type}.`
+                  );
+                  this.props.apiContent.getAllContent(token);
+                }
+              })
+              .catch(err => {
+                console.log(err);
+                openSnackbar("error", err);
+              });
+          } else {
+            openSnackbar("success", `Deleted ${contentData.content_type}.`);
+            this.props.apiContent.getAllContent(token);
+          }
         } else {
           openSnackbar("error", this.props.content.error);
         }

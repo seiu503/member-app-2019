@@ -13,6 +13,9 @@ export const GET_ALL_CONTENT_FAILURE = "GET_ALL_CONTENT_FAILURE";
 export const DELETE_CONTENT_REQUEST = "DELETE_CONTENT_REQUEST";
 export const DELETE_CONTENT_SUCCESS = "DELETE_CONTENT_SUCCESS";
 export const DELETE_CONTENT_FAILURE = "DELETE_CONTENT_FAILURE";
+export const DELETE_IMAGE_REQUEST = "DELETE_IMAGE_REQUEST";
+export const DELETE_IMAGE_SUCCESS = "DELETE_IMAGE_SUCCESS";
+export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
 export const UPDATE_CONTENT_REQUEST = "UPDATE_CONTENT_REQUEST";
 export const UPDATE_CONTENT_SUCCESS = "UPDATE_CONTENT_SUCCESS";
 export const UPDATE_CONTENT_FAILURE = "UPDATE_CONTENT_FAILURE";
@@ -316,6 +319,47 @@ export function deleteContent(token, id) {
         DELETE_CONTENT_SUCCESS,
         {
           type: DELETE_CONTENT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data) {
+                if (data.message) {
+                  message = data.message;
+                }
+                return { message };
+              } else {
+                return { message };
+              }
+            });
+          }
+        }
+      ],
+      headers: { Authorization: `Bearer ${token}` }
+    }
+  };
+}
+
+/*
+ * Function: deleteImage -- delete file from S3 bucket
+ * @param {string} key (S3 object key)
+ * This action dispatches additional actions as it executes:
+ *   DELETE_IMAGE_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   DELETE_IMAGE_SUCCESS:
+ *     If Content successfully deleted, hides spinner
+ *   DELETE_IMAGE_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function deleteImage(token, key) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/image/${key}`,
+      method: "DELETE",
+      types: [
+        DELETE_IMAGE_REQUEST,
+        DELETE_IMAGE_SUCCESS,
+        {
+          type: DELETE_IMAGE_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
