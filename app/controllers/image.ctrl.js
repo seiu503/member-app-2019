@@ -9,7 +9,7 @@ const content = require("../../db/models/content");
 
 const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
-const multer = require("multer");
+const MulterWrapper = require("../utils/multer.js");
 const path = require("path");
 const url = require("url");
 
@@ -19,7 +19,7 @@ const s3 = new aws.S3(s3config);
 /**
  * Upload to s3 bucket with multer
  */
-const upload = multer({
+const upload = MulterWrapper.multer({
   storage: multerS3({
     s3: s3,
     bucket: s3config.bucket,
