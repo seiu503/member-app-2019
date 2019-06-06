@@ -119,7 +119,6 @@ class ContentLibrary extends React.Component {
 
   handleDeleteDialogOpen = tile => {
     if (tile && this.props.appState.loggedIn) {
-      console.log("opening delete dialog");
       this.props.apiContent.handleDeleteOpen(tile);
     }
   };
@@ -136,7 +135,6 @@ class ContentLibrary extends React.Component {
           if (contentData.content_type === "image") {
             const keyParts = contentData.content.split("/");
             const key = keyParts[keyParts.length - 1];
-            console.log(key);
             this.props.apiContent
               .deleteImage(token, key)
               .then(result => {

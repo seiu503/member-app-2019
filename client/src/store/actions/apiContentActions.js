@@ -218,7 +218,6 @@ export function uploadImage(token, image, id) {
   if (id) {
     data.append("id", id);
   }
-  console.log(data);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/image/single`,

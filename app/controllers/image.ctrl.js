@@ -25,7 +25,6 @@ const upload = multer({
     bucket: s3config.bucket,
     acl: "public-read",
     key: function(req, file, cb) {
-      console.log(file);
       cb(
         null,
         path.basename(
@@ -124,11 +123,7 @@ const singleImgUpload = (req, res, next) => {
  * Delete file from S3 bucket
  */
 deleteImage = (req, res, next) => {
-  console.log("DELETE IMAGE ##########");
   const params = { Bucket: s3config.bucket, Key: req.params.key };
-  console.log("#############");
-  console.log(req.params.key);
-  console.log(params);
   s3.deleteObject(params, (err, data) => {
     if (err) {
       console.log(err, err.stack);
