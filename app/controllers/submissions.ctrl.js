@@ -130,8 +130,18 @@ const createSubmission = (req, res, next) => {
         attachContactSubmissions(
           submission.contact_id,
           submission.submission_id
-        );
-        res.status(200).json(submission);
+        )
+          .then(result => {
+            if (!result.message) {
+              return res.status(200).json(submission);
+            } else {
+              return res.status(500).json({ message: result.message });
+            }
+          })
+          .catch(err => {
+            console.log(`submissions.ctrl.js > 139: ${err}`);
+            res.status(500).json({ message: err.message });
+          });
       })
       .catch(err => {
         console.log(`submissions.ctrl.js > 134: ${err}`);
@@ -154,16 +164,18 @@ const attachContactSubmissions = (contact_id, submission_id) => {
     .attachContactSubmission(contact_id, submission_id)
     .then(contact_submissions => {
       if (!contact_submissions || contact_submissions.message) {
-        return res.status(404).json({
+        return {
           message:
             contact_submissions.message ||
             "Error adding Submission to contacts_submissions table"
-        });
+        };
       } else {
-        res.status(200).json(contact_submissions);
+        return contact_submissions;
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      return { message: err.message };
+    });
 };
 
 /** Update a Submission
