@@ -8,9 +8,13 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
 import Create from "@material-ui/icons/Create";
+import Delete from "@material-ui/icons/Delete";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
+import * as utils from "../utils";
 import ContentTile from "../components/ContentTile";
+import AlertDialog from "../components/AlertDialog";
+import { openSnackbar } from "./Notifier";
 
 const styles = theme => ({
   root: {
@@ -29,7 +33,20 @@ const styles = theme => ({
     position: "absolute",
     bottom: 20,
     right: 20,
-    visibility: "hidden"
+    visibility: "hidden",
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  buttonDelete: {
+    position: "absolute",
+    bottom: 20,
+    right: 80,
+    visibility: "hidden",
+    backgroundColor: theme.palette.danger.main,
+    "&:hover": {
+      backgroundColor: theme.palette.danger.light
+    }
   },
   actionArea: {
     borderRadius: 6,
@@ -44,6 +61,9 @@ const styles = theme => ({
       backgroundColor: "rgba(0,0,0,.05)"
     },
     "&:hover $buttonEdit": {
+      visibility: "visible"
+    },
+    "&:hover $buttonDelete": {
       visibility: "visible"
     }
   },
@@ -84,7 +104,11 @@ class ContentLibrary extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (!prevProps.appState.authToken && this.props.appState.authToken) {
+    if (
+      (!prevProps.appState.authToken && this.props.appState.authToken) ||
+      prevProps.content.allContent.length !==
+        this.props.content.allContent.length
+    ) {
       this.props.apiContent
         .getAllContent(this.props.appState.authToken)
         .then(result => {
@@ -93,43 +117,91 @@ class ContentLibrary extends React.Component {
     }
   }
 
+  handleDeleteDialogOpen = tile => {
+    if (tile && this.props.appState.loggedIn) {
+      console.log("opening delete dialog");
+      this.props.apiContent.handleDeleteOpen(tile);
+    }
+  };
+
+  deleteContent = contentData => {
+    const token = this.props.appState.authToken;
+    this.props.apiContent
+      .deleteContent(token, contentData.id)
+      .then(result => {
+        if (result.type === "DELETE_CONTENT_SUCCESS") {
+          openSnackbar("success", `Deleted ${contentData.content_type}.`);
+          this.props.apiContent.getAllContent(token);
+        } else {
+          openSnackbar("error", this.props.content.error);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        openSnackbar("error", err);
+      });
+  };
+
   render() {
     const { classes } = this.props;
+    const contentType =
+      utils.labelsObj[this.props.content.currentContent.content_type];
     return (
-      <div className={classes.section}>
-        <Typography
-          variant="h2"
-          align="center"
-          gutterBottom
-          className={classes.head}
-          style={{ paddingTop: 20 }}
-        >
-          Content Library
-        </Typography>
-        <div className={classes.gridWrapper}>
-          {this.props.content.allContent.map(tile => {
-            return (
-              <div className={classes.card} key={tile.id}>
-                <div
-                  className={classes.actionArea}
-                  tabIndex={0}
-                  onClick={() => this.props.history.push(`/edit/${tile.id}`)}
-                >
-                  <FAB
-                    className={classes.buttonEdit}
-                    onClick={() => this.props.history.push(`/edit/${tile.id}`)}
-                    color="primary"
-                    aria-label="Edit Content"
-                  >
-                    <Create />
-                  </FAB>
+      <React.Fragment>
+        {this.props.content.deleteDialogOpen && (
+          <AlertDialog
+            open={this.props.content.deleteDialogOpen}
+            handleClose={this.props.apiContent.handleDeleteClose}
+            content={`Are you sure you want to delete? Note that any live form versions that use this ${contentType} will render the default ${contentType} instead after this is deleted.`}
+            danger={true}
+            action={() => {
+              this.deleteContent(this.props.content.currentContent);
+              this.props.apiContent.handleDeleteClose();
+            }}
+            buttonText="Delete"
+          />
+        )}
+        <div className={classes.section}>
+          <Typography
+            variant="h2"
+            align="center"
+            gutterBottom
+            className={classes.head}
+            style={{ paddingTop: 20 }}
+          >
+            Content Library
+          </Typography>
+          <div className={classes.gridWrapper}>
+            {this.props.content.allContent.map(tile => {
+              return (
+                <div className={classes.card} key={tile.id}>
+                  <div className={classes.actionArea}>
+                    <FAB
+                      className={classes.buttonDelete}
+                      onClick={() => this.handleDeleteDialogOpen(tile)}
+                      color="primary"
+                      aria-label="Delete Content"
+                    >
+                      <Delete />
+                    </FAB>
+                    <FAB
+                      className={classes.buttonEdit}
+                      onClick={() =>
+                        this.props.history.push(`/edit/${tile.id}`)
+                      }
+                      color="primary"
+                      aria-label="Edit Content"
+                    >
+                      <Create />
+                    </FAB>
+                  </div>
+                  <ContentTile contentTile={tile} />
                 </div>
-                <ContentTile contentTile={tile} />
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      </React.Fragment>
     );
   }
 }

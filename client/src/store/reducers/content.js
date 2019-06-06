@@ -71,6 +71,7 @@ function Content(state = INITIAL_STATE, action) {
       }
 
     case HANDLE_DELETE_OPEN:
+      console.log("HANDLE_DELETE_OPEN");
       return update(state, {
         deleteDialogOpen: { $set: true },
         currentContent: { $set: { ...action.payload.selectedContent } }

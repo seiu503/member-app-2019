@@ -200,6 +200,7 @@ export function addContent(token, body) {
 /*
  * Function: uploadImage -- uploads image file to Amazon S3 bucket and adds new content record with image URL to db
  * @param {file} image (image file)
+ * @param {id} (optional content id if replacing existing image)
  * This action dispatches additional actions as it executes:
  *   UPLOAD_IMAGE_REQUEST:
  *     Initiates a spinner on the home page.
@@ -208,9 +209,13 @@ export function addContent(token, body) {
  *   UPLOAD_IMAGE_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function uploadImage(token, image) {
+export function uploadImage(token, image, id) {
   const data = new FormData();
   data.append("image", image);
+  if (id) {
+    data.append("id", id);
+  }
+  console.log(data);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/image/single`,

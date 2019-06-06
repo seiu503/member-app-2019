@@ -14,6 +14,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import { DropzoneDialog } from "material-ui-dropzone";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
+import * as utils from "../utils";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -56,13 +57,6 @@ const styles = theme => ({
     textAlign: "center"
   }
 });
-
-const labelsObj = {
-  headline: "Headline",
-  bodyCopy: "Body Copy",
-  image: "Image URL",
-  redirectUrl: "Redirect Url"
-};
 
 class TextInputForm extends React.Component {
   constructor(props) {
@@ -130,8 +124,10 @@ class TextInputForm extends React.Component {
   handleUpload = file => {
     const { authToken } = this.props.appState;
     const filename = file ? file.name.split(".")[0] : "";
+    const edit = this.props.edit;
+    const id = this.props.edit ? this.props.match.params.id : undefined;
     this.props.apiContent
-      .uploadImage(authToken, file)
+      .uploadImage(authToken, file, edit, id)
       .then(result => {
         if (
           result.type === "UPLOAD_IMAGE_FAILURE" ||
@@ -177,7 +173,7 @@ class TextInputForm extends React.Component {
                 "An error occured while trying to save your content."
             );
           } else {
-            openSnackbar("success", `${labelsObj[content_type]} Saved.`);
+            openSnackbar("success", `${utils.labelsObj[content_type]} Saved.`);
             this.props.apiContent.clearForm();
             this.props.history.push("/library");
           }
@@ -197,7 +193,10 @@ class TextInputForm extends React.Component {
                 "An error occured while trying to update your content."
             );
           } else {
-            openSnackbar("success", `${labelsObj[content_type]} Updated.`);
+            openSnackbar(
+              "success",
+              `${utils.labelsObj[content_type]} Updated.`
+            );
             this.props.apiContent.clearForm();
             this.props.history.push("/library");
           }
@@ -269,7 +268,7 @@ class TextInputForm extends React.Component {
               <TextField
                 name="content"
                 id="content"
-                label={labelsObj[this.props.content.form.content_type]}
+                label={utils.labelsObj[this.props.content.form.content_type]}
                 type={
                   this.props.content.form.content_type &&
                   this.props.content.form.content_type.includes("Url")
@@ -294,7 +293,7 @@ class TextInputForm extends React.Component {
                 loading={this.props.content.loading}
                 onClick={this.submit}
               >
-                Save {labelsObj[this.props.content.form.content_type]}
+                Save {utils.labelsObj[this.props.content.form.content_type]}
               </ButtonWithSpinner>
             </React.Fragment>
           ) : this.props.content.form.content_type &&

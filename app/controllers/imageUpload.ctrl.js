@@ -80,17 +80,36 @@ const singleImgUpload = (req, res, next) => {
       const imageUrl = `https://${s3config.bucket}.s3-${
         s3config.region
       }.amazonaws.com/${req.file.originalname}`;
-      // save url to postgres DB
-      return content
-        .newContent("image", imageUrl)
-        .then(records => {
-          const record = records[0];
-          res.status(200).json(record);
-        })
-        .catch(err => {
-          console.log(`imageUpload.ctrl.js > 90: ${err}`);
-          res.status(500).json({ message: err.message });
-        });
+      // check if we're creating a new DB record or updating existing
+      if (req.body.id) {
+        // update existing record
+        const updates = {
+          content_type: "image",
+          content: imageUrl
+        };
+        return content
+          .updateContent(id, updates)
+          .then(records => {
+            const record = records[0];
+            res.status(200).json(record);
+          })
+          .catch(err => {
+            console.log(`imageUpload.ctrl.js > 90: ${err}`);
+            res.status(500).json({ message: err.message });
+          });
+      } else {
+        // create new record in postgres DB
+        return content
+          .newContent("image", imageUrl)
+          .then(records => {
+            const record = records[0];
+            res.status(200).json(record);
+          })
+          .catch(err => {
+            console.log(`imageUpload.ctrl.js > 90: ${err}`);
+            res.status(500).json({ message: err.message });
+          });
+      }
     }
   });
 };
