@@ -39,7 +39,9 @@ const updateContent = (id, updates) => {
  */
 
 const getContent = () => {
-  return db(TABLES.CONTENT).returning("*");
+  return db(TABLES.CONTENT)
+    .orderBy("updated_at", "desc")
+    .returning("*");
 };
 
 /** Get all content by type
@@ -49,6 +51,7 @@ const getContent = () => {
 const getContentByType = content_type => {
   return db(TABLES.CONTENT)
     .where({ content_type })
+    .orderBy("updated_at", "desc")
     .returning("*");
 };
 

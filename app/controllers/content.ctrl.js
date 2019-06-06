@@ -41,7 +41,7 @@ const createContent = (req, res, next) => {
  *  @returns  {Object}             Updated content object OR error message.
  */
 const updateContent = (req, res, next) => {
-  const { updates } = req.body;
+  const updates = req.body;
   const { id } = req.params;
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
@@ -86,7 +86,6 @@ const deleteContent = (req, res, next) => {
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContent = (req, res, next) => {
-  console.log("getContent");
   return contentModel
     .getContent()
     .then(records => res.status(200).json(records))

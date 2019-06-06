@@ -77,7 +77,7 @@ const styles = theme => ({
 class ContentLibrary extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
-    console.log(authToken);
+    // console.log(authToken);
     this.props.apiContent.getAllContent(authToken).then(result => {
       // console.log(result);
     });

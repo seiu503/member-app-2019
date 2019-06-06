@@ -34,13 +34,13 @@ const INITIAL_STATE = {
   allContent: [],
   deleteDialogOpen: false,
   currentContent: {
-    contentType: null,
+    content_type: null,
     content: "",
     created_at: "",
     updated_at: ""
   },
   form: {
-    contentType: null,
+    content_type: null,
     content: "",
     dialogOpen: false
   },
@@ -82,7 +82,7 @@ function Content(state = INITIAL_STATE, action) {
         deleteDialogOpen: { $set: false },
         currentContent: {
           id: { $set: "" },
-          contentType: { $set: "" },
+          content_type: { $set: "" },
           content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" }
@@ -94,7 +94,7 @@ function Content(state = INITIAL_STATE, action) {
     case SET_EDIT_CONTENT:
       return update(state, {
         form: {
-          contentType: { $set: action.payload.contentType },
+          content_type: { $set: action.payload.content_type },
           content: { $set: action.payload.content },
           dialogOpen: { $set: false }
         }
@@ -103,7 +103,7 @@ function Content(state = INITIAL_STATE, action) {
     case CLEAR_FORM:
       return update(state, {
         form: {
-          contentType: { $set: null },
+          content_type: { $set: null },
           content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" },
@@ -128,7 +128,13 @@ function Content(state = INITIAL_STATE, action) {
     case UPLOAD_IMAGE_SUCCESS:
       return update(state, {
         loading: { $set: false },
-        currentContent: { $set: action.payload[0] },
+        form: {
+          content_type: { $set: action.payload.content_type },
+          content: { $set: action.payload.content },
+          created_at: { $set: action.payload.created_at },
+          updated_at: { $set: action.payload.updated_at },
+          dialogOpen: { $set: false }
+        },
         error: { $set: null }
       });
 

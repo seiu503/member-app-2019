@@ -60,7 +60,7 @@ const styles = theme => ({
 const labelsObj = {
   headline: "Headline",
   bodyCopy: "Body Copy",
-  imageUrl: "Image URL",
+  image: "Image URL",
   redirectUrl: "Redirect Url"
 };
 
@@ -73,13 +73,35 @@ class TextInputForm extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.edit && this.props.match.params.id) {
+      this.props.apiContent
+        .getContentById(this.props.match.params.id)
+        .then(result => {
+          // console.log(result.type);
+          if (
+            result.type === "GET_CONTENT_BY_ID_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to fetch your content."
+            );
+          } else {
+            // console.log(this.props.content.form)
+          }
+        })
+        .catch(err => openSnackbar("error", err));
+    }
+  }
 
   handleClose = () => {
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState }, () => {
       this.props.apiContent.clearForm();
+      this.props.history.push("/library");
     });
   };
 
@@ -123,40 +145,75 @@ class TextInputForm extends React.Component {
         } else {
           openSnackbar("success", `${filename} Saved.`);
           this.props.apiContent.clearForm();
+          this.props.history.push("/library");
         }
       })
       .catch(err => openSnackbar("error", err));
   };
 
   submit = e => {
-    e.preventDefault();
-    e.target.reset();
-    const { contentType, content } = this.props.content.form;
+    // e.preventDefault();
+    const { content_type, content } = this.props.content.form;
     const { authToken } = this.props.appState;
     const body = {
-      contentType,
+      content_type,
       content
     };
-    this.props.apiContent
-      .addContent(authToken, body)
-      .then(result => {
-        if (result.type === "ADD_CONTENT_FAILURE" || this.props.content.error) {
-          openSnackbar(
-            "error",
-            this.props.content.error ||
-              "An error occured while trying to save your content."
-          );
-        } else {
-          openSnackbar("success", `${labelsObj[contentType]} Saved.`);
-          this.props.apiContent.clearForm();
-        }
-      })
-      .catch(err => openSnackbar("error", err));
+    let id;
+    if (this.props.match.params.id) {
+      id = this.props.match.params.id;
+    }
+    if (!this.props.edit) {
+      this.props.apiContent
+        .addContent(authToken, body)
+        .then(result => {
+          if (
+            result.type === "ADD_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to save your content."
+            );
+          } else {
+            openSnackbar("success", `${labelsObj[content_type]} Saved.`);
+            this.props.apiContent.clearForm();
+            this.props.history.push("/library");
+          }
+        })
+        .catch(err => openSnackbar("error", err));
+    } else if (id) {
+      this.props.apiContent
+        .updateContent(authToken, id, body)
+        .then(result => {
+          if (
+            result.type === "UPDATE_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to update your content."
+            );
+          } else {
+            openSnackbar("success", `${labelsObj[content_type]} Updated.`);
+            this.props.apiContent.clearForm();
+            this.props.history.push("/library");
+          }
+        })
+        .catch(err => openSnackbar("error", err));
+    } else {
+      openSnackbar(
+        "error",
+        this.props.content.error ||
+          "An error occured while trying to save your content."
+      );
+    }
   };
 
   render() {
     const { classes } = this.props;
-    const { contentType } = this.props.content.form;
     return (
       <div className={classes.container}>
         <Typography
@@ -171,7 +228,6 @@ class TextInputForm extends React.Component {
         <form
           className={classes.form}
           onError={errors => console.log(errors)}
-          onSubmit={this.submit}
           id="form"
         >
           <FormControl component="fieldset" className={classes.formControl}>
@@ -180,9 +236,9 @@ class TextInputForm extends React.Component {
             </FormLabel>
             <RadioGroup
               aria-label="Content Type"
-              name="contentType"
+              name="content_type"
               className={classes.group}
-              value={this.props.content.form.contentType}
+              value={this.props.content.form.content_type}
               onChange={this.props.apiContent.handleInput}
             >
               <FormControlLabel
@@ -196,7 +252,7 @@ class TextInputForm extends React.Component {
                 label="Body"
               />
               <FormControlLabel
-                value="imageUrl"
+                value="image"
                 control={<Radio />}
                 label="Image"
               />
@@ -207,17 +263,23 @@ class TextInputForm extends React.Component {
               />
             </RadioGroup>
           </FormControl>
-          {contentType && contentType !== "imageUrl" ? (
+          {this.props.content.form.content_type &&
+          this.props.content.form.content_type !== "image" ? (
             <React.Fragment>
               <TextField
                 name="content"
                 id="content"
-                label={labelsObj[contentType]}
+                label={labelsObj[this.props.content.form.content_type]}
                 type={
-                  contentType && contentType.includes("Url") ? "url" : "text"
+                  this.props.content.form.content_type &&
+                  this.props.content.form.content_type.includes("Url")
+                    ? "url"
+                    : "text"
                 }
-                multiline={contentType === "bodyCopy"}
-                rows={contentType === "bodyCopy" ? 5 : 1}
+                multiline={this.props.content.form.content_type === "bodyCopy"}
+                rows={
+                  this.props.content.form.content_type === "bodyCopy" ? 5 : 1
+                }
                 variant="outlined"
                 required
                 value={this.props.content.form.content}
@@ -225,16 +287,18 @@ class TextInputForm extends React.Component {
                 className={classes.input}
               />
               <ButtonWithSpinner
-                type="submit"
+                type="button"
                 color="secondary"
                 className={classes.formButton}
                 variant="contained"
                 loading={this.props.content.loading}
+                onClick={this.submit}
               >
-                Save {labelsObj[contentType]}
+                Save {labelsObj[this.props.content.form.content_type]}
               </ButtonWithSpinner>
             </React.Fragment>
-          ) : contentType && contentType === "imageUrl" ? (
+          ) : this.props.content.form.content_type &&
+            this.props.content.form.content_type === "image" ? (
             <React.Fragment>
               <ButtonWithSpinner
                 onClick={this.handleOpen.bind(this)}
@@ -277,7 +341,7 @@ TextInputForm.propTypes = {
   }),
   content: PropTypes.shape({
     form: PropTypes.shape({
-      contentType: PropTypes.string,
+      content_type: PropTypes.string,
       content: PropTypes.string
     }),
     loading: PropTypes.bool

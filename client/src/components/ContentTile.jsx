@@ -94,9 +94,7 @@ const styles = theme => ({
 
 const ContentTile = props => {
   const { classes, contentTile } = props;
-  console.log(contentTile);
   const { content, content_type } = contentTile;
-  console.log(content_type);
   const imageStyle = { backgroundImage: `url(${content})` };
 
   return (
