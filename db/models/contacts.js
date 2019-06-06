@@ -195,7 +195,7 @@ const deleteContact = contact_id => {
 
 const attachContactSubmission = (contact_id, submission_id) => {
   return db
-    .insert({ contact_id, submission_id })
+    .insert({ id: uuid.v4(), contact_id, submission_id })
     .into(TABLES.CONTACTS_SUBMISSIONS)
     .returning("*");
 };
@@ -222,6 +222,9 @@ const getContactSubmissionsById = id => {
     .where(`${TABLES.CONTACTS}.contact_id`, id)
     .then(results => {
       return results.reduce((memo, submission) => {
+        if (!memo.contact_id) {
+          memo.contact_id = submission.contact_id;
+        }
         if (!memo.submissions) {
           memo.submissions = [];
         }

@@ -1,4 +1,4 @@
-// test/models_users_spec.js
+// test/routes_contacts_spec.js
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */
