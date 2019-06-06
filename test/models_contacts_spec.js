@@ -1,4 +1,4 @@
-// test/models_users_spec.js
+// test/models_submissions_spec.js
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */

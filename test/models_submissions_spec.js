@@ -1,4 +1,4 @@
-// test/models_users_spec.js
+// test/models_submissions_spec.js
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */
@@ -156,7 +156,6 @@ describe("submissions model tests", () => {
         sampleContact.work_email
       )
       .then(contact => {
-        console.log("SAMPLE CONTACT ID", contact[0].contact_id);
         contact_id = contact[0].contact_id;
       });
   };

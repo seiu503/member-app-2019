@@ -221,7 +221,6 @@ const getContactSubmissionsById = id => {
     )
     .where(`${TABLES.CONTACTS}.contact_id`, id)
     .then(results => {
-      console.log("MODEL", results);
       return results.reduce((memo, submission) => {
         if (!memo.contact_id) {
           memo.contact_id = submission.contact_id;

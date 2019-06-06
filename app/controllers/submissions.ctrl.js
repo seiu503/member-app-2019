@@ -151,7 +151,7 @@ const createSubmission = (req, res, next) => {
  */
 const attachContactSubmissions = (contact_id, submission_id) => {
   return contacts
-    .attachContactSubmissions(contact_id, submission_id)
+    .attachContactSubmission(contact_id, submission_id)
     .then(contact_submissions => {
       if (!contact_submissions || contact_submissions.message) {
         return res.status(404).json({
@@ -216,7 +216,7 @@ const deleteSubmission = (req, res, next) => {
 /** Get all submissions
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
-const getSubmissions = () => {
+const getSubmissions = (req, res, next) => {
   return submissions
     .getSubmissions()
     .then(submissions => res.status(200).json(submissions))
@@ -229,7 +229,7 @@ const getSubmissions = () => {
  */
 const getSubmissionById = (req, res, next) => {
   return submissions
-    .getSubmissoinById(req.params.id)
+    .getSubmissionById(req.params.id)
     .then(submission => {
       if (!submission || submission.message) {
         return res
