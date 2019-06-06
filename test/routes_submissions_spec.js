@@ -110,7 +110,7 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub, contactStub, submissionStub;
 
-suite.only("routes : submissions", function() {
+suite("routes : submissions", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
