@@ -50,8 +50,6 @@ const upload = MulterWrapper.multer({
  * @return {*}
  */
 const checkFile = (file, cb) => {
-  console.log("checkFile");
-  console.log(file);
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
@@ -75,26 +73,19 @@ const singleImgUpload = (req, res, next) => {
   upload(req, res, err => {
     // upload image to s3 bucket
     if (err instanceof multer.MulterError) {
-      console.log(`image.ctrl.js > 80`);
-      console.log("multer error");
       return res.status(500).json({
-        message: err
+        message: err.message
+      });
+    }
+    if (err) {
+      return res.status(500).json({
+        message: err.message
       });
     }
     if (!req.file) {
       console.log("No file found");
       return res.status(500).json({
         message: "No file attached. Please choose a file."
-      });
-    }
-    if (req.file.size > 200000) {
-      return res.status(500).json({
-        message: "File too large. File size limit is 2MB."
-      });
-    }
-    if (err) {
-      return res.status(500).json({
-        message: err
       });
     } else {
       // generate url of uploaded image

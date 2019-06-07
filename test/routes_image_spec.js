@@ -102,10 +102,28 @@ suite("routes : image", function() {
           "test_tooBig.jpg"
         )
         .end(function(err, res) {
-          console.log("routes_image_spec.js > 104");
-          console.log(res.message);
           assert.equal(res.status, 500);
-          assert.isNotNull(res.message);
+          assert.equal(res.body.message, "File too large");
+          done();
+        });
+    });
+    test("returns an error if file is unsupported filetype", function(done) {
+      this.timeout(5000);
+      chai
+        .request(app)
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test_wrongFileType.svg`),
+          "test_wrongFileType.svg"
+        )
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(
+            res.body.message,
+            "Error: Only jpeg, jpg, png, and gif files accepted."
+          );
           done();
         });
     });
