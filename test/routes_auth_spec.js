@@ -28,6 +28,7 @@ describe("routes : auth", () => {
 
   suite("GET /api/auth/google", function() {
     test("google auth route returns 200 status", function(done) {
+      this.timeout(5000);
       chai
         .request(app)
         .get("/api/auth/google")

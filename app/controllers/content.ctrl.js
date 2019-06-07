@@ -1,54 +1,54 @@
 /*
-   Route handlers for fetching and updating form meta.
+   Route handlers for fetching and updating content.
 */
 
 /* ================================= SETUP ================================= */
 
 // import model
-const formMeta = require("../../db/models/form_meta");
+const contentModel = require("../../db/models/content");
 
 /* ============================ ROUTE HANDLERS ============================= */
 
-/** Create a new form meta record
- *  @param    {String}   form_meta_type  Content type
+/** Create a new content record
+ *  @param    {String}   content_type  Content type
  ***  [headline|body_copy|image_url|redirect_url].
  *  @param    {String}   content         Content.
- *  @returns  {Object}                   New form meta object OR error message.
+ *  @returns  {Object}                   New content object OR error message.
  */
-const createFormMeta = (req, res, next) => {
-  const { formMetaType, content } = req.body;
-  if (formMetaType && content) {
-    return formMeta
-      .createFormMeta(formMetaType, content)
+const createContent = (req, res, next) => {
+  const { content_type, content } = req.body;
+  if (content_type && content) {
+    return contentModel
+      .newContent(content_type, content)
       .then(records => {
         const record = records[0];
         res.status(200).json(record);
       })
       .catch(err => {
-        console.log(`formMeta.ctrl.js > 28: ${err}`);
+        console.log(`content.ctrl.js > 28: ${err}`);
         res.status(500).json({ message: err.message });
       });
   } else {
     return res
       .status(500)
-      .json({ message: "There was an error creating the form meta" });
+      .json({ message: "There was an error creating the content" });
   }
 };
 
-/** Update an existing form meta record
+/** Update an existing content record
  *  @param    {String}   id        Id of record to update.
  *  @param    {Object}   updates   Key/value pairs for fields to update.
- *  @returns  {Object}             Updated form meta object OR error message.
+ *  @returns  {Object}             Updated content object OR error message.
  */
-const updateFormMeta = (req, res, next) => {
-  const { updates } = req.body;
+const updateContent = (req, res, next) => {
+  const updates = req.body;
   const { id } = req.params;
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
   }
 
-  return formMeta
-    .updateFormMeta(id, updates)
+  return contentModel
+    .updateContent(id, updates)
     .then(record => {
       if (record.message || !record) {
         return res.status(404).json({
@@ -60,16 +60,20 @@ const updateFormMeta = (req, res, next) => {
         return res.status(200).json(record);
       }
     })
-    .catch(err => res.status(500).json({ message: err.message }));
+    .catch(err => {
+      console.log("content.ctrl.js > 69");
+      console.log(err.message);
+      res.status(500).json({ message: err.message });
+    });
 };
 
-/** Delete form meta
+/** Delete content
  *  @param    {String}   id   Id of the content to delete.
  *  @returns  Success or error message.
  */
-const deleteFormMeta = (req, res, next) => {
-  return formMeta
-    .deleteFormMeta(req.params.id)
+const deleteContent = (req, res, next) => {
+  return contentModel
+    .deleteContent(req.params.id)
     .then(result => {
       if (result.message === "Content deleted successfully") {
         return res.status(200).json({ message: result.message });
@@ -82,23 +86,23 @@ const deleteFormMeta = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
-/** Get all form meta content
- *  @returns  {Array|Object}   Array of form meta objects OR error message
+/** Get all content
+ *  @returns  {Array|Object}   Array of content objects OR error message
  */
-const getFormMeta = () => {
-  return formMeta
-    .getFormMeta()
+const getContent = (req, res, next) => {
+  return contentModel
+    .getContent()
     .then(records => res.status(200).json(records))
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
-/** Get one form meta record by id
+/** Get one content record by id
  *  @param    {String}   id   Id of the requested content.
  *  @returns  {Object}        User object OR error message.
  */
-const getFormMetaById = (req, res, next) => {
-  return formMeta
-    .getFormMetaById(req.params.id)
+const getContentById = (req, res, next) => {
+  return contentModel
+    .getContentById(req.params.id)
     .then(record => {
       if (!record || record.message) {
         return res
@@ -111,13 +115,13 @@ const getFormMetaById = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
-/** Get all form meta of a certain type
- *  @param    {String}   form_meta_type   Type of the requested content.
- *  @returns  {Array|Object}   Array of form meta objects OR error message
+/** Get all content of a certain type
+ *  @param    {String}   content_type   Type of the requested content.
+ *  @returns  {Array|Object}   Array of content objects OR error message
  */
-const getFormMetaByType = (req, res, next) => {
-  return formMeta
-    .getFormMetaByType(req.params.form_meta_type)
+const getContentByType = (req, res, next) => {
+  return contentModel
+    .getContentByType(req.params.content_type)
     .then(records => {
       if (!records || !records.length || records.message) {
         return res
@@ -133,10 +137,10 @@ const getFormMetaByType = (req, res, next) => {
 /* ================================ EXPORT ================================= */
 
 module.exports = {
-  createFormMeta,
-  updateFormMeta,
-  getFormMeta,
-  getFormMetaByType,
-  getFormMetaById,
-  deleteFormMeta
+  createContent,
+  updateContent,
+  getContent,
+  getContentByType,
+  getContentById,
+  deleteContent
 };

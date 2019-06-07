@@ -20,5 +20,5 @@ exports.TABLES = {
   CONTACTS: "contacts",
   SUBMISSIONS: "submissions",
   CONTACTS_SUBMISSIONS: "contacts_submissions",
-  FORM_META: "form_meta"
+  CONTENT: "content"
 };

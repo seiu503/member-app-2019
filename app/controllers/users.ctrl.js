@@ -105,6 +105,7 @@ const getUserById = (req, res, next) => {
     .getUserById(req.params.id)
     .then(user => {
       if (!user || user.message) {
+        console.log(user.message);
         return res
           .status(404)
           .json({ message: user.message || "User not found" });

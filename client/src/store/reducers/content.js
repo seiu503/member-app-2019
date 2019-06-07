@@ -2,49 +2,55 @@ import update from "immutability-helper";
 
 import { LOGOUT } from "../actions";
 import {
-  GET_FORM_META_BY_ID_REQUEST,
-  GET_FORM_META_BY_ID_SUCCESS,
-  GET_FORM_META_BY_ID_FAILURE,
-  ADD_FORM_META_REQUEST,
-  ADD_FORM_META_SUCCESS,
-  ADD_FORM_META_FAILURE,
-  UPDATE_FORM_META_REQUEST,
-  UPDATE_FORM_META_SUCCESS,
-  UPDATE_FORM_META_FAILURE,
+  GET_CONTENT_BY_ID_REQUEST,
+  GET_CONTENT_BY_ID_SUCCESS,
+  GET_CONTENT_BY_ID_FAILURE,
+  ADD_CONTENT_REQUEST,
+  ADD_CONTENT_SUCCESS,
+  ADD_CONTENT_FAILURE,
+  UPDATE_CONTENT_REQUEST,
+  UPDATE_CONTENT_SUCCESS,
+  UPDATE_CONTENT_FAILURE,
   UPLOAD_IMAGE_REQUEST,
   UPLOAD_IMAGE_SUCCESS,
   UPLOAD_IMAGE_FAILURE,
-  DELETE_FORM_META_REQUEST,
-  DELETE_FORM_META_SUCCESS,
-  DELETE_FORM_META_FAILURE,
+  DELETE_IMAGE_REQUEST,
+  DELETE_IMAGE_SUCCESS,
+  DELETE_IMAGE_FAILURE,
+  DELETE_CONTENT_REQUEST,
+  DELETE_CONTENT_SUCCESS,
+  DELETE_CONTENT_FAILURE,
+  GET_ALL_CONTENT_REQUEST,
+  GET_ALL_CONTENT_SUCCESS,
+  GET_ALL_CONTENT_FAILURE,
   HANDLE_INPUT,
   HANDLE_SWITCH,
   HANDLE_DELETE_OPEN,
   HANDLE_DELETE_CLOSE,
   CLEAR_FORM,
-  SET_EDIT_FORM_META
-} from "../actions/apiFormMetaActions";
+  SET_EDIT_CONTENT
+} from "../actions/apiContentActions";
 
 const INITIAL_STATE = {
   loading: false,
-  featuredFormMetas: [],
-  moreFormMetas: [],
+  filteredList: [],
+  allContent: [],
   deleteDialogOpen: false,
-  currentFormMeta: {
-    formMetaType: null,
+  currentContent: {
+    content_type: null,
     content: "",
     created_at: "",
     updated_at: ""
   },
   form: {
-    formMetaType: null,
+    content_type: null,
     content: "",
     dialogOpen: false
   },
   error: null
 };
 
-function formMeta(state = INITIAL_STATE, action) {
+function Content(state = INITIAL_STATE, action) {
   let error;
 
   switch (action.type) {
@@ -68,18 +74,19 @@ function formMeta(state = INITIAL_STATE, action) {
       }
 
     case HANDLE_DELETE_OPEN:
+      console.log("HANDLE_DELETE_OPEN");
       return update(state, {
         deleteDialogOpen: { $set: true },
-        currentFormMeta: { $set: { ...action.payload.selectedFormMeta } }
+        currentContent: { $set: { ...action.payload.selectedContent } }
       });
 
     case HANDLE_DELETE_CLOSE:
-    case DELETE_FORM_META_SUCCESS:
+    case DELETE_CONTENT_SUCCESS:
       return update(state, {
         deleteDialogOpen: { $set: false },
-        currentFormMeta: {
+        currentContent: {
           id: { $set: "" },
-          formMetaType: { $set: "" },
+          content_type: { $set: "" },
           content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" }
@@ -88,20 +95,19 @@ function formMeta(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
-    case SET_EDIT_FORM_META:
+    case SET_EDIT_CONTENT:
       return update(state, {
         form: {
-          formMetaType: { $set: action.payload.formMetaType },
+          content_type: { $set: action.payload.content_type },
           content: { $set: action.payload.content },
           dialogOpen: { $set: false }
         }
       });
 
     case CLEAR_FORM:
-      console.log("clearing form in redux store");
       return update(state, {
         form: {
-          formMetaType: { $set: null },
+          content_type: { $set: null },
           content: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" },
@@ -109,31 +115,55 @@ function formMeta(state = INITIAL_STATE, action) {
         }
       });
 
-    case GET_FORM_META_BY_ID_REQUEST:
-    case ADD_FORM_META_REQUEST:
-    case UPDATE_FORM_META_REQUEST:
-    case DELETE_FORM_META_REQUEST:
+    case GET_CONTENT_BY_ID_REQUEST:
+    case ADD_CONTENT_REQUEST:
+    case UPDATE_CONTENT_REQUEST:
+    case DELETE_CONTENT_REQUEST:
     case UPLOAD_IMAGE_REQUEST:
+    case GET_ALL_CONTENT_REQUEST:
+    case DELETE_IMAGE_REQUEST:
+      console.log("loading");
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
       });
 
-    case GET_FORM_META_BY_ID_SUCCESS:
-    case ADD_FORM_META_SUCCESS:
-    case UPDATE_FORM_META_SUCCESS:
+    case GET_CONTENT_BY_ID_SUCCESS:
+    case ADD_CONTENT_SUCCESS:
+    case UPDATE_CONTENT_SUCCESS:
     case UPLOAD_IMAGE_SUCCESS:
       return update(state, {
         loading: { $set: false },
-        currentFormMeta: { $set: action.payload[0] },
+        form: {
+          content_type: { $set: action.payload.content_type },
+          content: { $set: action.payload.content },
+          created_at: { $set: action.payload.created_at },
+          updated_at: { $set: action.payload.updated_at },
+          dialogOpen: { $set: false }
+        },
         error: { $set: null }
       });
 
-    case GET_FORM_META_BY_ID_FAILURE:
-    case ADD_FORM_META_FAILURE:
-    case UPDATE_FORM_META_FAILURE:
-    case DELETE_FORM_META_FAILURE:
+    case DELETE_IMAGE_SUCCESS:
+      return update(state, {
+        loading: { $set: false },
+        error: { $set: null }
+      });
+
+    case GET_ALL_CONTENT_SUCCESS:
+      return update(state, {
+        loading: { $set: false },
+        allContent: { $set: action.payload },
+        error: { $set: null }
+      });
+
+    case GET_CONTENT_BY_ID_FAILURE:
+    case ADD_CONTENT_FAILURE:
+    case UPDATE_CONTENT_FAILURE:
+    case DELETE_CONTENT_FAILURE:
     case UPLOAD_IMAGE_FAILURE:
+    case GET_ALL_CONTENT_FAILURE:
+    case DELETE_IMAGE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
@@ -150,4 +180,4 @@ function formMeta(state = INITIAL_STATE, action) {
   }
 }
 
-export default formMeta;
+export default Content;
