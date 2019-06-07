@@ -236,7 +236,7 @@ App.propTypes = {
       id: PropTypes.string,
       name: PropTypes.string,
       email: PropTypes.string,
-      avatar_uro: PropTypes.string
+      avatar_url: PropTypes.string
     })
   }).isRequired
 };
