@@ -9,8 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
-import * as apiFormMetaActions from "./store/actions/apiFormMetaActions";
-// import BASE_URL from "./store/actions/apiConfig.js";
+import * as apiContentActions from "./store/actions/apiContentActions";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -19,6 +18,7 @@ import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
 import Notifier from "./containers/Notifier";
+import ContentLibrary from "./containers/ContentLibrary";
 
 const styles = theme => ({
   root: {
@@ -68,7 +68,7 @@ const styles = theme => ({
     position: "fixed",
     backgroundColor: theme.palette.primary.main,
     bottom: 0,
-    padding: 5,
+    padding: 25,
     height: 73,
     [theme.breakpoints.down("sm")]: {
       height: 53
@@ -77,7 +77,8 @@ const styles = theme => ({
     justifyContent: "center",
     alignItems: "middle",
     boxShadow: "0 1px 5px 2px rgba(0,0,0,.2)",
-    zIndex: 2
+    zIndex: 2,
+    color: "white"
   },
   footerIcon: {
     width: 30,
@@ -87,6 +88,13 @@ const styles = theme => ({
       marginTop: 5
     },
     fill: theme.palette.secondary.main
+  },
+  spinner: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    display: "block"
   }
 });
 
@@ -95,15 +103,21 @@ class App extends Component {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
+      console.log("not logged in");
       let token = window.localStorage.getItem("authToken");
       if (token && token !== "undefined") {
         token = JSON.parse(token);
+        console.log("found token in local storage");
         const userId = JSON.parse(window.localStorage.getItem("userId"));
         if (userId && userId !== "undefined") {
+          console.log("parsed user id from token");
           this.props.apiProfile.validateToken(token, userId).then(result => {
             if (result === "VALIDATE_TOKEN_FAILURE") {
               window.localStorage.clear();
+              console.log("failed to validate token");
             } else if (result === "VALIDATE_TOKEN_SUCESS") {
+              console.log("token validated");
+              console.log(this.props.appState.userId);
             }
           });
         } else {
@@ -145,6 +159,15 @@ class App extends Component {
             <Route
               path="/admin/:id?/:token?"
               render={routeProps => <Dashboard {...routeProps} />}
+            />
+            <Route
+              path="/library"
+              render={routeProps => (
+                <ContentLibrary
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
             />
             <Route
               path="/new"
@@ -197,20 +220,20 @@ App.propTypes = {
   apiProfile: PropTypes.shape({
     validateToken: PropTypes.func
   }).isRequired,
-  apiFormMetaActions: PropTypes.shape({
-    addFormMeta: PropTypes.func,
-    deleteFormMeta: PropTypes.func,
+  apiContentActions: PropTypes.shape({
+    addContent: PropTypes.func,
+    deleteContent: PropTypes.func,
     clearForm: PropTypes.func
   }).isRequired,
-  formMeta: PropTypes.shape({
+  content: PropTypes.shape({
     form: PropTypes.shape({
-      formMetaType: PropTypes.string,
+      contentType: PropTypes.string,
       content: PropTypes.string
     }),
     error: PropTypes.string,
     deleteDialogOpen: PropTypes.bool,
-    currentFormMeta: PropTypes.shape({
-      formMetaType: PropTypes.string,
+    currentContent: PropTypes.shape({
+      contentType: PropTypes.string,
       content: PropTypes.string
     })
   }).isRequired,
@@ -225,12 +248,12 @@ App.propTypes = {
 const mapStateToProps = state => ({
   appState: state.appState,
   profile: state.profile,
-  formMeta: state.formMeta
+  content: state.content
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
-  apiFormMetaActions: bindActionCreators(apiFormMetaActions, dispatch),
+  apiContentActions: bindActionCreators(apiContentActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch)
 });
 

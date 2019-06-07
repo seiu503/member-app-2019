@@ -19,3 +19,10 @@ export const skip = targetId => {
   // remove the tabindex attribute
   skipTo.addEventListener("blur", removeTabIndex);
 };
+
+export const labelsObj = {
+  headline: "headline",
+  bodyCopy: "body copy",
+  image: "image",
+  redirectUrl: "redirect URL"
+};

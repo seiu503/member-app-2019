@@ -13,7 +13,8 @@ import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import { DropzoneDialog } from "material-ui-dropzone";
 
-import * as apiFormMetaActions from "../store/actions/apiFormMetaActions";
+import * as apiContentActions from "../store/actions/apiContentActions";
+import * as utils from "../utils";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -33,7 +34,8 @@ const styles = theme => ({
   group: {
     display: "flex",
     width: "100%",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "center"
   },
   input: {
     width: "100%",
@@ -46,15 +48,15 @@ const styles = theme => ({
   formButton: {
     width: "100%",
     padding: 20
+  },
+  formControl: {
+    width: "100%"
+  },
+  radioLabel: {
+    width: "100%",
+    textAlign: "center"
   }
 });
-
-const labelsObj = {
-  headline: "Headline",
-  bodyCopy: "Body Copy",
-  imageUrl: "Image URL",
-  redirectUrl: "Redirect Url"
-};
 
 class TextInputForm extends React.Component {
   constructor(props) {
@@ -65,21 +67,35 @@ class TextInputForm extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.edit && this.props.match.params.id) {
+      this.props.apiContent
+        .getContentById(this.props.match.params.id)
+        .then(result => {
+          // console.log(result.type);
+          if (
+            result.type === "GET_CONTENT_BY_ID_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to fetch your content."
+            );
+          } else {
+            // console.log(this.props.content.form)
+          }
+        })
+        .catch(err => openSnackbar("error", err));
+    }
+  }
 
   handleClose = () => {
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState }, () => {
-      console.log("clearing form");
-      // clearing radio buttons programmatically cuz for some reason they won't clear otherwise ?? so dirty!!
-      let els = document.getElementsByName("formMetaType");
-      console.log(els);
-      for (let i = 0; i < els.length; i++) {
-        console.log(els[i]);
-        els[i].checked = false;
-      }
-      this.props.apiFormMeta.clearForm();
+      this.props.apiContent.clearForm();
+      this.props.history.push("/library");
     });
   };
 
@@ -99,67 +115,120 @@ class TextInputForm extends React.Component {
     this.setState({ ...newState });
   };
 
-  handleChange = files => {
-    const newState = { ...this.state };
-    newState.files = files;
-    this.setState({ ...newState });
+  onDropRejected = rejected => {
+    let errors = [];
+    if (rejected[0].size > 2000000) {
+      errors.push("File too large. File size limit 2MB.");
+    }
+    if (
+      rejected[0].type !== "image/jpeg" &&
+      rejected[0].type !== "image/jpg" &&
+      rejected[0].type !== "image/png" &&
+      rejected[0].type !== "image/gif"
+    ) {
+      errors.push(
+        "Invalid file type. Accepted file types are .jpeg, .jpg, .png, and .gif."
+      );
+    }
+    // display errors
+    if (errors.length) {
+      openSnackbar("error", errors.join(" "));
+    }
   };
 
   handleUpload = file => {
     const { authToken } = this.props.appState;
     const filename = file ? file.name.split(".")[0] : "";
-    this.props.apiFormMeta
-      .uploadImage(authToken, file)
+    const edit = this.props.edit;
+    const id = this.props.edit ? this.props.match.params.id : undefined;
+    this.props.apiContent
+      .uploadImage(authToken, file, edit, id)
       .then(result => {
         if (
           result.type === "UPLOAD_IMAGE_FAILURE" ||
-          this.props.formMeta.error
+          this.props.content.error
         ) {
           openSnackbar(
             "error",
-            this.props.formMeta.error ||
+            this.props.content.error ||
               "An error occured while trying to upload your image."
           );
         } else {
           openSnackbar("success", `${filename} Saved.`);
-          this.props.apiFormMeta.clearForm();
+          this.props.apiContent.clearForm();
+          this.props.apiContent.getAllContent(authToken);
+          this.props.history.push("/library");
         }
       })
       .catch(err => openSnackbar("error", err));
   };
 
   submit = e => {
-    e.preventDefault();
-    e.target.reset();
-    const { formMetaType, content } = this.props.formMeta.form;
+    // e.preventDefault();
+    const { content_type, content } = this.props.content.form;
     const { authToken } = this.props.appState;
     const body = {
-      formMetaType,
+      content_type,
       content
     };
-    this.props.apiFormMeta
-      .addFormMeta(authToken, body)
-      .then(result => {
-        if (
-          result.type === "ADD_FORM_META_FAILURE" ||
-          this.props.formMeta.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.formMeta.error ||
-              "An error occured while trying to save your formMeta."
-          );
-        } else {
-          openSnackbar("success", `${labelsObj[formMetaType]} Saved.`);
-          this.props.apiFormMeta.clearForm();
-        }
-      })
-      .catch(err => openSnackbar("error", err));
+    let id;
+    if (this.props.match.params.id) {
+      id = this.props.match.params.id;
+    }
+    if (!this.props.edit) {
+      this.props.apiContent
+        .addContent(authToken, body)
+        .then(result => {
+          if (
+            result.type === "ADD_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to save your content."
+            );
+          } else {
+            openSnackbar("success", `${utils.labelsObj[content_type]} Saved.`);
+            this.props.apiContent.clearForm();
+            this.props.history.push("/library");
+          }
+        })
+        .catch(err => openSnackbar("error", err));
+    } else if (id) {
+      this.props.apiContent
+        .updateContent(authToken, id, body)
+        .then(result => {
+          if (
+            result.type === "UPDATE_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to update your content."
+            );
+          } else {
+            openSnackbar(
+              "success",
+              `${utils.labelsObj[content_type]} Updated.`
+            );
+            this.props.apiContent.clearForm();
+            this.props.history.push("/library");
+          }
+        })
+        .catch(err => openSnackbar("error", err));
+    } else {
+      openSnackbar(
+        "error",
+        this.props.content.error ||
+          "An error occured while trying to save your content."
+      );
+    }
   };
 
   render() {
     const { classes } = this.props;
-    const { formMetaType } = this.props.formMeta.form;
     return (
       <div className={classes.container}>
         <Typography
@@ -174,17 +243,18 @@ class TextInputForm extends React.Component {
         <form
           className={classes.form}
           onError={errors => console.log(errors)}
-          onSubmit={this.submit}
           id="form"
         >
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend">Content Type</FormLabel>
+            <FormLabel component="legend" className={classes.radioLabel}>
+              Content Type
+            </FormLabel>
             <RadioGroup
               aria-label="Content Type"
-              name="formMetaType"
+              name="content_type"
               className={classes.group}
-              value={this.props.formMeta.form.formMetaType}
-              onChange={this.props.apiFormMeta.handleInput}
+              value={this.props.content.form.content_type}
+              onChange={this.props.apiContent.handleInput}
             >
               <FormControlLabel
                 value="headline"
@@ -197,7 +267,7 @@ class TextInputForm extends React.Component {
                 label="Body"
               />
               <FormControlLabel
-                value="imageUrl"
+                value="image"
                 control={<Radio />}
                 label="Image"
               />
@@ -208,34 +278,42 @@ class TextInputForm extends React.Component {
               />
             </RadioGroup>
           </FormControl>
-          {formMetaType !== "imageUrl" ? (
+          {this.props.content.form.content_type &&
+          this.props.content.form.content_type !== "image" ? (
             <React.Fragment>
               <TextField
                 name="content"
                 id="content"
-                label={labelsObj[formMetaType]}
+                label={utils.labelsObj[this.props.content.form.content_type]}
                 type={
-                  formMetaType && formMetaType.includes("Url") ? "url" : "text"
+                  this.props.content.form.content_type &&
+                  this.props.content.form.content_type.includes("Url")
+                    ? "url"
+                    : "text"
                 }
-                multiline={formMetaType === "bodyCopy"}
-                rows={formMetaType === "bodyCopy" ? 5 : 1}
+                multiline={this.props.content.form.content_type === "bodyCopy"}
+                rows={
+                  this.props.content.form.content_type === "bodyCopy" ? 5 : 1
+                }
                 variant="outlined"
                 required
-                value={this.props.formMeta.form.content}
-                onChange={this.props.apiFormMeta.handleInput}
+                value={this.props.content.form.content}
+                onChange={this.props.apiContent.handleInput}
                 className={classes.input}
               />
               <ButtonWithSpinner
-                type="submit"
+                type="button"
                 color="secondary"
                 className={classes.formButton}
                 variant="contained"
-                loading={this.props.formMeta.loading}
+                loading={this.props.content.loading}
+                onClick={this.submit}
               >
-                Save {labelsObj[formMetaType]}
+                Save {utils.labelsObj[this.props.content.form.content_type]}
               </ButtonWithSpinner>
             </React.Fragment>
-          ) : (
+          ) : this.props.content.form.content_type &&
+            this.props.content.form.content_type === "image" ? (
             <React.Fragment>
               <ButtonWithSpinner
                 onClick={this.handleOpen.bind(this)}
@@ -243,12 +321,13 @@ class TextInputForm extends React.Component {
                 color="secondary"
                 component="label"
                 className={classes.formButton}
-                loading={this.props.formMeta.loading}
+                loading={this.props.content.loading}
               >
                 Choose Image
               </ButtonWithSpinner>
               <DropzoneDialog
                 open={this.state.open}
+                onDropRejected={this.onDropRejected}
                 onSave={this.handleSave}
                 acceptedFiles={[
                   "image/jpeg",
@@ -262,6 +341,8 @@ class TextInputForm extends React.Component {
                 onClose={this.handleClose}
               />
             </React.Fragment>
+          ) : (
+            ""
           )}
         </form>
       </div>
@@ -274,16 +355,16 @@ TextInputForm.propTypes = {
   appState: PropTypes.shape({
     authToken: PropTypes.string
   }),
-  formMeta: PropTypes.shape({
+  content: PropTypes.shape({
     form: PropTypes.shape({
-      formMetaType: PropTypes.string,
+      content_type: PropTypes.string,
       content: PropTypes.string
     }),
     loading: PropTypes.bool
   }).isRequired,
-  apiFormMeta: PropTypes.shape({
+  apiContent: PropTypes.shape({
     handleInput: PropTypes.func,
-    addFormMeta: PropTypes.func,
+    addContent: PropTypes.func,
     clearForm: PropTypes.func,
     uploadImage: PropTypes.func
   }),
@@ -291,12 +372,12 @@ TextInputForm.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  formMeta: state.formMeta,
+  content: state.content,
   appState: state.appState
 });
 
 const mapDispatchToProps = dispatch => ({
-  apiFormMeta: bindActionCreators(apiFormMetaActions, dispatch)
+  apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
 export default withStyles(styles)(

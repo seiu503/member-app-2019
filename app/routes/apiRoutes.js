@@ -11,10 +11,10 @@ const passport = require("passport");
 
 const userCtrl = require("../controllers/users.ctrl");
 const authCtrl = require("../controllers/auth.ctrl");
-const formMetaCtrl = require("../controllers/formMeta.ctrl");
+const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
+const imageCtrl = require("../controllers/image.ctrl");
 const contactCtrl = require("../controllers/contacts.ctrl");
-const imageCtrl = require("../controllers/imageUpload.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
@@ -139,70 +139,70 @@ router.get("/user/", userCtrl.getUsers);
 
 router.delete("/user/:id", requireAuth, userCtrl.deleteUser);
 
-/* ============================= FORM META (CONTENT) ROUTES ================ */
+/* ============================= CONTENT ROUTES ============================ */
 
-// CREATE A FORM META RECORD
-//   Example: POST >> /api/form-meta
+// CREATE A CONTENT RECORD
+//   Example: POST >> /api/content
 //   Secured: yes
 //   Expects:
 //     request body properties : {
-//           form_meta type  : String
-//           content         : String
+//           content_type  : String
+//           content       : String
 //        }
-//   Returns: JSON form meta object on success.
+//   Returns: JSON content object on success.
 //
-router.post("/form-meta", requireAuth, formMetaCtrl.createFormMeta);
+router.post("/content", requireAuth, contentCtrl.createContent);
 
-// UPDATE A FORM META RECORD
-//   Example: PUT >> /api/form-meta/:id
+// UPDATE A CONTENT RECORD
+//   Example: PUT >> /api/content/:id
 //   Secured: yes
 //   Expects:
 //     1) request body properties : {
 //          updates         : Object {
-//              form_meta type  : String
-//              content         : String
+//              content_type  : String
+//              content       : String
 //             }
 //        }
 //      2) request params         : {
 //          id              : String
 //      }
-//   Returns: JSON updated form meta object on success.
+//   Returns: JSON updated content object on success.
 //
 
-router.put("/form-meta/:id", requireAuth, formMetaCtrl.updateFormMeta);
+router.put("/content/:id", requireAuth, contentCtrl.updateContent);
 
-// GET ONE FORM META RECORD BY ID
-//   Example: GET >> /api/form-meta/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+// GET ONE CONTENT RECORD BY ID
+//   Example: GET >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
 //   Secured: no
 //   Expects:
 //     1) request params : {
 //          id : String
 //        }
-//   Returns: JSON form meta object on success.
+//   Returns: JSON content object on success.
 //
-router.get("/form-meta/:id", formMetaCtrl.getFormMetaById);
+router.get("/content/:id", contentCtrl.getContentById);
 
-// GET FORM META CONTENT BY TYPE
-//   Example: GET >> /api/form-meta/headline
+// GET CONTENT BY TYPE
+//   Example: GET >> /api/content/headline
 //   Secured: yes
 //   Expects:
 //     1) request params : {
 //          id : String
 //        }
-//   Returns: Array of form meta objects on success.
+//   Returns: Array of content objects on success.
 //
-router.get("/form-meta/:form_meta_type", formMetaCtrl.getFormMetaById);
+router.get("/content/:content_type", contentCtrl.getContentByType);
 
-// GET ALL FORM META CONTENT
-//   Example: GET >> /api/form-meta/
+// GET ALL CONTENT
+//   Example: GET >> /api/content/
 //   Secured: yes
 //   Expects: null
-//   Returns: Array of form meta objects on success.
+//   Returns: Array of content objects on success.
 //
-router.get("/form-meta/", requireAuth, formMetaCtrl.getFormMeta);
+router.get("/content/", requireAuth, contentCtrl.getContent);
 
-// DELETE FORM META
-//   Example: DELETE >> /api/form-meta/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+// DELETE CONTENT
+//   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
 //   Secured: yes
 //   Expects:
 //     1) request params : {
@@ -210,9 +210,9 @@ router.get("/form-meta/", requireAuth, formMetaCtrl.getFormMeta);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/form-meta/:id", requireAuth, formMetaCtrl.deleteFormMeta);
+router.delete("/content/:id", requireAuth, contentCtrl.deleteContent);
 
-/* ========================= IMAGE UPLOAD ROUTES =========================== */
+/* ========================= IMAGE ROUTES =========================== */
 
 // UPLOAD A SINGLE IMAGE
 //   Example: POST >> /api/image/single
@@ -226,6 +226,18 @@ router.delete("/form-meta/:id", requireAuth, formMetaCtrl.deleteFormMeta);
 //   }
 //
 router.post("/image/single", requireAuth, imageCtrl.singleImgUpload);
+
+// DELETE AN IMAGE FROM S3 BUCKET
+// (this route is hit after the content is delete from the postgres database)
+//   Example: DELETE >> /api/image/
+//   Secured: yes
+//   Expects:
+//     request body: {
+//        key: S3 object key
+//     }
+//   Returns: Success or Error message
+//
+router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 
 /* =========================== SUBMISSION ROUTES =========================== */
 

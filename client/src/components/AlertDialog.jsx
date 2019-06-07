@@ -12,6 +12,16 @@ const styles = theme => ({
   root: {
     margin: 0,
     padding: 20
+  },
+  danger: {
+    backgroundColor: theme.palette.danger.main,
+    color: "white",
+    "&:hover": {
+      backgroundColor: theme.palette.danger.light
+    }
+  },
+  primary: {
+    backgroundColor: theme.palette.primary.main
   }
 });
 
@@ -40,7 +50,9 @@ const AlertDialog = props => (
         </Button>
         <Button
           onClick={props.action}
-          color="primary"
+          className={
+            props.danger ? props.classes.danger : props.classes.primary
+          }
           variant="contained"
           autoFocus
         >
