@@ -98,7 +98,7 @@ const styles = theme => ({
   }
 });
 
-class App extends Component {
+export class App extends Component {
   componentDidMount() {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
@@ -207,12 +207,6 @@ class App extends Component {
 
 App.propTypes = {
   classes: PropTypes.object.isRequired,
-  location: PropTypes.shape({
-    hash: PropTypes.string
-  }).isRequired,
-  history: PropTypes.shape({
-    push: PropTypes.func
-  }).isRequired,
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool,
     authToken: PropTypes.string
@@ -227,20 +221,22 @@ App.propTypes = {
   }).isRequired,
   content: PropTypes.shape({
     form: PropTypes.shape({
-      contentType: PropTypes.string,
+      content_type: PropTypes.string,
       content: PropTypes.string
     }),
     error: PropTypes.string,
     deleteDialogOpen: PropTypes.bool,
     currentContent: PropTypes.shape({
-      contentType: PropTypes.string,
+      content_type: PropTypes.string,
       content: PropTypes.string
     })
   }).isRequired,
   profile: PropTypes.shape({
     profile: PropTypes.shape({
       id: PropTypes.string,
-      username: PropTypes.string
+      name: PropTypes.string,
+      email: PropTypes.string,
+      avatar_uro: PropTypes.string
     })
   }).isRequired
 };
