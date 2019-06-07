@@ -15,7 +15,6 @@ const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
 const contactCtrl = require("../controllers/contacts.ctrl");
-// const imageCtrl = require("../controllers/imageUpload.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
