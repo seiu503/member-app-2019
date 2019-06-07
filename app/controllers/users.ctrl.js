@@ -101,8 +101,6 @@ const getUsers = () => {
  *  @returns  {Object}        User object OR error message.
  */
 const getUserById = (req, res, next) => {
-  console.log(getUserById);
-  console.log(req.params.id);
   return users
     .getUserById(req.params.id)
     .then(user => {

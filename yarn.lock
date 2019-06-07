@@ -225,6 +225,30 @@ atob@^2.1.1:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
+aws-sdk-mock@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk-mock/-/aws-sdk-mock-4.4.0.tgz#90f27b6a4e19293e9ad8c25add8e7137c2db94ce"
+  integrity sha512-cnR2Sff2jSO2UazeGL3rp4ulg66I8mVeCWvKZk0Bb+s//b5sUDZ1OhvOqr7v6uRJKhgaikeZJdZtI6efHYsN2Q==
+  dependencies:
+    aws-sdk "^2.431.0"
+    sinon "^7.3.1"
+    traverse "^0.6.6"
+
+aws-sdk@^2.431.0:
+  version "2.470.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.470.0.tgz#33cbf793b4ab6a08770e8af90fbf45d517526e7e"
+  integrity sha512-XCMLSNiYaUUc3wxH3NxFxPPmYAF95IHhDwc0o6pOIY30om83ZYJwuPizgheRWXuOGjrXQxWgT6W3EfyfeuAISA==
+  dependencies:
+    buffer "4.9.1"
+    events "1.1.1"
+    ieee754 "1.1.8"
+    jmespath "0.15.0"
+    querystring "0.2.0"
+    sax "1.2.1"
+    url "0.10.3"
+    uuid "3.3.2"
+    xml2js "0.4.19"
+
 aws-sdk@^2.467.0:
   version "2.467.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.467.0.tgz#803831646fc3322ce51181c9f586f17770cdf850"
@@ -3158,7 +3182,7 @@ simple-git@^1.85.0:
   dependencies:
     debug "^4.0.1"
 
-sinon@^7.3.2:
+sinon@^7.3.1, sinon@^7.3.2:
   version "7.3.2"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-7.3.2.tgz#82dba3a6d85f6d2181e1eca2c10d8657c2161f28"
   integrity sha512-thErC1z64BeyGiPvF8aoSg0LEnptSaWE7YhdWWbWXgelOyThent7uKOnnEh9zBxDbKixtr5dEko+ws1sZMuFMA==
@@ -3491,6 +3515,11 @@ toposort@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/toposort/-/toposort-2.0.2.tgz#ae21768175d1559d48bef35420b2f4962f09c330"
   integrity sha1-riF2gXXRVZ1IvvNUILL0li8JwzA=
+
+traverse@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.6.tgz#cbdf560fd7b9af632502fed40f918c157ea97137"
+  integrity sha1-y99WD9e5r2MlAv7UD5GMFX6pcTc=
 
 tree-kill@^1.1.0:
   version "1.2.1"

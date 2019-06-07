@@ -16,8 +16,8 @@ require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 const users = require("../db/models/users");
 
-const contentType = "headline";
-const contentType2 = "image_url";
+const content_type = "headline";
+const content_type2 = "image_url";
 const content = "Join SEIU Today!";
 const content2 = "http://example.com/image.png";
 
@@ -78,7 +78,7 @@ suite("routes : content", function() {
       chai
         .request(app)
         .post("/api/content/")
-        .send({ contentType, content })
+        .send({ content_type, content })
         .end(function(err, res) {
           id = res.body.id;
           assert.equal(res.status, 200);
@@ -142,7 +142,7 @@ suite("routes : content", function() {
       chai
         .request(app)
         .put(`/api/content/${id}`)
-        .send({ updates })
+        .send(updates)
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);

@@ -133,7 +133,7 @@ deleteImage = (req, res, next) => {
   const params = { Bucket: s3config.bucket, Key: req.params.key };
   s3.deleteObject(params, (err, data) => {
     if (err) {
-      console.log(err, err.stack);
+      console.log(err);
       res.status(500).json({
         message: err
       });

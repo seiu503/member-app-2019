@@ -16,7 +16,6 @@ const contentModel = require("../../db/models/content");
  *  @returns  {Object}                   New content object OR error message.
  */
 const createContent = (req, res, next) => {
-  console.log(req.body);
   const { content_type, content } = req.body;
   if (content_type && content) {
     return contentModel
@@ -61,7 +60,11 @@ const updateContent = (req, res, next) => {
         return res.status(200).json(record);
       }
     })
-    .catch(err => res.status(500).json({ message: err.message }));
+    .catch(err => {
+      console.log("content.ctrl.js > 69");
+      console.log(err.message);
+      res.status(500).json({ message: err.message });
+    });
 };
 
 /** Delete content

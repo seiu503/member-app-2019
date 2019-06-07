@@ -7,6 +7,7 @@ process.env.NODE_ENV = "testing";
 
 const chai = require("chai");
 const multer = require("multer");
+const aws = require("aws-sdk-mock");
 const fs = require("fs");
 const { db, TABLES } = require("../app/config/knex");
 const { assert } = chai;
@@ -62,6 +63,8 @@ suite("routes : image", function() {
     multerStub = sinon
       .stub(MulterWrapper, "multer")
       .returns(multer({ storage: multer.memoryStorage() }));
+    // S3 deleteObject mock - return a success message
+    aws.mock("S3", "deleteObject", { message: "Image deleted." });
   });
 
   // cleanup after each test
@@ -69,6 +72,7 @@ suite("routes : image", function() {
     authenticateMock.restore();
     userStub.restore();
     multerStub.restore();
+    aws.restore("S3");
   });
 
   suite("POST /api/image/single", function() {
@@ -103,6 +107,8 @@ suite("routes : image", function() {
         )
         .end(function(err, res) {
           assert.equal(res.status, 500);
+          assert.isNull(err);
+          assert.property(res.body, "message");
           assert.equal(res.body.message, "File too large");
           done();
         });
@@ -120,6 +126,8 @@ suite("routes : image", function() {
         )
         .end(function(err, res) {
           assert.equal(res.status, 500);
+          assert.isNull(err);
+          assert.property(res.body, "message");
           assert.equal(
             res.body.message,
             "Error: Only jpeg, jpg, png, and gif files accepted."
@@ -129,113 +137,18 @@ suite("routes : image", function() {
     });
   });
 
-  suite("GET /api/content/:id", function() {
+  suite("DELETE /api/image/:key", function() {
     const app = require("../server");
 
-    test("gets one content record by id", function(done) {
+    test("deletes image file from S3 bucket", function(done) {
       chai
         .request(app)
-        .get(`/api/content/${id}`)
+        .delete(`/api/image/test.png`)
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
-          assert.property(res.body, "id");
-          assert.property(res.body, "created_at");
-          assert.property(res.body, "updated_at");
-          assert.property(res.body, "content_type");
-          assert.property(res.body, "content");
-          done();
-        });
-    });
-
-    test("returns error if id is missing or malformed", function(done) {
-      chai
-        .request(app)
-        .get("/api/content/123456789")
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-  });
-
-  suite("PUT /api/content/:id", function() {
-    test("updates a content record", function(done) {
-      const app = require("../server");
-      const updates = {
-        content_type: updatedContentType,
-        content: updated_content
-      };
-      chai
-        .request(app)
-        .put(`/api/content/${id}`)
-        .send({ updates })
-        .end(function(err, res) {
-          assert.equal(res.status, 200);
-          assert.isNull(err);
-          assert.property(res.body[0], "id");
-          assert.property(res.body[0], "created_at");
-          assert.property(res.body[0], "updated_at");
-          assert.property(res.body[0], "content_type");
-          assert.property(res.body[0], "content");
-          done();
-        });
-    });
-    test("returns error if id missing or malformed", function(done) {
-      const app = require("../server");
-      const updates = {
-        content_type: updatedContentType,
-        content: updated_content
-      };
-      chai
-        .request(app)
-        .put("/api/content/123456789")
-        .send({ updates })
-        .end(function(err, res) {
-          assert.equal(res.status, 500);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-    test("returns error if updates missing or malformed", function(done) {
-      const app = require("../server");
-      chai
-        .request(app)
-        .put(`/api/content/${id}`)
-        .send({ name: undefined })
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
-        });
-    });
-  });
-
-  suite("DELETE", function() {
-    test("delete a content record", function(done) {
-      const app = require("../server");
-      chai
-        .request(app)
-        .delete(`/api/content/${id}`)
-        .end(function(err, res) {
-          assert.equal(res.body.message, "Content deleted successfully");
-          assert.isNull(err);
-          done();
-        });
-    });
-    test("returns error if id missing or malformed", function(done) {
-      const app = require("../server");
-      chai
-        .request(app)
-        .delete("/api/content/123456789")
-        .end(function(err, res) {
-          assert.equal(res.status, 404);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
+          assert.property(res.body, "message");
+          assert.equal(res.body.message, "Image deleted.");
           done();
         });
     });
