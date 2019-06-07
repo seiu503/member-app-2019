@@ -9,6 +9,7 @@ const content = require("../../db/models/content");
 
 const aws = require("aws-sdk");
 const multerS3 = require("multer-s3");
+const multer = require("multer");
 const MulterWrapper = require("../utils/multer.js");
 const path = require("path");
 const url = require("url");
@@ -43,22 +44,20 @@ const upload = MulterWrapper.multer({
 }).single("image");
 
 /**
- * Check File Type and Size
+ * Check File Type
  * @param file
  * @param cb
  * @return {*}
  */
 const checkFile = (file, cb) => {
+  console.log("checkFile");
+  console.log(file);
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check mime
   const mimetype = filetypes.test(file.mimetype);
-  // Check size
-  if (file.size > 2000000) {
-    return cb({ message: "Error: File too large. File size limit 2MB." });
-  }
   if (mimetype && extname) {
     return cb(null, true);
   } else {
@@ -73,11 +72,28 @@ const checkFile = (file, cb) => {
  *  @returns  {Object}                 Image name and URL OR error message.
  */
 const singleImgUpload = (req, res, next) => {
-  // upload image to s3 bucket
   upload(req, res, err => {
+    // upload image to s3 bucket
+    if (err instanceof multer.MulterError) {
+      console.log(`image.ctrl.js > 80`);
+      console.log("multer error");
+      return res.status(500).json({
+        message: err
+      });
+    }
+    if (!req.file) {
+      console.log("No file found");
+      return res.status(500).json({
+        message: "No file attached. Please choose a file."
+      });
+    }
+    if (req.file.size > 200000) {
+      return res.status(500).json({
+        message: "File too large. File size limit is 2MB."
+      });
+    }
     if (err) {
-      console.log(err);
-      res.status(500).json({
+      return res.status(500).json({
         message: err
       });
     } else {

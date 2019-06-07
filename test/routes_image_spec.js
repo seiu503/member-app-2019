@@ -81,7 +81,7 @@ suite("routes : image", function() {
         .set("Content-Type", "application/x-www-form-urlencoded")
         .attach(
           "image",
-          fs.readFileSync(appRoot + "/test/assets/test.png"),
+          fs.readFileSync(`${appRoot}/test/assets/test.png`),
           "test.png"
         )
         .end(function(err, res) {
@@ -90,15 +90,22 @@ suite("routes : image", function() {
           done();
         });
     });
-    test("returns an error if request body is malformed", function(done) {
+    test("returns an error if file is too large", function(done) {
+      this.timeout(5000);
       chai
         .request(app)
-        .post("/api/content/")
-        .send({ username: "user" })
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test_tooBig.jpg`),
+          "test_tooBig.jpg"
+        )
         .end(function(err, res) {
+          console.log("routes_image_spec.js > 104");
+          console.log(res.message);
           assert.equal(res.status, 500);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
+          assert.isNotNull(res.message);
           done();
         });
     });
