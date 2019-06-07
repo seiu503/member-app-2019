@@ -23,6 +23,8 @@ const styles = props => theme => {
   };
 };
 
-export default withStylesProps(styles)(props => (
+export const SpinnerAdornment = props => (
   <CircularProgress className={props.classes.spinner} size={20} />
-));
+);
+
+export default withStylesProps(styles)(props => SpinnerAdornment);

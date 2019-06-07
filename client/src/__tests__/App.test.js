@@ -1,6 +1,6 @@
 import React from "react";
 import { createShallow } from "@material-ui/core/test-utils";
-import { App } from "./App";
+import { App } from "../App";
 
 const props = {
   appState: { loggedIn: true, authToken: "12345" },
@@ -40,8 +40,7 @@ describe("<App />", () => {
   });
 
   it("renders without crashing", () => {
-    const wrapper = shallow(<App classes={{}} {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    shallow(<App classes={{}} {...props} />);
   });
 
   describe("redux properties", () => {
