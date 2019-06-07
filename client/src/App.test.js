@@ -1,13 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import { shallow, mount } from "enzyme";
-import { createShallow, unwrap } from "@material-ui/core/test-utils";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
-import WrappedApp, { App } from "./App";
+import { createShallow } from "@material-ui/core/test-utils";
+import { App } from "./App";
 
-const AppNaked = unwrap(WrappedApp);
-
-const fakeFunc = jest.fn();
 const props = {
   appState: { loggedIn: true, authToken: "12345" },
   profile: {
@@ -24,17 +18,12 @@ const props = {
     deleteDialogOpen: false,
     currentContent: { content_type: "headline", content: "This is a headline" }
   },
-  apiProfile: { validateToken: jest.fn(cb => fakeFunc(null, true)) },
+  apiProfile: { validateToken: jest.fn() },
   apiContentActions: {
     addContent: jest.fn(),
     deleteContent: jest.fn(),
     clearForm: jest.fn()
   }
-};
-
-const setup = (state = {}) => {
-  const wrapper = shallow(<AppNaked classes={{}} {...state} />);
-  return wrapper;
 };
 
 describe("<App />", () => {
@@ -50,8 +39,9 @@ describe("<App />", () => {
     localStorage.getItem.mockClear();
   });
 
-  it("should work", () => {
+  it("renders without crashing", () => {
     const wrapper = shallow(<App classes={{}} {...props} />);
+    expect(wrapper).toMatchSnapshot();
   });
 
   describe("redux properties", () => {
@@ -88,63 +78,5 @@ describe("<App />", () => {
       const contentProp = wrapper.instance().props.content;
       expect(contentProp).toEqual(content);
     });
-
-    test("`validateToken` runs on App mount if not logged in and token found in localStorage", () => {
-      props.appState.loggedIn = false;
-      localStorage.setItem("authToken", "12345");
-      localStorage.setItem("userId", '"c08fa228-44ff-4c78-b2d1-6685d06fef08"');
-
-      // set up App component with validateTokenMock as the validateToken prop.
-      const wrapper = shallow(<App classes={{}} {...props} />);
-      // console.log(props.apiProfile);
-
-      // run lifecycle method
-      wrapper.instance().componentDidMount();
-
-      // check to see if mock ran
-      const validateTokenCallCount =
-        props.apiProfile.validateToken.mock.calls.length;
-
-      expect(validateTokenCallCount).toBe(1);
-    });
   });
-
-  //   it("with mount", () => {
-  //     const wrapper = mount(
-  //       <MuiThemeProvider
-  //         theme={{
-  //           success: {
-  //             main: "#fff"
-  //           }
-  //         }}
-  //       >
-  //         <App />
-  //       </MuiThemeProvider>
-  //     );
-  //     console.log("mount", wrapper.debug());
-  //   });
-
-  // it("renders without crashing", () => {
-  //   const div = document.createElement("div");
-  //   ReactDOM.render(<App classes={{}} />, div);
-  //   ReactDOM.unmountComponentAtNode(div);
-  // });
-
-  // /**
-  //  * @function setup
-  //  * @param  {Object} state - State for this setup.
-  //  * @returns {ShallowWrapper}
-  //  */
-  // const setup = (state={}) => {
-  //   const wrapper = shallow(<App {...state} />);
-  //   return wrapper;
-  // }
-
-  // this test doesn't work with react-redux 6.x
-  //
-  // test('`getSecretWord` action creator is a function on the props', () => {
-  // 	const wrapper = setup();
-  // 	const getSecretWordProp = wrapper.instance().props.getsecretWord;
-  // 	expect(getSecretWordProp).toBeInstanceOf(Function);
-  // })
 });
