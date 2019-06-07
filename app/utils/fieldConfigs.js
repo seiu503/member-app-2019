@@ -822,3 +822,8 @@ const submissionsTableFields = {
     testingSample: "In Good Standing"
   }
 };
+
+module.exports = {
+  contactsTableFields,
+  submissionsTableFields
+};
