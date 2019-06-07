@@ -13,8 +13,9 @@ const userCtrl = require("../controllers/users.ctrl");
 const authCtrl = require("../controllers/auth.ctrl");
 const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
-const contactCtrl = require("../controllers/contact.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
+const contactCtrl = require("../controllers/contacts.ctrl");
+const imageCtrl = require("../controllers/imageUpload.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
@@ -243,7 +244,7 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 
 // CREATE A SUBMISSION
 //   Example: POST >> /api/submission/
-//   Secured: yes
+//   Secured: No
 //   Expects:
 //     1) request body properties : {
 //          Object {
@@ -295,8 +296,8 @@ router.post("/submission", submissionCtrl.createSubmission);
 //      }
 //   Returns: JSON updated submission object on success.
 //
-router.put("/submission/:id", submissionCtrl.updateSubmission);
-// router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
+// router.put("/submission/:id", submissionCtrl.updateSubmission);
+router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
 //   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -307,16 +308,16 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 //        }
 //   Returns: JSON submission object on success.
 //
-router.get("/submission/:id", submissionCtrl.getSubmissionById);
-// router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
+// router.get("/submission/:id", submissionCtrl.getSubmissionById);
+router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
 
 // GET ALL SUBMISSIONS
 //   Example: GET >> /api/submission/
-//   Secured: no
+//   Secured: yes
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", submissionCtrl.getSubmissions);
+router.get("/submission/", requireAuth, submissionCtrl.getSubmissions);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -327,14 +328,14 @@ router.get("/submission/", submissionCtrl.getSubmissions);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/submission/:id", submissionCtrl.deleteSubmission);
-// router.delete("/submission/:id", requireAuth, submission.deleteSubmission);
+// router.delete("/submission/:id", submissionCtrl.deleteSubmission);
+router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
 
 /* ============================== CONTACT ROUTES =========================== */
 
 // CREATE A CONTACT
 //   Example: POST >> /api/contact/
-//   Secured: yes
+//   Secured: no
 //   Expects:
 //     1) request body properties : {
 //          Object {
@@ -400,8 +401,8 @@ router.post("/contact", contactCtrl.createContact);
 //      }
 //   Returns: JSON updated contact object on success.
 //
-router.put("/contact/:id", contactCtrl.updateContact);
-// router.put("/contact/:id", requireAuth, contactCtrl.updateContact);
+// router.put("/contact/:id", contactCtrl.updateContact);
+router.put("/contact/:id", requireAuth, contactCtrl.updateContact);
 
 // GET ONE CONTACT
 //   Example: GET >> /api/contact/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -412,16 +413,16 @@ router.put("/contact/:id", contactCtrl.updateContact);
 //        }
 //   Returns: JSON contact object on success.
 //
-router.get("/contact/:id", contactCtrl.getContactById);
-// router.get("/contact/:id", requireAuth, contactCtrl.getContactById);
+// router.get("/contact/:id", contactCtrl.getContactById);
+router.get("/contact/:id", requireAuth, contactCtrl.getContactById);
 
 // GET ALL CONTACTS
 //   Example: GET >> /api/contact/
-//   Secured: no
+//   Secured: yes
 //   Expects: null
 //   Returns: Array of contact objects on success.
 //
-router.get("/contact/", contactCtrl.getContacts);
+// router.get("/contact/", contactCtrl.getContacts);
 
 // GET CONTACT_SUBMISSIONS BY CONTACT_ID
 //   Example: GET >> /api/contacts/submissions/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -432,8 +433,8 @@ router.get("/contact/", contactCtrl.getContacts);
 //        }
 //   Returns: Object with contact and Array of related submission objects on success.
 //
-router.get("/contact/submissions/:id", contactCtrl.getContactSubmissionsById);
-// router.get("/contact/submissions/:id", requireAuth, contactCtrl.getContactSubmissionsById);
+// router.get("/contact/submissions/:id", contactCtrl.getContactSubmissionsById);
+router.get("/contact/", requireAuth, contactCtrl.getContacts);
 
 // DELETE CONTACT
 //   Example: DELETE >> /api/contact/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -444,8 +445,8 @@ router.get("/contact/submissions/:id", contactCtrl.getContactSubmissionsById);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/contact/:id", contactCtrl.deleteContact);
-// router.delete("/contact/:id", requireAuth, contact.deleteContact);
+// router.delete("/contact/:id", contactCtrl.deleteContact);
+router.delete("/contact/:id", requireAuth, contactCtrl.deleteContact);
 
 /* ================================ EXPORT ================================= */
 
