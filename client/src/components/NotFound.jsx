@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-// import notFound from "../img/404.svg";
 
 const NotFound = props => {
   return (
