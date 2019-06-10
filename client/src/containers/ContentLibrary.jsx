@@ -176,6 +176,7 @@ class ContentLibrary extends React.Component {
           <AlertDialog
             open={this.props.content.deleteDialogOpen}
             handleClose={this.props.apiContent.handleDeleteClose}
+            title="Delete Content"
             content={`Are you sure you want to delete? Note that any live form versions that use this ${contentType} will render the default ${contentType} instead after this is deleted.`}
             danger={true}
             action={() => {

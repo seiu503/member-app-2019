@@ -12,9 +12,9 @@ type Props = {
 const ButtonWithSpinner = (props: Props) => {
   const { children, loading, ...rest } = props;
   return (
-    <Button {...rest}>
+    <Button {...rest} data-test="component-button-with-spinner">
       {children}
-      {loading && <SpinnerAdornment {...rest} />}
+      {loading && <SpinnerAdornment {...rest} data-test="spinner-adornment" />}
     </Button>
   );
 };

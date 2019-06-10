@@ -33,12 +33,6 @@ describe("<App />", () => {
     shallow = createShallow();
   });
 
-  beforeEach(() => {
-    localStorage.clear();
-    localStorage.setItem.mockClear();
-    localStorage.getItem.mockClear();
-  });
-
   it("renders without crashing", () => {
     shallow(<App classes={{}} {...props} />);
   });
