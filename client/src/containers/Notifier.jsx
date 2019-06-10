@@ -51,7 +51,7 @@ class Notifier extends React.Component {
           horizontal: "right"
         }}
         open={this.state.open}
-        autoHideDuration={3000}
+        autoHideDuration={10000000}
         onClose={this.handleSnackbarClose}
       >
         <CustomSnackbarContentWrapper
