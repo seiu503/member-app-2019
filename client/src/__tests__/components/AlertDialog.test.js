@@ -78,7 +78,7 @@ describe("<AlertDialog />", () => {
     const actionMock = jest.fn();
     const props = { open: true, action: actionMock, classes: {} };
 
-    // set up Unconnected component with actionMock as action prop
+    // set up unwrapped component with actionMock as action prop
     const wrapper = shallow(<AlertDialogNaked {...props} />);
 
     // simulate click
@@ -94,7 +94,7 @@ describe("<AlertDialog />", () => {
     const handleCloseMock = jest.fn();
     const props = { open: true, handleClose: handleCloseMock, classes: {} };
 
-    // set up Unconnected component with actionMock as action prop
+    // set up unwrapped component with actionMock as action prop
     const wrapper = shallow(<AlertDialogNaked {...props} />);
 
     // simulate click
