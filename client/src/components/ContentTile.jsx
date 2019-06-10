@@ -98,21 +98,25 @@ const ContentTile = props => {
   const imageStyle = { backgroundImage: `url(${content})` };
 
   return (
-    <React.Fragment>
+    <div data-test="component-content-tile">
       {content_type === "image" && (
-        <div className={classes.cardImage} style={imageStyle} />
+        <div
+          className={classes.cardImage}
+          style={imageStyle}
+          data-test="image"
+        />
       )}
-      <div className={classes.cardContent}>
-        <Typography component="h2" className={classes.title}>
+      <div className={classes.cardContent} data-test="card-content">
+        <Typography component="h2" className={classes.title} data-test="title">
           {content_type}
         </Typography>
         {content_type !== "image" && (
-          <Typography component="p" className={classes.body}>
+          <Typography component="p" className={classes.body} data-test="body">
             {content}
           </Typography>
         )}
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 

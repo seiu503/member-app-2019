@@ -9,7 +9,7 @@ const defaultProps = {
 };
 
 /**
- * Factory function to create a ShallowWrapper for the AlertDialog component
+ * Factory function to create a ShallowWrapper for the ButtonWithSpinner component
  * @function setup
  * @param  {object} props - Component props specific to this setup.
  * @return {ShallowWrapper}
