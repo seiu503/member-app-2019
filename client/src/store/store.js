@@ -4,6 +4,12 @@ import rootReducer from "./reducers/";
 
 const middleware = applyMiddleware(apiMiddleware);
 
+// these two lines are for storeFactory in testUtils
+export const middlewares = [apiMiddleware];
+export const createStoreWithMiddleware = applyMiddleware(...middlewares)(
+  createStore
+);
+
 const store = createStore(
   rootReducer,
   compose(

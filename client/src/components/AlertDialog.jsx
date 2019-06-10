@@ -26,8 +26,9 @@ const styles = theme => ({
 });
 
 const AlertDialog = props => (
-  <React.Fragment>
+  <div data-test="component-alert-dialog">
     <Dialog
+      data-test="dialog"
       open={props.open}
       onClose={props.handleClose}
       aria-labelledby={
@@ -37,15 +38,25 @@ const AlertDialog = props => (
       PaperProps={{ style: { margin: 0 } }}
     >
       {props.title && (
-        <DialogTitle id="alert-dialog-title">{props.title}</DialogTitle>
+        <DialogTitle id="alert-dialog-title" data-test="dialog-title">
+          {props.title}
+        </DialogTitle>
       )}
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
+        <DialogContentText
+          id="alert-dialog-description"
+          data-test="dialog-content"
+        >
           {props.content}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleClose} variant="outlined" color="default">
+        <Button
+          onClick={props.handleClose}
+          variant="outlined"
+          color="default"
+          data-test="button-cancel"
+        >
           Cancel
         </Button>
         <Button
@@ -55,12 +66,13 @@ const AlertDialog = props => (
           }
           variant="contained"
           autoFocus
+          data-test="button-action"
         >
           {props.buttonText}
         </Button>
       </DialogActions>
     </Dialog>
-  </React.Fragment>
+  </div>
 );
 
 AlertDialog.propTypes = {
