@@ -15,7 +15,7 @@ const defaultProps = {
 };
 
 /**
- * Factory function to create a ShallowWrapper for the AlertDialog component
+ * Factory function to create a ShallowWrapper for the ContentTile component
  * @function setup
  * @param  {object} props - Component props specific to this setup.
  * @return {ShallowWrapper}
@@ -39,7 +39,7 @@ describe("<ContentTile />", () => {
     expect(component.text()).toBe("headline");
   });
 
-  test("renders an image if `content_type` = 'image' ", () => {
+  test("renders an image if `content_type` is 'image' ", () => {
     const wrapper = setup({
       contentTile: {
         content_type: "image",
@@ -55,20 +55,20 @@ describe("<ContentTile />", () => {
     );
   });
 
-  test("does not render an image if `content_type` prop is anything other than 'image' ", () => {
+  test("does not render an image if `content_type` is not 'image' ", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "image");
     expect(component.length).toBe(0);
   });
 
-  test("renders body text if `content_type` prop is anything other than 'image' ", () => {
+  test("renders body text if `content_type` is not 'image' ", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "body");
     expect(component.length).toBe(1);
     expect(component.text()).toBe("some headline text");
   });
 
-  test("does not render body text if `content_type` prop = 'image' ", () => {
+  test("does not render body text if `content_type` is 'image' ", () => {
     const wrapper = setup({ contentTile: { content_type: "image" } });
     const component = findByTestAttr(wrapper, "body");
     expect(component.length).toBe(0);

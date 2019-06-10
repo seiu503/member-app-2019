@@ -49,7 +49,7 @@ const styles1 = theme => ({
   }
 });
 
-const CustomSnackbarContent = props => {
+export const CustomSnackbarContent = props => {
   const {
     classes,
     className,
@@ -67,10 +67,18 @@ const CustomSnackbarContent = props => {
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
+      data-test="component-custom-snackbar"
       aria-describedby="client-snackbar"
       message={
-        <span id="client-snackbar" className={classes.message}>
-          <Icon className={classNames(classes.icon, classes.iconVariant)} />
+        <span
+          id="client-snackbar"
+          className={classes.message}
+          data-test="message"
+        >
+          <Icon
+            className={classNames(classes.icon, classes.iconVariant)}
+            data-test="message-icon"
+          />
           {message}
         </span>
       }
@@ -82,8 +90,9 @@ const CustomSnackbarContent = props => {
           color="inherit"
           className={classes.close}
           onClick={onClose}
+          data-test="icon-button"
         >
-          <CloseIcon className={classes.icon} />
+          <CloseIcon className={classes.icon} data-test="close-icon" />
         </IconButton>
       ]}
       {...other}
