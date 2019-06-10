@@ -147,3 +147,8 @@ describe("<CustomSnackbarContent />", () => {
     expect(onCloseMock.mock.calls.length).toBe(1);
   });
 });
+
+// no test for rendering action button if passed an action prop
+// or for calling action function if action button clicked
+// not currently using that functionality in this implementation so haven't written tests for it.
+// if we decide to use it we'll need to write tests here.
