@@ -19,7 +19,12 @@ const spin = {
 
 const Spinner = props => (
   <div style={wrap}>
-    <CircularProgress style={spin} color="primary" size={50} />
+    <CircularProgress
+      style={spin}
+      color="primary"
+      size={50}
+      data-test="component-spinner"
+    />
   </div>
 );
 

@@ -24,7 +24,11 @@ const styles = props => theme => {
 };
 
 export const SpinnerAdornment = props => (
-  <CircularProgress className={props.classes.spinner} size={20} />
+  <CircularProgress
+    className={props.classes.spinner}
+    size={20}
+    data-test="component-spinner-adornment"
+  />
 );
 
 export default withStylesProps(styles)(props => SpinnerAdornment);
