@@ -17,6 +17,7 @@ import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
+import MemberForm from "./containers/MemberForm";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 
@@ -189,6 +190,12 @@ export class App extends Component {
               path="/logout"
               render={routeProps => (
                 <Logout classes={this.props.classes} {...routeProps} />
+              )}
+            />
+            <Route
+              path="/submission"
+              render={routeProps => (
+                <MemberForm setRedirect={this.setRedirect} {...routeProps} />
               )}
             />
             <Route
