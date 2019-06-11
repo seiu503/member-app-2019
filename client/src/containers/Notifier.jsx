@@ -41,6 +41,7 @@ class Notifier extends React.Component {
       <span
         id="snackbar-message-id"
         dangerouslySetInnerHTML={{ __html: this.state.message }}
+        data-test="message-span"
       />
     );
 
@@ -51,8 +52,9 @@ class Notifier extends React.Component {
           horizontal: "right"
         }}
         open={this.state.open}
-        autoHideDuration={10000000}
+        autoHideDuration={6000}
         onClose={this.handleSnackbarClose}
+        data-test="component-notifier"
       >
         <CustomSnackbarContentWrapper
           variant={this.state.variant}
@@ -60,6 +62,7 @@ class Notifier extends React.Component {
           open={this.state.open}
           action={this.state.action}
           onClose={this.handleSnackbarClose}
+          data-test="custom-snackbar-content-wrapper"
         />
       </Snackbar>
     );

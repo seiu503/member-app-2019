@@ -10,6 +10,7 @@ const defaultProps = {
   classes: {}
 };
 
+// mock setTimeout
 jest.useFakeTimers();
 
 /**
@@ -24,7 +25,11 @@ const setup = (props = {}) => {
 };
 
 describe("<Logout />", () => {
+  // localStorage is being mocked by the npm package `jest-localstorage-mock`
+  // which is required in src/setupTests.js
+
   afterAll(() => {
+    // clear the localStorage object and the mock functions after these tests
     localStorage.__STORE__ = {};
     localStorage.mockClear();
   });
@@ -61,7 +66,7 @@ describe("<Logout />", () => {
     wrapper.instance().componentDidMount();
 
     // this is the second test that calls componentDidMount so
-    // localStorage.clear will have been called twice
+    // localStorage.clear (mock) will have been called twice
     expect(localStorage.clear).toHaveBeenCalledTimes(2);
     expect(localStorage.__STORE__).toEqual({});
   });

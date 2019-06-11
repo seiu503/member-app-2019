@@ -189,7 +189,7 @@ class TextInputForm extends React.Component {
                 "An error occured while trying to save your content."
             );
           } else {
-            openSnackbar("success", `${utils.labelsObj[content_type]} Saved.`);
+            openSnackbar("success", `Saved ${utils.labelsObj[content_type]}.`);
             this.props.apiContent.clearForm();
             this.props.history.push("/library");
           }
@@ -211,7 +211,7 @@ class TextInputForm extends React.Component {
           } else {
             openSnackbar(
               "success",
-              `${utils.labelsObj[content_type]} Updated.`
+              `Updated ${utils.labelsObj[content_type]}.`
             );
             this.props.apiContent.clearForm();
             this.props.history.push("/library");
