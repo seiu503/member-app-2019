@@ -73,3 +73,5 @@ describe("<App />", () => {
     });
   });
 });
+
+// check notifier error rendering if error prop is true
