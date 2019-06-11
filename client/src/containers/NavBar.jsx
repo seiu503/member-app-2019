@@ -135,18 +135,21 @@ export class NavBar extends React.Component {
     this.state = {
       anchorEl: null
     };
+
+    this.handleClick = this.handleClick.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  handleClick = event => {
-    this.setState({ anchorEl: event.currentTarget });
-    console.log(this.props.main_ref);
+  handleClick(e) {
+    this.setState({ anchorEl: e.currentTarget });
+    // console.log(this.props.main_ref);
     this.props.main_ref.current.classList.add("is-blurred");
-  };
+  }
 
-  handleClose = () => {
+  handleClose() {
     this.setState({ anchorEl: null });
     this.props.main_ref.current.classList.remove("is-blurred");
-  };
+  }
 
   render() {
     const { classes } = this.props;
@@ -256,7 +259,7 @@ export class NavBar extends React.Component {
               aria-label="Menu"
               aria-owns={anchorEl ? "nav-menu" : null}
               aria-haspopup="true"
-              onClick={this.handleClick}
+              onClick={e => this.handleClick(e)}
               data-test="menu-button"
             >
               <MenuIcon />

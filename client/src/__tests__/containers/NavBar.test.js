@@ -2,11 +2,24 @@ import React from "react";
 import { shallow, mount } from "enzyme";
 import { BrowserRouter as Router } from "react-router-dom";
 import { findByTestAttr } from "../../utils/testUtils";
-import { unwrap } from "@material-ui/core/test-utils";
+import { createShallow } from "@material-ui/core/test-utils";
 import { NavBar } from "../../containers/NavBar";
 import * as utils from "../../utils";
 
-// const NavBarNaked = unwrap(NavBar);
+const options = {
+  untilSelector: "button"
+};
+const muiShallow = createShallow(options);
+
+const main_ref = {
+  current: {
+    classList: {
+      contains: jest.fn(),
+      remove: jest.fn(),
+      add: jest.fn()
+    }
+  }
+};
 
 const defaultProps = {
   classes: {},
@@ -21,7 +34,8 @@ const defaultProps = {
   },
   location: {
     pathname: "/"
-  }
+  },
+  main_ref: { ...main_ref }
 };
 
 /**
@@ -110,21 +124,43 @@ describe("<NavBar />", () => {
     utils.skip.mockRestore();
   });
 
-  test("mobile menu opens onClick", () => {
+  test("clicking mobile menu button calls `handleClick` function", () => {
+    const wrapper = setup({});
+    const menuButton = findByTestAttr(wrapper, "menu-button");
+
+    // mock handleClick function
+    wrapper.instance().handleClick = jest.fn();
+
+    // mock event and simulate click
+    const mockedEvent = { target: {} };
+    menuButton.simulate("click", mockedEvent);
+
+    // expect the handleClick function to have been called
+    expect(wrapper.instance().handleClick).toBeCalled();
+  });
+
+  test("clicking mobile menu button blurs main content while menu is open", () => {
+    // mock ref
+    function mockGetRef(ref: any) {
+      this.main_ref = { ...mainRef };
+    }
+
+    // jest.spyOn(NavBar.prototype, 'getRef').mockImplementationOnce(mockGetRef);
+
     const wrapper = mount(
       <Router>
         <NavBar {...defaultProps} />
       </Router>
     );
     const menuButton = findByTestAttr(wrapper, "menu-button").find("button");
-    console.log(menuButton.debug());
 
     // mock event and simulate click
     const mockedEvent = { target: {} };
     menuButton.simulate("click", mockedEvent);
 
-    // expect the handleClick function to have been called once
-    expect(wrapper.instance().handleClick.calls.length).toBe(1);
+    // expect main content to be blurred when menu is open
+    // console.log(wrapper.instance().getRef('main_ref').classList);
+    // expect(wrapper.instance().getRef('main_ref').hasClass('is-blurred').to.equal(true));
   });
 
   // test("renders a message span with correct message if `open` = true", () => {
