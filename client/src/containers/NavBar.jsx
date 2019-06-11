@@ -128,7 +128,7 @@ const styles = theme => ({
   }
 });
 
-class NavBar extends React.Component {
+export class NavBar extends React.Component {
   constructor(props) {
     super(props);
 
@@ -139,12 +139,13 @@ class NavBar extends React.Component {
 
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
-    document.getElementById("main").classList.add("is-blurred");
+    console.log(this.props.main_ref);
+    this.props.main_ref.current.classList.add("is-blurred");
   };
 
   handleClose = () => {
     this.setState({ anchorEl: null });
-    document.getElementById("main").classList.remove("is-blurred");
+    this.props.main_ref.current.classList.remove("is-blurred");
   };
 
   render() {
@@ -175,39 +176,51 @@ class NavBar extends React.Component {
         </MenuItem>
       );
     };
-    const mobileLinks = links.map((link, index) => {
-      return (
-        <ListItemLink
-          key={index}
-          primary={link}
-          handleClose={this.handleClose}
-          link={link}
-          scroll={this.props.scroll}
-        />
-      );
-    });
-    const adminMenuLinks = adminLinks.map((link, index) => {
-      return (
-        <Button key={index} className={classes.menuLink} href={`/${link}`}>
-          {link}
-        </Button>
-      );
-    });
-    const menuLinks = links.map((link, index) => {
-      return (
-        <Button
-          key={index}
-          className={classes.menuLink}
-          onClick={() => {
-            this.props.history.push(`/${link}`);
-          }}
-        >
-          {link}
-        </Button>
-      );
-    });
+    const mobileLinks = (
+      <div data-test="mobile-links">
+        {links.map((link, index) => {
+          return (
+            <ListItemLink
+              key={index}
+              primary={link}
+              handleClose={this.handleClose}
+              link={link}
+              scroll={this.props.scroll}
+            />
+          );
+        })}
+      </div>
+    );
+    const adminMenuLinks = (
+      <div data-test="admin-menu-links">
+        {adminLinks.map((link, index) => {
+          return (
+            <Button key={index} className={classes.menuLink} href={`/${link}`}>
+              {link}
+            </Button>
+          );
+        })}
+      </div>
+    );
+    const menuLinks = (
+      <div data-test="menu-links">
+        {links.map((link, index) => {
+          return (
+            <Button
+              key={index}
+              className={classes.menuLink}
+              onClick={() => {
+                this.props.history.push(`/${link}`);
+              }}
+            >
+              {link}
+            </Button>
+          );
+        })}
+      </div>
+    );
     return (
-      <div className={classes.root}>
+      <div className={classes.root} data-test="component-navbar">
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
             <Button
@@ -215,13 +228,24 @@ class NavBar extends React.Component {
               variant="contained"
               className={classes.skip}
               onClick={() => skip("main")}
+              data-test="skiplink"
             >
               Skip to content &rsaquo;
             </Button>
-            <Link to="/" className={classes.logoLink}>
-              <img src={logo} alt="SEIU 503" className={classes.logo} />
+            <Link to="/" className={classes.logoLink} data-test="logo-link">
+              <img
+                src={logo}
+                alt="SEIU 503"
+                className={classes.logo}
+                data-test="logo-image"
+              />
             </Link>
-            <Typography variant="h6" color="inherit" className={classes.title}>
+            <Typography
+              variant="h6"
+              color="inherit"
+              className={classes.title}
+              data-test="title"
+            >
               <Link to="/" className={classes.title}>
                 Membership Application
               </Link>
@@ -233,6 +257,7 @@ class NavBar extends React.Component {
               aria-owns={anchorEl ? "nav-menu" : null}
               aria-haspopup="true"
               onClick={this.handleClick}
+              data-test="menu-button"
             >
               <MenuIcon />
             </IconButton>
@@ -249,6 +274,7 @@ class NavBar extends React.Component {
               TransitionComponent={Slide}
               TransitionProps={{ direction: "left" }}
               PaperProps={{ className: classes.drawer }}
+              data-test="menu"
             >
               {mobileLinks}
             </Menu>

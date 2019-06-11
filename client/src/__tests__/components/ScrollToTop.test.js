@@ -13,7 +13,7 @@ describe("<ScrollToTop />", () => {
   });
   afterAll(() => {
     // cleanup after testing
-    ScrollToMock.mockClear();
+    ScrollToMock.mockRestore();
   });
   it("renders without error", () => {
     const wrapper = shallow(<ScrollToTop />);

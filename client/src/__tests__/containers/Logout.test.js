@@ -59,31 +59,42 @@ describe("<Logout />", () => {
 
     // expect the mock to have been called once
     expect(logoutMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    logoutMock.mockRestore();
   });
 
   test("clears localStorage on component mount", () => {
+    // clear mock since componentDidMount is called in other tests
+    localStorage.clear.mockReset();
     const wrapper = shallow(<Logout {...defaultProps} />);
     wrapper.instance().componentDidMount();
 
-    // this is the second test that calls componentDidMount so
-    // localStorage.clear (mock) will have been called twice
-    expect(localStorage.clear).toHaveBeenCalledTimes(2);
+    expect(localStorage.clear).toHaveBeenCalledTimes(1);
     expect(localStorage.__STORE__).toEqual({});
+
+    // restore mock
+    localStorage.clear.mockRestore();
   });
 
   test("redirects to home route 1 second after component mount", () => {
     window.location.assign = jest.fn();
     const wrapper = shallow(<Logout {...defaultProps} />);
 
+    // clear mock since componentDidMount is called in other tests
+    setTimeout.mockReset();
+
     // run lifecycle method
     wrapper.instance().componentDidMount();
     // simulate setTimeout
     jest.runAllTimers();
 
-    // this is the third test that calls componentDidMount so
-    // setTimeout will have been called 3 times
-    expect(setTimeout).toHaveBeenCalledTimes(3);
+    expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
     expect(window.location.assign).toBeCalledWith("/");
+
+    // restore mocks
+    window.location.assign.mockRestore();
+    setTimeout.mockRestore();
   });
 });
