@@ -6,19 +6,26 @@ import * as Actions from "../store/actions";
 
 import Typography from "@material-ui/core/Typography";
 
-class Logout extends React.Component {
+export class Logout extends React.Component {
   componentDidMount() {
     this.props.actions.logout();
     window.localStorage.clear();
     setTimeout(() => {
-      window.location.href = "/";
+      window.location.assign("/");
     }, 1000);
   }
 
   render() {
     return (
-      <div className={this.props.classes.container}>
-        <Typography variant="h5" className={this.props.classes.message}>
+      <div
+        className={this.props.classes.container}
+        data-test="component-logout"
+      >
+        <Typography
+          variant="h5"
+          className={this.props.classes.message}
+          data-test="message"
+        >
           Goodbye!
         </Typography>
       </div>
