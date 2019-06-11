@@ -132,69 +132,48 @@ describe("<NavBar />", () => {
     wrapper.instance().handleClick = jest.fn();
 
     // mock event and simulate click
-    const mockedEvent = { target: {} };
+    const mockedEvent = { currentTarget: {} };
     menuButton.simulate("click", mockedEvent);
 
     // expect the handleClick function to have been called
     expect(wrapper.instance().handleClick).toBeCalled();
   });
 
-  test("clicking mobile menu button blurs main content while menu is open", () => {
-    // mock ref
-    function mockGetRef(ref: any) {
-      this.main_ref = { ...mainRef };
-    }
+  test("`handleClick` sets anchorEl state", () => {
+    const wrapper = setup();
+    wrapper.setState({ anchorEl: null });
 
-    // jest.spyOn(NavBar.prototype, 'getRef').mockImplementationOnce(mockGetRef);
+    // call instance method with mocked event
+    const mockedEvent = { currentTarget: { nodeName: "button" } };
+    wrapper.instance().handleClick(mockedEvent);
 
-    const wrapper = mount(
-      <Router>
-        <NavBar {...defaultProps} />
-      </Router>
+    expect(wrapper.instance().state.anchorEl).toStrictEqual(
+      mockedEvent.currentTarget
     );
-    const menuButton = findByTestAttr(wrapper, "menu-button").find("button");
-
-    // mock event and simulate click
-    const mockedEvent = { target: {} };
-    menuButton.simulate("click", mockedEvent);
-
-    // expect main content to be blurred when menu is open
-    // console.log(wrapper.instance().getRef('main_ref').classList);
-    // expect(wrapper.instance().getRef('main_ref').hasClass('is-blurred').to.equal(true));
   });
 
-  // test("renders a message span with correct message if `open` = true", () => {
-  //   const wrapper = mount(<NavBarNaked />);
-  //   wrapper.setState({ open: true, message: "Everything OK!" }, () => {
-  //     const component = findByTestAttr(wrapper, "message-span");
-  //     expect(component.length).toBe(1);
-  //     expect(component.text()).toBe("Everything OK!");
-  //   });
-  // });
+  // test("`handleClick` blurs main content area", () => {
+  //   // mock ref
+  //   function mockGetRef(ref: any) {
+  //     this.main_ref = { ...main_ref };
+  //   }
 
-  // test("does not render a message span if `open` = false", () => {
-  //   const wrapper = mount(<NavBarNaked />);
-  //   wrapper.setState({ open: false }, () => {
-  //     const component = findByTestAttr(wrapper, "message-span");
-  //     expect(component.length).toBe(0);
-  //   });
-  // });
+  //   const wrapper = mount(
+  //     <Router>
+  //       <NavBar {...defaultProps} />
+  //     </Router>
+  //   );
+  //   const menuButton = findByTestAttr(wrapper, "menu-button").find("button");
 
-  // test("`openSnackbar` sets correct state for open, variant, and message", () => {
-  //   const wrapper = mount(<NavBarNaked />);
-  //   // call method
-  //   wrapper.instance().openSnackbar("success", "Everything OK!");
-  //   expect(wrapper.state("open")).toBe(true);
-  //   expect(wrapper.state("variant")).toBe("success");
-  //   expect(wrapper.state("message")).toBe("Everything OK!");
-  // });
+  //   // spy on getRef function
+  //   // jest.spyOn(wrapper.instance(), 'getRef').mockImplementationOnce(mockGetRef);
 
-  // test("`handleSnackbarClose` sets correct state for open, variant, and message", () => {
-  //   const wrapper = mount(<NavBarNaked />);
-  //   // call method
-  //   wrapper.instance().handleSnackbarClose();
-  //   expect(wrapper.state("open")).toBe(false);
-  //   expect(wrapper.state("variant")).toBe("info");
-  //   expect(wrapper.state("message")).toBe("");
+  //   // mock event and simulate click
+  //   const mockedEvent = { target: {} };
+  //   menuButton.simulate("click", mockedEvent);
+
+  //   // expect main content to be blurred when menu is open
+  //   console.log(wrapper.ref('main_ref'));
+  //   expect(wrapper.ref('main_ref').hasClass('is-blurred').to.equal(true));
   // });
 });
