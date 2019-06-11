@@ -7,7 +7,7 @@ import { NavBar } from "../../containers/NavBar";
 import * as utils from "../../utils";
 
 const options = {
-  untilSelector: "button"
+  untilSelector: "ListItemText"
 };
 const muiShallow = createShallow(options);
 
@@ -34,6 +34,9 @@ const defaultProps = {
   },
   location: {
     pathname: "/"
+  },
+  history: {
+    push: jest.fn()
   },
   main_ref: { ...main_ref }
 };
@@ -96,6 +99,12 @@ describe("<NavBar />", () => {
     expect(component.length).toBe(1);
   });
 
+  test("renders mobile menu items", () => {
+    const wrapper = setup();
+    const component = findByTestAttr(wrapper, "mobile-link");
+    expect(component.length).toBeGreaterThan(0);
+  });
+
   test("if `loggedId` = true, renders admin menu links", () => {
     const wrapper = setup({ appState: { loggedIn: true } });
     const component = findByTestAttr(wrapper, "admin-menu-links");
@@ -124,6 +133,21 @@ describe("<NavBar />", () => {
     utils.skip.mockRestore();
   });
 
+  test("clicking mobile menu item calls `handleClose` function", () => {
+    const wrapper = setup();
+    const menuItem = findByTestAttr(wrapper, "mobile-link").dive();
+
+    // mock handleClose function
+    const handleCloseMock = jest.fn();
+    menuItem.setProps({ handleClose: handleCloseMock });
+
+    // simulate click
+    menuItem.simulate("click");
+
+    // expect the handleClose function to have been called
+    expect(handleCloseMock.mock.calls.length).toBe(1);
+  });
+
   test("clicking mobile menu button calls `handleClick` function", () => {
     const wrapper = setup({});
     const menuButton = findByTestAttr(wrapper, "menu-button");
@@ -139,7 +163,7 @@ describe("<NavBar />", () => {
     expect(wrapper.instance().handleClick).toBeCalled();
   });
 
-  test("`handleClick` sets anchorEl state", () => {
+  test("`handleClick` sets anchorEl to current target", () => {
     const wrapper = setup();
     wrapper.setState({ anchorEl: null });
 
@@ -152,28 +176,15 @@ describe("<NavBar />", () => {
     );
   });
 
-  // test("`handleClick` blurs main content area", () => {
-  //   // mock ref
-  //   function mockGetRef(ref: any) {
-  //     this.main_ref = { ...main_ref };
-  //   }
+  test("`handleClose` sets anchorEl to null", () => {
+    const wrapper = setup();
+    wrapper.setState({ anchorEl: { nodeName: "button" } });
 
-  //   const wrapper = mount(
-  //     <Router>
-  //       <NavBar {...defaultProps} />
-  //     </Router>
-  //   );
-  //   const menuButton = findByTestAttr(wrapper, "menu-button").find("button");
+    // call instance method
+    wrapper.instance().handleClose();
 
-  //   // spy on getRef function
-  //   // jest.spyOn(wrapper.instance(), 'getRef').mockImplementationOnce(mockGetRef);
-
-  //   // mock event and simulate click
-  //   const mockedEvent = { target: {} };
-  //   menuButton.simulate("click", mockedEvent);
-
-  //   // expect main content to be blurred when menu is open
-  //   console.log(wrapper.ref('main_ref'));
-  //   expect(wrapper.ref('main_ref').hasClass('is-blurred').to.equal(true));
-  // });
+    expect(wrapper.instance().state.anchorEl).toBe(null);
+  });
 });
+
+// handle in integration tests: handleClick blurs main content area

@@ -142,7 +142,6 @@ export class NavBar extends React.Component {
 
   handleClick(e) {
     this.setState({ anchorEl: e.currentTarget });
-    // console.log(this.props.main_ref);
     this.props.main_ref.current.classList.add("is-blurred");
   }
 
@@ -165,10 +164,12 @@ export class NavBar extends React.Component {
           component={Button}
           href={`/${link}`}
           onClick={() => {
+            console.log("mobile menu item click");
             this.props.history.push(`/${link}`);
             handleClose();
           }}
           className={classes.menuItem}
+          data-test="menu-item-mobile"
         >
           <ListItemText
             primary={primary}
@@ -189,6 +190,7 @@ export class NavBar extends React.Component {
               handleClose={this.handleClose}
               link={link}
               scroll={this.props.scroll}
+              data-test="mobile-link"
             />
           );
         })}
@@ -309,6 +311,9 @@ NavBar.propTypes = {
   }),
   location: PropTypes.shape({
     pathname: PropTypes.string
+  }),
+  history: PropTypes.shape({
+    push: PropTypes.func
   })
 };
 
