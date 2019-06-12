@@ -2,6 +2,10 @@ import React from "react";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
 import Notifier from "../../containers/Notifier";
+import { openSnackbar } from "../../containers/Notifier";
+
+// mock setTimeout
+jest.useFakeTimers();
 
 describe("<Notifier />", () => {
   it("renders without error", () => {
@@ -55,4 +59,45 @@ describe("<Notifier />", () => {
   });
 });
 
-// tests for exported openSnackbar function should go in integration tests
+describe("exported openSnackbar function", () => {
+  test("if `openSnackbarFn` is type `function`, calls openSnackbarFn", () => {
+    // mock openSnackbarFn
+    const openSnackbarFnMock = jest.fn();
+
+    // mount component, set component method to mock, call cDM
+    const wrapper = mount(<Notifier />);
+    wrapper.instance().openSnackbar = openSnackbarFnMock;
+    wrapper.instance().componentDidMount();
+
+    // call method
+    openSnackbar("success", "Everything OK!");
+
+    // expect mock to be called
+    expect(openSnackbarFnMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    openSnackbarFnMock.mockRestore();
+  });
+
+  test("if `openSnackbarFn` is undefined, call setTimeout for 50ms", () => {
+    // clear mock since componentDidMount is called in other tests
+    setTimeout.mockReset();
+
+    // mount component (openSnackbarFn is undefined here)
+    const wrapper = mount(<Notifier />);
+
+    // call method
+    openSnackbar("success", "Everything OK!");
+
+    // mock openSnackbarFn
+    const openSnackbarFnMock = jest.fn();
+
+    // openSnackbarFn should not have been called yet, but setTimeout should
+    expect(openSnackbarFnMock.mock.calls.length).toBe(0);
+    expect(setTimeout).toHaveBeenCalled();
+
+    // restore mocks
+    setTimeout.mockRestore();
+    openSnackbarFnMock.mockRestore();
+  });
+});

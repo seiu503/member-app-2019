@@ -1,15 +1,8 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
-import { BrowserRouter as Router } from "react-router-dom";
+import { shallow } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
-import { createShallow } from "@material-ui/core/test-utils";
 import { NavBar } from "../../containers/NavBar";
 import * as utils from "../../utils";
-
-const options = {
-  untilSelector: "ListItemText"
-};
-const muiShallow = createShallow(options);
 
 const main_ref = {
   current: {
@@ -139,6 +132,21 @@ describe("<NavBar />", () => {
     utils.skip.mockRestore();
   });
 
+  test("clicking mobile menu button calls `handleClick` function", () => {
+    const wrapper = setup({});
+    const menuButton = findByTestAttr(wrapper, "menu-button");
+
+    // mock handleClick function
+    wrapper.instance().handleClick = jest.fn();
+
+    // mock event and simulate click
+    const mockedEvent = { currentTarget: {} };
+    menuButton.simulate("click", mockedEvent);
+
+    // expect the handleClick function to have been called
+    expect(wrapper.instance().handleClick).toBeCalled();
+  });
+
   test("clicking mobile menu item calls `handleClose` function", () => {
     const wrapper = setup();
     const menuItem = findByTestAttr(wrapper, "mobile-link").dive();
@@ -200,21 +208,6 @@ describe("<NavBar />", () => {
 
     // restore mock
     pushMock.mockRestore();
-  });
-
-  test("clicking mobile menu button calls `handleClick` function", () => {
-    const wrapper = setup({});
-    const menuButton = findByTestAttr(wrapper, "menu-button");
-
-    // mock handleClick function
-    wrapper.instance().handleClick = jest.fn();
-
-    // mock event and simulate click
-    const mockedEvent = { currentTarget: {} };
-    menuButton.simulate("click", mockedEvent);
-
-    // expect the handleClick function to have been called
-    expect(wrapper.instance().handleClick).toBeCalled();
   });
 
   test("`handleClick` sets anchorEl to current target", () => {
