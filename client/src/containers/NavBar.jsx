@@ -164,7 +164,6 @@ export class NavBar extends React.Component {
           component={Button}
           href={`/${link}`}
           onClick={() => {
-            console.log("mobile menu item click");
             this.props.history.push(`/${link}`);
             handleClose();
           }}

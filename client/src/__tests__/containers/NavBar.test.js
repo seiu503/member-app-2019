@@ -117,7 +117,7 @@ describe("<NavBar />", () => {
     expect(component.length).toBe(0);
   });
 
-  test("calls `skip` function skiplink click", () => {
+  test("clicking skiplink calls `skip` function", () => {
     // create a mock function so we can see whether it's called on click
     utils.skip = jest.fn();
     const wrapper = setup();
@@ -144,8 +144,31 @@ describe("<NavBar />", () => {
     // simulate click
     menuItem.simulate("click");
 
-    // expect the handleClose function to have been called
+    // expect the handleClose mock to have been called once
     expect(handleCloseMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    handleCloseMock.mockRestore();
+  });
+
+  test("clicking mobile menu item redirects to correct link", () => {
+    const wrapper = setup();
+    const menuItem = findByTestAttr(wrapper, "mobile-link").dive();
+    menuItem.setProps({ link: "home" });
+
+    // mock `history.push()`
+    const pushMock = jest.fn();
+    wrapper.setProps({ history: { push: pushMock } });
+
+    // simulate click
+    menuItem.simulate("click");
+
+    // expect the `history.push` mock to have been called with correct link
+    expect(pushMock.mock.calls.length).toBe(1);
+    expect(pushMock.mock.calls[0]).toEqual(["/home"]);
+
+    // restore mock
+    pushMock.mockRestore();
   });
 
   test("clicking mobile menu button calls `handleClick` function", () => {
