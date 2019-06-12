@@ -99,6 +99,16 @@ const styles = theme => ({
 });
 
 export class App extends Component {
+  constructor(props) {
+    super(props);
+    this.main_ref = React.createRef();
+    this.state = {
+      deleteDialogOpen: false,
+      animation: false,
+      more: false
+    };
+  }
+
   componentDidMount() {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
@@ -136,15 +146,9 @@ export class App extends Component {
     return (
       <React.Fragment>
         <CssBaseline />
-        <NavBar
-          scroll={this.scroll}
-          contact_ref={this.contact_ref}
-          about_ref={this.about_ref}
-          projects_ref={this.projects_ref}
-          skills_ref={this.skills_ref}
-        />
+        <NavBar scroll={this.scroll} main_ref={this.main_ref} />
         <Notifier />
-        <main className={classes.container} id="main">
+        <main className={classes.container} id="main" ref={this.main_ref}>
           <Switch>
             <Route
               exact

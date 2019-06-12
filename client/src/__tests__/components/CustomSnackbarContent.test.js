@@ -34,6 +34,10 @@ const setup = (props = {}) => {
 };
 
 describe("<CustomSnackbarContent />", () => {
+  afterAll(() => {
+    jest.resetAllMocks();
+  });
+
   it("renders without error", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "component-custom-snackbar");
@@ -145,6 +149,9 @@ describe("<CustomSnackbarContent />", () => {
 
     // expect the mock to have been called once
     expect(onCloseMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    onCloseMock.mockRestore();
   });
 });
 

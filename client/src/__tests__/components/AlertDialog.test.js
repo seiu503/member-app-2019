@@ -87,6 +87,9 @@ describe("<AlertDialog />", () => {
 
     // expect the mock to have been called once
     expect(actionMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    actionMock.mockRestore();
   });
 
   test("calls `handleClose` prop on cancel button click", () => {
@@ -103,5 +106,8 @@ describe("<AlertDialog />", () => {
 
     // expect the mock to have been called once
     expect(handleCloseMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    handleCloseMock.mockRestore();
   });
 });

@@ -1,6 +1,5 @@
 import React from "react";
 import { shallow, mount } from "enzyme";
-import { BrowserRouter as Router } from "react-router-dom";
 import ScrollToTop, {
   UnwrappedScrollToTop
 } from "../../components/ScrollToTop";
@@ -14,7 +13,7 @@ describe("<ScrollToTop />", () => {
   });
   afterAll(() => {
     // cleanup after testing
-    ScrollToMock.mockClear();
+    ScrollToMock.mockRestore();
   });
   it("renders without error", () => {
     const wrapper = shallow(<ScrollToTop />);
