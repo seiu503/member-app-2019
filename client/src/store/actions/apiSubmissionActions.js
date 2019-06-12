@@ -13,14 +13,20 @@ export function handleInput({ target: { name, value } }) {
   };
 }
 
-export function handleSelect(name, value) {
+export function handleSelect(event) {
+  console.log(event.target);
+  const name = event.target.name;
+  const value = event.target.value;
   return {
     type: HANDLE_SELECT,
     payload: { name, value }
   };
 }
 
-export function handleCheckbox(name, value) {
+export function handleCheckbox(event) {
+  console.log(event.target);
+  const name = event.target.name;
+  const value = event.target.checked;
   return {
     type: HANDLE_CHECKBOX,
     payload: { name, value }

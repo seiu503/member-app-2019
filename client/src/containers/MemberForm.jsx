@@ -6,11 +6,14 @@ import { bindActionCreators } from "redux";
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import NativeSelect from "@material-ui/core/NativeSelect";
+import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
-// import FormControlLabel from "@material-ui/core/FormControlLabel";
-// import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import FormGroup from "@material-ui/core/FormGroup";
 // import { DropzoneDialog } from "material-ui-dropzone";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
@@ -41,7 +44,7 @@ const styles = theme => ({
     width: "100%",
     margin: "0 0 20px 0"
   },
-  textarea: {
+  select: {
     width: "100%",
     margin: "0 0 20px 0"
   },
@@ -52,9 +55,8 @@ const styles = theme => ({
   formControl: {
     width: "100%"
   },
-  radioLabel: {
-    width: "100%",
-    textAlign: "center"
+  formControlLabel: {
+    width: "100%"
   }
 });
 
@@ -82,9 +84,9 @@ class MemberForm extends React.Component {
           onError={errors => console.log(errors)}
           id="form"
         >
-          <FormLabel component="legend" className={classes.formLabel}>
-            Submission Info
-          </FormLabel>
+          {/*<FormLabel component="legend" className={classes.formLabel}>
+Submission Info
+</FormLabel>*/}
 
           <React.Fragment>
             <TextField
@@ -142,19 +144,29 @@ class MemberForm extends React.Component {
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
             />
-            <NativeSelect
-              name="preferredLanguage"
-              id="preferredLanguage"
-              label="preferredLanguage"
-              value={this.props.submission.preferredLanguage}
-              onChange={this.props.apiSubmission.handleSelect}
-              className={classes.select}
-            >
-              <option value="" />
-              <option value={"english"}>English</option>
-              <option value={"russian"}>Russian</option>
-              <option value={"spanish"}>Spanish</option>
-            </NativeSelect>
+            <FormControl variant="outlined" className={classes.formControl}>
+              <InputLabel htmlFor="preferredLanguage">
+                preferredLanguage
+              </InputLabel>
+              <Select
+                native
+                value={this.props.submission.preferredLanguage}
+                onChange={this.props.apiSubmission.handleSelect}
+                className={classes.select}
+                input={
+                  <OutlinedInput
+                    labelWidth={130}
+                    name="preferredLanguage"
+                    id="preferredLanguage"
+                  />
+                }
+              >
+                <option value="" />
+                <option value={"english"}>English</option>
+                <option value={"russian"}>Russian</option>
+                <option value={"spanish"}>Spanish</option>
+              </Select>
+            </FormControl>
             <TextField
               name="homeStreet"
               id="homeStreet"
@@ -221,31 +233,36 @@ class MemberForm extends React.Component {
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
             />
-            <Checkbox
-              name="textAuthOptOut"
-              id="textAuthOptOut"
-              label="textAuthOptOut"
-              value={this.props.submission.form.textAuthOptOut}
-              onChange={this.props.apiSubmission.handleCheckbox}
-              className={classes.checkbox}
-            />
-            <Checkbox
-              name="termsAgree"
-              id="termsAgree"
-              label="termsAgree"
-              value={this.props.submission.form.termsAgree}
-              onChange={this.props.apiSubmission.handleCheckbox}
-              className={classes.checkbox}
-            />
-
-            <Checkbox
-              name="signed"
-              id="signed"
-              label="signed"
-              value={this.props.submission.form.signed}
-              onChange={this.props.apiSubmission.handleCheckbox}
-              className={classes.checkbox}
-            />
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="textAuthOptOut"
+                    id="textAuthOptOut"
+                    color="primary"
+                    value={this.props.submission.form.textAuthOptOut}
+                    onChange={this.props.apiSubmission.handleCheckbox}
+                    className={classes.checkbox}
+                  />
+                }
+                label="textAuthOptOut"
+              />
+            </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="termsAgree"
+                    id="termsAgree"
+                    color="primary"
+                    value={this.props.submission.form.termsAgree}
+                    onChange={this.props.apiSubmission.handleCheckbox}
+                    className={classes.checkbox}
+                  />
+                }
+                label="termsAgree"
+              />
+            </FormGroup>
             <TextField
               name="signature"
               id="signature"
@@ -256,6 +273,19 @@ class MemberForm extends React.Component {
               value={this.props.submission.form.signature}
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="signedApplication"
+                  id="signedApplication"
+                  color="primary"
+                  value={this.props.submission.form.signedApplication}
+                  onChange={this.props.apiSubmission.handleCheckbox}
+                  className={classes.checkbox}
+                />
+              }
+              label="signedApplication"
             />
             <TextField
               name="onlineCampaignSource"

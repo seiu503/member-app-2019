@@ -13,11 +13,11 @@ const INITIAL_STATE = {
   allContent: [],
   form: {
     firstName: "",
-    LastName: "",
-    Dd: "",
-    Mm: "",
-    Yyyy: "",
-    preferredLanguage: "english",
+    lastName: "",
+    dd: "",
+    mm: "",
+    yyyy: "",
+    preferredLanguage: "",
     homeStreet: "",
     homePostalCode: "",
     homeState: "",
@@ -37,6 +37,11 @@ function Submission(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case HANDLE_INPUT:
+      return update(state, {
+        form: {
+          [action.payload.name]: { $set: action.payload.value }
+        }
+      });
     case HANDLE_SELECT:
     case HANDLE_CHECKBOX:
       return update(state, {
