@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import localIpUrl from "local-ip-url";
+import uuid from "uuid";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -12,12 +14,12 @@ import InputLabel from "@material-ui/core/InputLabel";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
 import FormGroup from "@material-ui/core/FormGroup";
+// import FormLabel from "@material-ui/core/FormLabel";
 // import { DropzoneDialog } from "material-ui-dropzone";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
-import * as utils from "../utils";
+// import * as utils from "../utils";
 
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
@@ -66,6 +68,87 @@ class MemberForm extends React.Component {
     this.state = {};
   }
 
+  componentDidUpdate() {
+    if (this.props.submission.error) {
+      openSnackbar(
+        "error",
+        this.props.submission.error ||
+          "An error occurred while trying to submit."
+      );
+    }
+  }
+
+  submit = e => {
+    e.preventDefault();
+    const {
+      firstName,
+      lastName,
+      dd,
+      mm,
+      yyyy,
+      preferredLanguage,
+      homeStreet,
+      homePostalCode,
+      homeState,
+      homeCity,
+      homeEmail,
+      mobilePhone,
+      employerName,
+      agencyNumber,
+      textAuthOptOut,
+      termsAgree,
+      signature,
+      onlineCampaignSource
+      // signedApplication
+    } = this.props.submission.form;
+    const birthdate = mm + "/" + dd + "/" + yyyy;
+
+    const body = {
+      ip_address: localIpUrl(),
+      submission_date: new Date(),
+      agency_number: agencyNumber,
+      birthdate,
+      cell_phone: mobilePhone,
+      employer_name: employerName,
+      first_name: firstName,
+      last_name: lastName,
+      home_street: homeStreet,
+      home_city: homeCity,
+      home_state: homeState,
+      home_zip: homePostalCode,
+      home_email: homeEmail,
+      preferred_language: preferredLanguage,
+      terms_agree: termsAgree,
+      signature: signature,
+      text_auth_opt_out: textAuthOptOut,
+      online_campaign_source: onlineCampaignSource,
+      contact_id: uuid.v4(),
+      legal_language: "lorem ipsum",
+      maintenance_of_effort: new Date(),
+      seiu503_cba_app_date: new Date(),
+      direct_pay_auth: null,
+      direct_deposit_auth: null,
+      immediate_past_member_status: null
+    };
+
+    this.props.apiSubmission
+      .addSubmission(body)
+      .then(result => {
+        if (result.type === "ADD_CONTENT_FAILURE" || this.props.content.error) {
+          openSnackbar(
+            "error",
+            this.props.content.error ||
+              "An error occurred while trying to submit your information."
+          );
+        } else {
+          openSnackbar("success", "Your Submission was Successful!");
+          // this.props.apiSubmission.clearForm();
+          // this.props.history.push("/library");
+        }
+      })
+      .catch(err => openSnackbar("error", err));
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -83,6 +166,7 @@ class MemberForm extends React.Component {
           className={classes.form}
           onError={errors => console.log(errors)}
           id="form"
+          onSubmit={this.submit}
         >
           {/*<FormLabel component="legend" className={classes.formLabel}>
 Submission Info
@@ -112,17 +196,6 @@ Submission Info
               className={classes.input}
             />
             <TextField
-              name="dd"
-              id="dd"
-              label="dd"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.submission.form.dd}
-              onChange={this.props.apiSubmission.handleInput}
-              className={classes.input}
-            />
-            <TextField
               name="mm"
               id="mm"
               label="mm"
@@ -130,6 +203,17 @@ Submission Info
               variant="outlined"
               required
               value={this.props.submission.form.mm}
+              onChange={this.props.apiSubmission.handleInput}
+              className={classes.input}
+            />
+            <TextField
+              name="dd"
+              id="dd"
+              label="dd"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.submission.form.dd}
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
             />
@@ -190,13 +274,13 @@ Submission Info
               className={classes.input}
             />
             <TextField
-              name="State"
-              id="State"
-              label="State"
+              name="homeState"
+              id="homeState"
+              label="homeState"
               type="text"
               variant="outlined"
               required
-              value={this.props.submission.form.State}
+              value={this.props.submission.form.homeState}
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
             />
@@ -230,6 +314,28 @@ Submission Info
               variant="outlined"
               required
               value={this.props.submission.form.mobilePhone}
+              onChange={this.props.apiSubmission.handleInput}
+              className={classes.input}
+            />
+            <TextField
+              name="employerName"
+              id="employerName"
+              label="employerName"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.submission.form.employerName}
+              onChange={this.props.apiSubmission.handleInput}
+              className={classes.input}
+            />
+            <TextField
+              name="agencyNumber"
+              id="agencyNumber"
+              label="agencyNumber"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.submission.form.agencyNumber}
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
             />
@@ -322,7 +428,7 @@ MemberForm.propTypes = {
   submission: PropTypes.shape({
     form: PropTypes.shape({
       firstName: PropTypes.string,
-      LastName: PropTypes.string,
+      lastName: PropTypes.string,
       Dd: PropTypes.string,
       Mm: PropTypes.string,
       Yyyy: PropTypes.string,
@@ -334,7 +440,7 @@ MemberForm.propTypes = {
       mobilePhone: PropTypes.string,
       textAuthOptOut: PropTypes.bool,
       termsAgree: PropTypes.bool,
-      Signature: PropTypes.string,
+      signature: PropTypes.string,
       onlineCampaignSource: PropTypes.string,
       signedApplication: PropTypes.bool
     }),
