@@ -216,6 +216,7 @@ export class NavBar extends React.Component {
               onClick={() => {
                 this.props.history.push(`/${link}`);
               }}
+              data-test="standard-menu-link"
             >
               {link}
             </Button>
