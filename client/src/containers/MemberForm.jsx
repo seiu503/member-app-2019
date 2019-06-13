@@ -193,7 +193,7 @@ class MemberForm extends React.Component {
           );
         } else {
           openSnackbar("success", "Your Submission was Successful!");
-          // this.props.apiSubmission.clearForm();
+          this.props.apiSubmission.clearForm();
           // this.props.history.push("/library");
         }
       })
