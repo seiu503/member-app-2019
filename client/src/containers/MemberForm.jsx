@@ -15,7 +15,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormGroup from "@material-ui/core/FormGroup";
-// import FormLabel from "@material-ui/core/FormLabel";
+import FormLabel from "@material-ui/core/FormLabel";
 // import { DropzoneDialog } from "material-ui-dropzone";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
@@ -68,6 +68,7 @@ class MemberForm extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {}
   componentDidUpdate() {
     if (this.props.submission.error) {
       openSnackbar(
@@ -76,6 +77,56 @@ class MemberForm extends React.Component {
           "An error occurred while trying to submit."
       );
     }
+  }
+
+  getMaxDay(month) {
+    switch (month) {
+      case "02":
+        return 29;
+      case "04":
+      case "06":
+      case "09":
+      case "11":
+        return 30;
+      default:
+        return 31;
+    }
+  }
+
+  // setMinMaxDays() {
+  //   const max = this.getMaxDay(this.props.submission.form.mm)
+  //   const min = "01"
+  //   return {
+  //     min,
+  //     max
+  //   }
+  // }
+
+  dateOptions(mm) {
+    const max = this.getMaxDay(mm);
+    let dates = [];
+    for (let i = 1; i <= max; i++) {
+      if (i < 10) {
+        dates.push("0" + i);
+      } else {
+        dates.push(i.toString());
+      }
+    }
+    dates.unshift("");
+    return dates;
+  }
+
+  yearOptions() {
+    let years = [];
+    for (
+      let i = new Date().getFullYear() - 110;
+      i <= new Date().getFullYear();
+      i++
+    ) {
+      years.unshift(i.toString());
+    }
+    years.unshift("");
+    return years;
   }
 
   submit = e => {
@@ -168,10 +219,6 @@ class MemberForm extends React.Component {
           id="form"
           onSubmit={this.submit}
         >
-          {/*<FormLabel component="legend" className={classes.formLabel}>
-Submission Info
-</FormLabel>*/}
-
           <React.Fragment>
             <TextField
               name="firstName"
@@ -195,39 +242,94 @@ Submission Info
               onChange={this.props.apiSubmission.handleInput}
               className={classes.input}
             />
-            <TextField
-              name="mm"
-              id="mm"
-              label="mm"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.submission.form.mm}
-              onChange={this.props.apiSubmission.handleInput}
-              className={classes.input}
-            />
-            <TextField
-              name="dd"
-              id="dd"
-              label="dd"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.submission.form.dd}
-              onChange={this.props.apiSubmission.handleInput}
-              className={classes.input}
-            />
-            <TextField
-              name="yyyy"
-              id="yyyy"
-              label="yyyy"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.submission.form.yyyy}
-              onChange={this.props.apiSubmission.handleInput}
-              className={classes.input}
-            />
+            <FormLabel component="legend">Birthdate</FormLabel>
+            <FormGroup>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="mm">mm</InputLabel>
+                <Select
+                  native
+                  value={this.props.submission.mm}
+                  onChange={this.props.apiSubmission.handleSelect}
+                  className={classes.select}
+                  input={<OutlinedInput labelWidth={28} name="mm" id="mm" />}
+                >
+                  <option value="" />
+                  <option value="01">January</option>
+                  <option value="02">February</option>
+                  <option value="03">March</option>
+                  <option value="04">April</option>
+                  <option value="05">May</option>
+                  <option value="06">June</option>
+                  <option value="07">July</option>
+                  <option value="08">August</option>
+                  <option value="09">September</option>
+                  <option value="10">October</option>
+                  <option value="11">November</option>
+                  <option value="12">December</option>
+                </Select>
+              </FormControl>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="dd">dd</InputLabel>
+                <Select
+                  native
+                  value={this.props.submission.dd}
+                  onChange={this.props.apiSubmission.handleSelect}
+                  className={classes.select}
+                  input={<OutlinedInput labelWidth={20} name="dd" id="dd" />}
+                >
+                  {this.dateOptions(this.props.submission.form.mm).map(item => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel htmlFor="yyyy">yyyy</InputLabel>
+                <Select
+                  native
+                  value={this.props.submission.yyyy}
+                  onChange={this.props.apiSubmission.handleSelect}
+                  className={classes.select}
+                  input={
+                    <OutlinedInput labelWidth={30} name="yyyy" id="yyyy" />
+                  }
+                >
+                  {this.yearOptions().map(item => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+              {/*<TextField
+                name="dd"
+                id="dd"
+                label="dd"
+                variant="outlined"
+                required
+                type="number"
+                value={this.props.submission.form.dd}
+                onChange={this.props.apiSubmission.handleInput}
+                className={classes.input}
+              inputProps={this.setMinMaxDays()}
+              />*/}
+              {/*<TextField
+                name="yyyy"
+                id="yyyy"
+                label="yyyy"
+                type="number"
+                variant="outlined"
+                required
+                value={this.props.submission.form.yyyy}
+                onChange={this.props.apiSubmission.handleInput}
+                className={classes.input}
+                inputProps={{
+                  min: new Date().getFullYear() - 110,
+                  max: new Date().getFullYear()
+                }}
+              />*/}
+            </FormGroup>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel htmlFor="preferredLanguage">
                 preferredLanguage
