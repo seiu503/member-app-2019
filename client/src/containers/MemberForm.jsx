@@ -93,15 +93,6 @@ class MemberForm extends React.Component {
     }
   }
 
-  // setMinMaxDays() {
-  //   const max = this.getMaxDay(this.props.submission.form.mm)
-  //   const min = "01"
-  //   return {
-  //     min,
-  //     max
-  //   }
-  // }
-
   dateOptions(mm) {
     const max = this.getMaxDay(mm);
     let dates = [];
@@ -302,33 +293,6 @@ class MemberForm extends React.Component {
                   ))}
                 </Select>
               </FormControl>
-              {/*<TextField
-                name="dd"
-                id="dd"
-                label="dd"
-                variant="outlined"
-                required
-                type="number"
-                value={this.props.submission.form.dd}
-                onChange={this.props.apiSubmission.handleInput}
-                className={classes.input}
-              inputProps={this.setMinMaxDays()}
-              />*/}
-              {/*<TextField
-                name="yyyy"
-                id="yyyy"
-                label="yyyy"
-                type="number"
-                variant="outlined"
-                required
-                value={this.props.submission.form.yyyy}
-                onChange={this.props.apiSubmission.handleInput}
-                className={classes.input}
-                inputProps={{
-                  min: new Date().getFullYear() - 110,
-                  max: new Date().getFullYear()
-                }}
-              />*/}
             </FormGroup>
             <FormControl variant="outlined" className={classes.formControl}>
               <InputLabel htmlFor="preferredLanguage">
@@ -531,20 +495,23 @@ MemberForm.propTypes = {
     form: PropTypes.shape({
       firstName: PropTypes.string,
       lastName: PropTypes.string,
-      Dd: PropTypes.string,
-      Mm: PropTypes.string,
-      Yyyy: PropTypes.string,
+      dd: PropTypes.string,
+      mm: PropTypes.string,
+      yyyy: PropTypes.string,
       preferredLanguage: PropTypes.string,
       homeStreet: PropTypes.string,
+      homeCity: PropTypes.string,
       homePostalCode: PropTypes.string,
       homeState: PropTypes.string,
       homeEmail: PropTypes.string,
       mobilePhone: PropTypes.string,
+      employerName: PropTypes.string,
+      agencyNumber: PropTypes.string,
       textAuthOptOut: PropTypes.bool,
       termsAgree: PropTypes.bool,
       signature: PropTypes.string,
-      onlineCampaignSource: PropTypes.string,
-      signedApplication: PropTypes.bool
+      signedApplication: PropTypes.bool,
+      onlineCampaignSource: PropTypes.string
     }),
     loading: PropTypes.bool
   }).isRequired,
