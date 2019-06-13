@@ -17,7 +17,8 @@ import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
-import MemberForm from "./containers/MemberForm";
+// import MemberForm from "./containers/MemberForm";
+import SubmissionForm from "./components/SubmissionForm";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 
@@ -195,7 +196,10 @@ export class App extends Component {
             <Route
               path="/submission"
               render={routeProps => (
-                <MemberForm setRedirect={this.setRedirect} {...routeProps} />
+                <SubmissionForm
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
               )}
             />
             <Route

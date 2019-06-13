@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { reducer as formReducer } from "redux-form";
 import appState from "../reducers/appState";
 import profile from "../reducers/profile";
 import content from "../reducers/content";
@@ -8,7 +9,8 @@ const rootReducer = combineReducers({
   appState,
   profile,
   content,
-  submission
+  submission,
+  form: formReducer
 });
 
 export default rootReducer;
