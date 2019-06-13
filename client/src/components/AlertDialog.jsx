@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 });
 
-const AlertDialog = props => (
+const AlertDialogUnwrapped = props => (
   <div data-test="component-alert-dialog">
     <Dialog
       data-test="dialog"
@@ -75,7 +75,7 @@ const AlertDialog = props => (
   </div>
 );
 
-AlertDialog.propTypes = {
+AlertDialogUnwrapped.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.string,
   content: PropTypes.string,
@@ -85,4 +85,5 @@ AlertDialog.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(AlertDialog);
+// export const StyledAlertDialog = (testStyles) => withStyles(testStyles)(AlertDialog);
+export default withStyles(styles)(AlertDialogUnwrapped);

@@ -56,14 +56,14 @@ export const CustomSnackbarContent = props => {
     message,
     onClose,
     variant,
-    action,
+    // action,
     ...other
   } = props;
   const Icon = variantIcon[variant];
-  let actionButton = null;
-  if (action) {
-    actionButton = action(props);
-  }
+  // let actionButton = null;
+  // if (action) {
+  //   actionButton = action(props);
+  // }
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
@@ -83,7 +83,7 @@ export const CustomSnackbarContent = props => {
         </span>
       }
       action={[
-        actionButton,
+        // actionButton,
         <IconButton
           key="close"
           aria-label="Close"

@@ -4,7 +4,7 @@
   "description": "SEIU 503 Membership Application 2019",
   "main": "server.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --exit",
+    "test": "nyc ./node_modules/.bin/mocha --exit",
     "start": "webpack -d | node server.js",
     "client": "cd client && yarn build && yarn start",
     "server": "LOG_LEVEL=debug supervisor --inspect server.js",
@@ -55,6 +55,7 @@
     "lint-staged": "^8.1.7",
     "mocha": "^6.1.4",
     "moment": "^2.24.0",
+    "nyc": "^14.1.1",
     "prettier": "^1.17.1",
     "sinon": "^7.3.2"
   },

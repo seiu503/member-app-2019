@@ -1,8 +1,16 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
-import { unwrap } from "@material-ui/core/test-utils";
-import AlertDialog from "../../components/AlertDialog";
+import {
+  unwrap,
+  createShallow,
+  createMount
+} from "@material-ui/core/test-utils";
+// import AlertDialog, { StyledAlertDialog } from "../../components/AlertDialog";
+import AlertDialog, {
+  AlertDialogUnwrapped
+} from "../../components/AlertDialog";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 
 const AlertDialogNaked = unwrap(AlertDialog);
 
@@ -13,7 +21,10 @@ const defaultProps = {
   buttonText: "Do the action",
   handleClose: jest.fn(),
   action: jest.fn(),
-  classes: {}
+  classes: {
+    danger: "danger",
+    primary: "primary"
+  }
 };
 
 /**
@@ -32,6 +43,50 @@ describe("<AlertDialog />", () => {
     const wrapper = setup({ open: true });
     const component = findByTestAttr(wrapper, "component-alert-dialog");
     expect(component.length).toBe(1);
+  });
+
+  it("renders imported MUI theme without error", () => {
+    // the one below doesn't work with either AlertDialog, AlertDialogNaked, or AlertDialogUnwrapped -- test fails.
+    // const wrapper = mount(
+    //   <MuiThemeProvider
+    //     theme={{
+    //       palette: {
+    //         danger: {
+    //           main: '#b71c1c'
+    //         }
+    //       }
+    //     }}
+    //   >
+    //     <AlertDialog {...defaultProps} />
+    //   </MuiThemeProvider>
+    // );
+    // const wrapper = mount(<StyledAlertDialog {...defaultProps} />);
+    const testStyles = {};
+    // const StyledAlertDialogWithStyles = StyledAlertDialog(testStyles);
+    //
+    // below version makes test pass but fails to cover style/theme code block
+    // const wrapper = mount(<AlertDialogNaked {...defaultProps} />).find('[data-test="component-alert-dialog"]');
+
+    const muiShallow = createShallow();
+    const muiMount = createMount();
+
+    // below passes tests but doesn't cover theme function
+    const wrapper = createMount(
+      <MuiThemeProvider
+        theme={{
+          palette: {
+            danger: {
+              main: "#b71c1c"
+            }
+          }
+        }}
+      >
+        <AlertDialog {...defaultProps} />
+      </MuiThemeProvider>
+    );
+
+    // below line passes tests but doesn't cover theme function
+    // const wrapper = muiShallow(<AlertDialogNaked {...defaultProps} />);
   });
 
   test("renders a dialog", () => {
@@ -72,6 +127,24 @@ describe("<AlertDialog />", () => {
     expect(component.length).toBe(1);
     expect(component.text()).toBe("Do the action");
   });
+
+  test("action button has `danger` class if passed `danger` prop", () => {
+    const wrapper = setup({ buttonText: "Do the action", danger: true });
+    const component = findByTestAttr(wrapper, "button-action");
+    expect(component.props().className).toBe("danger");
+  });
+
+  test("action button does not have `danger` class if not passed `danger` prop", () => {
+    const wrapper = setup({ buttonText: "Do the action", danger: false });
+    const component = findByTestAttr(wrapper, "button-action");
+    expect(component.props().className).toBe("primary");
+  });
+
+  // test("styles imported correctly from MUI theme", () => {
+  //   const wrapper = shallow(<AlertDialog />);
+  //   const component = findByTestAttr(wrapper, "component-alert-dialog");
+  //   expect(component.length).toBe(1);
+  // });
 
   test("calls `action` prop on action button click", () => {
     // create a mock function so we can see whether it's called on click

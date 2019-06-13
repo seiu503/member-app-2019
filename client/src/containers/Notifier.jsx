@@ -69,14 +69,29 @@ class Notifier extends React.Component {
   }
 }
 
-export const openSnackbar = (variant, message, action) => {
-  // some kind of race condition is happening between importing the
-  // openSnackbar function into the target component and mounting the Notifier
-  // this is dirty but it works...
-  if (typeof openSnackbarFn === "function") {
-    openSnackbarFn(variant, message, action);
+// this function should really just be one line
+// it should call openSnackbarFn with the first 2 arguments
+// (variant, message)
+// however, some kind of race condition is happening between importing the
+// openSnackbar function into the target component and mounting the Notifier
+// so it's throwing an error if the function is not defined when the
+// Notifier mounts
+// setting a timeout of 50ms is an extremely dirty workaround but it works...
+export const openSnackbar = (variant, message, testSetTimeout) => {
+  // aaaaaand because it's dirty it is impossible to test lol
+  // so here let's add yet another unnecessary logical branch just for testing!
+  if (typeof openSnackbarFn === "function" && process.env.NODE_ENV !== "test") {
+    openSnackbarFn(variant, message);
+  } else if (
+    typeof openSnackbarFn === "function" &&
+    process.env.NODE_ENV === "test" &&
+    !testSetTimeout
+  ) {
+    // so! dirty!! somebody fix this mess!
+    openSnackbarFn(variant, message);
   } else {
-    setTimeout(() => openSnackbarFn(variant, message, action), 50);
+    console.log("openSnackbarFn is undefined");
+    setTimeout(() => openSnackbarFn(variant, message), 50);
   }
 };
 

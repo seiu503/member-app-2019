@@ -74,7 +74,6 @@ function Content(state = INITIAL_STATE, action) {
       }
 
     case HANDLE_DELETE_OPEN:
-      console.log("HANDLE_DELETE_OPEN");
       return update(state, {
         deleteDialogOpen: { $set: true },
         currentContent: { $set: { ...action.payload.selectedContent } }
@@ -122,7 +121,6 @@ function Content(state = INITIAL_STATE, action) {
     case UPLOAD_IMAGE_REQUEST:
     case GET_ALL_CONTENT_REQUEST:
     case DELETE_IMAGE_REQUEST:
-      console.log("loading");
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
