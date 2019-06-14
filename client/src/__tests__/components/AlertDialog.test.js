@@ -7,12 +7,13 @@ import {
   createMount
 } from "@material-ui/core/test-utils";
 // import AlertDialog, { StyledAlertDialog } from "../../components/AlertDialog";
-import AlertDialog, {
-  AlertDialogUnwrapped
-} from "../../components/AlertDialog";
+import AlertDialog from "../../components/AlertDialog";
+import AlertDialogUnwrapped from "../../components/AlertDialog";
+import { styles } from "../../components/AlertDialog";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 
 const AlertDialogNaked = unwrap(AlertDialog);
+const AlertDialogUnwrappedNaked = unwrap(AlertDialogUnwrapped);
 
 const defaultProps = {
   open: true,
@@ -26,6 +27,12 @@ const defaultProps = {
     primary: "primary"
   }
 };
+
+const options = {
+  untilSelector: "Button"
+};
+const muiShallow = createShallow(options);
+const muiMount = createMount();
 
 /**
  * Factory function to create a ShallowWrapper for the AlertDialog component
@@ -46,8 +53,20 @@ describe("<AlertDialog />", () => {
   });
 
   it("renders imported MUI theme without error", () => {
-    // the one below doesn't work with either AlertDialog, AlertDialogNaked, or AlertDialogUnwrapped -- test fails.
-    // const wrapper = mount(
+    const theme = {
+      palette: {
+        danger: {
+          main: "#b71c1c"
+        },
+        primary: {
+          main: "#b71c1c"
+        }
+      }
+    };
+    const stylesTest = styles(theme);
+    console.log(stylesTest);
+    // the one below doesn't work with either AlertDialog, AlertDialogNaked, or AlertDialogUnwrapped -- test fails (TypeError: Cannot read property 'main' of undefined), or for AlertDialogUnwrappedNaked: TypeError: Cannot read property 'values' of undefined
+    // const wrapper = muiMount(
     //   <MuiThemeProvider
     //     theme={{
     //       palette: {
@@ -57,20 +76,29 @@ describe("<AlertDialog />", () => {
     //       }
     //     }}
     //   >
-    //     <AlertDialog {...defaultProps} />
+    //     <AlertDialogUnwrappedNaked {...defaultProps} />
     //   </MuiThemeProvider>
     // );
     // const wrapper = mount(<StyledAlertDialog {...defaultProps} />);
     const testStyles = {};
     // const StyledAlertDialogWithStyles = StyledAlertDialog(testStyles);
-    //
+
     // below version makes test pass but fails to cover style/theme code block
     // const wrapper = mount(<AlertDialogNaked {...defaultProps} />).find('[data-test="component-alert-dialog"]');
 
-    const muiShallow = createShallow();
-    const muiMount = createMount();
+    // below: TypeError: Cannot read property 'main' of undefined
+    // const wrapper = muiShallow(<AlertDialog {...defaultProps} />);
 
-    // below passes tests but doesn't cover theme function
+    // below 4 versions pass test but don't cover theme func
+    // const wrapper = muiShallow(<AlertDialogNaked {...defaultProps} />);
+    // const wrapper = muiShallow(<AlertDialogUnwrappedNaked {...defaultProps} />);
+    // const wrapper = muiMount(<AlertDialogUnwrappedNaked {...defaultProps} />);
+    // const wrapper = muiMount(<AlertDialogNaked {...defaultProps} />);
+
+    // below throws TypeError: Cannot read property 'main' of undefined
+    // const wrapper = muiMount(<AlertDialog {...defaultProps} />);
+
+    // below passes test  but doesn't cover theme function
     const wrapper = createMount(
       <MuiThemeProvider
         theme={{
