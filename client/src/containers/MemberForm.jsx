@@ -515,12 +515,6 @@ MemberForm.propTypes = {
     }),
     loading: PropTypes.bool
   }).isRequired,
-  apiContent: PropTypes.shape({
-    handleInput: PropTypes.func,
-    handleCheckbox: PropTypes.func,
-    handleSelect: PropTypes.func,
-    clearForm: PropTypes.func
-  }),
   classes: PropTypes.object
 };
 

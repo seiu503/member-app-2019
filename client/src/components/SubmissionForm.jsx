@@ -1,17 +1,22 @@
 import React from "react";
-import { Field, reduxForm, Form } from "redux-form";
-import { connect } from "react-redux";
+import { Field, reduxForm } from "redux-form";
 import localIpUrl from "local-ip-url";
 import uuid from "uuid";
+import PropTypes from "prop-types";
 
 import { withStyles } from "@material-ui/core/styles";
-import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import Checkbox from "@material-ui/core/Checkbox";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-// import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
+import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
-import * as formElements from "../utils/formElements";
-import * as validate from "../utils/validators";
+// import * as validate from "../utils/validators";
 
 const styles = theme => ({
   root: {},
@@ -51,13 +56,107 @@ const styles = theme => ({
   }
 });
 
-class SubmissionForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+let SubmissionForm = props => {
+  const { classes } = props;
+  const stateList = [
+    "",
+    "AL",
+    "AK",
+    "AZ",
+    "AR",
+    "CA",
+    "CO",
+    "CT",
+    "DE",
+    "FL",
+    "GA",
+    "HI",
+    "ID",
+    "IL",
+    "IN",
+    "IA",
+    "KS",
+    "KY",
+    "LA",
+    "ME",
+    "MD",
+    "MA",
+    "MI",
+    "MN",
+    "MS",
+    "MO",
+    "MT",
+    "NE",
+    "NV",
+    "NH",
+    "NJ",
+    "NM",
+    "NY",
+    "NC",
+    "ND",
+    "OH",
+    "OK",
+    "OR",
+    "PA",
+    "RI",
+    "SC",
+    "SD",
+    "TN",
+    "TX",
+    "UT",
+    "VT",
+    "VA",
+    "WA",
+    "WV",
+    "WI",
+    "WY"
+  ];
 
-  getMaxDay = month => {
+  const renderTextField = ({
+    input,
+    label,
+    meta: { touched, error },
+    ...custom
+  }) => (
+    <TextField
+      label={label}
+      errorText={touched && error}
+      variant="outlined"
+      {...input}
+      {...custom}
+      className={classes.input}
+    />
+  );
+
+  const renderCheckbox = ({ input, label, meta: { error } }) => (
+    <FormControlLabel
+      control={
+        <Checkbox
+          color="primary"
+          checked={input.value ? true : false}
+          onCheck={input.onChange}
+          errorText={error}
+          className={classes.checkbox}
+        />
+      }
+      label={label}
+    />
+  );
+
+  const renderSelect = ({ input, label, meta: { error }, labelWidth }) => (
+    <FormControl variant="outlined" className={classes.formControl}>
+      <InputLabel htmlFor="mm">{label}</InputLabel>
+      <Select
+        native
+        onChange={input.onChange}
+        errorText={error}
+        className={classes.select}
+        input={<OutlinedInput labelWidth={labelWidth} />}
+      />
+    </FormControl>
+  );
+
+  const getMaxDay = month => {
     switch (month) {
       case "02":
         return 29;
@@ -71,8 +170,8 @@ class SubmissionForm extends React.Component {
     }
   };
 
-  dateMenuItems = mm => {
-    const max = this.getMaxDay(mm);
+  const dateptions = mm => {
+    const max = getMaxDay(mm);
     let dates = [];
     for (let i = 1; i <= max; i++) {
       if (i < 10) {
@@ -85,7 +184,7 @@ class SubmissionForm extends React.Component {
     return dates;
   };
 
-  yearMenuItems = () => {
+  const yearoptions = () => {
     let years = [];
     for (
       let i = new Date().getFullYear() - 110;
@@ -98,7 +197,7 @@ class SubmissionForm extends React.Component {
     return years;
   };
 
-  onSubmit = () => {
+  const onSubmit = values => {
     const {
       firstName,
       lastName,
@@ -119,7 +218,7 @@ class SubmissionForm extends React.Component {
       signature,
       onlineCampaignSource
       // signedApplication
-    } = this.props.form.submission;
+    } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
 
     const body = {
@@ -150,234 +249,273 @@ class SubmissionForm extends React.Component {
       immediate_past_member_status: null
     };
 
-    return this.props.apiSubmission
+    return props.apiSubmission
       .addSubmission(body)
       .then(result => {
-        if (
-          result.type === "ADD_CONTENT_FAILURE" ||
-          this.props.form.submission.error
-        ) {
+        if (result.type === "ADD_CONTENT_FAILURE" || props.submission.error) {
           openSnackbar(
             "error",
-            this.props.form.submission.error ||
+            props.submission.error ||
               "An error occurred while trying to submit your information."
           );
         } else {
           openSnackbar("success", "Your Submission was Successful!");
-          this.props.apiSubmission.clearForm();
+          props.apiSubmission.clearForm();
           // this.props.history.push("/library");
         }
       })
       .catch(err => openSnackbar("error", err));
   };
-
-  render() {
-    const { classes } = this.props;
-    return (
-      <Form
-        className={classes.form}
+  const { handleSubmit } = props;
+  return (
+    <div className={classes.container}>
+      <form
         id="submissionForm"
-        onSubmit={this.onSubmit}
+        onSubmit={handleSubmit(values => onSubmit(values))}
+        className={classes.form}
       >
-        <label htmlFor="firstName">First Name</label>
         <Field
           name="firstName"
           id="firstName"
           label="firstName"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="lastName">Last Name</label>
         <Field
           name="lastName"
           id="lastName"
           label="lastName"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="lastName">Last Name</label>
         <Field
+          label="mm"
           name="mm"
           id="mm"
           type="select"
-          component={formElements.renderSelect}
+          component={renderSelect}
+          labelWidth={28}
         >
-          <MenuItem value="" />
-          <MenuItem value="01">January</MenuItem>
-          <MenuItem value="02">February</MenuItem>
-          <MenuItem value="03">March</MenuItem>
-          <MenuItem value="04">April</MenuItem>
-          <MenuItem value="05">May</MenuItem>
-          <MenuItem value="06">June</MenuItem>
-          <MenuItem value="07">July</MenuItem>
-          <MenuItem value="08">August</MenuItem>
-          <MenuItem value="09">September</MenuItem>
-          <MenuItem value="10">October</MenuItem>
-          <MenuItem value="11">November</MenuItem>
-          <MenuItem value="12">December</MenuItem>
+          <option value="" />
+          <option value="01">January</option>
+          <option value="02">February</option>
+          <option value="03">March</option>
+          <option value="04">April</option>
+          <option value="05">May</option>
+          <option value="06">June</option>
+          <option value="07">July</option>
+          <option value="08">August</option>
+          <option value="09">September</option>
+          <option value="10">October</option>
+          <option value="11">November</option>
+          <option value="12">December</option>
         </Field>
 
-        <label htmlFor="dd">dd</label>
-        <Field
-          name="dd"
-          id="dd"
-          type="select"
-          component={formElements.renderSelect}
-        >
-          {this.dateMenuItems(this.props.form.submission.mm).map(item => (
-            <MenuItem key={item} value={item}>
-              {item}
-            </MenuItem>
-          ))}
-        </Field>
+        {/*
+      <Field
+        name="dd"
+        id="dd"
+        type="select"
+        component={renderSelect}
+        labelWidth={20}
+      >
+        {dateoptions(this.props.submission.mm).map(item => (
+          <option key={item} value={item}>
+            {item}
+          </option>
+        ))}
+        </Field>*/}
 
-        <label htmlFor="yyyy">yyyy</label>
         <Field
+          label="yyyy"
           name="yyyy"
           id="yyyy"
           type="select"
-          component={formElements.renderSelect}
+          component={renderSelect}
+          labelWidth={30}
         >
-          {this.yearMenuItems().map(item => (
-            <MenuItem key={item} value={item}>
+          {yearoptions().map(item => (
+            <option key={item} value={item}>
               {item}
-            </MenuItem>
+            </option>
           ))}
         </Field>
 
-        <label htmlFor="preferredLanguage">preferredLanguage</label>
         <Field
+          label="preferredLanguage"
           name="preferredLanguage"
           id="preferredLanguage"
           type="select"
-          component={formElements.renderSelect}
+          component={renderSelect}
+          labelWidth={130}
         >
-          <MenuItem value="" />
-          <MenuItem value={"english"}>English</MenuItem>
-          <MenuItem value={"russian"}>Russian</MenuItem>
-          <MenuItem value={"spanish"}>Spanish</MenuItem>
+          <option value="" />
+          <option value={"english"}>English</option>
+          <option value={"russian"}>Russian</option>
+          <option value={"spanish"}>Spanish</option>
         </Field>
 
-        <label htmlFor="homeStreet">Home Street</label>
         <Field
+          label="homeStreet"
           name="homeStreet"
           id="homeStreet"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="homeCity">Home City</label>
         <Field
+          label="homeCity"
           name="homeCity"
           id="homeCity"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="homeState">Home State</label>
         <Field
+          label="homeState"
           name="homeState"
           id="homeState"
           type="select"
-          component={formElements.renderSelect}
+          component={renderSelect}
+          labelWidth={80}
         >
-          {formElements.stateList.map(item => (
-            <MenuItem key={item} value={item}>
+          {stateList.map(item => (
+            <option key={item} value={item}>
               {item}
-            </MenuItem>
+            </option>
           ))}
         </Field>
-        <label htmlFor="homePostalCode">Home Postal Code</label>
+
         <Field
+          label="homePostalCode"
           name="homePostalCode"
           id="homePostalCode"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="homeEmail">Home Email</label>
-        <Field name="homeEmail" id="homeEmail" type="email" />
-
-        <label htmlFor="mobilePhone">Mobile Phone</label>
-        <Field name="mobilePhone" id="mobilePhone" type="tel" />
-
-        <label htmlFor="employerName">Employer Name</label>
         <Field
+          label="homeEmail"
+          name="homeEmail"
+          id="homeEmail"
+          type="email"
+          component={renderTextField}
+        />
+
+        <Field
+          label="mobilePhone"
+          name="mobilePhone"
+          id="mobilePhone"
+          type="tel"
+          component={renderTextField}
+        />
+
+        <Field
+          label="employerName"
           name="employerName"
           id="employerName"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="agencyNumber">Agency Number</label>
         <Field
+          label="agencyNumber"
           name="agencyNumber"
           id="agencyNumber"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="textAuthOptOut">Opt Out of Text Alerts</label>
         <Field
+          label="textAuthOptOut"
           name="textAuthOptOut"
           id="textAuthOptOut"
           type="checkbox"
-          component={formElements.renderCheckbox}
+          component={renderCheckbox}
         />
 
-        <label htmlFor="termsAgree">Terms Agree</label>
         <Field
+          label="termsAgree"
           name="termsAgree"
           id="termsAgree"
           type="checkbox"
-          component={formElements.renderCheckbox}
+          component={renderCheckbox}
         />
 
-        <label htmlFor="signature">Signature</label>
         <Field
+          label="signature"
           name="signature"
           id="signature"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <label htmlFor="signedApplication">Signed Application</label>
         <Field
+          label="signedApplication"
           name="signedApplication"
           id="signedApplication"
           type="checkbox"
-          component={formElements.renderCheckbox}
+          component={renderCheckbox}
         />
 
-        <label htmlFor="onlineCampaignSource">Online Campaign Source</label>
         <Field
+          label="onlineCampaignSource"
           name="onlineCampaignSource"
           id="onlineCampaignSource"
           type="text"
-          component={formElements.renderTextField}
+          component={renderTextField}
         />
 
-        <ButtonWithSpinner type="submit">Submit</ButtonWithSpinner>
-      </Form>
-    );
-  }
-}
+        <ButtonWithSpinner
+          type="submit"
+          color="secondary"
+          className={classes.formButton}
+          variant="contained"
+          // loading={props.submission.loading}
+        >
+          Submit
+        </ButtonWithSpinner>
+      </form>
+    </div>
+  );
+};
 
-const mapStateToProps = state => ({
-  submission: state.form.submission
-});
+SubmissionForm.propTypes = {
+  type: PropTypes.string,
+  appState: PropTypes.shape({
+    authToken: PropTypes.string
+  }),
+  submission: PropTypes.shape({
+    form: PropTypes.shape({
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      dd: PropTypes.string,
+      mm: PropTypes.string,
+      yyyy: PropTypes.string,
+      preferredLanguage: PropTypes.string,
+      homeStreet: PropTypes.string,
+      homeCity: PropTypes.string,
+      homePostalCode: PropTypes.string,
+      homeState: PropTypes.string,
+      homeEmail: PropTypes.string,
+      mobilePhone: PropTypes.string,
+      employerName: PropTypes.string,
+      agencyNumber: PropTypes.string,
+      textAuthOptOut: PropTypes.bool,
+      termsAgree: PropTypes.bool,
+      signature: PropTypes.string,
+      signedApplication: PropTypes.bool,
+      onlineCampaignSource: PropTypes.string
+    }),
+    loading: PropTypes.bool
+  }).isRequired,
+  classes: PropTypes.object
+};
 
-const mapDispatchToProps = dispatch => ({});
+SubmissionForm = reduxForm({
+  form: "submission"
+})(SubmissionForm);
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(
-    reduxForm({
-      form: "submission"
-    })(SubmissionForm)
-  )
-);
+export default withStyles(styles)(SubmissionForm);

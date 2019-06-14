@@ -1,9 +1,8 @@
 import { createStore, applyMiddleware, compose } from "redux";
 import { apiMiddleware } from "redux-api-middleware";
-import thunk from "redux-thunk";
 import rootReducer from "./reducers/";
 
-const middleware = applyMiddleware(apiMiddleware, thunk);
+const middleware = applyMiddleware(apiMiddleware);
 
 // these two lines are for storeFactory in testUtils
 export const middlewares = [apiMiddleware];
