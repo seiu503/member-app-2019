@@ -1,19 +1,10 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
-import {
-  unwrap,
-  createShallow,
-  createMount
-} from "@material-ui/core/test-utils";
-// import AlertDialog, { StyledAlertDialog } from "../../components/AlertDialog";
-import AlertDialog from "../../components/AlertDialog";
-import AlertDialogUnwrapped from "../../components/AlertDialog";
-import { styles } from "../../components/AlertDialog";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { unwrap } from "@material-ui/core/test-utils";
+import AlertDialog, { styles } from "../../components/AlertDialog";
 
 const AlertDialogNaked = unwrap(AlertDialog);
-const AlertDialogUnwrappedNaked = unwrap(AlertDialogUnwrapped);
 
 const defaultProps = {
   open: true,
@@ -27,12 +18,6 @@ const defaultProps = {
     primary: "primary"
   }
 };
-
-const options = {
-  untilSelector: "Button"
-};
-const muiShallow = createShallow(options);
-const muiMount = createMount();
 
 /**
  * Factory function to create a ShallowWrapper for the AlertDialog component
@@ -52,7 +37,7 @@ describe("<AlertDialog />", () => {
     expect(component.length).toBe(1);
   });
 
-  it("renders imported MUI theme without error", () => {
+  it("this is kind of a useless test to get coverage of the styles function...", () => {
     const theme = {
       palette: {
         danger: {
@@ -63,58 +48,7 @@ describe("<AlertDialog />", () => {
         }
       }
     };
-    const stylesTest = styles(theme);
-    console.log(stylesTest);
-    // the one below doesn't work with either AlertDialog, AlertDialogNaked, or AlertDialogUnwrapped -- test fails (TypeError: Cannot read property 'main' of undefined), or for AlertDialogUnwrappedNaked: TypeError: Cannot read property 'values' of undefined
-    // const wrapper = muiMount(
-    //   <MuiThemeProvider
-    //     theme={{
-    //       palette: {
-    //         danger: {
-    //           main: '#b71c1c'
-    //         }
-    //       }
-    //     }}
-    //   >
-    //     <AlertDialogUnwrappedNaked {...defaultProps} />
-    //   </MuiThemeProvider>
-    // );
-    // const wrapper = mount(<StyledAlertDialog {...defaultProps} />);
-    const testStyles = {};
-    // const StyledAlertDialogWithStyles = StyledAlertDialog(testStyles);
-
-    // below version makes test pass but fails to cover style/theme code block
-    // const wrapper = mount(<AlertDialogNaked {...defaultProps} />).find('[data-test="component-alert-dialog"]');
-
-    // below: TypeError: Cannot read property 'main' of undefined
-    // const wrapper = muiShallow(<AlertDialog {...defaultProps} />);
-
-    // below 4 versions pass test but don't cover theme func
-    // const wrapper = muiShallow(<AlertDialogNaked {...defaultProps} />);
-    // const wrapper = muiShallow(<AlertDialogUnwrappedNaked {...defaultProps} />);
-    // const wrapper = muiMount(<AlertDialogUnwrappedNaked {...defaultProps} />);
-    // const wrapper = muiMount(<AlertDialogNaked {...defaultProps} />);
-
-    // below throws TypeError: Cannot read property 'main' of undefined
-    // const wrapper = muiMount(<AlertDialog {...defaultProps} />);
-
-    // below passes test  but doesn't cover theme function
-    const wrapper = createMount(
-      <MuiThemeProvider
-        theme={{
-          palette: {
-            danger: {
-              main: "#b71c1c"
-            }
-          }
-        }}
-      >
-        <AlertDialog {...defaultProps} />
-      </MuiThemeProvider>
-    );
-
-    // below line passes tests but doesn't cover theme function
-    // const wrapper = muiShallow(<AlertDialogNaked {...defaultProps} />);
+    styles(theme);
   });
 
   test("renders a dialog", () => {
@@ -167,12 +101,6 @@ describe("<AlertDialog />", () => {
     const component = findByTestAttr(wrapper, "button-action");
     expect(component.props().className).toBe("primary");
   });
-
-  // test("styles imported correctly from MUI theme", () => {
-  //   const wrapper = shallow(<AlertDialog />);
-  //   const component = findByTestAttr(wrapper, "component-alert-dialog");
-  //   expect(component.length).toBe(1);
-  // });
 
   test("calls `action` prop on action button click", () => {
     // create a mock function so we can see whether it's called on click

@@ -4,12 +4,12 @@ import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { withStyles } from "@material-ui/core/styles";
 
-const withStylesProps = styles => Component => props => {
+export const withStylesProps = styles => Component => props => {
   const Comp = withStyles(styles(props))(Component);
   return <Comp {...props} />;
 };
 
-const styles = props => theme => {
+export const styles = props => theme => {
   let color =
     props.variant && props.variant === "raised"
       ? theme.palette[props.color].main
@@ -23,7 +23,7 @@ const styles = props => theme => {
   };
 };
 
-export const SpinnerAdornment = props => (
+export const SpinnerAdornmentBase = props => (
   <CircularProgress
     className={props.classes.spinner}
     size={20}
@@ -31,4 +31,5 @@ export const SpinnerAdornment = props => (
   />
 );
 
-export default withStylesProps(styles)(props => SpinnerAdornment);
+const SpinnerAdornment = withStylesProps(styles)(props => SpinnerAdornmentBase);
+export default SpinnerAdornment;

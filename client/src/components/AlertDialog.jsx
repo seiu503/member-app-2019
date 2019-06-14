@@ -8,25 +8,22 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import { withStyles } from "@material-ui/core/styles";
 
-export const styles = theme => {
-  console.log(theme.palette);
-  return {
-    root: {
-      margin: 0,
-      padding: 20
-    },
-    danger: {
-      backgroundColor: theme.palette.danger.main,
-      color: "white",
-      "&:hover": {
-        backgroundColor: theme.palette.danger.light
-      }
-    },
-    primary: {
-      backgroundColor: theme.palette.primary.main
+export const styles = theme => ({
+  root: {
+    margin: 0,
+    padding: 20
+  },
+  danger: {
+    backgroundColor: theme.palette.danger.main,
+    color: "white",
+    "&:hover": {
+      backgroundColor: theme.palette.danger.light
     }
-  };
-};
+  },
+  primary: {
+    backgroundColor: theme.palette.primary.main
+  }
+});
 
 export const AlertDialogUnwrapped = props => (
   <div data-test="component-alert-dialog">
@@ -88,7 +85,4 @@ AlertDialogUnwrapped.propTypes = {
   classes: PropTypes.object
 };
 
-// export const StyledAlertDialog = (testStyles) => withStyles(testStyles)(AlertDialog);
 export default withStyles(styles)(AlertDialogUnwrapped);
-// const AlertDialog = withStyles(styles)(AlertDialogUnwrapped);
-// export default AlertDialog;

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="530" lines-covered="182" line-rate="0.34340000000000004" branches-valid="281" branches-covered="35" branch-rate="0.1246" timestamp="1560477398563" complexity="0" version="0.1">
+<coverage lines-valid="528" lines-covered="186" line-rate="0.35229999999999995" branches-valid="281" branches-covered="40" branch-rate="0.1423" timestamp="1560491870639" complexity="0" version="0.1">
   <sources>
     <source>/Users/sarahschneider/Documents/_Sarah/projects/code/_seiu503/member-app-2019/client</source>
   </sources>
@@ -247,7 +247,7 @@
         </class>
       </classes>
     </package>
-    <package name="src.components" line-rate="0.875" branch-rate="0.75">
+    <package name="src.components" line-rate="1" branch-rate="1">
       <classes>
         <class name="AlertDialog.jsx" filename="src/components/AlertDialog.jsx" line-rate="1" branch-rate="1">
           <methods>
@@ -258,17 +258,15 @@
             </method>
             <method name="(anonymous_1)" hits="11" signature="()V">
               <lines>
-                <line number="31" hits="11"/>
+                <line number="28" hits="11"/>
               </lines>
             </method>
           </methods>
           <lines>
             <line number="11" hits="2" branch="false"/>
-            <line number="12" hits="1" branch="false"/>
-            <line number="13" hits="1" branch="false"/>
-            <line number="31" hits="2" branch="false"/>
-            <line number="32" hits="11" branch="false"/>
-            <line number="81" hits="2" branch="false"/>
+            <line number="28" hits="2" branch="false"/>
+            <line number="29" hits="11" branch="false"/>
+            <line number="78" hits="2" branch="false"/>
           </lines>
         </class>
         <class name="ButtonWithSpinner.jsx" filename="src/components/ButtonWithSpinner.jsx" line-rate="1" branch-rate="1">
@@ -288,9 +286,9 @@
         </class>
         <class name="ContentTile.jsx" filename="src/components/ContentTile.jsx" line-rate="1" branch-rate="1">
           <methods>
-            <method name="(anonymous_0)" hits="0" signature="()V">
+            <method name="(anonymous_0)" hits="1" signature="()V">
               <lines>
-                <line number="7" hits="0"/>
+                <line number="7" hits="1"/>
               </lines>
             </method>
             <method name="(anonymous_1)" hits="6" signature="()V">
@@ -361,23 +359,23 @@
             <line number="12" hits="2" branch="false"/>
           </lines>
         </class>
-        <class name="ScrollToTop.jsx" filename="src/components/ScrollToTop.jsx" line-rate="1" branch-rate="0.75">
+        <class name="ScrollToTop.jsx" filename="src/components/ScrollToTop.jsx" line-rate="1" branch-rate="1">
           <methods>
-            <method name="(anonymous_0)" hits="1" signature="()V">
+            <method name="(anonymous_0)" hits="2" signature="()V">
               <lines>
-                <line number="5" hits="1"/>
+                <line number="5" hits="2"/>
               </lines>
             </method>
-            <method name="(anonymous_1)" hits="2" signature="()V">
+            <method name="(anonymous_1)" hits="5" signature="()V">
               <lines>
-                <line number="14" hits="2"/>
+                <line number="14" hits="5"/>
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="6" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="6" hits="2" branch="true" condition-coverage="100% (2/2)"/>
             <line number="10" hits="1" branch="false"/>
-            <line number="15" hits="2" branch="false"/>
+            <line number="15" hits="5" branch="false"/>
           </lines>
         </class>
         <class name="Spinner.jsx" filename="src/components/Spinner.jsx" line-rate="1" branch-rate="1">
@@ -395,7 +393,7 @@
             <line number="21" hits="2" branch="false"/>
           </lines>
         </class>
-        <class name="SpinnerAdornment.jsx" filename="src/components/SpinnerAdornment.jsx" line-rate="0.4" branch-rate="0">
+        <class name="SpinnerAdornment.jsx" filename="src/components/SpinnerAdornment.jsx" line-rate="1" branch-rate="1">
           <methods>
             <method name="(anonymous_0)" hits="3" signature="()V">
               <lines>
@@ -407,24 +405,24 @@
                 <line number="7" hits="3"/>
               </lines>
             </method>
-            <method name="(anonymous_2)" hits="0" signature="()V">
+            <method name="(anonymous_2)" hits="1" signature="()V">
               <lines>
-                <line number="7" hits="0"/>
+                <line number="7" hits="1"/>
               </lines>
             </method>
-            <method name="(anonymous_3)" hits="0" signature="()V">
+            <method name="(anonymous_3)" hits="3" signature="()V">
               <lines>
-                <line number="12" hits="0"/>
+                <line number="12" hits="3"/>
               </lines>
             </method>
-            <method name="(anonymous_4)" hits="0" signature="()V">
+            <method name="(anonymous_4)" hits="2" signature="()V">
               <lines>
-                <line number="12" hits="0"/>
+                <line number="12" hits="2"/>
               </lines>
             </method>
-            <method name="(anonymous_5)" hits="2" signature="()V">
+            <method name="(anonymous_5)" hits="1" signature="()V">
               <lines>
-                <line number="26" hits="2"/>
+                <line number="26" hits="1"/>
               </lines>
             </method>
             <method name="(anonymous_6)" hits="0" signature="()V">
@@ -435,15 +433,15 @@
           </methods>
           <lines>
             <line number="7" hits="3" branch="false"/>
-            <line number="8" hits="0" branch="false"/>
-            <line number="9" hits="0" branch="false"/>
+            <line number="8" hits="1" branch="false"/>
+            <line number="9" hits="1" branch="false"/>
             <line number="12" hits="3" branch="false"/>
-            <line number="14" hits="0" branch="true" condition-coverage="0% (0/4)"/>
-            <line number="17" hits="0" branch="false"/>
-            <line number="18" hits="0" branch="false"/>
+            <line number="14" hits="2" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="17" hits="2" branch="false"/>
+            <line number="18" hits="2" branch="false"/>
             <line number="26" hits="3" branch="false"/>
-            <line number="27" hits="2" branch="false"/>
-            <line number="34" hits="0" branch="false"/>
+            <line number="27" hits="1" branch="false"/>
+            <line number="34" hits="3" branch="false"/>
           </lines>
         </class>
       </classes>
