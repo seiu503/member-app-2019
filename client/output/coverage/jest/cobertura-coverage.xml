@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
-<coverage lines-valid="528" lines-covered="187" line-rate="0.3542" branches-valid="282" branches-covered="42" branch-rate="0.1489" timestamp="1560574639975" complexity="0" version="0.1">
+<coverage lines-valid="527" lines-covered="186" line-rate="0.3529" branches-valid="282" branches-covered="42" branch-rate="0.1489" timestamp="1560627574057" complexity="0" version="0.1">
   <sources>
     <source>/Users/sarahschneider/Documents/_Sarah/projects/code/_seiu503/member-app-2019/client</source>
   </sources>
@@ -446,7 +446,7 @@
         </class>
       </classes>
     </package>
-    <package name="src.containers" line-rate="0.3232" branch-rate="0.1161">
+    <package name="src.containers" line-rate="0.31980000000000003" branch-rate="0.1161">
       <classes>
         <class name="ContentLibrary.jsx" filename="src/containers/ContentLibrary.jsx" line-rate="0.1081" branch-rate="0">
           <methods>
@@ -667,19 +667,14 @@
                 <line number="13" hits="2"/>
               </lines>
             </method>
-            <method name="(anonymous_2)" hits="5" signature="()V">
+            <method name="(anonymous_2)" hits="9" signature="()V">
               <lines>
-                <line number="18" hits="5"/>
+                <line number="18" hits="9"/>
               </lines>
             </method>
-            <method name="(anonymous_3)" hits="0" signature="()V">
+            <method name="(anonymous_3)" hits="1" signature="()V">
               <lines>
-                <line number="43" hits="0"/>
-              </lines>
-            </method>
-            <method name="(anonymous_4)" hits="0" signature="()V">
-              <lines>
-                <line number="47" hits="0"/>
+                <line number="43" hits="1"/>
               </lines>
             </method>
           </methods>
@@ -688,10 +683,9 @@
             <line number="12" hits="3" branch="false"/>
             <line number="13" hits="3" branch="false"/>
             <line number="14" hits="2" branch="false"/>
-            <line number="19" hits="5" branch="false"/>
+            <line number="19" hits="9" branch="false"/>
             <line number="36" hits="2" branch="false"/>
             <line number="43" hits="2" branch="false"/>
-            <line number="47" hits="2" branch="false"/>
           </lines>
         </class>
         <class name="NavBar.jsx" filename="src/containers/NavBar.jsx" line-rate="1" branch-rate="1">
@@ -830,7 +824,7 @@
             </method>
             <method name="(anonymous_5)" hits="0" signature="()V">
               <lines>
-                <line number="94" hits="0"/>
+                <line number="102" hits="0"/>
               </lines>
             </method>
           </methods>
@@ -844,12 +838,12 @@
             <line number="41" hits="14" branch="false"/>
             <line number="48" hits="14" branch="false"/>
             <line number="80" hits="2" branch="false"/>
-            <line number="83" hits="3" branch="true" condition-coverage="100% (5/5)"/>
-            <line number="84" hits="1" branch="false"/>
-            <line number="85" hits="2" branch="true" condition-coverage="50% (1/2)"/>
-            <line number="91" hits="2" branch="false"/>
-            <line number="93" hits="0" branch="false"/>
-            <line number="94" hits="0" branch="false"/>
+            <line number="88" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="92" hits="1" branch="false"/>
+            <line number="93" hits="2" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="99" hits="2" branch="false"/>
+            <line number="101" hits="0" branch="false"/>
+            <line number="102" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="TextInputForm.jsx" filename="src/containers/TextInputForm.jsx" line-rate="0.0541" branch-rate="0">

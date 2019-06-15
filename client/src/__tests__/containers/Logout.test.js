@@ -1,13 +1,16 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
-import { Logout } from "../../containers/Logout";
+import { Logout, mapDispatchToProps } from "../../containers/Logout";
+import configureMockStore from "redux-mock-store";
+const mockStore = configureMockStore();
+let store;
 
 const defaultProps = {
   actions: {
-    logout: jest.fn()
+    logout: () => ({ type: "LOGOUT" })
   },
-  classes: {}
+  classes: { test: "test" }
 };
 
 // mock setTimeout
@@ -20,14 +23,14 @@ jest.useFakeTimers();
  * @return {ShallowWrapper}
  */
 const setup = (props = {}) => {
+  store = mockStore(defaultProps);
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<Logout {...setupProps} />);
+  return shallow(<Logout {...setupProps} store={store} />);
 };
 
 describe("<Logout />", () => {
   // localStorage is being mocked by the npm package `jest-localstorage-mock`
   // which is required in src/setupTests.js
-
   afterAll(() => {
     // clear the localStorage object and the mock functions after these tests
     localStorage.__STORE__ = {};
@@ -38,6 +41,33 @@ describe("<Logout />", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "component-logout");
     expect(component.length).toBe(1);
+  });
+
+  it("has access to `logout` prop", () => {
+    const wrapper = setup();
+    expect(typeof wrapper.instance().props.actions.logout).toBe("function");
+  });
+
+  it("has access to `classes` prop", () => {
+    const wrapper = setup();
+    expect(typeof wrapper.instance().props.classes).toBe("object");
+  });
+
+  it("should receive correct props from redux store", () => {
+    const wrapper = setup();
+    expect(wrapper.instance().props.classes.test).toBe("test");
+  });
+
+  it("should dispatch redux `logout` action", () => {
+    // test that the component events dispatch the expected actions
+    const wrapper = setup();
+    const logout = wrapper.instance().props.actions.logout;
+    store.dispatch(logout());
+
+    const actions = store.getActions();
+    expect(actions).toEqual([{ type: "LOGOUT" }]);
+    const dispatch = jest.fn();
+    mapDispatchToProps(dispatch);
   });
 
   test("renders a message", () => {
