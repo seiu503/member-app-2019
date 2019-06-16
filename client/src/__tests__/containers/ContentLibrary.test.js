@@ -105,17 +105,13 @@ describe("<ContentLibrary />", () => {
     expect(wrapper.instance().props.classes.test).toBe("test");
   });
 
-  it("should dispatch redux `getAllContent` action", () => {
-    // test that the component events dispatch the expected actions
-    // const wrapper = setup();
-    // console.log(wrapper.instance().props);
-    // const getAllContent = wrapper.instance().props.apiContent.getAllContent;
-    // store.dispatch(getAllContent());
-    // const actions = store.getActions();
-    // expect(actions).toEqual([{ type: "GET_ALL_CONTENT" }]);
-    // const dispatch = jest.fn();
-    // mapDispatchToProps(dispatch);
-  });
+  // test this.deleteContent method
+
+  // test this.props.apiContent.handleDeleteClose method
+
+  // test that FAB click calls handleDeleteDialogOpen
+
+  // test that FAB Edit click calls this.props.history.push w/correct edit route
 
   test("renders an alert dialog when `deleteDialogOpen` is true", () => {
     const wrapper = shallow(
@@ -124,14 +120,6 @@ describe("<ContentLibrary />", () => {
         content={{ ...defaultProps.content, deleteDialogOpen: true }}
       />
     );
-
-    // const wrapper = mount(
-    //   <MuiThemeProvider
-    //     theme={theme}
-    //   >
-    //     <ContentLibrary { ...defaultProps } content={{ ...defaultProps.content, deleteDialogOpen: true } }/>
-    //   </MuiThemeProvider>
-    // );
     const component = findByTestAttr(wrapper, "alert-dialog");
     expect(component.length).toBe(1);
   });
@@ -232,6 +220,8 @@ describe("<ContentLibrary />", () => {
     // restore mock
     getAllContentMock.mockRestore();
   });
+
+  // test negative branches for componentDidMount (doesn't call action if conditions not met)
 
   test("`handleDeleteDialogOpen` method calls `handleDeleteOpen` prop if passed a tile and logged in", () => {
     // create a mock function so we can see whether it's called on component mount
