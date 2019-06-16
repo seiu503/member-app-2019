@@ -95,7 +95,7 @@ const styles = theme => ({
   }
 });
 
-class ContentLibrary extends React.Component {
+export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
     // console.log(authToken);
@@ -170,7 +170,7 @@ class ContentLibrary extends React.Component {
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
-      <React.Fragment>
+      <div data-test="component-content-library">
         {this.props.content.loading && <Spinner />}
         {this.props.content.deleteDialogOpen && (
           <AlertDialog
@@ -184,6 +184,7 @@ class ContentLibrary extends React.Component {
               this.props.apiContent.handleDeleteClose();
             }}
             buttonText="Delete"
+            data-test="alert-dialog"
           />
         )}
         <div className={classes.section}>
@@ -193,19 +194,21 @@ class ContentLibrary extends React.Component {
             gutterBottom
             className={classes.head}
             style={{ paddingTop: 20 }}
+            data-test="headline"
           >
             Content Library
           </Typography>
           <div className={classes.gridWrapper}>
             {this.props.content.allContent.map(tile => {
               return (
-                <div className={classes.card} key={tile.id}>
+                <div className={classes.card} key={tile.id} data-test="tile">
                   <div className={classes.actionArea}>
                     <FAB
                       className={classes.buttonDelete}
                       onClick={() => this.handleDeleteDialogOpen(tile)}
                       color="primary"
                       aria-label="Delete Content"
+                      data-test="delete"
                     >
                       <Delete />
                     </FAB>
@@ -216,6 +219,7 @@ class ContentLibrary extends React.Component {
                       }
                       color="primary"
                       aria-label="Edit Content"
+                      data-test="edit"
                     >
                       <Create />
                     </FAB>
@@ -226,22 +230,22 @@ class ContentLibrary extends React.Component {
             })}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
 
-ContentLibrary.propTypes = {
+ContentLibraryUnconnected.propTypes = {
   classes: PropTypes.object.isRequired,
   appState: PropTypes.shape({
-    loggedIn: PropTypes.bool
+    loggedIn: PropTypes.bool,
+    authToken: PropTypes.string
   }),
-  handleDeleteDialogOpen: PropTypes.func,
   content: PropTypes.shape({
     filteredList: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        contentType: PropTypes.string,
+        content_type: PropTypes.string,
         content: PropTypes.string,
         updated_at: PropTypes.string
       })
@@ -249,19 +253,21 @@ ContentLibrary.propTypes = {
     allContent: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        contentType: PropTypes.string,
+        content_type: PropTypes.string,
         content: PropTypes.string,
         updated_at: PropTypes.string
       })
     ),
     currentContent: PropTypes.shape({
       id: PropTypes.string,
-      contentType: PropTypes.string,
+      content_type: PropTypes.string,
       content: PropTypes.string,
       updated_at: PropTypes.string
     }),
+    deleteDialogOpen: PropTypes.bool,
     apiContent: PropTypes.shape({
-      getAllContent: PropTypes.func
+      getAllContent: PropTypes.func,
+      handleDeleteOpen: PropTypes.func
     })
   })
 };
@@ -281,6 +287,6 @@ export default withStyles(styles)(
     connect(
       mapStateToProps,
       mapDispatchToProps
-    )(ContentLibrary)
+    )(ContentLibraryUnconnected)
   )
 );
