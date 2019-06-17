@@ -126,6 +126,7 @@ export class ContentLibraryUnconnected extends React.Component {
 
   deleteContent = contentData => {
     const token = this.props.appState.authToken;
+    // console.log(this.props.apiContent.deleteContent);
     this.props.apiContent
       .deleteContent(token, contentData.id)
       .then(result => {
@@ -134,11 +135,14 @@ export class ContentLibraryUnconnected extends React.Component {
           // then we also have to delete it from S3 storage
           // after deleting from the postgres db
           if (contentData.content_type === "image") {
+            console.log("image");
             const keyParts = contentData.content.split("/");
             const key = keyParts[keyParts.length - 1];
+            console.log(token, key);
             this.props.apiContent
               .deleteImage(token, key)
               .then(result => {
+                console.log(result.type);
                 if (result.type === "DELETE_IMAGE_SUCCESS") {
                   openSnackbar(
                     "success",
@@ -267,7 +271,9 @@ ContentLibraryUnconnected.propTypes = {
     deleteDialogOpen: PropTypes.bool,
     apiContent: PropTypes.shape({
       getAllContent: PropTypes.func,
-      handleDeleteOpen: PropTypes.func
+      handleDeleteOpen: PropTypes.func,
+      deleteContent: PropTypes.func,
+      deleteImage: PropTypes.func
     })
   })
 };

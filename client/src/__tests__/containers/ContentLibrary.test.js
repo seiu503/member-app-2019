@@ -10,6 +10,7 @@ import ContentLibrary, {
   ContentLibraryUnconnected,
   mapDispatchToProps
 } from "../../containers/ContentLibrary";
+import { openSnackbar } from "../../containers/Notifier";
 import { BrowserRouter as Router } from "react-router-dom";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import configureMockStore from "redux-mock-store";
@@ -35,6 +36,20 @@ const theme = {
   }
 };
 
+const deleteContentMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "DELETE_CONTENT_SUCCESS" })
+  );
+const deleteImageMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({ type: "DELETE_IMAGE_SUCCESS" }));
+const getAllContentMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_ALL_CONTENT_SUCCESS" })
+  );
+
 const defaultProps = {
   appState: {
     loggedIn: true,
@@ -59,16 +74,21 @@ const defaultProps = {
     ],
     currentContent: {
       id: "5eb92d2e-ae94-47c9-bdb4-4780c3b0b33c",
-      content_type: "image",
-      content: "http:www.example.com/image.png",
+      content_type: "bodyCopy",
+      content: "Here is some body copy.",
       updated_at: "2019-06-11T16:58:01.012Z"
     }
   },
   apiContent: {
-    getAllContent: jest.fn(),
+    getAllContent: getAllContentMock,
+    deleteContent: deleteContentMock,
+    deleteImage: deleteImageMock,
     handleDeleteOpen: jest.fn()
   },
-  classes: { test: "test" }
+  classes: { test: "test" },
+  history: {
+    push: jest.fn()
+  }
 };
 
 /**
@@ -105,13 +125,77 @@ describe("<ContentLibrary />", () => {
     expect(wrapper.instance().props.classes.test).toBe("test");
   });
 
-  // test this.deleteContent method
+  test("`this.deleteContent` calls `this.props.apiContent.deleteContent`", () => {
+    const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
+    const contentData = { ...defaultProps.content.currentContent };
+    wrapper.instance().deleteContent(contentData);
+    expect(deleteContentMock.mock.calls.length).toBe(1);
+    deleteContentMock.mockRestore();
+  });
 
-  // test this.props.apiContent.handleDeleteClose method
+  test("`this.deleteContent` returns an error if api call fails", () => {
+    // const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
+    // const contentData = { junkData: 'that will fail' };
+    // wrapper.instance().deleteContent(contentData);
+    // expect(deleteContentMock.mock.calls.length).toBe(1);
+    // deleteContentMock.mockRestore();
+  });
 
-  // test that FAB click calls handleDeleteDialogOpen
+  test("if content_type = 'image', `this.deleteContent` calls `this.props.apiContent.deleteImage`", () => {
+    // const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
+    // wrapper.setProps({ content: {
+    //   ...defaultProps.content,
+    //   currentContent: { ...defaultProps.content.allContent[0] }
+    // }});
+    // const contentData = { ...defaultProps.content.currentContent }
+    // console.log(wrapper.instance().props.apiContent.deleteContent);
+    // wrapper.instance().deleteContent(contentData);
+    // expect(deleteImageMock.mock.calls.length).toBe(1);
+    // deleteImageMock.mockRestore();
+    // deleteContentMock.mockRestore();
+  });
 
-  // test that FAB Edit click calls this.props.history.push w/correct edit route
+  //**** TODO:  test this.props.apiContent.handleDeleteClose method
+
+  test("calls `handleDeleteDialogOpen` method on delete button click", () => {
+    // create a mock function so we can see whether it's called on click
+    const handleDeleteDialogOpenMock = jest.fn();
+
+    // set up unwrapped component with handleDeleteDialogOpenMock as handleDeleteDialogOpen method
+    const wrapper = mount(<ContentLibraryUnconnected {...defaultProps} />);
+    // console.log(wrapper.debug());
+    wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
+
+    // simulate click
+    const deleteButton = wrapper.find('[data-test="delete"]').first();
+    deleteButton.simulate("click");
+
+    // expect the mock to have been called once
+    expect(handleDeleteDialogOpenMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    handleDeleteDialogOpenMock.mockRestore();
+  });
+
+  test("calls `this.props.history.push` w/correct edit route on edit button click", () => {
+    // create a mock function so we can see whether it's called on click
+    const pushMock = jest.fn();
+
+    // set up unwrapped component with handleDeleteDialogOpenMock as handleDeleteDialogOpen method
+    const wrapper = mount(<ContentLibraryUnconnected {...defaultProps} />);
+    // console.log(wrapper.debug());
+    wrapper.instance().props.history.push = pushMock;
+
+    // simulate click
+    const editButton = wrapper.find('[data-test="edit"]').first();
+    editButton.simulate("click");
+
+    // expect the mock to have been called once
+    expect(pushMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    pushMock.mockRestore();
+  });
 
   test("renders an alert dialog when `deleteDialogOpen` is true", () => {
     const wrapper = shallow(
