@@ -126,7 +126,6 @@ export class ContentLibraryUnconnected extends React.Component {
 
   deleteContent = contentData => {
     const token = this.props.appState.authToken;
-    // console.log(this.props.apiContent.deleteContent);
     this.props.apiContent
       .deleteContent(token, contentData.id)
       .then(result => {

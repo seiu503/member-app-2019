@@ -25,6 +25,8 @@ const options = {
 };
 const muiShallow = createShallow(options);
 
+let deleteImageMock, deleteContentMock, getAllContentMock, wrapper;
+
 const theme = {
   palette: {
     danger: {
@@ -35,20 +37,6 @@ const theme = {
     }
   }
 };
-
-const deleteContentMock = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "DELETE_CONTENT_SUCCESS" })
-  );
-const deleteImageMock = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "DELETE_IMAGE_SUCCESS" }));
-const getAllContentMock = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_ALL_CONTENT_SUCCESS" })
-  );
 
 const defaultProps = {
   appState: {
@@ -80,9 +68,9 @@ const defaultProps = {
     }
   },
   apiContent: {
-    getAllContent: getAllContentMock,
-    deleteContent: deleteContentMock,
-    deleteImage: deleteImageMock,
+    getAllContent: jest.fn(),
+    deleteContent: jest.fn(),
+    deleteImage: jest.fn(),
     handleDeleteOpen: jest.fn()
   },
   classes: { test: "test" },
@@ -108,33 +96,58 @@ const setup = (props = {}) => {
 };
 
 describe("<ContentLibrary />", () => {
+  beforeEach(() => {
+    deleteImageMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "DELETE_IMAGE_SUCCESS" })
+      );
+    deleteContentMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "DELETE_CONTENT_SUCCESS" })
+      );
+    getAllContentMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "GET_ALL_CONTENT_SUCCESS" })
+      );
+    wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
+    wrapper.setProps({
+      ...defaultProps,
+      apiContent: {
+        deleteContent: deleteContentMock,
+        deleteImage: deleteImageMock,
+        getAllContent: getAllContentMock
+      }
+    });
+  });
+  afterEach(() => {
+    deleteImageMock.mockRestore();
+    deleteContentMock.mockRestore();
+    getAllContentMock.mockRestore();
+  });
   it("renders without error", () => {
-    const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
     const component = findByTestAttr(wrapper, "component-content-library");
     expect(component.length).toBe(1);
   });
 
   it("has access to `loggedIn` prop", () => {
-    const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
     expect(wrapper.instance().props.appState.loggedIn).toBe(true);
   });
 
   it("has access to `classes` prop", () => {
-    const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
     expect(typeof wrapper.instance().props.classes).toBe("object");
     expect(wrapper.instance().props.classes.test).toBe("test");
   });
 
   test("`this.deleteContent` calls `this.props.apiContent.deleteContent`", () => {
-    const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
     const contentData = { ...defaultProps.content.currentContent };
     wrapper.instance().deleteContent(contentData);
     expect(deleteContentMock.mock.calls.length).toBe(1);
-    deleteContentMock.mockRestore();
   });
 
   test("`this.deleteContent` returns an error if api call fails", () => {
-    // const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
     // const contentData = { junkData: 'that will fail' };
     // wrapper.instance().deleteContent(contentData);
     // expect(deleteContentMock.mock.calls.length).toBe(1);
@@ -142,17 +155,9 @@ describe("<ContentLibrary />", () => {
   });
 
   test("if content_type = 'image', `this.deleteContent` calls `this.props.apiContent.deleteImage`", () => {
-    // const wrapper = shallow(<ContentLibraryUnconnected {...defaultProps} />);
-    // wrapper.setProps({ content: {
-    //   ...defaultProps.content,
-    //   currentContent: { ...defaultProps.content.allContent[0] }
-    // }});
-    // const contentData = { ...defaultProps.content.currentContent }
-    // console.log(wrapper.instance().props.apiContent.deleteContent);
-    // wrapper.instance().deleteContent(contentData);
-    // expect(deleteImageMock.mock.calls.length).toBe(1);
-    // deleteImageMock.mockRestore();
-    // deleteContentMock.mockRestore();
+    const contentData = { ...defaultProps.content.currentContent };
+    wrapper.instance().deleteContent(contentData);
+    expect(deleteImageMock.mock.calls.length).toBe(1);
   });
 
   //**** TODO:  test this.props.apiContent.handleDeleteClose method
@@ -161,9 +166,6 @@ describe("<ContentLibrary />", () => {
     // create a mock function so we can see whether it's called on click
     const handleDeleteDialogOpenMock = jest.fn();
 
-    // set up unwrapped component with handleDeleteDialogOpenMock as handleDeleteDialogOpen method
-    const wrapper = mount(<ContentLibraryUnconnected {...defaultProps} />);
-    // console.log(wrapper.debug());
     wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
 
     // simulate click
@@ -181,9 +183,6 @@ describe("<ContentLibrary />", () => {
     // create a mock function so we can see whether it's called on click
     const pushMock = jest.fn();
 
-    // set up unwrapped component with handleDeleteDialogOpenMock as handleDeleteDialogOpen method
-    const wrapper = mount(<ContentLibraryUnconnected {...defaultProps} />);
-    // console.log(wrapper.debug());
     wrapper.instance().props.history.push = pushMock;
 
     // simulate click
@@ -198,60 +197,20 @@ describe("<ContentLibrary />", () => {
   });
 
   test("renders an alert dialog when `deleteDialogOpen` is true", () => {
-    const wrapper = shallow(
-      <ContentLibraryUnconnected
-        {...defaultProps}
-        content={{ ...defaultProps.content, deleteDialogOpen: true }}
-      />
-    );
+    wrapper.instance().props.content.deleteDialogOpen = true;
     const component = findByTestAttr(wrapper, "alert-dialog");
     expect(component.length).toBe(1);
   });
 
   test("calls `getAllContent` prop on component mount", () => {
-    // create a mock function so we can see whether it's called on component mount
-    const getAllContentMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ result: { type: "GET_ALL_CONTENT_SUCCESS" } })
-      );
-
-    const props = {
-      ...defaultProps,
-      apiContent: { getAllContent: getAllContentMock },
-      classes: {}
-    };
-
-    // set up unconnected component with getAllContentMock as getAllContent prop
-    const wrapper = shallow(<ContentLibraryUnconnected {...props} />);
-
     // run lifecycle method
     wrapper.instance().componentDidMount();
 
     // expect the mock to have been called once
     expect(getAllContentMock.mock.calls.length).toBe(1);
-
-    // restore mock
-    getAllContentMock.mockRestore();
   });
 
   test("calls `getAllContent` prop on component update (new authToken)", () => {
-    // create a mock function so we can see whether it's called on component mount
-    const getAllContentMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ result: { type: "GET_ALL_CONTENT_SUCCESS" } })
-      );
-
-    const props = {
-      ...defaultProps,
-      apiContent: { getAllContent: getAllContentMock },
-      classes: {}
-    };
-
-    // set up unconnected component with getAllContentMock as getAllContent prop
-    const wrapper = shallow(<ContentLibraryUnconnected {...props} />);
-
     const prevProps = {
       ...defaultProps,
       appState: {
@@ -261,31 +220,11 @@ describe("<ContentLibrary />", () => {
 
     // run lifecycle method
     wrapper.instance().componentDidUpdate(prevProps);
-
     // expect the mock to have been called once
     expect(getAllContentMock.mock.calls.length).toBe(1);
-
-    // restore mock
-    getAllContentMock.mockRestore();
   });
 
   test("calls `getAllContent` prop on component update (new content)", () => {
-    // create a mock function so we can see whether it's called on component mount
-    const getAllContentMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ result: { type: "GET_ALL_CONTENT_SUCCESS" } })
-      );
-
-    const props = {
-      ...defaultProps,
-      apiContent: { getAllContent: getAllContentMock },
-      classes: {}
-    };
-
-    // set up unconnected component with getAllContentMock as getAllContent prop
-    const wrapper = shallow(<ContentLibraryUnconnected {...props} />);
-
     const prevProps = {
       content: {
         allContent: []
@@ -300,9 +239,6 @@ describe("<ContentLibrary />", () => {
 
     // expect the mock to have been called once
     expect(getAllContentMock.mock.calls.length).toBe(1);
-
-    // restore mock
-    getAllContentMock.mockRestore();
   });
 
   // test negative branches for componentDidMount (doesn't call action if conditions not met)
@@ -310,14 +246,7 @@ describe("<ContentLibrary />", () => {
   test("`handleDeleteDialogOpen` method calls `handleDeleteOpen` prop if passed a tile and logged in", () => {
     // create a mock function so we can see whether it's called on component mount
     const handleDeleteOpenMock = jest.fn();
-    const props = {
-      ...defaultProps,
-      apiContent: { handleDeleteOpen: handleDeleteOpenMock },
-      classes: {}
-    };
-
-    // set up unconnected component with getAllContentMock as getAllContent prop
-    const wrapper = shallow(<ContentLibraryUnconnected {...props} />);
+    wrapper.instance().props.apiContent.handleDeleteOpen = handleDeleteOpenMock;
 
     const tile = {
       id: "5eb92d2e-ae94-47c9-bdb4-4780c3b0b33c",
