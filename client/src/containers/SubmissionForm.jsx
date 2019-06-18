@@ -18,9 +18,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
-import { openSnackbar } from "../containers/Notifier";
-import ButtonWithSpinner from "./ButtonWithSpinner";
-// import * as validate from "../utils/validators";
+import { openSnackbar } from "./Notifier";
+import ButtonWithSpinner from "../components/ButtonWithSpinner";
+import validate from "../utils/validators";
 
 const styles = theme => ({
   root: {},
@@ -140,33 +140,41 @@ class SubmissionForm extends React.Component {
   }
 
   componentDidMount() {}
-  componentDidUpdate() {
-    // if (this.props.submission.error) {
-    //   openSnackbar(
-    //     "error",
-    //     this.props.submission.error ||
-    //     "An error occurred while trying to submit."
-    //   );
-    // }
-  }
+  componentDidUpdate() {}
 
-  renderTextField = ({ input, label, meta: { touched, error } }) => (
+  renderTextField = ({
+    input,
+    name,
+    label,
+    meta: { touched, error },
+    ...custom
+  }) => (
     <TextField
       label={label}
-      // errorText={touched && error}
+      error={touched && error}
       variant="outlined"
       className={this.classes.input}
+      helperText={touched && error}
+      {...input}
+      {...custom}
     />
   );
 
-  renderCheckbox = ({ input, label, meta: { error } }) => (
+  renderCheckbox = ({
+    input,
+    label,
+    validate,
+    meta: { touched, error },
+    ...custom
+  }) => (
     <FormControlLabel
       control={
         <Checkbox
           color="primary"
           checked={input.value ? true : false}
           onChange={input.onChange}
-          // errorText={error}
+          helperText={touched && error}
+          {...custom}
           className={this.classes.checkbox}
         />
       }
@@ -174,13 +182,20 @@ class SubmissionForm extends React.Component {
     />
   );
 
-  renderSelect = ({ input, label, meta: { error }, labelWidth, options }) => (
+  renderSelect = ({
+    input,
+    name,
+    label,
+    meta: { error, touched },
+    labelWidth,
+    options
+  }) => (
     <FormControl variant="outlined" className={this.classes.formControl}>
-      <InputLabel htmlFor="mm">{label}</InputLabel>
+      <InputLabel htmlFor={name}>{label}</InputLabel>
       <Select
         native
         onChange={input.onChange}
-        // errorText={error}
+        helperText={touched && error}
         className={this.classes.select}
         input={<OutlinedInput labelWidth={labelWidth} />}
       >
@@ -255,9 +270,10 @@ class SubmissionForm extends React.Component {
       termsAgree,
       signature,
       onlineCampaignSource
-      // signedApplication
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
+    // if(!onlineCampaignSource) {
+    // }
 
     const body = {
       ip_address: localIpUrl(),
@@ -469,14 +485,6 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="signedApplication"
-            name="signedApplication"
-            id="signedApplication"
-            type="checkbox"
-            component={this.renderCheckbox}
-          />
-
-          <Field
             label="onlineCampaignSource"
             name="onlineCampaignSource"
             id="onlineCampaignSource"
@@ -523,7 +531,6 @@ SubmissionForm.propTypes = {
       textAuthOptOut: PropTypes.bool,
       termsAgree: PropTypes.bool,
       signature: PropTypes.string,
-      signedApplication: PropTypes.bool,
       onlineCampaignSource: PropTypes.string
     }),
     loading: PropTypes.bool
@@ -533,6 +540,7 @@ SubmissionForm.propTypes = {
 
 SubmissionForm = reduxForm({
   form: "submission",
+  validate,
   enableReinitialize: true
 })(SubmissionForm);
 
@@ -540,7 +548,8 @@ const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
   initialValues: {
-    mm: monthList[0]
+    mm: monthList[0],
+    onlineCampaignSource: null
   },
   formValues: getFormValues("submission")(state) || {}
 });

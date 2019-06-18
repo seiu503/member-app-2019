@@ -17,8 +17,7 @@ import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
-// import MemberForm from "./containers/MemberForm";
-import SubmissionForm from "./components/SubmissionForm";
+import SubmissionForm from "./containers/SubmissionForm";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 
