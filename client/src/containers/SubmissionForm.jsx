@@ -16,6 +16,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormLabel from "@material-ui/core/FormLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import { openSnackbar } from "./Notifier";
@@ -160,28 +161,6 @@ class SubmissionForm extends React.Component {
     />
   );
 
-  renderCheckbox = ({
-    input,
-    label,
-    validate,
-    meta: { touched, error },
-    ...custom
-  }) => (
-    <FormControlLabel
-      control={
-        <Checkbox
-          color="primary"
-          checked={input.value ? true : false}
-          onChange={input.onChange}
-          helperText={touched && error}
-          {...custom}
-          className={this.classes.checkbox}
-        />
-      }
-      label={label}
-    />
-  );
-
   renderSelect = ({
     input,
     name,
@@ -190,12 +169,15 @@ class SubmissionForm extends React.Component {
     labelWidth,
     options
   }) => (
-    <FormControl variant="outlined" className={this.classes.formControl}>
+    <FormControl
+      variant="outlined"
+      className={this.classes.formControl}
+      error={error && touched}
+    >
       <InputLabel htmlFor={name}>{label}</InputLabel>
       <Select
         native
         onChange={input.onChange}
-        helperText={touched && error}
         className={this.classes.select}
         input={<OutlinedInput labelWidth={labelWidth} />}
       >
@@ -206,6 +188,21 @@ class SubmissionForm extends React.Component {
         ))}
       </Select>
     </FormControl>
+  );
+
+  renderCheckbox = ({ input, label, validate, ...custom }) => (
+    <FormControlLabel
+      control={
+        <Checkbox
+          color="primary"
+          checked={input.value ? true : false}
+          onChange={input.onChange}
+          {...custom}
+          className={this.classes.checkbox}
+        />
+      }
+      label={label}
+    />
   );
 
   getMaxDay = month => {
@@ -272,8 +269,6 @@ class SubmissionForm extends React.Component {
       onlineCampaignSource
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
-    // if(!onlineCampaignSource) {
-    // }
 
     const body = {
       ip_address: localIpUrl(),
@@ -331,9 +326,19 @@ class SubmissionForm extends React.Component {
           className={this.classes.form}
         >
           <Field
+            label="Preferred Language"
+            name="preferredLanguage"
+            id="preferredLanguage"
+            type="select"
+            component={this.renderSelect}
+            labelWidth={132}
+            options={languageOptions}
+          />
+
+          <Field
+            label="First Name"
             name="firstName"
             id="firstName"
-            label="firstName"
             type="text"
             component={this.renderTextField}
           />
@@ -341,35 +346,37 @@ class SubmissionForm extends React.Component {
           <Field
             name="lastName"
             id="lastName"
-            label="lastName"
+            label="Last Name"
             type="text"
             component={this.renderTextField}
           />
+
           <FormLabel className={this.classes.formLabel} component="legend">
             Birthdate
           </FormLabel>
+
           <Field
-            label="mm"
+            label="Month"
             name="mm"
             id="mm"
             type="select"
             component={this.renderSelect}
-            labelWidth={28}
+            labelWidth={41}
             options={monthList}
           />
 
           <Field
+            label="Day"
             name="dd"
             id="dd"
-            label="dd"
             type="select"
             component={this.renderSelect}
-            labelWidth={20}
+            labelWidth={24}
             options={this.dateOptions()}
           />
 
           <Field
-            label="yyyy"
+            label="Year"
             name="yyyy"
             id="yyyy"
             type="select"
@@ -378,18 +385,12 @@ class SubmissionForm extends React.Component {
             options={this.yearOptions()}
           />
 
-          <Field
-            label="preferredLanguage"
-            name="preferredLanguage"
-            id="preferredLanguage"
-            type="select"
-            component={this.renderSelect}
-            labelWidth={130}
-            options={languageOptions}
-          />
+          <FormLabel className={this.classes.formLabel} component="legend">
+            Address
+          </FormLabel>
 
           <Field
-            label="homeStreet"
+            label="Home Street"
             name="homeStreet"
             id="homeStreet"
             type="text"
@@ -397,7 +398,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="homeCity"
+            label="Home City"
             name="homeCity"
             id="homeCity"
             type="text"
@@ -405,23 +406,17 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="homeState"
+            label="Home State"
             name="homeState"
             id="homeState"
             type="select"
             component={this.renderSelect}
             options={stateList}
             labelWidth={80}
-          >
-            {stateList.map(item => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </Field>
+          />
 
           <Field
-            label="homePostalCode"
+            label="Home Postal Code"
             name="homePostalCode"
             id="homePostalCode"
             type="text"
@@ -429,7 +424,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="homeEmail"
+            label="Home Email"
             name="homeEmail"
             id="homeEmail"
             type="email"
@@ -437,7 +432,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="mobilePhone"
+            label="Mobile Phone"
             name="mobilePhone"
             id="mobilePhone"
             type="tel"
@@ -445,7 +440,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="employerName"
+            label="Employer Name"
             name="employerName"
             id="employerName"
             type="text"
@@ -453,7 +448,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="agencyNumber"
+            label="Agency Number"
             name="agencyNumber"
             id="agencyNumber"
             type="text"
@@ -461,7 +456,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="textAuthOptOut"
+            label="Text Opt Out"
             name="textAuthOptOut"
             id="textAuthOptOut"
             type="checkbox"
@@ -469,7 +464,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="termsAgree"
+            label="Agree to Terms of Service"
             name="termsAgree"
             id="termsAgree"
             type="checkbox"
@@ -477,7 +472,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="signature"
+            label="Signature"
             name="signature"
             id="signature"
             type="text"
@@ -485,7 +480,7 @@ class SubmissionForm extends React.Component {
           />
 
           <Field
-            label="onlineCampaignSource"
+            label="Online Campaign Source"
             name="onlineCampaignSource"
             id="onlineCampaignSource"
             type="text"
