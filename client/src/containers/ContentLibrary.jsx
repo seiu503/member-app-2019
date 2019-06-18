@@ -124,49 +124,42 @@ export class ContentLibraryUnconnected extends React.Component {
     }
   };
 
-  deleteContent = contentData => {
+  async deleteContent(contentData) {
     const token = this.props.appState.authToken;
-    this.props.apiContent
-      .deleteContent(token, contentData.id)
-      .then(result => {
-        if (result.type === "DELETE_CONTENT_SUCCESS") {
-          // if the deleted content is an image
-          // then we also have to delete it from S3 storage
-          // after deleting from the postgres db
-          if (contentData.content_type === "image") {
-            console.log("image");
-            const keyParts = contentData.content.split("/");
-            const key = keyParts[keyParts.length - 1];
-            console.log(token, key);
-            this.props.apiContent
-              .deleteImage(token, key)
-              .then(result => {
-                console.log(result.type);
-                if (result.type === "DELETE_IMAGE_SUCCESS") {
-                  openSnackbar(
-                    "success",
-                    `Deleted ${contentData.content_type}.`
-                  );
-                  this.props.apiContent.getAllContent(token);
-                }
-              })
-              .catch(err => {
-                console.log(err);
-                openSnackbar("error", err);
-              });
-          } else {
+    try {
+      let contentDeleteResult = await this.props.apiContent.deleteContent(
+        token,
+        contentData.id
+      );
+
+      if (contentDeleteResult.type === "DELETE_CONTENT_SUCCESS") {
+        // if the deleted content is an image
+        // then we also have to delete it from S3 storage
+        // after deleting from the postgres db
+        if (contentData.content_type === "image") {
+          console.log("if clause image");
+          const keyParts = contentData.content.split("/");
+          const key = keyParts[keyParts.length - 1];
+          let imageDeleteResult = await this.props.apiContent.deleteImage(
+            token,
+            key
+          );
+          if (imageDeleteResult.type === "DELETE_IMAGE_SUCCESS") {
             openSnackbar("success", `Deleted ${contentData.content_type}.`);
             this.props.apiContent.getAllContent(token);
           }
         } else {
-          openSnackbar("error", this.props.content.error);
+          openSnackbar("success", `Deleted ${contentData.content_type}.`);
+          this.props.apiContent.getAllContent(token);
         }
-      })
-      .catch(err => {
-        console.log(err);
-        openSnackbar("error", err);
-      });
-  };
+      } else {
+        openSnackbar("error", this.props.content.error);
+      }
+    } catch (err) {
+      console.log(err);
+      openSnackbar("error", err);
+    }
+  }
 
   render() {
     const { classes } = this.props;
