@@ -2,9 +2,9 @@ import update from "immutability-helper";
 import moment from "moment";
 
 import {
-  HANDLE_INPUT,
-  HANDLE_SELECT,
-  HANDLE_CHECKBOX,
+  // HANDLE_INPUT,
+  // HANDLE_SELECT,
+  // HANDLE_CHECKBOX,
   CLEAR_FORM,
   ADD_SUBMISSION_REQUEST,
   ADD_SUBMISSION_SUCCESS,
@@ -15,27 +15,27 @@ const INITIAL_STATE = {
   loading: false,
   filteredList: [],
   allContent: [],
-  form: {
-    firstName: "",
-    lastName: "",
-    dd: "",
-    mm: "",
-    yyyy: "",
-    preferredLanguage: "",
-    homeStreet: "",
-    homeCity: "",
-    homeState: "",
-    homePostalCode: "",
-    homeEmail: "",
-    mobilePhone: "",
-    employerName: "",
-    agencyNumber: "",
-    textAuthOptOut: false,
-    termsAgree: false,
-    signature: "",
-    onlineCampaignSource: "",
-    signedApplication: false
-  },
+  // form: {
+  //   firstName: "",
+  //   lastName: "",
+  //   dd: "",
+  //   mm: "",
+  //   yyyy: "",
+  //   preferredLanguage: "",
+  //   homeStreet: "",
+  //   homeCity: "",
+  //   homeState: "",
+  //   homePostalCode: "",
+  //   homeEmail: "",
+  //   mobilePhone: "",
+  //   employerName: "",
+  //   agencyNumber: "",
+  //   textAuthOptOut: false,
+  //   termsAgree: false,
+  //   signature: "",
+  //   onlineCampaignSource: "",
+  //   signedApplication: false
+  // },
   error: null
 };
 
@@ -43,22 +43,21 @@ function Submission(state = INITIAL_STATE, action) {
   let error;
 
   switch (action.type) {
-    case HANDLE_INPUT:
-      return update(state, {
-        form: {
-          [action.payload.name]: { $set: action.payload.value }
-        }
-      });
-    case HANDLE_SELECT:
-    case HANDLE_CHECKBOX:
-      return update(state, {
-        form: {
-          [action.payload.name]: { $set: action.payload.value }
-        }
-      });
+    // case HANDLE_INPUT:
+    //   return update(state, {
+    //     form: {
+    //       [action.payload.name]: { $set: action.payload.value }
+    //     }
+    //   });
+    // case HANDLE_SELECT:
+    // case HANDLE_CHECKBOX:
+    //   return update(state, {
+    //     form: {
+    //       [action.payload.name]: { $set: action.payload.value }
+    //     }
+    //   });
 
     case ADD_SUBMISSION_REQUEST:
-      console.log("loading");
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
