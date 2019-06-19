@@ -95,7 +95,7 @@ const styles = theme => ({
   }
 });
 
-class ContentLibrary extends React.Component {
+export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
     // console.log(authToken);
@@ -124,53 +124,47 @@ class ContentLibrary extends React.Component {
     }
   };
 
-  deleteContent = contentData => {
+  async deleteContent(contentData) {
     const token = this.props.appState.authToken;
-    this.props.apiContent
-      .deleteContent(token, contentData.id)
-      .then(result => {
-        if (result.type === "DELETE_CONTENT_SUCCESS") {
-          // if the deleted content is an image
-          // then we also have to delete it from S3 storage
-          // after deleting from the postgres db
-          if (contentData.content_type === "image") {
-            const keyParts = contentData.content.split("/");
-            const key = keyParts[keyParts.length - 1];
-            this.props.apiContent
-              .deleteImage(token, key)
-              .then(result => {
-                if (result.type === "DELETE_IMAGE_SUCCESS") {
-                  openSnackbar(
-                    "success",
-                    `Deleted ${contentData.content_type}.`
-                  );
-                  this.props.apiContent.getAllContent(token);
-                }
-              })
-              .catch(err => {
-                console.log(err);
-                openSnackbar("error", err);
-              });
-          } else {
-            openSnackbar("success", `Deleted ${contentData.content_type}.`);
-            this.props.apiContent.getAllContent(token);
-          }
-        } else {
-          openSnackbar("error", this.props.content.error);
-        }
-      })
-      .catch(err => {
-        console.log(err);
+    let contentDeleteResult, imageDeleteResult;
+    try {
+      contentDeleteResult = await this.props.apiContent.deleteContent(
+        token,
+        contentData.id
+      );
+    } catch (err) {
+      console.log(err);
+      openSnackbar("error", err);
+    }
+    if (contentDeleteResult.type !== "DELETE_CONTENT_SUCCESS") {
+      openSnackbar("error", this.props.content.error);
+    } else if (
+      contentDeleteResult.type === "DELETE_CONTENT_SUCCESS" &&
+      contentData.content_type === "image"
+    ) {
+      const keyParts = contentData.content.split("/");
+      const key = keyParts[keyParts.length - 1];
+      try {
+        imageDeleteResult = await this.props.apiContent.deleteImage(token, key);
+      } catch (err) {
         openSnackbar("error", err);
-      });
-  };
+      }
+      if (imageDeleteResult.type === "DELETE_IMAGE_SUCCESS") {
+        openSnackbar("success", `Deleted ${contentData.content_type}.`);
+        this.props.apiContent.getAllContent(token);
+      }
+    } else if (contentDeleteResult.type === "DELETE_CONTENT_SUCCESS") {
+      openSnackbar("success", `Deleted ${contentData.content_type}.`);
+      this.props.apiContent.getAllContent(token);
+    }
+  }
 
   render() {
     const { classes } = this.props;
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
-      <React.Fragment>
+      <div data-test="component-content-library">
         {this.props.content.loading && <Spinner />}
         {this.props.content.deleteDialogOpen && (
           <AlertDialog
@@ -184,6 +178,7 @@ class ContentLibrary extends React.Component {
               this.props.apiContent.handleDeleteClose();
             }}
             buttonText="Delete"
+            data-test="alert-dialog"
           />
         )}
         <div className={classes.section}>
@@ -193,19 +188,21 @@ class ContentLibrary extends React.Component {
             gutterBottom
             className={classes.head}
             style={{ paddingTop: 20 }}
+            data-test="headline"
           >
             Content Library
           </Typography>
           <div className={classes.gridWrapper}>
             {this.props.content.allContent.map(tile => {
               return (
-                <div className={classes.card} key={tile.id}>
+                <div className={classes.card} key={tile.id} data-test="tile">
                   <div className={classes.actionArea}>
                     <FAB
                       className={classes.buttonDelete}
                       onClick={() => this.handleDeleteDialogOpen(tile)}
                       color="primary"
                       aria-label="Delete Content"
+                      data-test="delete"
                     >
                       <Delete />
                     </FAB>
@@ -216,6 +213,7 @@ class ContentLibrary extends React.Component {
                       }
                       color="primary"
                       aria-label="Edit Content"
+                      data-test="edit"
                     >
                       <Create />
                     </FAB>
@@ -226,22 +224,22 @@ class ContentLibrary extends React.Component {
             })}
           </div>
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 }
 
-ContentLibrary.propTypes = {
+ContentLibraryUnconnected.propTypes = {
   classes: PropTypes.object.isRequired,
   appState: PropTypes.shape({
-    loggedIn: PropTypes.bool
+    loggedIn: PropTypes.bool,
+    authToken: PropTypes.string
   }),
-  handleDeleteDialogOpen: PropTypes.func,
   content: PropTypes.shape({
     filteredList: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        contentType: PropTypes.string,
+        content_type: PropTypes.string,
         content: PropTypes.string,
         updated_at: PropTypes.string
       })
@@ -249,19 +247,23 @@ ContentLibrary.propTypes = {
     allContent: PropTypes.arrayOf(
       PropTypes.shape({
         id: PropTypes.string,
-        contentType: PropTypes.string,
+        content_type: PropTypes.string,
         content: PropTypes.string,
         updated_at: PropTypes.string
       })
     ),
     currentContent: PropTypes.shape({
       id: PropTypes.string,
-      contentType: PropTypes.string,
+      content_type: PropTypes.string,
       content: PropTypes.string,
       updated_at: PropTypes.string
     }),
+    deleteDialogOpen: PropTypes.bool,
     apiContent: PropTypes.shape({
-      getAllContent: PropTypes.func
+      getAllContent: PropTypes.func,
+      handleDeleteOpen: PropTypes.func,
+      deleteContent: PropTypes.func,
+      deleteImage: PropTypes.func
     })
   })
 };
@@ -281,6 +283,6 @@ export default withStyles(styles)(
     connect(
       mapStateToProps,
       mapDispatchToProps
-    )(ContentLibrary)
+    )(ContentLibraryUnconnected)
   )
 );

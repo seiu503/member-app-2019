@@ -36,13 +36,14 @@
     "jest-localstorage-mock": "^2.4.0",
     "react-scripts": "^3.0.1",
     "redux-mock-store": "^1.5.3",
+    "redux-thunk": "^2.3.0",
     "regenerator-runtime": "^0.13.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test-cov": "react-scripts test --coverage --watchAll=false",
+    "test-cov": "react-scripts test --coverage --watchAll=false --coverageDirectory=output/coverage/jest",
     "eject": "react-scripts eject",
     "build-task:scss-compile": "node-sass-chokidar --source-map true src/styles/scss/ -o public/css",
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
@@ -74,6 +75,7 @@
         "statements": 90
       }
     },
+    "coverageReporters": ["html", "json", "lcov", "text", "clover"],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ]

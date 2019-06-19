@@ -40,15 +40,8 @@ Logout.propTypes = {
   classes: PropTypes.object
 };
 
-const mapStateToProps = state => ({
-  appState: state.appState
-});
-
-const mapDispatchToProps = dispatch => ({
+export const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch)
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Logout);
+export default connect(mapDispatchToProps)(Logout);

@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import Typography from "@material-ui/core/Typography";
 
-const styles = theme => ({
+export const styles = theme => ({
   root: {
     margin: 20,
     padding: 20,

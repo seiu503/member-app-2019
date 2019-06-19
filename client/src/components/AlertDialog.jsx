@@ -8,7 +8,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import { withStyles } from "@material-ui/core/styles";
 
-const styles = theme => ({
+export const styles = theme => ({
   root: {
     margin: 0,
     padding: 20
@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 });
 
-const AlertDialog = props => (
+export const AlertDialogUnwrapped = props => (
   <div data-test="component-alert-dialog">
     <Dialog
       data-test="dialog"
@@ -75,7 +75,7 @@ const AlertDialog = props => (
   </div>
 );
 
-AlertDialog.propTypes = {
+AlertDialogUnwrapped.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.string,
   content: PropTypes.string,
@@ -85,4 +85,4 @@ AlertDialog.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(AlertDialog);
+export default withStyles(styles)(AlertDialogUnwrapped);

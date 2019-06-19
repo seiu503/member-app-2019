@@ -70,7 +70,26 @@ describe("exported openSnackbar function", () => {
     wrapper.instance().componentDidMount();
 
     // call method
-    openSnackbar("success", "Everything OK!");
+    openSnackbar("success", "Everything OK!", null, false);
+
+    // expect mock to be called
+    expect(openSnackbarFnMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    openSnackbarFnMock.mockRestore();
+  });
+
+  test("if `openSnackbarFn` is type `function`, calls openSnackbarFn (branchOne)", () => {
+    // mock openSnackbarFn
+    const openSnackbarFnMock = jest.fn();
+
+    // mount component, set component method to mock, call cDM
+    const wrapper = mount(<Notifier />);
+    wrapper.instance().openSnackbar = openSnackbarFnMock;
+    wrapper.instance().componentDidMount();
+
+    // call method
+    openSnackbar("success", "Everything OK!", null, false, true);
 
     // expect mock to be called
     expect(openSnackbarFnMock.mock.calls.length).toBe(1);
@@ -83,11 +102,13 @@ describe("exported openSnackbar function", () => {
     // clear mock since componentDidMount is called in other tests
     setTimeout.mockReset();
 
-    // mount component (openSnackbarFn is undefined here)
+    // mount component (ensure openSnackbarFn is undefined here)
     const wrapper = mount(<Notifier />);
+    wrapper.instance().componentDidMount();
+    wrapper.instance().openSnackbar = undefined;
 
     // call method
-    openSnackbar("success", "Everything OK!");
+    openSnackbar("success", "Everything OK!", null, true);
 
     // mock openSnackbarFn
     const openSnackbarFnMock = jest.fn();

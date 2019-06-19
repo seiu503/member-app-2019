@@ -2,7 +2,7 @@ import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
 import { unwrap } from "@material-ui/core/test-utils";
-import AlertDialog from "../../components/AlertDialog";
+import AlertDialog, { styles } from "../../components/AlertDialog";
 
 const AlertDialogNaked = unwrap(AlertDialog);
 
@@ -13,7 +13,10 @@ const defaultProps = {
   buttonText: "Do the action",
   handleClose: jest.fn(),
   action: jest.fn(),
-  classes: {}
+  classes: {
+    danger: "danger",
+    primary: "primary"
+  }
 };
 
 /**
@@ -32,6 +35,20 @@ describe("<AlertDialog />", () => {
     const wrapper = setup({ open: true });
     const component = findByTestAttr(wrapper, "component-alert-dialog");
     expect(component.length).toBe(1);
+  });
+
+  it("this is kind of a useless test to get coverage of the styles function...", () => {
+    const theme = {
+      palette: {
+        danger: {
+          main: "#b71c1c"
+        },
+        primary: {
+          main: "#b71c1c"
+        }
+      }
+    };
+    styles(theme);
   });
 
   test("renders a dialog", () => {
@@ -71,6 +88,18 @@ describe("<AlertDialog />", () => {
     const component = findByTestAttr(wrapper, "button-action");
     expect(component.length).toBe(1);
     expect(component.text()).toBe("Do the action");
+  });
+
+  test("action button has `danger` class if passed `danger` prop", () => {
+    const wrapper = setup({ buttonText: "Do the action", danger: true });
+    const component = findByTestAttr(wrapper, "button-action");
+    expect(component.props().className).toBe("danger");
+  });
+
+  test("action button does not have `danger` class if not passed `danger` prop", () => {
+    const wrapper = setup({ buttonText: "Do the action", danger: false });
+    const component = findByTestAttr(wrapper, "button-action");
+    expect(component.props().className).toBe("primary");
   });
 
   test("calls `action` prop on action button click", () => {

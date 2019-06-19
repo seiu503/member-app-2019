@@ -7,11 +7,11 @@ import ScrollToTop, {
 const ScrollToMock = jest.fn();
 
 describe("<ScrollToTop />", () => {
-  beforeAll(() => {
+  beforeEach(() => {
     // mock window.scrollTo function
     global.window.scrollTo = ScrollToMock;
   });
-  afterAll(() => {
+  afterEach(() => {
     // cleanup after testing
     ScrollToMock.mockRestore();
   });
@@ -19,7 +19,7 @@ describe("<ScrollToTop />", () => {
     const wrapper = shallow(<ScrollToTop />);
     expect(wrapper.length).toBe(1);
   });
-  it("calls window.scrollTo if props.location changes", () => {
+  it("calls window.scrollTo (location changes, no hash)", () => {
     const wrapper = mount(
       <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
     );
@@ -32,5 +32,22 @@ describe("<ScrollToTop />", () => {
       top: 0,
       behavior: "smooth"
     });
+  });
+  it("does not call window.scrollTo (location doesn't change)", () => {
+    mount(
+      <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
+    );
+    // check to see if scrollToMock was called in componentDidUpdate
+    expect(ScrollToMock).not.toHaveBeenCalled();
+  });
+  it("does not call window.scrollTo (location changes, hash exists)", () => {
+    const wrapper = mount(
+      <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
+    );
+
+    // pass different location prop to trigger componentDidUpdate
+    wrapper.setProps({ location: { pathname: "library", hash: "dashboard" } });
+    // check to see if scrollToMock was called in componentDidUpdate
+    expect(ScrollToMock).not.toHaveBeenCalled();
   });
 });
