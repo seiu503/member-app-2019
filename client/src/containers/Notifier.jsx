@@ -98,7 +98,7 @@ export const openSnackbar = (
     // so! dirty!! somebody fix this mess!
     openSnackbarFn(variant, message);
   } else {
-    console.log("openSnackbarFn is undefined");
+    // console.log("openSnackbarFn is undefined");
     setTimeout(() => openSnackbarFn(variant, message), 50);
   }
 };
