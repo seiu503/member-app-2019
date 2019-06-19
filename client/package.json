@@ -20,6 +20,7 @@
     "react-router-dom": "^5.0.0",
     "redux": "^4.0.1",
     "redux-api-middleware": "^3.0.1",
+    "redux-form": "^8.2.4",
     "typescript": "^3.5.1"
   },
   "devDependencies": {
@@ -34,6 +35,7 @@
     "enzyme-to-json": "^3.3.5",
     "jest-enzyme": "^7.0.2",
     "jest-localstorage-mock": "^2.4.0",
+    "local-ip-url": "^1.0.1",
     "react-scripts": "^3.0.1",
     "redux-mock-store": "^1.5.3",
     "redux-thunk": "^2.3.0",

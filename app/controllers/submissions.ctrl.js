@@ -88,11 +88,15 @@ const createSubmission = async (req, res, next) => {
   ];
 
   const missingField = requiredFields.find(field => !(field in req.body));
-
-  if (missingField) {
+  if (!terms_agree) {
     return res.status(422).json({
       reason: "ValidationError",
-      message: "Missing required fields"
+      message: "Must agree to terms of service"
+    });
+  } else if (missingField) {
+    return res.status(422).json({
+      reason: "ValidationError",
+      message: `Missing required field ${missingField}`
     });
   } else {
     const createSubmissionResult = await submissions.createSubmission(
@@ -124,13 +128,11 @@ const createSubmission = async (req, res, next) => {
     );
 
     if (!createSubmissionResult || createSubmissionResult.message) {
-      return res
-        .status(500)
-        .json({
-          message:
-            createSubmissionResult.message ||
-            "There was an error creating submission"
-        });
+      return res.status(500).json({
+        message:
+          createSubmissionResult.message ||
+          "There was an error creating submission"
+      });
     }
 
     const newSubmissionId = createSubmissionResult[0].submission_id;
@@ -142,13 +144,11 @@ const createSubmission = async (req, res, next) => {
     );
 
     if (!attachResult || attachResult.message) {
-      return res
-        .status(500)
-        .json({
-          message:
-            attachResult.message ||
-            "Error adding Submission to contacts_submissions table"
-        });
+      return res.status(500).json({
+        message:
+          attachResult.message ||
+          "Error adding Submission to contacts_submissions table"
+      });
     } else {
       const totalResult = {
         newSubmission: createSubmissionResult[0],
