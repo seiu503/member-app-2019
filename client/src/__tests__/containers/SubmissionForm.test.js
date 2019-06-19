@@ -49,9 +49,6 @@ const setup = (props = {}) => {
 };
 
 describe("Unconnected <SubmissionForm />", () => {
-  // beforeEach(() => {
-  // });
-
   it("renders without error", () => {
     wrapper = setup();
     console.log(wrapper.debug());
