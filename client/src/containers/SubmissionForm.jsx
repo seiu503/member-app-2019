@@ -133,7 +133,7 @@ const monthList = [
   "12"
 ];
 const languageOptions = ["", "English", "Russian", "Spanish"];
-class SubmissionForm extends React.Component {
+export class SubmissionForm extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -319,7 +319,7 @@ class SubmissionForm extends React.Component {
   };
   render() {
     return (
-      <div className={this.classes.container}>
+      <div className={this.classes.root} data-test="component-submissionform">
         <form
           id="submissionForm"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
