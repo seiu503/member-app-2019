@@ -11,12 +11,17 @@ import SubmissionForm, {
 import { findByTestAttr } from "../../utils/testUtils";
 import * as utils from "../../utils";
 
-let store, wrapper;
+// variables
+let store,
+  wrapper,
+  submitting,
+  touched,
+  error,
+  addSubmissionMock,
+  addSubmissionErrorMock,
+  handleSubmit;
 
-const options = {
-  untilSelector: "ContentTile"
-};
-const muiShallow = createShallow(options);
+// create fake store
 const mockStore = configureStore();
 
 // create any initial state needed
@@ -33,29 +38,108 @@ const defaultProps = {
     onlineCampaignSource: null
   },
   apiSubmission: {
-    addSubmission: jest.fn(),
-    clearForm: jest.fn()
+    addSubmission: addSubmissionMock
   },
   classes: { test: "test" },
-  history: {
-    push: jest.fn()
-  },
-  handleSubmit: jest.fn()
+  submitting: submitting,
+  fields: {
+    firstName: {
+      value: "",
+      touched: touched,
+      error: error
+    }
+  }
 };
 
-const setup = (props = {}) => {
-  store = configureStore(defaultProps);
+// setup for redux-form wrapped component... I think
+const options = {
+  untilSelector: "ContentTile"
+};
+const muiShallow = createShallow(options);
+const reduxFormSetup = (props = {}) => {
+  store = mockStore(defaultProps);
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionForm />, {
+  return shallow(<SubmissionFormReduxForm />, {
     ...setupProps,
-    context: { store: mockStore() }
+    context: { store: store }
   });
+};
+
+// setup for unwrapped, un-connected component
+const unconnectedSetup = () => {
+  const handleSubmitMock = jest.fn();
+  return shallow(
+    <SubmissionFormUnconnected {...defaultProps} onSubmit={handleSubmitMock} />
+  );
 };
 
 describe("Unconnected <SubmissionForm />", () => {
+  beforeEach(() => {
+    wrapper = unconnectedSetup();
+  });
   it("renders without error", () => {
-    wrapper = shallow(<SubmissionFormUnconnected {...defaultProps} />);
     const component = findByTestAttr(wrapper, "component-submissionform");
     expect(component.length).toBe(1);
   });
+  it("has access to `submission error` prop", () => {
+    expect(wrapper.instance().props.submission.error).toBe(null);
+  });
+  it("has access to `classes` prop", () => {
+    expect(typeof wrapper.instance().props.classes).toBe("object");
+    expect(wrapper.instance().props.classes.test).toBe("test");
+  });
+  it("has access to `initialValues` prop", () => {
+    expect(typeof wrapper.instance().props.formValues).toBe("object");
+    expect(wrapper.instance().props.initialValues.mm).toBe("");
+    expect(wrapper.instance().props.initialValues.onlineCampaignSource).toBe(
+      null
+    );
+  });
+  it("calls handleSubmit when form is submitted", () => {
+    console.log(wrapper.debug());
+    const form = wrapper.find("submissionForm").first();
+    form.simulate("submit");
+    expect(handleSubmit.toHaveBeenCalled());
+  });
+
+  // describe("tests that require mocked redux actions", () => {
+  //   beforeEach(() => {
+  //     submitting = false
+  //     touched = false
+  //     error = null
+  //     addSubmissionMock = jest
+  //     .fn()
+  //     .mockImplementation(() =>
+  //       Promise.resolve({type: "ADD_SUBMISSION_SUCCESS"}))
+  //     addSubmissionErrorMock = jest
+  //     .fn()
+  //     .mockImplementation(() => {
+  //       wrapper.instance().props.submission.error =
+  //       "Sorry, something went wrong :(";
+  //     wrapper.instance().forceUpdate();
+  //     return Promise.reject(
+  //       "Sorry, something went wrong :("
+  //     );
+  //   });
+  //     wrapper = unconnectedSetup()
+  //   });
+  //   afterEach(() => {
+  //     addSubmissionMock.mockRestore();
+  //     addSubmissionErrorMock.mockRestore();
+  //   });
+  // });
 });
+
+// describe("ReduxForm Wrapped <SubmissionForm />", () => {
+//   beforeEach(() => {
+//     wrapper = reduxFormSetup()
+//     console.log(wrapper.debug())
+//   });
+//   it("sets the form to `submission`", () => {
+
+//   });
+//   it("validates", () => {
+
+//   });
+
+// });
