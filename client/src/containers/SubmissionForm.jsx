@@ -133,7 +133,7 @@ const monthList = [
   "12"
 ];
 const languageOptions = ["", "English", "Russian", "Spanish"];
-export class SubmissionForm extends React.Component {
+export class SubmissionFormUnconnected extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -502,7 +502,7 @@ export class SubmissionForm extends React.Component {
   }
 }
 
-SubmissionForm.propTypes = {
+SubmissionFormUnconnected.propTypes = {
   type: PropTypes.string,
   appState: PropTypes.shape({
     authToken: PropTypes.string
@@ -533,11 +533,11 @@ SubmissionForm.propTypes = {
   classes: PropTypes.object
 };
 
-SubmissionForm = reduxForm({
+export const SubmissionFormReduxForm = reduxForm({
   form: "submission",
   validate,
   enableReinitialize: true
-})(SubmissionForm);
+})(SubmissionFormUnconnected);
 
 const mapStateToProps = state => ({
   submission: state.submission,
@@ -557,5 +557,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SubmissionForm)
+  )(SubmissionFormReduxForm)
 );

@@ -4,7 +4,10 @@ import { unwrap, createShallow } from "@material-ui/core/test-utils";
 import { BrowserRouter as Router } from "react-router-dom";
 import configureStore from "redux-mock-store";
 
-import { SubmissionForm } from "../../containers/SubmissionForm";
+import SubmissionForm, {
+  SubmissionFormUnconnected,
+  SubmissionFormReduxForm
+} from "../../containers/SubmissionForm";
 import { findByTestAttr } from "../../utils/testUtils";
 import * as utils from "../../utils";
 
@@ -36,7 +39,8 @@ const defaultProps = {
   classes: { test: "test" },
   history: {
     push: jest.fn()
-  }
+  },
+  handleSubmit: jest.fn()
 };
 
 const setup = (props = {}) => {
@@ -50,8 +54,7 @@ const setup = (props = {}) => {
 
 describe("Unconnected <SubmissionForm />", () => {
   it("renders without error", () => {
-    wrapper = setup();
-    console.log(wrapper.debug());
+    wrapper = shallow(<SubmissionFormUnconnected {...defaultProps} />);
     const component = findByTestAttr(wrapper, "component-submissionform");
     expect(component.length).toBe(1);
   });
