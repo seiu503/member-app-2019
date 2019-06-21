@@ -1,15 +1,15 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import { unwrap, createShallow } from "@material-ui/core/test-utils";
 import { findByTestAttr } from "../../utils/testUtils";
 import ContentLibrary, {
   ContentLibraryUnconnected
 } from "../../containers/ContentLibrary";
 
-import { openSnackbar } from "../../containers/Notifier";
 import { BrowserRouter as Router } from "react-router-dom";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
-import configureStore from "redux-mock-store";
+import configureMockStore from "redux-mock-store";
+const mockStore = configureMockStore();
 
 let store;
 
@@ -20,8 +20,7 @@ const options = {
 };
 const muiShallow = createShallow(options);
 
-let openSnackbarMock,
-  deleteImageMock,
+let deleteImageMock,
   deleteImageErrorMock,
   deleteContentMock,
   deleteContentErrorMock,
@@ -37,6 +36,9 @@ const theme = {
     primary: {
       main: "#b71c1c"
     }
+  },
+  breakpoints: {
+    down: jest.fn()
   }
 };
 
@@ -88,13 +90,9 @@ const defaultProps = {
  * @return {ShallowWrapper}
  */
 const setup = (props = {}) => {
-  store = configureStore(defaultProps);
+  store = mockStore(defaultProps);
   const setupProps = { ...defaultProps, ...props };
-  return muiShallow(
-    <Router>
-      <ContentLibraryNaked {...setupProps} store={store} />
-    </Router>
-  );
+  return shallow(<ContentLibraryUnconnected {...setupProps} store={store} />);
 };
 
 describe("<ContentLibrary />", () => {
@@ -105,6 +103,12 @@ describe("<ContentLibrary />", () => {
   it("renders without error", () => {
     const component = findByTestAttr(wrapper, "component-content-library");
     expect(component.length).toBe(1);
+  });
+
+  it("should have access to expected props", () => {
+    wrapper = setup();
+    // test that the state values were correctly passed as props
+    expect(wrapper.instance().props.appState.loggedIn).toBe(true);
   });
 
   test("renders an alert dialog when `deleteDialogOpen` is true", () => {
@@ -118,15 +122,6 @@ describe("<ContentLibrary />", () => {
     expect(component.length).toBe(1);
   });
 
-  it("has access to `loggedIn` prop", () => {
-    expect(wrapper.instance().props.appState.loggedIn).toBe(true);
-  });
-
-  it("has access to `classes` prop", () => {
-    expect(typeof wrapper.instance().props.classes).toBe("object");
-    expect(wrapper.instance().props.classes.test).toBe("test");
-  });
-
   describe("tests that require mocked redux actions", () => {
     beforeEach(() => {
       deleteImageMock = jest
@@ -135,7 +130,10 @@ describe("<ContentLibrary />", () => {
           Promise.resolve({ type: "DELETE_IMAGE_SUCCESS" })
         );
       deleteImageErrorMock = jest.fn().mockImplementation(() => {
-        throw new Error("An error occurred and the content was not deleted.");
+        wrapper.instance().props.content.error =
+          "An error occurred and the image was not deleted.";
+        wrapper.instance().forceUpdate();
+        return Promise.resolve({ type: "DELETE_IMAGE_FAILURE" });
       });
       deleteContentMock = jest
         .fn()
@@ -146,9 +144,7 @@ describe("<ContentLibrary />", () => {
         wrapper.instance().props.content.error =
           "An error occurred and the content was not deleted.";
         wrapper.instance().forceUpdate();
-        return Promise.reject(
-          "An error occurred and the content was not deleted."
-        );
+        return Promise.resolve({ type: "DELETE_CONTENT_FAILURE" });
       });
       getAllContentMock = jest
         .fn()
@@ -158,7 +154,7 @@ describe("<ContentLibrary />", () => {
       getAllContentErrorMock = jest
         .fn()
         .mockImplementation(() =>
-          Promise.reject({ type: "GET_ALL_CONTENT_FAILURE" })
+          Promise.resolve({ type: "GET_ALL_CONTENT_FAILURE" })
         );
       wrapper.setProps({
         ...defaultProps,
@@ -176,6 +172,7 @@ describe("<ContentLibrary />", () => {
       deleteImageErrorMock.mockRestore();
       deleteContentErrorMock.mockRestore();
       getAllContentErrorMock.mockRestore();
+      wrapper.instance().props.content.error = "";
     });
 
     test("`this.deleteContent` calls `this.props.apiContent.deleteContent`", () => {
@@ -184,25 +181,29 @@ describe("<ContentLibrary />", () => {
       expect(deleteContentMock.mock.calls.length).toBe(1);
     });
 
-    test("this.props.apiContent.deleteContent returns an error on fail", async () => {
-      // openSnackbarMock = jest.spyOn(openSnackbar);
-      // expect.assertions(1);
-      // wrapper.instance().props.apiContent.deleteContent = deleteContentErrorMock;
-      // wrapper.instance().forceUpdate();
-      // try {
-      //   await wrapper.instance().props.apiContent.deleteContent(undefined);;
-      // } catch (err) {
-      //   console.log(err);
-      //   expect(err).toMatch("An error occurred and the content was not deleted.");
-      //   expect(openSnackbarMock.mock.calls.length).toBe(1);
-      // }
-    });
-
     test("if content_type = 'image', `deleteContent` calls `this.props.apiContent.deleteImage`", () => {
       const contentData = { ...defaultProps.content.allContent[0] };
       wrapper.instance().deleteContent(contentData);
       // expect(deleteImageMock.mock.calls.length).toBe(1);
     });
+
+    test("`this.deleteContent` returns an error if deleteContent api call fails", () => {
+      wrapper.instance().props.apiContent.deleteContent = deleteContentErrorMock;
+      const contentData = { junkData: "that will fail" };
+      wrapper.instance().deleteContent(contentData);
+      expect(wrapper.instance().props.content.error).toBe(
+        "An error occurred and the content was not deleted."
+      );
+    });
+
+    test("`this.deleteContent` returns an error if deleteImage api call fails", () => {
+      wrapper.instance().props.apiContent.deleteImage = deleteImageErrorMock;
+      const contentData = { ...defaultProps.content.allContent[0] };
+      wrapper.instance().deleteContent(contentData);
+      // expect(deleteImageErrorMock.mock.calls.length).toBe(1);
+    });
+
+    //**** TODO:  test this.props.apiContent.handleDeleteClose method
 
     test("calls `handleDeleteDialogOpen` method on delete button click", () => {
       // create a mock function so we can see whether it's called on click
@@ -301,13 +302,4 @@ describe("<ContentLibrary />", () => {
       handleDeleteOpenMock.mockRestore();
     });
   });
-
-  test("`this.deleteContent` returns an error if api call fails", () => {
-    // const contentData = { junkData: 'that will fail' };
-    // wrapper.instance().deleteContent(contentData);
-    // expect(deleteContentMock.mock.calls.length).toBe(1);
-    // deleteContentMock.mockRestore();
-  });
-
-  //**** TODO:  test this.props.apiContent.handleDeleteClose method
 });
