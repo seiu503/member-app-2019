@@ -24,6 +24,9 @@ let store,
 // create fake store
 const mockStore = configureStore();
 
+// handleSubmit mock functions
+const simpleHandleSubmitMock = jest.fn();
+
 // create any initial state needed
 const defaultProps = {
   submission: {
@@ -48,14 +51,17 @@ const defaultProps = {
       touched: touched,
       error: error
     }
-  }
+  },
+  handleSubmit: simpleHandleSubmitMock
 };
 
-// setup for redux-form wrapped component... I think
+// eventually going to use to unwrap mui
 const options = {
   untilSelector: "ContentTile"
 };
 const muiShallow = createShallow(options);
+
+// setup for redux-form wrapped component... I think
 const reduxFormSetup = (props = {}) => {
   store = mockStore(defaultProps);
   const setupProps = { ...defaultProps, ...props };
@@ -67,15 +73,15 @@ const reduxFormSetup = (props = {}) => {
 
 // setup for unwrapped, un-connected component
 const unconnectedSetup = () => {
-  const handleSubmitMock = jest.fn();
-  return shallow(
-    <SubmissionFormUnconnected {...defaultProps} onSubmit={handleSubmitMock} />
-  );
+  return shallow(<SubmissionFormUnconnected {...defaultProps} />);
 };
 
 describe("Unconnected <SubmissionForm />", () => {
   beforeEach(() => {
     wrapper = unconnectedSetup();
+  });
+  afterEach(() => {
+    simpleHandleSubmitMock.mockRestore();
   });
   it("renders without error", () => {
     const component = findByTestAttr(wrapper, "component-submissionform");
@@ -97,9 +103,9 @@ describe("Unconnected <SubmissionForm />", () => {
   });
   it("calls handleSubmit when form is submitted", () => {
     console.log(wrapper.debug());
-    const form = wrapper.find("submissionForm").first();
+    const form = wrapper.find(`[id="submissionForm"]`).first();
     form.simulate("submit");
-    expect(handleSubmit.toHaveBeenCalled());
+    expect(simpleHandleSubmitMock.mock.calls.length).toBe(1);
   });
 
   // describe("tests that require mocked redux actions", () => {
