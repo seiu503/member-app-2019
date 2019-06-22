@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1561097733771" clover="3.2.0">
-  <project timestamp="1561097733771" name="All files">
+<coverage generated="1561179511138" clover="3.2.0">
+  <project timestamp="1561179511138" name="All files">
     <metrics statements="522" coveredstatements="214" conditionals="288" coveredconditionals="64" methods="166" coveredmethods="56" elements="976" coveredelements="334" complexity="0" loc="522" ncloc="522" packages="8" files="30" classes="30"/>
     <package name="src">
       <metrics statements="75" coveredstatements="9" conditionals="46" coveredconditionals="0" methods="29" coveredmethods="2"/>
@@ -179,29 +179,29 @@
         <line num="123" count="1" type="stmt"/>
         <line num="128" count="4" type="stmt"/>
         <line num="129" count="4" type="stmt"/>
-        <line num="133" count="4" type="cond" truecount="4" falsecount="0"/>
-        <line num="134" count="1" type="stmt"/>
-        <line num="135" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="139" count="2" type="stmt"/>
-        <line num="140" count="2" type="stmt"/>
-        <line num="141" count="2" type="stmt"/>
-        <line num="142" count="2" type="cond" truecount="2" falsecount="0"/>
-        <line num="143" count="1" type="stmt"/>
-        <line num="144" count="1" type="stmt"/>
-        <line num="146" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="147" count="1" type="stmt"/>
-        <line num="148" count="1" type="stmt"/>
-        <line num="153" count="27" type="stmt"/>
-        <line num="155" count="27" type="stmt"/>
-        <line num="156" count="27" type="stmt"/>
-        <line num="167" count="0" type="stmt"/>
-        <line num="168" count="0" type="stmt"/>
-        <line num="187" count="54" type="stmt"/>
-        <line num="192" count="1" type="stmt"/>
-        <line num="202" count="1" type="stmt"/>
-        <line num="222" count="2" type="stmt"/>
-        <line num="261" count="2" type="stmt"/>
+        <line num="133" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="137" count="1" type="stmt"/>
+        <line num="138" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="142" count="2" type="stmt"/>
+        <line num="143" count="2" type="stmt"/>
+        <line num="144" count="2" type="stmt"/>
+        <line num="148" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="149" count="1" type="stmt"/>
+        <line num="150" count="1" type="stmt"/>
+        <line num="152" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="153" count="1" type="stmt"/>
+        <line num="154" count="1" type="stmt"/>
+        <line num="159" count="27" type="stmt"/>
+        <line num="161" count="27" type="stmt"/>
+        <line num="162" count="27" type="stmt"/>
+        <line num="173" count="0" type="stmt"/>
+        <line num="174" count="0" type="stmt"/>
+        <line num="193" count="54" type="stmt"/>
+        <line num="198" count="1" type="stmt"/>
+        <line num="208" count="1" type="stmt"/>
+        <line num="228" count="2" type="stmt"/>
         <line num="267" count="2" type="stmt"/>
+        <line num="273" count="2" type="stmt"/>
       </file>
       <file name="Dashboard.jsx" path="/Users/sarahschneider/Documents/_Sarah/projects/code/_seiu503/member-app-2019/client/src/containers/Dashboard.jsx">
         <metrics statements="33" coveredstatements="4" conditionals="15" coveredconditionals="0" methods="7" coveredmethods="0"/>

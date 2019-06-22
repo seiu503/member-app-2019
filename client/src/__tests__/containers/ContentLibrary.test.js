@@ -1,24 +1,12 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
-import { unwrap, createShallow } from "@material-ui/core/test-utils";
+import { shallow } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
-import ContentLibrary, {
-  ContentLibraryUnconnected
-} from "../../containers/ContentLibrary";
+import { ContentLibraryUnconnected } from "../../containers/ContentLibrary";
 
-import { BrowserRouter as Router } from "react-router-dom";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
 
 let store;
-
-const ContentLibraryNaked = unwrap(ContentLibrary);
-
-const options = {
-  untilSelector: "ContentTile"
-};
-const muiShallow = createShallow(options);
 
 let deleteImageMock,
   deleteImageErrorMock,
@@ -27,20 +15,6 @@ let deleteImageMock,
   getAllContentMock,
   getAllContentErrorMock,
   wrapper;
-
-const theme = {
-  palette: {
-    danger: {
-      main: "#b71c1c"
-    },
-    primary: {
-      main: "#b71c1c"
-    }
-  },
-  breakpoints: {
-    down: jest.fn()
-  }
-};
 
 const defaultProps = {
   appState: {

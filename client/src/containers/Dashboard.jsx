@@ -55,9 +55,8 @@ const styles = theme => ({
   }
 });
 
-class Dashboard extends React.Component {
+export class DashboardUnconnected extends React.Component {
   componentWillMount() {
-    console.log("dashboard");
     let userId, token;
     // check route params for user id and token
     if (this.props.match && this.props.match.params.id) {
@@ -118,7 +117,7 @@ class Dashboard extends React.Component {
     const redirect = window.localStorage.getItem("redirect");
     const { name, avatar_url } = this.props.profile.profile;
     return (
-      <div className={classes.container}>
+      <div className={classes.container} data-test="component-dashboard">
         {loggedIn && !redirect && (
           <Card className={classes.card}>
             <CardMedia
@@ -144,7 +143,7 @@ class Dashboard extends React.Component {
   }
 }
 
-Dashboard.propTypes = {
+DashboardUnconnected.propTypes = {
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool,
     authToken: PropTypes.string
@@ -191,6 +190,6 @@ export default withRouter(
     connect(
       mapStateToProps,
       mapDispatchToProps
-    )(Dashboard)
+    )(DashboardUnconnected)
   )
 );
