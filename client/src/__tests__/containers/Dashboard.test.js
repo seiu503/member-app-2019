@@ -20,11 +20,11 @@ const defaultProps = {
     authToken: "12345"
   },
   actions: {
-    setLoggedIn: jest.fn(),
-    setSpinner: jest.fn()
+    setLoggedIn: () => ({ type: "SET_LOGGED_IN" }),
+    setSpinner: () => ({ type: "SET_SPINNER" })
   },
   api: {
-    getProfile: jest.fn()
+    getProfile: () => Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
   },
   profile: {
     profile: {
@@ -56,7 +56,7 @@ const defaultProps = {
 const setup = (props = {}) => {
   store = mockStore(defaultProps);
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<Dashboard {...setupProps} store={store} />).dive();
+  return shallow(<DashboardUnconnected {...setupProps} store={store} />);
 };
 
 describe("<Dashboard />", () => {
@@ -84,32 +84,35 @@ describe("<Dashboard />", () => {
 
   it("renders without error", () => {
     wrapper = setup();
-    console.log(wrapper.debug());
-    // getProfileMock = jest
-    //   .fn()
-    //   .mockImplementation(() =>
-    //     Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
-    //   );
-    // wrapper.instance().props.api.getProfile = getProfileMock;
-    // console.log(wrapper.instance().props);
-    // console.log(wrapper.instance().props.api);
     const component = findByTestAttr(wrapper, "component-dashboard");
     expect(component.length).toBe(1);
   });
 
   it("should have access to expected props", () => {
     wrapper = setup();
-    // test that the state values were correctly passed as props
     expect(wrapper.instance().props.appState.loggedIn).toBe(true);
   });
 
   test("calls `getProfile` prop on component mount", () => {
-    wrapper = setup();
+    const getProfileMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
+      );
+    const props = { api: { getProfile: getProfileMock } };
+
+    const wrapper = shallow(
+      <DashboardUnconnected {...defaultProps} {...props} />
+    );
+
     // run lifecycle method
     wrapper.instance().componentDidMount();
 
     // expect the mock to have been called once
     expect(getProfileMock.mock.calls.length).toBe(1);
+
+    // restore mock
+    getProfileMock.mockRestore();
   });
 
   test("sets userId & authToken to localStorage on component mount if userId in route params", () => {
