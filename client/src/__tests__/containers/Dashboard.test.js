@@ -8,11 +8,9 @@ const mockStore = configureMockStore();
 
 let store;
 
-let getProfileMock,
-  setLoggedInMock,
-  setSpinnerMock,
-  getProfileErrorMock,
-  wrapper;
+let wrapper;
+
+let pushMock = jest.fn();
 
 const defaultProps = {
   appState: {
@@ -43,7 +41,7 @@ const defaultProps = {
   },
   classes: { test: "test" },
   history: {
-    push: jest.fn()
+    push: pushMock
   }
 };
 
@@ -60,28 +58,6 @@ const setup = (props = {}) => {
 };
 
 describe("<Dashboard />", () => {
-  // beforeEach(() => {
-  //   wrapper = setup();
-  //   getProfileMock = jest
-  //     .fn()
-  //     .mockImplementation(() =>
-  //       Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
-  //     );
-  //   getProfileErrorMock = jest.fn().mockImplementation(() => {
-  //     wrapper.instance().props.profile.error =
-  //       "An error occurred while fetching the profile.";
-  //     wrapper.instance().forceUpdate();
-  //     return Promise.resolve({ type: "GET_PROFILE_FAILURE" });
-  //   });
-  //   wrapper.instance().props.api.getProfile = getProfileMock;
-  // });
-  // afterEach(() => {
-  //   getProfileMock.mockRestore();
-  //   getProfileErrorMock.mockRestore();
-  //   wrapper.instance().props.profile.error = "";
-  //   localStorage.clear();
-  // });
-
   it("renders without error", () => {
     wrapper = setup();
     const component = findByTestAttr(wrapper, "component-dashboard");
@@ -93,7 +69,7 @@ describe("<Dashboard />", () => {
     expect(wrapper.instance().props.appState.loggedIn).toBe(true);
   });
 
-  test("calls `getProfile` prop on component mount", () => {
+  test("calls `getProfile` prop on componentWillMount", () => {
     const getProfileMock = jest
       .fn()
       .mockImplementation(() =>
@@ -105,10 +81,7 @@ describe("<Dashboard />", () => {
       <DashboardUnconnected {...defaultProps} {...props} />
     );
 
-    // run lifecycle method
-    wrapper.instance().componentDidMount();
-
-    // expect the mock to have been called once
+    // expect the mock to have been called once during component mount
     expect(getProfileMock.mock.calls.length).toBe(1);
 
     // restore mock
@@ -116,18 +89,53 @@ describe("<Dashboard />", () => {
   });
 
   test("sets userId & authToken to localStorage on component mount if userId in route params", () => {
-    // clear mock
-    localStorage.set.mockReset();
     const wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
-    wrapper.instance().componentDidMount();
 
-    expect(localStorage.set).toHaveBeenCalledTimes(1);
-    expect(localStorage.__STORE__).toEqual({
-      userId: "1234",
-      authToken: "5678"
-    });
+    expect(localStorage.getItem("authToken")).toEqual('"5678"');
+    expect(localStorage.getItem("userId")).toEqual('"1234"');
 
-    // restore mock
-    localStorage.set.mockRestore();
+    localStorage.clear();
+  });
+
+  test("if no route params", () => {
+    let props = {
+      match: {
+        params: {
+          id: null
+        }
+      }
+    };
+    const wrapper = shallow(
+      <DashboardUnconnected {...defaultProps} {...props} />
+    );
+
+    localStorage.clear();
+  });
+
+  test("redirects to saved route if redirect found in local storage", () => {
+    // set redirect to localStorage
+    localStorage.setItem("redirect", "/test");
+    pushMock = jest.fn();
+
+    const wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
+    wrapper.instance().props.history.push = pushMock;
+    wrapper.instance().componentWillMount();
+
+    // expect(pushMock).toHaveBeenCalledTimes(1);
+    // expect(pushMock).toHaveBeenCalledWith("/test");
+
+    // expect(localStorage.getItem('redirect')).toBe('');
+    localStorage.clear();
+  });
+
+  test("getProfile returns error message if api fails", () => {
+    const wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
+    wrapper.instance().props.api.getProfile = () =>
+      Promise.resolve({ type: "GET_PROFILE_FAILURE" });
+    wrapper.instance().forceUpdate();
+    wrapper.instance().props.api.getProfile = () => {
+      throw new Error("error");
+    };
+    wrapper.instance().forceUpdate();
   });
 });

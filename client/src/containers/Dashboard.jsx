@@ -91,7 +91,6 @@ export class DashboardUnconnected extends React.Component {
       .getProfile(token, userId)
       .then(result => {
         if (result.type === "GET_PROFILE_SUCCESS") {
-          console.log("got profile");
           this.props.actions.setLoggedIn();
           // check for redirect url in local storage
           const redirect = window.localStorage.getItem("redirect");

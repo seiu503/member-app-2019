@@ -29,12 +29,8 @@ const setup = (props = {}) => {
 };
 
 describe("<Logout />", () => {
-  // localStorage is being mocked by the npm package `jest-localstorage-mock`
-  // which is required in src/setupTests.js
   afterAll(() => {
-    // clear the localStorage object and the mock functions after these tests
-    localStorage.__STORE__ = {};
-    localStorage.mockClear();
+    localStorage.clear();
   });
 
   it("renders without error", () => {
@@ -76,7 +72,7 @@ describe("<Logout />", () => {
     expect(component.length).toBe(1);
   });
 
-  test("calls `logout` prop on component mount", () => {
+  test("calls `logout` prop on componentDidMount", () => {
     // create a mock function so we can see whether it's called on component mount
     const logoutMock = jest.fn();
     const props = { actions: { logout: logoutMock }, classes: {} };
@@ -94,17 +90,12 @@ describe("<Logout />", () => {
     logoutMock.mockRestore();
   });
 
-  test("clears localStorage on component mount", () => {
-    // clear mock since componentDidMount is called in other tests
-    localStorage.clear.mockReset();
+  test("clears localStorage on componentDidMount", () => {
+    localStorage.setItem("test", "testData");
     const wrapper = shallow(<Logout {...defaultProps} />);
     wrapper.instance().componentDidMount();
 
-    expect(localStorage.clear).toHaveBeenCalledTimes(1);
-    expect(localStorage.__STORE__).toEqual({});
-
-    // restore mock
-    localStorage.clear.mockRestore();
+    expect(localStorage.length).toEqual(0);
   });
 
   test("redirects to home route 1 second after component mount", () => {
