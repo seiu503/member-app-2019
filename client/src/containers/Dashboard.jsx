@@ -184,11 +184,9 @@ const mapDispatchToProps = dispatch => ({
   api: bindActionCreators(apiProfileActions, dispatch)
 });
 
-export default withRouter(
-  withStyles(styles)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(DashboardUnconnected)
-  )
-);
+export const DashboardConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(DashboardUnconnected);
+
+export default withRouter(withStyles(styles)(DashboardConnected));
