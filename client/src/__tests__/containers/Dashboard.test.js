@@ -8,8 +8,6 @@ import {
 import { getProfile } from "../../store/actions/apiProfileActions";
 
 import configureMockStore from "redux-mock-store";
-import { RSAA } from "redux-api-middleware";
-import { BASE_URL } from "../../store/actions/apiConfig.js";
 const mockStore = configureMockStore();
 
 let store;
@@ -106,9 +104,7 @@ describe("<Dashboard />", () => {
       );
     const props = { api: { getProfile: getProfileMock } };
 
-    const wrapper = shallow(
-      <DashboardUnconnected {...defaultProps} {...props} />
-    );
+    wrapper = shallow(<DashboardUnconnected {...defaultProps} {...props} />);
 
     // expect the mock to have been called once during component mount
     expect(getProfileMock.mock.calls.length).toBe(1);
@@ -118,7 +114,7 @@ describe("<Dashboard />", () => {
   });
 
   test("sets userId & authToken to localStorage on component mount if userId in route params", () => {
-    const wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
+    wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
 
     expect(localStorage.getItem("authToken")).toEqual('"5678"');
     expect(localStorage.getItem("userId")).toEqual('"1234"');
@@ -161,7 +157,7 @@ describe("<Dashboard />", () => {
     localStorage.setItem("redirect", "/test");
     pushMock = jest.fn();
 
-    const wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
+    wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
     wrapper.instance().props.history.push = pushMock;
     wrapper.instance().componentWillMount();
 

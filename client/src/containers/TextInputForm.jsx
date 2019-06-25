@@ -58,7 +58,7 @@ const styles = theme => ({
   }
 });
 
-class TextInputForm extends React.Component {
+export class TextInputFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,7 +72,7 @@ class TextInputForm extends React.Component {
       this.props.apiContent
         .getContentById(this.props.match.params.id)
         .then(result => {
-          // console.log(result.type);
+          console.log(result.type);
           if (
             result.type === "GET_CONTENT_BY_ID_FAILURE" ||
             this.props.content.error
@@ -230,7 +230,7 @@ class TextInputForm extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container}>
+      <div className={classes.container} data-test="component-text-input-form">
         <Typography
           variant="h2"
           align="center"
@@ -350,7 +350,7 @@ class TextInputForm extends React.Component {
   }
 }
 
-TextInputForm.propTypes = {
+TextInputFormUnconnected.propTypes = {
   type: PropTypes.string,
   appState: PropTypes.shape({
     authToken: PropTypes.string
@@ -380,9 +380,9 @@ const mapDispatchToProps = dispatch => ({
   apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TextInputForm)
-);
+export const TextInputFormConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TextInputFormUnconnected);
+
+export default withStyles(styles)(TextInputFormConnected);
