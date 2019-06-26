@@ -8,17 +8,12 @@ import { connect } from "react-redux";
 import { getFormValues } from "redux-form";
 
 import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
+import * as formElements from "../components/SubmissionFormElements";
 import { openSnackbar } from "./Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 import validate from "../utils/validators";
@@ -65,76 +60,12 @@ const styles = theme => ({
     margin: "10px 0"
   }
 });
+const stateList = formElements.stateList;
+const monthList = formElements.monthList;
+const languageOptions = formElements.languageOptions;
+const dateOptions = formElements.dateOptions;
+const yearOptions = formElements.yearOptions;
 
-const stateList = [
-  "",
-  "AL",
-  "AK",
-  "AZ",
-  "AR",
-  "CA",
-  "CO",
-  "CT",
-  "DE",
-  "FL",
-  "GA",
-  "HI",
-  "ID",
-  "IL",
-  "IN",
-  "IA",
-  "KS",
-  "KY",
-  "LA",
-  "ME",
-  "MD",
-  "MA",
-  "MI",
-  "MN",
-  "MS",
-  "MO",
-  "MT",
-  "NE",
-  "NV",
-  "NH",
-  "NJ",
-  "NM",
-  "NY",
-  "NC",
-  "ND",
-  "OH",
-  "OK",
-  "OR",
-  "PA",
-  "RI",
-  "SC",
-  "SD",
-  "TN",
-  "TX",
-  "UT",
-  "VT",
-  "VA",
-  "WA",
-  "WV",
-  "WI",
-  "WY"
-];
-const monthList = [
-  "",
-  "01",
-  "02",
-  "03",
-  "04",
-  "05",
-  "06",
-  "07",
-  "08",
-  "09",
-  "10",
-  "11",
-  "12"
-];
-const languageOptions = ["", "English", "Russian", "Spanish"];
 export class SubmissionFormUnconnected extends React.Component {
   classes = this.props.classes;
   constructor(props) {
@@ -142,112 +73,9 @@ export class SubmissionFormUnconnected extends React.Component {
     this.state = {};
   }
 
-  componentDidMount() {}
-  componentDidUpdate() {}
-
-  renderTextField = ({
-    input,
-    name,
-    label,
-    meta: { touched, error },
-    ...custom
-  }) => (
-    <TextField
-      label={label}
-      error={touched && error}
-      variant="outlined"
-      className={this.classes.input}
-      helperText={touched && error}
-      {...input}
-      {...custom}
-    />
-  );
-
-  renderSelect = ({
-    input,
-    name,
-    label,
-    meta: { error, touched },
-    labelWidth,
-    options
-  }) => (
-    <FormControl
-      variant="outlined"
-      className={this.classes.formControl}
-      error={error && touched}
-    >
-      <InputLabel htmlFor={name}>{label}</InputLabel>
-      <Select
-        native
-        onChange={input.onChange}
-        className={this.classes.select}
-        input={<OutlinedInput labelWidth={labelWidth} />}
-      >
-        {options.map(item => (
-          <option key={item} value={item.toLowerCase()}>
-            {item}
-          </option>
-        ))}
-      </Select>
-    </FormControl>
-  );
-
-  renderCheckbox = ({ input, label, validate, ...custom }) => (
-    <FormControlLabel
-      control={
-        <Checkbox
-          color="primary"
-          checked={input.value ? true : false}
-          onChange={input.onChange}
-          {...custom}
-          className={this.classes.checkbox}
-        />
-      }
-      label={label}
-    />
-  );
-
-  getMaxDay = month => {
-    switch (month) {
-      case "02":
-        return 29;
-      case "04":
-      case "06":
-      case "09":
-      case "11":
-        return 30;
-      default:
-        return 31;
-    }
-  };
-
-  dateOptions = () => {
-    const mm = this.props.formValues.mm;
-    const max = this.getMaxDay(mm);
-    let dates = [];
-    for (let i = 1; i <= max; i++) {
-      if (i < 10) {
-        dates.push("0" + i);
-      } else {
-        dates.push(i.toString());
-      }
-    }
-    dates.unshift("");
-    return dates;
-  };
-
-  yearOptions = () => {
-    let years = [];
-    for (
-      let i = new Date().getFullYear() - 110;
-      i <= new Date().getFullYear();
-      i++
-    ) {
-      years.unshift(i.toString());
-    }
-    years.unshift("");
-    return years;
-  };
+  renderTextField = formElements.renderTextField;
+  renderSelect = formElements.renderSelect;
+  renderCheckbox = formElements.renderCheckbox;
 
   handleSubmit = values => {
     const {
@@ -332,6 +160,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="preferredLanguage"
             id="preferredLanguage"
             type="select"
+            classes={this.classes}
             component={this.renderSelect}
             labelWidth={132}
             options={languageOptions}
@@ -342,6 +171,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="firstName"
             id="firstName"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -349,8 +179,9 @@ export class SubmissionFormUnconnected extends React.Component {
             name="lastName"
             id="lastName"
             label="Last Name"
-            type="text"
+            classes={this.classes}
             component={this.renderTextField}
+            type="text"
           />
 
           <FormLabel className={this.classes.formLabel} component="legend">
@@ -362,6 +193,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="mm"
             id="mm"
             type="select"
+            classes={this.classes}
             component={this.renderSelect}
             labelWidth={41}
             options={monthList}
@@ -372,9 +204,10 @@ export class SubmissionFormUnconnected extends React.Component {
             name="dd"
             id="dd"
             type="select"
+            classes={this.classes}
             component={this.renderSelect}
             labelWidth={24}
-            options={this.dateOptions()}
+            options={dateOptions(this.props)}
           />
 
           <Field
@@ -382,9 +215,10 @@ export class SubmissionFormUnconnected extends React.Component {
             name="yyyy"
             id="yyyy"
             type="select"
+            classes={this.classes}
             component={this.renderSelect}
             labelWidth={30}
-            options={this.yearOptions()}
+            options={yearOptions()}
           />
 
           <FormLabel className={this.classes.formLabel} component="legend">
@@ -396,6 +230,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="homeStreet"
             id="homeStreet"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -404,6 +239,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="homeCity"
             id="homeCity"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -412,6 +248,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="homeState"
             id="homeState"
             type="select"
+            classes={this.classes}
             component={this.renderSelect}
             options={stateList}
             labelWidth={80}
@@ -422,6 +259,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="homePostalCode"
             id="homePostalCode"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -430,6 +268,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="homeEmail"
             id="homeEmail"
             type="email"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -438,6 +277,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="mobilePhone"
             id="mobilePhone"
             type="tel"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -446,6 +286,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="employerName"
             id="employerName"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -454,6 +295,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="agencyNumber"
             id="agencyNumber"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -462,6 +304,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="textAuthOptOut"
             id="textAuthOptOut"
             type="checkbox"
+            classes={this.classes}
             component={this.renderCheckbox}
           />
 
@@ -470,6 +313,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="termsAgree"
             id="termsAgree"
             type="checkbox"
+            classes={this.classes}
             component={this.renderCheckbox}
           />
 
@@ -478,6 +322,7 @@ export class SubmissionFormUnconnected extends React.Component {
             name="signature"
             id="signature"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
@@ -486,12 +331,14 @@ export class SubmissionFormUnconnected extends React.Component {
             name="onlineCampaignSource"
             id="onlineCampaignSource"
             type="text"
+            classes={this.classes}
             component={this.renderTextField}
           />
 
           <ButtonWithSpinner
             type="submit"
             color="secondary"
+            classes={this.classes}
             className={this.classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}

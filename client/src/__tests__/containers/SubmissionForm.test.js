@@ -13,7 +13,6 @@ import {
   generateSampleSubmission,
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
-import validate from "../../utils/validators";
 import SubmissionForm, {
   SubmissionFormUnconnected,
   SubmissionFormReduxForm
@@ -25,14 +24,13 @@ let wrapper,
   touched,
   error,
   addSubmissionMock,
+  mockStore,
   addSubmissionErrorMock,
   handleSubmitMock,
   testData,
-  mockStore,
   store,
   submitting,
-  loading,
-  handleSubmit;
+  loading;
 
 // const SubmissionFormNaked = unwrap(SubmissionForm);
 
@@ -41,9 +39,6 @@ const defaultProps = {
   submission: {
     error: null,
     loading: false
-  },
-  apiSubmission: {
-    addSubmission: jest.fn()
   },
   initialValues: {
     mm: "",
@@ -62,6 +57,10 @@ const defaultProps = {
     }
   }
 };
+const options = {
+  untilSelector: "ContentTile"
+};
+const muiShallow = createShallow(options);
 
 // setup for unwrapped, un-connected component
 const unconnectedSetup = () => {
@@ -69,24 +68,21 @@ const unconnectedSetup = () => {
   return shallow(<SubmissionFormUnconnected {...setUpProps} />);
 };
 
-const options = {
-  untilSelector: "ContentTile"
-};
-const muiShallow = createShallow(options);
-
 // setup for redux-form wrapped component... I think
 const connectedSetup = (props = {}) => {
   // create basic store
   mockStore = createStore(combineReducers({ form: formReducer }));
-
+  addSubmissionMock = jest.fn();
+  addSubmissionErrorMock = jest.fn();
+  handleSubmitMock = jest.fn();
   // props to pass to test subject
   props = {
     ...defaultProps,
     apiSubmission: {
       addSubmission: addSubmissionMock,
       addSubmissionError: addSubmissionErrorMock
-    }
-    // handleSubmit: handleSubmitMock
+    },
+    handleSubmit: handleSubmitMock
   };
 
   // mockConnected component with props
@@ -101,9 +97,6 @@ const connectedSetup = (props = {}) => {
 describe("Unconnected <SubmissionForm />", () => {
   beforeEach(() => {
     wrapper = unconnectedSetup();
-  });
-  afterEach(() => {
-    // simpleHandleSubmitMock.mockRestore();
   });
   it("renders without error", () => {
     const component = findByTestAttr(wrapper, "component-submissionform");
@@ -131,68 +124,21 @@ describe("Connected Form", () => {
     touched = false;
     error = true;
     loading = false;
-    addSubmissionMock = jest.fn();
-    // .mockImplementation(() =>
-    //   Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-    // );
-    addSubmissionErrorMock = jest.fn();
-    // .mockImplementation(() => {
-    //   wrapper.instance().props.submission.error =
-    //     "Sorry, something went wrong :(";
-    //   wrapper.instance().forceUpdate();
-    //   return Promise.reject("Sorry, something went wrong :(");
-    // });
-    // handleSubmitMock = jest.fn().mockImplementation(() => Promise.resolve())
     wrapper = connectedSetup();
   });
   afterEach(() => {
     addSubmissionMock.mockRestore();
     addSubmissionErrorMock.mockRestore();
-    // handleSubmitMock.mockRestore();
+    handleSubmitMock.mockRestore();
   });
   test("calls handleSubmit", () => {
     testData = generateSampleValidate();
     const form = wrapper.find(`[id="submissionForm"]`);
-    console.log(form.debug());
-    // for (let key in testData) {
-    //   let input = wrapper.find(`[id="${key}"]`)
-    //   input.simulate('change', { target: { value: testData[key] } })
-    // }
-    form.simulate("submit");
-    expect(addSubmissionMock.mock.calls.length).toBe(1);
-  });
-});
-
-describe("Redux-Form custom Validators", () => {
-  beforeEach(() => {
-    testData = generateSampleValidate();
-  });
-  afterAll(() => {
-    testData = generateSampleValidate();
-  });
-  test("no errors on well formed values", () => {
-    expect(validate(testData)).toStrictEqual({});
-  });
-  test("adds required field to errors returned", () => {
-    delete testData.firstName;
-    expect(validate(testData)).toStrictEqual({ firstName: "Required" });
-  });
-  test("validates properly formed phone numbers", () => {
-    testData.mobilePhone = 55;
-    expect(validate(testData)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-456)"
+    wrapper.setState({
+      form: { values: generateSampleValidate }
     });
-  });
-  test("validates properly formed emails", () => {
-    testData.homeEmail = "fake@email";
-    expect(validate(testData)).toStrictEqual({
-      homeEmail: "Invalid email address (e.g. sample@email.com)"
-    });
-  });
-  test("validates properly formed zip codes", () => {
-    testData.homePostalCode = 4444;
-    expect(validate(testData)).toStrictEqual({
-      homePostalCode: "Must be at exactly 5 characters long"
-    });
+    console.log(wrapper.state);
+    wrapper.simulate("submit");
+    expect(handleSubmitMock.mock.calls.length).toBe(1);
   });
 });
