@@ -24,7 +24,9 @@ import ButtonWithSpinner from "../components/ButtonWithSpinner";
 import validate from "../utils/validators";
 
 const styles = theme => ({
-  root: {},
+  root: {
+    margin: "40px 0"
+  },
   container: {
     padding: "80px 0 140px 0"
   },

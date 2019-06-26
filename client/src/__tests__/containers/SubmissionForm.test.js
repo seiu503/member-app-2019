@@ -21,28 +21,29 @@ import SubmissionForm, {
 import { findByTestAttr } from "../../utils/testUtils";
 
 // variables
-let store,
-  wrapper,
-  submitting,
+let wrapper,
   touched,
   error,
-  loading,
   addSubmissionMock,
   addSubmissionErrorMock,
+  handleSubmitMock,
   testData,
   mockStore,
+  store,
+  submitting,
+  loading,
   handleSubmit;
 
-const SubmissionFormNaked = unwrap(SubmissionForm);
-
-// handleSubmit mock functions
-const simpleHandleSubmitMock = jest.fn();
+// const SubmissionFormNaked = unwrap(SubmissionForm);
 
 // create simple initial state
 const defaultProps = {
   submission: {
     error: null,
     loading: false
+  },
+  apiSubmission: {
+    addSubmission: jest.fn()
   },
   initialValues: {
     mm: "",
@@ -59,13 +60,13 @@ const defaultProps = {
       touched: touched,
       error: error
     }
-  },
-  handleSubmit: simpleHandleSubmitMock
+  }
 };
 
 // setup for unwrapped, un-connected component
 const unconnectedSetup = () => {
-  return shallow(<SubmissionFormUnconnected {...defaultProps} />);
+  const setUpProps = { handleSubmit: jest.fn(), ...defaultProps };
+  return shallow(<SubmissionFormUnconnected {...setUpProps} />);
 };
 
 const options = {
@@ -78,12 +79,14 @@ const connectedSetup = (props = {}) => {
   // create basic store
   mockStore = createStore(combineReducers({ form: formReducer }));
 
-  // spy function to test submit was called NOT USING RIGHT NOW
-  // handleSubmit = sinon.stub().returns(Promise.resolve());
-
   // props to pass to test subject
   props = {
-    ...defaultProps
+    ...defaultProps,
+    apiSubmission: {
+      addSubmission: addSubmissionMock,
+      addSubmissionError: addSubmissionErrorMock
+    }
+    // handleSubmit: handleSubmitMock
   };
 
   // mockConnected component with props
@@ -100,7 +103,7 @@ describe("Unconnected <SubmissionForm />", () => {
     wrapper = unconnectedSetup();
   });
   afterEach(() => {
-    simpleHandleSubmitMock.mockRestore();
+    // simpleHandleSubmitMock.mockRestore();
   });
   it("renders without error", () => {
     const component = findByTestAttr(wrapper, "component-submissionform");
@@ -122,8 +125,49 @@ describe("Unconnected <SubmissionForm />", () => {
   });
 });
 
+describe("Connected Form", () => {
+  beforeEach(() => {
+    submitting = false;
+    touched = false;
+    error = true;
+    loading = false;
+    addSubmissionMock = jest.fn();
+    // .mockImplementation(() =>
+    //   Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    // );
+    addSubmissionErrorMock = jest.fn();
+    // .mockImplementation(() => {
+    //   wrapper.instance().props.submission.error =
+    //     "Sorry, something went wrong :(";
+    //   wrapper.instance().forceUpdate();
+    //   return Promise.reject("Sorry, something went wrong :(");
+    // });
+    // handleSubmitMock = jest.fn().mockImplementation(() => Promise.resolve())
+    wrapper = connectedSetup();
+  });
+  afterEach(() => {
+    addSubmissionMock.mockRestore();
+    addSubmissionErrorMock.mockRestore();
+    // handleSubmitMock.mockRestore();
+  });
+  test("calls handleSubmit", () => {
+    testData = generateSampleValidate();
+    const form = wrapper.find(`[id="submissionForm"]`);
+    console.log(form.debug());
+    // for (let key in testData) {
+    //   let input = wrapper.find(`[id="${key}"]`)
+    //   input.simulate('change', { target: { value: testData[key] } })
+    // }
+    form.simulate("submit");
+    expect(addSubmissionMock.mock.calls.length).toBe(1);
+  });
+});
+
 describe("Redux-Form custom Validators", () => {
   beforeEach(() => {
+    testData = generateSampleValidate();
+  });
+  afterAll(() => {
     testData = generateSampleValidate();
   });
   test("no errors on well formed values", () => {
@@ -150,41 +194,5 @@ describe("Redux-Form custom Validators", () => {
     expect(validate(testData)).toStrictEqual({
       homePostalCode: "Must be at exactly 5 characters long"
     });
-  });
-});
-
-describe("Connected Form", () => {
-  beforeEach(() => {
-    submitting = false;
-    touched = false;
-    error = null;
-    loading = false;
-    addSubmissionMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-      );
-    addSubmissionErrorMock = jest.fn().mockImplementation(() => {
-      wrapper.instance().props.submission.error =
-        "Sorry, something went wrong :(";
-      wrapper.instance().forceUpdate();
-      return Promise.reject("Sorry, something went wrong :(");
-    });
-    wrapper = connectedSetup();
-  });
-  afterEach(() => {
-    addSubmissionMock.mockRestore();
-    addSubmissionErrorMock.mockRestore();
-    simpleHandleSubmitMock.mockRestore();
-  });
-  test("calls handleSubmit", () => {
-    testData = generateSampleValidate();
-    const form = wrapper.find(`[id="submissionForm"]`);
-    // for (let key in testData) {
-    //   let input = wrapper.find(`[id="${key}"]`)
-    //   input.simulate('change', { target: { value: testData[key] } })
-    // }
-    form.simulate("submit");
-    expect(simpleHandleSubmitMock.mock.calls.length).toBe(1);
   });
 });
