@@ -29,7 +29,6 @@ const defaultProps = {
   classes: {}
 };
 
-let count = 0;
 describe("Connected Form", () => {
   let store, handleSubmit, wrapper, testData;
 
