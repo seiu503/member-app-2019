@@ -133,7 +133,6 @@ describe("Unconnected <SubmissionForm />", () => {
         );
       // replacing openSnackbar import with mock function
       Notifier.openSnackbar = jest.fn();
-
       // replacing form prop functions and placing them in dispatch action object
       addSubmission = handleSubmitError;
       apiSubmission.addSubmission = addSubmission;

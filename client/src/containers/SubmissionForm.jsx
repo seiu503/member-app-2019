@@ -9,7 +9,7 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import validate from "../utils/validators";
 import { styles } from "../components/SubmissionFormElements";
 
-export const SubmissionFormReduxForm = reduxForm({
+export const SubmissionForm = reduxForm({
   form: "submission",
   validate,
   enableReinitialize: true
@@ -33,5 +33,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SubmissionFormReduxForm)
+  )(SubmissionForm)
 );
