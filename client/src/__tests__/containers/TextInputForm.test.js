@@ -5,7 +5,12 @@ import {
   TextInputFormConnected,
   TextInputFormUnconnected
 } from "../../containers/TextInputForm";
-import { getContentById } from "../../store/actions/apiContentActions";
+import {
+  getContentById,
+  addContent,
+  updateContent,
+  clearForm
+} from "../../store/actions/apiContentActions";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -26,7 +31,8 @@ const initialState = {
       content_type: "",
       content: ""
     },
-    loading: false
+    loading: false,
+    error: ""
   }
 };
 
@@ -48,7 +54,8 @@ const defaultProps = {
       content_type: "",
       content: ""
     },
-    loading: false
+    loading: false,
+    error: ""
   },
   classes: { test: "test" },
   history: {
@@ -112,11 +119,117 @@ describe("<TextInputForm />", () => {
 
     // expect the spy to have been called
     // extract the action and JSON.stringify both sides to get the
-    // assertion to pass, because of the anonymouse function in the
-    // getContentById failure payload
+    // assertion to pass, because the anonymous function in the
+    // getContentById failure payload means expect toHaveBeenCalledWith
+    // won't work (can't compare 2 anonymous functions / won't be 'equal')
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(JSON.stringify(spyCall)).toEqual(
       JSON.stringify(getContentById("1"))
+    );
+  });
+
+  test("if `getContentById` fails, this.props.content.error should be non-empty", () => {
+    let props = {
+      match: {
+        params: {
+          id: "junk"
+        }
+      },
+      edit: true,
+      apiContent: { getContentById: getContentById }
+    };
+    store = storeFactory(initialState);
+
+    wrapper = shallow(
+      <TextInputFormConnected {...defaultProps} {...props} store={store} />
+    )
+      .dive()
+      .dive();
+
+    // expect error to be populated
+    console.log(wrapper.instance().props);
+    expect(wrapper.instance().props.content.error.length).toBeGreaterThan(0);
+  });
+
+  test("calls `addContent` on submit if !props.edit", () => {
+    let props = {
+      edit: false,
+      apiContent: { addContent: addContent },
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      }
+    };
+    store = storeFactory(initialState);
+    // Create a spy of the dispatch() method for test assertions.
+    const dispatchSpy = jest.spyOn(store, "dispatch");
+    wrapper = shallow(
+      <TextInputFormConnected {...defaultProps} {...props} store={store} />
+    )
+      .dive()
+      .dive();
+
+    wrapper.instance().submit();
+    // expect the spy to have been called
+    // extract the action and JSON.stringify both sides to get the
+    // assertion to pass, because the anonymous function in the
+    // getContentById failure payload means expect toHaveBeenCalledWith
+    // won't work (can't compare 2 anonymous functions / won't be 'equal')
+    const spyCall = dispatchSpy.mock.calls[0][0];
+    const { content_type, content } = wrapper.instance().props.content.form;
+    const { authToken } = wrapper.instance().props.appState;
+    const body = {
+      content_type,
+      content
+    };
+    expect(JSON.stringify(spyCall)).toEqual(
+      JSON.stringify(addContent(authToken, body))
+    );
+  });
+
+  test("calls `updateContent` on submit if props.edit && match.params.id", () => {
+    let props = {
+      edit: true,
+      apiContent: { updateContent: updateContent },
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      },
+      match: {
+        params: {
+          id: 1
+        }
+      }
+    };
+    store = storeFactory(initialState);
+    // Create a spy of the dispatch() method for test assertions.
+    const dispatchSpy = jest.spyOn(store, "dispatch");
+    wrapper = shallow(
+      <TextInputFormConnected {...defaultProps} {...props} store={store} />
+    )
+      .dive()
+      .dive();
+
+    wrapper.instance().submit();
+    // expect the spy to have been called
+    // extract the action and JSON.stringify both sides to get the
+    // assertion to pass, because the anonymous function in the
+    // getContentById failure payload means expect toHaveBeenCalledWith
+    // won't work (can't compare 2 anonymous functions / won't be 'equal')
+    const spyCall = dispatchSpy.mock.calls[0][0];
+    const { content_type, content } = wrapper.instance().props.content.form;
+    const { authToken } = wrapper.instance().props.appState;
+    const body = {
+      content_type,
+      content
+    };
+    const id = wrapper.instance().props.match.params.id;
+    expect(JSON.stringify(spyCall)).toEqual(
+      JSON.stringify(updateContent(authToken, id, body))
     );
   });
 

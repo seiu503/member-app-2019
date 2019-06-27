@@ -89,14 +89,14 @@ export const openSnackbar = (
     (typeof openSnackbarFn === "function" && process.env.NODE_ENV !== "test") ||
     testBranchOne
   ) {
-    openSnackbarFn(variant, message);
+    return openSnackbarFn(variant, message);
   } else if (
     typeof openSnackbarFn === "function" &&
     process.env.NODE_ENV === "test" &&
     !testSetTimeout
   ) {
     // so! dirty!! somebody fix this mess!
-    openSnackbarFn(variant, message);
+    return openSnackbarFn(variant, message);
   } else {
     // console.log("openSnackbarFn is undefined");
     setTimeout(() => openSnackbarFn(variant, message), 50);

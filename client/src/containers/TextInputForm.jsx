@@ -65,6 +65,7 @@ export class TextInputFormUnconnected extends React.Component {
       open: false,
       files: []
     };
+    this.submit = this.submit.bind(this);
   }
 
   componentDidMount() {
@@ -163,8 +164,7 @@ export class TextInputFormUnconnected extends React.Component {
       .catch(err => openSnackbar("error", err));
   };
 
-  submit = e => {
-    // e.preventDefault();
+  submit() {
     const { content_type, content } = this.props.content.form;
     const { authToken } = this.props.appState;
     const body = {
@@ -225,7 +225,7 @@ export class TextInputFormUnconnected extends React.Component {
           "An error occured while trying to save your content."
       );
     }
-  };
+  }
 
   render() {
     const { classes } = this.props;
