@@ -7,6 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 
+// hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
 export const stateList = [
   "",
   "AL",
@@ -76,6 +77,8 @@ export const monthList = [
   "12"
 ];
 export const languageOptions = ["", "English", "Russian", "Spanish"];
+
+// switch helper for dateOptions
 export const getMaxDay = month => {
   switch (month) {
     case "02":
@@ -89,6 +92,7 @@ export const getMaxDay = month => {
       return 31;
   }
 };
+// function to adjust date select based on mm value
 export const dateOptions = props => {
   const mm = props.formValues.mm;
   const max = getMaxDay(mm);
@@ -103,6 +107,7 @@ export const dateOptions = props => {
   dates.unshift("");
   return dates;
 };
+// dynamically fills yyyy select with last 110 years
 export const yearOptions = () => {
   let years = [];
   for (
@@ -115,6 +120,8 @@ export const yearOptions = () => {
   years.unshift("");
   return years;
 };
+
+// MUI styles object
 export const styles = theme => ({
   root: {
     margin: "40px 0"
@@ -158,6 +165,7 @@ export const styles = theme => ({
   }
 });
 
+// custom MUI friendly TEXT input
 export const renderTextField = ({
   input,
   name,
@@ -177,6 +185,7 @@ export const renderTextField = ({
   />
 );
 
+// custom MUI friendly SELECT input
 export const renderSelect = ({
   input,
   name,
@@ -207,6 +216,7 @@ export const renderSelect = ({
   </FormControl>
 );
 
+// custom MUI friendly CHECKBOX input
 export const renderCheckbox = ({
   input,
   label,

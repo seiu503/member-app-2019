@@ -9,6 +9,7 @@ import * as formElements from "../components/SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 
+// helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
 const monthList = formElements.monthList;
 const languageOptions = formElements.languageOptions;
@@ -22,6 +23,7 @@ class SubmissionFormComponent extends React.Component {
     this.state = {};
   }
 
+  // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;

@@ -9,10 +9,7 @@ import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 import { unwrap, createShallow } from "@material-ui/core/test-utils";
 
-import {
-  generateSampleSubmission,
-  generateSampleValidate
-} from "../../../../app/utils/fieldConfigs";
+import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import SubmissionForm, {
   SubmissionFormReduxForm
 } from "../../containers/SubmissionForm";
@@ -47,7 +44,7 @@ const defaultProps = {
     mm: "",
     onlineCampaignSource: null
   },
-  classes: { test: "test" },
+  classes: {},
   fields: {
     firstName: {
       value: "",
@@ -60,12 +57,6 @@ const options = {
   untilSelector: "ContentTile"
 };
 const muiShallow = createShallow(options);
-
-// setup for unwrapped, un-connected component
-const unconnectedSetup = () => {
-  const setUpProps = { handleSubmit: jest.fn(), ...defaultProps };
-  return shallow(<SubmissionFormComponent {...setUpProps} />);
-};
 
 // setup for redux-form wrapped component... I think
 const connectedSetup = (props = {}) => {
@@ -112,51 +103,7 @@ describe("Connected Form", () => {
     wrapper.setState({
       form: { values: generateSampleValidate }
     });
-    console.log(wrapper.state);
-    wrapper.simulate("submit");
-    expect(handleSubmitMock.mock.calls.length).toBe(1);
+    form.simulate("submit");
+    expect(handleSubmitMock.mock.calls.length).toBe(2);
   });
-});
-
-export const styles = theme => ({
-  root: {
-    margin: "40px 0"
-  },
-  container: {
-    padding: "80px 0 140px 0"
-  },
-  head: {
-    color: theme.palette.primary.light
-  },
-  form: {
-    maxWidth: 600,
-    margin: "auto"
-  },
-  group: {
-    display: "flex",
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "center"
-  },
-  input: {
-    width: "100%",
-    margin: "0 0 20px 0"
-  },
-  select: {
-    width: "100%",
-    margin: "0 0 20px 0"
-  },
-  formButton: {
-    width: "100%",
-    padding: 20
-  },
-  formControl: {
-    width: "100%"
-  },
-  formControlLabel: {
-    width: "100%"
-  },
-  formLabel: {
-    margin: "10px 0"
-  }
 });
