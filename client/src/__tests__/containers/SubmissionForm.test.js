@@ -14,7 +14,6 @@ import {
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
 import SubmissionForm, {
-  SubmissionFormUnconnected,
   SubmissionFormReduxForm
 } from "../../containers/SubmissionForm";
 import { findByTestAttr } from "../../utils/testUtils";
@@ -65,7 +64,7 @@ const muiShallow = createShallow(options);
 // setup for unwrapped, un-connected component
 const unconnectedSetup = () => {
   const setUpProps = { handleSubmit: jest.fn(), ...defaultProps };
-  return shallow(<SubmissionFormUnconnected {...setUpProps} />);
+  return shallow(<SubmissionFormComponent {...setUpProps} />);
 };
 
 // setup for redux-form wrapped component... I think
@@ -94,30 +93,6 @@ const connectedSetup = (props = {}) => {
   return subject;
 };
 
-describe("Unconnected <SubmissionForm />", () => {
-  beforeEach(() => {
-    wrapper = unconnectedSetup();
-  });
-  it("renders without error", () => {
-    const component = findByTestAttr(wrapper, "component-submissionform");
-    expect(component.length).toBe(1);
-  });
-  it("has access to `submission error` prop", () => {
-    expect(wrapper.instance().props.submission.error).toBe(null);
-  });
-  it("has access to `classes` prop", () => {
-    expect(typeof wrapper.instance().props.classes).toBe("object");
-    expect(wrapper.instance().props.classes.test).toBe("test");
-  });
-  it("has access to `initialValues` prop", () => {
-    expect(typeof wrapper.instance().props.formValues).toBe("object");
-    expect(wrapper.instance().props.initialValues.mm).toBe("");
-    expect(wrapper.instance().props.initialValues.onlineCampaignSource).toBe(
-      null
-    );
-  });
-});
-
 describe("Connected Form", () => {
   beforeEach(() => {
     submitting = false;
@@ -141,4 +116,47 @@ describe("Connected Form", () => {
     wrapper.simulate("submit");
     expect(handleSubmitMock.mock.calls.length).toBe(1);
   });
+});
+
+export const styles = theme => ({
+  root: {
+    margin: "40px 0"
+  },
+  container: {
+    padding: "80px 0 140px 0"
+  },
+  head: {
+    color: theme.palette.primary.light
+  },
+  form: {
+    maxWidth: 600,
+    margin: "auto"
+  },
+  group: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  input: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  select: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  formButton: {
+    width: "100%",
+    padding: 20
+  },
+  formControl: {
+    width: "100%"
+  },
+  formControlLabel: {
+    width: "100%"
+  },
+  formLabel: {
+    margin: "10px 0"
+  }
 });

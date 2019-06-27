@@ -115,6 +115,48 @@ export const yearOptions = () => {
   years.unshift("");
   return years;
 };
+export const styles = theme => ({
+  root: {
+    margin: "40px 0"
+  },
+  container: {
+    padding: "80px 0 140px 0"
+  },
+  head: {
+    color: theme.palette.primary.light
+  },
+  form: {
+    maxWidth: 600,
+    margin: "auto"
+  },
+  group: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  input: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  select: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  formButton: {
+    width: "100%",
+    padding: 20
+  },
+  formControl: {
+    width: "100%"
+  },
+  formControlLabel: {
+    width: "100%"
+  },
+  formLabel: {
+    margin: "10px 0"
+  }
+});
 
 export const renderTextField = ({
   input,
