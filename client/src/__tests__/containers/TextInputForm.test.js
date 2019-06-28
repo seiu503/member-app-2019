@@ -11,6 +11,7 @@ import {
   updateContent,
   clearForm
 } from "../../store/actions/apiContentActions";
+import * as Notifier from "../../containers/Notifier";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -81,6 +82,11 @@ const setup = (props = {}) => {
   return shallow(<TextInputFormUnconnected {...setupProps} store={store} />);
 };
 
+const unconnectedSetup = () => {
+  const setupProps = { ...defaultProps };
+  return shallow(<TextInputFormUnconnected {...setupProps} />);
+};
+
 describe("<TextInputForm />", () => {
   it("renders without error", () => {
     wrapper = setup();
@@ -128,7 +134,7 @@ describe("<TextInputForm />", () => {
     );
   });
 
-  test("if `getContentById` fails, this.props.content.error should be non-empty", () => {
+  test("if `getContentById` fails, openSnackbar should be called with error message", () => {
     let props = {
       match: {
         params: {
@@ -154,18 +160,24 @@ describe("<TextInputForm />", () => {
     };
     store = storeFactory(testState);
 
-    wrapper = shallow(
-      <TextInputFormConnected {...defaultProps} {...props} store={store} />
-    )
-      .dive()
-      .dive();
+    wrapper = unconnectedSetup();
 
-    // expect error to be populated
-    wrapper.instance().props.apiContent.getContentById = () => {
+    // assign mock to openSnackbar
+    Notifier.openSnackbar = jest.fn();
+
+    // assign error mock to getContentById
+    const getContentByIdErrorMock = () => {
       return Promise.resolve({ type: "GET_CONTENT_BY_ID_FAILURE" });
     };
+
+    wrapper.instance().props.apiContent.getContentById = getContentByIdErrorMock;
+
     wrapper.instance().componentDidMount();
-    // expect(wrapper.instance().props.content.error.length).toBeGreaterThan(0);
+    return getContentByIdErrorMock()
+      .then(() => {
+        expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+      })
+      .catch(err => console.log(err));
   });
 
   test("calls `addContent` on submit if !props.edit", () => {

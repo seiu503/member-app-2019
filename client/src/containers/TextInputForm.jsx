@@ -77,7 +77,6 @@ export class TextInputFormUnconnected extends React.Component {
             result.type === "GET_CONTENT_BY_ID_FAILURE" ||
             this.props.content.error
           ) {
-            console.log("error");
             openSnackbar(
               "error",
               this.props.content.error ||
