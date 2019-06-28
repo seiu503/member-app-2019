@@ -254,21 +254,12 @@ class SubmissionFormComponent extends React.Component {
           </FormHelperText>
 
           <Field
-            label="Mobile Phone"
+            label="Mobile Phone†"
             name="mobilePhone"
             id="mobilePhone"
             type="tel"
             classes={this.classes}
             component={this.renderTextField}
-          />
-
-          <Field
-            label="Opt Out Of Receiving Mobile Alerts†"
-            name="textAuthOptOut"
-            id="textAuthOptOut"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
           />
 
           <FormHelperText className={this.classes.formHelperText}>
@@ -280,6 +271,15 @@ class SubmissionFormComponent extends React.Component {
             apply to such alerts. Reply STOP to stop receiving messages; reply
             HELP for more information.
           </FormHelperText>
+
+          <Field
+            label="Opt Out Of Receiving Mobile Alerts"
+            name="textAuthOptOut"
+            id="textAuthOptOut"
+            type="checkbox"
+            classes={this.classes}
+            component={this.renderCheckbox}
+          />
 
           <Field
             label="Agree to Terms of Service"
