@@ -58,13 +58,14 @@ const styles = theme => ({
   }
 });
 
-class TextInputForm extends React.Component {
+export class TextInputFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
       files: []
     };
+    this.submit = this.submit.bind(this);
   }
 
   componentDidMount() {
@@ -72,7 +73,6 @@ class TextInputForm extends React.Component {
       this.props.apiContent
         .getContentById(this.props.match.params.id)
         .then(result => {
-          // console.log(result.type);
           if (
             result.type === "GET_CONTENT_BY_ID_FAILURE" ||
             this.props.content.error
@@ -163,8 +163,7 @@ class TextInputForm extends React.Component {
       .catch(err => openSnackbar("error", err));
   };
 
-  submit = e => {
-    // e.preventDefault();
+  submit() {
     const { content_type, content } = this.props.content.form;
     const { authToken } = this.props.appState;
     const body = {
@@ -225,12 +224,12 @@ class TextInputForm extends React.Component {
           "An error occured while trying to save your content."
       );
     }
-  };
+  }
 
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container}>
+      <div className={classes.container} data-test="component-text-input-form">
         <Typography
           variant="h2"
           align="center"
@@ -350,7 +349,7 @@ class TextInputForm extends React.Component {
   }
 }
 
-TextInputForm.propTypes = {
+TextInputFormUnconnected.propTypes = {
   type: PropTypes.string,
   appState: PropTypes.shape({
     authToken: PropTypes.string
@@ -380,9 +379,9 @@ const mapDispatchToProps = dispatch => ({
   apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
-export default withStyles(styles)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(TextInputForm)
-);
+export const TextInputFormConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TextInputFormUnconnected);
+
+export default withStyles(styles)(TextInputFormConnected);

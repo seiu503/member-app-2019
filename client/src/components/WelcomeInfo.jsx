@@ -57,7 +57,7 @@ class WelcomeFormComponent extends React.Component {
           </Typography>
 
           <Typography
-            variant="body"
+            variant="body1"
             align="center"
             gutterBottom
             className={this.classes.body}

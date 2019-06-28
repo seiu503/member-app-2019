@@ -126,17 +126,14 @@ export class ContentLibraryUnconnected extends React.Component {
 
   async deleteContent(contentData) {
     const token = this.props.appState.authToken;
-    let contentDeleteResult, imageDeleteResult;
-    try {
-      contentDeleteResult = await this.props.apiContent.deleteContent(
-        token,
-        contentData.id
-      );
-    } catch (err) {
-      console.log(err);
-      openSnackbar("error", err);
-    }
-    if (contentDeleteResult.type !== "DELETE_CONTENT_SUCCESS") {
+    const contentDeleteResult = await this.props.apiContent.deleteContent(
+      token,
+      contentData.id
+    );
+    if (
+      !contentDeleteResult.type ||
+      contentDeleteResult.type !== "DELETE_CONTENT_SUCCESS"
+    ) {
       openSnackbar("error", this.props.content.error);
     } else if (
       contentDeleteResult.type === "DELETE_CONTENT_SUCCESS" &&
@@ -144,11 +141,10 @@ export class ContentLibraryUnconnected extends React.Component {
     ) {
       const keyParts = contentData.content.split("/");
       const key = keyParts[keyParts.length - 1];
-      try {
-        imageDeleteResult = await this.props.apiContent.deleteImage(token, key);
-      } catch (err) {
-        openSnackbar("error", err);
-      }
+      const imageDeleteResult = await this.props.apiContent.deleteImage(
+        token,
+        key
+      );
       if (imageDeleteResult.type === "DELETE_IMAGE_SUCCESS") {
         openSnackbar("success", `Deleted ${contentData.content_type}.`);
         this.props.apiContent.getAllContent(token);
