@@ -26,3 +26,9 @@ export const labelsObj = {
   image: "image",
   redirectUrl: "redirect URL"
 };
+
+export const randomInt = () => {
+  const min = 100;
+  const max = 999;
+  return Math.floor(Math.random() * (+max - +min)) + +min;
+};

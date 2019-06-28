@@ -20,7 +20,9 @@ const mapStateToProps = state => ({
   appState: state.appState,
   initialValues: {
     mm: "",
-    onlineCampaignSource: null
+    onlineCampaignSource: null,
+    homeState: "or",
+    preferredLanguage: "english"
   },
   formValues: getFormValues("submission")(state) || {}
 });

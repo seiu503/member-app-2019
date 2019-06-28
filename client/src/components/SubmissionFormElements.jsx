@@ -1,4 +1,6 @@
 import React from "react";
+import uuid from "uuid";
+
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -6,10 +8,10 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
 
 // hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
 export const stateList = [
-  "",
   "AL",
   "AK",
   "AZ",
@@ -76,7 +78,7 @@ export const monthList = [
   "11",
   "12"
 ];
-export const languageOptions = ["", "English", "Russian", "Spanish"];
+export const languageOptions = ["English", "Russian", "Spanish"];
 
 // switch helper for dateOptions
 export const getMaxDay = month => {
@@ -150,6 +152,9 @@ export const styles = theme => ({
     width: "100%",
     margin: "0 0 20px 0"
   },
+  failedText: {
+    color: "red"
+  },
   formButton: {
     width: "100%",
     padding: 20
@@ -160,8 +165,26 @@ export const styles = theme => ({
   formControlLabel: {
     width: "100%"
   },
+  formControlDate: {
+    width: "15%",
+    minWidth: 80,
+    margin: "0 15px"
+  },
   formLabel: {
     margin: "10px 0"
+  },
+  formHelperText: {
+    margin: "-10px 0 20px 0"
+  },
+  checkboxErrorText: {
+    margin: "-10px 0 10px 0"
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    margin: "0 0 20px"
   }
 });
 
@@ -193,11 +216,12 @@ export const renderSelect = ({
   classes,
   meta: { error, touched },
   labelWidth,
-  options
+  options,
+  formControlName
 }) => (
   <FormControl
     variant="outlined"
-    className={classes.formControl}
+    className={classes[formControlName] || classes.formControl}
     error={error && touched}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
@@ -205,10 +229,11 @@ export const renderSelect = ({
       native
       onChange={input.onChange}
       className={classes.select}
+      value={input.value.toLowerCase()}
       input={<OutlinedInput labelWidth={labelWidth} />}
     >
       {options.map(item => (
-        <option key={item} value={item.toLowerCase()}>
+        <option key={uuid.v4()} value={item.toLowerCase()}>
           {item}
         </option>
       ))}
@@ -222,18 +247,26 @@ export const renderCheckbox = ({
   label,
   validate,
   classes,
+  meta: { touched, error },
   ...custom
 }) => (
-  <FormControlLabel
-    control={
-      <Checkbox
-        color="primary"
-        checked={input.value ? true : false}
-        onChange={input.onChange}
-        {...custom}
-        className={classes.checkbox}
-      />
-    }
-    label={label}
-  />
+  <FormControl error={touched && error}>
+    <FormControlLabel
+      label={label}
+      control={
+        <Checkbox
+          color="primary"
+          checked={input.value ? true : false}
+          onChange={input.onChange}
+          {...custom}
+          className={classes.checkbox}
+        />
+      }
+    />
+    {touched && error && (
+      <FormHelperText className={classes.checkboxErrorText}>
+        {error}
+      </FormHelperText>
+    )}
+  </FormControl>
 );

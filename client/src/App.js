@@ -155,10 +155,10 @@ export class App extends Component {
               exact
               path="/"
               render={routeProps => (
-                <React.Fragment>
-                  Home
-                  {/* <TextInputForm {...routeProps} /> */}
-                </React.Fragment>
+                <SubmissionForm
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
               )}
             />
             <Route
@@ -194,15 +194,6 @@ export class App extends Component {
               path="/logout"
               render={routeProps => (
                 <Logout classes={this.props.classes} {...routeProps} />
-              )}
-            />
-            <Route
-              path="/submission"
-              render={routeProps => (
-                <SubmissionForm
-                  setRedirect={this.setRedirect}
-                  {...routeProps}
-                />
               )}
             />
             <Route
