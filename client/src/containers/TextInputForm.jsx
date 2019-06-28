@@ -73,11 +73,11 @@ export class TextInputFormUnconnected extends React.Component {
       this.props.apiContent
         .getContentById(this.props.match.params.id)
         .then(result => {
-          console.log(result.type);
           if (
             result.type === "GET_CONTENT_BY_ID_FAILURE" ||
             this.props.content.error
           ) {
+            console.log("error");
             openSnackbar(
               "error",
               this.props.content.error ||
