@@ -13,29 +13,6 @@ import {
 
 const INITIAL_STATE = {
   loading: false,
-  filteredList: [],
-  allContent: [],
-  // form: {
-  //   firstName: "",
-  //   lastName: "",
-  //   dd: "",
-  //   mm: "",
-  //   yyyy: "",
-  //   preferredLanguage: "",
-  //   homeStreet: "",
-  //   homeCity: "",
-  //   homeState: "",
-  //   homePostalCode: "",
-  //   homeEmail: "",
-  //   mobilePhone: "",
-  //   employerName: "",
-  //   agencyNumber: "",
-  //   textAuthOptOut: false,
-  //   termsAgree: false,
-  //   signature: "",
-  //   onlineCampaignSource: "",
-  //   signedApplication: false
-  // },
   error: null
 };
 
