@@ -218,6 +218,161 @@ describe("<TextInputForm />", () => {
     );
   });
 
+  test("`submit` returns error if `addContent` fails", () => {
+    const addContentErrorMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "ADD_CONTENT_FAILURE" }).catch(err =>
+          console.log(err)
+        )
+      );
+    let props = {
+      edit: false,
+      apiContent: { addContent: addContentErrorMock },
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    wrapper = shallow(
+      <TextInputFormUnconnected {...defaultProps} {...props} />
+    );
+
+    wrapper.instance().submit();
+    return addContentErrorMock().then(() => {
+      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+        "error",
+        "An error occured while trying to save your content."
+      );
+    });
+  });
+
+  test("`submit` returns success message if `addContent` succeeds", () => {
+    const addContentMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "ADD_CONTENT_SUCCESS" }).catch(err =>
+          console.log(err)
+        )
+      );
+    let props = {
+      edit: false,
+      apiContent: { addContent: addContentMock },
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    wrapper = shallow(
+      <TextInputFormUnconnected {...defaultProps} {...props} />
+    );
+
+    wrapper.instance().submit();
+    return addContentMock().then(() => {
+      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+        "success",
+        "Saved headline."
+      );
+    });
+  });
+
+  test("`submit` returns error if `updateContent` fails", () => {
+    const updateContentErrorMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "UPDATE_CONTENT_FAILURE" }).catch(err =>
+          console.log(err)
+        )
+      );
+    let props = {
+      edit: true,
+      apiContent: { updateContent: updateContentErrorMock },
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    wrapper = shallow(
+      <TextInputFormUnconnected {...defaultProps} {...props} />
+    );
+
+    wrapper.instance().submit();
+    return updateContentErrorMock().then(() => {
+      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+        "error",
+        "An error occured while trying to update your content."
+      );
+    });
+  });
+
+  test("`submit` returns error if props.edit and !match.params.id", () => {
+    let props = {
+      edit: true,
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      },
+      match: {
+        params: {
+          id: null
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    wrapper = shallow(
+      <TextInputFormUnconnected {...defaultProps} {...props} />
+    );
+
+    wrapper.instance().submit();
+    expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+      "error",
+      "An error occured while trying to save your content."
+    );
+  });
+
+  test("`submit` returns success message if `updateContent` succeeds", () => {
+    const updateContentMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "UPDATE_CONTENT_SUCCESS" }).catch(err =>
+          console.log(err)
+        )
+      );
+    let props = {
+      edit: true,
+      apiContent: { updateContent: updateContentMock },
+      content: {
+        form: {
+          content_type: "headline",
+          content: "test"
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    wrapper = shallow(
+      <TextInputFormUnconnected {...defaultProps} {...props} />
+    );
+
+    wrapper.instance().submit();
+    return updateContentMock().then(() => {
+      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+        "success",
+        "Updated headline."
+      );
+    });
+  });
+
   test("calls `updateContent` on submit if props.edit && match.params.id", () => {
     let props = {
       edit: true,
@@ -283,5 +438,143 @@ describe("<TextInputForm />", () => {
     );
 
     expect(getContentByIdMock.mock.calls.length).toBe(0);
+  });
+
+  test("`handeOpen` opens modal", () => {
+    wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
+    wrapper.instance().handleOpen();
+    expect(wrapper.instance().state.open).toBe(true);
+  });
+
+  test("`handeClose` closes modal, clears form, and redirects to '/library'", () => {
+    wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
+    const clearFormMock = jest.fn();
+    const pushMock = jest.fn();
+    wrapper.instance().props.apiContent.clearForm = clearFormMock;
+    wrapper.instance().props.history.push = pushMock;
+
+    // set state to open to test that handleClose closes it
+    wrapper.instance().setState({ open: true });
+
+    // then call handleClose
+    wrapper.instance().handleClose();
+
+    expect(wrapper.instance().state.open).toBe(false);
+    expect(clearFormMock.mock.calls.length).toBe(1);
+    expect(pushMock).toHaveBeenCalledWith("/library");
+
+    clearFormMock.mockRestore();
+    pushMock.mockRestore();
+  });
+
+  test("`handeSave` saves files to state, closes modal, and calls `handleUpload`", () => {
+    wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
+    const handleUploadMock = jest.fn();
+    wrapper.instance().handleUpload = handleUploadMock;
+
+    const files = [{ test: "testFile" }];
+
+    wrapper.instance().handleSave(files);
+
+    expect(wrapper.instance().state.open).toBe(false);
+    expect(wrapper.instance().state.files).toEqual(files);
+    expect(handleUploadMock.mock.calls.length).toBe(1);
+    expect(handleUploadMock).toHaveBeenCalledWith(files[0]);
+
+    handleUploadMock.mockRestore();
+  });
+
+  test("`onDropRejected` opens Snackbar with appropriate error message(s)", () => {
+    wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
+    // assign mock to openSnackbar
+    Notifier.openSnackbar = jest.fn();
+
+    const rejected = [{ size: 300000000, type: "image/psd" }];
+
+    wrapper.instance().onDropRejected(rejected);
+
+    expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+      "error",
+      "File too large. File size limit 2MB. Invalid file type. Accepted file types are .jpeg, .jpg, .png, and .gif."
+    );
+
+    Notifier.openSnackbar.mockRestore();
+  });
+
+  test("on success, `handleUpload` clears form, calls `uploadImage`, redirects to `library`, and opens Snackbar with success message", () => {
+    wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
+
+    Notifier.openSnackbar = jest.fn();
+    const getAllContentMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "GET_ALL_CONTENT_SUCCESS" }).catch(err =>
+          console.log(err)
+        )
+      );
+    const uploadImageMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "UPLOAD_IMAGE_SUCCESS" }).catch(err =>
+          console.log(err)
+        )
+      );
+    const pushMock = jest.fn();
+    const clearFormMock = jest.fn();
+
+    wrapper.instance().props.apiContent.getAllContent = getAllContentMock;
+    wrapper.instance().props.apiContent.uploadImage = uploadImageMock;
+    wrapper.instance().props.apiContent.clearForm = clearFormMock;
+    wrapper.instance().props.history.push = pushMock;
+
+    const testFile = { size: 100, type: "image/jpg", name: "testname.jpg" };
+
+    wrapper.instance().handleUpload(testFile);
+    expect(uploadImageMock.mock.calls.length).toBe(1);
+
+    return uploadImageMock()
+      .then(() => {
+        expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+          "success",
+          "testname Saved."
+        );
+        expect(clearFormMock.mock.calls.length).toBe(1);
+        expect(pushMock).toHaveBeenCalledWith("/library");
+        Notifier.openSnackbar.mockRestore();
+        clearFormMock.mockRestore();
+        pushMock.mockRestore();
+        uploadImageMock.mockRestore();
+        getAllContentMock.mockRestore();
+      })
+      .catch(err => console.log(err));
+  });
+
+  test("on error, `handleUpload` opens Snackbar with error message", () => {
+    wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
+
+    Notifier.openSnackbar = jest.fn();
+    const uploadImageErrorMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "UPLOAD_IMAGE_FAILURE" }).catch(err =>
+          console.log(err)
+        )
+      );
+
+    wrapper.instance().props.apiContent.uploadImage = uploadImageErrorMock;
+
+    const testFile = { size: 100, type: "image/jpg", name: "testname.jpg" };
+
+    wrapper.instance().handleUpload(testFile);
+
+    return uploadImageErrorMock()
+      .then(() => {
+        expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+          "error",
+          "An error occured while trying to upload your image."
+        );
+        uploadImageErrorMock.mockRestore();
+      })
+      .catch(err => console.log(err));
   });
 });
