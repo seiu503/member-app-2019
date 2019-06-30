@@ -325,7 +325,6 @@ class SubmissionFormComponent extends React.Component {
           <ButtonWithSpinner
             type="submit"
             color="secondary"
-            classes={this.classes}
             className={this.classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}
