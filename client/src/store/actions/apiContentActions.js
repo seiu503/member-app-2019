@@ -76,7 +76,6 @@ export function getContentById(id) {
           type: GET_CONTENT_BY_ID_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
-              console.log("79");
               let message = "Sorry, something went wrong :(";
               if (data) {
                 if (data.message) {

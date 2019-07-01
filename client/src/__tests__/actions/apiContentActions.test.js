@@ -53,12 +53,13 @@ describe("apiContentActions", () => {
   });
 
   describe("api actions", () => {
-    afterEach(() => {
+    beforeEach(() => {
       fetchMock.reset();
-      fetchMock.restore();
+      // expect at least one expect in async code:
+      expect.hasAssertions();
     });
 
-    it("GET_CONTENT_BY_ID: Dispatches request and success actions after successful fetch", () => {
+    it("GET_CONTENT_BY_ID: Dispatches request and success actions after successful fetch", async () => {
       // Response body sample
       const response = {
         content_type: "headline",
@@ -66,46 +67,63 @@ describe("apiContentActions", () => {
         id: "1651a5d6-c2f7-453f-bdc7-13888041add6"
       };
 
-      fetchMock.getOnce("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6", {
-        body: { results: response }
+      fetchMock.mock("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6", {
+        body: { results: response },
+        status: 200
       });
 
       const expectedActions = [
         { type: "GET_CONTENT_BY_ID_REQUEST", payload: undefined },
         { type: "GET_CONTENT_BY_ID_SUCCESS", payload: { results: response } }
       ];
-      store
-        .dispatch(
-          actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
-        )
-        .then(() => {
-          expect(store.getActions()).toEqual(expectedActions);
-        });
+
+      try {
+        await store
+          .dispatch(
+            actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
+          )
+          .then(() => {
+            expect(store.getActions()).toEqual(expectedActions);
+            console.log(store.getActions());
+          });
+        // .catch(e => console.log(e));
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toEqual("Fetch: 500 Internal Server Error");
+      }
     });
 
-    it("GET_CONTENT_BY_ID: Dispatches request and failure actions after failed fetch", () => {
-      fetchMock.getOnce("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6", {
-        body: { results: { error: { status: 400, statusText: "Test Error" } } }
+    it("GET_CONTENT_BY_ID: Dispatches request and failure actions after failed fetch", async () => {
+      fetchMock.mock("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6", {
+        body: { message: "Content not found" },
+        status: 500
       });
 
       const expectedActions = [
-        // { type: 'GET_CONTENT_BY_ID_REQUEST', payload: undefined},
+        { type: "GET_CONTENT_BY_ID_REQUEST" },
+        { type: "GET_CONTENT_BY_ID_REQUEST" },
         {
+          payload: { message: "Content not found" },
           type: "GET_CONTENT_BY_ID_FAILURE",
-          payload: { error: { status: 400, statusText: "Test Error" } }
+          error: true,
+          meta: undefined
         }
       ];
-      console.log(expectedActions);
 
-      store
-        .dispatch(
-          actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
-        )
-        .then(() => {
-          expect(store.getActions()).toEqual(expectedActions);
-          console.log(store.getActions());
-        });
-      console.log(store.getActions());
+      try {
+        await store
+          .dispatch(
+            actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
+          )
+          .then(() => {
+            expect(store.getActions()).toEqual(expectedActions);
+            console.log(JSON.parse(store.getActions()));
+          });
+        // .catch(e => console.log(e));
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error);
+        expect(e.message).toEqual("Fetch: 500 Internal Server Error");
+      }
     });
   });
 });
