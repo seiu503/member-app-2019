@@ -2,38 +2,23 @@ import update from "immutability-helper";
 import moment from "moment";
 
 import {
-  // HANDLE_INPUT,
-  // HANDLE_SELECT,
-  // HANDLE_CHECKBOX,
-  CLEAR_FORM,
   ADD_SUBMISSION_REQUEST,
   ADD_SUBMISSION_SUCCESS,
-  ADD_SUBMISSION_FAILURE
+  ADD_SUBMISSION_FAILURE,
+  CLEAR_FORM
 } from "../actions/apiSubmissionActions";
 
 const INITIAL_STATE = {
   loading: false,
-  error: null
+  error: null,
+  formPage1: {},
+  formPage2: {}
 };
 
 function Submission(state = INITIAL_STATE, action) {
   let error;
 
   switch (action.type) {
-    // case HANDLE_INPUT:
-    //   return update(state, {
-    //     form: {
-    //       [action.payload.name]: { $set: action.payload.value }
-    //     }
-    //   });
-    // case HANDLE_SELECT:
-    // case HANDLE_CHECKBOX:
-    //   return update(state, {
-    //     form: {
-    //       [action.payload.name]: { $set: action.payload.value }
-    //     }
-    //   });
-
     case ADD_SUBMISSION_REQUEST:
       return update(state, {
         loading: { $set: true },
@@ -43,8 +28,7 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         loading: { $set: false },
-        form: {
-          agencyNumber: { $set: action.payload.agency_number },
+        formPage1: {
           mm: { $set: moment(action.payload.birthdate).format("mm") },
           dd: { $set: moment(action.payload.birthdate).format("dd") },
           yy: { $set: moment(action.payload.birthdate).format("yyyy") },
@@ -60,8 +44,7 @@ function Submission(state = INITIAL_STATE, action) {
           preferredLanguage: { $set: action.payload.preferred_language },
           termsAgree: { $set: action.payload.terms_agree },
           signature: { $set: action.payload.signature },
-          textAuthOptOut: { $set: action.payload.text_auth_opt_out },
-          onlineCampaignSource: { $set: action.payload.online_campaign_source }
+          textAuthOptOut: { $set: action.payload.text_auth_opt_out }
         }
       });
 
@@ -79,12 +62,12 @@ function Submission(state = INITIAL_STATE, action) {
 
     case CLEAR_FORM:
       return update(state, {
-        form: {
+        formPage1: {
           firstName: { $set: "" },
           lastName: { $set: "" },
-          Dd: { $set: "" },
-          Mm: { $set: "" },
-          Yyyy: { $set: "" },
+          dd: { $set: "" },
+          mm: { $set: "" },
+          yyyy: { $set: "" },
           preferredLanguage: { $set: "english" },
           homeStreet: { $set: "" },
           homeCity: { $set: "" },
@@ -93,11 +76,9 @@ function Submission(state = INITIAL_STATE, action) {
           homeEmail: { $set: "" },
           mobilePhone: { $set: "" },
           employerName: { $set: "" },
-          agencyNumber: { $set: "" },
           textAuthOptOut: { $set: false },
           termsAgree: { $set: false },
           signature: { $set: "" },
-          onlineCampaignSource: { $set: "" },
           signedApplication: { $set: false }
         }
       });

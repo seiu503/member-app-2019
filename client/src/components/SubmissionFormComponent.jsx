@@ -28,6 +28,8 @@ class SubmissionFormComponent extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {}
+
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
@@ -97,6 +99,7 @@ class SubmissionFormComponent extends React.Component {
         } else {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.apiSubmission.clearForm();
+          this.props.reset("submission");
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -254,21 +257,12 @@ class SubmissionFormComponent extends React.Component {
           </FormHelperText>
 
           <Field
-            label="Mobile Phone"
+            label="Mobile Phone†"
             name="mobilePhone"
             id="mobilePhone"
             type="tel"
             classes={this.classes}
             component={this.renderTextField}
-          />
-
-          <Field
-            label="Opt Out Of Receiving Mobile Alerts†"
-            name="textAuthOptOut"
-            id="textAuthOptOut"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
           />
 
           <FormHelperText className={this.classes.formHelperText}>
@@ -280,6 +274,15 @@ class SubmissionFormComponent extends React.Component {
             apply to such alerts. Reply STOP to stop receiving messages; reply
             HELP for more information.
           </FormHelperText>
+
+          <Field
+            label="Opt Out Of Receiving Mobile Alerts"
+            name="textAuthOptOut"
+            id="textAuthOptOut"
+            type="checkbox"
+            classes={this.classes}
+            component={this.renderCheckbox}
+          />
 
           <Field
             label="Agree to Terms of Service"
@@ -357,13 +360,13 @@ SubmissionFormComponent.propTypes = {
       homeEmail: PropTypes.string,
       mobilePhone: PropTypes.string,
       employerName: PropTypes.string,
-      agencyNumber: PropTypes.string,
       textAuthOptOut: PropTypes.bool,
       termsAgree: PropTypes.bool,
       signature: PropTypes.string,
       onlineCampaignSource: PropTypes.string
     }),
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    error: PropTypes.string
   }).isRequired,
   classes: PropTypes.object
 };
