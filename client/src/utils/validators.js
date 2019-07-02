@@ -14,7 +14,6 @@ const validate = values => {
     "homeEmail",
     "mobilePhone",
     "employerName",
-    "agencyNumber",
     "signature",
     "termsAgree"
   ];

@@ -28,6 +28,8 @@ class SubmissionFormComponent extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {}
+
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
@@ -97,6 +99,7 @@ class SubmissionFormComponent extends React.Component {
         } else {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.apiSubmission.clearForm();
+          this.props.reset("submission");
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -325,7 +328,6 @@ class SubmissionFormComponent extends React.Component {
           <ButtonWithSpinner
             type="submit"
             color="secondary"
-            classes={this.classes}
             className={this.classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}
@@ -358,13 +360,13 @@ SubmissionFormComponent.propTypes = {
       homeEmail: PropTypes.string,
       mobilePhone: PropTypes.string,
       employerName: PropTypes.string,
-      agencyNumber: PropTypes.string,
       textAuthOptOut: PropTypes.bool,
       termsAgree: PropTypes.bool,
       signature: PropTypes.string,
       onlineCampaignSource: PropTypes.string
     }),
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    error: PropTypes.string
   }).isRequired,
   classes: PropTypes.object
 };
