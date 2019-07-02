@@ -28,8 +28,6 @@ class SubmissionFormComponent extends React.Component {
     this.state = {};
   }
 
-  componentDidMount() {}
-
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
@@ -52,7 +50,8 @@ class SubmissionFormComponent extends React.Component {
       employerName,
       textAuthOptOut,
       termsAgree,
-      signature
+      signature,
+      contactId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
 
@@ -75,7 +74,7 @@ class SubmissionFormComponent extends React.Component {
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: "HARD CODED",
-      contact_id: uuid.v4(),
+      contact_id: contactId || uuid.v4(),
       legal_language: "lorem ipsum",
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
