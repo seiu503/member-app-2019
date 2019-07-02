@@ -6,7 +6,6 @@
 
 // import models
 const submissions = require("../../db/models/submissions");
-const contacts = require("../../db/models/contacts");
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -133,55 +132,10 @@ const createSubmission = async (req, res, next) => {
           createSubmissionResult.message ||
           "There was an error creating submission"
       });
-    }
-
-    const newSubmissionId = createSubmissionResult[0].submission_id;
-    const newContactId = createSubmissionResult[0].contact_id;
-
-    const attachResult = await attachContactSubmissions(
-      newContactId,
-      newSubmissionId
-    );
-
-    if (!attachResult || attachResult.message) {
-      return res.status(500).json({
-        message:
-          attachResult.message ||
-          "Error adding Submission to contacts_submissions table"
-      });
     } else {
-      const totalResult = {
-        newSubmission: createSubmissionResult[0],
-        attachedSubmission: attachResult[0]
-      };
-      return res.status(200).json(totalResult);
+      return res.status(200).json(createSubmissionResult);
     }
   }
-};
-
-/** Attach submission to join table
- *
- * @param {String} contact_id   Id of contact to add submissions to
- * @param {String} submission_id   Id of submission to attach
- * @returns {Object}    Object containing contact id and array of all related submissions
- */
-const attachContactSubmissions = (contact_id, submission_id) => {
-  return contacts
-    .attachContactSubmission(contact_id, submission_id)
-    .then(contact_submissions => {
-      if (!contact_submissions || contact_submissions.message) {
-        return {
-          message:
-            contact_submissions.message ||
-            "Error adding Submission to contacts_submissions table"
-        };
-      } else {
-        return contact_submissions;
-      }
-    })
-    .catch(err => {
-      return { message: err.message };
-    });
 };
 
 /** Update a Submission
