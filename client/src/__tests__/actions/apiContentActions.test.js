@@ -1,20 +1,16 @@
-import fetchMock from "fetch-mock";
+/**
+ * @jest-environment node
+ */
+
+import nock from "nock";
 import { apiMiddleware, ApiError } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiContentActions";
 import * as contentReducer from "../../store/reducers/content";
+import BASE_URL from "../../store/actions/apiConfig.js";
 
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(contentReducer.initialState);
-const mockResponse = (status, statusText, response) => {
-  return new window.Response(response, {
-    status,
-    statusText,
-    headers: {
-      "Content-type": "application/json"
-    }
-  });
-};
 
 describe("apiContentActions", () => {
   it("should create an action to handle form input", () => {
@@ -53,77 +49,72 @@ describe("apiContentActions", () => {
   });
 
   describe("api actions", () => {
-    beforeEach(() => {
-      fetchMock.reset();
+    afterEach(() => {
+      nock.cleanAll();
+      nock.enableNetConnect();
       // expect at least one expect in async code:
       expect.hasAssertions();
     });
 
-    it("GET_CONTENT_BY_ID: Dispatches request and success actions after successful fetch", async () => {
-      // Response body sample
+    it("GET_CONTENT_BY_ID: Dispatches success action after successful fetch", async () => {
       const response = {
         content_type: "headline",
         content: "Test headline",
         id: "1651a5d6-c2f7-453f-bdc7-13888041add6"
       };
 
-      fetchMock.mock("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6", {
-        body: { results: response },
-        status: 200
-      });
+      nock(`${BASE_URL}`)
+        .get("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6")
+        .reply(200, response);
 
-      const expectedActions = [
-        { type: "GET_CONTENT_BY_ID_REQUEST", payload: undefined },
-        { type: "GET_CONTENT_BY_ID_SUCCESS", payload: { results: response } }
-      ];
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_CONTENT_BY_ID_SUCCESS",
+        meta: undefined
+      };
 
-      try {
-        await store
-          .dispatch(
-            actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
-          )
-          .then(() => {
-            expect(store.getActions()).toEqual(expectedActions);
-            console.log(store.getActions());
-          });
-        // .catch(e => console.log(e));
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual("Fetch: 500 Internal Server Error");
-      }
+      const result = await store.dispatch(
+        actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
+      );
+      expect(result).toEqual(expectedResult);
     });
 
-    it("GET_CONTENT_BY_ID: Dispatches request and failure actions after failed fetch", async () => {
-      fetchMock.mock("/api/content/1651a5d6-c2f7-453f-bdc7-13888041add6", {
-        body: { message: "Content not found" },
-        status: 500
-      });
+    it("GET_CONTENT_BY_ID: Dispatches failure actions after failed fetch", async () => {
+      const body = JSON.stringify({ message: "Content not found" });
+      const init = { status: 404, statusText: "Content not found" };
 
-      const expectedActions = [
-        { type: "GET_CONTENT_BY_ID_REQUEST" },
-        { type: "GET_CONTENT_BY_ID_REQUEST" },
-        {
-          payload: { message: "Content not found" },
-          type: "GET_CONTENT_BY_ID_FAILURE",
-          error: true,
-          meta: undefined
-        }
-      ];
+      fetch.mockResponseOnce(body, init);
 
-      try {
-        await store
-          .dispatch(
-            actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
-          )
-          .then(() => {
-            expect(store.getActions()).toEqual(expectedActions);
-            console.log(JSON.parse(store.getActions()));
-          });
-        // .catch(e => console.log(e));
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error);
-        expect(e.message).toEqual("Fetch: 500 Internal Server Error");
-      }
+      const dispatchSpy = jest.spyOn(store, "dispatch");
+      const spyCall = dispatchSpy.mock.calls;
+      console.log(spyCall);
+      expect(JSON.stringify(spyCall)).toEqual(
+        JSON.stringify(
+          actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
+        )
+      );
+
+      //   it('handles fetch errors', () => {
+      //     return get('doesnotexist')
+      //       .catch(error => expect(error).toEqual('some error'));
+      //   });
+
+      //   nock(`${BASE_URL}`)
+      //     .get('/api/content/1651a5d6-c2f7-453f-bdc7-13999041add6')
+      //     .reply( (url, body, cb) => { cb(null, [400, { response }]); });
+
+      //   const expectedResult = {
+      //     payload: response,
+      //     type: 'GET_CONTENT_BY_ID_FAILURE',
+      //     meta: undefined
+      //   }
+
+      //   const result = await store
+      //     .dispatch(
+      //       actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
+      //     );
+      //   console.log(result);
+      //   expect(result).toEqual(expectedResult);
     });
   });
 });
