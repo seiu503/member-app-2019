@@ -1,5 +1,6 @@
 import React from "react";
 import uuid from "uuid";
+import PropTypes from "prop-types";
 
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
@@ -157,7 +158,8 @@ export const styles = theme => ({
   },
   formButton: {
     width: "100%",
-    padding: 20
+    padding: 20,
+    margin: "0 0 40px"
   },
   formControl: {
     width: "100%"
@@ -217,12 +219,14 @@ export const renderSelect = ({
   meta: { error, touched },
   labelWidth,
   options,
-  formControlName
+  formControlName,
+  ...custom
 }) => (
   <FormControl
     variant="outlined"
     className={classes[formControlName] || classes.formControl}
     error={error && touched}
+    {...custom}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select

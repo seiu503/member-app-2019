@@ -2,6 +2,7 @@
 /* globals describe afterEach it beforeEach */
 
 /* ================================= SETUP ================================= */
+const uuid = require("uuid");
 
 process.env.NODE_ENV = "testing";
 
@@ -15,12 +16,11 @@ const passport = require("passport");
 require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 const users = require("../db/models/users");
-const contacts = require("../db/models/contacts");
 const submissions = require("../db/models/submissions");
 const moment = require("moment");
 
-/*  Sample Data for new contact */
-let contact_id;
+/*  Sample Data for new submission */
+const contact_id = uuid.v4();
 const ip_address = "192.0.2.0";
 const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
@@ -46,52 +46,10 @@ const direct_pay_auth = submission_date;
 const direct_deposit_auth = submission_date;
 const immediate_past_member_status = "In Good Standing";
 
-/*  Sample Data for contact info updates */
+/*  Sample Data for submission info updates */
 const updatedFirstName = `updatedFirstName ${utils.randomText()}`;
 const updatedEmployerName = `updatedEmployerName ${utils.randomText()}`;
 const updatedTextAuthOptOut = true;
-
-/* Sample Contact Data */
-const sampleContact = {
-  display_name: "testuser",
-  account_name: "testuser",
-  agency_number: "123456",
-  mail_to_city: "mailToCity",
-  mail_to_state: "OR",
-  mail_to_street: "Multnomah Blvd",
-  mail_to_postal_code: "97221",
-  first_name: "firstname",
-  last_name: "lastname",
-  dd: "01",
-  mm: "01",
-  yyyy: "2001",
-  dob: new Date("01/01/2001"),
-  preferred_language: "English",
-  home_street: "homestreet",
-  home_postal_code: "12345",
-  home_state: "OR",
-  home_city: "Portland",
-  home_email: "fakeemail@test.com",
-  mobile_phone: "123-546-7890",
-  text_auth_opt_out: false,
-  terms_agree: true,
-  signature: "http://example.com/avatar.png",
-  online_campaign_source: "email",
-  signed_application: true,
-  ethnicity: "other",
-  lgbtq_id: false,
-  trans_id: false,
-  disability_id: false,
-  deaf_or_hard_of_hearing: false,
-  blind_or_visually_impaired: false,
-  gender: "female",
-  gender_other_description: "",
-  gender_pronoun: "She/Her",
-  job_title: "jobtitle",
-  hire_date: new Date("01/08/2003"),
-  worksite: "worksite",
-  work_email: "lastnamef@seiu.com"
-};
 
 /*  Test user Data for secured routes */
 
@@ -123,55 +81,6 @@ suite("routes : submissions", function() {
 
   suite("POST /api/submission/", function() {
     const app = require("../server");
-    test("need contactId for submissions tests", function(done) {
-      chai
-        .request(app)
-        .post("/api/contact/")
-        .send({
-          display_name: sampleContact.display_name,
-          account_name: sampleContact.account_name,
-          agency_number: sampleContact.agency_number,
-          mail_to_city: sampleContact.mail_to_city,
-          mail_to_state: sampleContact.mail_to_state,
-          mail_to_street: sampleContact.mail_to_street,
-          mail_to_postal_code: sampleContact.mail_to_postal_code,
-          first_name: sampleContact.first_name,
-          last_name: sampleContact.last_name,
-          dd: sampleContact.dd,
-          mm: sampleContact.mm,
-          yyyy: sampleContact.yyyy,
-          dob: sampleContact.dob,
-          preferred_language: sampleContact.preferred_language,
-          home_street: sampleContact.home_street,
-          home_postal_code: sampleContact.home_postal_code,
-          home_state: sampleContact.home_state,
-          home_city: sampleContact.home_city,
-          home_email: sampleContact.home_email,
-          mobile_phone: sampleContact.mobile_phone,
-          text_auth_opt_out: sampleContact.text_auth_opt_out,
-          terms_agree: sampleContact.terms_agree,
-          signature: sampleContact.signature,
-          online_campaign_source: sampleContact.online_campaign_source,
-          signed_application: sampleContact.signed_application,
-          ethnicity: sampleContact.ethnicity,
-          lgbtq_id: sampleContact.lgbtq_id,
-          trans_id: sampleContact.trans_id,
-          disability_id: sampleContact.disability_id,
-          deaf_or_hard_of_hearing: sampleContact.deaf_or_hard_of_hearing,
-          blind_or_visually_impaired: sampleContact.blind_or_visually_impaired,
-          gender: sampleContact.gender,
-          gender_other_description: sampleContact.gender_other_description,
-          gender_pronoun: sampleContact.gender_pronoun,
-          job_title: sampleContact.job_title,
-          hire_date: sampleContact.hire_date,
-          worksite: sampleContact.worksite,
-          work_emai: sampleContact.work_email
-        })
-        .end(function(err, res) {
-          contact_id = res.body.contact_id;
-          done();
-        });
-    });
     test("creates and returns new submission", function(done) {
       chai
         .request(app)
@@ -204,9 +113,9 @@ suite("routes : submissions", function() {
           immediate_past_member_status
         })
         .end(function(err, res) {
-          submissionId = res.body.newSubmission.submission_id;
-          createdAt = res.body.newSubmission.created_at;
-          updatedAt = res.body.newSubmission.updated_at;
+          submissionId = res.body[0].submission_id;
+          createdAt = res.body[0].created_at;
+          updatedAt = res.body[0].updated_at;
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();
@@ -218,7 +127,6 @@ suite("routes : submissions", function() {
         .post("/api/submission/")
         .send({ fullname: "firstname lastname" })
         .end(function(err, res) {
-          console.log(res.body.message);
           assert.equal(res.status, 422);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);

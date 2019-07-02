@@ -850,6 +850,7 @@ const generateSampleValidate = () => {
     "cellPhone",
     "employerName",
     "agencyNumber",
+    "termsAgree",
     "signature"
   ];
   Object.keys(submissionsTableFields).map(function(key, index) {
@@ -861,6 +862,7 @@ const generateSampleValidate = () => {
   sampleData.dd = "01";
   sampleData.mm = "01";
   sampleData.yyyy = "2001";
+  sampleData.termsAgree = true;
   sampleData.homePostalCode = sampleData.homeZip;
   sampleData.mobilePhone = sampleData.cellPhone;
   delete sampleData.homeZip;
