@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">95.65% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>22/23</span>
+        <span class='fraction'>24/24</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">80% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>4/5</span>
+        <span class='fraction'>6/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">95.65% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>22/23</span>
+        <span class='fraction'>24/24</span>
       </div>
     </div>
     <p class="quiet">
@@ -417,7 +417,10 @@
 <a name='L369'></a><a href='#L369'>369</a>
 <a name='L370'></a><a href='#L370'>370</a>
 <a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L372'></a><a href='#L372'>372</a>
+<a name='L373'></a><a href='#L373'>373</a>
+<a name='L374'></a><a href='#L374'>374</a>
+<a name='L375'></a><a href='#L375'>375</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -445,6 +448,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -516,9 +521,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
@@ -818,6 +824,8 @@ class SubmissionFormComponent extends React.Component {
     this.state = {};
   }
 &nbsp;
+  componentDidMount() {}
+&nbsp;
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
@@ -887,9 +895,10 @@ class SubmissionFormComponent extends React.Component {
         } else {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.apiSubmission.clearForm();
+          this.props.reset("submission");
         }
       })
-      .catch(<span class="fstat-no" title="function not covered" >er</span>r =&gt; <span class="cstat-no" title="statement not covered" >openSnackbar("error", err))</span>;
+      .catch(err =&gt; openSnackbar("error", err));
   };
   render() {
     return (
@@ -1044,21 +1053,12 @@ class SubmissionFormComponent extends React.Component {
           &lt;/FormHelperText&gt;
 &nbsp;
           &lt;Field
-            label="Mobile Phone"
+            label="Mobile Phone†"
             name="mobilePhone"
             id="mobilePhone"
             type="tel"
             classes={this.classes}
             component={this.renderTextField}
-          /&gt;
-&nbsp;
-          &lt;Field
-            label="Opt Out Of Receiving Mobile Alerts†"
-            name="textAuthOptOut"
-            id="textAuthOptOut"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
           /&gt;
 &nbsp;
           &lt;FormHelperText className={this.classes.formHelperText}&gt;
@@ -1070,6 +1070,15 @@ class SubmissionFormComponent extends React.Component {
             apply to such alerts. Reply STOP to stop receiving messages; reply
             HELP for more information.
           &lt;/FormHelperText&gt;
+&nbsp;
+          &lt;Field
+            label="Opt Out Of Receiving Mobile Alerts"
+            name="textAuthOptOut"
+            id="textAuthOptOut"
+            type="checkbox"
+            classes={this.classes}
+            component={this.renderCheckbox}
+          /&gt;
 &nbsp;
           &lt;Field
             label="Agree to Terms of Service"
@@ -1147,13 +1156,13 @@ SubmissionFormComponent.propTypes = {
       homeEmail: PropTypes.string,
       mobilePhone: PropTypes.string,
       employerName: PropTypes.string,
-      agencyNumber: PropTypes.string,
       textAuthOptOut: PropTypes.bool,
       termsAgree: PropTypes.bool,
       signature: PropTypes.string,
       onlineCampaignSource: PropTypes.string
     }),
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    error: PropTypes.string
   }).isRequired,
   classes: PropTypes.object
 };
@@ -1165,7 +1174,7 @@ export default SubmissionFormComponent;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sat Jun 29 2019 20:48:59 GMT-0700 (Pacific Daylight Time)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Tue Jul 02 2019 22:16:46 GMT-0700 (Pacific Daylight Time)
 </div>
 </div>
 <script src="../../prettify.js"></script>

@@ -126,7 +126,7 @@ describe("<App />", () => {
       call[0].hasOwnProperty("@@redux-api-middleware/RSAA")
     )[0];
     expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
-      JSON.parse(JSON.stringify(validateToken(5678, "1234")))
+      JSON.parse(JSON.stringify(validateToken("5678", "1234")))
     );
   });
 

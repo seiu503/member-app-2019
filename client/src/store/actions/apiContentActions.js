@@ -1,5 +1,6 @@
 import { RSAA } from "redux-api-middleware";
 import BASE_URL from "./apiConfig.js";
+import FormData from "form-data";
 
 export const HANDLE_INPUT = "HANDLE_INPUT";
 export const HANDLE_DELETE_OPEN = "HANDLE_DELETE_OPEN";

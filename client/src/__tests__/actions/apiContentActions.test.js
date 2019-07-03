@@ -3,7 +3,6 @@
  */
 
 import nock from "nock";
-import FormData from "form-data";
 import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiContentActions";
@@ -195,9 +194,7 @@ describe("apiContentActions", () => {
 
     it("UPLOAD_IMAGE: Dispatches success action after successful POST", async () => {
       const token = "1234";
-      const image = { name: "test.png" };
-      const data = new FormData();
-      data.append("image", image);
+      const image = JSON.stringify({ name: "example.png" });
 
       const response = {
         id: "1651a5d6-c2f7-453f-bdc7-13888041add6",
@@ -206,7 +203,7 @@ describe("apiContentActions", () => {
       };
 
       nock(`${BASE_URL}`)
-        .post("/api/content", data)
+        .post("/api/image/single")
         .reply(200, response);
 
       const expectedResult = {
@@ -221,20 +218,163 @@ describe("apiContentActions", () => {
 
     it("UPLOAD_IMAGE: Dispatches failure action after failed POST", async () => {
       const token = "1234";
-      const image = JSON.stringify({ name: "test.png" });
-      const data = new FormData();
-      data.append("image", image);
+      const image = JSON.stringify({ name: "example.png" });
       const init = {
         status: 500,
         statusText: "Sorry, something went wrong :("
       };
 
-      fetch.mockResponseOnce(data, init);
+      fetch.mockResponseOnce(image, init);
 
-      const result = await store.dispatch(actions.uploadImage(token, data));
+      const result = await store.dispatch(actions.uploadImage(token, image));
       const expectedResult = {
         payload: { message: "Sorry, something went wrong :(" },
         type: "UPLOAD_IMAGE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_CONTENT: Dispatches success action after successful PUT", async () => {
+      const token = "1234";
+      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+      const body = JSON.stringify({
+        content_type: "headline",
+        content: "Test headline"
+      });
+
+      const response = {
+        id: "1651a5d6-c2f7-453f-bdc7-13888041add6",
+        content_type: "headline",
+        content: "Test headline"
+      };
+
+      nock(`${BASE_URL}`)
+        .put(`/api/content/${id}`, body)
+        .reply(200, response);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "UPDATE_CONTENT_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(
+        actions.updateContent(token, id, body)
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_CONTENT: Dispatches failure action after failed PUT", async () => {
+      const token = "1234";
+      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+      const body = JSON.stringify({
+        content_type: undefined
+      });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.updateContent(token, id, body)
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "UPDATE_CONTENT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_IMAGE: Dispatches success action after successful DELETE", async () => {
+      const token = "1234";
+      const key = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+
+      const response = {
+        message: "Image deleted successfully"
+      };
+
+      nock(`${BASE_URL}`)
+        .delete(`/api/image/${key}`)
+        .reply(200, response);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "DELETE_IMAGE_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.deleteImage(token, key));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_IMAGE: Dispatches failure action after failed DELETE", async () => {
+      const token = "1234";
+      const key = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+      const body = JSON.stringify({
+        content_type: undefined
+      });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.deleteImage(token, key));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "DELETE_IMAGE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_CONTENT: Dispatches success action after successful DELETE", async () => {
+      const token = "1234";
+      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+
+      const response = {
+        message: "Content deleted successfully"
+      };
+
+      nock(`${BASE_URL}`)
+        .delete(`/api/content/${id}`)
+        .reply(200, response);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "DELETE_CONTENT_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.deleteContent(token, id));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_CONTENT: Dispatches failure action after failed DELETE", async () => {
+      const token = "1234";
+      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+      const body = JSON.stringify({
+        content_type: undefined
+      });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.deleteContent(token, id));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "DELETE_CONTENT_FAILURE",
         error: true,
         meta: undefined
       };

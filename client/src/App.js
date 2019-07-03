@@ -122,9 +122,8 @@ export class AppUnconnected extends Component {
         userId &&
         userId !== "undefined"
       ) {
-        const token = JSON.parse(authToken);
         this.props.apiProfile
-          .validateToken(token, userId)
+          .validateToken(authToken, userId)
           .then(result => {
             if (result.type === "VALIDATE_TOKEN_FAILURE") {
               window.localStorage.clear();
@@ -257,12 +256,3 @@ export const AppConnected = connect(
 )(AppUnconnected);
 
 export default withStyles(styles)(withRouter(AppConnected));
-
-// export default withStyles(styles)(
-//   withRouter(
-//     connect(
-//       mapStateToProps,
-//       mapDispatchToProps
-//     )(App)
-//   )
-// );
