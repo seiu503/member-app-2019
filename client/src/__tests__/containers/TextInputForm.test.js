@@ -17,7 +17,6 @@ import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
 
 let store;
-
 let wrapper;
 
 let pushMock = jest.fn();
@@ -144,21 +143,6 @@ describe("<TextInputForm />", () => {
       edit: true,
       apiContent: { getContentById: getContentById }
     };
-    let testState = {
-      appState: {
-        loggedIn: false,
-        authToken: ""
-      },
-      content: {
-        form: {
-          content_type: "",
-          content: ""
-        },
-        loading: false,
-        error: ""
-      }
-    };
-    store = storeFactory(testState);
 
     wrapper = unconnectedSetup();
 
