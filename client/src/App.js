@@ -99,7 +99,7 @@ const styles = theme => ({
   }
 });
 
-export class AppUnconnected extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
     this.main_ref = React.createRef();
@@ -200,7 +200,7 @@ export class AppUnconnected extends Component {
   }
 }
 
-AppUnconnected.propTypes = {
+App.propTypes = {
   classes: PropTypes.object.isRequired,
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool,
@@ -248,9 +248,18 @@ const mapDispatchToProps = dispatch => ({
   apiProfile: bindActionCreators(apiProfileActions, dispatch)
 });
 
-export const AppConnected = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AppUnconnected);
+// export const AppConnected = connect(
+//   mapStateToProps,
+//   mapDispatchToProps
+// )(AppUnconnected);
 
-export default withStyles(withRouter(AppConnected));
+// export default withStyles(withRouter(AppConnected));
+
+export default withStyles(styles)(
+  withRouter(
+    connect(
+      mapStateToProps,
+      mapDispatchToProps
+    )(App)
+  )
+);

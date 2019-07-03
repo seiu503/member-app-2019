@@ -9,15 +9,18 @@ import { unregister } from "./serviceWorker";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 render(
   <Provider store={store}>
     <BrowserRouter>
-      <ScrollToTop>
-        <MuiThemeProvider theme={theme}>
-          <App />
-        </MuiThemeProvider>
-      </ScrollToTop>
+      <ErrorBoundary>
+        <ScrollToTop>
+          <MuiThemeProvider theme={theme}>
+            <App />
+          </MuiThemeProvider>
+        </ScrollToTop>
+      </ErrorBoundary>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
