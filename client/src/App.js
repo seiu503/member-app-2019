@@ -99,7 +99,7 @@ const styles = theme => ({
   }
 });
 
-export class App extends Component {
+export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
     this.main_ref = React.createRef();
@@ -123,11 +123,14 @@ export class App extends Component {
         userId !== "undefined"
       ) {
         const token = JSON.parse(authToken);
-        this.props.apiProfile.validateToken(token, userId).then(result => {
-          if (result.type === "VALIDATE_TOKEN_FAILURE") {
-            window.localStorage.clear();
-          }
-        });
+        this.props.apiProfile
+          .validateToken(token, userId)
+          .then(result => {
+            if (result.type === "VALIDATE_TOKEN_FAILURE") {
+              window.localStorage.clear();
+            }
+          })
+          .catch(err => console.log(err));
       }
     }
   }
@@ -200,7 +203,7 @@ export class App extends Component {
   }
 }
 
-App.propTypes = {
+AppUnconnected.propTypes = {
   classes: PropTypes.object.isRequired,
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool,
@@ -248,18 +251,18 @@ const mapDispatchToProps = dispatch => ({
   apiProfile: bindActionCreators(apiProfileActions, dispatch)
 });
 
-// export const AppConnected = connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(AppUnconnected);
+export const AppConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppUnconnected);
 
-// export default withStyles(withRouter(AppConnected));
+export default withStyles(styles)(withRouter(AppConnected));
 
-export default withStyles(styles)(
-  withRouter(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(App)
-  )
-);
+// export default withStyles(styles)(
+//   withRouter(
+//     connect(
+//       mapStateToProps,
+//       mapDispatchToProps
+//     )(App)
+//   )
+// );

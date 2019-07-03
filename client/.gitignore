@@ -9,6 +9,7 @@
 /coverage
 /coverage.data
 /output/
+.nyc_output
 
 # production
 /build
