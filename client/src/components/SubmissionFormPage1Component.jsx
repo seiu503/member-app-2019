@@ -75,13 +75,15 @@ class SubmissionFormPage1Component extends React.Component {
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: "HARD CODED",
       contact_id: contactId || uuid.v4(),
-      legal_language: "lorem ipsum",
+      legal_language: this.legal_language.textContent.toString(),
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
       direct_pay_auth: null,
       direct_deposit_auth: null,
       immediate_past_member_status: null
     };
+
+    console.log(body.legal_language);
 
     return this.props.apiSubmission
       .addSubmission(body)
@@ -99,7 +101,7 @@ class SubmissionFormPage1Component extends React.Component {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.apiSubmission.clearForm();
           this.props.reset("submission");
-          this.props.history.push(`/page2`);
+          // this.props.history.push(`/page2`);
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -295,7 +297,11 @@ class SubmissionFormPage1Component extends React.Component {
             classes={this.classes}
             component={this.renderCheckbox}
           />
-          <FormHelperText className={this.classes.formHelperText}>
+          <FormHelperText
+            className={this.classes.formHelperText}
+            id="termsOfServiceLegalLanguage"
+            ref={el => (this.legal_language = el)}
+          >
             Your full name, the network address you are accessing this page
             from, and the timestamp of submission will serve as signature
             indicating: I hereby designate SEIU Local 503, OPEU (or any
