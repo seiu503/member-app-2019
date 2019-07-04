@@ -29,6 +29,12 @@ const validate = values => {
     errors.homeEmail = "Invalid email address (e.g. sample@email.com)";
   }
   if (
+    values.workEmail &&
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.workEmail)
+  ) {
+    errors.workEmail = "Invalid email address (e.g. sample@email.com)";
+  }
+  if (
     values.mobilePhone &&
     !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(
       values.mobilePhone
@@ -38,6 +44,9 @@ const validate = values => {
   }
   if (values.homePostalCode && values.homePostalCode.length !== 5) {
     errors.homePostalCode = `Must be at exactly 5 characters long`;
+  }
+  if (values.mailToPostalCode && values.mailToPostalCode.length !== 5) {
+    errors.mailToPostalCode = `Must be at exactly 5 characters long`;
   }
   return errors;
 };

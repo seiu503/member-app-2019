@@ -13,7 +13,8 @@ import { styles } from "../components/SubmissionFormElements";
 
 // default initial values we want if salesforce doesn't provide useful data
 const initialValues = {
-  /* *********  POPULATE ME  ********* */
+  mm: "",
+  mailToState: "or"
 };
 
 const salesForceCheck = id => {

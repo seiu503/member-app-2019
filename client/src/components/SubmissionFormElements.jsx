@@ -79,6 +79,9 @@ export const monthList = [
   "12"
 ];
 export const languageOptions = ["English", "Russian", "Spanish"];
+export const ethnicityOptions = ["", "Asian", "Hispanic", "White"];
+export const genderOptions = ["", "Male", "Female", "Other"];
+export const genderPronounOptions = ["", "He/Him", "She/Her", "They/Them"];
 
 // switch helper for dateOptions
 export const getMaxDay = month => {
@@ -96,7 +99,7 @@ export const getMaxDay = month => {
 };
 // function to adjust date select based on mm value
 export const dateOptions = props => {
-  const mm = props.formValues.mm;
+  const mm = props.formValues.mm || props.formValues.hiremm;
   const max = getMaxDay(mm);
   let dates = [];
   for (let i = 1; i <= max; i++) {
