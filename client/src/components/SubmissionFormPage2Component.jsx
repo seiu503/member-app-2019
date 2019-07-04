@@ -12,6 +12,8 @@ import WelcomeInfo from "./WelcomeInfo";
 // helper functions these MAY NEED TO BE UPDATED with localization package
 // *********  POPULATE ME  ********* //
 
+const FILLMEIN = ["nothing", "to", "see"];
+
 class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
   constructor(props) {

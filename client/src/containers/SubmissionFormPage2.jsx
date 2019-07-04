@@ -9,7 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import validate from "../utils/validators";
-import { styles } from "../components/SubmissionElements";
+import { styles } from "../components/SubmissionFormElements";
 
 // default initial values we want if salesforce doesn't provide useful data
 const initialValues = {

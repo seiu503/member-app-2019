@@ -17,7 +17,8 @@ import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
-import SubmissionForm from "./containers/SubmissionForm";
+import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
+import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 
@@ -155,7 +156,17 @@ export class App extends Component {
               exact
               path="/"
               render={routeProps => (
-                <SubmissionForm
+                <SubmissionFormPage1
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/page2"
+              render={routeProps => (
+                <SubmissionFormPage2
                   setRedirect={this.setRedirect}
                   {...routeProps}
                 />

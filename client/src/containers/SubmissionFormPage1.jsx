@@ -6,7 +6,7 @@ import uuid from "uuid";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import SubmissionFormComponent from "../components/SubmissionFormComponent";
+import SubmissionFormPage1Component from "../components/SubmissionFormPage1Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import validate from "../utils/validators";
 import { styles } from "../components/SubmissionFormElements";
@@ -92,17 +92,17 @@ const methods = {
 };
 
 // add reduxForm to component
-export const SubmissionForm = reduxForm({
-  form: "submission",
+export const SubmissionFormPage1 = reduxForm({
+  form: "submissionPage1",
   validate,
   enableReinitialize: true
-})(SubmissionFormComponent);
+})(SubmissionFormPage1Component);
 
 const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
   initialValues,
-  formValues: getFormValues("submission")(state) || {}
+  formValues: getFormValues("submissionPage1")(state) || {}
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -115,6 +115,6 @@ export default withStyles(styles)(
     connect(
       mapStateToProps,
       mapDispatchToProps
-    )(SubmissionForm)
+    )(SubmissionFormPage1)
   )
 );

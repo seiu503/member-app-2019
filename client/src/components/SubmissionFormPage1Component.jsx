@@ -8,11 +8,11 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 
-import * as formElements from "../components/SubmissionFormElements";
+import * as formElements from "./SubmissionFormElements";
 import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
-import ButtonWithSpinner from "../components/ButtonWithSpinner";
-import WelcomeInfo from "../components/WelcomeInfo";
+import ButtonWithSpinner from "./ButtonWithSpinner";
+import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
@@ -21,7 +21,7 @@ const languageOptions = formElements.languageOptions;
 const dateOptions = formElements.dateOptions;
 const yearOptions = formElements.yearOptions;
 
-class SubmissionFormComponent extends React.Component {
+class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -99,16 +99,20 @@ class SubmissionFormComponent extends React.Component {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.apiSubmission.clearForm();
           this.props.reset("submission");
+          this.props.history.push(`/page2`);
         }
       })
       .catch(err => openSnackbar("error", err));
   };
   render() {
     return (
-      <div className={this.classes.root} data-test="component-submissionform">
+      <div
+        className={this.classes.root}
+        data-test="component-submissionformpage1"
+      >
         <WelcomeInfo />
         <form
-          id="submissionForm"
+          id="submissionFormPage1"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           className={this.classes.form}
         >
@@ -339,7 +343,7 @@ class SubmissionFormComponent extends React.Component {
   }
 }
 
-SubmissionFormComponent.propTypes = {
+SubmissionFormPage1Component.propTypes = {
   type: PropTypes.string,
   appState: PropTypes.shape({
     authToken: PropTypes.string
@@ -370,4 +374,4 @@ SubmissionFormComponent.propTypes = {
   classes: PropTypes.object
 };
 
-export default SubmissionFormComponent;
+export default SubmissionFormPage1Component;
