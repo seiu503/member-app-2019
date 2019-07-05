@@ -106,7 +106,7 @@ class SubmissionFormPage2Component extends React.Component {
       work_phone: workPhone || null
     };
 
-    const id = this.state.submission.submissionId;
+    const id = this.props.submission.salesforceId;
 
     return this.props.apiSubmission
       .updateSubmission(body, id)
@@ -435,27 +435,9 @@ SubmissionFormPage2Component.propTypes = {
     authToken: PropTypes.string
   }),
   submission: PropTypes.shape({
-    form: PropTypes.shape({
-      mailToStreet: PropTypes.string,
-      mailToCity: PropTypes.string,
-      mailToState: PropTypes.string,
-      mailToPostalCode: PropTypes.string,
-      ethnicity: PropTypes.string,
-      lgbtqId: PropTypes.bool,
-      transId: PropTypes.bool,
-      disabilityId: PropTypes.bool,
-      deafOrHardOfHearing: PropTypes.bool,
-      blindOrVisuallyImpaired: PropTypes.bool,
-      gender: PropTypes.string,
-      genderOtherDescription: PropTypes.string,
-      genderPronoun: PropTypes.string,
-      jobTitle: PropTypes.string,
-      hireDate: PropTypes.string,
-      worksite: PropTypes.string,
-      workEmail: PropTypes.string
-    }),
     loading: PropTypes.bool,
-    error: PropTypes.string
+    error: PropTypes.string,
+    salesforceId: PropTypes.string
   }).isRequired,
   classes: PropTypes.object
 };
