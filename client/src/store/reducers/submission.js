@@ -5,14 +5,17 @@ import {
   ADD_SUBMISSION_REQUEST,
   ADD_SUBMISSION_SUCCESS,
   ADD_SUBMISSION_FAILURE,
+  UPDATE_SUBMISSION_REQUEST,
+  UPDATE_SUBMISSION_SUCCESS,
+  UPDATE_SUBMISSION_FAILURE,
   CLEAR_FORM
 } from "../actions/apiSubmissionActions";
 
 const INITIAL_STATE = {
   loading: false,
   error: null,
-  formPage1: {},
-  formPage2: {}
+  formPage2SubmitSucess: false,
+  formPage1SubmitSucess: false
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -28,24 +31,7 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         loading: { $set: false },
-        formPage1: {
-          mm: { $set: moment(action.payload.birthdate).format("mm") },
-          dd: { $set: moment(action.payload.birthdate).format("dd") },
-          yy: { $set: moment(action.payload.birthdate).format("yyyy") },
-          cellPhone: { $set: action.payload.cell_phone },
-          employerName: { $set: action.payload.employer_name },
-          firstName: { $set: action.payload.first_name },
-          lastName: { $set: action.payload.last_name },
-          homeStreet: { $set: action.payload.home_street },
-          homeCity: { $set: action.payload.home_city },
-          homeState: { $set: action.payload.home_state },
-          homeZip: { $set: action.payload.home_zip },
-          homeEmail: { $set: action.payload.home_email },
-          preferredLanguage: { $set: action.payload.preferred_language },
-          termsAgree: { $set: action.payload.terms_agree },
-          signature: { $set: action.payload.signature },
-          textAuthOptOut: { $set: action.payload.text_auth_opt_out }
-        }
+        formPage1SubmitSucess: { $set: true }
       });
 
     case ADD_SUBMISSION_FAILURE:
@@ -59,27 +45,59 @@ function Submission(state = INITIAL_STATE, action) {
         loading: { $set: false },
         error: { $set: error }
       });
+    case UPDATE_SUBMISSION_REQUEST:
+      return update(state, {
+        loading: { $set: true },
+        error: { $set: null }
+      });
+
+    case UPDATE_SUBMISSION_SUCCESS:
+      return update(state, {
+        loading: { $set: false },
+        formPage2SubmitSucess: { $set: true }
+      });
+
+    case UPDATE_SUBMISSION_FAILURE:
+      if (typeof action.payload.message === "string") {
+        error = action.payload.message;
+      } else {
+        error = "Sorry, something went wrong :(\nPlease try again.";
+      }
+      console.log(error);
+      return update(state, {
+        loading: { $set: false },
+        error: { $set: error }
+      });
 
     case CLEAR_FORM:
       return update(state, {
-        formPage1: {
-          firstName: { $set: "" },
-          lastName: { $set: "" },
-          dd: { $set: "" },
-          mm: { $set: "" },
-          yyyy: { $set: "" },
-          preferredLanguage: { $set: "english" },
-          homeStreet: { $set: "" },
-          homeCity: { $set: "" },
-          homePostalCode: { $set: "" },
-          homeState: { $set: "" },
-          homeEmail: { $set: "" },
-          mobilePhone: { $set: "" },
-          employerName: { $set: "" },
-          textAuthOptOut: { $set: false },
-          termsAgree: { $set: false },
-          signature: { $set: "" },
-          signedApplication: { $set: false }
+        formPage2: {
+          mailToCity: { $set: "" },
+          mailToState: { $set: "" },
+          mailToStreet: { $set: "" },
+          mailToPostalCode: { $set: "" },
+          africanOrAfricanAmerican: { $set: false },
+          arabAmericanMiddleEasternOrNorthAfrican: { $set: false },
+          asianOrAsianAmerican: { $set: false },
+          hispanicOrLatinx: { $set: false },
+          nativeAmericanOrIndigenous: { $set: false },
+          nativeHawaiianOrOtherPacificIslander: { $set: false },
+          white: { $set: false },
+          other: { $set: false },
+          declined: { $set: false },
+          lgbtqId: { $set: false },
+          transId: { $set: false },
+          disabilityId: { $set: false },
+          deafOrHardOfHearing: { $set: false },
+          blindOrVisuallyImpaired: { $set: false },
+          gender: { $set: "" },
+          genderOtherDescription: { $set: "" },
+          genderPronoun: { $set: "" },
+          jobTitle: { $set: "" },
+          worksite: { $set: "" },
+          workEmail: { $set: "" },
+          workPhone: { $set: "" },
+          hireDate: { $set: "" }
         }
       });
 

@@ -106,27 +106,25 @@ class SubmissionFormPage2Component extends React.Component {
       work_phone: workPhone || null
     };
 
-    console.log("SUBMISSION BODY", body);
-    return;
-    // return this.props.apiSubmission
-    //   .updateSubmission(body)
-    //   .then(result => {
-    //     if (
-    //       result.type === "UPDATE_SUBMISSION_FAILURE" ||
-    //       this.props.submission.error
-    //     ) {
-    //       openSnackbar(
-    //         "error",
-    //         this.props.submission.error ||
-    //         "An error occurred while trying to update your information."
-    //       );
-    //     } else {
-    //       openSnackbar("success", "Your information was updated!");
-    //       this.props.apiSubmission.clearForm();
-    //       this.props.reset("submission");
-    //     }
-    //   })
-    //   .catch(err => openSnackbar("error", err));
+    return this.props.apiSubmission
+      .updateSubmission(body)
+      .then(result => {
+        if (
+          result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          this.props.submission.error
+        ) {
+          openSnackbar(
+            "error",
+            this.props.submission.error ||
+              "An error occurred while trying to update your information."
+          );
+        } else {
+          openSnackbar("success", "Your information was updated!");
+          this.props.apiSubmission.clearForm();
+          this.props.reset("submissionsubmissionPage2");
+        }
+      })
+      .catch(err => openSnackbar("error", err));
   };
   render() {
     return (
@@ -134,23 +132,22 @@ class SubmissionFormPage2Component extends React.Component {
         className={this.classes.root}
         data-test="component-submissionformpage2"
       >
-        <FormHelperText
-          className={this.classes.formHelperText}
-          id="page2IntroText"
-        >
-          Your membership application has been received and will be reviewed
-          shortly. In the mean time, please help your fellow union members get
-          to know you better by telling us a little more about yourself. SEIU
-          Local 503 is committed to honoring the diversity of all members. This
-          optional demographic information helps us understand the social
-          identities of our membership.
-        </FormHelperText>
-
         <form
           id="submissionFormPage2"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           className={this.classes.form}
         >
+          <FormHelperText
+            className={this.classes.formHelperText}
+            id="page2IntroText"
+          >
+            Your membership application has been received and will be reviewed
+            shortly. In the mean time, please help your fellow union members get
+            to know you better by telling us a little more about yourself. SEIU
+            Local 503 is committed to honoring the diversity of all members.
+            This optional demographic information helps us understand the social
+            identities of our membership.
+          </FormHelperText>
           <FormLabel className={this.classes.formLabel} component="legend">
             Check as many as apply to your race/ethnicity
           </FormLabel>

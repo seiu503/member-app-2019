@@ -83,8 +83,6 @@ class SubmissionFormPage1Component extends React.Component {
       immediate_past_member_status: null
     };
 
-    console.log(body.legal_language);
-
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
@@ -100,8 +98,8 @@ class SubmissionFormPage1Component extends React.Component {
         } else {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.apiSubmission.clearForm();
-          this.props.reset("submission");
-          // this.props.history.push(`/page2`);
+          this.props.reset("submissionPage1");
+          this.props.history.push(`/page2`);
         }
       })
       .catch(err => openSnackbar("error", err));
