@@ -11,11 +11,9 @@ import * as formElements from "./SubmissionFormElements";
 import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
-import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
-const ethnicityOptions = formElements.ethnicityOptions;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
 const monthList = formElements.monthList;
@@ -40,7 +38,15 @@ class SubmissionFormPage2Component extends React.Component {
       mailToState,
       mailToStreet,
       mailToPostalCode,
-      ethnicity,
+      africanOrAfricanAmerican,
+      arabAmericanMiddleEasternOrNorthAfrican,
+      asianOrAsianAmerican,
+      hispanicOrLatinx,
+      nativeAmericanOrIndigenous,
+      nativeHawaiianOrOtherPacificIslander,
+      white,
+      other,
+      declined,
       lgbtqId,
       transId,
       disabilityId,
@@ -52,18 +58,45 @@ class SubmissionFormPage2Component extends React.Component {
       jobTitle,
       worksite,
       workEmail,
+      workPhone,
       hiremm,
       hiredd,
       hireyyyy
     } = values;
     const hireDate = hiremm + "/" + hiredd + "/" + hireyyyy;
+    const ethnicity = () => {
+      if (declined) {
+        return "declined";
+      }
+      let combinedEthnicities = "";
+      const ethnicities = {
+        africanOrAfricanAmerican,
+        arabAmericanMiddleEasternOrNorthAfrican,
+        asianOrAsianAmerican,
+        hispanicOrLatinx,
+        nativeAmericanOrIndigenous,
+        nativeHawaiianOrOtherPacificIslander,
+        white,
+        other
+      };
+      const ethnicitiesArray = Object.entries(ethnicities);
+      ethnicitiesArray.forEach(i => {
+        if (i[1]) {
+          if (combinedEthnicities === "") {
+            combinedEthnicities = i[0];
+          }
+          combinedEthnicities += `, ${i[0]}`;
+        }
+      });
+      return combinedEthnicities;
+    };
 
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
       mail_to_postal_code: mailToPostalCode,
-      ethnicity: ethnicity,
+      ethnicity: ethnicity(),
       lgbtq_id: lgbtqId,
       trans_id: transId,
       disability_id: disabilityId,
@@ -75,28 +108,31 @@ class SubmissionFormPage2Component extends React.Component {
       job_title: jobTitle,
       hire_date: hireDate,
       worksite: worksite,
-      work_email: workEmail
+      work_email: workEmail,
+      work_phone: workPhone
     };
 
-    return this.props.apiSubmission
-      .updateSubmission(body)
-      .then(result => {
-        if (
-          result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.submission.error ||
-              "An error occurred while trying to update your information."
-          );
-        } else {
-          openSnackbar("success", "Your information was updated!");
-          this.props.apiSubmission.clearForm();
-          this.props.reset("submission");
-        }
-      })
-      .catch(err => openSnackbar("error", err));
+    console.log("SUBMISSION BODY", body);
+    return;
+    // return this.props.apiSubmission
+    //   .updateSubmission(body)
+    //   .then(result => {
+    //     if (
+    //       result.type === "UPDATE_SUBMISSION_FAILURE" ||
+    //       this.props.submission.error
+    //     ) {
+    //       openSnackbar(
+    //         "error",
+    //         this.props.submission.error ||
+    //         "An error occurred while trying to update your information."
+    //       );
+    //     } else {
+    //       openSnackbar("success", "Your information was updated!");
+    //       this.props.apiSubmission.clearForm();
+    //       this.props.reset("submission");
+    //     }
+    //   })
+    //   .catch(err => openSnackbar("error", err));
   };
   render() {
     return (
@@ -104,204 +140,320 @@ class SubmissionFormPage2Component extends React.Component {
         className={this.classes.root}
         data-test="component-submissionformpage2"
       >
-        <WelcomeInfo />
+        <FormHelperText
+          className={this.classes.formHelperText}
+          id="page2IntroText"
+        >
+          Your membership application has been received and will be reviewed
+          shortly. In the mean time, please help your fellow union members get
+          to know you better by telling us a little more about yourself. SEIU
+          Local 503 is committed to honoring the diversity of all members. This
+          optional demographic information helps us understand the social
+          identities of our membership.
+        </FormHelperText>
+
         <form
           id="submissionFormPage2"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           className={this.classes.form}
         >
-          <Field
-            label="mailToStreet"
-            name="mailToStreet"
-            id="mailToStreet"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-          <Field
-            label="mailToCity"
-            name="mailToCity"
-            id="mailToCity"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-
-          <Field
-            label="mailToState"
-            name="mailToState"
-            id="mailToState"
-            type="select"
-            classes={this.classes}
-            formControlName="formControlDate"
-            component={this.renderSelect}
-            labelWidth={41}
-            options={stateList}
-          />
-
-          <Field
-            label="mailToPostalCode"
-            name="mailToPostalCode"
-            id="mailToPostalCode"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-
-          <Field
-            label="ethnicity"
-            name="ethnicity"
-            id="ethnicity"
-            type="select"
-            classes={this.classes}
-            component={this.renderSelect}
-            labelWidth={41}
-            options={ethnicityOptions}
-          />
-
-          <Field
-            label="lgbtqId"
-            name="lgbtqId"
-            id="lgbtqId"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
-          />
-
-          <Field
-            label="transId"
-            name="transId"
-            id="transId"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
-          />
-
-          <Field
-            label="disabilityId"
-            name="disabilityId"
-            id="disabilityId"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
-          />
-
-          <Field
-            label="deafOrHardOfHearing"
-            name="deafOrHardOfHearing"
-            id="deafOrHardOfHearing"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
-          />
-
-          <Field
-            label="blindOrVisuallyImpaired"
-            name="blindOrVisuallyImpaired"
-            id="blindOrVisuallyImpaired"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
-          />
-
-          <Field
-            label="gender"
-            name="gender"
-            id="gender"
-            type="select"
-            classes={this.classes}
-            component={this.renderSelect}
-            labelWidth={41}
-            options={genderOptions}
-          />
-
-          <Field
-            label="genderOtherDescription"
-            name="genderOtherDescription"
-            id="genderOtherDescription"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-
-          <Field
-            label="genderPronoun"
-            name="genderPronoun"
-            id="genderPronoun"
-            type="select"
-            classes={this.classes}
-            component={this.renderSelect}
-            labelWidth={41}
-            options={genderPronounOptions}
-          />
-
-          <Field
-            label="worksite"
-            name="worksite"
-            id="worksite"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-
           <FormLabel className={this.classes.formLabel} component="legend">
-            Hire Date
+            Check as many as apply to your race/ethnicity
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field
-              label="Month"
-              name="hirehire"
-              id="hiremm"
+              label="African or African-American"
+              name="africanOrAfricanAmerican"
+              id="africanOrAfricanAmerican"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Arab American, Middle Eastern, or North African"
+              name="arabAmericanMiddleEasternOrNorthAfrican"
+              id="arabAmericanMiddleEasternOrNorthAfrican"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Asian or Asian American"
+              name="asianOrAsianAmerican"
+              id="asianOrAsianAmerican"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Hispanic or Latinx"
+              name="hispanicOrLatinx"
+              id="hispanicOrLatinx"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Native American or Indigenous"
+              name="nativeAmericanOrIndigenous"
+              id="nativeAmericanOrIndigenous"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Native Hawaiian or Other Pacific Islander"
+              name="nativeHawaiianOrOtherPacificIslander"
+              id="nativeHawaiianOrOtherPacificIslander"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="White"
+              name="white"
+              id="white"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Other"
+              name="other"
+              id="other"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Declined"
+              name="declined"
+              id="declined"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+          </FormGroup>
+
+          <FormLabel className={this.classes.formLabel} component="legend">
+            Other Social Identities
+          </FormLabel>
+          <FormGroup className={this.classes.formGroup}>
+            <Field
+              label="I identify as LGBTQIA+"
+              name="lgbtqId"
+              id="lgbtqId"
+              type="checkbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="I identify as transgender"
+              name="transId"
+              id="transId"
+              type="checkbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="I identify as disabled or a person with a disability"
+              name="disabilityId"
+              id="disabilityId"
+              type="checkbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="I identify as Deaf or hard-of-hearing"
+              name="deafOrHardOfHearing"
+              id="deafOrHardOfHearing"
+              type="checkbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="I identify as Blind or visually impaired"
+              name="blindOrVisuallyImpaired"
+              id="blindOrVisuallyImpaired"
+              type="checkbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+            <Field
+              label="Gender"
+              name="gender"
+              id="gender"
+              type="select"
+              classes={this.classes}
+              component={this.renderSelect}
+              labelWidth={41}
+              options={genderOptions}
+            />
+            <Field
+              label="If other, Please describe"
+              name="genderOtherDescription"
+              id="genderOtherDescription"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <Field
+              label="Your pronouns"
+              name="genderPronoun"
+              id="genderPronoun"
+              type="select"
+              classes={this.classes}
+              component={this.renderSelect}
+              labelWidth={41}
+              options={genderPronounOptions}
+            />
+          </FormGroup>
+
+          <FormLabel className={this.classes.formLabel} component="legend">
+            Employemnt Info
+          </FormLabel>
+          <FormGroup className={this.classes.formGroup}>
+            <Field
+              label="Job Class/Title"
+              name="jobTitle"
+              id="jobTitle"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <FormLabel className={this.classes.formLabel} component="legend">
+              Hire Date
+            </FormLabel>
+            <FormGroup className={this.classes.formGroup}>
+              <Field
+                label="Month"
+                name="hirehire"
+                id="hiremm"
+                type="select"
+                classes={this.classes}
+                formControlName="formControlDate"
+                component={this.renderSelect}
+                labelWidth={41}
+                options={monthList}
+              />
+              <Field
+                label="Day"
+                name="hiredd"
+                id="hiredd"
+                type="select"
+                formControlName="formControlDate"
+                classes={this.classes}
+                component={this.renderSelect}
+                labelWidth={24}
+                options={dateOptions(this.props)}
+              />
+              <Field
+                label="Year"
+                name="hireyyyy"
+                id="hireyyyy"
+                type="select"
+                formControlName="formControlDate"
+                classes={this.classes}
+                component={this.renderSelect}
+                labelWidth={30}
+                options={yearOptions()}
+              />
+            </FormGroup>
+            <Field
+              label="Worksite"
+              name="worksite"
+              id="worksite"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <Field
+              label="Work Email"
+              name="workEmail"
+              id="workEmail"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <Field
+              label="Work Phone"
+              name="workPhone"
+              id="workPhone"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+          </FormGroup>
+
+          <FormLabel className={this.classes.formLabel} component="legend">
+            Mailing Address
+          </FormLabel>
+          <FormHelperText
+            className={this.classes.formHelperText}
+            id="mailingAddressDescription"
+          >
+            If different from residence address
+          </FormHelperText>
+          <FormGroup className={this.classes.formGroup}>
+            <Field
+              label="Mailing Street"
+              name="mailToStreet"
+              id="mailToStreet"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <Field
+              label="Mailing City"
+              name="mailToCity"
+              id="mailToCity"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <Field
+              label="Mailing State"
+              name="mailToState"
+              id="mailToState"
               type="select"
               classes={this.classes}
               formControlName="formControlDate"
               component={this.renderSelect}
               labelWidth={41}
-              options={monthList}
+              options={stateList}
             />
-
             <Field
-              label="Day"
-              name="hiredd"
-              id="hiredd"
-              type="select"
-              formControlName="formControlDate"
+              label="Mailing ZIP"
+              name="mailToPostalCode"
+              id="mailToPostalCode"
+              type="text"
               classes={this.classes}
-              component={this.renderSelect}
-              labelWidth={24}
-              options={dateOptions(this.props)}
-            />
-
-            <Field
-              label="Year"
-              name="hireyyyy"
-              id="hireyyyy"
-              type="select"
-              formControlName="formControlDate"
-              classes={this.classes}
-              component={this.renderSelect}
-              labelWidth={30}
-              options={yearOptions()}
+              component={this.renderTextField}
             />
           </FormGroup>
-
-          <Field
-            label="worksite"
-            name="worksite"
-            id="worksite"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-
-          <Field
-            label="workEmail"
-            name="workEmail"
-            id="workEmail"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
+          <FormLabel className={this.classes.formLabel} component="legend">
+            Name and Email
+          </FormLabel>
+          <FormGroup className={this.classes.formGroup}>
+            <Field
+              label="First Name"
+              name="firstName"
+              id="firstName"
+              type="text"
+              required={true}
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+            <Field
+              label="Last Name"
+              name="lastName"
+              id="lastName"
+              required={true}
+              classes={this.classes}
+              type="text"
+              component={this.renderTextField}
+            />
+            <Field
+              label="Home Email"
+              name="homeEmail"
+              id="homeEmail"
+              type="text"
+              required={true}
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+          </FormGroup>
 
           <ButtonWithSpinner
             type="submit"

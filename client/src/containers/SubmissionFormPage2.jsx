@@ -14,7 +14,24 @@ import { styles } from "../components/SubmissionFormElements";
 // default initial values we want if salesforce doesn't provide useful data
 const initialValues = {
   mm: "",
-  mailToState: "or"
+  mailToState: "or",
+  mail_to_city: null,
+  mail_to_street: null,
+  mail_to_postal_code: null,
+  ethnicity: null,
+  lgbtq_id: null,
+  trans_id: null,
+  disability_id: null,
+  deaf_or_hard_of_hearing: null,
+  blind_or_visually_impaired: null,
+  gender: null,
+  gender_other_description: null,
+  gender_pronoun: null,
+  job_title: null,
+  hire_date: null,
+  worksite: null,
+  work_email: null,
+  work_phone: null
 };
 
 const salesForceCheck = id => {

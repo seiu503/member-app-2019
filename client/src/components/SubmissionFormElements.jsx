@@ -79,9 +79,14 @@ export const monthList = [
   "12"
 ];
 export const languageOptions = ["English", "Russian", "Spanish"];
-export const ethnicityOptions = ["", "Asian", "Hispanic", "White"];
-export const genderOptions = ["", "Male", "Female", "Other"];
-export const genderPronounOptions = ["", "He/Him", "She/Her", "They/Them"];
+export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
+export const genderPronounOptions = [
+  "",
+  "She/Her/Hers",
+  "He/Him/His",
+  "They/Them/Their(s)",
+  "Other"
+];
 
 // switch helper for dateOptions
 export const getMaxDay = month => {

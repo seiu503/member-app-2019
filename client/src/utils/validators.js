@@ -42,6 +42,12 @@ const validate = values => {
   ) {
     errors.mobilePhone = "Invalid phone number (e.g. 555-123-456)";
   }
+  if (
+    values.workPhone &&
+    !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(values.workPhone)
+  ) {
+    errors.workPhone = "Invalid phone number (e.g. 555-123-456)";
+  }
   if (values.homePostalCode && values.homePostalCode.length !== 5) {
     errors.homePostalCode = `Must be at exactly 5 characters long`;
   }
