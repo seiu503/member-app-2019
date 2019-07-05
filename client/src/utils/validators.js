@@ -48,6 +48,12 @@ const validate = values => {
   ) {
     errors.workPhone = "Invalid phone number (e.g. 555-123-456)";
   }
+  if (
+    values.hireDate &&
+    !/^\(?([0-9]{2})\)?[/]?([0-9]{2})[/]?([0-9]{4})$/.test(values.hireDate)
+  ) {
+    errors.hireDate = "Invalid Date (please us 'mm/dd/yyyy' format)";
+  }
   if (values.homePostalCode && values.homePostalCode.length !== 5) {
     errors.homePostalCode = `Must be at exactly 5 characters long`;
   }

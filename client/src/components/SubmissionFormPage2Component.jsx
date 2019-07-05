@@ -59,11 +59,8 @@ class SubmissionFormPage2Component extends React.Component {
       worksite,
       workEmail,
       workPhone,
-      hiremm,
-      hiredd,
-      hireyyyy
+      hireDate
     } = values;
-    const hireDate = hiremm + "/" + hiredd + "/" + hireyyyy;
     const ethnicity = () => {
       if (declined) {
         return "declined";
@@ -312,44 +309,14 @@ class SubmissionFormPage2Component extends React.Component {
               classes={this.classes}
               component={this.renderTextField}
             />
-            <FormLabel className={this.classes.formLabel} component="legend">
-              Hire Date
-            </FormLabel>
-            <FormGroup className={this.classes.formGroup}>
-              <Field
-                label="Month"
-                name="hirehire"
-                id="hiremm"
-                type="select"
-                classes={this.classes}
-                formControlName="formControlDate"
-                component={this.renderSelect}
-                labelWidth={41}
-                options={monthList}
-              />
-              <Field
-                label="Day"
-                name="hiredd"
-                id="hiredd"
-                type="select"
-                formControlName="formControlDate"
-                classes={this.classes}
-                component={this.renderSelect}
-                labelWidth={24}
-                options={dateOptions(this.props)}
-              />
-              <Field
-                label="Year"
-                name="hireyyyy"
-                id="hireyyyy"
-                type="select"
-                formControlName="formControlDate"
-                classes={this.classes}
-                component={this.renderSelect}
-                labelWidth={30}
-                options={yearOptions()}
-              />
-            </FormGroup>
+            <Field
+              label="Hire Date"
+              name="hireDate"
+              id="hireDate"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
             <Field
               label="Worksite"
               name="worksite"
