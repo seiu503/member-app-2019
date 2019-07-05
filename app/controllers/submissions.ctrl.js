@@ -57,13 +57,13 @@ const createSubmission = async (req, res, next) => {
     signature,
     text_auth_opt_out,
     online_campaign_source,
-    contact_id,
     legal_language,
     maintenance_of_effort,
     seiu503_cba_app_date,
     direct_pay_auth,
     direct_deposit_auth,
-    immediate_past_member_status
+    immediate_past_member_status,
+    salesforce_id
   } = req.body;
 
   const requiredFields = [
@@ -117,13 +117,13 @@ const createSubmission = async (req, res, next) => {
       signature,
       text_auth_opt_out,
       online_campaign_source,
-      contact_id,
       legal_language,
       maintenance_of_effort,
       seiu503_cba_app_date,
       direct_pay_auth,
       direct_deposit_auth,
-      immediate_past_member_status
+      immediate_past_member_status,
+      salesforce_id
     );
 
     if (!createSubmissionResult || createSubmissionResult.message) {

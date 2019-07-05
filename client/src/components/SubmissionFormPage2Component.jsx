@@ -122,7 +122,6 @@ class SubmissionFormPage2Component extends React.Component {
           );
         } else {
           openSnackbar("success", "Your information was updated!");
-          this.props.apiSubmission.clearForm();
           this.props.reset("submissionsubmissionPage2");
         }
       })

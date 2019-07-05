@@ -55,17 +55,17 @@ const createSubmission = (
   signature,
   text_auth_opt_out,
   online_campaign_source,
-  contact_id,
   legal_language,
   maintenance_of_effort,
   seiu503_cba_app_date,
   direct_pay_auth,
   direct_deposit_auth,
-  immediate_past_member_status
+  immediate_past_member_status,
+  salesforce_id
 ) => {
   return db
     .insert({
-      submission_id: uuid.v4(),
+      id: uuid.v4(),
       ip_address,
       submission_date,
       agency_number,
@@ -84,13 +84,13 @@ const createSubmission = (
       signature,
       text_auth_opt_out,
       online_campaign_source,
-      contact_id,
       legal_language,
       maintenance_of_effort,
       seiu503_cba_app_date,
       direct_pay_auth,
       direct_deposit_auth,
-      immediate_past_member_status
+      immediate_past_member_status,
+      salesforce_id
     })
     .into(TABLES.SUBMISSIONS)
     .returning("*");
@@ -130,14 +130,14 @@ const getSubmissionById = submission_id => {
     .returning("*");
 };
 
-/** Find Submissions by contact_id
- *  @param    {String}   contact_id   The id of the Submission to delete.
+/** Find Submissions by salesforce_id
+ *  @param    {String}   salesforce_id   The id of the Submission to delete.
  *  @returns  {Array}                 Array of all submissions for given contact.
  */
 
-const getSubmissionsByContactId = contact_id => {
+const getSubmissionsBySalesforceId = salesforce_id => {
   return db(TABLES.SUBMISSIONS)
-    .where({ contact_id })
+    .where({ salesforce_id })
     .first()
     .returning("*");
 };
@@ -163,7 +163,7 @@ module.exports = {
   createSubmission,
   updateSubmission,
   getSubmissionById,
-  getSubmissionsByContactId,
+  getSubmissionsBySalesforceId,
   getSubmissions,
   deleteSubmission
 };

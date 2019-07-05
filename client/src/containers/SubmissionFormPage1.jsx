@@ -74,7 +74,7 @@ const componentDidMount = () => {
       initialValues.homePostalCode = preFill.Home_Zip__c;
       initialValues.homeEmail = preFill.Home_Email__c;
       initialValues.preferredLanguage = preFill.Preferred_Language__c;
-      initialValues.contactId = preFill.id;
+      initialValues.salesforceId = preFill.id;
       if (initialValues.mm.length === 1) {
         initialValues.mm = "0" + initialValues.mm;
       }

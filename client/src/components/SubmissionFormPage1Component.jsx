@@ -51,7 +51,7 @@ class SubmissionFormPage1Component extends React.Component {
       textAuthOptOut,
       termsAgree,
       signature,
-      contactId
+      salesforceId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
 
@@ -74,14 +74,15 @@ class SubmissionFormPage1Component extends React.Component {
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: "HARD CODED",
-      contact_id: contactId || uuid.v4(),
       legal_language: this.legal_language.textContent.toString(),
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
       direct_pay_auth: null,
       direct_deposit_auth: null,
-      immediate_past_member_status: null
+      immediate_past_member_status: null,
+      salesforce_id: salesforceId
     };
+    console.log(body);
 
     return this.props.apiSubmission
       .addSubmission(body)
@@ -97,12 +98,14 @@ class SubmissionFormPage1Component extends React.Component {
           );
         } else {
           openSnackbar("success", "Your Submission was Successful!");
-          this.props.apiSubmission.clearForm();
           this.props.reset("submissionPage1");
           this.props.history.push(`/page2`);
         }
       })
-      .catch(err => openSnackbar("error", err));
+      .catch(err => {
+        console.log(err);
+        openSnackbar("error", err);
+      });
   };
   render() {
     return (
@@ -353,27 +356,9 @@ SubmissionFormPage1Component.propTypes = {
     authToken: PropTypes.string
   }),
   submission: PropTypes.shape({
-    form: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      dd: PropTypes.string,
-      mm: PropTypes.string,
-      yyyy: PropTypes.string,
-      preferredLanguage: PropTypes.string,
-      homeStreet: PropTypes.string,
-      homeCity: PropTypes.string,
-      homePostalCode: PropTypes.string,
-      homeState: PropTypes.string,
-      homeEmail: PropTypes.string,
-      mobilePhone: PropTypes.string,
-      employerName: PropTypes.string,
-      textAuthOptOut: PropTypes.bool,
-      termsAgree: PropTypes.bool,
-      signature: PropTypes.string,
-      onlineCampaignSource: PropTypes.string
-    }),
     loading: PropTypes.bool,
-    error: PropTypes.string
+    error: PropTypes.string,
+    salesforceId: PropTypes.string
   }).isRequired,
   classes: PropTypes.object
 };
