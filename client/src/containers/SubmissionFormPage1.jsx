@@ -9,7 +9,7 @@ import { withStyles } from "@material-ui/core/styles";
 import SubmissionFormPage1Component from "../components/SubmissionFormPage1Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import validate from "../utils/validators";
-import { styles } from "../components/SubmissionFormElements";
+import { stylesPage1 } from "../components/SubmissionFormElements";
 
 // default initial values we want if salesforce doesn't provide useful data
 const initialValues = {
@@ -110,7 +110,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 // add MUI styles and faked lifecycle methods
-export default withStyles(styles)(
+export default withStyles(stylesPage1)(
   lifecycle(methods)(
     connect(
       mapStateToProps,

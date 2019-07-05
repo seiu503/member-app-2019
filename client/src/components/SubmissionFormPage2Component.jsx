@@ -16,9 +16,6 @@ import ButtonWithSpinner from "./ButtonWithSpinner";
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
-const monthList = formElements.monthList;
-const dateOptions = formElements.dateOptions;
-const yearOptions = formElements.yearOptions;
 
 class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
@@ -89,24 +86,24 @@ class SubmissionFormPage2Component extends React.Component {
     };
 
     const body = {
-      mail_to_city: mailToCity,
-      mail_to_state: mailToState,
-      mail_to_street: mailToStreet,
-      mail_to_postal_code: mailToPostalCode,
-      ethnicity: ethnicity(),
-      lgbtq_id: lgbtqId,
-      trans_id: transId,
-      disability_id: disabilityId,
-      deaf_or_hard_of_hearing: deafOrHardOfHearing,
-      blind_or_visually_impaired: blindOrVisuallyImpaired,
-      gender: gender,
-      gender_other_description: genderOtherDescription,
-      gender_pronoun: genderPronoun,
-      job_title: jobTitle,
-      hire_date: hireDate,
-      worksite: worksite,
-      work_email: workEmail,
-      work_phone: workPhone
+      mail_to_city: mailToCity || null,
+      mail_to_state: mailToState || null,
+      mail_to_street: mailToStreet || null,
+      mail_to_postal_code: mailToPostalCode || null,
+      ethnicity: ethnicity() || null,
+      lgbtq_id: lgbtqId || null,
+      trans_id: transId || null,
+      disability_id: disabilityId || null,
+      deaf_or_hard_of_hearing: deafOrHardOfHearing || null,
+      blind_or_visually_impaired: blindOrVisuallyImpaired || null,
+      gender: gender || null,
+      gender_other_description: genderOtherDescription || null,
+      gender_pronoun: genderPronoun || null,
+      job_title: jobTitle || null,
+      hire_date: hireDate || null,
+      worksite: worksite || null,
+      work_email: workEmail || null,
+      work_phone: workPhone || null
     };
 
     console.log("SUBMISSION BODY", body);
@@ -398,7 +395,6 @@ class SubmissionFormPage2Component extends React.Component {
               name="firstName"
               id="firstName"
               type="text"
-              required={true}
               classes={this.classes}
               component={this.renderTextField}
             />
@@ -406,7 +402,6 @@ class SubmissionFormPage2Component extends React.Component {
               label="Last Name"
               name="lastName"
               id="lastName"
-              required={true}
               classes={this.classes}
               type="text"
               component={this.renderTextField}
@@ -416,7 +411,6 @@ class SubmissionFormPage2Component extends React.Component {
               name="homeEmail"
               id="homeEmail"
               type="text"
-              required={true}
               classes={this.classes}
               component={this.renderTextField}
             />

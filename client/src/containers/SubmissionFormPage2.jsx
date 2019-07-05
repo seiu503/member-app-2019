@@ -9,29 +9,11 @@ import { withStyles } from "@material-ui/core/styles";
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import validate from "../utils/validators";
-import { styles } from "../components/SubmissionFormElements";
+import { stylesPage2 } from "../components/SubmissionFormElements";
 
 // default initial values we want if salesforce doesn't provide useful data
 const initialValues = {
-  mm: "",
-  mailToState: "or",
-  mail_to_city: null,
-  mail_to_street: null,
-  mail_to_postal_code: null,
-  ethnicity: null,
-  lgbtq_id: null,
-  trans_id: null,
-  disability_id: null,
-  deaf_or_hard_of_hearing: null,
-  blind_or_visually_impaired: null,
-  gender: null,
-  gender_other_description: null,
-  gender_pronoun: null,
-  job_title: null,
-  hire_date: null,
-  worksite: null,
-  work_email: null,
-  work_phone: null
+  mm: ""
 };
 
 const salesForceCheck = id => {
@@ -95,7 +77,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 // add MUI styles and faked lifecycle methods
-export default withStyles(styles)(
+export default withStyles(stylesPage2)(
   lifecycle(methods)(
     connect(
       mapStateToProps,
