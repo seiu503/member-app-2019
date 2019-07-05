@@ -41,10 +41,10 @@ export function addSubmission(body) {
     }
   };
 }
-export function updateSubmission(body) {
+export function updateSubmission(body, id) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/submission/`,
+      endpoint: `${BASE_URL}/api/submission/${id}`,
       method: "PUT",
       types: [
         ADD_SUBMISSION_REQUEST,

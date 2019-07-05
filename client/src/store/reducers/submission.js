@@ -12,6 +12,7 @@ import {
 } from "../actions/apiSubmissionActions";
 
 const INITIAL_STATE = {
+  submissionId: null,
   loading: false,
   error: null,
   formPage2SubmitSucess: false,
@@ -31,7 +32,8 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         loading: { $set: false },
-        formPage1SubmitSucess: { $set: true }
+        formPage1SubmitSucess: { $set: true },
+        submissionId: action.payload.submission_id
       });
 
     case ADD_SUBMISSION_FAILURE:

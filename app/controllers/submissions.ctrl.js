@@ -151,7 +151,7 @@ const updateSubmission = (req, res, next) => {
   }
 
   return submissions
-    .updateSubmission(id, updates)
+    .updateSubmission(updates, id)
     .then(submission => {
       if (submission.message || !submission) {
         return res.status(404).json({

@@ -106,8 +106,10 @@ class SubmissionFormPage2Component extends React.Component {
       work_phone: workPhone || null
     };
 
+    const id = this.state.submission.submissionId;
+
     return this.props.apiSubmission
-      .updateSubmission(body)
+      .updateSubmission(body, id)
       .then(result => {
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
