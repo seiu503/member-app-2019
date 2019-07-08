@@ -102,12 +102,6 @@ const createSubmission = (
  *  @returns  {Object}      Updated Submission object.
  */
 const updateSubmission = (salesforce_id, updates) => {
-  console.log(
-    "submissions.js updateSubmission called with",
-    updates,
-    "for",
-    salesforce_id
-  );
   return db(TABLES.SUBMISSIONS)
     .where({ salesforce_id })
     .first()

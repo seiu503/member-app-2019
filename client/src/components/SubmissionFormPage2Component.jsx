@@ -122,11 +122,9 @@ class SubmissionFormPage2Component extends React.Component {
 
     //HARDCODED ID FOR TESTING, DELETE ME LATER!!!!
     id = "bc9e88b7-342c-4cac-8f7c-5acc96c6401e";
-    console.log(cleanBody);
     return this.props.apiSubmission
       .updateSubmission(id, cleanBody)
       .then(result => {
-        console.log(result);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
