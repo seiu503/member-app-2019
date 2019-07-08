@@ -1,7 +1,6 @@
 import React from "react";
 import { Field } from "redux-form";
 import localIpUrl from "local-ip-url";
-import uuid from "uuid";
 import PropTypes from "prop-types";
 
 import FormLabel from "@material-ui/core/FormLabel";

@@ -278,8 +278,8 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 router.post("/submission", submissionCtrl.createSubmission);
 
 // UPDATE A SUBMISSION
-//   Example: POST >> /api/submission/
-//   Secured: yes
+//   Example: PUT >> /api/submission/:id
+//   Secured: no
 //   Expects:
 //     1) request body properties : {
 //          updates         : Object {

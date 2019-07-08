@@ -1,6 +1,5 @@
 import React from "react";
 import { Field } from "redux-form";
-import uuid from "uuid";
 import PropTypes from "prop-types";
 
 import FormLabel from "@material-ui/core/FormLabel";
@@ -8,7 +7,6 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 
 import * as formElements from "./SubmissionFormElements";
-import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 
