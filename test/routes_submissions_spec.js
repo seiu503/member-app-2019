@@ -20,7 +20,7 @@ const submissions = require("../db/models/submissions");
 const moment = require("moment");
 
 /*  Sample Data for new submission */
-const contact_id = uuid.v4();
+const salesforce_id = uuid.v4();
 const ip_address = "192.0.2.0";
 const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
@@ -61,13 +61,11 @@ const google_token = "5678";
 
 /* ================================= TESTS ================================= */
 
-let id;
-let submissionId, createdAt, updatedAt;
+let id, mySalesforce_id, submissionId, createdAt, updatedAt;
 
 chai.use(chaiHttp);
 let authenticateMock;
-let userStub, contactStub, submissionStub;
-
+let userStub;
 suite("routes : submissions", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
@@ -80,6 +78,7 @@ suite("routes : submissions", function() {
   });
 
   suite("POST /api/submission/", function() {
+    this.timeout(10000);
     const app = require("../server");
     test("creates and returns new submission", function(done) {
       chai
@@ -104,16 +103,17 @@ suite("routes : submissions", function() {
           signature,
           text_auth_opt_out,
           online_campaign_source,
-          contact_id,
           legal_language,
           maintenance_of_effort,
           seiu503_cba_app_date,
           direct_pay_auth,
           direct_deposit_auth,
-          immediate_past_member_status
+          immediate_past_member_status,
+          salesforce_id
         })
         .end(function(err, res) {
-          submissionId = res.body[0].submission_id;
+          id = res.body[0].id;
+          mySalesforce_id = res.body[0].salesforce_id;
           createdAt = res.body[0].created_at;
           updatedAt = res.body[0].updated_at;
           assert.equal(res.status, 200);
@@ -128,6 +128,85 @@ suite("routes : submissions", function() {
         .send({ fullname: "firstname lastname" })
         .end(function(err, res) {
           assert.equal(res.status, 422);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+  });
+
+  suite("PUT /api/submission/:id", function() {
+    test("updates a submission", function(done) {
+      const app = require("../server");
+      const updates = {
+        first_name: updatedFirstName,
+        text_auth_opt_out: updatedTextAuthOptOut
+      };
+      chai
+        .request(app)
+        .put(`/api/submission/${mySalesforce_id}`)
+        .send(updates)
+        .end(function(err, res) {
+          let result = res.body[0];
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.property(result, "id");
+          assert.property(result, "created_at");
+          assert.property(result, "updated_at");
+          assert.property(result, "ip_address");
+          assert.property(result, "submission_date");
+          assert.property(result, "agency_number");
+          assert.property(result, "birthdate");
+          assert.property(result, "cell_phone");
+          assert.property(result, "employer_name");
+          assert.property(result, "first_name");
+          assert.property(result, "last_name");
+          assert.property(result, "home_street");
+          assert.property(result, "home_city");
+          assert.property(result, "home_state");
+          assert.property(result, "home_zip");
+          assert.property(result, "home_email");
+          assert.property(result, "preferred_language");
+          assert.property(result, "terms_agree");
+          assert.property(result, "signature");
+          assert.property(result, "text_auth_opt_out");
+          assert.property(result, "online_campaign_source");
+          assert.property(result, "salesforce_id");
+          assert.property(result, "legal_language");
+          assert.property(result, "maintenance_of_effort");
+          assert.property(result, "seiu503_cba_app_date");
+          assert.property(result, "direct_pay_auth");
+          assert.property(result, "direct_deposit_auth");
+          assert.property(result, "immediate_past_member_status");
+          done();
+        });
+    });
+    test("returns error if submission id missing or malformed", function(done) {
+      const app = require("../server");
+      const updates = {
+        first_name: updatedFirstName,
+        employer_name: updatedEmployerName,
+        text_auth_opt_out: updatedTextAuthOptOut
+      };
+      chai
+        .request(app)
+        .put("/api/submission/123456789")
+        .send({ updates })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+    test("returns error if updates missing or malformed", function(done) {
+      const app = require("../server");
+      chai
+        .request(app)
+        .put(`/api/submission/${mySalesforce_id}`)
+        .send({ name: undefined })
+        .end(function(err, res) {
+          assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
           done();
@@ -157,8 +236,9 @@ suite("routes : submissions", function() {
       test("gets one submission by id", function(done) {
         chai
           .request(app)
-          .get(`/api/submission/${submissionId}`)
+          .get(`/api/submission/${id}`)
           .end(function(err, res) {
+            console.log(res.body);
             assert.equal(res.status, 200);
             assert.isNull(err);
             assert.property(res.body, "ip_address");
@@ -179,7 +259,7 @@ suite("routes : submissions", function() {
             assert.property(res.body, "signature");
             assert.property(res.body, "text_auth_opt_out");
             assert.property(res.body, "online_campaign_source");
-            assert.property(res.body, "contact_id");
+            assert.property(res.body, "salesforce_id");
             assert.property(res.body, "legal_language");
             assert.property(res.body, "maintenance_of_effort");
             assert.property(res.body, "seiu503_cba_app_date");
@@ -233,7 +313,7 @@ suite("routes : submissions", function() {
             );
             assert.include(arrayOfKeys("cell_phone"), cell_phone);
             assert.include(arrayOfKeys("employer_name"), employer_name);
-            assert.include(arrayOfKeys("first_name"), first_name);
+            assert.include(arrayOfKeys("first_name"), updatedFirstName);
             assert.include(arrayOfKeys("last_name"), last_name);
             assert.include(arrayOfKeys("home_street"), home_street);
             assert.include(arrayOfKeys("home_city"), home_city);
@@ -246,12 +326,15 @@ suite("routes : submissions", function() {
             );
             assert.include(arrayOfKeys("terms_agree"), terms_agree);
             assert.include(arrayOfKeys("signature"), signature);
-            assert.include(arrayOfKeys("text_auth_opt_out"), text_auth_opt_out);
+            assert.include(
+              arrayOfKeys("text_auth_opt_out"),
+              updatedTextAuthOptOut
+            );
             assert.include(
               arrayOfKeys("online_campaign_source"),
               online_campaign_source
             );
-            assert.include(arrayOfKeys("contact_id"), contact_id);
+            assert.include(arrayOfKeys("salesforce_id"), salesforce_id);
             assert.include(arrayOfKeys("legal_language"), legal_language);
             assert.include(
               arrayOfKeys("maintenance_of_effort").toString(),
@@ -290,95 +373,6 @@ suite("routes : submissions", function() {
       });
     });
 
-    suite("PUT /api/submission/:id", function() {
-      beforeEach(() => {
-        const user = [{ name, email, avatar_url, google_token, google_id }];
-        userStub = sinon.stub(users, "createUser").resolves(user);
-        authenticateMock.yields(null, { id: 1 });
-      });
-      afterEach(() => {
-        userStub.restore();
-      });
-
-      test("updates a submission", function(done) {
-        const app = require("../server");
-        const updates = {
-          first_name: updatedFirstName,
-          employer_name: updatedEmployerName,
-          text_auth_opt_out: updatedTextAuthOptOut
-        };
-        chai
-          .request(app)
-          .put(`/api/submission/${submissionId}`)
-          .send({ updates })
-          .end(function(err, res) {
-            let result = res.body[0];
-            assert.equal(res.status, 200);
-            assert.isNull(err);
-            assert.property(result, "submission_id");
-            assert.property(result, "created_at");
-            assert.property(result, "updated_at");
-            assert.property(result, "ip_address");
-            assert.property(result, "submission_date");
-            assert.property(result, "agency_number");
-            assert.property(result, "birthdate");
-            assert.property(result, "cell_phone");
-            assert.property(result, "employer_name");
-            assert.property(result, "first_name");
-            assert.property(result, "last_name");
-            assert.property(result, "home_street");
-            assert.property(result, "home_city");
-            assert.property(result, "home_state");
-            assert.property(result, "home_zip");
-            assert.property(result, "home_email");
-            assert.property(result, "preferred_language");
-            assert.property(result, "terms_agree");
-            assert.property(result, "signature");
-            assert.property(result, "text_auth_opt_out");
-            assert.property(result, "online_campaign_source");
-            assert.property(result, "contact_id");
-            assert.property(result, "legal_language");
-            assert.property(result, "maintenance_of_effort");
-            assert.property(result, "seiu503_cba_app_date");
-            assert.property(result, "direct_pay_auth");
-            assert.property(result, "direct_deposit_auth");
-            assert.property(result, "immediate_past_member_status");
-            done();
-          });
-      });
-      test("returns error if submission id missing or malformed", function(done) {
-        const app = require("../server");
-        const updates = {
-          first_name: updatedFirstName,
-          employer_name: updatedEmployerName,
-          text_auth_opt_out: updatedTextAuthOptOut
-        };
-        chai
-          .request(app)
-          .put("/api/submission/123456789")
-          .send({ updates })
-          .end(function(err, res) {
-            assert.equal(res.status, 500);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
-      test("returns error if updates missing or malformed", function(done) {
-        const app = require("../server");
-        chai
-          .request(app)
-          .put(`/api/submission/${submissionId}`)
-          .send({ name: undefined })
-          .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
-            done();
-          });
-      });
-    });
-
     suite("DELETE", function() {
       beforeEach(() => {
         const user = [{ name, email, avatar_url, google_token, google_id }];
@@ -392,7 +386,7 @@ suite("routes : submissions", function() {
         const app = require("../server");
         chai
           .request(app)
-          .delete(`/api/submission/${submissionId}`)
+          .delete(`/api/submission/${id}`)
           .end(function(err, res) {
             assert.equal(res.body.message, "Submission deleted successfully");
             assert.isNull(err);

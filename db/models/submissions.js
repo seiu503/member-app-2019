@@ -26,7 +26,7 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {String}   Signature              URL of signature image
  *  @param    {Boolean}  text_auth_opt_out      Text authorization opt out
  *  @param    {String}   online_campaign_source Online campaign source
- *  @param    {String}   contact_id             Contact id
+ *  @param    {String}   salesforce_id             salesforce id
  *  @param    {String}   legal_language         Dynamic dump of html legal language on form at time of submision
  *  @param    {Date}  maintenance_of_effort     Date of submission; confirmation of MOE checkbox
  *  @param    {Date}   seiu503_cba_app_date     Date of submission; confirmation of submitting membership form
@@ -97,7 +97,7 @@ const createSubmission = (
 };
 
 /** Update a Submission
- *  @param    {String}   submission_id             The id of the submission to update.
+ *  @param    {String}   salesforce_id             The id of the submission to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
@@ -119,13 +119,13 @@ const getSubmissions = () => {
 };
 
 /** Find Submission by id
- *  @param    {String}   submission_id   The id of the Submission to delete.
+ *  @param    {String}   id   The id of the Submission to delete.
  *  @returns  {Object}                   Submission Object.
  */
 
-const getSubmissionById = submission_id => {
+const getSubmissionById = id => {
   return db(TABLES.SUBMISSIONS)
-    .where({ submission_id })
+    .where({ id })
     .first()
     .returning("*");
 };
@@ -143,13 +143,13 @@ const getSubmissionsBySalesforceId = salesforce_id => {
 };
 
 /** Delete Submission
- *  @param    {String}   submission_id   The id of the Submission to delete.
+ *  @param    {String}   id   The id of the Submission to delete.
  *  @returns  success message
  */
 
-const deleteSubmission = submission_id => {
+const deleteSubmission = id => {
   return db(TABLES.SUBMISSIONS)
-    .where({ submission_id })
+    .where({ id })
     .del()
     .then(() => {
       // then return success message to client
