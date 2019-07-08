@@ -101,9 +101,15 @@ const createSubmission = (
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = (submission_id, updates) => {
+const updateSubmission = (salesforce_id, updates) => {
+  console.log(
+    "submissions.js updateSubmission called with",
+    updates,
+    "for",
+    salesforce_id
+  );
   return db(TABLES.SUBMISSIONS)
-    .where({ submission_id })
+    .where({ salesforce_id })
     .first()
     .update(updates)
     .update("updated_at", db.fn.now())

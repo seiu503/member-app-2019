@@ -32,7 +32,7 @@ const salesForceCheck = id => {
     Home_Street__c: "SF homeStreet",
     Home_City__c: "SF homeCity",
     Home_State__c: "OR",
-    Home_Zip__c: 11111,
+    Home_Zip__c: "11111",
     Home_Email__c: "SFemail@fake.com",
     Preferred_Language__c: "english",
     id

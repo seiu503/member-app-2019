@@ -144,14 +144,21 @@ const createSubmission = async (req, res, next) => {
  *  @returns  {Object}      Updated Submission object.
  */
 const updateSubmission = (req, res, next) => {
-  const { updates } = req.body;
+  const updates = req.body;
   const { id } = req.params;
+  console.log(req.body);
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
   }
+  console.log(
+    "submission.ctrl.js updateSubmission called with",
+    updates,
+    "for",
+    id
+  );
 
   return submissions
-    .updateSubmission(updates, id)
+    .updateSubmission(id, updates)
     .then(submission => {
       if (submission.message || !submission) {
         return res.status(404).json({
