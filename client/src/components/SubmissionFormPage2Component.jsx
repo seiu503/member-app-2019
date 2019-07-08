@@ -137,6 +137,7 @@ class SubmissionFormPage2Component extends React.Component {
         } else {
           openSnackbar("success", "Your information was updated!");
           this.props.reset("submissionsubmissionPage2");
+          this.props.history.push(`/thankyou`);
         }
       })
       .catch(err => openSnackbar("error", err));

@@ -13,6 +13,7 @@ import * as apiContentActions from "./store/actions/apiContentActions";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
+import ThankYou from "./components/FormThankYou";
 import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
@@ -168,6 +169,17 @@ export class App extends Component {
               render={routeProps => (
                 <SubmissionFormPage2
                   setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/thankyou"
+              render={routeProps => (
+                <ThankYou
+                  setRedirect={this.setRedirect}
+                  classes={this.props.classes}
                   {...routeProps}
                 />
               )}
