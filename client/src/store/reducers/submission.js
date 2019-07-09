@@ -26,13 +26,17 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case ADD_SUBMISSION_SUCCESS:
+      console.log(action.payload);
+      console.log(action.payload.mm);
+      console.log(action.payload.birthdate);
+      console.log(moment(action.payload.birthdate).format("MM"));
       return update(state, {
         loading: { $set: false },
         formPage1: {
           mm: { $set: moment(action.payload.birthdate).format("MM") },
           dd: { $set: moment(action.payload.birthdate).format("DD") },
-          yy: { $set: moment(action.payload.birthdate).format("YYYY") },
-          cellPhone: { $set: action.payload.cell_phone },
+          yyyy: { $set: moment(action.payload.birthdate).format("YYYY") },
+          mobilePhone: { $set: action.payload.cell_phone },
           employerName: { $set: action.payload.employer_name },
           firstName: { $set: action.payload.first_name },
           lastName: { $set: action.payload.last_name },
