@@ -8,6 +8,8 @@
 # testing
 /coverage
 /output
+/coverage.data
+.nyc_output
 
 # production
 /build
