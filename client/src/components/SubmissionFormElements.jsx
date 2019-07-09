@@ -122,7 +122,7 @@ export const dateOptions = props => {
 export const yearOptions = () => {
   let years = [];
   for (
-    let i = new Date().getFullYear() - 110;
+    let i = new Date().getFullYear() - 109;
     i <= new Date().getFullYear();
     i++
   ) {
