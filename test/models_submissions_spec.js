@@ -9,15 +9,13 @@ const uuid = require("uuid");
 
 const { assert } = require("chai");
 const moment = require("moment");
-const sinon = require("sinon");
-const passport = require("passport");
 const { db, TABLES } = require("../app/config/knex");
 const submissions = require("../db/models/submissions");
 const users = require("../db/models/users");
 const utils = require("../app/utils");
 
 /*  Sample Data for new Submission */
-const contact_id = uuid.v4();
+const salesforce_id = uuid.v4();
 const ip_address = "192.0.2.0";
 const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
@@ -59,7 +57,7 @@ const google_token = "5678";
 /* ================================= TESTS ================================= */
 
 let id;
-let submissionId;
+let mysalesforce_id;
 
 describe("submissions model tests", () => {
   before(() => {
@@ -93,13 +91,13 @@ describe("submissions model tests", () => {
         signature,
         text_auth_opt_out,
         online_campaign_source,
-        contact_id,
         legal_language,
         maintenance_of_effort,
         seiu503_cba_app_date,
         direct_pay_auth,
         direct_deposit_auth,
-        immediate_past_member_status
+        immediate_past_member_status,
+        salesforce_id
       )
       .then(result => {
         assert.deepEqual(result[0].ip_address, ip_address);
@@ -129,7 +127,7 @@ describe("submissions model tests", () => {
           result[0].online_campaign_source,
           online_campaign_source
         );
-        assert.deepEqual(result[0].contact_id, contact_id);
+        assert.deepEqual(result[0].salesforce_id, salesforce_id);
         assert.deepEqual(result[0].legal_language, legal_language);
         assert.deepEqual(
           moment(result[0].maintenance_of_effort),
@@ -151,7 +149,8 @@ describe("submissions model tests", () => {
           result[0].immediate_past_member_status,
           immediate_past_member_status
         );
-        submissionId = result[0].submission_id;
+        id = result[0].id;
+        mysalesforce_id = result[0].salesforce_id;
         return db.select("*").from(TABLES.SUBMISSIONS);
       })
       .then(([result]) => {
@@ -179,7 +178,7 @@ describe("submissions model tests", () => {
         assert.equal(result.signature, signature);
         assert.equal(result.text_auth_opt_out, text_auth_opt_out);
         assert.equal(result.online_campaign_source, online_campaign_source);
-        assert.equal(result.contact_id, contact_id);
+        assert.equal(result.salesforce_id, salesforce_id);
         assert.equal(result.legal_language, legal_language);
         assert.equal(
           moment(result.maintenance_of_effort).format(),
@@ -201,6 +200,21 @@ describe("submissions model tests", () => {
           result.immediate_past_member_status,
           immediate_past_member_status
         );
+      });
+  });
+  it("PUT updates a submission", () => {
+    const updates = {
+      first_name: updatedFirstName,
+      employer_name: updatedEmployerName,
+      text_auth_opt_out: updatedTextAuthOptOut
+    };
+    return submissions
+      .updateSubmission(salesforce_id, updates)
+      .then(results => {
+        assert.equal(results[0].first_name, updatedFirstName);
+        assert.equal(results[0].employer_name, updatedEmployerName);
+        assert.equal(results[0].text_auth_opt_out, updatedTextAuthOptOut);
+        assert.isAbove(results[0].updated_at, results[0].created_at);
       });
   });
 
@@ -230,27 +244,12 @@ describe("submissions model tests", () => {
     //   passport.authenticate.restore();
     // });
 
-    it("PUT updates a submission", () => {
-      const updates = {
-        first_name: updatedFirstName,
-        employer_name: updatedEmployerName,
-        text_auth_opt_out: updatedTextAuthOptOut
-      };
-      return submissions
-        .updateSubmission(submissionId, updates)
-        .then(results => {
-          assert.equal(results[0].first_name, updatedFirstName);
-          assert.equal(results[0].employer_name, updatedEmployerName);
-          assert.equal(results[0].text_auth_opt_out, updatedTextAuthOptOut);
-          assert.isAbove(results[0].updated_at, results[0].created_at);
-        });
-    });
-
     it("GET gets all submissions", () => {
       return submissions.getSubmissions().then(results => {
         const arrayOfKeys = key => results.map(obj => obj[key]);
         assert.equal(Array.isArray(results), true);
-        assert.include(arrayOfKeys("submission_id"), submissionId);
+        assert.include(arrayOfKeys("salesforce_id"), salesforce_id);
+        assert.include(arrayOfKeys("id"), id);
         assert.include(arrayOfKeys("ip_address"), ip_address);
         assert.include(
           arrayOfKeys("submission_date").toString(),
@@ -281,8 +280,9 @@ describe("submissions model tests", () => {
     });
 
     it("GET gets one submission by id", () => {
-      return submissions.getSubmissionById(submissionId).then(result => {
-        assert.equal(result.submission_id, submissionId);
+      return submissions.getSubmissionById(id).then(result => {
+        assert.equal(result.id, id);
+        assert.equal(result.salesforce_id, salesforce_id);
         assert.equal(result.ip_address, ip_address);
         assert.equal(result.submission_date.toString(), submission_date);
         assert.equal(result.birthdate.toString(), birthdate);
@@ -311,7 +311,7 @@ describe("submissions model tests", () => {
     });
 
     it("DELETE deletes a submission", () => {
-      return submissions.deleteSubmission(submissionId).then(result => {
+      return submissions.deleteSubmission(id).then(result => {
         assert.equal(result.message, "Submission deleted successfully");
       });
     });

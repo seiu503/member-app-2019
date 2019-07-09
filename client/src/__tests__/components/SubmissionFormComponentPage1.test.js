@@ -6,7 +6,7 @@ import {
   generateSampleSubmission,
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormComponent from "../../components/SubmissionFormComponent";
+import SubmissionFormPage1Component from "../../components/SubmissionFormPage1Component";
 import * as Notifier from "../../containers/Notifier";
 
 // variables
@@ -43,7 +43,7 @@ const defaultProps = {
   handleSubmit
 };
 
-describe("Unconnected <SubmissionForm />", () => {
+describe("Unconnected <SubmissionFormPage1 />", () => {
   // assigning handlesubmit as a callback so it can be passed form's obSubmit assignment or our own test function
   // gain access to touched and error to test validation
   // will assign our own test functions to replace action/reducers for apiSubmission prop
@@ -57,7 +57,7 @@ describe("Unconnected <SubmissionForm />", () => {
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
-    return shallow(<SubmissionFormComponent {...setUpProps} />);
+    return shallow(<SubmissionFormPage1Component {...setUpProps} />);
   };
 
   // smoke test and making sure we have access to correct props
@@ -69,7 +69,10 @@ describe("Unconnected <SubmissionForm />", () => {
     });
 
     it("renders without error", () => {
-      const component = findByTestAttr(wrapper, "component-submissionform");
+      const component = findByTestAttr(
+        wrapper,
+        "component-submissionformpage1"
+      );
       expect(component.length).toBe(1);
     });
     it("has access to `submission error` prop", () => {

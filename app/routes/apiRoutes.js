@@ -279,7 +279,7 @@ router.post("/submission", submissionCtrl.createSubmission);
 
 // UPDATE A SUBMISSION
 //   Example: PUT >> /api/submission/:id
-//   Secured: yes
+//   Secured: no
 //   Expects:
 //     1) request body properties : {
 //          updates         : Object {
@@ -294,8 +294,8 @@ router.post("/submission", submissionCtrl.createSubmission);
 //      }
 //   Returns: JSON updated submission object on success.
 //
-// router.put("/submission/:id", submissionCtrl.updateSubmission);
-router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
+router.put("/submission/:id", submissionCtrl.updateSubmission);
+// router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
 //   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
