@@ -8,7 +8,7 @@ import {
   CLEAR_FORM
 } from "../actions/apiSubmissionActions";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   loading: false,
   error: null,
   formPage1: {},
@@ -29,9 +29,9 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         loading: { $set: false },
         formPage1: {
-          mm: { $set: moment(action.payload.birthdate).format("mm") },
-          dd: { $set: moment(action.payload.birthdate).format("dd") },
-          yy: { $set: moment(action.payload.birthdate).format("yyyy") },
+          mm: { $set: moment(action.payload.birthdate).format("MM") },
+          dd: { $set: moment(action.payload.birthdate).format("DD") },
+          yy: { $set: moment(action.payload.birthdate).format("YYYY") },
           cellPhone: { $set: action.payload.cell_phone },
           employerName: { $set: action.payload.employer_name },
           firstName: { $set: action.payload.first_name },
@@ -45,7 +45,8 @@ function Submission(state = INITIAL_STATE, action) {
           termsAgree: { $set: action.payload.terms_agree },
           signature: { $set: action.payload.signature },
           textAuthOptOut: { $set: action.payload.text_auth_opt_out }
-        }
+        },
+        error: { $set: null }
       });
 
     case ADD_SUBMISSION_FAILURE:
@@ -54,7 +55,6 @@ function Submission(state = INITIAL_STATE, action) {
       } else {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
-      console.log(error);
       return update(state, {
         loading: { $set: false },
         error: { $set: error }
