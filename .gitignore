@@ -5,3 +5,4 @@ node_modules/
 .gitconfig
 .vscode/
 **/.DS_Store
+.nyc_output/
