@@ -15,13 +15,6 @@ const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
 
 describe("apiSubmissionActions", () => {
-  it("should create an action to clear the form", () => {
-    const expectedAction = {
-      type: "CLEAR_FORM"
-    };
-    expect(actions.clearForm()).toEqual(expectedAction);
-  });
-
   describe("api actions", () => {
     afterEach(() => {
       nock.cleanAll();

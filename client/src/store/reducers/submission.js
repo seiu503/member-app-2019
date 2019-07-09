@@ -28,10 +28,6 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case ADD_SUBMISSION_SUCCESS:
-      console.log(action.payload);
-      console.log(action.payload.mm);
-      console.log(action.payload.birthdate);
-      console.log(moment(action.payload.birthdate).format("MM"));
       return update(state, {
         loading: { $set: false },
         formPage1: {
