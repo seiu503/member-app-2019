@@ -6,7 +6,7 @@ import { findByTestAttr, storeFactory } from "../utils/testUtils";
 import { AppConnected, AppUnconnected } from "../App";
 import { validateToken } from "../store/actions/apiProfileActions";
 
-import SubmissionForm from "../containers/SubmissionForm";
+import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
 import Dashboard from "../containers/Dashboard";
 import NotFound from "../components/NotFound";
 // import ContentLibrary from "../containers/ContentLibrary";
@@ -157,16 +157,16 @@ describe("<App />", () => {
     });
     test("invalid path should render NotFound component", () => {
       wrapper = routeSetup("/random");
-      expect(wrapper.find(SubmissionForm)).toHaveLength(0);
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(NotFound)).toHaveLength(1);
     });
     test(' "/" path should render SubmissionForm component', () => {
       wrapper = routeSetup("/");
-      expect(wrapper.find(SubmissionForm)).toHaveLength(1);
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(1);
     });
     test(' "/admin" path should render Dashboard component', () => {
       wrapper = routeSetup("/admin");
-      expect(wrapper.find(SubmissionForm)).toHaveLength(0);
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(Dashboard)).toHaveLength(1);
     });
     // test(' "/library" path should render ContentLibrary component', () => {
@@ -183,12 +183,12 @@ describe("<App />", () => {
     // });
     test(' "/new" path should render TextInputForm component', () => {
       wrapper = routeSetup("/new");
-      expect(wrapper.find(SubmissionForm)).toHaveLength(0);
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
     });
     test(' "/edit" path should render TextInputForm component', () => {
       wrapper = routeSetup("/edit/1234");
-      expect(wrapper.find(SubmissionForm)).toHaveLength(0);
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
     });
     // test(' "/logout" path should render Logout component', () => {

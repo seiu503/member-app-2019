@@ -130,7 +130,7 @@ const createSubmission = async (req, res, next) => {
       return res.status(500).json({
         message:
           createSubmissionResult.message ||
-          "There was an error creating submission"
+          "There was an error saving the submission"
       });
     } else {
       return res.status(200).json(createSubmissionResult);

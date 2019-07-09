@@ -10,7 +10,7 @@ import {
   GET_PROFILE_FAILURE
 } from "../actions/apiProfileActions";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   loading: false,
   profile: {
     id: "",
@@ -50,16 +50,12 @@ function profile(state = INITIAL_STATE, action) {
 
     case VALIDATE_TOKEN_FAILURE:
     case GET_PROFILE_FAILURE:
-      console.log(action.type);
-      console.log(action.payload);
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
-      console.log(error);
       return update(state, {
-        spinnerClass: { $set: "spinner__hide" },
         error: { $set: error }
       });
 
