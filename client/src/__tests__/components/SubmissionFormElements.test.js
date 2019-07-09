@@ -1,7 +1,9 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 
 import * as formElements from "../../components/SubmissionFormElements";
+import { checkProps } from "../../utils/testUtils";
+
 const {
   getMaxDay,
   dateOptions,
@@ -66,29 +68,187 @@ describe("Helper Functions", () => {
   });
 });
 
+const onChange = jest.fn();
+const onClick = jest.fn();
 describe("Input Field Render functions", () => {
+  afterEach(() => {
+    onChange.mockRestore();
+  });
   describe("renderTextField", () => {
-    it("returns an textField with correct attributes", () => {});
+    let wrapper;
 
-    it("provides helperText and error class when touched and errored", () => {});
+    const initialProps = {
+      input: {
+        name: "testField",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: "Test Value"
+      },
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testInputClass"
+      },
+      label: "Test Field"
+    };
 
-    it("sets value on input", () => {});
+    const errorProps = {
+      input: {
+        name: "testField",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: ""
+      },
+      meta: {
+        touched: true,
+        error: "Required"
+      },
+      classes: {
+        input: "testInputClass"
+      },
+      label: "Test Field"
+    };
+
+    wrapper = shallow(renderTextField(initialProps));
+
+    it("renders without errors", () => {
+      expect(wrapper.find(`[data-test="component-text-field"]`)).toHaveLength(
+        1
+      );
+    });
+    it("fills the input with a default value", () => {
+      expect(
+        wrapper.find(`[data-test="component-text-field"]`).prop("name")
+      ).toBe("testField");
+      expect(
+        wrapper.find(`[data-test="component-text-field"]`).prop("value")
+      ).toBe("Test Value");
+    });
+    it("updates input value when changed", () => {
+      const event = { target: { value: "Test" } };
+      wrapper
+        .find(`[data-test="component-text-field"]`)
+        .simulate("change", event);
+      expect(onChange).toHaveBeenCalledWith(event);
+    });
+    it("provides helperText and error class when touched and errored", () => {
+      wrapper = shallow(renderTextField(errorProps));
+      expect(
+        wrapper.find(`[data-test="component-text-field"]`).prop("error")
+      ).toBe("Required");
+      expect(
+        wrapper.find(`[data-test="component-text-field"]`).prop("helperText")
+      ).toBe("Required");
+    });
+    it("it doesn't throw PropType warnings", () => {
+      checkProps(renderTextField, initialProps);
+    });
   });
 
   describe("renderSelect", () => {
-    it("returns a select with correct attributes", () => {});
+    let wrapper;
 
-    it("populates options correctly", () => {});
+    const initialProps = {
+      input: {
+        name: "testField",
+        onBlur: jest.fn(),
+        onChange,
+        onClick,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: "1"
+      },
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testInputClass"
+      },
+      label: "Test Select",
+      options: ["", "1", "2", "3"]
+    };
 
-    it("provides helperText and error class when touched and errored", () => {});
+    wrapper = shallow(renderSelect(initialProps));
 
-    it("sets value on input", () => {});
+    it("renders without errors", () => {
+      expect(wrapper.find(`[data-test="component-select"]`)).toHaveLength(1);
+    });
+    it("fills the input with a default value", () => {
+      expect(wrapper.find(`[data-test="component-select"]`).prop("value")).toBe(
+        "1"
+      );
+    });
+    it("populates with options", () => {
+      expect(wrapper.find("option")).toHaveLength(4);
+    });
+    it("updates input value when changed", () => {
+      const event = { target: { value: "3" } };
+      wrapper.find(`[data-test="component-select"]`).simulate("change", event);
+      expect(onChange).toHaveBeenCalledWith(event);
+    });
+    it("it doesn't throw PropType warnings", () => {
+      checkProps(renderSelect, initialProps);
+    });
   });
 
   describe("renderCheckbox", () => {
-    it("returns a checkbox with correct attributes", () => {});
+    let wrapper;
 
-    it("provides helperText and error class when touched and errored", () => {});
-    it("sets value on input", () => {});
+    const initialProps = {
+      input: {
+        name: "testCheckbox",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: false
+      },
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testCheckboxClass"
+      },
+      label: "Test Field"
+    };
+
+    wrapper = mount(renderCheckbox(initialProps));
+
+    it("renders without errors", () => {
+      expect(
+        wrapper.find(`[data-test="component-checkbox"]`).first()
+      ).toHaveLength(1);
+    });
+
+    it("fills the input with a default value", () => {
+      expect(
+        wrapper
+          .find(`[data-test="component-checkbox"]`)
+          .first()
+          .prop("checked")
+      ).toBe(false);
+    });
+
+    it("updates input value when changed", () => {
+      const checkEvent = { target: { value: true } };
+      wrapper.find(`[data-test="component-checkbox"]`).simulate("click");
+      expect(onClick.mock.calls).toBe(10);
+    });
+
+    it("it doesn't throw PropType warnings", () => {
+      checkProps(renderCheckbox, initialProps);
+    });
   });
 });
