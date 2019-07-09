@@ -548,7 +548,7 @@ const submissionsTableFields = {
     SFAPIName: "Birthdate__c",
     SFDataType: "Date",
     SQLDataType: "Date",
-    testingSample: "new Date("
+    testingSample: new Date("01/01/2001")
   },
   cell_phone: {
     oldFormPage: "none",
@@ -833,26 +833,53 @@ const generateSampleSubmission = () => {
   });
   return sampleData;
 };
+const requiredFields = [
+  "firstName",
+  "lastName",
+  "dd",
+  "mm",
+  "yyyy",
+  "preferredLanguage",
+  "homeStreet",
+  "homeZip",
+  "homeState",
+  "homeCity",
+  "homeEmail",
+  "cellPhone",
+  "employerName",
+  "agencyNumber",
+  "termsAgree",
+  "signature"
+];
+const generateSampleSubmissionFrontEnd = () => {
+  const sampleData = {};
+  sampleData.submission_id = uuid.v4();
+  Object.keys(submissionsTableFields).map(function(key, index) {
+    if (requiredFields.includes(submissionsTableFields[key].clientFieldName)) {
+      let clientFieldName = submissionsTableFields[key].postgresFieldName;
+      sampleData[clientFieldName] = submissionsTableFields[key].testingSample;
+    }
+  });
+  sampleData.dd = "01";
+  sampleData.mm = "01";
+  sampleData.yyyy = "2001";
+  sampleData.termsAgree = true;
+  // console.log(sampleData.homeZip);
+  // console.log(sampleData.homePostalCode);
+  console.log(sampleData.home_zip);
+  // console.log(sampleData.home_postal_code);
+  console.log(sampleData.cell_phone);
+  // console.log(sampleData.cellPhone);
+  // console.log(sampleData.mobile_phone);
+  // console.log(sampleData.mobilePhone);
+  // sampleData.homePostalCode = sampleData.home_zip;
+  // sampleData.mobilePhone = sampleData.cell_phone;
+  // delete sampleData.home_zip;
+  // delete sampleData.cell_phone;
+  return sampleData;
+};
 const generateSampleValidate = () => {
   const sampleData = {};
-  const requiredFields = [
-    "firstName",
-    "lastName",
-    "dd",
-    "mm",
-    "yyyy",
-    "preferredLanguage",
-    "homeStreet",
-    "homeZip",
-    "homeState",
-    "homeCity",
-    "homeEmail",
-    "cellPhone",
-    "employerName",
-    "agencyNumber",
-    "termsAgree",
-    "signature"
-  ];
   Object.keys(submissionsTableFields).map(function(key, index) {
     if (requiredFields.includes(submissionsTableFields[key].clientFieldName)) {
       let clientFieldName = submissionsTableFields[key].clientFieldName;
@@ -874,5 +901,6 @@ module.exports = {
   contactsTableFields,
   submissionsTableFields,
   generateSampleSubmission,
+  generateSampleSubmissionFrontEnd,
   generateSampleValidate
 };

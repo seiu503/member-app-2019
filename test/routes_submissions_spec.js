@@ -44,7 +44,35 @@ const maintenance_of_effort = submission_date;
 const seiu503_cba_app_date = submission_date;
 const direct_pay_auth = submission_date;
 const direct_deposit_auth = submission_date;
-const immediate_past_member_status = "In Good Standing";
+const immediate_past_member_status = "Member";
+
+export const submissionBody = {
+  ip_address,
+  submission_date,
+  agency_number,
+  birthdate,
+  cell_phone,
+  employer_name,
+  first_name,
+  last_name,
+  home_street,
+  home_city,
+  home_state,
+  home_zip,
+  home_email,
+  preferred_language,
+  terms_agree,
+  signature,
+  text_auth_opt_out,
+  online_campaign_source,
+  contact_id,
+  legal_language,
+  maintenance_of_effort,
+  seiu503_cba_app_date,
+  direct_pay_auth,
+  direct_deposit_auth,
+  immediate_past_member_status
+};
 
 /*  Sample Data for submission info updates */
 const updatedFirstName = `updatedFirstName ${utils.randomText()}`;
@@ -85,33 +113,7 @@ suite("routes : submissions", function() {
       chai
         .request(app)
         .post("/api/submission/")
-        .send({
-          ip_address,
-          submission_date,
-          agency_number,
-          birthdate,
-          cell_phone,
-          employer_name,
-          first_name,
-          last_name,
-          home_street,
-          home_city,
-          home_state,
-          home_zip,
-          home_email,
-          preferred_language,
-          terms_agree,
-          signature,
-          text_auth_opt_out,
-          online_campaign_source,
-          contact_id,
-          legal_language,
-          maintenance_of_effort,
-          seiu503_cba_app_date,
-          direct_pay_auth,
-          direct_deposit_auth,
-          immediate_past_member_status
-        })
+        .send(submissionBody)
         .end(function(err, res) {
           submissionId = res.body[0].submission_id;
           createdAt = res.body[0].created_at;
