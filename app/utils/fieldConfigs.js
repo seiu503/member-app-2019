@@ -885,11 +885,21 @@ const generateSampleValidate = () => {
   delete sampleData.cellPhone;
   return sampleData;
 };
+const generateSFContactFieldList = () => {
+  const fieldList = [];
+  Object.keys(contactsTableFields).map(function(key, index) {
+    if (contactsTableFields[key].SFTable === "Worker (Contact)") {
+      fieldList.push(contactsTableFields[key].SFAPIName);
+    }
+  });
+  return fieldList;
+};
 
 module.exports = {
   contactsTableFields,
   submissionsTableFields,
   generateSampleSubmission,
   generateSampleSubmissionFrontEnd,
-  generateSampleValidate
+  generateSampleValidate,
+  generateSFContactFieldList
 };

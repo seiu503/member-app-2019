@@ -14,6 +14,7 @@ const authCtrl = require("../controllers/auth.ctrl");
 const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
+const sfCtrl = require("../controllers/sf.ctrl");
 
 /* =========================== ROUTE MIDDLEWARE ============================ */
 
@@ -328,6 +329,19 @@ router.get("/submission/", requireAuth, submissionCtrl.getSubmissions);
 //
 // router.delete("/submission/:id", submissionCtrl.deleteSubmission);
 router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
+
+/* =========================== SALESFORCE ROUTES =========================== */
+
+// GET ONE SALESFORCE CONTACT RECORD BY ID
+//   Example: GET >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON selected fields from salesforce contact object on success.
+//
+router.get("/sf/:id", sfCtrl.getSFContactById);
 
 /* ================================ EXPORT ================================= */
 
