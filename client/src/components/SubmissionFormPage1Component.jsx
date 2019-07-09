@@ -53,6 +53,7 @@ class SubmissionFormPage1Component extends React.Component {
       salesforceId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
+    const legalLanguage = this.legal_language.textContent.toString();
 
     const body = {
       ip_address: localIpUrl(),
@@ -73,7 +74,7 @@ class SubmissionFormPage1Component extends React.Component {
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: "HARD CODED",
-      legal_language: this.legal_language.textContent.toString(),
+      legal_language: legalLanguage,
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
       direct_pay_auth: null,
