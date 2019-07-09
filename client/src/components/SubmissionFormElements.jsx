@@ -12,6 +12,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 
 // hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
 export const stateList = [
+  "",
   "AL",
   "AK",
   "AZ",
@@ -79,6 +80,14 @@ export const monthList = [
   "12"
 ];
 export const languageOptions = ["English", "Russian", "Spanish"];
+export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
+export const genderPronounOptions = [
+  "",
+  "She/Her/Hers",
+  "He/Him/His",
+  "They/Them/Their(s)",
+  "Other"
+];
 
 // switch helper for dateOptions
 export const getMaxDay = month => {
@@ -96,7 +105,7 @@ export const getMaxDay = month => {
 };
 // function to adjust date select based on mm value
 export const dateOptions = props => {
-  const mm = props.formValues.mm;
+  const mm = props.formValues.mm || props.formValues.hiremm;
   const max = getMaxDay(mm);
   let dates = [];
   for (let i = 1; i <= max; i++) {
@@ -124,7 +133,7 @@ export const yearOptions = () => {
 };
 
 // MUI styles object
-export const styles = theme => ({
+export const stylesPage1 = theme => ({
   root: {
     margin: "40px 0"
   },
@@ -186,6 +195,61 @@ export const styles = theme => ({
     flexWrap: "wrap",
     justifyContent: "flex-start",
     margin: "0 0 20px"
+  }
+});
+export const stylesPage2 = theme => ({
+  root: {
+    margin: "80px 0"
+  },
+  container: {
+    padding: "80px 0 140px 0"
+  },
+  head: {
+    color: theme.palette.primary.light
+  },
+  form: {
+    maxWidth: 600,
+    margin: "auto"
+  },
+  group: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  input: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  select: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  failedText: {
+    color: "red"
+  },
+  formButton: {
+    width: "100%",
+    padding: 20,
+    margin: "0 0 40px"
+  },
+  formLabel: {
+    margin: "10px 0 10px",
+    fontSize: "20px",
+    color: "black"
+  },
+  checkboxErrorText: {
+    margin: "-10px 0 10px 0"
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    margin: "0 0 20px"
+  },
+  formHelperText: {
+    margin: "0 0 10px",
+    fontSize: "15px"
   }
 });
 

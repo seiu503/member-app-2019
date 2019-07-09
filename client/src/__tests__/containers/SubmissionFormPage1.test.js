@@ -9,9 +9,9 @@ import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import SubmissionForm from "../../containers/SubmissionForm";
+import SubmissionFormPage1 from "../../containers/SubmissionFormPage1";
 
-const SubmissionFormNaked = unwrap(SubmissionForm);
+const SubmissionFormPage1Naked = unwrap(SubmissionFormPage1);
 
 const defaultProps = {
   submission: {
@@ -46,7 +46,7 @@ describe("Connected Form", () => {
     };
     wrapper = mount(
       <Provider store={store}>
-        <SubmissionFormNaked {...props} />
+        <SubmissionFormPage1Naked {...props} />
       </Provider>
     );
   });
@@ -56,7 +56,7 @@ describe("Connected Form", () => {
 
   test("calls handleSubmit", () => {
     testData = generateSampleValidate();
-    const form = wrapper.find(`[id="submissionForm"]`).first();
+    const form = wrapper.find(`[id="submissionFormPage1"]`).first();
     form.simulate("submit", testData);
     expect(handleSubmit).toHaveBeenCalled();
   });

@@ -1,18 +1,17 @@
 import React from "react";
 import { Field } from "redux-form";
 import localIpUrl from "local-ip-url";
-import uuid from "uuid";
 import PropTypes from "prop-types";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 
-import * as formElements from "../components/SubmissionFormElements";
+import * as formElements from "./SubmissionFormElements";
 import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
-import ButtonWithSpinner from "../components/ButtonWithSpinner";
-import WelcomeInfo from "../components/WelcomeInfo";
+import ButtonWithSpinner from "./ButtonWithSpinner";
+import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
@@ -21,14 +20,12 @@ const languageOptions = formElements.languageOptions;
 const dateOptions = formElements.dateOptions;
 const yearOptions = formElements.yearOptions;
 
-class SubmissionFormComponent extends React.Component {
+class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
     this.state = {};
   }
-
-  componentDidMount() {}
 
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
@@ -52,7 +49,8 @@ class SubmissionFormComponent extends React.Component {
       employerName,
       textAuthOptOut,
       termsAgree,
-      signature
+      signature,
+      salesforceId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
 
@@ -75,14 +73,15 @@ class SubmissionFormComponent extends React.Component {
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: "HARD CODED",
-      contact_id: uuid.v4(),
-      legal_language: "lorem ipsum",
+      legal_language: this.legal_language.textContent.toString(),
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
       direct_pay_auth: null,
       direct_deposit_auth: null,
-      immediate_past_member_status: null
+      immediate_past_member_status: null,
+      salesforce_id: salesforceId
     };
+    console.log(body);
 
     return this.props.apiSubmission
       .addSubmission(body)
@@ -98,18 +97,25 @@ class SubmissionFormComponent extends React.Component {
           );
         } else {
           openSnackbar("success", "Your Submission was Successful!");
-          this.props.apiSubmission.clearForm();
-          this.props.reset("submission");
+          this.props.reset("submissionPage1");
+          this.props.apiSubmission.saveSalesforceId(salesforceId);
+          this.props.history.push(`/page2`);
         }
       })
-      .catch(err => openSnackbar("error", err));
+      .catch(err => {
+        console.log(err);
+        openSnackbar("error", err);
+      });
   };
   render() {
     return (
-      <div className={this.classes.root} data-test="component-submissionform">
+      <div
+        className={this.classes.root}
+        data-test="component-submissionformpage1"
+      >
         <WelcomeInfo />
         <form
-          id="submissionForm"
+          id="submissionFormPage1"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           className={this.classes.form}
         >
@@ -292,7 +298,11 @@ class SubmissionFormComponent extends React.Component {
             classes={this.classes}
             component={this.renderCheckbox}
           />
-          <FormHelperText className={this.classes.formHelperText}>
+          <FormHelperText
+            className={this.classes.formHelperText}
+            id="termsOfServiceLegalLanguage"
+            ref={el => (this.legal_language = el)}
+          >
             Your full name, the network address you are accessing this page
             from, and the timestamp of submission will serve as signature
             indicating: I hereby designate SEIU Local 503, OPEU (or any
@@ -340,35 +350,17 @@ class SubmissionFormComponent extends React.Component {
   }
 }
 
-SubmissionFormComponent.propTypes = {
+SubmissionFormPage1Component.propTypes = {
   type: PropTypes.string,
   appState: PropTypes.shape({
     authToken: PropTypes.string
   }),
   submission: PropTypes.shape({
-    form: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      dd: PropTypes.string,
-      mm: PropTypes.string,
-      yyyy: PropTypes.string,
-      preferredLanguage: PropTypes.string,
-      homeStreet: PropTypes.string,
-      homeCity: PropTypes.string,
-      homePostalCode: PropTypes.string,
-      homeState: PropTypes.string,
-      homeEmail: PropTypes.string,
-      mobilePhone: PropTypes.string,
-      employerName: PropTypes.string,
-      textAuthOptOut: PropTypes.bool,
-      termsAgree: PropTypes.bool,
-      signature: PropTypes.string,
-      onlineCampaignSource: PropTypes.string
-    }),
     loading: PropTypes.bool,
-    error: PropTypes.string
+    error: PropTypes.string,
+    salesforceId: PropTypes.string
   }).isRequired,
   classes: PropTypes.object
 };
 
-export default SubmissionFormComponent;
+export default SubmissionFormPage1Component;

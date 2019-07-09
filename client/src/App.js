@@ -13,11 +13,13 @@ import * as apiContentActions from "./store/actions/apiContentActions";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
+import ThankYou from "./components/FormThankYou";
 import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
-import SubmissionForm from "./containers/SubmissionForm";
+import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
+import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 
@@ -147,8 +149,29 @@ export class AppUnconnected extends Component {
               exact
               path="/"
               render={routeProps => (
-                <SubmissionForm
+                <SubmissionFormPage1
                   setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/page2"
+              render={routeProps => (
+                <SubmissionFormPage2
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/thankyou"
+              render={routeProps => (
+                <ThankYou
+                  setRedirect={this.setRedirect}
+                  classes={this.props.classes}
                   {...routeProps}
                 />
               )}
