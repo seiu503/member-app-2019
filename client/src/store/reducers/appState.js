@@ -12,7 +12,7 @@ import {
   GET_PROFILE_SUCCESS
 } from "../actions/apiProfileActions";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   loggedIn: false,
   authToken: "",
   spinnerClass: "spinner__hide",

@@ -1,4 +1,5 @@
 import update from "immutability-helper";
+import moment from "moment";
 
 import {
   ADD_SUBMISSION_REQUEST,
@@ -10,7 +11,7 @@ import {
   SAVE_SALESFORCEID
 } from "../actions/apiSubmissionActions";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   loading: false,
   error: null,
   salesforceId: null
@@ -28,7 +29,26 @@ function Submission(state = INITIAL_STATE, action) {
 
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
-        loading: { $set: false }
+        loading: { $set: false },
+        formPage1: {
+          mm: { $set: moment(action.payload.birthdate).format("MM") },
+          dd: { $set: moment(action.payload.birthdate).format("DD") },
+          yyyy: { $set: moment(action.payload.birthdate).format("YYYY") },
+          mobilePhone: { $set: action.payload.cell_phone },
+          employerName: { $set: action.payload.employer_name },
+          firstName: { $set: action.payload.first_name },
+          lastName: { $set: action.payload.last_name },
+          homeStreet: { $set: action.payload.home_street },
+          homeCity: { $set: action.payload.home_city },
+          homeState: { $set: action.payload.home_state },
+          homeZip: { $set: action.payload.home_zip },
+          homeEmail: { $set: action.payload.home_email },
+          preferredLanguage: { $set: action.payload.preferred_language },
+          termsAgree: { $set: action.payload.terms_agree },
+          signature: { $set: action.payload.signature },
+          textAuthOptOut: { $set: action.payload.text_auth_opt_out }
+        },
+        error: { $set: null }
       });
 
     case ADD_SUBMISSION_FAILURE:
@@ -37,7 +57,6 @@ function Submission(state = INITIAL_STATE, action) {
       } else {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
-      console.log(error);
       return update(state, {
         loading: { $set: false },
         error: { $set: error }

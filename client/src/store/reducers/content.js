@@ -29,7 +29,7 @@ import {
   CLEAR_FORM
 } from "../actions/apiContentActions";
 
-const INITIAL_STATE = {
+export const INITIAL_STATE = {
   loading: false,
   filteredList: [],
   allContent: [],
@@ -56,19 +56,11 @@ function Content(state = INITIAL_STATE, action) {
       return INITIAL_STATE;
 
     case HANDLE_INPUT:
-      if (action.payload.name === "sort_order") {
-        return update(state, {
-          form: {
-            [action.payload.name]: { $set: parseInt(action.payload.value) }
-          }
-        });
-      } else {
-        return update(state, {
-          form: {
-            [action.payload.name]: { $set: action.payload.value }
-          }
-        });
-      }
+      return update(state, {
+        form: {
+          [action.payload.name]: { $set: action.payload.value }
+        }
+      });
 
     case HANDLE_DELETE_OPEN:
       return update(state, {
@@ -155,7 +147,6 @@ function Content(state = INITIAL_STATE, action) {
       } else {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
-      console.log(error);
       return update(state, {
         loading: { $set: false },
         error: { $set: error }
