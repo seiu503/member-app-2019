@@ -101,7 +101,7 @@ const styles = theme => ({
   }
 });
 
-export class App extends Component {
+export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
     this.main_ref = React.createRef();
@@ -116,38 +116,30 @@ export class App extends Component {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
-      console.log("not logged in");
-      let token = window.localStorage.getItem("authToken");
-      if (token && token !== "undefined") {
-        token = JSON.parse(token);
-        console.log("found token in local storage");
-        const userId = JSON.parse(window.localStorage.getItem("userId"));
-        if (userId && userId !== "undefined") {
-          console.log("parsed user id from token");
-          this.props.apiProfile.validateToken(token, userId).then(result => {
-            if (result === "VALIDATE_TOKEN_FAILURE") {
+      const authToken = window.localStorage.getItem("authToken");
+      const userId = JSON.parse(window.localStorage.getItem("userId"));
+      if (
+        authToken &&
+        authToken !== "undefined" &&
+        userId &&
+        userId !== "undefined"
+      ) {
+        this.props.apiProfile
+          .validateToken(authToken, userId)
+          .then(result => {
+            if (result.type === "VALIDATE_TOKEN_FAILURE") {
               window.localStorage.clear();
-              console.log("failed to validate token");
-            } else if (result === "VALIDATE_TOKEN_SUCESS") {
-              console.log("token validated");
-              console.log(this.props.appState.userId);
             }
-          });
-        } else {
-          console.log("could not parse userId");
-        }
-      } else {
-        console.log("no token found in local storage");
+          })
+          .catch(err => console.log(err));
       }
-    } else {
-      console.log("logged in");
     }
   }
 
   render() {
     const { classes } = this.props;
     return (
-      <React.Fragment>
+      <div data-test="component-app">
         <CssBaseline />
         <NavBar scroll={this.scroll} main_ref={this.main_ref} />
         <Notifier />
@@ -228,12 +220,12 @@ export class App extends Component {
           </Switch>
         </main>
         <Footer classes={this.props.classes} />
-      </React.Fragment>
+      </div>
     );
   }
 }
 
-App.propTypes = {
+AppUnconnected.propTypes = {
   classes: PropTypes.object.isRequired,
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool,
@@ -281,11 +273,9 @@ const mapDispatchToProps = dispatch => ({
   apiProfile: bindActionCreators(apiProfileActions, dispatch)
 });
 
-export default withStyles(styles)(
-  withRouter(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(App)
-  )
-);
+export const AppConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AppUnconnected);
+
+export default withStyles(styles)(withRouter(AppConnected));

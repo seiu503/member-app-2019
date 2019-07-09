@@ -40,10 +40,10 @@ function profile(state = INITIAL_STATE, action) {
       return update(state, {
         loading: { $set: false },
         profile: {
-          id: { $set: action.payload.id },
-          name: { $set: action.payload.name },
-          email: { $set: action.payload.email },
-          avatar_url: { $set: action.payload.avatar_url }
+          id: { $set: action.meta.id },
+          name: { $set: action.meta.name },
+          email: { $set: action.meta.email },
+          avatar_url: { $set: action.meta.avatar_url }
         },
         error: { $set: null }
       });

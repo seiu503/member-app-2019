@@ -24,11 +24,9 @@ import {
   GET_ALL_CONTENT_SUCCESS,
   GET_ALL_CONTENT_FAILURE,
   HANDLE_INPUT,
-  HANDLE_SWITCH,
   HANDLE_DELETE_OPEN,
   HANDLE_DELETE_CLOSE,
-  CLEAR_FORM,
-  SET_EDIT_CONTENT
+  CLEAR_FORM
 } from "../actions/apiContentActions";
 
 const INITIAL_STATE = {
@@ -58,7 +56,6 @@ function Content(state = INITIAL_STATE, action) {
       return INITIAL_STATE;
 
     case HANDLE_INPUT:
-    case HANDLE_SWITCH:
       if (action.payload.name === "sort_order") {
         return update(state, {
           form: {
@@ -92,15 +89,6 @@ function Content(state = INITIAL_STATE, action) {
         },
         loading: { $set: false },
         error: { $set: null }
-      });
-
-    case SET_EDIT_CONTENT:
-      return update(state, {
-        form: {
-          content_type: { $set: action.payload.content_type },
-          content: { $set: action.payload.content },
-          dialogOpen: { $set: false }
-        }
       });
 
     case CLEAR_FORM:

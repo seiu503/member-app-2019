@@ -1,6 +1,11 @@
 import { RSAA } from "redux-api-middleware";
 import BASE_URL from "./apiConfig.js";
+import FormData from "form-data";
 
+export const HANDLE_INPUT = "HANDLE_INPUT";
+export const HANDLE_DELETE_OPEN = "HANDLE_DELETE_OPEN";
+export const HANDLE_DELETE_CLOSE = "HANDLE_DELETE_CLOSE";
+export const CLEAR_FORM = "CLEAR_FORM";
 export const GET_CONTENT_BY_ID_REQUEST = "GET_CONTENT_BY_ID_REQUEST";
 export const GET_CONTENT_BY_ID_SUCCESS = "GET_CONTENT_BY_ID_SUCCESS";
 export const GET_CONTENT_BY_ID_FAILURE = "GET_CONTENT_BY_ID_FAILURE";
@@ -19,12 +24,6 @@ export const DELETE_IMAGE_FAILURE = "DELETE_IMAGE_FAILURE";
 export const UPDATE_CONTENT_REQUEST = "UPDATE_CONTENT_REQUEST";
 export const UPDATE_CONTENT_SUCCESS = "UPDATE_CONTENT_SUCCESS";
 export const UPDATE_CONTENT_FAILURE = "UPDATE_CONTENT_FAILURE";
-export const HANDLE_INPUT = "HANDLE_INPUT";
-export const HANDLE_SWITCH = "HANDLE_SWITCH";
-export const HANDLE_DELETE_OPEN = "HANDLE_DELETE_OPEN";
-export const HANDLE_DELETE_CLOSE = "HANDLE_DELETE_CLOSE";
-export const CLEAR_FORM = "CLEAR_FORM";
-export const SET_EDIT_CONTENT = "SET_EDIT_CONTENT";
 export const UPLOAD_IMAGE_REQUEST = "UPLOAD_IMAGE_REQUEST";
 export const UPLOAD_IMAGE_SUCCESS = "UPLOAD_IMAGE_SUCCESS";
 export const UPLOAD_IMAGE_FAILURE = "UPLOAD_IMAGE_FAILURE";
@@ -32,13 +31,6 @@ export const UPLOAD_IMAGE_FAILURE = "UPLOAD_IMAGE_FAILURE";
 export function handleInput({ target: { name, value } }) {
   return {
     type: HANDLE_INPUT,
-    payload: { name, value }
-  };
-}
-
-export function handleSwitch(name, value) {
-  return {
-    type: HANDLE_SWITCH,
     payload: { name, value }
   };
 }
@@ -59,13 +51,6 @@ export function handleDeleteClose() {
 export function clearForm() {
   return {
     type: CLEAR_FORM
-  };
-}
-
-export function setEditContent(Content) {
-  return {
-    type: SET_EDIT_CONTENT,
-    payload: Content
   };
 }
 
