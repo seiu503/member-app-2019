@@ -82,7 +82,6 @@ class SubmissionFormPage1Component extends React.Component {
       immediate_past_member_status: null,
       salesforce_id: salesforceId
     };
-    console.log(body);
 
     return this.props.apiSubmission
       .addSubmission(body)
