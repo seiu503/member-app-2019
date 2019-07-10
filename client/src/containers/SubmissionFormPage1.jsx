@@ -30,27 +30,30 @@ export class SubmissionFormPage1Container extends React.Component {
           console.log("success -- Contact data fetched.");
           console.log(result.payload);
           const preFill = result.payload;
-          console.log(preFill);
-          initialValues.mm = (preFill.Birthdate__c.getMonth() + 1).toString();
-          initialValues.dd = preFill.Birthdate__c.getDate().toString();
-          initialValues.yyyy = preFill.Birthdate__c.getFullYear().toString();
-          initialValues.mobilePhone = preFill.Cell_Phone__c;
-          initialValues.employerName = preFill.EmployerName_fromWebForm__c;
-          initialValues.firstName = preFill.firstName__c;
-          initialValues.lastName = preFill.lastName__c;
-          initialValues.homeStreet = preFill.Home_Street__c;
-          initialValues.homeCity = preFill.Home_City__c;
-          initialValues.homeState = preFill.Home_State__c;
-          initialValues.homePostalCode = preFill.Home_Zip__c;
+          const birthDate = new Date(preFill.Birthdate);
+          initialValues.mm = (birthDate.getMonth() + 1).toString();
+          initialValues.dd = birthDate.getDate().toString();
+          initialValues.yyyy = birthDate.getFullYear().toString();
+          initialValues.mobilePhone = preFill.MobilePhone;
+          // change this to account name from salesforce
+          initialValues.employerName =
+            preFill.Worksite_manual_entry_from_webform__c;
+          initialValues.firstName = preFill.FirstName;
+          initialValues.lastName = preFill.LastName;
+          initialValues.homeStreet = preFill.MailingStreet;
+          initialValues.homeCity = preFill.MailingCity;
+          initialValues.homeState = preFill.MailingState;
+          initialValues.homePostalCode = preFill.MailingPostalCode;
           initialValues.homeEmail = preFill.Home_Email__c;
           initialValues.preferredLanguage = preFill.Preferred_Language__c;
-          initialValues.salesforceId = preFill.id;
+          initialValues.salesforceId = id;
           if (initialValues.mm.length === 1) {
             initialValues.mm = "0" + initialValues.mm;
           }
           if (initialValues.dd.length === 1) {
             initialValues.dd = "0" + initialValues.dd;
           }
+          console.log(initialValues);
         })
         .catch(err => {
           console.log(err);
