@@ -243,8 +243,11 @@ describe("Input Field Render functions", () => {
 
     it("updates input value when changed", () => {
       const checkEvent = { target: { value: true } };
-      wrapper.find(`[data-test="component-checkbox"]`).simulate("click");
-      expect(onClick.mock.calls).toBe(10);
+      wrapper
+        .find(`[data-test="component-checkbox"]`)
+        .first()
+        .simulate("click");
+      expect(onClick).toHaveBeenCalled();
     });
 
     it("it doesn't throw PropType warnings", () => {
