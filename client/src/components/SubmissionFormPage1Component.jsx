@@ -27,31 +27,6 @@ class SubmissionFormPage1Component extends React.Component {
     this.state = {};
   }
 
-  componentDidMount() {
-    if (this.props.match.params.id) {
-      const { id } = this.props.match.params;
-      try {
-        this.getPrefillData(id);
-      } catch (err) {
-        console.log(err);
-        openSnackbar("error", err);
-      }
-    }
-  }
-
-  getPrefillData(id) {
-    this.props.apiSF
-      .getSFContactById(id)
-      .then(contact => {
-        console.log(contact);
-        openSnackbar("success", "Contact data fetched.");
-      })
-      .catch(err => {
-        console.log(err);
-        openSnackbar("error", err);
-      });
-  }
-
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
