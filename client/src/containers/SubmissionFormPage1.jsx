@@ -13,12 +13,7 @@ import validate from "../utils/validators";
 import { stylesPage1 } from "../components/SubmissionFormElements";
 
 // default initial values we want if salesforce doesn't provide useful data
-const initialValues = {
-  mm: "",
-  onlineCampaignSource: null,
-  homeState: "or",
-  preferredLanguage: "english"
-};
+const initialValues = {};
 
 export class SubmissionFormPage1Container extends React.Component {
   componentDidMount() {
@@ -28,10 +23,10 @@ export class SubmissionFormPage1Container extends React.Component {
         .getSFContactById(id)
         .then(result => {
           console.log("success -- Contact data fetched.");
-          console.log(result.payload);
+          console.log("result.payload", result.payload);
           const preFill = result.payload;
           const birthDate = new Date(preFill.Birthdate);
-          initialValues.mm = (birthDate.getMonth() + 1).toString();
+          initialValues.mm = (birthDate.getMonth() + 1).toString() || "";
           initialValues.dd = birthDate.getDate().toString();
           initialValues.yyyy = birthDate.getFullYear().toString();
           initialValues.mobilePhone = preFill.MobilePhone;
@@ -42,10 +37,11 @@ export class SubmissionFormPage1Container extends React.Component {
           initialValues.lastName = preFill.LastName;
           initialValues.homeStreet = preFill.MailingStreet;
           initialValues.homeCity = preFill.MailingCity;
-          initialValues.homeState = preFill.MailingState;
+          initialValues.homeState = preFill.MailingState || "or";
           initialValues.homePostalCode = preFill.MailingPostalCode;
           initialValues.homeEmail = preFill.Home_Email__c;
-          initialValues.preferredLanguage = preFill.Preferred_Language__c;
+          initialValues.preferredLanguage =
+            preFill.Preferred_Language__c || "english";
           initialValues.salesforceId = id;
           if (initialValues.mm.length === 1) {
             initialValues.mm = "0" + initialValues.mm;
@@ -53,7 +49,8 @@ export class SubmissionFormPage1Container extends React.Component {
           if (initialValues.dd.length === 1) {
             initialValues.dd = "0" + initialValues.dd;
           }
-          console.log(initialValues);
+          initialValues.onlineCampaignSource = null;
+          console.log("initial Values", initialValues);
         })
         .catch(err => {
           console.log(err);
@@ -65,6 +62,9 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   render() {
+    if (initialValues === {}) {
+      return <div>Loading...</div>;
+    }
     return <SubmissionFormPage1Wrap {...this.props} />;
   }
 }
