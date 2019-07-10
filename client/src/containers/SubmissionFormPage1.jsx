@@ -26,7 +26,7 @@ export class SubmissionFormPage1Container extends React.Component {
           console.log("result.payload", result.payload);
           const preFill = result.payload;
           const birthDate = new Date(preFill.Birthdate);
-          initialValues.mm = (birthDate.getMonth() + 1).toString() || "";
+          initialValues.mm = (birthDate.getMonth() + 1).toString();
           initialValues.dd = birthDate.getDate().toString();
           initialValues.yyyy = birthDate.getFullYear().toString();
           initialValues.mobilePhone = preFill.MobilePhone;
@@ -37,17 +37,24 @@ export class SubmissionFormPage1Container extends React.Component {
           initialValues.lastName = preFill.LastName;
           initialValues.homeStreet = preFill.MailingStreet;
           initialValues.homeCity = preFill.MailingCity;
-          initialValues.homeState = preFill.MailingState || "or";
+          initialValues.homeState = preFill.MailingState;
           initialValues.homePostalCode = preFill.MailingPostalCode;
           initialValues.homeEmail = preFill.Home_Email__c;
-          initialValues.preferredLanguage =
-            preFill.Preferred_Language__c || "english";
+          initialValues.preferredLanguage = preFill.Preferred_Language__c;
           initialValues.salesforceId = id;
           if (initialValues.mm.length === 1) {
             initialValues.mm = "0" + initialValues.mm;
+          } else {
+            initialValues.mm = "";
           }
           if (initialValues.dd.length === 1) {
             initialValues.dd = "0" + initialValues.dd;
+          }
+          if (!initialValues.homeState) {
+            initialValues.homeState = "or";
+          }
+          if (!initialValues.preferredLanguage) {
+            initialValues.preferredLanguage = "english";
           }
           initialValues.onlineCampaignSource = null;
           console.log("initial Values", initialValues);
@@ -62,10 +69,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   render() {
-    if (initialValues === {}) {
+    if (initialValues) {
+      console.log("loading component", this.props.initialValues);
+      return <SubmissionFormPage1Wrap {...this.props} />;
+    } else {
+      console.log("waiting");
       return <div>Loading...</div>;
     }
-    return <SubmissionFormPage1Wrap {...this.props} />;
   }
 }
 
