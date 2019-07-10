@@ -83,7 +83,7 @@ const contactsTableFields = {
     oldFormPage: "2",
     req: "N",
     postgresFieldName: "mail_to_postal_code",
-    clientFieldName: "mailToPostalCode",
+    clientFieldName: "mailToZip",
     HtmlInputType: "text (limit 5 char)",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Mail-To Zip/Postal Code",
@@ -200,7 +200,7 @@ const contactsTableFields = {
     oldFormPage: "1",
     req: "Y",
     postgresFieldName: "home_postal_code",
-    clientFieldName: "homePostalCode",
+    clientFieldName: "homeZip",
     HtmlInputType: "text (limit 5 char)",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Home Zip/Postal Code",
@@ -879,7 +879,6 @@ const generateSampleValidate = () => {
   sampleData.mm = "01";
   sampleData.yyyy = "2001";
   sampleData.termsAgree = true;
-  sampleData.homePostalCode = sampleData.homeZip;
   sampleData.mobilePhone = sampleData.cellPhone;
   delete sampleData.homeZip;
   delete sampleData.cellPhone;

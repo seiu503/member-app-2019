@@ -32,7 +32,7 @@ class SubmissionFormPage2Component extends React.Component {
       mailToCity,
       mailToState,
       mailToStreet,
-      mailToPostalCode,
+      mailToZip,
       africanOrAfricanAmerican,
       arabAmericanMiddleEasternOrNorthAfrican,
       asianOrAsianAmerican,
@@ -87,7 +87,7 @@ class SubmissionFormPage2Component extends React.Component {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
-      mail_to_postal_code: mailToPostalCode,
+      mail_to_postal_code: mailToZip,
       ethnicity: ethnicity(),
       lgbtq_id: lgbtqId,
       trans_id: transId,
@@ -390,8 +390,8 @@ class SubmissionFormPage2Component extends React.Component {
             />
             <Field
               label="Mailing ZIP"
-              name="mailToPostalCode"
-              id="mailToPostalCode"
+              name="mailToZip"
+              id="mailToZip"
               type="text"
               classes={this.classes}
               component={this.renderTextField}
