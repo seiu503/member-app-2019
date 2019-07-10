@@ -21,7 +21,11 @@ export const INITIAL_STATE = {
   loading: false,
   error: null,
   salesforceId: null,
-  formPage1: {},
+  formPage1: {
+    mm: "",
+    homeState: "or",
+    preferredLanguage: "english"
+  },
   formPage2: {}
 };
 
