@@ -14,7 +14,10 @@ import {
 import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
-  GET_SF_CONTACT_FAILURE
+  GET_SF_CONTACT_FAILURE,
+  UPDATE_SF_CONTACT_SUCCESS,
+  UPDATE_SF_CONTACT_REQUEST,
+  UPDATE_SF_CONTACT_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -34,13 +37,16 @@ function Submission(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case ADD_SUBMISSION_REQUEST:
+    case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
+    case UPDATE_SF_CONTACT_REQUEST:
       return update(state, {
         loading: { $set: true },
         error: { $set: null }
       });
 
     case GET_SF_CONTACT_SUCCESS:
+    case UPDATE_SF_CONTACT_SUCCESS:
       return update(state, {
         loading: { $set: false },
         formPage1: {
@@ -91,8 +97,16 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case UPDATE_SUBMISSION_SUCCESS:
+      return update(state, {
+        loading: { $set: false },
+        formPage2SubmitSucess: { $set: true }
+      });
+
     case ADD_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_FAILURE:
+    case UPDATE_SF_CONTACT_FAILURE:
+    case UPDATE_SUBMISSION_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
@@ -106,30 +120,6 @@ function Submission(state = INITIAL_STATE, action) {
     case SAVE_SALESFORCEID:
       return update(state, {
         salesforceId: { $set: action.payload.salesforceId }
-      });
-
-    case UPDATE_SUBMISSION_REQUEST:
-      return update(state, {
-        loading: { $set: true },
-        error: { $set: null }
-      });
-
-    case UPDATE_SUBMISSION_SUCCESS:
-      return update(state, {
-        loading: { $set: false },
-        formPage2SubmitSucess: { $set: true }
-      });
-
-    case UPDATE_SUBMISSION_FAILURE:
-      if (typeof action.payload.message === "string") {
-        error = action.payload.message;
-      } else {
-        error = "Sorry, something went wrong :(\nPlease try again.";
-      }
-      console.log(error);
-      return update(state, {
-        loading: { $set: false },
-        error: { $set: error }
       });
 
     default:

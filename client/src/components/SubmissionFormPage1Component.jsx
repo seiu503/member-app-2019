@@ -12,6 +12,7 @@ import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
+import contactsTableFields from "../../../../app/utils/fieldConfigs";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
@@ -99,6 +100,26 @@ class SubmissionFormPage1Component extends React.Component {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.reset("submissionPage1");
           this.props.apiSubmission.saveSalesforceId(salesforceId);
+
+          // the SF contact update should really be called from the controller,
+          // just testing it here for now...
+
+          const sfUpdateBody = {};
+          Object.keys(body).forEach(key => {
+            let sfKey = contactsTableFields[key].SFAPIName;
+            sfUpdateBody[sfKey] = body[key];
+          });
+          console.log(sfUpdateBody);
+
+          this.props.apiSF
+            .updateSFContact(salesforceId, sfUpdateBody)
+            .then(result => {
+              console.log(result);
+            })
+            .catch(err => {
+              console.log(err);
+              openSnackbar("error", err);
+            });
           this.props.history.push(`/page2`);
         }
       })
