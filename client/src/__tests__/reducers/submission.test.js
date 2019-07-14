@@ -1,9 +1,14 @@
 import reducer, { INITIAL_STATE } from "../../store/reducers/submission";
 import {
+  contactsTableFields,
   generateSampleSubmissionFrontEnd,
   generateSampleValidate,
   generateSampleSubmission
 } from "../../../../app/utils/fieldConfigs.js";
+
+// this is a hack to allow the SubmissionFormPageComponent to import
+// this object even though it is stored outside the /src directory
+export const contactsTableFieldsExport = { ...contactsTableFields };
 
 const samplePayload = generateSampleSubmissionFrontEnd();
 const sampleSubmission = generateSampleValidate();

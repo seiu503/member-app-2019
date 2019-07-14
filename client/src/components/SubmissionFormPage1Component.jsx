@@ -12,7 +12,7 @@ import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
-import contactsTableFields from "../../../../app/utils/fieldConfigs";
+import { contactsTableFieldsExport } from "../__tests__/reducers/submission.test";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
@@ -106,7 +106,7 @@ class SubmissionFormPage1Component extends React.Component {
 
           const sfUpdateBody = {};
           Object.keys(body).forEach(key => {
-            let sfKey = contactsTableFields[key].SFAPIName;
+            let sfKey = contactsTableFieldsExport[key].SFAPIName;
             sfUpdateBody[sfKey] = body[key];
           });
           console.log(sfUpdateBody);
