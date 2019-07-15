@@ -133,7 +133,8 @@ const createSubmission = async (req, res, next) => {
           "There was an error saving the submission"
       });
     } else {
-      return res.status(200).json(createSubmissionResult);
+      return next(createSubmissionResult);
+      // return res.status(200).json(createSubmissionResult);
     }
   }
 };

@@ -276,7 +276,11 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 //        }
 //   Returns: JSON created submission object on success.
 //
-router.post("/submission", submissionCtrl.createSubmission);
+router.post(
+  "/submission",
+  submissionCtrl.createSubmission,
+  sfCtrl.updateSFContact
+);
 
 // UPDATE A SUBMISSION
 //   Example: PUT >> /api/submission/:id
