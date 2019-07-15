@@ -11,10 +11,22 @@ import {
   SAVE_SALESFORCEID
 } from "../actions/apiSubmissionActions";
 
+import {
+  GET_SF_CONTACT_REQUEST,
+  GET_SF_CONTACT_SUCCESS,
+  GET_SF_CONTACT_FAILURE
+} from "../actions/apiSFActions";
+
 export const INITIAL_STATE = {
   loading: false,
   error: null,
-  salesforceId: null
+  salesforceId: null,
+  formPage1: {
+    mm: "",
+    homeState: "or",
+    preferredLanguage: "english"
+  },
+  formPage2: {}
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -22,8 +34,36 @@ function Submission(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case ADD_SUBMISSION_REQUEST:
+    case GET_SF_CONTACT_REQUEST:
       return update(state, {
         loading: { $set: true },
+        error: { $set: null }
+      });
+
+    case GET_SF_CONTACT_SUCCESS:
+      return update(state, {
+        loading: { $set: false },
+        formPage1: {
+          mm: { $set: moment(action.payload.Birthdate).format("MM") },
+          dd: { $set: moment(action.payload.Birthdate).format("DD") },
+          yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
+          mobilePhone: { $set: action.payload.MobilePhone },
+          // fix employer name to pull from Acct table
+          employerName: {
+            $set: action.payload.Worksite_manual_entry_from_webform__c
+          },
+          firstName: { $set: action.payload.FirstName },
+          lastName: { $set: action.payload.LastName },
+          homeStreet: { $set: action.payload.MailingStreet },
+          homeCity: { $set: action.payload.MailingCity },
+          homeState: { $set: action.payload.MailingState },
+          homeZip: { $set: action.payload.MailingPostalCode },
+          homeEmail: { $set: action.payload.Home_Email__c },
+          preferredLanguage: { $set: action.payload.Preferred_Language__c },
+          termsAgree: { $set: false },
+          signature: { $set: null },
+          textAuthOptOut: { $set: false }
+        },
         error: { $set: null }
       });
 
@@ -52,6 +92,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case ADD_SUBMISSION_FAILURE:
+    case GET_SF_CONTACT_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

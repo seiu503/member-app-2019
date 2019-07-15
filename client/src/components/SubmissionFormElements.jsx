@@ -80,7 +80,7 @@ export const monthList = [
   "11",
   "12"
 ];
-export const languageOptions = ["English", "Russian", "Spanish"];
+export const languageOptions = ["", "English", "Russian", "Spanish"];
 export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
 export const genderPronounOptions = [
   "",

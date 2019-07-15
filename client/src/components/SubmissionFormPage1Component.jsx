@@ -41,7 +41,7 @@ class SubmissionFormPage1Component extends React.Component {
       yyyy,
       preferredLanguage,
       homeStreet,
-      homePostalCode,
+      homeZip,
       homeState,
       homeCity,
       homeEmail,
@@ -67,7 +67,7 @@ class SubmissionFormPage1Component extends React.Component {
       home_street: homeStreet,
       home_city: homeCity,
       home_state: homeState,
-      home_zip: homePostalCode,
+      home_zip: homeZip,
       home_email: homeEmail,
       preferred_language: preferredLanguage,
       terms_agree: termsAgree,
@@ -238,9 +238,9 @@ class SubmissionFormPage1Component extends React.Component {
           />
 
           <Field
-            label="Home Postal Code"
-            name="homePostalCode"
-            id="homePostalCode"
+            label="Home Zip"
+            name="homeZip"
+            id="homeZip"
             type="text"
             classes={this.classes}
             component={this.renderTextField}

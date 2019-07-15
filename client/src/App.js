@@ -147,7 +147,7 @@ export class AppUnconnected extends Component {
           <Switch>
             <Route
               exact
-              path="/"
+              path="/:id?"
               render={routeProps => (
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
