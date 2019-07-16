@@ -45,7 +45,6 @@ describe("submission reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
   });
@@ -57,7 +56,6 @@ describe("submission reducer", () => {
   //     })
   //   ).toEqual({
   //     ...INITIAL_STATE,
-  //     loading: false,
   //     error: null,
   //     formPage1: {
   //       ...sampleSubmission
@@ -72,7 +70,6 @@ describe("submission reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Some error"
     });
     expect(
@@ -82,7 +79,6 @@ describe("submission reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
   });

@@ -11,7 +11,6 @@ import {
 } from "../actions/apiProfileActions";
 
 export const INITIAL_STATE = {
-  loading: false,
   profile: {
     id: "",
     name: "",
@@ -31,14 +30,12 @@ function profile(state = INITIAL_STATE, action) {
     case VALIDATE_TOKEN_REQUEST:
     case GET_PROFILE_REQUEST:
       return update(state, {
-        loading: { $set: true },
         error: { $set: null }
       });
 
     case VALIDATE_TOKEN_SUCCESS:
     case GET_PROFILE_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         profile: {
           id: { $set: action.meta.id },
           name: { $set: action.meta.name },

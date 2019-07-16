@@ -14,14 +14,10 @@ import {
 import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
-  GET_SF_CONTACT_FAILURE,
-  UPDATE_SF_CONTACT_SUCCESS,
-  UPDATE_SF_CONTACT_REQUEST,
-  UPDATE_SF_CONTACT_FAILURE
+  GET_SF_CONTACT_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
-  loading: false,
   error: null,
   salesforceId: null,
   formPage1: {
@@ -39,16 +35,12 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
-    case UPDATE_SF_CONTACT_REQUEST:
       return update(state, {
-        loading: { $set: true },
         error: { $set: null }
       });
 
     case GET_SF_CONTACT_SUCCESS:
-    case UPDATE_SF_CONTACT_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
           dd: { $set: moment(action.payload.Birthdate).format("DD") },
@@ -75,7 +67,6 @@ function Submission(state = INITIAL_STATE, action) {
 
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         formPage1: {
           mm: { $set: moment(action.payload.birthdate).format("MM") },
           dd: { $set: moment(action.payload.birthdate).format("DD") },
@@ -99,13 +90,11 @@ function Submission(state = INITIAL_STATE, action) {
 
     case UPDATE_SUBMISSION_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         formPage2SubmitSucess: { $set: true }
       });
 
     case ADD_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_FAILURE:
-    case UPDATE_SF_CONTACT_FAILURE:
     case UPDATE_SUBMISSION_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
@@ -113,7 +102,6 @@ function Submission(state = INITIAL_STATE, action) {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
       return update(state, {
-        loading: { $set: false },
         error: { $set: error }
       });
 

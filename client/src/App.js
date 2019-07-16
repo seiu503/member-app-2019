@@ -22,6 +22,7 @@ import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
+import Spinner from "./components/Spinner";
 
 const styles = theme => ({
   root: {
@@ -143,28 +144,9 @@ export class AppUnconnected extends Component {
         <CssBaseline />
         <NavBar scroll={this.scroll} main_ref={this.main_ref} />
         <Notifier />
+        {this.props.appState.loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
           <Switch>
-            <Route
-              exact
-              path="/:id?"
-              render={routeProps => (
-                <SubmissionFormPage1
-                  setRedirect={this.setRedirect}
-                  {...routeProps}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/page2"
-              render={routeProps => (
-                <SubmissionFormPage2
-                  setRedirect={this.setRedirect}
-                  {...routeProps}
-                />
-              )}
-            />
             <Route
               exact
               path="/thankyou"
@@ -209,6 +191,26 @@ export class AppUnconnected extends Component {
               path="/logout"
               render={routeProps => (
                 <Logout classes={this.props.classes} {...routeProps} />
+              )}
+            />
+            <Route
+              exact
+              path="/:id?"
+              render={routeProps => (
+                <SubmissionFormPage1
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/page2/:id?"
+              render={routeProps => (
+                <SubmissionFormPage2
+                  setRedirect={this.setRedirect}
+                  {...routeProps}
+                />
               )}
             />
             <Route

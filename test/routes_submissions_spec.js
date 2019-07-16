@@ -46,7 +46,7 @@ const direct_pay_auth = submission_date;
 const direct_deposit_auth = submission_date;
 const immediate_past_member_status = "Member";
 
-export const submissionBody = {
+const submissionBody = {
   ip_address,
   submission_date,
   agency_number,
@@ -65,7 +65,7 @@ export const submissionBody = {
   signature,
   text_auth_opt_out,
   online_campaign_source,
-  contact_id,
+  salesforce_id,
   legal_language,
   maintenance_of_effort,
   seiu503_cba_app_date,
@@ -410,3 +410,7 @@ suite("routes : submissions", function() {
     });
   });
 });
+
+module.exports = {
+  submissionBody
+};
