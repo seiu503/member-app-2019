@@ -242,6 +242,12 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 /* =========================== SUBMISSION ROUTES =========================== */
 
 // CREATE A SUBMISSION
+// This route calls 3 controller functions:
+// (1) Creates a submission in the Postgres DB
+// (2) Creates an 'OnlineMemberApp__c' object in Salesforce
+// (3) Updates the corresponding contact record in Salesforce with any
+//     new or changed fields from the submission
+//
 //   Example: POST >> /api/submission/
 //   Secured: No
 //   Expects:
@@ -279,6 +285,7 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 router.post(
   "/submission",
   submissionCtrl.createSubmission,
+  sfCtrl.createSFOnlineMemberApp,
   sfCtrl.updateSFContact
 );
 

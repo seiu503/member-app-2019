@@ -1,7 +1,9 @@
 const jsforce = require("jsforce");
 const {
   contactsTableFields,
-  generateSFContactFieldList
+  submissionsTableFields,
+  generateSFContactFieldList,
+  formatDate
 } = require("../utils/fieldConfigs");
 
 const conn = new jsforce.Connection({
@@ -47,9 +49,10 @@ const getSFContactById = (req, res, next) => {
 
 /** Update a contact in Salesforce by Salesforce Contact ID
  *  @param    {String}   id           Salesforce Contact ID
- *  @param    {Object}   updates      Updates object, containing
+ *  @param    {Object}   body         Raw submission data used to generate
+ *                                    updates object, containing
  *                                    key/value pairs of fields to be updated.
- *  @returns  {Object}        Salesforce Contact object OR error message.
+ *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 const updateSFContact = (id, req, res, next) => {
   const updatesRaw = { ...req.body };
@@ -71,21 +74,18 @@ const updateSFContact = (id, req, res, next) => {
     }
 
     try {
-      console.log(`sf.ctrl.js > 71: ${id}`);
       conn.sobject("Contact").update(
         {
           Id: id,
           ...updates
         },
         function(err, contact) {
-          console.log("sf.ctrl.js > 77");
-          console.log(contact);
           if (err || !contact.success) {
             console.log("sf.ctrl.js > 80");
             return console.error(err, contact);
           } else {
             console.log("Updated Successfully : " + contact.id);
-            return res.status(200).json(contact);
+            return res.status(200).json({ salesforce_id: contact.id });
           }
         }
       );
@@ -97,9 +97,59 @@ const updateSFContact = (id, req, res, next) => {
   });
 };
 
+/** Create an OnlineMemberApps object in Salesforce with submission data
+ *  @param    {Object}   body         Submission object
+ *  @returns  does not return to client; passes salesforce_id to next function
+ */
+
+const createSFOnlineMemberApp = (id, req, res, next) => {
+  conn.login(user, password, function(err, userInfo) {
+    if (err) {
+      console.log("sf.ctrl.js > 106");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+
+    try {
+      const dataRaw = { ...req.body };
+      const data = {};
+      // convert data object to key/value pairs using
+      // SF API field names
+      Object.keys(dataRaw).forEach(key => {
+        if (submissionsTableFields[key]) {
+          const sfFieldName = submissionsTableFields[key].SFAPIName;
+          data[sfFieldName] = dataRaw[key];
+        }
+      });
+      data.Worker__c = id;
+      data.Birthdate__c = formatDate(dataRaw.birthdate);
+      conn.sobject("OnlineMemberApp__c").create(
+        {
+          ...data
+        },
+        function(err, OMA) {
+          if (err || !OMA.success) {
+            console.log("sf.ctrl.js > 119");
+            return console.error(err, OMA);
+          } else {
+            console.log("Created SF OMA Successfully : " + OMA.id);
+            return next(id, req, res, next);
+            // return res.status(200).json({ salesforce_id: OMA.id });
+          }
+        }
+      );
+    } catch (err) {
+      console.log("sf.ctrl.js > 128");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+};
+
 /* ================================ EXPORT ================================= */
 
 module.exports = {
   getSFContactById,
+  createSFOnlineMemberApp,
   updateSFContact
 };
