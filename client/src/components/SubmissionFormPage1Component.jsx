@@ -33,7 +33,7 @@ class SubmissionFormPage1Component extends React.Component {
   renderCheckbox = formElements.renderCheckbox;
 
   handleSubmit = values => {
-    const {
+    let {
       firstName,
       lastName,
       dd,
@@ -53,6 +53,10 @@ class SubmissionFormPage1Component extends React.Component {
       salesforceId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
+
+    if (!salesforceId) {
+      salesforceId = this.props.match.params.id;
+    }
 
     const body = {
       ip_address: localIpUrl(),

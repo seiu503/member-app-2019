@@ -13,32 +13,6 @@ describe("appState reducer", () => {
     ).toEqual(INITIAL_STATE);
   });
 
-  it("should handle SET_SPINNER", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_SPINNER",
-        payload: "show"
-      })
-    ).toEqual({
-      loggedIn: false,
-      authToken: "",
-      spinnerClass: "spinner__show",
-      loading: false,
-      redirect: ""
-    });
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_SPINNER",
-        payload: "hide"
-      })
-    ).toEqual({
-      loggedIn: false,
-      authToken: "",
-      spinnerClass: "spinner__hide",
-      loading: false,
-      redirect: ""
-    });
-  });
   it("should handle VALIDATE_TOKEN_SUCCESS", () => {
     expect(
       reducer(INITIAL_STATE, {
@@ -48,7 +22,6 @@ describe("appState reducer", () => {
     ).toEqual({
       loggedIn: true,
       authToken: "1234",
-      spinnerClass: "spinner__hide",
       loading: false,
       redirect: ""
     });
@@ -62,7 +35,6 @@ describe("appState reducer", () => {
     ).toEqual({
       loggedIn: false,
       authToken: "1234",
-      spinnerClass: "spinner__hide",
       loading: false,
       redirect: ""
     });
@@ -75,7 +47,6 @@ describe("appState reducer", () => {
     ).toEqual({
       loggedIn: false,
       authToken: "",
-      spinnerClass: "spinner__hide",
       loading: false,
       redirect: ""
     });
@@ -89,7 +60,6 @@ describe("appState reducer", () => {
     ).toEqual({
       loggedIn: false,
       authToken: "",
-      spinnerClass: "spinner__hide",
       loading: false,
       redirect: "http://www.example.com"
     });
@@ -103,7 +73,6 @@ describe("appState reducer", () => {
     ).toEqual({
       loggedIn: true,
       authToken: "",
-      spinnerClass: "spinner__hide",
       loading: false,
       redirect: ""
     });

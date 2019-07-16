@@ -67,7 +67,6 @@ export class DashboardUnconnected extends React.Component {
       window.localStorage.setItem("userId", JSON.stringify(userId));
       window.localStorage.setItem("authToken", JSON.stringify(token));
       this.props.actions.setLoggedIn();
-      this.props.actions.setSpinner("hide");
       // remove id & token from route params after saving to local storage
       window.history.replaceState(
         null,
@@ -148,8 +147,7 @@ DashboardUnconnected.propTypes = {
     authToken: PropTypes.string
   }).isRequired,
   actions: PropTypes.shape({
-    setLoggedIn: PropTypes.func,
-    setSpinner: PropTypes.func
+    setLoggedIn: PropTypes.func
   }).isRequired,
   api: PropTypes.shape({
     getProfile: PropTypes.func

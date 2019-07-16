@@ -242,6 +242,12 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 /* =========================== SUBMISSION ROUTES =========================== */
 
 // CREATE A SUBMISSION
+// This route calls 3 controller functions:
+// (1) Creates a submission in the Postgres DB
+// (2) Creates an 'OnlineMemberApp__c' object in Salesforce
+// (3) Updates the corresponding contact record in Salesforce with any
+//     new or changed fields from the submission
+//
 //   Example: POST >> /api/submission/
 //   Secured: No
 //   Expects:
@@ -276,7 +282,12 @@ router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
 //        }
 //   Returns: JSON created submission object on success.
 //
-router.post("/submission", submissionCtrl.createSubmission);
+router.post(
+  "/submission",
+  submissionCtrl.createSubmission,
+  sfCtrl.createSFOnlineMemberApp,
+  sfCtrl.updateSFContact
+);
 
 // UPDATE A SUBMISSION
 //   Example: PUT >> /api/submission/:id
@@ -342,6 +353,22 @@ router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
+
+// UPDATE ONE SALESFORCE CONTACT RECORD BY ID
+//   Example: PUT >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          updates         : Object {
+//              any contact fields to update go here...
+//             }
+//        }
+//     2) request params         : {
+//          id              : String
+//      }
+//   Returns: JSON selected fields from salesforce contact object on success.
+//
+router.put("/sf/:id", sfCtrl.updateSFContact);
 
 /* ================================ EXPORT ================================= */
 
