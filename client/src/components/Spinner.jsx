@@ -9,7 +9,8 @@ const wrap = {
   alignItems: "center",
   position: "absolute",
   top: 0,
-  zIndex: 3
+  zIndex: 3,
+  backgroundColor: "rgba(0,0,0,.4)"
 };
 
 const spin = {

@@ -66,7 +66,6 @@ describe("content reducer", () => {
       ...INITIAL_STATE,
       deleteDialogOpen: false,
       currentContent: emptyContent,
-      loading: false,
       error: null
     });
   });
@@ -79,7 +78,6 @@ describe("content reducer", () => {
       ...INITIAL_STATE,
       deleteDialogOpen: false,
       currentContent: emptyContent,
-      loading: false,
       error: null
     });
   });
@@ -106,7 +104,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -115,7 +112,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -124,7 +120,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -133,7 +128,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -142,7 +136,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -151,7 +144,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -160,7 +152,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
   });
@@ -172,7 +163,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       form: {
         ...sampleContent,
         dialogOpen: false
@@ -186,7 +176,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       form: {
         ...sampleContent,
         dialogOpen: false
@@ -200,7 +189,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       form: {
         ...sampleContent,
         dialogOpen: false
@@ -214,7 +202,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       form: {
         ...sampleContent,
         dialogOpen: false
@@ -229,7 +216,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: null
     });
   });
@@ -241,7 +227,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: null,
       allContent: [sampleContent]
     });
@@ -254,7 +239,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Some error"
     });
     expect(
@@ -264,7 +248,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
     expect(
@@ -274,7 +257,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
     expect(
@@ -284,7 +266,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
     expect(
@@ -294,7 +275,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
     expect(
@@ -304,7 +284,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
     expect(
@@ -314,7 +293,6 @@ describe("content reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
   });

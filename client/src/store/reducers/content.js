@@ -30,7 +30,6 @@ import {
 } from "../actions/apiContentActions";
 
 export const INITIAL_STATE = {
-  loading: false,
   filteredList: [],
   allContent: [],
   deleteDialogOpen: false,
@@ -79,7 +78,6 @@ function Content(state = INITIAL_STATE, action) {
           created_at: { $set: "" },
           updated_at: { $set: "" }
         },
-        loading: { $set: false },
         error: { $set: null }
       });
 
@@ -102,7 +100,6 @@ function Content(state = INITIAL_STATE, action) {
     case GET_ALL_CONTENT_REQUEST:
     case DELETE_IMAGE_REQUEST:
       return update(state, {
-        loading: { $set: true },
         error: { $set: null }
       });
 
@@ -111,7 +108,6 @@ function Content(state = INITIAL_STATE, action) {
     case UPDATE_CONTENT_SUCCESS:
     case UPLOAD_IMAGE_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         form: {
           content_type: { $set: action.payload.content_type },
           content: { $set: action.payload.content },
@@ -124,13 +120,11 @@ function Content(state = INITIAL_STATE, action) {
 
     case DELETE_IMAGE_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         error: { $set: null }
       });
 
     case GET_ALL_CONTENT_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         allContent: { $set: action.payload },
         error: { $set: null }
       });
@@ -148,7 +142,6 @@ function Content(state = INITIAL_STATE, action) {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
       return update(state, {
-        loading: { $set: false },
         error: { $set: error }
       });
 

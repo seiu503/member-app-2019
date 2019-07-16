@@ -33,7 +33,6 @@ describe("profile reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
     expect(
@@ -42,7 +41,6 @@ describe("profile reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: true,
       error: null
     });
   });
@@ -54,7 +52,6 @@ describe("profile reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       profile: { ...sampleProfile },
       error: null
     });
@@ -77,7 +74,6 @@ describe("profile reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Some error"
     });
     expect(
@@ -87,7 +83,6 @@ describe("profile reducer", () => {
       })
     ).toEqual({
       ...INITIAL_STATE,
-      loading: false,
       error: "Sorry, something went wrong :(\nPlease try again."
     });
   });

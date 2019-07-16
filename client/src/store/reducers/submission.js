@@ -18,7 +18,6 @@ import {
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
-  loading: false,
   error: null,
   salesforceId: null,
   formPage1: {
@@ -34,15 +33,14 @@ function Submission(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case ADD_SUBMISSION_REQUEST:
+    case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
       return update(state, {
-        loading: { $set: true },
         error: { $set: null }
       });
 
     case GET_SF_CONTACT_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
           dd: { $set: moment(action.payload.Birthdate).format("DD") },
@@ -69,7 +67,6 @@ function Submission(state = INITIAL_STATE, action) {
 
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         formPage1: {
           mm: { $set: moment(action.payload.birthdate).format("MM") },
           dd: { $set: moment(action.payload.birthdate).format("DD") },
@@ -91,45 +88,26 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
-    case ADD_SUBMISSION_FAILURE:
-    case GET_SF_CONTACT_FAILURE:
-      if (typeof action.payload.message === "string") {
-        error = action.payload.message;
-      } else {
-        error = "Sorry, something went wrong :(\nPlease try again.";
-      }
-      return update(state, {
-        loading: { $set: false },
-        error: { $set: error }
-      });
-
-    case SAVE_SALESFORCEID:
-      return update(state, {
-        salesforceId: { $set: action.payload.salesforceId }
-      });
-
-    case UPDATE_SUBMISSION_REQUEST:
-      return update(state, {
-        loading: { $set: true },
-        error: { $set: null }
-      });
-
     case UPDATE_SUBMISSION_SUCCESS:
       return update(state, {
-        loading: { $set: false },
         formPage2SubmitSucess: { $set: true }
       });
 
+    case ADD_SUBMISSION_FAILURE:
+    case GET_SF_CONTACT_FAILURE:
     case UPDATE_SUBMISSION_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
         error = "Sorry, something went wrong :(\nPlease try again.";
       }
-      console.log(error);
       return update(state, {
-        loading: { $set: false },
         error: { $set: error }
+      });
+
+    case SAVE_SALESFORCEID:
+      return update(state, {
+        salesforceId: { $set: action.payload.salesforceId }
       });
 
     default:
