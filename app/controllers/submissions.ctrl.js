@@ -127,13 +127,17 @@ const createSubmission = async (req, res, next) => {
     );
 
     if (!createSubmissionResult || createSubmissionResult.message) {
+      console.log(
+        `submissions.ctrl.js > 130: ${createSubmissionResult.message ||
+          "There was an error saving the submission"}`
+      );
       return res.status(500).json({
         message:
           createSubmissionResult.message ||
           "There was an error saving the submission"
       });
     } else {
-      return next(createSubmissionResult);
+      return next(salesforce_id, req, res, next);
       // return res.status(200).json(createSubmissionResult);
     }
   }
