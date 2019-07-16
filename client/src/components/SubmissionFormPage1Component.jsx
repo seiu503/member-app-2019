@@ -115,6 +115,7 @@ class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
+    const employerList = this.props.submission.employerNames || [""];
     return (
       <div
         className={this.classes.root}
@@ -130,9 +131,10 @@ class SubmissionFormPage1Component extends React.Component {
             label="Employer Name"
             name="employerName"
             id="employerName"
-            type="text"
+            type="select"
             classes={this.classes}
-            component={this.renderTextField}
+            component={this.renderSelect}
+            options={employerList}
           />
 
           <Field

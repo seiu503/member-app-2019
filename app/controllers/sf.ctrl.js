@@ -47,6 +47,37 @@ const getSFContactById = (req, res, next) => {
   });
 };
 
+/** Get an array of all employers from Salesforce
+ *  @param    {none}
+ *  @returns  {Array||Object}    Array of SF Account objects OR error message.
+ */
+const getAllEmployers = (req, res, next) => {
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retiree', 'Public', 'Care')`;
+  conn.login(user, password, function(err, userInfo) {
+    if (err) {
+      console.log("sf.ctrl.js > 58");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+
+    try {
+      conn.query(query, function(err, accounts) {
+        if (err) {
+          console.log("sf.ctrl.js > 66");
+          console.error(err);
+          return res.status(500).json({ message: err.message });
+        }
+        // console.log(accounts.records);
+        res.status(200).json(accounts.records);
+      });
+    } catch (err) {
+      console.log("sf.ctrl.js > 74");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+};
+
 /** Update a contact in Salesforce by Salesforce Contact ID
  *  @param    {String}   id           Salesforce Contact ID
  *  @param    {Object}   body         Raw submission data used to generate
@@ -68,7 +99,7 @@ const updateSFContact = (id, req, res, next) => {
   console.log(updates);
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 59");
+      console.log("sf.ctrl.js > 103");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -81,7 +112,7 @@ const updateSFContact = (id, req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.log("sf.ctrl.js > 80");
+            console.log("sf.ctrl.js > 116");
             return console.error(err, contact);
           } else {
             console.log("Updated Successfully : " + contact.id);
@@ -90,7 +121,7 @@ const updateSFContact = (id, req, res, next) => {
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 86");
+      console.log("sf.ctrl.js > 125");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -105,7 +136,7 @@ const updateSFContact = (id, req, res, next) => {
 const createSFOnlineMemberApp = (id, req, res, next) => {
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 106");
+      console.log("sf.ctrl.js > 140");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -129,7 +160,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
         },
         function(err, OMA) {
           if (err || !OMA.success) {
-            console.log("sf.ctrl.js > 119");
+            console.log("sf.ctrl.js > 164");
             return console.error(err, OMA);
           } else {
             console.log("Created SF OMA Successfully : " + OMA.id);
@@ -139,7 +170,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 128");
+      console.log("sf.ctrl.js > 174");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -150,6 +181,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
 
 module.exports = {
   getSFContactById,
+  getAllEmployers,
   createSFOnlineMemberApp,
   updateSFContact
 };

@@ -14,7 +14,10 @@ import {
 import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
-  GET_SF_CONTACT_FAILURE
+  GET_SF_CONTACT_FAILURE,
+  GET_SF_EMPLOYERS_REQUEST,
+  GET_SF_EMPLOYERS_SUCCESS,
+  GET_SF_EMPLOYERS_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -25,6 +28,8 @@ export const INITIAL_STATE = {
     homeState: "or",
     preferredLanguage: "english"
   },
+  employerNames: [""],
+  employerObjects: [{ Name: "" }],
   formPage2: {}
 };
 
@@ -35,8 +40,16 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
+    case GET_SF_EMPLOYERS_REQUEST:
       return update(state, {
         error: { $set: null }
+      });
+
+    case GET_SF_EMPLOYERS_SUCCESS:
+      const employerNames = action.payload.map(employer => employer.Name);
+      return update(state, {
+        employerNames: { $set: employerNames },
+        employerObjects: { $set: action.payload }
       });
 
     case GET_SF_CONTACT_SUCCESS:
@@ -96,6 +109,7 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_FAILURE:
     case UPDATE_SUBMISSION_FAILURE:
+    case GET_SF_EMPLOYERS_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

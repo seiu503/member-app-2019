@@ -15,7 +15,6 @@ const wrap = {
 
 const spin = {
   position: "relative",
-  // left: "-27px",
   top: "44%"
 };
 
