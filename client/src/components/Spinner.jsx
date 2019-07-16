@@ -2,20 +2,21 @@ import React from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const wrap = {
-  width: "100vw",
-  height: "100vh",
   display: "flex",
   justifyContent: "center",
-  alignItems: "center",
-  position: "absolute",
+  position: "fixed",
   top: 0,
+  bottom: 0,
+  left: 0,
+  right: 0,
   zIndex: 3,
   backgroundColor: "rgba(0,0,0,.4)"
 };
 
 const spin = {
   position: "relative",
-  left: "-27px"
+  // left: "-27px",
+  top: "44%"
 };
 
 const Spinner = props => (

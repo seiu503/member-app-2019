@@ -2,7 +2,7 @@ import React from "react";
 import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-// import lifecycle from "react-pure-lifecycle";
+import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
@@ -14,8 +14,10 @@ import { stylesPage1 } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage1Container extends React.Component {
   componentDidMount() {
-    if (this.props.match.params.id) {
-      const { id } = this.props.match.params;
+    const values = queryString.parse(this.props.location.search);
+    console.log(values.id);
+    if (values.id) {
+      const { id } = values;
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
@@ -26,7 +28,7 @@ export class SubmissionFormPage1Container extends React.Component {
           console.log(err);
         });
     } else {
-      console.log("no match params found, no prefill");
+      console.log("no id found, no prefill");
       return;
     }
   }
@@ -64,10 +66,8 @@ const mapDispatchToProps = dispatch => ({
 
 // add MUI styles and faked lifecycle methods
 export default withStyles(stylesPage1)(
-  // lifecycle(methods)(
   connect(
     mapStateToProps,
     mapDispatchToProps
   )(SubmissionFormPage1Container)
-  // )
 );

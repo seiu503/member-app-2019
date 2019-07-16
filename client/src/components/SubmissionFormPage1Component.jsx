@@ -2,6 +2,7 @@ import React from "react";
 import { Field } from "redux-form";
 import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
+import queryString from "query-string";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -55,7 +56,9 @@ class SubmissionFormPage1Component extends React.Component {
     const birthdate = mm + "/" + dd + "/" + yyyy;
 
     if (!salesforceId) {
-      salesforceId = this.props.match.params.id;
+      const values = queryString.parse(this.props.location.search);
+      console.log(values.id);
+      salesforceId = values.id;
     }
 
     const body = {
