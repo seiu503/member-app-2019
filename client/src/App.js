@@ -195,7 +195,7 @@ export class AppUnconnected extends Component {
             />
             <Route
               exact
-              path="/:id?"
+              path="/"
               render={routeProps => (
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
@@ -205,7 +205,7 @@ export class AppUnconnected extends Component {
             />
             <Route
               exact
-              path="/page2/:id?"
+              path="/page2"
               render={routeProps => (
                 <SubmissionFormPage2
                   setRedirect={this.setRedirect}
