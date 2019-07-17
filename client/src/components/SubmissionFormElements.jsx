@@ -148,7 +148,9 @@ export const employerTypeMap = {
 
 // helper function for reverse lookup from above object
 export const getKeyByValue = (object, value) => {
-  return Object.keys(object).find(key => object[key] === value);
+  return Object.keys(object).find(
+    key => object[key].toLowerCase() === value.toLowerCase()
+  );
 };
 
 // MUI styles object

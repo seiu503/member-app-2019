@@ -32,10 +32,76 @@ class SubmissionFormPage1Component extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    this.loadEmployersPicklist();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.submission.employerNames.length < 2) {
+      this.loadEmployersPicklist();
+    }
+  }
+
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
+
+  loadEmployersPicklist = () => {
+    // generate initial picklist of employer types by manipulating data
+    // from redux store to replace with more user-friendly names
+    let employerList = this.props.submission.employerNames || [""];
+    if (employerList.length > 1) {
+      console.log(employerList.length);
+    }
+    const employerTypesListRaw = this.props.submission.employerObjects.map(
+      employer => employer.Sub_Division__c
+    ) || [""];
+    const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
+    const employerTypesList = employerTypesCodes.map(code =>
+      employerTypeMap[code] ? employerTypeMap[code] : ""
+    ) || [""];
+    if (employerTypesList.length > 1) {
+      console.log(employerTypesList.length);
+    }
+    return employerTypesList;
+  };
+
+  updateEmployersPicklist = e => {
+    let employerObjects = this.props.submission.employerObjects || [
+      { Name: "", Sub_Division__c: "" }
+    ];
+
+    // get the value of the employer type selected by user
+    let employerTypeUserSelect = "";
+    if (e) {
+      console.log(e.target.value);
+    }
+    if (Object.keys(this.props.formValues).length) {
+      console.log(this.props.formValues);
+      employerTypeUserSelect = this.props.formValues.employerType;
+      console.log(employerTypeUserSelect);
+    } else {
+      console.log("no formValues in props");
+    }
+
+    const employerTypesList = this.loadEmployersPicklist();
+    // if picklist finished populating and user has selected employer type,
+    // filter the employer names list to return only names in that category
+    if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
+      console.log(employerTypeUserSelect);
+      const employerObjectsFiltered = employerObjects.filter(
+        employer =>
+          employer.Sub_Division__c ===
+          getKeyByValue(employerTypeMap, employerTypeUserSelect)
+      );
+      console.log(employerObjectsFiltered);
+      const employerList = employerObjectsFiltered.map(
+        employer => employer.Name
+      );
+      return employerList;
+    }
+  };
 
   handleSubmit = values => {
     let {
@@ -119,48 +185,10 @@ class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
-    // generate initial picklist of employer types by manipulating data
-    // from redux store to replace with more user-friendly names
-    let employerList = this.props.submission.employerNames || [""];
-    let employerObjects = this.props.submission.employerObjects || [
+    const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
-    if (employerList.length > 1) {
-      console.log(employerList.length);
-    }
-    const employerTypesListRaw = this.props.submission.employerObjects.map(
-      employer => employer.Sub_Division__c
-    ) || [""];
-    const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
-    const employerTypesList = employerTypesCodes.map(code =>
-      employerTypeMap[code] ? employerTypeMap[code] : ""
-    ) || [""];
-    if (employerTypesList.length > 1) {
-      console.log(employerTypesList.length);
-    }
-
-    // get the value of the employer type selected by user
-    let employerTypeUserSelect = "";
-    if (Object.keys(this.props.formValues).length) {
-      console.log(this.props.formValues);
-      employerTypeUserSelect = this.props.formValues.employerType;
-      console.log(employerTypeUserSelect);
-    } else {
-      console.log("no formValues in props");
-    }
-
-    // if picklist finished populating and user has selected employer type,
-    // filter the employer names list to return only names in that category
-    if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
-      console.log(employerTypeUserSelect);
-      const employerObjectsFiltered = employerObjects.filter(
-        employer =>
-          employer.Sub_Division__c ===
-          getKeyByValue(employerTypeMap, employerTypeUserSelect)
-      );
-      console.log(employerObjectsFiltered);
-      employerList = employerObjectsFiltered.map(employer => employer.Name);
-    }
+    const employerList = this.updateEmployersPicklist() || [""];
     return (
       <div
         className={this.classes.root}
@@ -180,6 +208,7 @@ class SubmissionFormPage1Component extends React.Component {
             classes={this.classes}
             component={this.renderSelect}
             options={employerTypesList}
+            onChange={e => this.updateEmployersPicklist(e)}
           />
           <Field
             label="Employer Name"
