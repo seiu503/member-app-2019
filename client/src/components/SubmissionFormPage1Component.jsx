@@ -33,7 +33,21 @@ class SubmissionFormPage1Component extends React.Component {
   }
 
   componentDidMount() {
-    this.loadEmployersPicklist();
+    // API call to SF to populate employers picklist
+    this.props.apiSF
+      .getSFEmployers()
+      .then(result => {
+        // console.log(result.payload)
+        this.loadEmployersPicklist();
+      })
+      .catch(err => {
+        console.log(err);
+        openSnackbar(
+          "error",
+          this.props.submission.error ||
+            "An error occurred while trying to fetch data from salesforce."
+        );
+      });
   }
 
   componentDidUpdate(prevProps) {
@@ -198,15 +212,17 @@ class SubmissionFormPage1Component extends React.Component {
             options={employerTypesList}
             onChange={e => this.updateEmployersPicklist(e)}
           />
-          <Field
-            label="Employer Name"
-            name="employerName"
-            id="employerName"
-            type="select"
-            classes={this.classes}
-            component={this.renderSelect}
-            options={employerList}
-          />
+          {this.props.formValues.employerType !== "" && (
+            <Field
+              label="Employer Name"
+              name="employerName"
+              id="employerName"
+              type="select"
+              classes={this.classes}
+              component={this.renderSelect}
+              options={employerList}
+            />
+          )}
           <Field
             label="First Name"
             name="firstName"

@@ -7,7 +7,6 @@ import queryString from "query-string";
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage1Component from "../components/SubmissionFormPage1Component";
-import { openSnackbar } from "../containers/Notifier";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
@@ -32,20 +31,6 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log("no id found, no prefill");
       return;
     }
-    // second API call to SF to populate employers picklist
-    this.props.apiSF
-      .getSFEmployers()
-      .then(result => {
-        // console.log(result.payload)
-      })
-      .catch(err => {
-        console.log(err);
-        openSnackbar(
-          "error",
-          this.props.submission.error ||
-            "An error occurred while trying to fetch data from salesforce."
-        );
-      });
   }
   render() {
     if (this.props.submission.loading) {
