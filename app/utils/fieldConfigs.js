@@ -26,8 +26,8 @@ const contactsTableFields = {
     clientFieldName: "accountName",
     HtmlInputType: "select",
     SFTable: "Worker (Contact)", // Account field
-    SFFieldLabel: "Employer Name",
-    SFAPIName: "Account.Name",
+    SFFieldLabel: "Parent Name",
+    SFAPIName: "Account.CVRSOS__ParentName__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Dakavia Health Services"

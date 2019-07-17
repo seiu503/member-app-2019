@@ -56,11 +56,8 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
       const { employerTypeMap } = formElements;
-      console.log(action.payload);
-      console.log(action.payload.Account.WS_Subdivision_from_Agency__c);
       const employerType =
         employerTypeMap[action.payload.Account.WS_Subdivision_from_Agency__c];
-      console.log(employerType);
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
@@ -68,7 +65,7 @@ function Submission(state = INITIAL_STATE, action) {
           yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
           mobilePhone: { $set: action.payload.MobilePhone },
           employerName: {
-            $set: action.payload.Employer_Name__c
+            $set: action.payload.Account.CVRSOS__ParentName__c
           },
           employerType: {
             $set: employerType

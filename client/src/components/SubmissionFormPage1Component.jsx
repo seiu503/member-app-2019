@@ -50,10 +50,6 @@ class SubmissionFormPage1Component extends React.Component {
   loadEmployersPicklist = () => {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
-    let employerList = this.props.submission.employerNames || [""];
-    if (employerList.length > 1) {
-      console.log(employerList.length);
-    }
     const employerTypesListRaw = this.props.submission.employerObjects.map(
       employer => employer.Sub_Division__c
     ) || [""];
@@ -61,9 +57,7 @@ class SubmissionFormPage1Component extends React.Component {
     const employerTypesList = employerTypesCodes.map(code =>
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
-    if (employerTypesList.length > 1) {
-      console.log(employerTypesList.length);
-    }
+    employerTypesList.unshift("");
     return employerTypesList;
   };
 
@@ -74,13 +68,8 @@ class SubmissionFormPage1Component extends React.Component {
 
     // get the value of the employer type selected by user
     let employerTypeUserSelect = "";
-    if (e) {
-      console.log(e.target.value);
-    }
     if (Object.keys(this.props.formValues).length) {
-      console.log(this.props.formValues);
       employerTypeUserSelect = this.props.formValues.employerType;
-      console.log(employerTypeUserSelect);
     } else {
       console.log("no formValues in props");
     }
@@ -89,16 +78,15 @@ class SubmissionFormPage1Component extends React.Component {
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
     if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
-      console.log(employerTypeUserSelect);
       const employerObjectsFiltered = employerObjects.filter(
         employer =>
           employer.Sub_Division__c ===
           getKeyByValue(employerTypeMap, employerTypeUserSelect)
       );
-      console.log(employerObjectsFiltered);
       const employerList = employerObjectsFiltered.map(
         employer => employer.Name
       );
+      employerList.unshift("");
       return employerList;
     }
   };
