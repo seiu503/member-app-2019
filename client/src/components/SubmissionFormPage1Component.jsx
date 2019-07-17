@@ -1,6 +1,5 @@
 import React from "react";
-import { connect } from "react-redux";
-import { Field, formValueSelector } from "redux-form";
+import { Field } from "redux-form";
 import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
 import queryString from "query-string";
@@ -126,7 +125,9 @@ class SubmissionFormPage1Component extends React.Component {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
-    console.log(employerList);
+    if (employerList.length > 1) {
+      console.log(employerList.length);
+    }
     const employerTypesListRaw = this.props.submission.employerObjects.map(
       employer => employer.Sub_Division__c
     ) || [""];
@@ -134,15 +135,19 @@ class SubmissionFormPage1Component extends React.Component {
     const employerTypesList = employerTypesCodes.map(code =>
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
-    console.log(employerTypesList);
+    if (employerTypesList.length > 1) {
+      console.log(employerTypesList.length);
+    }
 
     // get the value of the employer type selected by user
-    const selector = formValueSelector("formPage1");
     let employerTypeUserSelect = "";
-    connect(state => {
-      let employerTypeUserSelect = selector(state, "employerType");
-    });
-    console.log(employerTypeUserSelect);
+    if (Object.keys(this.props.formValues).length) {
+      console.log(this.props.formValues);
+      employerTypeUserSelect = this.props.formValues.employerType;
+      console.log(employerTypeUserSelect);
+    } else {
+      console.log("no formValues in props");
+    }
 
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category

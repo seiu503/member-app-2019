@@ -55,11 +55,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 }
 
-// param for add lifecycle methods to functional component
-// const methods = {
-//   componentDidMount
-// };
-
 // add reduxForm to component
 export const SubmissionFormPage1Wrap = reduxForm({
   form: "submissionPage1",
@@ -79,7 +74,6 @@ const mapDispatchToProps = dispatch => ({
   apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
-// add MUI styles and faked lifecycle methods
 export default withStyles(stylesPage1)(
   connect(
     mapStateToProps,

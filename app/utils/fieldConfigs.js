@@ -1,5 +1,10 @@
 const uuid = require("uuid");
 
+// fields labeled 'Account field' are actually in the Account (Employer)
+// table in SF, but they're being accessed from a query to the
+// Contacts table that includes a lookup to Accounts
+// so i'm leaving them here to avoid having to rewrite
+// the generateSFContactFieldList function
 const contactsTableFields = {
   display_name: {
     oldFormPage: "none",
@@ -20,7 +25,7 @@ const contactsTableFields = {
     postgresFieldName: "account_name",
     clientFieldName: "accountName",
     HtmlInputType: "select",
-    SFTable: "Worker (Contact)",
+    SFTable: "Worker (Contact)", // Account field
     SFFieldLabel: "Employer Name",
     SFAPIName: "Account.Name",
     SFDataType: "Text(255)",
@@ -28,17 +33,30 @@ const contactsTableFields = {
     testingSample: "Dakavia Health Services"
   },
   account_id: {
-    oldFormPage: "1",
+    oldFormPage: "none",
     req: "Y",
     postgresFieldName: "account_id",
     clientFieldName: "accountId",
     HtmlInputType: "none",
-    SFTable: "Worker (Contact)",
+    SFTable: "Worker (Contact)", // Account field
     SFFieldLabel: "Account Id",
     SFAPIName: "Account.Id",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "0016100000Pw3eMAAR"
+  },
+  account_subdivision: {
+    oldFormPage: "none",
+    req: "Y",
+    postgresFieldName: "account_subdivision",
+    clientFieldName: "accountSubdivision",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "WS Subdivision (from Agency)",
+    SFAPIName: "Account.WS_Subdivision_from_Agency__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Nursing Homes"
   },
   agency_number: {
     oldFormPage: "none",

@@ -26,8 +26,8 @@ export const INITIAL_STATE = {
   salesforceId: null,
   formPage1: {
     mm: "",
-    homeState: "or",
-    preferredLanguage: "english",
+    homeState: "OR",
+    preferredLanguage: "English",
     employerType: ""
   },
   employerNames: [""],
@@ -56,7 +56,11 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
       const { employerTypeMap } = formElements;
-      const employerType = employerTypeMap[action.payload.Sub_Division__c];
+      console.log(action.payload);
+      console.log(action.payload.Account.WS_Subdivision_from_Agency__c);
+      const employerType =
+        employerTypeMap[action.payload.Account.WS_Subdivision_from_Agency__c];
+      console.log(employerType);
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
