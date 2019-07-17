@@ -1,5 +1,6 @@
 import React from "react";
-import { Field } from "redux-form";
+import { connect } from "react-redux";
+import { Field, formValueSelector } from "redux-form";
 import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
 import queryString from "query-string";
@@ -15,11 +16,15 @@ import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
-const stateList = formElements.stateList;
-const monthList = formElements.monthList;
-const languageOptions = formElements.languageOptions;
-const dateOptions = formElements.dateOptions;
-const yearOptions = formElements.yearOptions;
+const {
+  stateList,
+  monthList,
+  languageOptions,
+  dateOptions,
+  yearOptions,
+  employerTypeMap,
+  getKeyByValue
+} = formElements;
 
 class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
@@ -115,7 +120,42 @@ class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
-    const employerList = this.props.submission.employerNames || [""];
+    // generate initial picklist of employer types by manipulating data
+    // from redux store to replace with more user-friendly names
+    let employerList = this.props.submission.employerNames || [""];
+    let employerObjects = this.props.submission.employerObjects || [
+      { Name: "", Sub_Division__c: "" }
+    ];
+    console.log(employerList);
+    const employerTypesListRaw = this.props.submission.employerObjects.map(
+      employer => employer.Sub_Division__c
+    ) || [""];
+    const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
+    const employerTypesList = employerTypesCodes.map(code =>
+      employerTypeMap[code] ? employerTypeMap[code] : ""
+    ) || [""];
+    console.log(employerTypesList);
+
+    // get the value of the employer type selected by user
+    const selector = formValueSelector("formPage1");
+    let employerTypeUserSelect = "";
+    connect(state => {
+      let employerTypeUserSelect = selector(state, "employerType");
+    });
+    console.log(employerTypeUserSelect);
+
+    // if picklist finished populating and user has selected employer type,
+    // filter the employer names list to return only names in that category
+    if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
+      console.log(employerTypeUserSelect);
+      const employerObjectsFiltered = employerObjects.filter(
+        employer =>
+          employer.Sub_Division__c ===
+          getKeyByValue(employerTypeMap, employerTypeUserSelect)
+      );
+      console.log(employerObjectsFiltered);
+      employerList = employerObjectsFiltered.map(employer => employer.Name);
+    }
     return (
       <div
         className={this.classes.root}
@@ -128,6 +168,15 @@ class SubmissionFormPage1Component extends React.Component {
           className={this.classes.form}
         >
           <Field
+            label="Employer Type"
+            name="employerType"
+            id="employerType"
+            type="select"
+            classes={this.classes}
+            component={this.renderSelect}
+            options={employerTypesList}
+          />
+          <Field
             label="Employer Name"
             name="employerName"
             id="employerName"
@@ -136,7 +185,6 @@ class SubmissionFormPage1Component extends React.Component {
             component={this.renderSelect}
             options={employerList}
           />
-
           <Field
             label="First Name"
             name="firstName"

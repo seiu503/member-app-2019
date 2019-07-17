@@ -1,5 +1,6 @@
 import update from "immutability-helper";
 import moment from "moment";
+import * as formElements from "../../components/SubmissionFormElements";
 
 import {
   ADD_SUBMISSION_REQUEST,
@@ -26,10 +27,11 @@ export const INITIAL_STATE = {
   formPage1: {
     mm: "",
     homeState: "or",
-    preferredLanguage: "english"
+    preferredLanguage: "english",
+    employerType: ""
   },
   employerNames: [""],
-  employerObjects: [{ Name: "" }],
+  employerObjects: [{ Name: "", Sub_Division__c: "" }],
   formPage2: {}
 };
 
@@ -53,15 +55,19 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_SF_CONTACT_SUCCESS:
+      const { employerTypeMap } = formElements;
+      const employerType = employerTypeMap[action.payload.Sub_Division__c];
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
           dd: { $set: moment(action.payload.Birthdate).format("DD") },
           yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
           mobilePhone: { $set: action.payload.MobilePhone },
-          // fix employer name to pull from Acct table
           employerName: {
-            $set: action.payload.Worksite_manual_entry_from_webform__c
+            $set: action.payload.Employer_Name__c
+          },
+          employerType: {
+            $set: employerType
           },
           firstName: { $set: action.payload.FirstName },
           lastName: { $set: action.payload.LastName },

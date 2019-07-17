@@ -132,6 +132,25 @@ export const yearOptions = () => {
   return years;
 };
 
+// user-friendly names for employer type codes
+export const employerTypeMap = {
+  PNP: "Non-Profit",
+  Retirees: "Retired",
+  State: "State Agency",
+  "Nursing Homes": "Nursing Home",
+  "State Homecare": "State Homecare or Personal Support",
+  "Higher Ed": "Higher Education",
+  "Local Gov": "Local Government",
+  AFH: "Adult Foster Home",
+  "Child Care": "Child Care",
+  "Private Homecare": "Private Homecare Agency"
+};
+
+// helper function for reverse lookup from above object
+export const getKeyByValue = (object, value) => {
+  return Object.keys(object).find(key => object[key] === value);
+};
+
 // MUI styles object
 export const stylesPage1 = theme => ({
   root: {

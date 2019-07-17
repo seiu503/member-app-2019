@@ -52,7 +52,7 @@ const getSFContactById = (req, res, next) => {
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
 const getAllEmployers = (req, res, next) => {
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retiree', 'Public', 'Care')`;
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.log("sf.ctrl.js > 58");

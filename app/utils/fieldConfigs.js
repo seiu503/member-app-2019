@@ -12,7 +12,7 @@ const contactsTableFields = {
     SFAPIName: "Display_Name_for_forms__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "testuser"
+    testingSample: "test user"
   },
   account_name: {
     oldFormPage: "1",
@@ -21,11 +21,24 @@ const contactsTableFields = {
     clientFieldName: "accountName",
     HtmlInputType: "select",
     SFTable: "Worker (Contact)",
-    SFFieldLabel: "Account name free entry",
-    SFAPIName: "Account_name_Pardot_sync__c",
+    SFFieldLabel: "Employer Name",
+    SFAPIName: "Account.Name",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "testuser"
+    testingSample: "Dakavia Health Services"
+  },
+  account_id: {
+    oldFormPage: "1",
+    req: "Y",
+    postgresFieldName: "account_id",
+    clientFieldName: "accountId",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Account Id",
+    SFAPIName: "Account.Id",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "0016100000Pw3eMAAR"
   },
   agency_number: {
     oldFormPage: "none",
