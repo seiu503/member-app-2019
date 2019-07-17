@@ -3,6 +3,7 @@ import { shallow, mount } from "enzyme";
 
 import * as formElements from "../../components/SubmissionFormElements";
 import { checkProps } from "../../utils/testUtils";
+import checkPropTypes from "check-prop-types";
 
 const {
   getMaxDay,
@@ -69,10 +70,11 @@ describe("Helper Functions", () => {
 });
 
 const onChange = jest.fn();
+const onChangeMock = jest.fn();
 const onClick = jest.fn();
 describe("Input Field Render functions", () => {
   afterEach(() => {
-    onChange.mockRestore();
+    onChangeMock.mockRestore();
   });
   describe("renderTextField", () => {
     let wrapper;
@@ -149,7 +151,7 @@ describe("Input Field Render functions", () => {
       ).toBe("Required");
     });
     it("it doesn't throw PropType warnings", () => {
-      checkProps(renderTextField, initialProps);
+      checkPropTypes(renderTextField, initialProps);
     });
   });
 
@@ -197,7 +199,7 @@ describe("Input Field Render functions", () => {
       expect(onChange).toHaveBeenCalledWith(event);
     });
     it("it doesn't throw PropType warnings", () => {
-      checkProps(renderSelect, initialProps);
+      checkPropTypes(renderSelect, initialProps);
     });
   });
 
@@ -208,7 +210,7 @@ describe("Input Field Render functions", () => {
       input: {
         name: "testCheckbox",
         onBlur: jest.fn(),
-        onChange,
+        onChange: onChangeMock(),
         onDragStart: jest.fn(),
         onDrop: jest.fn(),
         onFocus: jest.fn(),
@@ -242,16 +244,16 @@ describe("Input Field Render functions", () => {
     });
 
     it("updates input value when changed", () => {
-      const checkEvent = { target: { value: true } };
-      wrapper
-        .find(`[data-test="component-checkbox"]`)
-        .first()
-        .simulate("click");
-      expect(onClick).toHaveBeenCalled();
+      const checkbox = wrapper.find(`[data-test="component-checkbox"]`).first();
+      checkbox.checked = true;
+      checkbox.simulate("change", {
+        target: { checked: true }
+      });
+      expect(onChangeMock).toHaveBeenCalled();
     });
 
     it("it doesn't throw PropType warnings", () => {
-      checkProps(renderCheckbox, initialProps);
+      checkPropTypes(renderCheckbox, initialProps);
     });
   });
 });

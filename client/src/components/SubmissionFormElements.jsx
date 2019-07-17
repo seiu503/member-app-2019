@@ -331,6 +331,7 @@ export const renderCheckbox = ({
           {...custom}
           className={classes.checkbox}
           data-test="component-checkbox"
+          name="checkbox"
         />
       }
     />
