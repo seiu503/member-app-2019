@@ -9,7 +9,6 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 
 import * as formElements from "./SubmissionFormElements";
-import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
@@ -126,20 +125,31 @@ class SubmissionFormPage1Component extends React.Component {
       salesforceId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
+    console.log(employerName);
+    console.log(employerName.toLowerCase());
+    console.log(this.props.submission.employerObjects);
+    const employerObject = this.props.submission.employerObjects.filter(
+      obj => obj.Name.toLowerCase() === employerName.toLowerCase()
+    )[0];
+    console.log(employerObject);
+    const employerId = employerObject.Id;
+    const agencyNumber = employerObject.Agency_Number__c;
+    console.log(employerId);
 
+    const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
-      const values = queryString.parse(this.props.location.search);
-      console.log(values.id);
-      salesforceId = values.id;
+      salesforceId = q.id;
     }
+    const campaignSource = q.s || "Direct seiu503signup";
 
     const body = {
       ip_address: localIpUrl(),
       submission_date: new Date(),
-      agency_number: utils.randomInt(),
+      agency_number: agencyNumber,
       birthdate,
       cell_phone: mobilePhone,
       employer_name: employerName,
+      employer_id: employerId,
       first_name: firstName,
       last_name: lastName,
       home_street: homeStreet,
@@ -151,7 +161,7 @@ class SubmissionFormPage1Component extends React.Component {
       terms_agree: termsAgree,
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
-      online_campaign_source: "HARD CODED",
+      online_campaign_source: campaignSource,
       legal_language: this.legal_language.textContent.toString(),
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
