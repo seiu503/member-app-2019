@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.table("submissions", function(table) {
-      table.uuid("salesforce_id").notNullable().unique;
+      table.string("salesforce_id").notNullable();
       table.renameColumn("submission_id", "id");
       table.dropColumn("contact_id");
     })
