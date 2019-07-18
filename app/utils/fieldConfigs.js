@@ -32,6 +32,19 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "Dakavia Health Services"
   },
+  worksite_name: {
+    oldFormPage: "none",
+    req: "N",
+    postgresFieldName: "worksite_name",
+    clientFieldName: "worksiteName",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "Name",
+    SFAPIName: "Account.Name",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Dakavia - Fernhill Estates"
+  },
   employer_id: {
     oldFormPage: "none",
     req: "Y",
@@ -64,9 +77,22 @@ const contactsTableFields = {
     postgresFieldName: "agency_number",
     clientFieldName: "agencyNumber",
     HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "Worker (Contact)",
-    SFFieldLabel: "Formstack_Agency_Number",
-    SFAPIName: "Formstack_Agency_Number__c",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "Agency Number",
+    SFAPIName: "Account.Agency_Number__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "123456"
+  },
+  account_record_type_id: {
+    oldFormPage: "none",
+    req: "N",
+    postgresFieldName: "account_record_type_id",
+    clientFieldName: "accountRecordTypeId",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "Employer Record Type",
+    SFAPIName: "Account.RecordTypeId",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "123456"
