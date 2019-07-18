@@ -294,6 +294,14 @@ export const stylesPage2 = theme => ({
   }
 });
 
+//disable otherDescription input based on gender select
+export const enableGenderOtherDescription = props => {
+  if (props.formValues.gender === "other") {
+    return false;
+  }
+  return true;
+};
+
 // custom MUI friendly TEXT input
 export const renderTextField = ({
   input,

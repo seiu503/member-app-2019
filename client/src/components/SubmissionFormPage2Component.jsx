@@ -14,6 +14,7 @@ import ButtonWithSpinner from "./ButtonWithSpinner";
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
+const enableGenderOtherDescription = formElements.enableGenderOtherDescription;
 
 class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
@@ -292,6 +293,7 @@ class SubmissionFormPage2Component extends React.Component {
               type="text"
               classes={this.classes}
               component={this.renderTextField}
+              disabled={enableGenderOtherDescription(this.props)}
             />
             <Field
               label="Your pronouns"
