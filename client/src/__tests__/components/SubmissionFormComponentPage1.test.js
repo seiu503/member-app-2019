@@ -1,12 +1,12 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 
 import { findByTestAttr } from "../../utils/testUtils";
 import {
   generateSampleSubmission,
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormPage1Component from "../../components/SubmissionFormPage1Component";
+import SubmissionFormPage1Wrap from "../../components/SubmissionFormPage1";
 import * as Notifier from "../../containers/Notifier";
 
 // variables
@@ -57,7 +57,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
-    return shallow(<SubmissionFormPage1Component {...setUpProps} />);
+    return mount(<SubmissionFormPage1Wrap {...setUpProps} />);
   };
 
   // smoke test and making sure we have access to correct props
