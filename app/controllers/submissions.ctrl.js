@@ -137,12 +137,10 @@ const createSubmission = async (req, res, next) => {
           "There was an error saving the submission"
       });
     } else {
+      // passing contact id and submission id to next middleware
       res.locals.sf_contact_id = salesforce_id;
       res.locals.submission_id = createSubmissionResult[0].id;
-      console.log("submissions.ctrl.js > 142");
-      console.log(res.locals);
       return next();
-      // return res.status(200).json(createSubmissionResult);
     }
   }
 };

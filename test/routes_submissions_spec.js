@@ -89,7 +89,7 @@ const google_token = "5678";
 
 /* ================================= TESTS ================================= */
 
-let id, mySalesforce_id, submissionId, createdAt, updatedAt;
+let sf_contact_id, submission_id, createdAt, updatedAt;
 
 chai.use(chaiHttp);
 let authenticateMock;
@@ -114,29 +114,25 @@ suite.only("routes : submissions", function() {
         .post("/api/submission/")
         .send(submissionBody)
         .end(function(err, res) {
-          console.log("routes_submissions_spec.js > 117");
-          console.log(res.body);
-          // id = res.body[0].id;
-          // mySalesforce_id = res.body[0].salesforce_id;
-          // createdAt = res.body[0].created_at;
-          // updatedAt = res.body[0].updated_at;
+          sf_contact_id = res.body.salesforce_id;
+          submission_id = res.body.submission_id;
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();
         });
     });
-    // test("returns an error if request body is missing required fields", function(done) {
-    //   chai
-    //     .request(app)
-    //     .post("/api/submission/")
-    //     .send({ fullname: "firstname lastname" })
-    //     .end(function(err, res) {
-    //       assert.equal(res.status, 422);
-    //       assert.equal(res.type, "application/json");
-    //       assert.isNotNull(res.body.message);
-    //       done();
-    //     });
-    // });
+    test("returns an error if request body is missing required fields", function(done) {
+      chai
+        .request(app)
+        .post("/api/submission/")
+        .send({ fullname: "firstname lastname" })
+        .end(function(err, res) {
+          assert.equal(res.status, 422);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
   });
 
   // suite("PUT /api/submission/:id", function() {
