@@ -28,7 +28,7 @@ const styles = theme => ({
   }
 });
 
-class WelcomeFormComponent extends React.Component {
+class WelcomeInfo extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -37,7 +37,7 @@ class WelcomeFormComponent extends React.Component {
 
   render() {
     return (
-      <div className={this.classes.root} data-test="component-welcomeInfo">
+      <div className={this.classes.root} data-test="component-welcome-info">
         <Card className={this.classes.card}>
           <CardMedia
             className={this.classes.media}
@@ -84,8 +84,8 @@ class WelcomeFormComponent extends React.Component {
   }
 }
 
-WelcomeFormComponent.propTypes = {
+WelcomeInfo.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(WelcomeFormComponent);
+export default withStyles(styles)(WelcomeInfo);

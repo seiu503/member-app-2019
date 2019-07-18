@@ -231,7 +231,7 @@ const contactsTableFields = {
     oldFormPage: "1",
     req: "Y",
     postgresFieldName: "home_postal_code",
-    clientFieldName: "homeZip",
+    clientFieldName: "homePostalCode",
     HtmlInputType: "text (limit 5 char)",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Home Zip/Postal Code",
@@ -872,6 +872,7 @@ const requiredFields = [
   "yyyy",
   "preferredLanguage",
   "homeStreet",
+  "homePostalCode",
   "homeZip",
   "homeState",
   "homeCity",
@@ -911,6 +912,7 @@ const generateSampleValidate = () => {
   sampleData.yyyy = "2001";
   sampleData.termsAgree = true;
   sampleData.mobilePhone = sampleData.cellPhone;
+  sampleData.homePostalCode = sampleData.homeZip;
   delete sampleData.homeZip;
   delete sampleData.cellPhone;
   return sampleData;

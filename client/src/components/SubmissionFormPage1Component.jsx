@@ -132,6 +132,7 @@ class SubmissionFormPage1Component extends React.Component {
     )[0];
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
+    const legalLanguage = this.legal_language.textContent.toString();
 
     const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
@@ -159,7 +160,7 @@ class SubmissionFormPage1Component extends React.Component {
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: campaignSource,
-      legal_language: this.legal_language.textContent.toString(),
+      legal_language: legalLanguage,
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
       direct_pay_auth: null,
