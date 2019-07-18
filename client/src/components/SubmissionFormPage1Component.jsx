@@ -138,7 +138,7 @@ class SubmissionFormPage1Component extends React.Component {
     if (!salesforceId) {
       salesforceId = q.id;
     }
-    const campaignSource = JSON.parse(q.s) || "Direct seiu503signup";
+    const campaignSource = q.s || "Direct seiu503signup";
 
     const body = {
       ip_address: localIpUrl(),

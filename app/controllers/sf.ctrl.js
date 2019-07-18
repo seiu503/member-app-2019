@@ -85,7 +85,9 @@ const getAllEmployers = (req, res, next) => {
  *                                    key/value pairs of fields to be updated.
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
-const updateSFContact = (id, req, res, next) => {
+const updateSFContact = (req, res, next) => {
+  console.log("sf.ctrl.js > 89");
+  console.log(res.locals);
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -95,10 +97,10 @@ const updateSFContact = (id, req, res, next) => {
       const sfFieldName = contactsTableFields[key].SFAPIName;
       updates[sfFieldName] = updatesRaw[key];
     } else {
-      console.log(`${key} not added to updates.`);
+      // console.log(`${key} not added to updates.`);
     }
   });
-  console.log(updates);
+  // console.log(updates);
   delete updates["Account.Id"];
   updates.AccountId = updatesRaw.employer_id;
   console.log(`sf.ctrl.js > 104: ${updates.AccountId}`);
@@ -112,7 +114,7 @@ const updateSFContact = (id, req, res, next) => {
     try {
       conn.sobject("Contact").update(
         {
-          Id: id,
+          Id: res.locals.sf_contact_id,
           ...updates
         },
         function(err, contact) {
@@ -121,7 +123,12 @@ const updateSFContact = (id, req, res, next) => {
             return console.error(err, contact);
           } else {
             console.log("Updated Successfully : " + contact.id);
-            return res.status(200).json({ salesforce_id: contact.id });
+            return res
+              .status(200)
+              .json({
+                salesforce_id: res.locals.sf_contact_id,
+                submission_id: res.locals.submission_id
+              });
           }
         }
       );
@@ -138,7 +145,9 @@ const updateSFContact = (id, req, res, next) => {
  *  @returns  does not return to client; passes salesforce_id to next function
  */
 
-const createSFOnlineMemberApp = (id, req, res, next) => {
+const createSFOnlineMemberApp = (req, res, next) => {
+  console.log("sf.ctrl.js > 140");
+  console.log(res.locals);
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.log("sf.ctrl.js > 140");
@@ -157,7 +166,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
           data[sfFieldName] = dataRaw[key];
         }
       });
-      data.Worker__c = id;
+      data.Worker__c = res.locals.sf_contact_id;
       data.Birthdate__c = formatDate(dataRaw.birthdate);
       conn.sobject("OnlineMemberApp__c").create(
         {
@@ -169,7 +178,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
             return console.error(err, OMA);
           } else {
             console.log("Created SF OMA Successfully : " + OMA.id);
-            return next(id, req, res, next);
+            return next();
             // return res.status(200).json({ salesforce_id: OMA.id });
           }
         }
