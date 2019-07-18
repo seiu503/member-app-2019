@@ -229,199 +229,158 @@ suite.only("routes : submissions", function() {
     });
   });
 
-  // suite("secured routes", function() {
-  //   beforeEach(() => {
-  //     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
-  //   });
+  suite("secured routes", function() {
+    beforeEach(() => {
+      authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+    });
 
-  //   afterEach(() => {
-  //     authenticateMock.restore();
-  //   });
+    afterEach(() => {
+      authenticateMock.restore();
+    });
 
-  //   suite("GET /api/submission/:id", function() {
-  //     beforeEach(() => {
-  //       const user = [{ name, email, avatar_url, google_token, google_id }];
-  //       userStub = sinon.stub(users, "createUser").resolves(user);
-  //       authenticateMock.yields(null, { id: 1 });
-  //     });
-  //     afterEach(() => {
-  //       userStub.restore();
-  //     });
-  //     const app = require("../server");
-  //     test("gets one submission by id", function(done) {
-  //       chai
-  //         .request(app)
-  //         .get(`/api/submission/${id}`)
-  //         .end(function(err, res) {
-  //           console.log(res.body);
-  //           assert.equal(res.status, 200);
-  //           assert.isNull(err);
-  //           assert.property(res.body, "ip_address");
-  //           assert.property(res.body, "submission_date");
-  //           assert.property(res.body, "agency_number");
-  //           assert.property(res.body, "birthdate");
-  //           assert.property(res.body, "cell_phone");
-  //           assert.property(res.body, "employer_name");
-  //           assert.property(res.body, "first_name");
-  //           assert.property(res.body, "last_name");
-  //           assert.property(res.body, "home_street");
-  //           assert.property(res.body, "home_city");
-  //           assert.property(res.body, "home_state");
-  //           assert.property(res.body, "home_zip");
-  //           assert.property(res.body, "home_email");
-  //           assert.property(res.body, "preferred_language");
-  //           assert.property(res.body, "terms_agree");
-  //           assert.property(res.body, "signature");
-  //           assert.property(res.body, "text_auth_opt_out");
-  //           assert.property(res.body, "online_campaign_source");
-  //           assert.property(res.body, "salesforce_id");
-  //           assert.property(res.body, "legal_language");
-  //           assert.property(res.body, "maintenance_of_effort");
-  //           assert.property(res.body, "seiu503_cba_app_date");
-  //           assert.property(res.body, "direct_pay_auth");
-  //           assert.property(res.body, "direct_deposit_auth");
-  //           assert.property(res.body, "immediate_past_member_status");
-  //           done();
-  //         });
-  //     });
-  //     test("returns error if submission id missing or malformed", function(done) {
-  //       chai
-  //         .request(app)
-  //         .get("/api/submission/123456789")
-  //         .end(function(err, res) {
-  //           assert.equal(res.status, 404);
-  //           assert.equal(res.type, "application/json");
-  //           assert.isNotNull(res.body.message);
-  //           done();
-  //         });
-  //     });
-  //   });
+    suite("GET /api/submission/:id", function() {
+      beforeEach(() => {
+        const user = [{ name, email, avatar_url, google_token, google_id }];
+        userStub = sinon.stub(users, "createUser").resolves(user);
+        authenticateMock.yields(null, { id: 1 });
+      });
+      afterEach(() => {
+        userStub.restore();
+      });
+      const app = require("../server");
+      test("gets one submission by id", function(done) {
+        chai
+          .request(app)
+          .get(`/api/submission/${submission_id}`)
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.property(res.body, "ip_address");
+            assert.property(res.body, "submission_date");
+            assert.property(res.body, "agency_number");
+            assert.property(res.body, "birthdate");
+            assert.property(res.body, "cell_phone");
+            assert.property(res.body, "employer_name");
+            assert.property(res.body, "first_name");
+            assert.property(res.body, "last_name");
+            assert.property(res.body, "home_street");
+            assert.property(res.body, "home_city");
+            assert.property(res.body, "home_state");
+            assert.property(res.body, "home_zip");
+            assert.property(res.body, "home_email");
+            assert.property(res.body, "preferred_language");
+            assert.property(res.body, "terms_agree");
+            assert.property(res.body, "signature");
+            assert.property(res.body, "text_auth_opt_out");
+            assert.property(res.body, "online_campaign_source");
+            assert.property(res.body, "salesforce_id");
+            assert.property(res.body, "legal_language");
+            assert.property(res.body, "maintenance_of_effort");
+            assert.property(res.body, "seiu503_cba_app_date");
+            assert.property(res.body, "direct_pay_auth");
+            assert.property(res.body, "direct_deposit_auth");
+            assert.property(res.body, "immediate_past_member_status");
+            done();
+          });
+      });
+      test("returns error if submission id missing or malformed", function(done) {
+        chai
+          .request(app)
+          .get("/api/submission/123456789")
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+    });
 
-  //   suite("GET /api/submission", function() {
-  //     beforeEach(() => {
-  //       const user = [{ name, email, avatar_url, google_token, google_id }];
-  //       userStub = sinon.stub(users, "createUser").resolves(user);
-  //       authenticateMock.yields(null, { id: 1 });
-  //     });
-  //     afterEach(() => {
-  //       userStub.restore();
-  //     });
-  //     const app = require("../server");
-  //     test("gets all submissions", function(done) {
-  //       chai
-  //         .request(app)
-  //         .get("/api/submission/")
-  //         .end(function(err, res) {
-  //           assert.equal(res.status, 200);
-  //           assert.isNull(err);
-  //           const arrayOfKeys = key => res.body.map(obj => obj[key]);
-  //           assert.equal(Array.isArray(res.body), true);
-  //           assert.include(arrayOfKeys("ip_address"), ip_address);
-  //           assert.include(
-  //             arrayOfKeys("submission_date").toString(),
-  //             new Date(submission_date).toISOString()
-  //           );
-  //           assert.include(arrayOfKeys("agency_number"), agency_number);
-  //           assert.include(
-  //             arrayOfKeys("birthdate").toString(),
-  //             new Date(birthdate).toISOString()
-  //           );
-  //           assert.include(arrayOfKeys("cell_phone"), cell_phone);
-  //           assert.include(arrayOfKeys("employer_name"), employer_name);
-  //           assert.include(arrayOfKeys("first_name"), updatedFirstName);
-  //           assert.include(arrayOfKeys("last_name"), last_name);
-  //           assert.include(arrayOfKeys("home_street"), home_street);
-  //           assert.include(arrayOfKeys("home_city"), home_city);
-  //           assert.include(arrayOfKeys("home_state"), home_state);
-  //           assert.include(arrayOfKeys("home_zip"), home_zip);
-  //           assert.include(arrayOfKeys("home_email"), home_email);
-  //           assert.include(
-  //             arrayOfKeys("preferred_language"),
-  //             preferred_language
-  //           );
-  //           assert.include(arrayOfKeys("terms_agree"), terms_agree);
-  //           assert.include(arrayOfKeys("signature"), signature);
-  //           assert.include(
-  //             arrayOfKeys("text_auth_opt_out"),
-  //             updatedTextAuthOptOut
-  //           );
-  //           assert.include(
-  //             arrayOfKeys("online_campaign_source"),
-  //             online_campaign_source
-  //           );
-  //           assert.include(arrayOfKeys("salesforce_id"), salesforce_id);
-  //           assert.include(arrayOfKeys("legal_language"), legal_language);
-  //           assert.include(
-  //             arrayOfKeys("maintenance_of_effort").toString(),
-  //             new Date(maintenance_of_effort).toISOString()
-  //           );
-  //           assert.include(
-  //             arrayOfKeys("seiu503_cba_app_date").toString(),
-  //             new Date(seiu503_cba_app_date).toISOString()
-  //           );
-  //           assert.include(
-  //             arrayOfKeys("direct_pay_auth").toString(),
-  //             new Date(direct_pay_auth).toISOString()
-  //           );
-  //           assert.include(
-  //             arrayOfKeys("direct_deposit_auth").toString(),
-  //             new Date(direct_deposit_auth).toISOString()
-  //           );
-  //           assert.include(
-  //             arrayOfKeys("immediate_past_member_status"),
-  //             immediate_past_member_status
-  //           );
-  //           done();
-  //         });
-  //     });
+    suite("GET /api/submission", function() {
+      beforeEach(() => {
+        const user = [{ name, email, avatar_url, google_token, google_id }];
+        userStub = sinon.stub(users, "createUser").resolves(user);
+        authenticateMock.yields(null, { id: 1 });
+      });
+      afterEach(() => {
+        userStub.restore();
+      });
+      const app = require("../server");
+      test("gets all submissions", function(done) {
+        chai
+          .request(app)
+          .get("/api/submission/")
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            const result = res.body[0];
+            assert.equal(Array.isArray(res.body), true);
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.property(result, "ip_address");
+            assert.property(result, "submission_date");
+            assert.property(result, "agency_number");
+            assert.property(result, "birthdate");
+            assert.property(result, "cell_phone");
+            assert.property(result, "employer_name");
+            assert.property(result, "first_name");
+            assert.property(result, "last_name");
+            assert.property(result, "home_street");
+            assert.property(result, "home_city");
+            assert.property(result, "home_state");
+            assert.property(result, "home_zip");
+            assert.property(result, "home_email");
+            assert.property(result, "preferred_language");
+            assert.property(result, "terms_agree");
+            assert.property(result, "signature");
+            assert.property(result, "text_auth_opt_out");
+            assert.property(result, "online_campaign_source");
+            assert.property(result, "salesforce_id");
+            assert.property(result, "legal_language");
+            assert.property(result, "maintenance_of_effort");
+            assert.property(result, "seiu503_cba_app_date");
+            assert.property(result, "direct_pay_auth");
+            assert.property(result, "direct_deposit_auth");
+            assert.property(result, "immediate_past_member_status");
+            done();
+          });
+      });
+    });
 
-  //     test("returns error if submission id missing or malformed", function(done) {
-  //       chai
-  //         .request(app)
-  //         .get("/api/submission/123456789")
-  //         .end(function(err, res) {
-  //           assert.equal(res.status, 404);
-  //           assert.equal(res.type, "application/json");
-  //           assert.isNotNull(res.body.message);
-  //           done();
-  //         });
-  //     });
-  //   });
-
-  //   suite("DELETE", function() {
-  //     beforeEach(() => {
-  //       const user = [{ name, email, avatar_url, google_token, google_id }];
-  //       userStub = sinon.stub(users, "createUser").resolves(user);
-  //       authenticateMock.yields(null, { id: 1 });
-  //     });
-  //     afterEach(() => {
-  //       userStub.restore();
-  //     });
-  //     test("delete a submission", function(done) {
-  //       const app = require("../server");
-  //       chai
-  //         .request(app)
-  //         .delete(`/api/submission/${id}`)
-  //         .end(function(err, res) {
-  //           assert.equal(res.body.message, "Submission deleted successfully");
-  //           assert.isNull(err);
-  //           done();
-  //         });
-  //     });
-  //     test("returns error if submission id missing or malformed", function(done) {
-  //       const app = require("../server");
-  //       chai
-  //         .request(app)
-  //         .delete("/api/submission/123456789")
-  //         .end(function(err, res) {
-  //           assert.equal(res.status, 404);
-  //           assert.equal(res.type, "application/json");
-  //           assert.isNotNull(res.body.message);
-  //           done();
-  //         });
-  //     });
-  //   });
-  // });
+    suite("DELETE", function() {
+      beforeEach(() => {
+        const user = [{ name, email, avatar_url, google_token, google_id }];
+        userStub = sinon.stub(users, "createUser").resolves(user);
+        authenticateMock.yields(null, { id: 1 });
+      });
+      afterEach(() => {
+        userStub.restore();
+      });
+      test("delete a submission", function(done) {
+        const app = require("../server");
+        chai
+          .request(app)
+          .delete(`/api/submission/${submission_id}`)
+          .end(function(err, res) {
+            assert.equal(res.body.message, "Submission deleted successfully");
+            assert.isNull(err);
+            done();
+          });
+      });
+      test("returns error if submission id missing or malformed", function(done) {
+        const app = require("../server");
+        chai
+          .request(app)
+          .delete("/api/submission/123456789")
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+    });
+  });
 });
 
 module.exports = {
