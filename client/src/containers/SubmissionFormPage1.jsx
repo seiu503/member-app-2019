@@ -14,15 +14,15 @@ import { stylesPage1 } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage1Container extends React.Component {
   componentDidMount() {
+    // check for contact id in query string
     const values = queryString.parse(this.props.location.search);
-    console.log(values.id);
+    // if find contact id, call API to fetch contact info for prefill
     if (values.id) {
       const { id } = values;
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          console.log("success -- Contact data fetched.");
-          console.log("result.payload", result.payload);
+          // console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);
@@ -39,11 +39,6 @@ export class SubmissionFormPage1Container extends React.Component {
     return <SubmissionFormPage1Wrap {...this.props} />;
   }
 }
-
-// param for add lifecycle methods to functional component
-// const methods = {
-//   componentDidMount
-// };
 
 // add reduxForm to component
 export const SubmissionFormPage1Wrap = reduxForm({
@@ -64,7 +59,6 @@ const mapDispatchToProps = dispatch => ({
   apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
-// add MUI styles and faked lifecycle methods
 export default withStyles(stylesPage1)(
   connect(
     mapStateToProps,

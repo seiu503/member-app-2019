@@ -40,6 +40,14 @@ import {
   UPDATE_SUBMISSION_SUCCESS,
   UPDATE_SUBMISSION_FAILURE
 } from "../actions/apiSubmissionActions";
+import {
+  GET_SF_CONTACT_REQUEST,
+  GET_SF_CONTACT_SUCCESS,
+  GET_SF_CONTACT_FAILURE,
+  GET_SF_EMPLOYERS_REQUEST,
+  GET_SF_EMPLOYERS_SUCCESS,
+  GET_SF_EMPLOYERS_FAILURE
+} from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
   loggedIn: false,
@@ -90,7 +98,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_PROFILE_REQUEST:
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
-      console.log("loading: true");
+    case GET_SF_CONTACT_REQUEST:
+    case GET_SF_EMPLOYERS_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -114,7 +123,10 @@ function appState(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_FAILURE:
     case UPDATE_SUBMISSION_SUCCESS:
     case UPDATE_SUBMISSION_FAILURE:
-      console.log("loading: false");
+    case GET_SF_CONTACT_SUCCESS:
+    case GET_SF_CONTACT_FAILURE:
+    case GET_SF_EMPLOYERS_SUCCESS:
+    case GET_SF_EMPLOYERS_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

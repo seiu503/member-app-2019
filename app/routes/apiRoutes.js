@@ -354,21 +354,14 @@ router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
 
-// UPDATE ONE SALESFORCE CONTACT RECORD BY ID
-//   Example: PUT >> /api/sf/0036100001gYL0HAAW
+// GET ALL ACTIVE EMPLOYER NAMES
+//   Example: GET >> /api/sfaccts
 //   Secured: no
-//   Expects:
-//     1) request body properties : {
-//          updates         : Object {
-//              any contact fields to update go here...
-//             }
-//        }
-//     2) request params         : {
-//          id              : String
-//      }
-//   Returns: JSON selected fields from salesforce contact object on success.
+//   Expects: nada
+//   Returns: Array of SF Account objects including:
+//      Id, Name, Sub_Division__c, Agency_Number__c.
 //
-router.put("/sf/:id", sfCtrl.updateSFContact);
+router.get("/sfaccts", sfCtrl.getAllEmployers);
 
 /* ================================ EXPORT ================================= */
 

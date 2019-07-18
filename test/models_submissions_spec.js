@@ -6,7 +6,9 @@
 process.env.NODE_ENV = "testing";
 
 const uuid = require("uuid");
-
+const sinon = require("sinon");
+const passport = require("passport");
+require("../app/config/passport")(passport);
 const { assert } = require("chai");
 const moment = require("moment");
 const { db, TABLES } = require("../app/config/knex");
@@ -56,8 +58,8 @@ const google_token = "5678";
 
 /* ================================= TESTS ================================= */
 
-let id;
-let mysalesforce_id;
+let submission_id;
+let sf_contact_id;
 
 describe("submissions model tests", () => {
   before(() => {
@@ -149,8 +151,8 @@ describe("submissions model tests", () => {
           result[0].immediate_past_member_status,
           immediate_past_member_status
         );
-        id = result[0].id;
-        mysalesforce_id = result[0].salesforce_id;
+        submission_id = result[0].id;
+        sf_contact_id = result[0].salesforce_id;
         return db.select("*").from(TABLES.SUBMISSIONS);
       })
       .then(([result]) => {
@@ -208,8 +210,9 @@ describe("submissions model tests", () => {
       employer_name: updatedEmployerName,
       text_auth_opt_out: updatedTextAuthOptOut
     };
+    console.log(salesforce_id);
     return submissions
-      .updateSubmission(salesforce_id, updates)
+      .updateSubmission(submission_id, updates)
       .then(results => {
         assert.equal(results[0].first_name, updatedFirstName);
         assert.equal(results[0].employer_name, updatedEmployerName);
@@ -227,29 +230,26 @@ describe("submissions model tests", () => {
         .createUser(name, email, avatar_url, google_id, google_token)
         .then(user => {
           userId = user[0].id;
+        })
+        .then(() => {
+          // stub passport authentication to test secured routes
+          sinon
+            .stub(passport, "authenticate")
+            .callsFake(function(test, args) {});
+          passport.authenticate("jwt", { session: false });
         });
-      // .then(() => {
-      //   // stub passport authentication to test secured routes
-      //   sinon
-      //     .stub(passport, 'authenticate')
-      //     .callsFake(function (test, args) {
-      //       console.log('Auth stub');
-      //     });
-      //   console.log('stub registered');
-      //   passport.authenticate('jwt', { session: false });
-      // });
     });
 
-    // afterEach(() => {
-    //   passport.authenticate.restore();
-    // });
+    afterEach(() => {
+      passport.authenticate.restore();
+    });
 
     it("GET gets all submissions", () => {
       return submissions.getSubmissions().then(results => {
         const arrayOfKeys = key => results.map(obj => obj[key]);
         assert.equal(Array.isArray(results), true);
         assert.include(arrayOfKeys("salesforce_id"), salesforce_id);
-        assert.include(arrayOfKeys("id"), id);
+        assert.include(arrayOfKeys("id"), submission_id);
         assert.include(arrayOfKeys("ip_address"), ip_address);
         assert.include(
           arrayOfKeys("submission_date").toString(),
@@ -280,8 +280,8 @@ describe("submissions model tests", () => {
     });
 
     it("GET gets one submission by id", () => {
-      return submissions.getSubmissionById(id).then(result => {
-        assert.equal(result.id, id);
+      return submissions.getSubmissionById(submission_id).then(result => {
+        assert.equal(result.id, submission_id);
         assert.equal(result.salesforce_id, salesforce_id);
         assert.equal(result.ip_address, ip_address);
         assert.equal(result.submission_date.toString(), submission_date);
@@ -311,7 +311,7 @@ describe("submissions model tests", () => {
     });
 
     it("DELETE deletes a submission", () => {
-      return submissions.deleteSubmission(id).then(result => {
+      return submissions.deleteSubmission(submission_id).then(result => {
         assert.equal(result.message, "Submission deleted successfully");
       });
     });

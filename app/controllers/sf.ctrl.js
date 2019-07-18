@@ -24,7 +24,7 @@ const getSFContactById = (req, res, next) => {
   )} FROM Contact WHERE Id = \'${id}\'`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 23");
+      console.log("sf.ctrl.js > 27");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -32,15 +32,44 @@ const getSFContactById = (req, res, next) => {
     try {
       conn.query(query, function(err, contact) {
         if (err) {
-          console.log("sf.ctrl.js > 34");
+          console.log("sf.ctrl.js > 35");
           console.error(err);
           return res.status(500).json({ message: err.message });
         }
-        // console.log(contact.records[0]);
         res.status(200).json(contact.records[0]);
       });
     } catch (err) {
-      console.log("sf.ctrl.js > 43");
+      console.log("sf.ctrl.js > 42");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+};
+
+/** Get an array of all employers from Salesforce
+ *  @param    {none}
+ *  @returns  {Array||Object}    Array of SF Account objects OR error message.
+ */
+const getAllEmployers = (req, res, next) => {
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
+  conn.login(user, password, function(err, userInfo) {
+    if (err) {
+      console.log("sf.ctrl.js > 57");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+
+    try {
+      conn.query(query, function(err, accounts) {
+        if (err) {
+          console.log("sf.ctrl.js > 65");
+          console.error(err);
+          return res.status(500).json({ message: err.message });
+        }
+        res.status(200).json(accounts.records);
+      });
+    } catch (err) {
+      console.log("sf.ctrl.js > 72");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -54,7 +83,8 @@ const getSFContactById = (req, res, next) => {
  *                                    key/value pairs of fields to be updated.
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
-const updateSFContact = (id, req, res, next) => {
+const updateSFContact = (req, res, next) => {
+  const { sf_contact_id, submission_id } = res.locals;
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -65,10 +95,11 @@ const updateSFContact = (id, req, res, next) => {
       updates[sfFieldName] = updatesRaw[key];
     }
   });
-  console.log(updates);
+  delete updates["Account.Id"];
+  updates.AccountId = updatesRaw.employer_id;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 59");
+      console.log("sf.ctrl.js > 102");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -76,21 +107,23 @@ const updateSFContact = (id, req, res, next) => {
     try {
       conn.sobject("Contact").update(
         {
-          Id: id,
+          Id: sf_contact_id,
           ...updates
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.log("sf.ctrl.js > 80");
+            console.log("sf.ctrl.js > 115");
             return console.error(err, contact);
           } else {
-            console.log("Updated Successfully : " + contact.id);
-            return res.status(200).json({ salesforce_id: contact.id });
+            return res.status(200).json({
+              salesforce_id: sf_contact_id,
+              submission_id
+            });
           }
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 86");
+      console.log("sf.ctrl.js > 128");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -102,10 +135,10 @@ const updateSFContact = (id, req, res, next) => {
  *  @returns  does not return to client; passes salesforce_id to next function
  */
 
-const createSFOnlineMemberApp = (id, req, res, next) => {
+const createSFOnlineMemberApp = (req, res, next) => {
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 106");
+      console.log("sf.ctrl.js > 143");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -121,7 +154,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
           data[sfFieldName] = dataRaw[key];
         }
       });
-      data.Worker__c = id;
+      data.Worker__c = res.locals.sf_contact_id;
       data.Birthdate__c = formatDate(dataRaw.birthdate);
       conn.sobject("OnlineMemberApp__c").create(
         {
@@ -129,17 +162,15 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
         },
         function(err, OMA) {
           if (err || !OMA.success) {
-            console.log("sf.ctrl.js > 119");
-            return console.error(err, OMA);
+            console.log("sf.ctrl.js > 167");
+            return console.error(err);
           } else {
-            console.log("Created SF OMA Successfully : " + OMA.id);
-            return next(id, req, res, next);
-            // return res.status(200).json({ salesforce_id: OMA.id });
+            return next();
           }
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 128");
+      console.log("sf.ctrl.js > 175");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -150,6 +181,7 @@ const createSFOnlineMemberApp = (id, req, res, next) => {
 
 module.exports = {
   getSFContactById,
+  getAllEmployers,
   createSFOnlineMemberApp,
   updateSFContact
 };

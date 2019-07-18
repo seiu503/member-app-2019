@@ -137,8 +137,10 @@ const createSubmission = async (req, res, next) => {
           "There was an error saving the submission"
       });
     } else {
-      return next(salesforce_id, req, res, next);
-      // return res.status(200).json(createSubmissionResult);
+      // passing contact id and submission id to next middleware
+      res.locals.sf_contact_id = salesforce_id;
+      res.locals.submission_id = createSubmissionResult[0].id;
+      return next();
     }
   }
 };
@@ -151,6 +153,7 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
+
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
   }
