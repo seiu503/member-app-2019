@@ -337,7 +337,7 @@ class SubmissionFormPage2Component extends React.Component {
               label="Work Email"
               name="workEmail"
               id="workEmail"
-              type="text"
+              type="email"
               classes={this.classes}
               component={this.renderTextField}
             />
@@ -345,7 +345,7 @@ class SubmissionFormPage2Component extends React.Component {
               label="Work Phone"
               name="workPhone"
               id="workPhone"
-              type="text"
+              type="tel"
               classes={this.classes}
               component={this.renderTextField}
             />
