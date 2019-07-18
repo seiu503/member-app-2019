@@ -101,11 +101,11 @@ const createSubmission = (
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = (id, body) => {
+const updateSubmission = (id, updates) => {
   return db(TABLES.SUBMISSIONS)
     .where({ id })
     .first()
-    .update({ ...body.updates })
+    .update({ ...updates })
     .update("updated_at", db.fn.now())
     .returning("*");
 };

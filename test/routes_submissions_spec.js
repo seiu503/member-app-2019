@@ -94,7 +94,7 @@ let sf_contact_id, submission_id, createdAt, updatedAt;
 chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
-suite.only("routes : submissions", function() {
+suite("routes : submissions", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();

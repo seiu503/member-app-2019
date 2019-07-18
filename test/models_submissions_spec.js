@@ -56,10 +56,10 @@ const google_token = "5678";
 
 /* ================================= TESTS ================================= */
 
-let id;
-let mysalesforce_id;
+let submission_id;
+let sf_contact_id;
 
-describe("submissions model tests", () => {
+describe.only("submissions model tests", () => {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -149,8 +149,8 @@ describe("submissions model tests", () => {
           result[0].immediate_past_member_status,
           immediate_past_member_status
         );
-        id = result[0].id;
-        mysalesforce_id = result[0].salesforce_id;
+        submission_id = result[0].id;
+        sf_contact_id = result[0].salesforce_id;
         return db.select("*").from(TABLES.SUBMISSIONS);
       })
       .then(([result]) => {
@@ -208,8 +208,9 @@ describe("submissions model tests", () => {
       employer_name: updatedEmployerName,
       text_auth_opt_out: updatedTextAuthOptOut
     };
+    console.log(salesforce_id);
     return submissions
-      .updateSubmission(salesforce_id, updates)
+      .updateSubmission(submission_id, updates)
       .then(results => {
         assert.equal(results[0].first_name, updatedFirstName);
         assert.equal(results[0].employer_name, updatedEmployerName);
