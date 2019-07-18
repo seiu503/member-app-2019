@@ -26,6 +26,11 @@ const defaultProps = {
     mm: "",
     onlineCampaignSource: null
   },
+  location: {
+    search: {
+      id: "0036100001gYL0HAAW"
+    }
+  },
   classes: {}
 };
 
