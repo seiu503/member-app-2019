@@ -61,7 +61,7 @@ const google_token = "5678";
 let submission_id;
 let sf_contact_id;
 
-describe.only("submissions model tests", () => {
+describe("submissions model tests", () => {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
