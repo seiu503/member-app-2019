@@ -32,7 +32,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "Dakavia Health Services"
   },
-  account_id: {
+  employer_id: {
     oldFormPage: "none",
     req: "Y",
     postgresFieldName: "account_id",
@@ -188,7 +188,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "2001"
   },
-  dob: {
+  birthdate: {
     oldFormPage: "none",
     req: "Y",
     postgresFieldName: "dob",
@@ -227,7 +227,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "homestreet"
   },
-  home_postal_code: {
+  home_zip: {
     oldFormPage: "1",
     req: "Y",
     postgresFieldName: "home_postal_code",
@@ -279,7 +279,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "fakeemail@test.com"
   },
-  mobile_phone: {
+  cell_phone: {
     oldFormPage: "1",
     req: "Y",
     postgresFieldName: "mobile_phone",

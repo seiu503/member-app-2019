@@ -21,7 +21,8 @@ const {
   dateOptions,
   yearOptions,
   employerTypeMap,
-  getKeyByValue
+  getKeyByValue,
+  formatSFDate
 } = formElements;
 
 class SubmissionFormPage1Component extends React.Component {
@@ -124,17 +125,17 @@ class SubmissionFormPage1Component extends React.Component {
       signature,
       salesforceId
     } = values;
-    const birthdate = mm + "/" + dd + "/" + yyyy;
+    const dobRaw = mm + "/" + dd + "/" + yyyy;
+    const birthdate = formatSFDate(dobRaw);
+    console.log(birthdate);
     console.log(employerName);
     console.log(employerName.toLowerCase());
     console.log(this.props.submission.employerObjects);
     const employerObject = this.props.submission.employerObjects.filter(
       obj => obj.Name.toLowerCase() === employerName.toLowerCase()
     )[0];
-    console.log(employerObject);
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
-    console.log(employerId);
 
     const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
@@ -170,7 +171,7 @@ class SubmissionFormPage1Component extends React.Component {
       immediate_past_member_status: null,
       salesforce_id: salesforceId
     };
-    console.log(body);
+    console.log(body.birthdate);
 
     return this.props.apiSubmission
       .addSubmission(body)

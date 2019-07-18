@@ -94,9 +94,14 @@ const updateSFContact = (id, req, res, next) => {
     if (contactsTableFields[key]) {
       const sfFieldName = contactsTableFields[key].SFAPIName;
       updates[sfFieldName] = updatesRaw[key];
+    } else {
+      console.log(`${key} not added to updates.`);
     }
   });
   console.log(updates);
+  delete updates["Account.Id"];
+  updates.AccountId = updatesRaw.employer_id;
+  console.log(`sf.ctrl.js > 104: ${updates.AccountId}`);
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.log("sf.ctrl.js > 103");
