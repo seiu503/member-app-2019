@@ -282,7 +282,7 @@ class SubmissionFormPage2Component extends React.Component {
               type="select"
               classes={this.classes}
               component={this.renderSelect}
-              labelWidth={41}
+              labelWidth={50}
               options={genderOptions}
             />
             <Field
@@ -300,7 +300,7 @@ class SubmissionFormPage2Component extends React.Component {
               type="select"
               classes={this.classes}
               component={this.renderSelect}
-              labelWidth={41}
+              labelWidth={97}
               options={genderPronounOptions}
             />
           </FormGroup>
@@ -385,7 +385,7 @@ class SubmissionFormPage2Component extends React.Component {
               classes={this.classes}
               formControlName="formControlDate"
               component={this.renderSelect}
-              labelWidth={41}
+              labelWidth={88}
               options={stateList}
             />
             <Field
