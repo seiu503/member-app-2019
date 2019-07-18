@@ -13,9 +13,8 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.table("submissions", function(table) {
       table
-        .uuid("salesforce_id")
+        .string("salesforce_id")
         .notNullable()
-        .unique()
         .alter();
     })
   ]);

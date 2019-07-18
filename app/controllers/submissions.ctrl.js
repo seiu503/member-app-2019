@@ -153,6 +153,7 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
+
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
   }
