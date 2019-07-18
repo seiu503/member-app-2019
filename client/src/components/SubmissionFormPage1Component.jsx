@@ -54,6 +54,7 @@ class SubmissionFormPage1Component extends React.Component {
       salesforceId
     } = values;
     const birthdate = mm + "/" + dd + "/" + yyyy;
+    const legalLanguage = this.legal_language.textContent.toString();
 
     if (!salesforceId) {
       const values = queryString.parse(this.props.location.search);
@@ -80,7 +81,7 @@ class SubmissionFormPage1Component extends React.Component {
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: "HARD CODED",
-      legal_language: this.legal_language.textContent.toString(),
+      legal_language: legalLanguage,
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
       direct_pay_auth: null,
@@ -88,7 +89,6 @@ class SubmissionFormPage1Component extends React.Component {
       immediate_past_member_status: null,
       salesforce_id: salesforceId
     };
-    console.log(body);
 
     return this.props.apiSubmission
       .addSubmission(body)

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const ThankYou = props => (
+const FormThankYou = props => (
   <div className={props.classes.message} data-test="component-thankyou">
     <p>
       Your information has been submitted.
@@ -12,8 +12,8 @@ const ThankYou = props => (
   </div>
 );
 
-ThankYou.propTypes = {
+FormThankYou.propTypes = {
   classes: PropTypes.object
 };
 
-export default ThankYou;
+export default FormThankYou;

@@ -20,7 +20,7 @@ const submissions = require("../db/models/submissions");
 const moment = require("moment");
 
 /*  Sample Data for new submission */
-const salesforce_id = uuid.v4();
+const salesforce_id = "0036100001gYL0HAAW";
 const ip_address = "192.0.2.0";
 const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
@@ -33,7 +33,7 @@ const home_street = "home_street";
 const home_city = "home_city";
 const home_state = "OR";
 const home_zip = "12345";
-const home_email = "fakeemail";
+const home_email = "fake@email.com";
 const preferred_language = "English";
 const terms_agree = true;
 const signature = "http://example.com/signature.png";
@@ -94,7 +94,7 @@ let id, mySalesforce_id, submissionId, createdAt, updatedAt;
 chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
-suite("routes : submissions", function() {
+suite.only("routes : submissions", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -106,7 +106,7 @@ suite("routes : submissions", function() {
   });
 
   suite("POST /api/submission/", function() {
-    this.timeout(10000);
+    this.timeout(5000);
     const app = require("../server");
     test("creates and returns new submission", function(done) {
       chai

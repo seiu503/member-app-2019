@@ -1,5 +1,6 @@
 import React from "react";
 import uuid from "uuid";
+import PropTypes from "prop-types";
 
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
@@ -270,6 +271,7 @@ export const renderTextField = ({
     helperText={touched && error}
     {...input}
     {...custom}
+    data-test="component-text-field"
   />
 );
 
@@ -298,6 +300,7 @@ export const renderSelect = ({
       className={classes.select}
       value={input.value.toLowerCase()}
       input={<OutlinedInput labelWidth={labelWidth} />}
+      data-test="component-select"
     >
       {options.map(item => (
         <option key={uuid.v4()} value={item.toLowerCase()}>
@@ -327,6 +330,8 @@ export const renderCheckbox = ({
           onChange={input.onChange}
           {...custom}
           className={classes.checkbox}
+          data-test="component-checkbox"
+          name="checkbox"
         />
       }
     />
@@ -337,3 +342,55 @@ export const renderCheckbox = ({
     )}
   </FormControl>
 );
+
+TextField.propTypes = {
+  input: PropTypes.shape({
+    onBlur: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    onDrop: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    value: PropTypes.string
+  }),
+  name: PropTypes.string,
+  label: PropTypes.string,
+  touched: PropTypes.bool,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  helperText: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+};
+Select.propTypes = {
+  input: PropTypes.shape({
+    onBlur: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    onDrop: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    value: PropTypes.string
+  }),
+  name: PropTypes.string,
+  label: PropTypes.string,
+  labelWidth: PropTypes.string,
+  formControlName: PropTypes.string,
+  options: PropTypes.array,
+  touched: PropTypes.bool,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+};
+Checkbox.propTypes = {
+  input: PropTypes.shape({
+    onBlur: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+    onDragStart: PropTypes.func.isRequired,
+    onDrop: PropTypes.func.isRequired,
+    onFocus: PropTypes.func.isRequired,
+    value: PropTypes.string
+  }),
+  name: PropTypes.string,
+  label: PropTypes.string,
+  touched: PropTypes.bool,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  checked: PropTypes.bool
+};
+FormControl.propTypes = {
+  touched: PropTypes.bool,
+  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+};

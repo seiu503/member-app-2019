@@ -12,7 +12,7 @@ describe("<SpinnerAdornment />", () => {
   });
 
   it("renders a CircularProgress", () => {
-    const wrapper = shallow(<SpinnerAdornmentBase classes={{}} />);
+    const wrapper = shallow(<SpinnerAdornment classes={{}} />);
     expect(wrapper.find(CircularProgress)).toHaveLength(1);
   });
 });
