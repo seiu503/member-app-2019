@@ -127,10 +127,6 @@ class SubmissionFormPage1Component extends React.Component {
     } = values;
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
-    console.log(birthdate);
-    console.log(employerName);
-    console.log(employerName.toLowerCase());
-    console.log(this.props.submission.employerObjects);
     const employerObject = this.props.submission.employerObjects.filter(
       obj => obj.Name.toLowerCase() === employerName.toLowerCase()
     )[0];
@@ -141,7 +137,7 @@ class SubmissionFormPage1Component extends React.Component {
     if (!salesforceId) {
       salesforceId = q.id;
     }
-    const campaignSource = q.s || "Direct seiu503signup";
+    const campaignSource = JSON.parse(q.s) || "Direct seiu503signup";
 
     const body = {
       ip_address: localIpUrl(),
@@ -171,7 +167,6 @@ class SubmissionFormPage1Component extends React.Component {
       immediate_past_member_status: null,
       salesforce_id: salesforceId
     };
-    console.log(body.birthdate);
 
     return this.props.apiSubmission
       .addSubmission(body)
