@@ -196,7 +196,6 @@ export const stylesPage1 = theme => ({
     width: "100%",
     margin: "0 0 30px 0"
   },
-  checkbox: {},
   failedText: {
     color: "red"
   },
@@ -317,6 +316,7 @@ export const renderTextField = ({
     variant="outlined"
     className={classes.input}
     helperText={touched && error}
+    required={touched && error}
     {...input}
     {...custom}
     data-test="component-text-field"
@@ -338,8 +338,9 @@ export const renderSelect = ({
   <FormControl
     variant="outlined"
     className={classes[formControlName] || classes.formControl}
-    error={error && touched}
     {...custom}
+    error={touched && error}
+    required={touched && error === "Required"}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select

@@ -218,9 +218,11 @@ class SubmissionFormPage1Component extends React.Component {
             component={this.renderSelect}
             options={employerTypesList}
             onChange={e => this.updateEmployersPicklist(e)}
+            labelWidth={100}
           />
           {this.props.formValues.employerType !== "" && (
             <Field
+              labelWidth={90}
               label="Employer Name"
               name="employerName"
               id="employerName"
