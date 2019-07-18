@@ -96,6 +96,7 @@ const updateSFContact = (req, res, next) => {
     }
   });
   delete updates["Account.Id"];
+  delete updates["Account.Agency_Number__c"];
   updates.AccountId = updatesRaw.employer_id;
   conn.login(user, password, function(err, userInfo) {
     if (err) {

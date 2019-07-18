@@ -58,18 +58,20 @@ function Submission(state = INITIAL_STATE, action) {
       const { employerTypeMap } = formElements;
       const employerType =
         employerTypeMap[action.payload.Account.WS_Subdivision_from_Agency__c];
+      // if employer attached to contact record is 'Employer' record type,
+      // use Account Name. if it's 'Worksite' record type, use Parent Name
+      const employerName =
+        action.payload.Account.RecordTypeId === "01261000000ksTuAAI"
+          ? action.payload.Account.Name
+          : action.payload.Account.CVRSOS__ParentName__c;
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
           dd: { $set: moment(action.payload.Birthdate).format("DD") },
           yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
           mobilePhone: { $set: action.payload.MobilePhone },
-          employerName: {
-            $set: action.payload.Account.CVRSOS__ParentName__c
-          },
-          employerType: {
-            $set: employerType
-          },
+          employerName: { $set: employerName },
+          employerType: { $set: employerType },
           firstName: { $set: action.payload.FirstName },
           lastName: { $set: action.payload.LastName },
           homeStreet: { $set: action.payload.MailingStreet },
