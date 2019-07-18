@@ -89,12 +89,12 @@ const google_token = "5678";
 
 /* ================================= TESTS ================================= */
 
-let id, mySalesforce_id, submissionId, createdAt, updatedAt;
+let sf_contact_id, submission_id, createdAt, updatedAt;
 
 chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
-suite.only("routes : submissions", function() {
+suite("routes : submissions", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -105,8 +105,10 @@ suite.only("routes : submissions", function() {
     return db.migrate.rollback();
   });
 
-  suite("POST /api/submission/", function() {
-    this.timeout(5000);
+  describe("POST /api/submission/", function() {
+    // this route calls 3 chained controllers, 2 of which have to call SF and
+    // wait for a response; hence the very long timeout
+    this.timeout(10000);
     const app = require("../server");
     test("creates and returns new submission", function(done) {
       chai
@@ -114,10 +116,6 @@ suite.only("routes : submissions", function() {
         .post("/api/submission/")
         .send(submissionBody)
         .end(function(err, res) {
-          id = res.body[0].id;
-          mySalesforce_id = res.body[0].salesforce_id;
-          createdAt = res.body[0].created_at;
-          updatedAt = res.body[0].updated_at;
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();
@@ -137,16 +135,31 @@ suite.only("routes : submissions", function() {
     });
   });
 
-  suite("PUT /api/submission/:id", function() {
+  describe("PUT /api/submission/:id", function() {
+    const app = require("../server");
+    this.timeout(10000);
+    before(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .post("/api/submission/")
+          .send(submissionBody)
+          .end(function(err, res) {
+            sf_contact_id = res.body.salesforce_id;
+            submission_id = res.body.submission_id;
+            resolve();
+          });
+      });
+    });
+
     test("updates a submission", function(done) {
-      const app = require("../server");
       const updates = {
         first_name: updatedFirstName,
         text_auth_opt_out: updatedTextAuthOptOut
       };
       chai
         .request(app)
-        .put(`/api/submission/${mySalesforce_id}`)
+        .put(`/api/submission/${submission_id}`)
         .send(updates)
         .end(function(err, res) {
           let result = res.body[0];
@@ -205,7 +218,7 @@ suite.only("routes : submissions", function() {
       const app = require("../server");
       chai
         .request(app)
-        .put(`/api/submission/${mySalesforce_id}`)
+        .put(`/api/submission/${submission_id}`)
         .send({ name: undefined })
         .end(function(err, res) {
           assert.equal(res.status, 404);
@@ -238,9 +251,8 @@ suite.only("routes : submissions", function() {
       test("gets one submission by id", function(done) {
         chai
           .request(app)
-          .get(`/api/submission/${id}`)
+          .get(`/api/submission/${submission_id}`)
           .end(function(err, res) {
-            console.log(res.body);
             assert.equal(res.status, 200);
             assert.isNull(err);
             assert.property(res.body, "ip_address");
@@ -301,75 +313,35 @@ suite.only("routes : submissions", function() {
           .end(function(err, res) {
             assert.equal(res.status, 200);
             assert.isNull(err);
-            const arrayOfKeys = key => res.body.map(obj => obj[key]);
+            const result = res.body[0];
             assert.equal(Array.isArray(res.body), true);
-            assert.include(arrayOfKeys("ip_address"), ip_address);
-            assert.include(
-              arrayOfKeys("submission_date").toString(),
-              new Date(submission_date).toISOString()
-            );
-            assert.include(arrayOfKeys("agency_number"), agency_number);
-            assert.include(
-              arrayOfKeys("birthdate").toString(),
-              new Date(birthdate).toISOString()
-            );
-            assert.include(arrayOfKeys("cell_phone"), cell_phone);
-            assert.include(arrayOfKeys("employer_name"), employer_name);
-            assert.include(arrayOfKeys("first_name"), updatedFirstName);
-            assert.include(arrayOfKeys("last_name"), last_name);
-            assert.include(arrayOfKeys("home_street"), home_street);
-            assert.include(arrayOfKeys("home_city"), home_city);
-            assert.include(arrayOfKeys("home_state"), home_state);
-            assert.include(arrayOfKeys("home_zip"), home_zip);
-            assert.include(arrayOfKeys("home_email"), home_email);
-            assert.include(
-              arrayOfKeys("preferred_language"),
-              preferred_language
-            );
-            assert.include(arrayOfKeys("terms_agree"), terms_agree);
-            assert.include(arrayOfKeys("signature"), signature);
-            assert.include(
-              arrayOfKeys("text_auth_opt_out"),
-              updatedTextAuthOptOut
-            );
-            assert.include(
-              arrayOfKeys("online_campaign_source"),
-              online_campaign_source
-            );
-            assert.include(arrayOfKeys("salesforce_id"), salesforce_id);
-            assert.include(arrayOfKeys("legal_language"), legal_language);
-            assert.include(
-              arrayOfKeys("maintenance_of_effort").toString(),
-              new Date(maintenance_of_effort).toISOString()
-            );
-            assert.include(
-              arrayOfKeys("seiu503_cba_app_date").toString(),
-              new Date(seiu503_cba_app_date).toISOString()
-            );
-            assert.include(
-              arrayOfKeys("direct_pay_auth").toString(),
-              new Date(direct_pay_auth).toISOString()
-            );
-            assert.include(
-              arrayOfKeys("direct_deposit_auth").toString(),
-              new Date(direct_deposit_auth).toISOString()
-            );
-            assert.include(
-              arrayOfKeys("immediate_past_member_status"),
-              immediate_past_member_status
-            );
-            done();
-          });
-      });
-
-      test("returns error if submission id missing or malformed", function(done) {
-        chai
-          .request(app)
-          .get("/api/submission/123456789")
-          .end(function(err, res) {
-            assert.equal(res.status, 404);
-            assert.equal(res.type, "application/json");
-            assert.isNotNull(res.body.message);
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.property(result, "ip_address");
+            assert.property(result, "submission_date");
+            assert.property(result, "agency_number");
+            assert.property(result, "birthdate");
+            assert.property(result, "cell_phone");
+            assert.property(result, "employer_name");
+            assert.property(result, "first_name");
+            assert.property(result, "last_name");
+            assert.property(result, "home_street");
+            assert.property(result, "home_city");
+            assert.property(result, "home_state");
+            assert.property(result, "home_zip");
+            assert.property(result, "home_email");
+            assert.property(result, "preferred_language");
+            assert.property(result, "terms_agree");
+            assert.property(result, "signature");
+            assert.property(result, "text_auth_opt_out");
+            assert.property(result, "online_campaign_source");
+            assert.property(result, "salesforce_id");
+            assert.property(result, "legal_language");
+            assert.property(result, "maintenance_of_effort");
+            assert.property(result, "seiu503_cba_app_date");
+            assert.property(result, "direct_pay_auth");
+            assert.property(result, "direct_deposit_auth");
+            assert.property(result, "immediate_past_member_status");
             done();
           });
       });
@@ -388,7 +360,7 @@ suite.only("routes : submissions", function() {
         const app = require("../server");
         chai
           .request(app)
-          .delete(`/api/submission/${id}`)
+          .delete(`/api/submission/${submission_id}`)
           .end(function(err, res) {
             assert.equal(res.body.message, "Submission deleted successfully");
             assert.isNull(err);

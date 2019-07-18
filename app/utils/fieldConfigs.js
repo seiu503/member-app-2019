@@ -1,5 +1,10 @@
 const uuid = require("uuid");
 
+// fields labeled 'Account field' are actually in the Account (Employer)
+// table in SF, but they're being accessed from a query to the
+// Contacts table that includes a lookup to Accounts
+// so i'm leaving them here to avoid having to rewrite
+// the generateSFContactFieldList function
 const contactsTableFields = {
   display_name: {
     oldFormPage: "none",
@@ -12,7 +17,7 @@ const contactsTableFields = {
     SFAPIName: "Display_Name_for_forms__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "testuser"
+    testingSample: "test user"
   },
   account_name: {
     oldFormPage: "1",
@@ -20,12 +25,38 @@ const contactsTableFields = {
     postgresFieldName: "account_name",
     clientFieldName: "accountName",
     HtmlInputType: "select",
-    SFTable: "Worker (Contact)",
-    SFFieldLabel: "Account name free entry",
-    SFAPIName: "Account_name_Pardot_sync__c",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "Parent Name",
+    SFAPIName: "Account.CVRSOS__ParentName__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "testuser"
+    testingSample: "Dakavia Health Services"
+  },
+  employer_id: {
+    oldFormPage: "none",
+    req: "Y",
+    postgresFieldName: "account_id",
+    clientFieldName: "accountId",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "Account Id",
+    SFAPIName: "Account.Id",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "0016100000Pw3eMAAR"
+  },
+  account_subdivision: {
+    oldFormPage: "none",
+    req: "Y",
+    postgresFieldName: "account_subdivision",
+    clientFieldName: "accountSubdivision",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "WS Subdivision (from Agency)",
+    SFAPIName: "Account.WS_Subdivision_from_Agency__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Nursing Homes"
   },
   agency_number: {
     oldFormPage: "none",
@@ -157,7 +188,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "2001"
   },
-  dob: {
+  birthdate: {
     oldFormPage: "none",
     req: "Y",
     postgresFieldName: "dob",
@@ -196,7 +227,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "homestreet"
   },
-  home_postal_code: {
+  home_zip: {
     oldFormPage: "1",
     req: "Y",
     postgresFieldName: "home_postal_code",
@@ -248,7 +279,7 @@ const contactsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "fakeemail@test.com"
   },
-  mobile_phone: {
+  cell_phone: {
     oldFormPage: "1",
     req: "Y",
     postgresFieldName: "mobile_phone",

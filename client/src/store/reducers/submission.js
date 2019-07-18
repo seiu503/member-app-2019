@@ -1,5 +1,6 @@
 import update from "immutability-helper";
 import moment from "moment";
+import * as formElements from "../../components/SubmissionFormElements";
 
 import {
   ADD_SUBMISSION_REQUEST,
@@ -14,7 +15,10 @@ import {
 import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
-  GET_SF_CONTACT_FAILURE
+  GET_SF_CONTACT_FAILURE,
+  GET_SF_EMPLOYERS_REQUEST,
+  GET_SF_EMPLOYERS_SUCCESS,
+  GET_SF_EMPLOYERS_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -22,9 +26,12 @@ export const INITIAL_STATE = {
   salesforceId: null,
   formPage1: {
     mm: "",
-    homeState: "or",
-    preferredLanguage: "english"
+    homeState: "OR",
+    preferredLanguage: "English",
+    employerType: ""
   },
+  employerNames: [""],
+  employerObjects: [{ Name: "", Sub_Division__c: "" }],
   formPage2: {}
 };
 
@@ -35,20 +42,33 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
+    case GET_SF_EMPLOYERS_REQUEST:
       return update(state, {
         error: { $set: null }
       });
 
+    case GET_SF_EMPLOYERS_SUCCESS:
+      const employerNames = action.payload.map(employer => employer.Name);
+      return update(state, {
+        employerNames: { $set: employerNames },
+        employerObjects: { $set: action.payload }
+      });
+
     case GET_SF_CONTACT_SUCCESS:
+      const { employerTypeMap } = formElements;
+      const employerType =
+        employerTypeMap[action.payload.Account.WS_Subdivision_from_Agency__c];
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
           dd: { $set: moment(action.payload.Birthdate).format("DD") },
           yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
           mobilePhone: { $set: action.payload.MobilePhone },
-          // fix employer name to pull from Acct table
           employerName: {
-            $set: action.payload.Worksite_manual_entry_from_webform__c
+            $set: action.payload.Account.CVRSOS__ParentName__c
+          },
+          employerType: {
+            $set: employerType
           },
           firstName: { $set: action.payload.FirstName },
           lastName: { $set: action.payload.LastName },
@@ -96,6 +116,7 @@ function Submission(state = INITIAL_STATE, action) {
     case ADD_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_FAILURE:
     case UPDATE_SUBMISSION_FAILURE:
+    case GET_SF_EMPLOYERS_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

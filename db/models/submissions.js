@@ -97,15 +97,15 @@ const createSubmission = (
 };
 
 /** Update a Submission
- *  @param    {String}   salesforce_id             The id of the submission to update.
+ *  @param    {String}   id             The id of the submission to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = (salesforce_id, updates) => {
+const updateSubmission = (id, updates) => {
   return db(TABLES.SUBMISSIONS)
-    .where({ salesforce_id })
+    .where({ id })
     .first()
-    .update(updates)
+    .update({ ...updates })
     .update("updated_at", db.fn.now())
     .returning("*");
 };

@@ -9,17 +9,21 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 
 import * as formElements from "./SubmissionFormElements";
-import * as utils from "../utils/index";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
-const stateList = formElements.stateList;
-const monthList = formElements.monthList;
-const languageOptions = formElements.languageOptions;
-const dateOptions = formElements.dateOptions;
-const yearOptions = formElements.yearOptions;
+const {
+  stateList,
+  monthList,
+  languageOptions,
+  dateOptions,
+  yearOptions,
+  employerTypeMap,
+  getKeyByValue,
+  formatSFDate
+} = formElements;
 
 class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
@@ -28,10 +32,78 @@ class SubmissionFormPage1Component extends React.Component {
     this.state = {};
   }
 
+  componentDidMount() {
+    // API call to SF to populate employers picklist
+    this.props.apiSF
+      .getSFEmployers()
+      .then(result => {
+        // console.log(result.payload)
+        this.loadEmployersPicklist();
+      })
+      .catch(err => {
+        console.log(err);
+        openSnackbar(
+          "error",
+          this.props.submission.error ||
+            "An error occurred while trying to fetch data from salesforce."
+        );
+      });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.submission.employerNames.length < 2) {
+      this.loadEmployersPicklist();
+    }
+  }
+
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
+
+  loadEmployersPicklist = () => {
+    // generate initial picklist of employer types by manipulating data
+    // from redux store to replace with more user-friendly names
+    const employerTypesListRaw = this.props.submission.employerObjects.map(
+      employer => employer.Sub_Division__c
+    ) || [""];
+    const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
+    const employerTypesList = employerTypesCodes.map(code =>
+      employerTypeMap[code] ? employerTypeMap[code] : ""
+    ) || [""];
+    employerTypesList.unshift("");
+    return employerTypesList;
+  };
+
+  updateEmployersPicklist = e => {
+    let employerObjects = this.props.submission.employerObjects || [
+      { Name: "", Sub_Division__c: "" }
+    ];
+
+    // get the value of the employer type selected by user
+    let employerTypeUserSelect = "";
+    if (Object.keys(this.props.formValues).length) {
+      employerTypeUserSelect = this.props.formValues.employerType;
+    } else {
+      console.log("no formValues in props");
+    }
+
+    const employerTypesList = this.loadEmployersPicklist();
+    // if picklist finished populating and user has selected employer type,
+    // filter the employer names list to return only names in that category
+    if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
+      const employerObjectsFiltered = employerObjects.filter(
+        employer =>
+          employer.Sub_Division__c ===
+          getKeyByValue(employerTypeMap, employerTypeUserSelect)
+      );
+      const employerList = employerObjectsFiltered.map(
+        employer => employer.Name
+      );
+      employerList.unshift("");
+      return employerList;
+    }
+  };
 
   handleSubmit = values => {
     let {
@@ -53,22 +125,29 @@ class SubmissionFormPage1Component extends React.Component {
       signature,
       salesforceId
     } = values;
-    const birthdate = mm + "/" + dd + "/" + yyyy;
+    const dobRaw = mm + "/" + dd + "/" + yyyy;
+    const birthdate = formatSFDate(dobRaw);
+    const employerObject = this.props.submission.employerObjects.filter(
+      obj => obj.Name.toLowerCase() === employerName.toLowerCase()
+    )[0];
+    const employerId = employerObject.Id;
+    const agencyNumber = employerObject.Agency_Number__c;
     const legalLanguage = this.legal_language.textContent.toString();
 
+    const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
-      const values = queryString.parse(this.props.location.search);
-      console.log(values.id);
-      salesforceId = values.id;
+      salesforceId = q.id;
     }
+    const campaignSource = q.s || "Direct seiu503signup";
 
     const body = {
       ip_address: localIpUrl(),
       submission_date: new Date(),
-      agency_number: utils.randomInt(),
+      agency_number: agencyNumber,
       birthdate,
       cell_phone: mobilePhone,
       employer_name: employerName,
+      employer_id: employerId,
       first_name: firstName,
       last_name: lastName,
       home_street: homeStreet,
@@ -80,7 +159,7 @@ class SubmissionFormPage1Component extends React.Component {
       terms_agree: termsAgree,
       signature: signature,
       text_auth_opt_out: textAuthOptOut,
-      online_campaign_source: "HARD CODED",
+      online_campaign_source: campaignSource,
       legal_language: legalLanguage,
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
@@ -115,6 +194,10 @@ class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
+    const employerTypesList = this.loadEmployersPicklist() || [
+      { Name: "", Sub_Division__c: "" }
+    ];
+    const employerList = this.updateEmployersPicklist() || [""];
     return (
       <div
         className={this.classes.root}
@@ -127,14 +210,26 @@ class SubmissionFormPage1Component extends React.Component {
           className={this.classes.form}
         >
           <Field
-            label="Employer Name"
-            name="employerName"
-            id="employerName"
-            type="text"
+            label="Employer Type"
+            name="employerType"
+            id="employerType"
+            type="select"
             classes={this.classes}
-            component={this.renderTextField}
+            component={this.renderSelect}
+            options={employerTypesList}
+            onChange={e => this.updateEmployersPicklist(e)}
           />
-
+          {this.props.formValues.employerType !== "" && (
+            <Field
+              label="Employer Name"
+              name="employerName"
+              id="employerName"
+              type="select"
+              classes={this.classes}
+              component={this.renderSelect}
+              options={employerList}
+            />
+          )}
           <Field
             label="First Name"
             name="firstName"
