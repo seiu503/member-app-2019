@@ -330,11 +330,10 @@ export const renderSelect = ({
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select
       native
-      onChange={input.onChange}
+      input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
-      value={input.value.toLowerCase()}
-      input={{ input: <OutlinedInput labelWidth={labelWidth} />, ...input }}
-      inputProps={{ ...input }}
+      value={input.value}
+      {...custom}
       data-test="component-select"
     >
       {options.map(item => (
@@ -364,6 +363,7 @@ export const renderCheckbox = ({
           checked={input.value ? true : false}
           onChange={input.onChange}
           {...custom}
+          {...input}
           className={classes.checkbox}
           data-test="component-checkbox"
           name="checkbox"
@@ -380,11 +380,11 @@ export const renderCheckbox = ({
 
 TextField.propTypes = {
   input: PropTypes.shape({
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onDragStart: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
     value: PropTypes.string
   }),
   name: PropTypes.string,
@@ -395,11 +395,11 @@ TextField.propTypes = {
 };
 Select.propTypes = {
   input: PropTypes.shape({
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onDragStart: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
     value: PropTypes.string
   }),
   name: PropTypes.string,
@@ -412,11 +412,11 @@ Select.propTypes = {
 };
 Checkbox.propTypes = {
   input: PropTypes.shape({
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onDragStart: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
     value: PropTypes.string
   }),
   name: PropTypes.string,

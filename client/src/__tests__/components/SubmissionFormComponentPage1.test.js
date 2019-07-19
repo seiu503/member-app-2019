@@ -6,7 +6,7 @@ import {
   generateSampleSubmission,
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormPage1Component from "../../components/SubmissionFormPage1Component";
+import { SubmissionFormPage1Component } from "../../components/SubmissionFormPage1Component";
 import * as Notifier from "../../containers/Notifier";
 
 // variables

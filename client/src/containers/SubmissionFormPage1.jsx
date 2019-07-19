@@ -1,15 +1,15 @@
 import React from "react";
-import { reduxForm, getFormValues } from "redux-form";
+import { getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import SubmissionFormPage1Component from "../components/SubmissionFormPage1Component";
+import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
-import validate from "../utils/validators";
+
 import { stylesPage1 } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage1Container extends React.Component {
@@ -39,13 +39,6 @@ export class SubmissionFormPage1Container extends React.Component {
     return <SubmissionFormPage1Wrap {...this.props} />;
   }
 }
-
-// add reduxForm to component
-export const SubmissionFormPage1Wrap = reduxForm({
-  form: "submissionPage1",
-  validate,
-  enableReinitialize: true
-})(SubmissionFormPage1Component);
 
 const mapStateToProps = state => ({
   submission: state.submission,

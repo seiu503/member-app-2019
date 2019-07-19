@@ -145,7 +145,7 @@ describe("Input Field Render functions", () => {
       wrapper = shallow(renderTextField(errorProps));
       expect(
         wrapper.find(`[data-test="component-text-field"]`).prop("error")
-      ).toBe("Required");
+      ).toBe(true);
       expect(
         wrapper.find(`[data-test="component-text-field"]`).prop("helperText")
       ).toBe("Required");
@@ -245,10 +245,10 @@ describe("Input Field Render functions", () => {
 
     it("updates input value when changed", () => {
       const checkbox = wrapper.find(`[data-test="component-checkbox"]`).first();
-      checkbox.checked = true;
-      checkbox.simulate("change", {
-        target: { checked: true }
-      });
+      console.log(checkbox.checked);
+      checkbox.checked = false;
+      console.log(checkbox.checked);
+      checkbox.simulate("change", { target: { checked: true } });
       expect(onChangeMock).toHaveBeenCalled();
     });
 
