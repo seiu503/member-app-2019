@@ -299,7 +299,7 @@ export const renderTextField = ({
 }) => (
   <TextField
     label={label}
-    error={touched && error}
+    error={!!(touched && error)}
     variant="outlined"
     className={classes.input}
     helperText={touched && error}
@@ -324,7 +324,7 @@ export const renderSelect = ({
   <FormControl
     variant="outlined"
     className={classes[formControlName] || classes.formControl}
-    error={error && touched}
+    error={!!(error && touched)}
     {...custom}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
@@ -355,7 +355,7 @@ export const renderCheckbox = ({
   meta: { touched, error },
   ...custom
 }) => (
-  <FormControl error={touched && error}>
+  <FormControl error={!!(touched && error)}>
     <FormControlLabel
       label={label}
       control={
