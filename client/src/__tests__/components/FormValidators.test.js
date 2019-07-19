@@ -11,7 +11,7 @@ describe("Redux-Form custom Validators", () => {
     testData = generateSampleValidate();
   });
   test("no errors on well formed values", () => {
-    console.log(testData);
+    // console.log(testData);
     expect(validate(testData)).toStrictEqual({});
   });
   test("adds required field to errors returned", () => {

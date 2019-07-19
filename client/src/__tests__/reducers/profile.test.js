@@ -7,13 +7,6 @@ const sampleProfile = {
   avatar_url: "http://www.example.com/avatar.png"
 };
 
-const emptyProfile = {
-  id: "",
-  name: "",
-  email: "",
-  avatar_url: ""
-};
-
 describe("profile reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
@@ -29,14 +22,6 @@ describe("profile reducer", () => {
   it("should handle all api REQUEST actions", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "VALIDATE_TOKEN_REQUEST"
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      error: null
-    });
-    expect(
-      reducer(INITIAL_STATE, {
         type: "GET_PROFILE_REQUEST"
       })
     ).toEqual({
@@ -47,18 +32,8 @@ describe("profile reducer", () => {
   it("should handle all api SUCCESS actions", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "VALIDATE_TOKEN_SUCCESS",
-        meta: sampleProfile
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      profile: { ...sampleProfile },
-      error: null
-    });
-    expect(
-      reducer(INITIAL_STATE, {
         type: "GET_PROFILE_SUCCESS",
-        meta: sampleProfile
+        payload: sampleProfile
       })
     ).toEqual({
       ...INITIAL_STATE,
@@ -67,15 +42,6 @@ describe("profile reducer", () => {
     });
   });
   it("should handle all api FAILURE actions", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "VALIDATE_TOKEN_FAILURE",
-        payload: { message: "Some error" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      error: "Some error"
-    });
     expect(
       reducer(INITIAL_STATE, {
         type: "GET_PROFILE_FAILURE",

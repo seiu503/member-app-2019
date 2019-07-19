@@ -62,7 +62,7 @@ const contactsTableFields = {
     oldFormPage: "none",
     req: "Y",
     postgresFieldName: "account_subdivision",
-    clientFieldName: "accountSubdivision",
+    clientFieldName: "employerType",
     HtmlInputType: "none",
     SFTable: "Worker (Contact)", // Account field
     SFFieldLabel: "WS Subdivision (from Agency)",
@@ -594,6 +594,19 @@ const submissionsTableFields = {
     SQLDataType: "",
     testingSample: "123456"
   },
+  account_subdivision: {
+    oldFormPage: "none",
+    req: "Y",
+    postgresFieldName: "account_subdivision",
+    clientFieldName: "employerType",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "WS Subdivision (from Agency)",
+    SFAPIName: "Account.WS_Subdivision_from_Agency__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Nursing Homes"
+  },
   birthdate: {
     oldFormPage: "none",
     req: "Y",
@@ -905,6 +918,7 @@ const requiredFields = [
   "homeEmail",
   "cellPhone",
   "employerName",
+  "employerType",
   "agencyNumber",
   "termsAgree",
   "signature"

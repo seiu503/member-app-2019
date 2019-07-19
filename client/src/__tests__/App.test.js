@@ -122,8 +122,11 @@ describe("<App />", () => {
       </Provider>
     );
 
-    const spyCall = dispatchSpy.mock.calls.find(call =>
-      call[0].hasOwnProperty("@@redux-api-middleware/RSAA")
+    const spyCall = dispatchSpy.mock.calls.find(
+      call =>
+        call[0].hasOwnProperty("@@redux-api-middleware/RSAA") &&
+        call[0]["@@redux-api-middleware/RSAA"].endpoint ===
+          "http://localhost:3001/api/user/1234"
     )[0];
     expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
       JSON.parse(JSON.stringify(validateToken("5678", "1234")))
