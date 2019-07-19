@@ -35,7 +35,7 @@ export function validateToken(token, userId) {
         VALIDATE_TOKEN_REQUEST,
         {
           type: VALIDATE_TOKEN_SUCCESS,
-          meta: { token }
+          payload: { token }
         },
         {
           type: VALIDATE_TOKEN_FAILURE,

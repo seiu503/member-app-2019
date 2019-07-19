@@ -2,9 +2,6 @@ import update from "immutability-helper";
 
 import { LOGOUT } from "../actions";
 import {
-  VALIDATE_TOKEN_REQUEST,
-  VALIDATE_TOKEN_SUCCESS,
-  VALIDATE_TOKEN_FAILURE,
   GET_PROFILE_REQUEST,
   GET_PROFILE_SUCCESS,
   GET_PROFILE_FAILURE
@@ -27,25 +24,22 @@ function profile(state = INITIAL_STATE, action) {
     case LOGOUT:
       return INITIAL_STATE;
 
-    case VALIDATE_TOKEN_REQUEST:
     case GET_PROFILE_REQUEST:
       return update(state, {
         error: { $set: null }
       });
 
-    case VALIDATE_TOKEN_SUCCESS:
     case GET_PROFILE_SUCCESS:
       return update(state, {
         profile: {
-          id: { $set: action.meta.id },
-          name: { $set: action.meta.name },
-          email: { $set: action.meta.email },
-          avatar_url: { $set: action.meta.avatar_url }
+          id: { $set: action.payload.id },
+          name: { $set: action.payload.name },
+          email: { $set: action.payload.email },
+          avatar_url: { $set: action.payload.avatar_url }
         },
         error: { $set: null }
       });
 
-    case VALIDATE_TOKEN_FAILURE:
     case GET_PROFILE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;

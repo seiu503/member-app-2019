@@ -65,7 +65,7 @@ function appState(state = INITIAL_STATE, action) {
     case VALIDATE_TOKEN_SUCCESS:
       return update(state, {
         loggedIn: { $set: true },
-        authToken: { $set: action.meta.token },
+        authToken: { $set: action.payload.token },
         loading: { $set: false }
       });
 

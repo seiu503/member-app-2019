@@ -62,6 +62,7 @@ export class DashboardUnconnected extends React.Component {
     if (this.props.match && this.props.match.params.id) {
       userId = this.props.match.params.id;
       token = this.props.match.params.token;
+
       // if logged in for first time through social auth,
       // save userId & token to local storage
       window.localStorage.setItem("userId", JSON.stringify(userId));
@@ -105,6 +106,7 @@ export class DashboardUnconnected extends React.Component {
         }
       })
       .catch(err => {
+        console.log(err);
         openSnackbar("error", err);
       });
   }
