@@ -71,7 +71,6 @@ function appState(state = INITIAL_STATE, action) {
 
     case GET_PROFILE_SUCCESS:
       return update(state, {
-        authToken: { $set: action.payload.token },
         loading: { $set: false }
       });
 

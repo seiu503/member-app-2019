@@ -106,7 +106,7 @@ export class DashboardUnconnected extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         openSnackbar("error", err);
       });
   }
