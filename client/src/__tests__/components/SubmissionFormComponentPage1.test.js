@@ -6,7 +6,7 @@ import {
   generateSampleSubmission,
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormPage1Wrap from "../../components/SubmissionFormPage1";
+import SubmissionFormPage1Component from "../../components/SubmissionFormPage1Component";
 import * as Notifier from "../../containers/Notifier";
 
 // variables
@@ -57,7 +57,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
-    return mount(<SubmissionFormPage1Wrap {...setUpProps} />);
+    return mount(<SubmissionFormPage1Component {...setUpProps} />);
   };
 
   // smoke test and making sure we have access to correct props

@@ -17,7 +17,7 @@ describe("appState reducer", () => {
     expect(
       reducer(INITIAL_STATE, {
         type: "VALIDATE_TOKEN_SUCCESS",
-        meta: { token: "1234" }
+        payload: { token: "1234" }
       })
     ).toEqual({
       loggedIn: true,
@@ -34,7 +34,7 @@ describe("appState reducer", () => {
       })
     ).toEqual({
       loggedIn: false,
-      authToken: "1234",
+      authToken: "",
       loading: false,
       redirect: ""
     });

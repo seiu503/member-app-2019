@@ -34,9 +34,9 @@ describe("apiProfileActions", () => {
         .reply(200, response);
 
       const expectedResult = {
-        payload: undefined,
+        meta: undefined,
         type: "VALIDATE_TOKEN_SUCCESS",
-        meta: {
+        payload: {
           token: "1234"
         }
       };
