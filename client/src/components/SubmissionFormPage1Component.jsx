@@ -193,7 +193,6 @@ export class SubmissionFormPage1Component extends React.Component {
         } else {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.reset("submissionPage1");
-          this.props.apiSubmission.saveSalesforceId(salesforceId);
           this.props.history.push(`/page2`);
         }
       })
