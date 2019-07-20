@@ -17,14 +17,14 @@ let wrapper,
   handleSubmit,
   apiSubmission,
   addSubmission,
-  clearForm,
   handleSubmitMock,
-  clearFormMock,
   handleSubmitSuccess,
   testData,
   handleSubmitError,
   error,
   touched;
+
+let resetMock = jest.fn();
 
 // initial props for form
 const defaultProps = {
@@ -49,7 +49,8 @@ const defaultProps = {
   },
   location: {
     search: ""
-  }
+  },
+  reset: resetMock
 };
 
 describe("Unconnected <SubmissionFormPage1 />", () => {
@@ -106,7 +107,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
   // testing that we are triggering expected behavior for submit success and failure
   describe("submit functionality", () => {
-    it("calls clearForm after successful Submit", () => {
+    it("calls reset after successful Submit", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return success object
@@ -115,32 +116,19 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
-      // just need to test that this is called after submit success
-      clearFormMock = jest.fn();
-      // replacing form prop functions and placing them in dispatch action object
-      addSubmission = handleSubmitSuccess;
-      clearForm = clearFormMock;
-      apiSubmission.addSubmission = addSubmission;
-      apiSubmission.clearForm = clearForm;
 
       // creating wrapper
       wrapper = unconnectedSetup();
-      console.log(wrapper.instance().props.legal_language);
 
-      // // mock getRef
-      // function mockGetRef(ref:any) {
-      //   this.legal_language = {textContent: 'blah'}
-      // }
-      // wrapper.instance().getRef = mockGetRef;
-      // wrapper.update();
-      // wrapper.instance().legal_language.textContent = 'blah'
+      wrapper.instance().props.apiSubmission.addSubmission = handleSubmitSuccess;
+
       // simulate submit with dummy data
       wrapper.find("form").simulate("submit", { testData });
       // testing that submit was called
       expect(handleSubmitSuccess.mock.calls.length).toBe(1);
-      // testing that clearForm is called when handleSubmit receives success message
+      // testing that reset is called when handleSubmit receives success message
       return handleSubmitSuccess().then(() => {
-        expect(clearFormMock.mock.calls.length).toBe(1);
+        expect(resetMock.mock.calls.length).toBe(1);
       });
     });
 
