@@ -48,7 +48,9 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_SF_EMPLOYERS_SUCCESS:
-      const employerNames = action.payload.map(employer => employer.Name);
+      const employerNames = action.payload
+        ? action.payload.map(employer => employer.Name)
+        : [""];
       return update(state, {
         employerNames: { $set: employerNames },
         employerObjects: { $set: action.payload }
