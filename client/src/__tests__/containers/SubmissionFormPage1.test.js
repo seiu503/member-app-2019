@@ -1,5 +1,5 @@
 import React from "react";
-import { mount } from "enzyme";
+import { mount, shallow } from "enzyme";
 import { unwrap } from "@material-ui/core/test-utils";
 
 // Needed to create simple store to test connected component
@@ -33,7 +33,7 @@ const defaultProps = {
   },
   classes: {},
   apiSF: {
-    getSFEmployer: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" })
+    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" })
   }
 };
 
@@ -50,13 +50,18 @@ describe("Connected Form", () => {
     handleSubmit = jest.fn().mockName("handleSubmit");
     const props = {
       ...defaultProps,
-      handleSubmit
+      handleSubmit,
+      apiSF: {
+        getSFEmployers: () =>
+          Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" })
+      }
     };
-    wrapper = mount(
-      <Provider store={store}>
-        <SubmissionFormWrap {...props} />
-      </Provider>
-    );
+    // wrapper = mount(
+    //   <Provider store={store}>
+    //     <SubmissionFormWrap {...props} />
+    //   </Provider>
+    // );
+    wrapper = shallow(<SubmissionFormWrap {...props} />);
   });
   afterEach(() => {
     handleSubmit.mockRestore();

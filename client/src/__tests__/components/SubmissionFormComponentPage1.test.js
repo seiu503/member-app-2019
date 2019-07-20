@@ -1,5 +1,5 @@
 import React from "react";
-import { mount } from "enzyme";
+import { mount, shallow } from "enzyme";
 
 import { findByTestAttr } from "../../utils/testUtils";
 import {
@@ -57,7 +57,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
-    return mount(<SubmissionFormWrap {...setUpProps} />);
+    return shallow(<SubmissionFormWrap {...setUpProps} />);
   };
 
   // smoke test and making sure we have access to correct props
@@ -72,6 +72,15 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       const component = findByTestAttr(
         wrapper,
         "component-submissionformpage1"
+      );
+      console.log(
+        wrapper
+          .dive()
+          .dive()
+          .dive()
+          .dive()
+          .dive()
+          .debug()
       );
       expect(component.length).toBe(1);
     });
