@@ -1,6 +1,7 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import { unwrap } from "@material-ui/core/test-utils";
+import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 
 // Needed to create simple store to test connected component
 import { reducer as formReducer } from "redux-form";
@@ -9,9 +10,15 @@ import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormWrap from "../../containers/SubmissionFormPage1";
+import SubmissionFormWrap, {
+  SubmissionFormPage1Container
+} from "../../containers/SubmissionFormPage1";
 
-// const SubmissionFormUnwrapped = unwrap(SubmissionFormWrap);
+import configureMockStore from "redux-mock-store";
+const mockStore = configureMockStore();
+
+let store;
+let wrapper;
 
 const defaultProps = {
   submission: {
@@ -36,6 +43,22 @@ const defaultProps = {
     getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" })
   }
 };
+
+const unconnectedSetup = () => {
+  const setupProps = { ...defaultProps };
+  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+};
+
+describe("<SubmissionFormPage1Container /> unconnected", () => {
+  it("renders without error", () => {
+    wrapper = unconnectedSetup();
+    const component = findByTestAttr(
+      wrapper,
+      "container-submission-form-page-1"
+    );
+    expect(component.length).toBe(1);
+  });
+});
 
 describe("Connected Form", () => {
   let store, handleSubmit, wrapper, testData;
@@ -62,6 +85,7 @@ describe("Connected Form", () => {
     //   </Provider>
     // );
     wrapper = shallow(<SubmissionFormWrap {...props} />);
+    console.log(wrapper.debug());
   });
   afterEach(() => {
     handleSubmit.mockRestore();

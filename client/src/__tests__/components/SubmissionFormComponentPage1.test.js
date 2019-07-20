@@ -6,7 +6,10 @@ import {
   generateSampleSubmission,
   generateSampleValidate
 } from "../../../../app/utils/fieldConfigs";
-import { SubmissionFormWrap } from "../../components/SubmissionFormPage1Component";
+import {
+  SubmissionFormWrap,
+  SubmissionFormPage1Component
+} from "../../components/SubmissionFormPage1Component";
 import * as Notifier from "../../containers/Notifier";
 
 // variables
@@ -40,11 +43,17 @@ const defaultProps = {
   classes: { test: "test" },
   // need these here for form to have access to their definitions later
   apiSubmission,
-  handleSubmit
+  handleSubmit,
+  legal_language: {
+    textContent: "blah"
+  },
+  location: {
+    search: ""
+  }
 };
 
 describe("Unconnected <SubmissionFormPage1 />", () => {
-  // assigning handlesubmit as a callback so it can be passed form's obSubmit assignment or our own test function
+  // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function
   // gain access to touched and error to test validation
   // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
@@ -57,7 +66,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
-    return shallow(<SubmissionFormWrap {...setUpProps} />);
+    return shallow(<SubmissionFormPage1Component {...setUpProps} />);
   };
 
   // smoke test and making sure we have access to correct props
@@ -72,15 +81,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       const component = findByTestAttr(
         wrapper,
         "component-submissionformpage1"
-      );
-      console.log(
-        wrapper
-          .dive()
-          .dive()
-          .dive()
-          .dive()
-          .dive()
-          .debug()
       );
       expect(component.length).toBe(1);
     });
@@ -122,8 +122,18 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       clearForm = clearFormMock;
       apiSubmission.addSubmission = addSubmission;
       apiSubmission.clearForm = clearForm;
+
       // creating wrapper
       wrapper = unconnectedSetup();
+      console.log(wrapper.instance().props.legal_language);
+
+      // // mock getRef
+      // function mockGetRef(ref:any) {
+      //   this.legal_language = {textContent: 'blah'}
+      // }
+      // wrapper.instance().getRef = mockGetRef;
+      // wrapper.update();
+      // wrapper.instance().legal_language.textContent = 'blah'
       // simulate submit with dummy data
       wrapper.find("form").simulate("submit", { testData });
       // testing that submit was called

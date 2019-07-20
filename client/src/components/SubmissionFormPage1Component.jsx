@@ -141,7 +141,7 @@ export class SubmissionFormPage1Component extends React.Component {
       : { Name: "" };
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
-    const legalLanguage = this.legal_language.textContent.toString();
+    const legalLanguage = this.props.legal_language.textContent.toString();
 
     const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
@@ -412,7 +412,7 @@ export class SubmissionFormPage1Component extends React.Component {
           <FormHelperText
             className={this.classes.formHelperText}
             id="termsOfServiceLegalLanguage"
-            ref={el => (this.legal_language = el)}
+            ref={this.props.legal_language}
           >
             Your full name, the network address you are accessing this page
             from, and the timestamp of submission will serve as signature

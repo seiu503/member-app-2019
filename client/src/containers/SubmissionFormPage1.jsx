@@ -33,10 +33,11 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
   render() {
-    if (this.props.submission.loading) {
-      return <div>Loading...</div>;
-    }
-    return <SubmissionFormPage1Wrap {...this.props} />;
+    return (
+      <div data-test="container-submission-form-page-1">
+        <SubmissionFormPage1Wrap {...this.props} />
+      </div>
+    );
   }
 }
 
