@@ -475,10 +475,10 @@ SubmissionFormPage1Component.propTypes = {
 };
 
 // add reduxForm to component
-export const SubmissionFormPage1Wrap = reduxForm({
+export const SubmissionFormWrap = reduxForm({
   form: "submissionPage1",
   validate,
   enableReinitialize: true
 })(SubmissionFormPage1Component);
 
-export default SubmissionFormPage1Wrap;
+export default SubmissionFormWrap;

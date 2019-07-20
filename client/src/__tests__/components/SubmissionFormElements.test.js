@@ -196,7 +196,7 @@ describe("Input Field Render functions", () => {
     it("updates input value when changed", () => {
       const event = { target: { value: "3" } };
       wrapper.find(`[data-test="component-select"]`).simulate("change", event);
-      expect(onChange).toHaveBeenCalledWith(event);
+      expect(onChange).toHaveBeenCalled();
     });
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderSelect, initialProps);
@@ -210,7 +210,7 @@ describe("Input Field Render functions", () => {
       input: {
         name: "testCheckbox",
         onBlur: jest.fn(),
-        onChange: onChangeMock(),
+        onChange,
         onDragStart: jest.fn(),
         onDrop: jest.fn(),
         onFocus: jest.fn(),
@@ -245,11 +245,9 @@ describe("Input Field Render functions", () => {
 
     it("updates input value when changed", () => {
       const checkbox = wrapper.find(`[data-test="component-checkbox"]`).first();
-      console.log(checkbox.checked);
       checkbox.checked = false;
-      console.log(checkbox.checked);
       checkbox.simulate("change", { target: { checked: true } });
-      expect(onChangeMock).toHaveBeenCalled();
+      expect(onChange).toHaveBeenCalled();
     });
 
     it("it doesn't throw PropType warnings", () => {

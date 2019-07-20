@@ -9,9 +9,9 @@ import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormPage1 from "../../containers/SubmissionFormPage1";
+import SubmissionFormWrap from "../../containers/SubmissionFormPage1";
 
-const SubmissionFormPage1Naked = unwrap(SubmissionFormPage1);
+// const SubmissionFormUnwrapped = unwrap(SubmissionFormWrap);
 
 const defaultProps = {
   submission: {
@@ -31,7 +31,10 @@ const defaultProps = {
       id: "0036100001gYL0HAAW"
     }
   },
-  classes: {}
+  classes: {},
+  apiSF: {
+    getSFEmployer: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" })
+  }
 };
 
 describe("Connected Form", () => {
@@ -51,7 +54,7 @@ describe("Connected Form", () => {
     };
     wrapper = mount(
       <Provider store={store}>
-        <SubmissionFormPage1Naked {...props} />
+        <SubmissionFormWrap {...props} />
       </Provider>
     );
   });
