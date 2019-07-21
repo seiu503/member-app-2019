@@ -46,6 +46,58 @@ const getSFContactById = (req, res, next) => {
   });
 };
 
+/** Lookup contact in Salesforce by Firstname, Lastname, & Email.
+ *  Return existing contact OR create and return new contact if none found.
+ *  @param    {Object}   body         Raw submission data, containing
+ *                                    key/value pairs of fields to match/
+ *                                    upsert. Minimum fields required to pass
+ *                                    SF validation for lookup and potential
+ *                                    new contact creation:
+ *                                    first_name, last_name, email, employer_id
+ *  @returns  {Object}        Salesforce Contact object OR error message.
+ */
+const lookupSFContact = (req, res, next) => {
+  const { first_name, last_name, email } = req.body;
+  // fuzzy match on first name AND exact match on last name
+  // AND exact match on either home OR work email
+  // limit one most recently updated record
+  const query = `SELECT ${fieldList.join(
+    ","
+  )} FROM Contact WHERE FirstName LIKE ${first_name} AND LastName = ${last_name} AND (email = ${Home_Email__c} OR email = ${Work_Email__c}) ORDER BY LastModifiedDate DESC LIMIT 1`;
+  conn.login(user, password, function(err, userInfo) {
+    if (err) {
+      console.log("sf.ctrl.js > 67");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+
+    try {
+      conn.query(query, function(err, contact) {
+        if (err) {
+          console.log("sf.ctrl.js > 75");
+          console.error(err);
+          // need branch here for if no contact found
+          // test route and figure out exactly what the
+          // error msg is for that case
+
+          // if no contact found,
+          // create new contact and then create SF OMA record
+          // if contact found, update contact, then create OMA
+
+          // if OTHER error (not no contact found) return err to client
+          return res.status(500).json({ message: err.message });
+        }
+        console.lg(contact.records[0]);
+        res.status(200).json(contact.records[0]);
+      });
+    } catch (err) {
+      console.log("sf.ctrl.js > 83");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+};
+
 /** Get an array of all employers from Salesforce
  *  @param    {none}
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
@@ -182,6 +234,7 @@ const createSFOnlineMemberApp = (req, res, next) => {
 
 module.exports = {
   getSFContactById,
+  getSFContactByNameEmail,
   getAllEmployers,
   createSFOnlineMemberApp,
   updateSFContact

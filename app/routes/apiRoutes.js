@@ -363,6 +363,19 @@ router.get("/sf/:id", sfCtrl.getSFContactById);
 //
 router.get("/sfaccts", sfCtrl.getAllEmployers);
 
+// GET ONE SALESFORCE CONTACT RECORD BY FIRSTNAME LASTNAME and EMAIL
+//   Example: GET >> /api/sfcontact
+//   Secured: no
+//   Expects:
+//     1) request body : {
+//          first_name : String,
+//          last_name  : String,
+//          email      : String
+//        }
+//   Returns: JSON selected fields from salesforce contact object on success.
+//
+router.get("/sfcontact", sfCtrl.getSFContactByNameEmail);
+
 /* ================================ EXPORT ================================= */
 
 module.exports = router;
