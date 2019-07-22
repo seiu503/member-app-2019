@@ -7,6 +7,7 @@ import queryString from "query-string";
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
+import Spinner from "../components/Spinner";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
@@ -36,8 +37,8 @@ export class SubmissionFormPage2Container extends React.Component {
     }
   }
   render() {
-    if (this.props.submission.loading) {
-      return <div>Loading...</div>;
+    if (this.props.appState.loading) {
+      return <Spinner />;
     }
     return <SubmissionFormPage2Wrap {...this.props} />;
   }

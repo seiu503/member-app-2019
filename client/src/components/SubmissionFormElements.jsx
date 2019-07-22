@@ -348,7 +348,6 @@ export const renderSelect = ({
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
       value={input.value}
-      {...custom}
       data-test="component-select"
     >
       {options.map(item => (

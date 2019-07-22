@@ -108,6 +108,7 @@ export class SubmissionFormPage1Component extends React.Component {
         employer => employer.Name
       );
       employerList.unshift("");
+      console.log(employerList);
       return employerList;
     }
   };
@@ -141,7 +142,7 @@ export class SubmissionFormPage1Component extends React.Component {
       : { Name: "" };
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
-    const legalLanguage = this.props.legal_language.textContent.toString();
+    const legalLanguage = this.props.legal_language.current.textContent;
 
     const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
@@ -230,7 +231,7 @@ export class SubmissionFormPage1Component extends React.Component {
           />
           {this.props.formValues.employerType !== "" && (
             <Field
-              labelWidth={90}
+              labelWidth={104}
               label="Employer Name"
               name="employerName"
               id="employerName"
