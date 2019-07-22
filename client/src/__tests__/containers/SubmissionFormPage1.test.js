@@ -1,17 +1,28 @@
 import React from "react";
-import { mount } from "enzyme";
+import { mount, shallow } from "enzyme";
 import { unwrap } from "@material-ui/core/test-utils";
+import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 
 // Needed to create simple store to test connected component
 import { reducer as formReducer } from "redux-form";
-import submission from "../../store/reducers/submission";
+import submission, { INITIAL_STATE } from "../../store/reducers/submission";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import SubmissionFormPage1 from "../../containers/SubmissionFormPage1";
+import SubmissionFormWrap, {
+  SubmissionFormPage1Container
+} from "../../containers/SubmissionFormPage1";
 
-const SubmissionFormPage1Naked = unwrap(SubmissionFormPage1);
+import configureMockStore from "redux-mock-store";
+const mockStore = configureMockStore();
+
+let store;
+let wrapper;
+
+const initialState = {
+  ...INITIAL_STATE
+};
 
 const defaultProps = {
   submission: {
@@ -31,38 +42,27 @@ const defaultProps = {
       id: "0036100001gYL0HAAW"
     }
   },
-  classes: {}
+  classes: {},
+  apiSF: {
+    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" })
+  },
+  history: {
+    push: jest.fn()
+  }
 };
 
-describe("Connected Form", () => {
-  let store, handleSubmit, wrapper, testData;
+const unconnectedSetup = () => {
+  const setupProps = { ...defaultProps };
+  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+};
 
-  beforeEach(() => {
-    store = createStore(
-      combineReducers({
-        form: formReducer,
-        submission
-      })
+describe("<SubmissionFormPage1Container /> unconnected", () => {
+  it("renders without error", () => {
+    wrapper = unconnectedSetup();
+    const component = findByTestAttr(
+      wrapper,
+      "container-submission-form-page-1"
     );
-    handleSubmit = jest.fn().mockName("handleSubmit");
-    const props = {
-      ...defaultProps,
-      handleSubmit
-    };
-    wrapper = mount(
-      <Provider store={store}>
-        <SubmissionFormPage1Naked {...props} />
-      </Provider>
-    );
-  });
-  afterEach(() => {
-    handleSubmit.mockRestore();
-  });
-
-  test("calls handleSubmit", () => {
-    testData = generateSampleValidate();
-    const form = wrapper.find(`[id="submissionFormPage1"]`).first();
-    form.simulate("submit", testData);
-    expect(handleSubmit).toHaveBeenCalled();
+    expect(component.length).toBe(1);
   });
 });

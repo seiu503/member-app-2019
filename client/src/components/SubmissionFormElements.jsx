@@ -312,7 +312,7 @@ export const renderTextField = ({
 }) => (
   <TextField
     label={label}
-    error={touched && error}
+    error={!!(touched && error)}
     variant="outlined"
     className={classes.input}
     helperText={touched && error}
@@ -338,6 +338,7 @@ export const renderSelect = ({
   <FormControl
     variant="outlined"
     className={classes[formControlName] || classes.formControl}
+    error={!!(error && touched)}
     {...custom}
     error={touched && error}
     required={touched && error === "Required"}
@@ -345,10 +346,10 @@ export const renderSelect = ({
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select
       native
-      onChange={input.onChange}
-      className={classes.select}
-      value={input.value.toLowerCase()}
       input={<OutlinedInput labelWidth={labelWidth} />}
+      className={classes.select}
+      value={input.value}
+      {...custom}
       data-test="component-select"
     >
       {options.map(item => (
@@ -370,11 +371,7 @@ export const renderCheckbox = ({
   formControlName,
   ...custom
 }) => (
-  <FormControl
-    error={touched && error}
-    {...custom}
-    className={classes[formControlName] || classes.formControl}
-  >
+  <FormControl error={!!(touched && error)}>
     <FormControlLabel
       label={label}
       control={
@@ -383,6 +380,7 @@ export const renderCheckbox = ({
           checked={input.value ? true : false}
           onChange={input.onChange}
           {...custom}
+          {...input}
           className={classes.checkbox}
           data-test="component-checkbox"
           name="checkbox"
@@ -399,11 +397,11 @@ export const renderCheckbox = ({
 
 TextField.propTypes = {
   input: PropTypes.shape({
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onDragStart: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
     value: PropTypes.string
   }),
   name: PropTypes.string,
@@ -414,11 +412,11 @@ TextField.propTypes = {
 };
 Select.propTypes = {
   input: PropTypes.shape({
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onDragStart: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
     value: PropTypes.string
   }),
   name: PropTypes.string,
@@ -431,11 +429,11 @@ Select.propTypes = {
 };
 Checkbox.propTypes = {
   input: PropTypes.shape({
-    onBlur: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onDragStart: PropTypes.func.isRequired,
-    onDrop: PropTypes.func.isRequired,
-    onFocus: PropTypes.func.isRequired,
+    onBlur: PropTypes.func,
+    onChange: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDrop: PropTypes.func,
+    onFocus: PropTypes.func,
     value: PropTypes.string
   }),
   name: PropTypes.string,

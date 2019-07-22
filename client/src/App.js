@@ -106,6 +106,7 @@ export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
     this.main_ref = React.createRef();
+    this.legal_language = React.createRef();
     this.state = {
       deleteDialogOpen: false,
       animation: false,
@@ -199,6 +200,7 @@ export class AppUnconnected extends Component {
               render={routeProps => (
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
+                  legal_language={this.legal_language}
                   {...routeProps}
                 />
               )}

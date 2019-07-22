@@ -3,6 +3,7 @@ import { Field } from "redux-form";
 import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
 import queryString from "query-string";
+import { reduxForm } from "redux-form";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -12,6 +13,7 @@ import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
+import validate from "../utils/validators";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const {
@@ -25,7 +27,7 @@ const {
   formatSFDate
 } = formElements;
 
-class SubmissionFormPage1Component extends React.Component {
+export class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -37,6 +39,7 @@ class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
+        console.log(result.type);
         // console.log(result.payload)
         this.loadEmployersPicklist();
       })
@@ -64,9 +67,11 @@ class SubmissionFormPage1Component extends React.Component {
   loadEmployersPicklist = () => {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
-    const employerTypesListRaw = this.props.submission.employerObjects.map(
-      employer => employer.Sub_Division__c
-    ) || [""];
+    const employerTypesListRaw = this.props.submission.employerObjects
+      ? this.props.submission.employerObjects.map(
+          employer => employer.Sub_Division__c
+        )
+      : [""];
     const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
     const employerTypesList = employerTypesCodes.map(code =>
       employerTypeMap[code] ? employerTypeMap[code] : ""
@@ -92,11 +97,13 @@ class SubmissionFormPage1Component extends React.Component {
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
     if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
-      const employerObjectsFiltered = employerObjects.filter(
-        employer =>
-          employer.Sub_Division__c ===
-          getKeyByValue(employerTypeMap, employerTypeUserSelect)
-      );
+      const employerObjectsFiltered = employerTypeUserSelect
+        ? employerObjects.filter(
+            employer =>
+              employer.Sub_Division__c ===
+              getKeyByValue(employerTypeMap, employerTypeUserSelect)
+          )
+        : [{ Name: "" }];
       const employerList = employerObjectsFiltered.map(
         employer => employer.Name
       );
@@ -127,12 +134,14 @@ class SubmissionFormPage1Component extends React.Component {
     } = values;
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
-    const employerObject = this.props.submission.employerObjects.filter(
-      obj => obj.Name.toLowerCase() === employerName.toLowerCase()
-    )[0];
+    const employerObject = this.props.submission.employerObjects
+      ? this.props.submission.employerObjects.filter(
+          obj => obj.Name.toLowerCase() === employerName.toLowerCase()
+        )[0]
+      : { Name: "" };
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
-    const legalLanguage = this.legal_language.textContent.toString();
+    const legalLanguage = this.props.legal_language.textContent.toString();
 
     const q = queryString.parse(this.props.location.search);
     if (!salesforceId) {
@@ -184,7 +193,6 @@ class SubmissionFormPage1Component extends React.Component {
         } else {
           openSnackbar("success", "Your Submission was Successful!");
           this.props.reset("submissionPage1");
-          this.props.apiSubmission.saveSalesforceId(salesforceId);
           this.props.history.push(`/page2`);
         }
       })
@@ -408,7 +416,7 @@ class SubmissionFormPage1Component extends React.Component {
           <FormHelperText
             className={this.classes.formHelperTextLegal}
             id="termsOfServiceLegalLanguage"
-            ref={el => (this.legal_language = el)}
+            ref={this.props.legal_language}
           >
             Your full name, the network address you are accessing this page
             from, and the timestamp of submission will serve as signature
@@ -470,4 +478,11 @@ SubmissionFormPage1Component.propTypes = {
   classes: PropTypes.object
 };
 
-export default SubmissionFormPage1Component;
+// add reduxForm to component
+export const SubmissionFormWrap = reduxForm({
+  form: "submissionPage1",
+  validate,
+  enableReinitialize: true
+})(SubmissionFormPage1Component);
+
+export default SubmissionFormWrap;
