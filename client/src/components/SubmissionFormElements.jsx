@@ -347,7 +347,8 @@ export const renderSelect = ({
       native
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
-      value={input.value}
+      onChange={input.onChange}
+      value={input.value.toLowerCase()}
       data-test="component-select"
     >
       {options.map(item => (

@@ -108,7 +108,7 @@ export class SubmissionFormPage1Component extends React.Component {
         employer => employer.Name
       );
       employerList.unshift("");
-      console.log(employerList);
+      // console.log(employerList);
       return employerList;
     }
   };
