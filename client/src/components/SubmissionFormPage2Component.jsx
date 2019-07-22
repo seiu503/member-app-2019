@@ -14,6 +14,7 @@ import ButtonWithSpinner from "./ButtonWithSpinner";
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
+const enableGenderOtherDescription = formElements.enableGenderOtherDescription;
 
 class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
@@ -282,7 +283,7 @@ class SubmissionFormPage2Component extends React.Component {
               type="select"
               classes={this.classes}
               component={this.renderSelect}
-              labelWidth={41}
+              labelWidth={50}
               options={genderOptions}
             />
             <Field
@@ -292,6 +293,7 @@ class SubmissionFormPage2Component extends React.Component {
               type="text"
               classes={this.classes}
               component={this.renderTextField}
+              disabled={enableGenderOtherDescription(this.props)}
             />
             <Field
               label="Your pronouns"
@@ -300,7 +302,7 @@ class SubmissionFormPage2Component extends React.Component {
               type="select"
               classes={this.classes}
               component={this.renderSelect}
-              labelWidth={41}
+              labelWidth={97}
               options={genderPronounOptions}
             />
           </FormGroup>
@@ -337,7 +339,7 @@ class SubmissionFormPage2Component extends React.Component {
               label="Work Email"
               name="workEmail"
               id="workEmail"
-              type="text"
+              type="email"
               classes={this.classes}
               component={this.renderTextField}
             />
@@ -345,7 +347,7 @@ class SubmissionFormPage2Component extends React.Component {
               label="Work Phone"
               name="workPhone"
               id="workPhone"
-              type="text"
+              type="tel"
               classes={this.classes}
               component={this.renderTextField}
             />
@@ -385,7 +387,7 @@ class SubmissionFormPage2Component extends React.Component {
               classes={this.classes}
               formControlName="formControlDate"
               component={this.renderSelect}
-              labelWidth={41}
+              labelWidth={88}
               options={stateList}
             />
             <Field

@@ -226,9 +226,11 @@ export class SubmissionFormPage1Component extends React.Component {
             component={this.renderSelect}
             options={employerTypesList}
             onChange={e => this.updateEmployersPicklist(e)}
+            labelWidth={100}
           />
           {this.props.formValues.employerType !== "" && (
             <Field
+              labelWidth={90}
               label="Employer Name"
               name="employerName"
               id="employerName"
@@ -371,37 +373,40 @@ export class SubmissionFormPage1Component extends React.Component {
             personal email, work email is fine. If you don't have an email
             address, call us at 1.844.503.7348 to sign up over the phone.
           </FormHelperText>
+          <FormGroup>
+            <Field
+              label="Mobile Phone†"
+              name="mobilePhone"
+              id="mobilePhone"
+              type="tel"
+              classes={this.classes}
+              component={this.renderTextField}
+            />
+
+            <FormHelperText className={this.classes.formHelperText}>
+              † By providing my phone number, I understand that the Service
+              Employees International Union (SEIU), its local unions, and
+              affiliates may use automated calling technologies and/or text
+              message me on my cellular phone on a periodic basis. SEIU will
+              never charge for text message alerts. Carrier message and data
+              rates may apply to such alerts. Reply STOP to stop receiving
+              messages; reply HELP for more information.
+            </FormHelperText>
+
+            <Field
+              label="Opt Out Of Receiving Mobile Alerts"
+              name="textAuthOptOut"
+              id="textAuthOptOut"
+              type="checkbox"
+              formControlName="controlCheckbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
+          </FormGroup>
 
           <Field
-            label="Mobile Phone†"
-            name="mobilePhone"
-            id="mobilePhone"
-            type="tel"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-
-          <FormHelperText className={this.classes.formHelperText}>
-            † By providing my phone number, I understand that the Service
-            Employees International Union (SEIU), its local unions, and
-            affiliates may use automated calling technologies and/or text
-            message me on my cellular phone on a periodic basis. SEIU will never
-            charge for text message alerts. Carrier message and data rates may
-            apply to such alerts. Reply STOP to stop receiving messages; reply
-            HELP for more information.
-          </FormHelperText>
-
-          <Field
-            label="Opt Out Of Receiving Mobile Alerts"
-            name="textAuthOptOut"
-            id="textAuthOptOut"
-            type="checkbox"
-            classes={this.classes}
-            component={this.renderCheckbox}
-          />
-
-          <Field
-            label="Agree to Terms of Service"
+            formControlName="controlCheckbox"
+            label="Agree to Terms of Membership"
             name="termsAgree"
             id="termsAgree"
             type="checkbox"
@@ -409,7 +414,7 @@ export class SubmissionFormPage1Component extends React.Component {
             component={this.renderCheckbox}
           />
           <FormHelperText
-            className={this.classes.formHelperText}
+            className={this.classes.formHelperTextLegal}
             id="termsOfServiceLegalLanguage"
             ref={this.props.legal_language}
           >
