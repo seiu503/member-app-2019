@@ -340,7 +340,6 @@ export const renderSelect = ({
     className={classes[formControlName] || classes.formControl}
     error={!!(error && touched)}
     {...custom}
-    error={touched && error}
     required={touched && error === "Required"}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
