@@ -16,11 +16,15 @@ import * as Notifier from "../../containers/Notifier";
 let wrapper,
   handleSubmit,
   apiSubmission,
+  apiSF,
   addSubmission,
   handleSubmitMock,
   handleSubmitSuccess,
+  lookupSFContact,
+  sfLookupSuccess,
   testData,
   handleSubmitError,
+  sfLookupError,
   error,
   touched;
 
@@ -43,6 +47,7 @@ const defaultProps = {
   classes: { test: "test" },
   // need these here for form to have access to their definitions later
   apiSubmission,
+  apiSF,
   handleSubmit,
   legal_language: {
     textContent: "blah"
@@ -50,7 +55,10 @@ const defaultProps = {
   location: {
     search: ""
   },
-  reset: resetMock
+  reset: resetMock,
+  history: {
+    push: jest.fn()
+  }
 };
 
 describe("Unconnected <SubmissionFormPage1 />", () => {
@@ -62,11 +70,12 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     error = null;
     handleSubmit = fn => fn;
     apiSubmission = {};
+    apiSF = {};
   });
 
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
-    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
+    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return shallow(<SubmissionFormPage1Component {...setUpProps} />);
   };
 
@@ -117,17 +126,24 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
 
+      sfLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "LOOKUP_SF_CONTACT_SUCCESS" })
+        );
+
       // creating wrapper
       wrapper = unconnectedSetup();
 
       wrapper.instance().props.apiSubmission.addSubmission = handleSubmitSuccess;
+      wrapper.instance().props.apiSF.lookupSFContact = sfLookupSuccess;
 
       // simulate submit with dummy data
       wrapper.find("form").simulate("submit", { testData });
       // testing that submit was called
-      expect(handleSubmitSuccess.mock.calls.length).toBe(1);
+      expect(sfLookupSuccess.mock.calls.length).toBe(1);
       // testing that reset is called when handleSubmit receives success message
-      return handleSubmitSuccess().then(() => {
+      return sfLookupSuccess().then(() => {
         expect(resetMock.mock.calls.length).toBe(1);
       });
     });
@@ -136,24 +152,24 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return error object
-      handleSubmitError = jest
+      sfLookupError = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+          Promise.resolve({ type: "LOOKUP_SF_CONTACT_FAILURE" })
         );
       // replacing openSnackbar import with mock function
       Notifier.openSnackbar = jest.fn();
       // replacing form prop functions and placing them in dispatch action object
-      addSubmission = handleSubmitError;
-      apiSubmission.addSubmission = addSubmission;
+      lookupSFContact = sfLookupError;
+      apiSF.lookupSFContact = lookupSFContact;
       // creating wrapper
       wrapper = unconnectedSetup();
       // simulate submit with dummy data
       wrapper.find("form").simulate("submit", { testData });
       // testing that submit was called
-      expect(handleSubmitError.mock.calls.length).toBe(1);
+      expect(sfLookupError.mock.calls.length).toBe(1);
       // testing that clearForm is called when handleSubmit receives Error message
-      return handleSubmitError().then(() => {
+      return sfLookupError().then(() => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       });
     });

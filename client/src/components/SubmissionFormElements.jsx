@@ -332,7 +332,7 @@ export const renderSelect = ({
       native
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
-      value={input.value}
+      value={input.value.toLowerCase()}
       {...custom}
       data-test="component-select"
     >

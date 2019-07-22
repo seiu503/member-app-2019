@@ -95,3 +95,47 @@ export function getSFEmployers() {
     }
   };
 }
+
+/*
+ * Function: lookupSFContact -- lookup a SF contact (by id OR name/email)
+ * @param {string} id
+ * This action dispatches additional actions as it executes:
+ *   LOOKUP_SF_CONTACT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   LOOKUP_SF_CONTACT_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   LOOKUP_SF_CONTACT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function lookupSFContact(body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfcontact`,
+      method: "GET",
+      types: [
+        LOOKUP_SF_CONTACT_REQUEST,
+        LOOKUP_SF_CONTACT_SUCCESS,
+        {
+          type: LOOKUP_SF_CONTACT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data) {
+                if (data.message) {
+                  message = data.message;
+                }
+                return { message };
+              } else {
+                return { message };
+              }
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}

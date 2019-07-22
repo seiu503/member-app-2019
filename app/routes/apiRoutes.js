@@ -363,18 +363,48 @@ router.get("/sf/:id", sfCtrl.getSFContactById);
 //
 router.get("/sfaccts", sfCtrl.getAllEmployers);
 
-// GET ONE SALESFORCE CONTACT RECORD BY FIRSTNAME LASTNAME and EMAIL
+// LOOKUP ONE SALESFORCE CONTACT RECORD (BY ID OR FIRSTNAME/LASTNAME/EMAIL)
 //   Example: GET >> /api/sfcontact
 //   Secured: no
 //   Expects:
-//     1) request body : {
-//          first_name : String,
-//          last_name  : String,
-//          email      : String
-//        }
+//     1) request body properties : {
+//          Object {
+//              ip_address                       : String
+//              submission_date                  : Timestamp
+//              agency_number                    : String
+//              employer_id                      : String
+//              birthdate                        : String
+//              cell_phone                       : String
+//              employer_name                    : String
+//              first_name                       : String
+//              last_name                        : String
+//              home_street                      : String
+//              home_city                        : String
+//              home_state                       : String
+//              home_zip                         : String
+//              home_email                       : String
+//              preferred_language               : String
+//              terms_agree                      : Boolean
+//              Signature                        : String
+//              text_auth_opt_out                : Boolean
+//              online_campaign_source           : String
+//              contact_id                       : String
+//              legal_language                   : String
+//              maintenance_of_effort            : Date
+//              seiu503_cba_app_date             : Date
+//              direct_pay_auth                  : Date
+//              direct_deposit_auth              : Date
+//              immediate_past_member_status     : String
+//             }
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
-router.get("/sfcontact", sfCtrl.getSFContactByNameEmail);
+router.get(
+  "/sfcontact",
+  sfCtrl.lookupSFContact,
+  submissionCtrl.createSubmission,
+  sfCtrl.createSFOnlineMemberApp,
+  sfCtrl.updateSFContact
+);
 
 /* ================================ EXPORT ================================= */
 

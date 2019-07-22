@@ -18,6 +18,7 @@ const fieldList = generateSFContactFieldList();
  *  @returns  {Object}       	Salesforce Contact object OR error message.
  */
 const getSFContactById = (req, res, next) => {
+  console.log(`getSFContactById`);
   const { id } = req.params;
   const query = `SELECT ${fieldList.join(
     ","
@@ -57,10 +58,22 @@ const getSFContactById = (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact object OR error message.
  */
 const lookupSFContact = (req, res, next) => {
+  const { contact_id } = req.body;
+  console.log(`sf.ctrl.js > 62: ${contact_id}`);
+
+  // if contact id is sent in request body, then this is a prefill
+  // skip the lookup function and head straight to getSFContactById
+  if (contact_id) {
+    console.log(`found contact id; skipping lookup`);
+    return getSFContactById(req, res, next);
+  }
+
+  // otherwise, proceed with lookup:
   const { first_name, last_name, email } = req.body;
   // fuzzy match on first name AND exact match on last name
   // AND exact match on either home OR work email
   // limit one most recently updated record
+
   const query = `SELECT ${fieldList.join(
     ","
   )} FROM Contact WHERE FirstName LIKE ${first_name} AND LastName = ${last_name} AND (email = ${Home_Email__c} OR email = ${Work_Email__c}) ORDER BY LastModifiedDate DESC LIMIT 1`;
@@ -81,13 +94,14 @@ const lookupSFContact = (req, res, next) => {
           // error msg is for that case
 
           // if no contact found,
-          // create new contact and then create SF OMA record
-          // if contact found, update contact, then create OMA
+          // create new contact and then pass contact id to next
+          // in res.locals
+          // if contact found, pass contact id to next
 
           // if OTHER error (not no contact found) return err to client
           return res.status(500).json({ message: err.message });
         }
-        console.lg(contact.records[0]);
+        console.log(contact.records[0]);
         res.status(200).json(contact.records[0]);
       });
     } catch (err) {
@@ -234,7 +248,7 @@ const createSFOnlineMemberApp = (req, res, next) => {
 
 module.exports = {
   getSFContactById,
-  getSFContactByNameEmail,
+  lookupSFContact,
   getAllEmployers,
   createSFOnlineMemberApp,
   updateSFContact
