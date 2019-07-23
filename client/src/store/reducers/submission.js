@@ -1,7 +1,6 @@
 import update from "immutability-helper";
 import moment from "moment";
 import * as formElements from "../../components/SubmissionFormElements";
-import { camelize } from "../../utils/index";
 
 import {
   ADD_SUBMISSION_REQUEST,
@@ -67,14 +66,11 @@ function Submission(state = INITIAL_STATE, action) {
         action.payload.Account.RecordTypeId === "01261000000ksTuAAI"
           ? action.payload.Account.Name
           : action.payload.Account.CVRSOS__ParentName__c;
-      // split ethinicity string, camelcase to match input names, provide true value for each ethnicity returned
-      const ethnicities = action.payload.Ethnicity__c.split(",");
-      ethnicities.forEach((ethnicity, index) => {
-        ethnicities[index] = camelize(ethnicity);
-      });
+      // split ethinicity string, provide true value for each ethnicity returned
+      const ethnicities = action.payload.Ethnicity__c.split(", ");
       const ethnicitiesObj = {};
-      for (const key of ethnicities) {
-        ethnicitiesObj[key] = true;
+      for (const item of ethnicities) {
+        ethnicitiesObj[item] = true;
       }
       console.log(ethnicitiesObj);
       return update(state, {
