@@ -1,11 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import queryString from "query-string";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CardMedia from "@material-ui/core/CardMedia";
 import Card from "@material-ui/core/Card";
 
+import * as apiContentActions from "../store/actions/apiContentActions";
+import { defaultWelcomeInfo } from "../utils/index";
 import SamplePhoto from "../img/sample-form-photo.jpg";
 
 const styles = theme => ({
@@ -32,17 +37,87 @@ class WelcomeInfo extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      headline: defaultWelcomeInfo.headline,
+      body: defaultWelcomeInfo.body,
+      image: null
+    };
+  }
+
+  getHeadline() {}
+
+  componentDidMount() {
+    const values = queryString.parse(this.props.location.search);
+    // if find contact id, call API to fetch contact info for prefill
+    if (values.headline) {
+      const { headline } = values;
+      this.props.apiContent
+        .getContentById(headline)
+        .then(result => {
+          if (!result || result.payload.message) {
+            console.log(
+              result.payload.message ||
+                "there was an error loading the headline"
+            );
+          } else {
+            console.log(result);
+            this.setState({ headline: result.payload.content });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+    if (values.body) {
+      const { body } = values;
+      this.props.apiContent
+        .getContentById(body)
+        .then(result => {
+          if (!result || result.payload.message) {
+            console.log(
+              result.payload.message || "there was an error loading the body"
+            );
+          } else {
+            console.log(result);
+            this.setState({ body: result.payload.content });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+    if (values.image) {
+      const { image } = values;
+      this.props.apiContent
+        .getContentById(image)
+        .then(result => {
+          if (!result || result.payload.message) {
+            console.log(
+              result.payload.message || "there was an error loading the body"
+            );
+          } else {
+            console.log(result);
+            this.setState({ image: result.payload.content });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 
   render() {
+    if (this.props.appState.loading) {
+      return <div>loading...</div>;
+    }
     return (
       <div className={this.classes.root} data-test="component-welcome-info">
         <Card className={this.classes.card}>
           <CardMedia
             className={this.classes.media}
-            title="Purple lights"
-            image={SamplePhoto}
+            title="Welcome Photo"
+            alt="Welcome Photo"
+            image={this.state.image || SamplePhoto}
           />
 
           <Typography
@@ -53,7 +128,7 @@ class WelcomeInfo extends React.Component {
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
-            Sample Headline
+            {this.state.headline}
           </Typography>
 
           <Typography
@@ -63,20 +138,7 @@ class WelcomeInfo extends React.Component {
             className={this.classes.body}
             data-test="body"
           >
-            By joining together in union, SEIU 503 members have won incredible
-            victories—including increasing our pay and benefits and improving
-            our workplace conditions. In states where more public employees
-            remain members of the union, salaries are higher for all employees
-            because the union has the power to negotiate from a position of
-            strength. <br />
-            <br />
-            We have strength in numbers. Please complete the following form to
-            join tens of thousands of public service workers and care providers
-            who make Oregon a great place to work and live. By doing so, you
-            will commit to maintaining your membership for one year, or paying a
-            non-member fee equivalent. Dues are 1.7% of your salary +
-            $2.75/month. Your full name, network address, and a timestamp of
-            your submission will serve as your signature.
+            {this.state.body}
           </Typography>
         </Card>
       </div>
@@ -88,4 +150,17 @@ WelcomeInfo.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(WelcomeInfo);
+const mapStateToProps = state => ({
+  appState: state.appState
+});
+
+const mapDispatchToProps = dispatch => ({
+  apiContent: bindActionCreators(apiContentActions, dispatch)
+});
+
+export default withStyles(styles)(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(WelcomeInfo)
+);

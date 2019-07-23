@@ -86,6 +86,10 @@ const unconnectedSetup = () => {
   return shallow(<TextInputFormUnconnected {...setupProps} />);
 };
 
+const fakeEvent = {
+  preventDefault: () => console.log("preventDefault")
+};
+
 describe("<TextInputForm />", () => {
   it("renders without error", () => {
     wrapper = setup();
@@ -175,6 +179,7 @@ describe("<TextInputForm />", () => {
         }
       }
     };
+
     store = storeFactory(initialState);
     // Create a spy of the dispatch() method for test assertions.
     const dispatchSpy = jest.spyOn(store, "dispatch");
@@ -184,7 +189,7 @@ describe("<TextInputForm />", () => {
       .dive()
       .dive();
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     // expect the spy to have been called
     // extract the action and JSON.stringify both sides to get the
     // assertion to pass, because the anonymous function in the
@@ -225,7 +230,7 @@ describe("<TextInputForm />", () => {
       <TextInputFormUnconnected {...defaultProps} {...props} />
     );
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     return addContentErrorMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "error",
@@ -257,7 +262,7 @@ describe("<TextInputForm />", () => {
       <TextInputFormUnconnected {...defaultProps} {...props} />
     );
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     return addContentMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "success",
@@ -289,7 +294,7 @@ describe("<TextInputForm />", () => {
       <TextInputFormUnconnected {...defaultProps} {...props} />
     );
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     return updateContentErrorMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "error",
@@ -318,7 +323,7 @@ describe("<TextInputForm />", () => {
       <TextInputFormUnconnected {...defaultProps} {...props} />
     );
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     expect(Notifier.openSnackbar).toHaveBeenCalledWith(
       "error",
       "An error occured while trying to save your content."
@@ -348,7 +353,7 @@ describe("<TextInputForm />", () => {
       <TextInputFormUnconnected {...defaultProps} {...props} />
     );
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     return updateContentMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "success",
@@ -382,7 +387,7 @@ describe("<TextInputForm />", () => {
       .dive()
       .dive();
 
-    wrapper.instance().submit();
+    wrapper.instance().submit(fakeEvent);
     // expect the spy to have been called
     // extract the action and JSON.stringify both sides to get the
     // assertion to pass, because the anonymous function in the

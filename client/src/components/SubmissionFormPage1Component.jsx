@@ -212,7 +212,7 @@ export class SubmissionFormPage1Component extends React.Component {
         className={this.classes.root}
         data-test="component-submissionformpage1"
       >
-        <WelcomeInfo />
+        <WelcomeInfo location={this.props.location} />
         <form
           id="submissionFormPage1"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
