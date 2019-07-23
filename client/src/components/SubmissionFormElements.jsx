@@ -340,7 +340,6 @@ export const renderSelect = ({
     className={classes[formControlName] || classes.formControl}
     error={!!(error && touched)}
     {...custom}
-    error={touched && error}
     required={touched && error === "Required"}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
@@ -348,7 +347,8 @@ export const renderSelect = ({
       native
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
-      value={input.value}
+      value={input.value.toLowerCase()}
+      onChange={input.onChange}
       {...custom}
       data-test="component-select"
     >
