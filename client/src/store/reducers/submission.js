@@ -70,9 +70,12 @@ function Submission(state = INITIAL_STATE, action) {
       const ethnicities = action.payload.Ethnicity__c.split(", ");
       const ethnicitiesObj = {};
       for (const item of ethnicities) {
-        ethnicitiesObj[item] = true;
+        if (item === "Declined") {
+          ethnicitiesObj.declined = true;
+        } else {
+          ethnicitiesObj[item] = true;
+        }
       }
-      console.log(ethnicitiesObj);
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
@@ -110,6 +113,7 @@ function Submission(state = INITIAL_STATE, action) {
           },
           white: { $set: ethnicitiesObj.white },
           other: { $set: ethnicitiesObj.other },
+          declined: { $set: ethnicitiesObj.declined },
           mailToCity: { $set: action.payload.OtherCity },
           mailToState: { $set: action.payload.OtherState },
           mailToStreet: { $set: action.payload.OtherStreet },
