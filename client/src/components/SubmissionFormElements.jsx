@@ -316,7 +316,7 @@ export const renderTextField = ({
     variant="outlined"
     className={classes.input}
     helperText={touched && error}
-    required={touched && error}
+    required={!!(touched && error)}
     {...input}
     {...custom}
     data-test="component-text-field"
