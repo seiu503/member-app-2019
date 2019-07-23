@@ -65,8 +65,8 @@ export class DashboardUnconnected extends React.Component {
 
       // if logged in for first time through social auth,
       // save userId & token to local storage
-      window.localStorage.setItem("userId", JSON.stringify(userId));
-      window.localStorage.setItem("authToken", JSON.stringify(token));
+      window.localStorage.setItem("userId", userId);
+      window.localStorage.setItem("authToken", token);
       this.props.actions.setLoggedIn();
       // remove id & token from route params after saving to local storage
       window.history.replaceState(
@@ -78,10 +78,9 @@ export class DashboardUnconnected extends React.Component {
       // if userId is not in route params
       // look in redux store or local storage
       userId =
-        this.props.profile.profile._id ||
-        JSON.parse(window.localStorage.getItem("userId"));
+        this.props.profile.profile._id || window.localStorage.getItem("userId");
       if (window.localStorage.getItem("authToken")) {
-        token = JSON.parse(window.localStorage.getItem("authToken"));
+        token = window.localStorage.getItem("authToken");
       } else {
         token = this.props.appState.authToken;
       }

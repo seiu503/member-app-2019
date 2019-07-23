@@ -1,65 +1,47 @@
+import React from "react";
 import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import lifecycle from "react-pure-lifecycle";
-import uuid from "uuid";
+import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
+import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
 import { stylesPage2 } from "../components/SubmissionFormElements";
 
-// default initial values we want if salesforce doesn't provide useful data
-const initialValues = {
-  mm: ""
-};
-
-const salesForceCheck = id => {
-  // MAKE SALESFORCE API CALL HERE using passed Id
-
-  // fake response with an attempt to mock salesforce naming convention based on GoogleDoc
-  let fakePositive = {
-    // *********  UPDATE WITH PROPER FIELDS FROM COMPONENT  ********* //
-  };
-  let fakeNegative = {
-    error: "no data found in salesforce"
-  };
-
-  // using fake test to check if last char is a letter, but really want check truthiness/value of salesforce returned data
-  if (id[id.length - 1].toUpperCase() !== id[id.length - 1].toLowerCase()) {
-    return fakePositive;
-  } else {
-    return fakeNegative;
-  }
-};
-
-const componentDidMount = () => {
-  // for now running random 50/50 shot of prefill to test, eventually Will need to nest function in an if block that checks truthiness of `this.props.match.params.id`
-  let chance = Math.random() < 0.5;
-  if (chance) {
-    // temp random ID
-    const mockId = uuid.v4();
-    // check truthiness of return saleForceAPI call
-    const preFill = salesForceCheck(mockId);
-    // set initialValue params to values returned from SalesForce
-    if (preFill.error) {
-      return;
+export class SubmissionFormPage2Container extends React.Component {
+  componentDidMount() {
+    // check for contact id in query string
+    const values = queryString.parse(this.props.location.search);
+    // if find contact id, call API to fetch contact info for prefill
+    if (values.id) {
+      const { id } = values;
+      this.props.apiSF
+        .getSFContactById(id)
+        .then(result => {
+          // console.log("result.payload", result.payload);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     } else {
-      /* *********  POPULATE ME  ********* */
+      alert("We Did not find your Id, redirecting to main submission page");
+      console.log("no id found, no prefill");
+      // return this.props.history.push("/")
     }
-    return;
   }
-};
+  render() {
+    if (this.props.submission.loading) {
+      return <div>Loading...</div>;
+    }
+    return <SubmissionFormPage2Wrap {...this.props} />;
+  }
+}
 
-// param for add lifecycle methods to functional component
-const methods = {
-  componentDidMount
-};
-
-// add reduxForm to component
-export const SubmissionFormPage2 = reduxForm({
+export const SubmissionFormPage2Wrap = reduxForm({
   form: "submissionPage2",
   validate,
   enableReinitialize: true
@@ -68,20 +50,19 @@ export const SubmissionFormPage2 = reduxForm({
 const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
-  initialValues,
+  initialValues: state.submission.formPage2,
   formValues: getFormValues("submissionPage2")(state) || {}
 });
 
 const mapDispatchToProps = dispatch => ({
-  apiSubmission: bindActionCreators(apiSubmissionActions, dispatch)
+  apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
+  apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
 // add MUI styles and faked lifecycle methods
 export default withStyles(stylesPage2)(
-  lifecycle(methods)(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(SubmissionFormPage2)
-  )
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SubmissionFormPage2Container)
 );

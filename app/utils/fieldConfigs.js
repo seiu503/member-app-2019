@@ -953,7 +953,6 @@ const generateSampleValidate = () => {
   sampleData.termsAgree = true;
   sampleData.mobilePhone = sampleData.cellPhone;
   sampleData.homePostalCode = sampleData.homeZip;
-  delete sampleData.homeZip;
   delete sampleData.cellPhone;
   return sampleData;
 };

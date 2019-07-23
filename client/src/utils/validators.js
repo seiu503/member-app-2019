@@ -8,7 +8,7 @@ const validate = values => {
     "yyyy",
     "preferredLanguage",
     "homeStreet",
-    "homePostalCode",
+    "homeZip",
     "homeState",
     "homeCity",
     "homeEmail",

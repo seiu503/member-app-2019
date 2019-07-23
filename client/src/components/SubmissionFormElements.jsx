@@ -190,11 +190,11 @@ export const stylesPage1 = theme => ({
   },
   input: {
     width: "100%",
-    margin: "0 0 20px 0"
+    margin: "0 0 30px 0"
   },
   select: {
     width: "100%",
-    margin: "0 0 20px 0"
+    margin: "0 0 30px 0"
   },
   failedText: {
     color: "red"
@@ -219,7 +219,7 @@ export const stylesPage1 = theme => ({
     margin: "10px 0"
   },
   formHelperText: {
-    margin: "-10px 0 20px 0"
+    margin: "-25px 0 30px 0"
   },
   checkboxErrorText: {
     margin: "-10px 0 10px 0"
@@ -228,8 +228,13 @@ export const stylesPage1 = theme => ({
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
-    margin: "0 0 20px"
+    justifyContent: "flex-start"
+  },
+  controlCheckbox: {
+    margin: "-35px 0 40px 0"
+  },
+  formHelperTextLegal: {
+    margin: "-50px 0 30px 0"
   }
 });
 export const stylesPage2 = theme => ({
@@ -288,6 +293,14 @@ export const stylesPage2 = theme => ({
   }
 });
 
+//disable otherDescription input based on gender select
+export const enableGenderOtherDescription = props => {
+  if (props.formValues.gender === "other") {
+    return false;
+  }
+  return true;
+};
+
 // custom MUI friendly TEXT input
 export const renderTextField = ({
   input,
@@ -303,6 +316,7 @@ export const renderTextField = ({
     variant="outlined"
     className={classes.input}
     helperText={touched && error}
+    required={!!(touched && error)}
     {...input}
     {...custom}
     data-test="component-text-field"
@@ -326,6 +340,7 @@ export const renderSelect = ({
     className={classes[formControlName] || classes.formControl}
     error={!!(error && touched)}
     {...custom}
+    required={touched && error === "Required"}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select
@@ -333,6 +348,7 @@ export const renderSelect = ({
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
       value={input.value.toLowerCase()}
+      onChange={input.onChange}
       {...custom}
       data-test="component-select"
     >
@@ -352,6 +368,7 @@ export const renderCheckbox = ({
   validate,
   classes,
   meta: { touched, error },
+  formControlName,
   ...custom
 }) => (
   <FormControl error={!!(touched && error)}>
