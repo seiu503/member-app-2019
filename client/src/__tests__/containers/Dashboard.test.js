@@ -116,8 +116,8 @@ describe("<Dashboard />", () => {
   test("sets userId & authToken to localStorage on component mount if userId in route params", () => {
     wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
 
-    expect(localStorage.getItem("authToken")).toEqual('"5678"');
-    expect(localStorage.getItem("userId")).toEqual('"1234"');
+    expect(localStorage.getItem("authToken")).toEqual("5678");
+    expect(localStorage.getItem("userId")).toEqual("1234");
 
     localStorage.clear();
   });
