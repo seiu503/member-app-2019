@@ -98,7 +98,6 @@ const styles = theme => ({
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
-    // console.log(authToken);
     this.props.apiContent.getAllContent(authToken).then(result => {
       // console.log(result);
     });
@@ -161,7 +160,7 @@ export class ContentLibraryUnconnected extends React.Component {
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
       <div data-test="component-content-library">
-        {this.props.content.loading && <Spinner />}
+        {this.props.appState.loading && <Spinner />}
         {this.props.content.deleteDialogOpen && (
           <AlertDialog
             open={this.props.content.deleteDialogOpen}

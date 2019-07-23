@@ -26,6 +26,8 @@ module.exports = passport => {
           done(null, user);
         })
         .catch(err => {
+          console.log("passport.js > 31");
+          console.log(err);
           done(err, null);
         });
     })

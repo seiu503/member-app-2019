@@ -165,7 +165,7 @@ export class TextInputFormUnconnected extends React.Component {
 
   submit() {
     const { content_type, content } = this.props.content.form;
-    const { authToken } = this.props.appState;
+    const authToken = this.props.appState.authToken;
     const body = {
       content_type,
       content

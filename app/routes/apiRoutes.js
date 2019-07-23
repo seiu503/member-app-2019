@@ -21,11 +21,11 @@ const sfCtrl = require("../controllers/sf.ctrl");
 const requireAuth = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (err) {
-      console.log(`apiRoutes.js > 21: ${err}`);
+      console.log(`apiRoutes.js > 24: ${err}`);
       return res.status(422).send({ success: false, message: err.message });
     }
     if (!user) {
-      console.log(`apiRoutes.js > 25: no user found`);
+      console.log(`apiRoutes.js > 28: no user found`);
       return res.status(422).send({
         success: false,
         message: "Sorry, you must log in to view this page."
