@@ -316,7 +316,7 @@ export const renderTextField = ({
     variant="outlined"
     className={classes.input}
     helperText={touched && error}
-    required={touched && error}
+    required={!!(touched && error)}
     {...input}
     {...custom}
     data-test="component-text-field"
@@ -347,8 +347,9 @@ export const renderSelect = ({
       native
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
-      onChange={input.onChange}
       value={input.value.toLowerCase()}
+      onChange={input.onChange}
+      {...custom}
       data-test="component-select"
     >
       {options.map(item => (

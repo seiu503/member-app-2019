@@ -39,7 +39,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         // console.log(result.payload)
         this.loadEmployersPicklist();
       })
@@ -90,7 +90,7 @@ export class SubmissionFormPage1Component extends React.Component {
     if (Object.keys(this.props.formValues).length) {
       employerTypeUserSelect = this.props.formValues.employerType;
     } else {
-      console.log("no formValues in props");
+      // console.log("no formValues in props");
     }
 
     const employerTypesList = this.loadEmployersPicklist();

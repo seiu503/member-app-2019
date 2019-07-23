@@ -52,7 +52,10 @@ const defaultProps = {
   location: {
     search: ""
   },
-  reset: resetMock
+  reset: resetMock,
+  history: {
+    push: jest.fn()
+  }
 };
 
 describe("Unconnected <SubmissionFormPage1 />", () => {

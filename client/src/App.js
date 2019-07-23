@@ -119,7 +119,7 @@ export class AppUnconnected extends Component {
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
       const authToken = window.localStorage.getItem("authToken");
-      const userId = JSON.parse(window.localStorage.getItem("userId"));
+      const userId = window.localStorage.getItem("userId");
       if (
         authToken &&
         authToken !== "undefined" &&
