@@ -150,28 +150,38 @@ const createSubmission = async (req, res, next) => {
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = (req, res, next) => {
+const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
   }
 
-  return submissions
-    .updateSubmission(id, updates)
-    .then(submission => {
-      if (submission.message || !submission) {
-        return res.status(404).json({
-          message:
-            submission.message ||
-            "An error occured while trying to update this submission"
-        });
-      } else {
-        return res.status(200).json(submission);
-      }
-    })
-    .catch(err => res.status(500).json({ message: err.message }));
+  if (!id) {
+    return res.status(404).json({ message: "No Provided in URL" });
+  }
+
+  const updateSubmissionResult = await submissions.updateSubmission(
+    id,
+    updates
+  );
+
+  if (!updateSubmissionResult || updateSubmissionResult.message) {
+    console.log(
+      `submissions.ctrl.js > 170: ${updateSubmissionResult.message ||
+        "There was an error updating the submission"}`
+    );
+    return res.status(500).json({
+      message:
+        updateSubmissionResult.message ||
+        "An error occured while trying to update this submission"
+    });
+  } else {
+    // passing contact id and submission id to next middleware
+    res.locals.sf_contact_id = id;
+    res.locals.submission_id = updateSubmissionResult[0].id;
+    return next();
+  }
 };
 
 /** Delete submission

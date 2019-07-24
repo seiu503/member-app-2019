@@ -77,10 +77,12 @@ class SubmissionFormPage2Component extends React.Component {
         if (i[1]) {
           if (combinedEthnicities === "") {
             combinedEthnicities = i[0];
+          } else {
+            combinedEthnicities += `, ${i[0]}`;
           }
-          combinedEthnicities += `, ${i[0]}`;
         }
       });
+      console.log("COMBINEDETHINICITIES", combinedEthnicities);
       return combinedEthnicities;
     };
 
@@ -104,7 +106,6 @@ class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-
     const removeFalsy = obj => {
       let newObj = {};
       Object.keys(obj).forEach(prop => {
@@ -116,11 +117,12 @@ class SubmissionFormPage2Component extends React.Component {
     };
 
     const cleanBody = removeFalsy(body);
+    console.log("CLEANBODY", cleanBody);
 
     let id = this.props.submission.salesforceId;
 
     //HARDCODED ID FOR TESTING, DELETE ME LATER!!!!
-    id = "bc9e88b7-342c-4cac-8f7c-5acc96c6401e";
+    id = "0036100001gYL0HAAW";
     return this.props.apiSubmission
       .updateSubmission(id, cleanBody)
       .then(result => {
@@ -135,11 +137,15 @@ class SubmissionFormPage2Component extends React.Component {
           );
         } else {
           openSnackbar("success", "Your information was updated!");
-          this.props.reset("submissionsubmissionPage2");
+          this.props.reset("submissionPage2");
           this.props.history.push(`/thankyou`);
         }
       })
-      .catch(err => openSnackbar("error", err));
+
+      .catch(err => {
+        console.log(err);
+        openSnackbar("error", err);
+      });
   };
   render() {
     return (

@@ -7,6 +7,7 @@ import queryString from "query-string";
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
+import Spinner from "../components/Spinner";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
@@ -14,15 +15,18 @@ import { stylesPage2 } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage2Container extends React.Component {
   componentDidMount() {
-    // check for contact id in query string
-    const values = queryString.parse(this.props.location.search);
+    // check state for contact id from page1
+    let id = this.props.submission.salesforceId;
+
+    // this is just for building prefill data REMOVE LATER
+    id = "0036100001gYL0HAAW";
+
     // if find contact id, call API to fetch contact info for prefill
-    if (values.id) {
-      const { id } = values;
+    if (id) {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          // console.log("result.payload", result.payload);
+          console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);
@@ -30,14 +34,17 @@ export class SubmissionFormPage2Container extends React.Component {
     } else {
       alert("We Did not find your Id, redirecting to main submission page");
       console.log("no id found, no prefill");
+
+      //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
       // return this.props.history.push("/")
     }
   }
   render() {
-    if (this.props.submission.loading) {
-      return <div>Loading...</div>;
-    }
-    return <SubmissionFormPage2Wrap {...this.props} />;
+    return (
+      <div data-test="container-submission-form-page-2">
+        <SubmissionFormPage2Wrap {...this.props} />
+      </div>
+    );
   }
 }
 

@@ -45,7 +45,9 @@ const defaultProps = {
   apiSubmission,
   handleSubmit,
   legal_language: {
-    textContent: "blah"
+    current: {
+      textContent: "blah"
+    }
   },
   location: {
     search: ""

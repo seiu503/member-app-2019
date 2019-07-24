@@ -306,7 +306,11 @@ router.post(
 //      }
 //   Returns: JSON updated submission object on success.
 //
-router.put("/submission/:id", submissionCtrl.updateSubmission);
+router.put(
+  "/submission/:id",
+  submissionCtrl.updateSubmission,
+  sfCtrl.updateSFContact
+);
 // router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
