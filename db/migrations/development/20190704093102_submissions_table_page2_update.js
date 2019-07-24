@@ -1,7 +1,5 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
-    // knex.schema.hasTable("submissions").then(function(exists) {
-    //   if (exists) {
     knex.schema.table("submissions", function(table) {
       table.string("mail_to_city");
       table.string("mail_to_state");
@@ -21,8 +19,6 @@ exports.up = function(knex, Promise) {
       table.string("worksite");
       table.string("work_email");
     })
-    //   }
-    // })
   ]);
 };
 
