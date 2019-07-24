@@ -1,28 +1,28 @@
 exports.up = function(knex, Promise) {
   return Promise.all([
-    knex.schema.hasTable("submissions").then(function(exists) {
-      if (exists) {
-        knex.schema.table("submissions", function(table) {
-          table.string("mail_to_city");
-          table.string("mail_to_state");
-          table.string("mail_to_street");
-          table.string("mail_to_postal_code");
-          table.string("ethnicity");
-          table.boolean("lgbtq_id");
-          table.boolean("trans_id");
-          table.boolean("disability_id");
-          table.boolean("deaf_or_hard_of_hearing");
-          table.boolean("blind_or_visually_impaired");
-          table.string("gender");
-          table.string("gender_other_description");
-          table.string("gender_pronoun");
-          table.string("job_title");
-          table.date("hire_date");
-          table.string("worksite");
-          table.string("work_email");
-        });
-      }
+    // knex.schema.hasTable("submissions").then(function(exists) {
+    //   if (exists) {
+    knex.schema.table("submissions", function(table) {
+      table.string("mail_to_city");
+      table.string("mail_to_state");
+      table.string("mail_to_street");
+      table.string("mail_to_postal_code");
+      table.string("ethnicity");
+      table.boolean("lgbtq_id");
+      table.boolean("trans_id");
+      table.boolean("disability_id");
+      table.boolean("deaf_or_hard_of_hearing");
+      table.boolean("blind_or_visually_impaired");
+      table.string("gender");
+      table.string("gender_other_description");
+      table.string("gender_pronoun");
+      table.string("job_title");
+      table.date("hire_date");
+      table.string("worksite");
+      table.string("work_email");
     })
+    //   }
+    // })
   ]);
 };
 
