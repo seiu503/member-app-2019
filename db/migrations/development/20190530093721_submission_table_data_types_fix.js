@@ -2,7 +2,7 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        knex.schema.table("submissions", function(table) {
+        return knex.schema.table("submissions", function(table) {
           table
             .boolean("terms_agree")
             .notNullable()
@@ -18,7 +18,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        knex.schema.table("submissions", function(table) {
+        return knex.schema.table("submissions", function(table) {
           table
             .string("terms_agree")
             .notNullable()

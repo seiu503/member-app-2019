@@ -41,7 +41,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        knex.schema.dropTable("submissions");
+        return knex.schema.dropTable("submissions");
       }
     })
   ]);
