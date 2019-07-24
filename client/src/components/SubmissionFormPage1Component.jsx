@@ -108,6 +108,7 @@ export class SubmissionFormPage1Component extends React.Component {
         employer => employer.Name
       );
       employerList.unshift("");
+      // console.log(employerList);
       return employerList;
     }
   };
@@ -141,7 +142,7 @@ export class SubmissionFormPage1Component extends React.Component {
       : { Name: "" };
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
-    const legalLanguage = this.props.legal_language.textContent.toString();
+    const legalLanguage = this.props.legal_language.current.textContent;
 
     const q = queryString.parse(this.props.location.search);
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
@@ -212,7 +213,7 @@ export class SubmissionFormPage1Component extends React.Component {
         className={this.classes.root}
         data-test="component-submissionformpage1"
       >
-        <WelcomeInfo />
+        <WelcomeInfo location={this.props.location} />
         <form
           id="submissionFormPage1"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
@@ -231,7 +232,7 @@ export class SubmissionFormPage1Component extends React.Component {
           />
           {this.props.formValues.employerType !== "" && (
             <Field
-              labelWidth={90}
+              labelWidth={104}
               label="Employer Name"
               name="employerName"
               id="employerName"

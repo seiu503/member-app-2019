@@ -51,9 +51,9 @@ const validate = values => {
   }
   if (
     values.hireDate &&
-    !/^\(?([0-9]{2})\)?[/]?([0-9]{2})[/]?([0-9]{4})$/.test(values.hireDate)
+    !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
   ) {
-    errors.hireDate = "Invalid Date (please us 'mm/dd/yyyy' format)";
+    errors.hireDate = "Invalid Date (please us 'yyyy-mm-dd' format)";
   }
   if (values.homePostalCode && values.homePostalCode.length !== 5) {
     errors.homePostalCode = `Must be at exactly 5 characters long`;

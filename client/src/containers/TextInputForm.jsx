@@ -163,7 +163,8 @@ export class TextInputFormUnconnected extends React.Component {
       .catch(err => openSnackbar("error", err));
   };
 
-  submit() {
+  submit(e) {
+    e.preventDefault();
     const { content_type, content } = this.props.content.form;
     const authToken = this.props.appState.authToken;
     const body = {
@@ -301,12 +302,12 @@ export class TextInputFormUnconnected extends React.Component {
                 className={classes.input}
               />
               <ButtonWithSpinner
-                type="button"
+                type="submit"
                 color="secondary"
                 className={classes.formButton}
                 variant="contained"
                 loading={this.props.content.loading}
-                onClick={this.submit}
+                onClick={e => this.submit(e)}
               >
                 Save {utils.labelsObj[this.props.content.form.content_type]}
               </ButtonWithSpinner>

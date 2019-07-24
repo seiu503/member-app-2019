@@ -371,7 +371,10 @@ export const renderCheckbox = ({
   formControlName,
   ...custom
 }) => (
-  <FormControl error={!!(touched && error)}>
+  <FormControl
+    error={!!(touched && error)}
+    className={classes[formControlName] || classes.formControl}
+  >
     <FormControlLabel
       label={label}
       control={

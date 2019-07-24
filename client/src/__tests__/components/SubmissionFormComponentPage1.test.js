@@ -50,7 +50,9 @@ const defaultProps = {
   apiSF,
   handleSubmit,
   legal_language: {
-    textContent: "blah"
+    current: {
+      textContent: "blah"
+    }
   },
   location: {
     search: ""

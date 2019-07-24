@@ -66,6 +66,16 @@ function Submission(state = INITIAL_STATE, action) {
         action.payload.Account.RecordTypeId === "01261000000ksTuAAI"
           ? action.payload.Account.Name
           : action.payload.Account.CVRSOS__ParentName__c;
+      // split ethinicity string, provide true value for each ethnicity returned
+      const ethnicities = action.payload.Ethnicity__c.split(", ");
+      const ethnicitiesObj = {};
+      for (const item of ethnicities) {
+        if (item === "Declined") {
+          ethnicitiesObj.declined = true;
+        } else {
+          ethnicitiesObj[item] = true;
+        }
+      }
       return update(state, {
         formPage1: {
           mm: { $set: moment(action.payload.Birthdate).format("MM") },
@@ -85,6 +95,50 @@ function Submission(state = INITIAL_STATE, action) {
           termsAgree: { $set: false },
           signature: { $set: null },
           textAuthOptOut: { $set: false }
+        },
+        formPage2: {
+          africanOrAfricanAmerican: {
+            $set: ethnicitiesObj.africanOrAfricanAmerican
+          },
+          arabAmericanMiddleEasternOrNorthAfrican: {
+            $set: ethnicitiesObj.arabAmericanMiddleEasternOrNorthAfrican
+          },
+          asianOrAsianAmerican: { $set: ethnicitiesObj.asianOrAsianAmerican },
+          hispanicOrLatinx: { $set: ethnicitiesObj.hispanicOrLatinx },
+          nativeAmericanOrIndigenous: {
+            $set: ethnicitiesObj.nativeAmericanOrIndigenous
+          },
+          nativeHawaiianOrOtherPacificIslander: {
+            $set: ethnicitiesObj.nativeHawaiianOrOtherPacificIslander
+          },
+          white: { $set: ethnicitiesObj.white },
+          other: { $set: ethnicitiesObj.other },
+          declined: { $set: ethnicitiesObj.declined },
+          mailToCity: { $set: action.payload.OtherCity },
+          mailToState: { $set: action.payload.OtherState },
+          mailToStreet: { $set: action.payload.OtherStreet },
+          mailToZip: { $set: action.payload.OtherPostalCode },
+          lgbtqId: { $set: action.payload.LGBTQ_ID__c },
+          transId: { $set: action.payload.Trans_ID__c },
+          disabilityId: { $set: action.payload.Disability_ID__c },
+          deafOrHardOfHearing: {
+            $set: action.payload.Deaf_or_hearing_impaired__c
+          },
+          blindOrVisuallyImpaired: {
+            $set: action.payload.Blind_or_visually_impaired__c
+          },
+          gender: { $set: action.payload.Gender__c },
+          genderOtherDescription: {
+            $set: action.payload.Gender_Other_Description__c
+          },
+          genderPronoun: { $set: action.payload.Prounoun__c },
+          jobTitle: { $set: action.payload.Title },
+          worksite: {
+            $set: action.payload.Worksite_manual_entry_from_webform__c
+          },
+          workEmail: { $set: action.payload.Work_Email__c },
+          workPhone: { $set: action.payload.Work_Phone__c },
+          hireDate: { $set: action.payload.Hire_Date__c }
         },
         error: { $set: null }
       });
@@ -109,6 +163,7 @@ function Submission(state = INITIAL_STATE, action) {
           signature: { $set: action.payload.signature },
           textAuthOptOut: { $set: action.payload.text_auth_opt_out }
         },
+        salesforceId: { $set: action.payload.salesforce_id },
         error: { $set: null }
       });
 
