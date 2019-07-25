@@ -38,7 +38,8 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  const {
+  console.log("submissions.ctrl.js > 41 createSubmission");
+  let {
     ip_address,
     submission_date,
     agency_number,
@@ -65,6 +66,13 @@ const createSubmission = async (req, res, next) => {
     immediate_past_member_status,
     salesforce_id
   } = req.body;
+
+  if (!salesforce_id) {
+    salesforce_id = res.locals.sf_contact_id;
+  }
+
+  console.log("submissions.ctrl.js > 73");
+  console.log(salesforce_id);
 
   const requiredFields = [
     "submission_date",

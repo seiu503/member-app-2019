@@ -47,6 +47,11 @@ const getSFContactById = (req, res, next) => {
   });
 };
 
+const createSFContact = (req, res, next) => {
+  console.log("sf.ctrl.js > 52 createSFContact");
+  return next();
+};
+
 /** Lookup contact in Salesforce by Firstname, Lastname, & Email.
  *  Return existing contact OR create and return new contact if none found.
  *  @param    {Object}   body         Raw submission data, containing
@@ -58,6 +63,7 @@ const getSFContactById = (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact object OR error message.
  */
 const lookupSFContact = (req, res, next) => {
+  console.log("sf.ctrl.js > 61 lookupSFContact");
   const { contact_id } = req.body;
   console.log(`sf.ctrl.js > 62: ${contact_id}`);
 
@@ -69,14 +75,17 @@ const lookupSFContact = (req, res, next) => {
   }
 
   // otherwise, proceed with lookup:
-  const { first_name, last_name, email } = req.body;
+  console.log("sf.ctrl.js > 73 (body below)");
+  console.dir(req.body);
+  const { first_name, last_name, home_email } = req.body;
+  console.log(`sf.ctrl.js > 76: ${first_name}, ${last_name}, ${home_email}`);
   // fuzzy match on first name AND exact match on last name
   // AND exact match on either home OR work email
   // limit one most recently updated record
 
-  const query = `SELECT ${fieldList.join(
+  const query = `SELECT Id, ${fieldList.join(
     ","
-  )} FROM Contact WHERE FirstName LIKE ${first_name} AND LastName = ${last_name} AND (email = ${Home_Email__c} OR email = ${Work_Email__c}) ORDER BY LastModifiedDate DESC LIMIT 1`;
+  )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.log("sf.ctrl.js > 67");
@@ -89,20 +98,23 @@ const lookupSFContact = (req, res, next) => {
         if (err) {
           console.log("sf.ctrl.js > 75");
           console.error(err);
-          // need branch here for if no contact found
-          // test route and figure out exactly what the
-          // error msg is for that case
+          return res.status(500).json({ message: err.message });
+        }
 
+        if (contact.records.totalSize === 0) {
+          console.log("sf.ctrl.js > 110: no matching SF contact found, ");
           // if no contact found,
           // create new contact and then pass contact id to next
           // in res.locals
-          // if contact found, pass contact id to next
-
-          // if OTHER error (not no contact found) return err to client
-          return res.status(500).json({ message: err.message });
+          return createSFContact();
         }
-        console.log(contact.records[0]);
-        res.status(200).json(contact.records[0]);
+        // if contact found, pass contact id to next
+        console.log("sf.ctrl.js > 108");
+        console.log(contact);
+        console.log(contact.records[0].Id);
+        res.locals.sf_contact_id = contact.records[0].Id;
+        console.log(res.locals);
+        return next();
       });
     } catch (err) {
       console.log("sf.ctrl.js > 83");

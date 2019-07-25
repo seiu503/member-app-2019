@@ -183,6 +183,7 @@ export class SubmissionFormPage1Component extends React.Component {
     return this.props.apiSF
       .lookupSFContact(body)
       .then(result => {
+        console.log(result.type);
         if (
           result.type === "LOOKUP_SF_CONTACT_FAILURE" ||
           this.props.submission.error
