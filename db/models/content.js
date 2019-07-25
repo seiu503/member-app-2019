@@ -15,7 +15,7 @@ const { db, TABLES } = require("../../app/config/knex");
  */
 const newContent = (content_type, content) => {
   return db
-    .insert({ id: uuid.v4(), content_type, content })
+    .insert({ content_type, content })
     .into(TABLES.CONTENT)
     .returning("*");
 };
