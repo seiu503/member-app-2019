@@ -67,7 +67,9 @@ function Submission(state = INITIAL_STATE, action) {
           ? action.payload.Account.Name
           : action.payload.Account.CVRSOS__ParentName__c;
       // split ethinicity string, provide true value for each ethnicity returned
-      const ethnicities = action.payload.Ethnicity__c.split(", ");
+      const ethnicities = action.payload.Ethnicity__c
+        ? action.payload.Ethnicity__c.split(", ")
+        : [""];
       const ethnicitiesObj = {};
       for (const item of ethnicities) {
         if (item === "Declined") {
