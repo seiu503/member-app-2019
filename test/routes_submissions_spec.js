@@ -20,7 +20,6 @@ const submissions = require("../db/models/submissions");
 const moment = require("moment");
 
 /*  Sample Data for new submission */
-const salesforce_id = "0036100001gYL0HAAW";
 const ip_address = "192.0.2.0";
 const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
@@ -45,6 +44,29 @@ const seiu503_cba_app_date = submission_date;
 const direct_pay_auth = submission_date;
 const direct_deposit_auth = submission_date;
 const immediate_past_member_status = "Member";
+
+// Array of sample salesforce contact_ids for various prefill use cases
+const salesforceIdArr = [
+  "0036100001bqfuuAAA",
+  "0036100001bqfv4AAA",
+  "0036100001bqfvEAAQ",
+  "0036100001bqfvJAAQ",
+  "0036100001bqfvOAAQ",
+  "0036100001bqfvTAAQ",
+  "0036100001bqfvYAAQ",
+  "0036100001bqfvdAAA",
+  "0036100001bqfviAAA",
+  "0036100001bqfvnAAA",
+  "0036100001bqfvsAAA",
+  "0036100001bqfvxAAA",
+  "0036100001bqfw2AAA",
+  "0036100001bqfw7AAA",
+  "0036100001bqfwCAAQ",
+  "0036100001bqfwMAAQ"
+];
+
+// Randomly select from salesforce contact ids
+salesforce_id = salesforceIdArr[Math.floor(Math.random() * 17)];
 
 const submissionBody = {
   ip_address,
