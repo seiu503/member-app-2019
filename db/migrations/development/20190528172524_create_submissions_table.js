@@ -3,7 +3,6 @@ exports.up = function(knex, Promise) {
     knex.schema.hasTable("submissions").then(function(exists) {
       if (!exists) {
         return knex.schema.createTable("submissions", function(table) {
-          table.uuid("submission_id").primary();
           table.string("ip_address").notNullable();
           table.date("submission_date").notNullable();
           table.string("agency_number");
@@ -41,7 +40,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        knex.schema.dropTable("submissions");
+        return knex.schema.dropTable("submissions");
       }
     })
   ]);

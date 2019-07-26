@@ -14,7 +14,6 @@ import ButtonWithSpinner from "./ButtonWithSpinner";
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
-const enableGenderOtherDescription = formElements.enableGenderOtherDescription;
 
 class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
@@ -121,8 +120,6 @@ class SubmissionFormPage2Component extends React.Component {
 
     let id = this.props.submission.salesforceId;
 
-    //HARDCODED ID FOR TESTING, DELETE ME LATER!!!!
-    id = "0036100001gYL0HAAW";
     return this.props.apiSubmission
       .updateSubmission(id, cleanBody)
       .then(result => {
@@ -292,15 +289,16 @@ class SubmissionFormPage2Component extends React.Component {
               labelWidth={50}
               options={genderOptions}
             />
-            <Field
-              label="If other, Please describe"
-              name="genderOtherDescription"
-              id="genderOtherDescription"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-              disabled={enableGenderOtherDescription(this.props)}
-            />
+            {this.props.formValues.gender === "other" && (
+              <Field
+                label="If other, Please describe"
+                name="genderOtherDescription"
+                id="genderOtherDescription"
+                type="text"
+                classes={this.classes}
+                component={this.renderTextField}
+              />
+            )}
             <Field
               label="Your pronouns"
               name="genderPronoun"

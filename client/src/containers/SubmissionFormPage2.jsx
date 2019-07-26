@@ -2,12 +2,12 @@ import React from "react";
 import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import queryString from "query-string";
+// import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
-import Spinner from "../components/Spinner";
+// import Spinner from "../components/Spinner";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
@@ -17,9 +17,6 @@ export class SubmissionFormPage2Container extends React.Component {
   componentDidMount() {
     // check state for contact id from page1
     let id = this.props.submission.salesforceId;
-
-    // this is just for building prefill data REMOVE LATER
-    id = "0036100001gYL0HAAW";
 
     // if find contact id, call API to fetch contact info for prefill
     if (id) {

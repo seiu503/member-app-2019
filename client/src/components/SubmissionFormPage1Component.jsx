@@ -192,7 +192,6 @@ export class SubmissionFormPage1Component extends React.Component {
               "An error occurred while trying to submit your information."
           );
         } else {
-          openSnackbar("success", "Your Submission was Successful!");
           this.props.reset("submissionPage1");
           this.props.history.push(`/page2`);
         }

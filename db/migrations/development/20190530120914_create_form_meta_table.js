@@ -2,7 +2,7 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("form_meta").then(function(exists) {
       if (!exists) {
-        knex.schema.createTable("form_meta", function(table) {
+        return knex.schema.createTable("form_meta", function(table) {
           table.uuid("id").primary();
           table.string("form_meta_type").notNullable();
           table.string("content").notNullable();
@@ -18,7 +18,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("form_meta").then(function(exists) {
       if (exists) {
-        knex.schema.dropTable("form_meta");
+        return knex.schema.dropTable("form_meta");
       }
     })
   ]);
