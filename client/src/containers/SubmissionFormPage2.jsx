@@ -2,12 +2,12 @@ import React from "react";
 import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import queryString from "query-string";
+// import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
-import Spinner from "../components/Spinner";
+// import Spinner from "../components/Spinner";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
