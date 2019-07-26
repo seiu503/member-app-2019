@@ -2,11 +2,13 @@ import React from "react";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import queryString from "query-string";
+import { defaultWelcomeInfo } from "../../utils/index";
 
 import WelcomeInfo, {
   WelcomeInfoUnconnected
 } from "../../components/WelcomeInfo";
 import { getContentById } from "../../store/actions/apiContentActions";
+import * as Notifier from "../../containers/Notifier";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -42,7 +44,7 @@ const setup = (props = {}) => {
   return shallow(<WelcomeInfoUnconnected {...setupProps} store={store} />);
 };
 
-const unonnectedSetup = () => {
+const unconnectedSetup = () => {
   const setupProps = { ...defaultProps };
   return shallow(<WelcomeInfoUnconnected {...setupProps} />);
 };
@@ -89,5 +91,41 @@ describe("<WelcomeInfo />", () => {
     expect(JSON.stringify(spyCall3)).toEqual(
       JSON.stringify(getContentById("2"))
     );
+  });
+
+  test("if `getContentById` fails, openSnackbar should be called with error message", () => {
+    let props = {
+      location: {
+        search: "h=1&b=2&i=3"
+      },
+      apiContent: { getContentById: getContentById }
+    };
+
+    wrapper = unconnectedSetup();
+
+    // assign mock to openSnackbar
+    Notifier.openSnackbar = jest.fn();
+
+    // assign error mock to getContentById
+    const getContentByIdErrorMock = () => {
+      return Promise.reject({ type: "GET_CONTENT_BY_ID_FAILURE" });
+    };
+
+    wrapper.instance().props.apiContent.getContentById = getContentByIdErrorMock;
+
+    wrapper.instance().componentDidMount();
+    return getContentByIdErrorMock()
+      .then(() => {
+        expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+      })
+      .catch(err => console.log(err));
+  });
+
+  it("has generic content if no ids in query", () => {
+    wrapper = unconnectedSetup();
+    expect(wrapper.instance().state.headline).toEqual(
+      defaultWelcomeInfo.headline
+    );
+    expect(wrapper.instance().state.body).toEqual(defaultWelcomeInfo.body);
   });
 });
