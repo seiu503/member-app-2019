@@ -58,8 +58,12 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
       const { employerTypeMap } = formElements;
-      const employerType =
-        employerTypeMap[action.payload.Account.WS_Subdivision_from_Agency__c];
+      // subDivision is stored in a different field depending on whether the
+      // attached account/employer type is "Parent Employer" or "Agency"
+      const subDivision = action.payload.Account.WS_Subdivision_from_Agency__c
+        ? action.payload.Account.WS_Subdivision_from_Agency__c
+        : action.payload.Account.Sub_Division__c;
+      const employerType = employerTypeMap[subDivision];
       // if employer attached to contact record is 'Employer' record type,
       // use Account Name. if it's 'Worksite' record type, use Parent Name
       const employerName =
@@ -146,26 +150,10 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case ADD_SUBMISSION_SUCCESS:
+      console.log(action.payload);
       return update(state, {
-        formPage1: {
-          mm: { $set: moment(action.payload.birthdate).format("MM") },
-          dd: { $set: moment(action.payload.birthdate).format("DD") },
-          yyyy: { $set: moment(action.payload.birthdate).format("YYYY") },
-          mobilePhone: { $set: action.payload.cell_phone },
-          employerName: { $set: action.payload.employer_name },
-          firstName: { $set: action.payload.first_name },
-          lastName: { $set: action.payload.last_name },
-          homeStreet: { $set: action.payload.home_street },
-          homeCity: { $set: action.payload.home_city },
-          homeState: { $set: action.payload.home_state },
-          homeZip: { $set: action.payload.home_zip },
-          homeEmail: { $set: action.payload.home_email },
-          preferredLanguage: { $set: action.payload.preferred_language },
-          termsAgree: { $set: action.payload.terms_agree },
-          signature: { $set: action.payload.signature },
-          textAuthOptOut: { $set: action.payload.text_auth_opt_out }
-        },
         salesforceId: { $set: action.payload.salesforce_id },
+        submissionId: { $set: action.payload.submission_id },
         error: { $set: null }
       });
 

@@ -120,8 +120,6 @@ class SubmissionFormPage2Component extends React.Component {
 
     let id = this.props.submission.salesforceId;
 
-    //HARDCODED ID FOR TESTING, DELETE ME LATER!!!!
-    id = "0036100001gYL0HAAW";
     return this.props.apiSubmission
       .updateSubmission(id, cleanBody)
       .then(result => {
