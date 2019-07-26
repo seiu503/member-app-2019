@@ -118,6 +118,8 @@ suite("routes : submissions", function() {
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
+          sf_contact_id = res.body.sf_contact_id;
+          submission_id = res.body.submission_id;
           done();
         });
     });
@@ -145,8 +147,6 @@ suite("routes : submissions", function() {
           .post("/api/submission/")
           .send(submissionBody)
           .end(function(err, res) {
-            sf_contact_id = res.body.salesforce_id;
-            submission_id = res.body.submission_id;
             resolve();
           });
       });
@@ -159,40 +159,14 @@ suite("routes : submissions", function() {
       };
       chai
         .request(app)
-        .put(`/api/submission/${submission_id}`)
+        .put(`/api/submission/${salesforce_id}`)
         .send(updates)
         .end(function(err, res) {
-          let result = res.body[0];
+          let result = res.body;
           assert.equal(res.status, 200);
           assert.isNull(err);
-          assert.property(result, "id");
-          assert.property(result, "created_at");
-          assert.property(result, "updated_at");
-          assert.property(result, "ip_address");
-          assert.property(result, "submission_date");
-          assert.property(result, "agency_number");
-          assert.property(result, "birthdate");
-          assert.property(result, "cell_phone");
-          assert.property(result, "employer_name");
-          assert.property(result, "first_name");
-          assert.property(result, "last_name");
-          assert.property(result, "home_street");
-          assert.property(result, "home_city");
-          assert.property(result, "home_state");
-          assert.property(result, "home_zip");
-          assert.property(result, "home_email");
-          assert.property(result, "preferred_language");
-          assert.property(result, "terms_agree");
-          assert.property(result, "signature");
-          assert.property(result, "text_auth_opt_out");
-          assert.property(result, "online_campaign_source");
+          assert.property(result, "submission_id");
           assert.property(result, "salesforce_id");
-          assert.property(result, "legal_language");
-          assert.property(result, "maintenance_of_effort");
-          assert.property(result, "seiu503_cba_app_date");
-          assert.property(result, "direct_pay_auth");
-          assert.property(result, "direct_deposit_auth");
-          assert.property(result, "immediate_past_member_status");
           done();
         });
     });
@@ -205,10 +179,11 @@ suite("routes : submissions", function() {
       };
       chai
         .request(app)
-        .put("/api/submission/123456789")
-        .send({ updates })
+        .put("/api/submission/123456")
+        .send(updates)
         .end(function(err, res) {
-          assert.equal(res.status, 500);
+          console.log(res.body);
+          assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
           done();
@@ -218,7 +193,7 @@ suite("routes : submissions", function() {
       const app = require("../server");
       chai
         .request(app)
-        .put(`/api/submission/${submission_id}`)
+        .put(`/api/submission/${salesforce_id}`)
         .send({ name: undefined })
         .end(function(err, res) {
           assert.equal(res.status, 404);
