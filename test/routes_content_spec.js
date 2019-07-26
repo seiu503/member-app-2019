@@ -162,9 +162,10 @@ suite("routes : content", function() {
       };
       chai
         .request(app)
-        .put("/api/content/123456789")
-        .send({ updates })
+        .put("/api/content/bad")
+        .send(updates)
         .end(function(err, res) {
+          console.log(res.body);
           assert.equal(res.status, 500);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
@@ -202,7 +203,7 @@ suite("routes : content", function() {
       const app = require("../server");
       chai
         .request(app)
-        .delete("/api/content/123456789")
+        .delete("/api/content/bad")
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
