@@ -33,7 +33,7 @@ const styles = theme => ({
   }
 });
 
-class WelcomeInfo extends React.Component {
+export class WelcomeInfoUnconnected extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -43,8 +43,6 @@ class WelcomeInfo extends React.Component {
       image: null
     };
   }
-
-  getHeadline() {}
 
   componentDidMount() {
     const values = queryString.parse(this.props.location.search);
@@ -82,14 +80,15 @@ class WelcomeInfo extends React.Component {
   }
 
   render() {
-    if (this.props.appState.loading) {
+    const { classes } = this.props;
+    if (this.props.loading) {
       return <div>loading...</div>;
     }
     return (
-      <div className={this.classes.root} data-test="component-welcome-info">
-        <Card className={this.classes.card}>
+      <div className={classes.root} data-test="component-welcome-info">
+        <Card className={classes.card}>
           <CardMedia
-            className={this.classes.media}
+            className={classes.media}
             title="Welcome Photo"
             alt="Welcome Photo"
             image={this.state.image || SamplePhoto}
@@ -99,7 +98,7 @@ class WelcomeInfo extends React.Component {
             variant="h3"
             align="center"
             gutterBottom
-            className={this.classes.head}
+            className={classes.head}
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
@@ -110,7 +109,7 @@ class WelcomeInfo extends React.Component {
             variant="body1"
             align="center"
             gutterBottom
-            className={this.classes.body}
+            className={classes.body}
             data-test="body"
           >
             {this.state.body}
@@ -121,12 +120,12 @@ class WelcomeInfo extends React.Component {
   }
 }
 
-WelcomeInfo.propTypes = {
+WelcomeInfoUnconnected.propTypes = {
   classes: PropTypes.object
 };
 
 const mapStateToProps = state => ({
-  appState: state.appState
+  loading: state.appState.loading
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -137,5 +136,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(WelcomeInfo)
+  )(WelcomeInfoUnconnected)
 );

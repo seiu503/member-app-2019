@@ -1,15 +1,9 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 
 import { findByTestAttr } from "../../utils/testUtils";
-import {
-  generateSampleSubmission,
-  generateSampleValidate
-} from "../../../../app/utils/fieldConfigs";
-import {
-  SubmissionFormWrap,
-  SubmissionFormPage1Component
-} from "../../components/SubmissionFormPage1Component";
+import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
+import { SubmissionFormPage1Component } from "../../components/SubmissionFormPage1Component";
 import * as Notifier from "../../containers/Notifier";
 
 // variables
