@@ -12,7 +12,6 @@ exports.db = knex(config[environment]);
 // we're interacting with.
 
 // fill this in as we build out the tables. still missing:
-// • employers (for employer picklist. needs name, SF Acct ID, Agency Number)
 // • payments (for unioni.se payment processing. data structure is WIP)
 
 exports.TABLES = {
