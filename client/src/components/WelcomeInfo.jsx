@@ -12,6 +12,7 @@ import Card from "@material-ui/core/Card";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
 import SamplePhoto from "../img/sample-form-photo.jpg";
+import { openSnackbar } from "../containers/Notifier";
 
 const styles = theme => ({
   root: {
@@ -54,10 +55,15 @@ export class WelcomeInfoUnconnected extends React.Component {
         this.props.apiContent
           .getContentById(id)
           .then(result => {
-            if (!result || result.payload.message) {
-              console.log(
-                result.payload.message ||
-                  "there was an error loading the content"
+            if (
+              !result ||
+              result.payload.message ||
+              result.type === "GET_CONTENT_BY_ID_FAILURE"
+            ) {
+              openSnackbar(
+                "error",
+                this.props.content.error ||
+                  "An error occured while trying to fetch your content."
               );
             } else {
               switch (result.payload.content_type) {
@@ -73,7 +79,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             }
           })
           .catch(err => {
-            console.log(err);
+            openSnackbar("error", err);
           });
       });
     }
@@ -125,7 +131,7 @@ WelcomeInfoUnconnected.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  loading: state.appState.loading
+  appState: state.appState
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -15,7 +15,9 @@ let store;
 let wrapper;
 
 const initialState = {
-  loading: false
+  appState: {
+    loading: false
+  }
 };
 
 const defaultProps = {
@@ -25,7 +27,7 @@ const defaultProps = {
   apiContent: {
     getContentById: () => Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
   },
-  classes: { test: "test" }
+  classes: {}
 };
 
 /**
@@ -61,7 +63,7 @@ describe("<WelcomeInfo />", () => {
 
   it("should have access to expected props", () => {
     wrapper = setup();
-    expect(wrapper.instance().props.classes.test).toBe("test");
+    expect(wrapper.instance().props.location.search).toBe("");
   });
 
   test("calls `getContentById` on componentDidMount for each id in props.location.search", () => {
