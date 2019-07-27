@@ -108,11 +108,11 @@ export function getSFEmployers() {
  *     If database error, hides spinner, displays error toastr
  */
 export function lookupSFContact(body) {
-  console.log(JSON.stringify(body));
+  // console.log(JSON.stringify(body));
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sfcontact`,
-      method: "GET",
+      method: "PUT",
       types: [
         LOOKUP_SF_CONTACT_REQUEST,
         LOOKUP_SF_CONTACT_SUCCESS,

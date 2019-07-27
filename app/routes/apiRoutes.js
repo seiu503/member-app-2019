@@ -368,7 +368,7 @@ router.get("/sf/:id", sfCtrl.getSFContactById);
 router.get("/sfaccts", sfCtrl.getAllEmployers);
 
 // LOOKUP ONE SALESFORCE CONTACT RECORD (BY ID OR FIRSTNAME/LASTNAME/EMAIL)
-//   Example: GET >> /api/sfcontact
+//   Example: PUT >> /api/sfcontact
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
@@ -402,7 +402,7 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //             }
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
-router.get(
+router.put(
   "/sfcontact",
   sfCtrl.lookupSFContact,
   submissionCtrl.createSubmission,

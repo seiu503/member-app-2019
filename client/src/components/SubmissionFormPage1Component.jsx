@@ -180,8 +180,6 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId
     };
 
-    console.log(body);
-
     return this.props.apiSF
       .lookupSFContact(body)
       .then(result => {
