@@ -48,8 +48,53 @@ const getSFContactById = (req, res, next) => {
 };
 
 const createSFContact = (req, res, next) => {
-  console.log("sf.ctrl.js > 52 createSFContact");
-  return next();
+  console.log("sf.ctrl.js > 51 createSFContact");
+  const bodyRaw = { ...req.body };
+  console.log(bodyRaw);
+  const body = {};
+  // convert raw body object to key/value pairs using
+  // SF API field names
+  Object.keys(bodyRaw).forEach(key => {
+    if (contactsTableFields[key]) {
+      const sfFieldName = contactsTableFields[key].SFAPIName;
+      body[sfFieldName] = bodyRaw[key];
+    }
+  });
+  delete body["Account.Id"];
+  delete body["Account.Agency_Number__c"];
+  body.AccountId = bodyRaw.employer_id;
+  console.log("sf.ctrl.js > 66");
+  console.log(body);
+  conn.login(user, password, function(err, userInfo) {
+    if (err) {
+      console.log("sf.ctrl.js > 70");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+
+    try {
+      conn.sobject("Contact").create(
+        {
+          ...body
+        },
+        function(err, contact) {
+          if (err || !contact.success) {
+            console.log("sf.ctrl.js > 82");
+            return console.error(err, contact);
+          } else {
+            console.log("sf.ctrl.js > 85");
+            console.log(contact);
+            res.locals.sf_contact_id = contact.Id;
+            return next();
+          }
+        }
+      );
+    } catch (err) {
+      console.log("sf.ctrl.js > 93");
+      console.error(err);
+      return res.status(500).json({ message: err.message });
+    }
+  });
 };
 
 /** Lookup contact in Salesforce by Firstname, Lastname, & Email.
@@ -63,9 +108,9 @@ const createSFContact = (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact object OR error message.
  */
 const lookupSFContact = (req, res, next) => {
-  console.log("sf.ctrl.js > 61 lookupSFContact");
+  console.log("sf.ctrl.js > 111 lookupSFContact");
   const { contact_id } = req.body;
-  console.log(`sf.ctrl.js > 62: ${contact_id}`);
+  console.log(`sf.ctrl.js > 113: ${contact_id}`);
 
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to getSFContactById
@@ -75,10 +120,10 @@ const lookupSFContact = (req, res, next) => {
   }
 
   // otherwise, proceed with lookup:
-  console.log("sf.ctrl.js > 73 (body below)");
+  console.log("sf.ctrl.js > 123 (body below)");
   console.dir(req.body);
   const { first_name, last_name, home_email } = req.body;
-  console.log(`sf.ctrl.js > 76: ${first_name}, ${last_name}, ${home_email}`);
+  console.log(`sf.ctrl.js > 126: ${first_name}, ${last_name}, ${home_email}`);
   // fuzzy match on first name AND exact match on last name
   // AND exact match on either home OR work email
   // limit one most recently updated record
@@ -88,7 +133,7 @@ const lookupSFContact = (req, res, next) => {
   )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 67");
+      console.log("sf.ctrl.js > 136");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -96,28 +141,32 @@ const lookupSFContact = (req, res, next) => {
     try {
       conn.query(query, function(err, contact) {
         if (err) {
-          console.log("sf.ctrl.js > 75");
+          console.log("sf.ctrl.js > 144");
           console.error(err);
           return res.status(500).json({ message: err.message });
         }
 
-        if (contact.records.totalSize === 0) {
-          console.log("sf.ctrl.js > 110: no matching SF contact found, ");
+        if (contact.totalSize === 0 || !contact) {
+          console.log("sf.ctrl.js > 150: no matching SF contact found, ");
           // if no contact found,
-          // create new contact and then pass contact id to next
+          // create new contact and then pass contact id to next middleware
           // in res.locals
-          return createSFContact();
+          return createSFContact(req, res, next);
         }
         // if contact found, pass contact id to next
-        console.log("sf.ctrl.js > 108");
-        console.log(contact);
-        console.log(contact.records[0].Id);
-        res.locals.sf_contact_id = contact.records[0].Id;
-        console.log(res.locals);
-        return next();
+        if (contact) {
+          console.log("sf.ctrl.js > 158");
+          console.log(contact);
+          console.log(contact.records[0].Id);
+          res.locals.sf_contact_id = contact.records[0].Id;
+          console.log(res.locals);
+          return next();
+        }
+        // if none of these conditions are true, wtf is happening??
+        console.log("sf.ctrl.js > 166");
       });
     } catch (err) {
-      console.log("sf.ctrl.js > 83");
+      console.log("sf.ctrl.js > 169");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -132,7 +181,7 @@ const getAllEmployers = (req, res, next) => {
   const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 57");
+      console.log("sf.ctrl.js > 184");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -140,14 +189,14 @@ const getAllEmployers = (req, res, next) => {
     try {
       conn.query(query, function(err, accounts) {
         if (err) {
-          console.log("sf.ctrl.js > 65");
+          console.log("sf.ctrl.js > 192");
           console.error(err);
           return res.status(500).json({ message: err.message });
         }
         res.status(200).json(accounts.records);
       });
     } catch (err) {
-      console.log("sf.ctrl.js > 72");
+      console.log("sf.ctrl.js > 199");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -178,7 +227,7 @@ const updateSFContact = (req, res, next) => {
   updates.AccountId = updatesRaw.employer_id;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 102");
+      console.log("sf.ctrl.js > 230");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -191,7 +240,7 @@ const updateSFContact = (req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.log("sf.ctrl.js > 115");
+            console.log("sf.ctrl.js > 243");
             return console.error(err, contact);
           } else {
             return res.status(200).json({
@@ -202,7 +251,7 @@ const updateSFContact = (req, res, next) => {
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 128");
+      console.log("sf.ctrl.js > 254");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -217,7 +266,7 @@ const updateSFContact = (req, res, next) => {
 const createSFOnlineMemberApp = (req, res, next) => {
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 143");
+      console.log("sf.ctrl.js > 269");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -241,7 +290,7 @@ const createSFOnlineMemberApp = (req, res, next) => {
         },
         function(err, OMA) {
           if (err || !OMA.success) {
-            console.log("sf.ctrl.js > 167");
+            console.log("sf.ctrl.js > 293");
             return console.error(err);
           } else {
             return next();
@@ -249,7 +298,7 @@ const createSFOnlineMemberApp = (req, res, next) => {
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 175");
+      console.log("sf.ctrl.js > 301");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -260,6 +309,7 @@ const createSFOnlineMemberApp = (req, res, next) => {
 
 module.exports = {
   getSFContactById,
+  createSFContact,
   lookupSFContact,
   getAllEmployers,
   createSFOnlineMemberApp,

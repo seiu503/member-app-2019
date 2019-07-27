@@ -98,7 +98,7 @@ export function getSFEmployers() {
 
 /*
  * Function: lookupSFContact -- lookup a SF contact (by id OR name/email)
- * @param {string} id
+ * @param {body}      Complete submission body
  * This action dispatches additional actions as it executes:
  *   LOOKUP_SF_CONTACT_REQUEST:
  *     Initiates a spinner on the home page.
