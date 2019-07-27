@@ -38,7 +38,6 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  console.log("submissions.ctrl.js > 41 createSubmission");
   let {
     ip_address,
     submission_date,
@@ -70,9 +69,6 @@ const createSubmission = async (req, res, next) => {
   if (!salesforce_id || salesforce_id === undefined) {
     salesforce_id = res.locals.sf_contact_id;
   }
-
-  console.log("submissions.ctrl.js > 74");
-  console.log(salesforce_id);
 
   const requiredFields = [
     "submission_date",
@@ -136,7 +132,7 @@ const createSubmission = async (req, res, next) => {
 
     if (!createSubmissionResult || createSubmissionResult.message) {
       console.log(
-        `submissions.ctrl.js > 130: ${createSubmissionResult.message ||
+        `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
           "There was an error saving the submission"}`
       );
       return res.status(500).json({
@@ -177,7 +173,7 @@ const updateSubmission = async (req, res, next) => {
 
     if (!updateSubmissionResult || updateSubmissionResult.message) {
       console.log(
-        `submissions.ctrl.js > 171: ${updateSubmissionResult.message ||
+        `submissions.ctrl.js > 176: ${updateSubmissionResult.message ||
           "There was an error updating the submission"}`
       );
       return res.status(500).json({

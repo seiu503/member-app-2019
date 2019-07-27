@@ -165,7 +165,7 @@ suite("routes : content", function() {
         .put("/api/content/bad")
         .send(updates)
         .end(function(err, res) {
-          console.log(res.body);
+          // console.log(res.body);
           assert.equal(res.status, 500);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);

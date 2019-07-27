@@ -210,7 +210,7 @@ describe("submissions model tests", () => {
       employer_name: updatedEmployerName,
       text_auth_opt_out: updatedTextAuthOptOut
     };
-    console.log(salesforce_id);
+    // console.log(salesforce_id);
     return submissions
       .updateSubmission(salesforce_id, updates)
       .then(results => {

@@ -98,14 +98,18 @@ const createSFContact = (req, res, next) => {
 };
 
 /** Lookup contact in Salesforce by Firstname, Lastname, & Email.
- *  Return existing contact OR create and return new contact if none found.
+ *  Pass id of existing contact to next middleware
+ *  OR if none found, create and pass id of new contact to next middleware.
  *  @param    {Object}   body         Raw submission data, containing
  *                                    key/value pairs of fields to match/
  *                                    upsert. Minimum fields required to pass
  *                                    SF validation for lookup and potential
  *                                    new contact creation:
  *                                    first_name, last_name, email, employer_id
- *  @returns  {Object}        Salesforce Contact object OR error message.
+ *  @returns  {null||Object}          If successful, returns nothing to client
+ *                                    but passes object with contact id to
+ *                                    next middleware. If failed, returns
+ *                                    object with error message to client.
  */
 const lookupSFContact = (req, res, next) => {
   console.log("sf.ctrl.js > 111 lookupSFContact");
@@ -153,7 +157,7 @@ const lookupSFContact = (req, res, next) => {
           // in res.locals
           return createSFContact(req, res, next);
         }
-        // if contact found, pass contact id to next
+        // if contact found, pass contact id to next middleware
         if (contact) {
           console.log("sf.ctrl.js > 158");
           console.log(contact);
