@@ -49,60 +49,35 @@ class WelcomeInfo extends React.Component {
   componentDidMount() {
     const values = queryString.parse(this.props.location.search);
     // if find contact id, call API to fetch contact info for prefill
-    if (values.headline) {
-      const { headline } = values;
-      this.props.apiContent
-        .getContentById(headline)
-        .then(result => {
-          if (!result || result.payload.message) {
-            console.log(
-              result.payload.message ||
-                "there was an error loading the headline"
-            );
-          } else {
-            console.log(result);
-            this.setState({ headline: result.payload.content });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-    if (values.body) {
-      const { body } = values;
-      this.props.apiContent
-        .getContentById(body)
-        .then(result => {
-          if (!result || result.payload.message) {
-            console.log(
-              result.payload.message || "there was an error loading the body"
-            );
-          } else {
-            console.log(result);
-            this.setState({ body: result.payload.content });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-    if (values.image) {
-      const { image } = values;
-      this.props.apiContent
-        .getContentById(image)
-        .then(result => {
-          if (!result || result.payload.message) {
-            console.log(
-              result.payload.message || "there was an error loading the body"
-            );
-          } else {
-            console.log(result);
-            this.setState({ image: result.payload.content });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+    if (values.h || values.b || values.i) {
+      const { h, i, b } = values;
+      const queryIds = [h, i, b];
+      queryIds.forEach(id => {
+        this.props.apiContent
+          .getContentById(id)
+          .then(result => {
+            if (!result || result.payload.message) {
+              console.log(
+                result.payload.message ||
+                  "there was an error loading the content"
+              );
+            } else {
+              switch (result.payload.content_type) {
+                case "headline":
+                  return this.setState({ headline: result.payload.content });
+                case "bodyCopy":
+                  return this.setState({ body: result.payload.content });
+                case "image":
+                  return this.setState({ image: result.payload.content });
+                default:
+                  break;
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      });
     }
   }
 

@@ -105,7 +105,6 @@ router.post("/user", userCtrl.createUser);
 //      }
 //   Returns: JSON updated user object on success.
 //
-
 router.put("/user/:id", requireAuth, userCtrl.updateUser);
 
 // GET ONE USER

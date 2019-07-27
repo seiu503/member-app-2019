@@ -54,7 +54,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("contacts").then(function(exists) {
       if (exists) {
-        knex.schema.dropTable("contacts");
+        return knex.schema.dropTable("contacts");
       }
     })
   ]);

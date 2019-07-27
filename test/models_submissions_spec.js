@@ -212,7 +212,7 @@ describe("submissions model tests", () => {
     };
     console.log(salesforce_id);
     return submissions
-      .updateSubmission(submission_id, updates)
+      .updateSubmission(salesforce_id, updates)
       .then(results => {
         assert.equal(results[0].first_name, updatedFirstName);
         assert.equal(results[0].employer_name, updatedEmployerName);

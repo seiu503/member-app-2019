@@ -2,12 +2,12 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("contacts").then(function(exists) {
       if (exists) {
-        knex.schema.dropTable("contacts");
+        return knex.schema.dropTable("contacts");
       }
     }),
     knex.schema.hasTable("contacts_submissions").then(function(exists) {
       if (exists) {
-        knex.schema.dropTable("contacts_submissions");
+        return knex.schema.dropTable("contacts_submissions");
       }
     })
   ]);
@@ -17,7 +17,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("contacts").then(function(exists) {
       if (!exists) {
-        knex.schema.createTable("contacts", function(table) {
+        return knex.schema.createTable("contacts", function(table) {
           table.uuid("contact_id").primary();
           table.string("display_name");
           table.string("account_name").notNullable();
@@ -64,7 +64,7 @@ exports.down = function(knex, Promise) {
     }),
     knex.schema.hasTable("contacts_submissions").then(function(exists) {
       if (!exists) {
-        knex.schema.createTable("contacts_submissions", function(table) {
+        return knex.schema.createTable("contacts_submissions", function(table) {
           table.uuid("id").primary();
           table
             .uuid("contact_id")

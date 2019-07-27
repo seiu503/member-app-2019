@@ -161,34 +161,38 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  if (!updates || !Object.keys(updates).length) {
-    return res.status(404).json({ message: "No updates submitted" });
-  }
+  try {
+    if (!updates || !Object.keys(updates).length) {
+      return res.status(404).json({ message: "No updates submitted" });
+    }
 
-  if (!id) {
-    return res.status(404).json({ message: "No Provided in URL" });
-  }
+    if (!id) {
+      return res.status(404).json({ message: "No Id Provided in URL" });
+    }
 
-  const updateSubmissionResult = await submissions.updateSubmission(
-    id,
-    updates
-  );
-
-  if (!updateSubmissionResult || updateSubmissionResult.message) {
-    console.log(
-      `submissions.ctrl.js > 170: ${updateSubmissionResult.message ||
-        "There was an error updating the submission"}`
+    const updateSubmissionResult = await submissions.updateSubmission(
+      id,
+      updates
     );
-    return res.status(500).json({
-      message:
-        updateSubmissionResult.message ||
-        "An error occured while trying to update this submission"
-    });
-  } else {
-    // passing contact id and submission id to next middleware
-    res.locals.sf_contact_id = id;
-    res.locals.submission_id = updateSubmissionResult[0].id;
-    return next();
+
+    if (!updateSubmissionResult || updateSubmissionResult.message) {
+      console.log(
+        `submissions.ctrl.js > 171: ${updateSubmissionResult.message ||
+          "There was an error updating the submission"}`
+      );
+      return res.status(500).json({
+        message:
+          updateSubmissionResult.message ||
+          "An error occured while trying to update this submission"
+      });
+    } else {
+      // passing contact id and submission id to next middleware
+      res.locals.sf_contact_id = id;
+      res.locals.submission_id = updateSubmissionResult[0].id;
+      return next();
+    }
+  } catch (error) {
+    return res.status(404).json({ message: "Id missing or malformed" });
   }
 };
 

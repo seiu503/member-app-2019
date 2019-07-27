@@ -75,6 +75,7 @@ const deleteContent = (req, res, next) => {
   return contentModel
     .deleteContent(req.params.id)
     .then(result => {
+      console.log(result);
       if (result.message === "Content deleted successfully") {
         return res.status(200).json({ message: result.message });
       } else {

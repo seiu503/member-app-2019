@@ -18,9 +18,6 @@ export class SubmissionFormPage2Container extends React.Component {
     // check state for contact id from page1
     let id = this.props.submission.salesforceId;
 
-    // this is just for building prefill data REMOVE LATER
-    id = "0036100001gYL0HAAW";
-
     // if find contact id, call API to fetch contact info for prefill
     if (id) {
       this.props.apiSF

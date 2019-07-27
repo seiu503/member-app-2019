@@ -105,7 +105,7 @@ const updateSubmission = (id, updates) => {
   return db(TABLES.SUBMISSIONS)
     .where({ salesforce_id: id })
     .first()
-    .update({ ...updates })
+    .update(updates)
     .update("updated_at", db.fn.now())
     .returning("*");
 };

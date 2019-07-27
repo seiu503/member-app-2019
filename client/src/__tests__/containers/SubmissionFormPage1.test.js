@@ -39,7 +39,7 @@ const defaultProps = {
   },
   location: {
     search: {
-      id: "0036100001gYL0HAAW"
+      id: ""
     }
   },
   classes: {},
