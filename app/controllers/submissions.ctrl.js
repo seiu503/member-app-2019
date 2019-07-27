@@ -67,11 +67,11 @@ const createSubmission = async (req, res, next) => {
     salesforce_id
   } = req.body;
 
-  if (!salesforce_id) {
+  if (!salesforce_id || salesforce_id === undefined) {
     salesforce_id = res.locals.sf_contact_id;
   }
 
-  console.log("submissions.ctrl.js > 73");
+  console.log("submissions.ctrl.js > 74");
   console.log(salesforce_id);
 
   const requiredFields = [

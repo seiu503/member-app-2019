@@ -84,7 +84,7 @@ const createSFContact = (req, res, next) => {
           } else {
             console.log("sf.ctrl.js > 85");
             console.log(contact);
-            res.locals.sf_contact_id = contact.Id;
+            res.locals.sf_contact_id = contact.id || contact.Id;
             return next();
           }
         }
