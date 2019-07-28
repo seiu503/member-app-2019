@@ -25,7 +25,7 @@ const getSFContactById = (req, res, next) => {
   )} FROM Contact WHERE Id = \'${id}\'`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 27");
+      console.log("sf.ctrl.js > 28");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -33,14 +33,14 @@ const getSFContactById = (req, res, next) => {
     try {
       conn.query(query, function(err, contact) {
         if (err) {
-          console.log("sf.ctrl.js > 35");
+          console.log("sf.ctrl.js > 36");
           console.error(err);
           return res.status(500).json({ message: err.message });
         }
         res.status(200).json(contact.records[0]);
       });
     } catch (err) {
-      console.log("sf.ctrl.js > 42");
+      console.log("sf.ctrl.js > 43");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -62,6 +62,7 @@ const createSFContact = (req, res, next) => {
   });
   delete body["Account.Id"];
   delete body["Account.Agency_Number__c"];
+  delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
   console.log("sf.ctrl.js > 66");
   console.log(body);
@@ -97,9 +98,12 @@ const createSFContact = (req, res, next) => {
   });
 };
 
-/** Lookup contact in Salesforce by Firstname, Lastname, & Email.
- *  Pass id of existing contact to next middleware
- *  OR if none found, create and pass id of new contact to next middleware.
+/** Lookup contact in Salesforce, by id if prefill,
+ *  otherwise by Firstname, Lastname, & Email.
+ *  If existing contact found, update with submission data, then pass id
+ *  to next middleware.
+ *  If no match found, create new contact and pass id
+ *  to next middleware.
  *  @param    {Object}   body         Raw submission data, containing
  *                                    key/value pairs of fields to match/
  *                                    upsert. Minimum fields required to pass
@@ -111,23 +115,28 @@ const createSFContact = (req, res, next) => {
  *                                    next middleware. If failed, returns
  *                                    object with error message to client.
  */
-const lookupSFContact = (req, res, next) => {
-  console.log("sf.ctrl.js > 111 lookupSFContact");
+const createOrUpdateSFContact = (req, res, next) => {
+  console.log("sf.ctrl.js > 116 createOrUpdateSFContact");
   const { contact_id } = req.body;
-  console.log(`sf.ctrl.js > 113: ${contact_id}`);
+  console.log(`sf.ctrl.js > 118: ${contact_id}`);
 
   // if contact id is sent in request body, then this is a prefill
-  // skip the lookup function and head straight to getSFContactById
+  // skip the lookup function and head straight to updateSFContact
   if (contact_id) {
     console.log(`found contact id; skipping lookup`);
-    return getSFContactById(req, res, next);
+    // save contact_id to res.locals to pass to next middleware
+    // (it was in the body already but updateSFContact
+    // doesn't know to look for it there)
+    res.locals.sf_contact_id = contact_id;
+    return updateSFContact(req, res, next);
   }
 
   // otherwise, proceed with lookup:
-  console.log("sf.ctrl.js > 123 (body below)");
-  console.dir(req.body);
+  console.log(
+    "sf.ctrl.js > 132 (no prefill; looking up SF contact with fields below)"
+  );
   const { first_name, last_name, home_email } = req.body;
-  console.log(`sf.ctrl.js > 126: ${first_name}, ${last_name}, ${home_email}`);
+  console.log(`sf.ctrl.js > 134: ${first_name}, ${last_name}, ${home_email}`);
   // fuzzy match on first name AND exact match on last name
   // AND exact match on either home OR work email
   // limit one most recently updated record
@@ -137,7 +146,7 @@ const lookupSFContact = (req, res, next) => {
   )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 136");
+      console.log("sf.ctrl.js > 144");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -145,32 +154,34 @@ const lookupSFContact = (req, res, next) => {
     try {
       conn.query(query, function(err, contact) {
         if (err) {
-          console.log("sf.ctrl.js > 144");
+          console.log("sf.ctrl.js > 152");
           console.error(err);
           return res.status(500).json({ message: err.message });
         }
 
         if (contact.totalSize === 0 || !contact) {
-          console.log("sf.ctrl.js > 150: no matching SF contact found, ");
+          console.log("sf.ctrl.js > 161: no matching SF contact found, ");
           // if no contact found,
           // create new contact and then pass contact id to next middleware
           // in res.locals
           return createSFContact(req, res, next);
         }
-        // if contact found, pass contact id to next middleware
+        // if contact found, pass contact id to next middleware, which will
+        // update it with the submission data from res.body
         if (contact) {
-          console.log("sf.ctrl.js > 158");
+          console.log("sf.ctrl.js > 170");
           console.log(contact);
           console.log(contact.records[0].Id);
           res.locals.sf_contact_id = contact.records[0].Id;
           console.log(res.locals);
-          return next();
+          return updateSFContact(req, res, next);
         }
-        // if none of these conditions are true, wtf is happening??
-        console.log("sf.ctrl.js > 166");
+        // this line should never be reached, if it is we are in trouble
+        console.log("sf.ctrl.js > 175");
+        console.log("something is rotten...");
       });
     } catch (err) {
-      console.log("sf.ctrl.js > 169");
+      console.log("sf.ctrl.js > 179");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -185,7 +196,7 @@ const getAllEmployers = (req, res, next) => {
   const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 184");
+      console.log("sf.ctrl.js > 194");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -193,14 +204,14 @@ const getAllEmployers = (req, res, next) => {
     try {
       conn.query(query, function(err, accounts) {
         if (err) {
-          console.log("sf.ctrl.js > 192");
+          console.log("sf.ctrl.js > 202");
           console.error(err);
           return res.status(500).json({ message: err.message });
         }
         res.status(200).json(accounts.records);
       });
     } catch (err) {
-      console.log("sf.ctrl.js > 199");
+      console.log("sf.ctrl.js > 209");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -215,7 +226,9 @@ const getAllEmployers = (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 const updateSFContact = (req, res, next) => {
-  const { sf_contact_id, submission_id } = res.locals;
+  console.log("sf.ctrl.js > 227: updateSFContact");
+  const { sf_contact_id } = res.locals;
+  console.log(sf_contact_id);
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -228,10 +241,11 @@ const updateSFContact = (req, res, next) => {
   });
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
+  delete updates["Account.WS_Subdivision_from_Agency__c"];
   updates.AccountId = updatesRaw.employer_id;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 230");
+      console.log("sf.ctrl.js > 246");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -244,18 +258,17 @@ const updateSFContact = (req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.log("sf.ctrl.js > 243");
+            console.log("sf.ctrl.js > 253");
             return console.error(err, contact);
           } else {
-            return res.status(200).json({
-              salesforce_id: sf_contact_id,
-              submission_id
-            });
+            console.log("sf.ctrl.js > 262");
+            console.log(contact);
+            return next();
           }
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 254");
+      console.log("sf.ctrl.js > 267");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -268,9 +281,10 @@ const updateSFContact = (req, res, next) => {
  */
 
 const createSFOnlineMemberApp = (req, res, next) => {
+  console.log("sf.ctrl.js > 283: createSFOnlineMemberApp");
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      console.log("sf.ctrl.js > 269");
+      console.log("sf.ctrl.js > 276");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -288,21 +302,30 @@ const createSFOnlineMemberApp = (req, res, next) => {
       });
       data.Worker__c = res.locals.sf_contact_id;
       data.Birthdate__c = formatDate(dataRaw.birthdate);
+      delete data["Account.Id"];
+      delete data["Account.Agency_Number__c"];
+      delete data["Account.WS_Subdivision_from_Agency__c"];
+      console.log("sf.ctrl.js > 307");
       conn.sobject("OnlineMemberApp__c").create(
         {
           ...data
         },
         function(err, OMA) {
           if (err || !OMA.success) {
-            console.log("sf.ctrl.js > 293");
+            console.log("sf.ctrl.js > 300");
             return console.error(err);
           } else {
-            return next();
+            return res
+              .status(200)
+              .json({
+                salesforce_id: res.locals.sf_contact_id,
+                submission_id: res.locals.submission_id
+              });
           }
         }
       );
     } catch (err) {
-      console.log("sf.ctrl.js > 301");
+      console.log("sf.ctrl.js > 308");
       console.error(err);
       return res.status(500).json({ message: err.message });
     }
@@ -314,7 +337,7 @@ const createSFOnlineMemberApp = (req, res, next) => {
 module.exports = {
   getSFContactById,
   createSFContact,
-  lookupSFContact,
+  createOrUpdateSFContact,
   getAllEmployers,
   createSFOnlineMemberApp,
   updateSFContact

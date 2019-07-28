@@ -403,10 +403,9 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //
 router.put(
   "/sfcontact",
-  sfCtrl.lookupSFContact,
+  sfCtrl.createOrUpdateSFContact,
   submissionCtrl.createSubmission,
-  sfCtrl.createSFOnlineMemberApp,
-  sfCtrl.updateSFContact
+  sfCtrl.createSFOnlineMemberApp
 );
 
 /* ================================ EXPORT ================================= */

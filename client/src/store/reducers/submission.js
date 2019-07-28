@@ -18,7 +18,10 @@ import {
   GET_SF_CONTACT_FAILURE,
   GET_SF_EMPLOYERS_REQUEST,
   GET_SF_EMPLOYERS_SUCCESS,
-  GET_SF_EMPLOYERS_FAILURE
+  GET_SF_EMPLOYERS_FAILURE,
+  LOOKUP_SF_CONTACT_REQUEST,
+  LOOKUP_SF_CONTACT_SUCCESS,
+  LOOKUP_SF_CONTACT_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -43,6 +46,7 @@ function Submission(state = INITIAL_STATE, action) {
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
     case GET_SF_EMPLOYERS_REQUEST:
+    case LOOKUP_SF_CONTACT_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -150,6 +154,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case ADD_SUBMISSION_SUCCESS:
+    case LOOKUP_SF_CONTACT_SUCCESS:
       console.log(action.payload);
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
@@ -166,6 +171,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_FAILURE:
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_EMPLOYERS_FAILURE:
+    case LOOKUP_SF_CONTACT_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

@@ -1,5 +1,18 @@
 const uuid = require("uuid");
 
+// format date for Salesforce JSON parser
+const formatDate = date => {
+  let d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
+
 // fields labeled 'Account field' are actually in the Account (Employer)
 // table in SF, but they're being accessed from a query to the
 // Contacts table that includes a lookup to Accounts
@@ -585,7 +598,7 @@ const submissionsTableFields = {
     SFAPIName: "Submission_Date__c",
     SFDataType: "Date/Time",
     SQLDataType: "Timestamp",
-    testingSample: "05/02/2019"
+    testingSample: formatDate(new Date())
   },
   agency_number: {
     oldFormPage: "none",
@@ -845,7 +858,7 @@ const submissionsTableFields = {
     SFAPIName: "Maintenance_of_Effort__c",
     SFDataType: "Date",
     SQLDataType: "Date",
-    testingSample: "05/02/2019"
+    testingSample: formatDate(new Date())
   },
   seiu503_cba_app_date: {
     oldFormPage: "none",
@@ -858,7 +871,7 @@ const submissionsTableFields = {
     SFAPIName: "X503_CBA_App_Date__c",
     SFDataType: "Date",
     SQLDataType: "Date",
-    testingSample: "05/02/2019"
+    testingSample: formatDate(new Date())
   },
   direct_pay_auth: {
     oldFormPage: "none",
@@ -871,7 +884,7 @@ const submissionsTableFields = {
     SFAPIName: "Direct_Pay_Authorization__c",
     SFDataType: "Date",
     SQLDataType: "Date",
-    testingSample: "05/02/2019"
+    testingSample: formatDate(new Date())
   },
   direct_deposit_auth: {
     oldFormPage: "none",
@@ -884,7 +897,7 @@ const submissionsTableFields = {
     SFAPIName: "Direct_Deposit_Authorization__c",
     SFDataType: "Date",
     SQLDataType: "Date",
-    testingSample: "05/02/2019"
+    testingSample: formatDate(new Date())
   },
   immediate_past_member_status: {
     oldFormPage: "none",
@@ -897,7 +910,7 @@ const submissionsTableFields = {
     SFAPIName: "Immediate_Past_Member_Status__c",
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "In Good Standing"
+    testingSample: "Not a Member"
   }
 };
 
@@ -970,19 +983,6 @@ const generateSFContactFieldList = () => {
     }
   });
   return fieldList;
-};
-
-// format date for Salesforce JSON parser
-const formatDate = date => {
-  let d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear();
-
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-
-  return [year, month, day].join("-");
 };
 
 module.exports = {
