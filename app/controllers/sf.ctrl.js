@@ -81,8 +81,8 @@ const createSFContact = (req, res, next) => {
         function(err, contact) {
           if (err || !contact.success) {
             let message = "Error creating contact";
-            if (err.message && err.message.errorCode) {
-              message = err.message.errorCode;
+            if (err.errorCode) {
+              message = err.errorCode;
             }
             console.log("sf.ctrl.js > 87");
             console.error(err, contact);
@@ -266,8 +266,8 @@ const updateSFContact = (req, res, next) => {
             console.log("sf.ctrl.js > 265");
             console.error(err, contact);
             let message = "Error updating contact";
-            if (err.message && err.message.errorCode) {
-              message = err.message.errorCode;
+            if (err.errorCode) {
+              message = err.errorCode;
             }
             return res.status(500).json({ message });
           } else {
@@ -325,8 +325,8 @@ const createSFOnlineMemberApp = (req, res, next) => {
             console.log("sf.ctrl.js > 324");
             console.error(err, OMA);
             let message = "Error creating online member application";
-            if (err.message && err.message.errorCode) {
-              message = err.message.errorCode;
+            if (err.errorCode) {
+              message = err.errorCode;
             }
             return res.status(500).json({ message });
           } else {
