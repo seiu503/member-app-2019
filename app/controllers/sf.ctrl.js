@@ -80,8 +80,13 @@ const createSFContact = (req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.log("sf.ctrl.js > 82");
-            return console.error(err, contact);
+            let message = "Error creating contact";
+            if (err.message && err.message.errorCode) {
+              message = err.message.errorCode;
+            }
+            console.log("sf.ctrl.js > 87");
+            console.error(err, contact);
+            return res.status(500).json({ message });
           } else {
             console.log("sf.ctrl.js > 85");
             console.log(contact);
@@ -258,8 +263,13 @@ const updateSFContact = (req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.log("sf.ctrl.js > 253");
-            return console.error(err, contact);
+            console.log("sf.ctrl.js > 265");
+            console.error(err, contact);
+            let message = "Error updating contact";
+            if (err.message && err.message.errorCode) {
+              message = err.message.errorCode;
+            }
+            return res.status(500).json({ message });
           } else {
             console.log("sf.ctrl.js > 262");
             console.log(contact);
@@ -312,15 +322,18 @@ const createSFOnlineMemberApp = (req, res, next) => {
         },
         function(err, OMA) {
           if (err || !OMA.success) {
-            console.log("sf.ctrl.js > 300");
-            return console.error(err);
+            console.log("sf.ctrl.js > 324");
+            console.error(err, OMA);
+            let message = "Error creating online member application";
+            if (err.message && err.message.errorCode) {
+              message = err.message.errorCode;
+            }
+            return res.status(500).json({ message });
           } else {
-            return res
-              .status(200)
-              .json({
-                salesforce_id: res.locals.sf_contact_id,
-                submission_id: res.locals.submission_id
-              });
+            return res.status(200).json({
+              salesforce_id: res.locals.sf_contact_id,
+              submission_id: res.locals.submission_id
+            });
           }
         }
       );

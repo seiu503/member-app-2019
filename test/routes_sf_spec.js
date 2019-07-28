@@ -79,17 +79,19 @@ suite("routes : salesforce", function() {
           done();
         });
     });
-    // test("returns an error if request body is missing required fields", function(done) {
-    //   chai
-    //     .request(app)
-    //     .put("/api/sfcontact/")
-    //     .send({ fullname: "firstname lastname" })
-    //     .end(function(err, res) {
-    //       assert.equal(res.status, 422);
-    //       assert.equal(res.type, "application/json");
-    //       assert.isNotNull(res.body.message);
-    //       done();
-    //     });
-    // });
+    test("returns an error if request body is missing required fields", function(done) {
+      chai
+        .request(app)
+        .put("/api/sfcontact/")
+        .send({ fullname: "firstname lastname" })
+        .end(function(err, res) {
+          console.log("routes_sf_spec.js > 87");
+          console.log(res.body);
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
   });
 });
