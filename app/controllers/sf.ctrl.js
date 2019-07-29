@@ -50,7 +50,7 @@ const getSFContactById = (req, res, next) => {
 const createSFContact = (req, res, next) => {
   console.log("sf.ctrl.js > 51 createSFContact");
   const bodyRaw = { ...req.body };
-  console.log(bodyRaw);
+  // console.log(bodyRaw);
   const body = {};
   // convert raw body object to key/value pairs using
   // SF API field names
@@ -65,7 +65,7 @@ const createSFContact = (req, res, next) => {
   delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
   console.log("sf.ctrl.js > 66");
-  console.log(body);
+  // console.log(body);
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.log("sf.ctrl.js > 70");
@@ -90,8 +90,20 @@ const createSFContact = (req, res, next) => {
           } else {
             console.log("sf.ctrl.js > 85");
             console.log(contact);
-            res.locals.sf_contact_id = contact.id || contact.Id;
-            return next();
+            // this should be undefined if calling as a standalone function
+            console.log("sf.ctrl.js > 94 ########################");
+            console.log(res.locals.next);
+            if (res.locals.next) {
+              console.log(
+                "sf.ctrl.js > 96: next exists ###########################"
+              );
+              res.locals.sf_contact_id = contact.id || contact.Id;
+              return next();
+            }
+            console.log("sf.ctrl.js > 100: next is undefined");
+            return res
+              .status(200)
+              .json({ salesforce_id: contact.id || contact.Id });
           }
         }
       );
@@ -133,6 +145,7 @@ const createOrUpdateSFContact = (req, res, next) => {
     // (it was in the body already but updateSFContact
     // doesn't know to look for it there)
     res.locals.sf_contact_id = contact_id;
+    res.locals.next = true;
     return updateSFContact(req, res, next);
   }
 
@@ -169,15 +182,17 @@ const createOrUpdateSFContact = (req, res, next) => {
           // if no contact found,
           // create new contact and then pass contact id to next middleware
           // in res.locals
+          res.locals.next = true;
           return createSFContact(req, res, next);
         }
         // if contact found, pass contact id to next middleware, which will
         // update it with the submission data from res.body
         if (contact) {
           console.log("sf.ctrl.js > 170");
-          console.log(contact);
+          // console.log(contact);
           console.log(contact.records[0].Id);
           res.locals.sf_contact_id = contact.records[0].Id;
+          res.locals.next = true;
           console.log(res.locals);
           return updateSFContact(req, res, next);
         }

@@ -59,12 +59,12 @@ suite("routes : salesforce", function() {
     return db.migrate.rollback();
   });
 
-  describe("PUT /api/sfcontact/", function() {
+  describe.only("PUT /api/sfcontact/", function() {
     // this route calls 3 chained controllers, 2 of which have to call SF and
     // wait for a response; hence the very long timeout
     this.timeout(15000);
     const app = require("../server");
-    test("creates/updates a SF contact, creates submission, creates OMA", function(done) {
+    test("MATCH: updates a SF contact, creates submission, creates OMA", function(done) {
       chai
         .request(app)
         .put("/api/sfcontact/")
@@ -79,6 +79,26 @@ suite("routes : salesforce", function() {
           done();
         });
     });
+    test("NO MATCH: creates a SF contact, creates submission, creates OMA", function(done) {
+      submissionBody.first_name = utils.randomText();
+      submissionBody.last_name = utils.randomText();
+      submissionBody.home_email = `${utils.randomText()}@fakemail.com`;
+      delete submissionBody.contact_id;
+      chai
+        .request(app)
+        .put("/api/sfcontact/")
+        .send(submissionBody)
+        .end(function(err, res) {
+          console.log(`routes_sf_spec.js > 72`);
+          console.log(res.body);
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.property(res.body, "submission_id");
+          sf_contact_id = res.body.salesforce_id;
+          submission_id = res.body.submission_id;
+          done();
+        });
+    });
     test("returns an error if request body is missing required fields", function(done) {
       chai
         .request(app)
@@ -86,6 +106,52 @@ suite("routes : salesforce", function() {
         .send({ fullname: "firstname lastname" })
         .end(function(err, res) {
           console.log("routes_sf_spec.js > 87");
+          console.log(res.body);
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+  });
+
+  describe("GET /api/sf/:id", function() {
+    console.log("############# GET TEST #############");
+    this.timeout(5000);
+    const app = require("../server");
+    test("gets one SF contact by ID", function(done) {
+      // create a test contact and save its returned id
+      chai
+        .request(app)
+        .post("/api/sf/")
+        .send(submissionBody)
+        .end(function(err, res) {
+          console.log(`routes_sf_spec.js > 108`);
+          console.log(res.body);
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.notProperty(res.body, "submission_id");
+          sf_contact_id = res.body.salesforce_id;
+          // then try to fetch the contact
+          chai
+            .request(app)
+            .get(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              console.log(`routes_sf_spec.js > 122`);
+              // console.log(res.body);
+              assert.equal(res.body.Id, sf_contact_id);
+              assert.equal(res.status, 200);
+              assert.isNull(err);
+            });
+          done();
+        });
+    });
+    test("returns an error if ID is missing or malformed", function(done) {
+      chai
+        .request(app)
+        .get("/api/sf/12345")
+        .end(function(err, res) {
+          console.log("routes_sf_spec.js > 133");
           console.log(res.body);
           assert.equal(res.status, 500);
           assert.equal(res.type, "application/json");
