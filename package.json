@@ -4,7 +4,7 @@
   "description": "SEIU 503 Membership Application 2019",
   "main": "server.js",
   "scripts": {
-    "test": "nyc ./node_modules/.bin/mocha --exit",
+    "test": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --exit",
     "start": "webpack -d | node server.js",
     "client": "cd client && yarn build && yarn start",
     "server": "LOG_LEVEL=debug supervisor --inspect server.js",
