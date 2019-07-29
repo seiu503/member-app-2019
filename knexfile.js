@@ -15,6 +15,7 @@ module.exports = {
     seeds: {
       directory: "./db/seeds"
     }
+    //, debug: "knex:tx" // toggle this to turn off debugging console output
   },
   testing: {
     client: "pg",
