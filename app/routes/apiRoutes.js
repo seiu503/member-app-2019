@@ -357,6 +357,30 @@ router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
 
+// DELETE ONE SALESFORCE CONTACT RECORD BY ID
+// This is really only needed for cleanup after testing...
+//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Success or error message.
+//
+router.delete("/sf/:id", sfCtrl.deleteSFContactById);
+
+// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
+// This is really only needed for cleanup after testing...
+//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Success or error message.
+//
+router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
+
 // GET ALL ACTIVE EMPLOYER NAMES
 //   Example: GET >> /api/sfaccts
 //   Secured: no

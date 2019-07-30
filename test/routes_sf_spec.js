@@ -48,7 +48,7 @@ let sf_contact_id, submission_id, createdAt, updatedAt;
 chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
-suite("routes : salesforce", function() {
+suite.only("routes : salesforce", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -59,11 +59,42 @@ suite("routes : salesforce", function() {
     return db.migrate.rollback();
   });
 
-  describe.only("PUT /api/sfcontact/", function() {
+  describe("GET /api/sfaccts", function() {
+    const app = require("../server");
+    test("gets all SF employers", function(done) {
+      chai
+        .request(app)
+        .get("/api/sfaccts")
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.isArray(res.body);
+          assert.isAbove(res.body.length, 0);
+          done();
+        });
+    });
+  });
+
+  describe("PUT /api/sfcontact/", function() {
     // this route calls 3 chained controllers, 2 of which have to call SF and
     // wait for a response; hence the very long timeout
     this.timeout(15000);
     const app = require("../server");
+    // test error case first to avoid race condition with success cases
+    test("returns an error if request body is missing required fields", function(done) {
+      chai
+        .request(app)
+        .put("/api/sfcontact/")
+        .send({ fullname: "firstname lastname" })
+        .end(function(err, res) {
+          console.log("routes_sf_spec.js > 87");
+          console.log(res.body);
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
     test("MATCH: updates a SF contact, creates submission, creates OMA", function(done) {
       chai
         .request(app)
@@ -96,16 +127,46 @@ suite("routes : salesforce", function() {
           assert.property(res.body, "submission_id");
           sf_contact_id = res.body.salesforce_id;
           submission_id = res.body.submission_id;
-          done();
+          sf_OMA_id = res.body.sf_OMA_id;
+          // then delete created OMA and then contact to clean up
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              // assert that record was deleted
+              assert.equal(res.status, 200);
+              assert.isNull(err);
+              assert.equal(
+                res.body.message,
+                "Successfully deleted Online Member App"
+              );
+              chai
+                .request(app)
+                .delete(`/api/sf/${sf_contact_id}`)
+                .end(function(err, res) {
+                  // assert that record was deleted
+                  assert.equal(res.status, 200);
+                  assert.isNull(err);
+                  assert.equal(
+                    res.body.message,
+                    "Successfully deleted contact"
+                  );
+                  done();
+                });
+            });
         });
     });
-    test("returns an error if request body is missing required fields", function(done) {
+  });
+
+  describe("GET /api/sf/:id", function() {
+    const app = require("../server");
+    // test the error case first to avoid race condition with success case
+    test("returns an error if ID is missing or malformed", function(done) {
       chai
         .request(app)
-        .put("/api/sfcontact/")
-        .send({ fullname: "firstname lastname" })
+        .get("/api/sf/12345")
         .end(function(err, res) {
-          console.log("routes_sf_spec.js > 87");
+          console.log("routes_sf_spec.js > 133");
           console.log(res.body);
           assert.equal(res.status, 500);
           assert.equal(res.type, "application/json");
@@ -113,13 +174,9 @@ suite("routes : salesforce", function() {
           done();
         });
     });
-  });
-
-  describe("GET /api/sf/:id", function() {
-    console.log("############# GET TEST #############");
-    this.timeout(5000);
-    const app = require("../server");
     test("gets one SF contact by ID", function(done) {
+      // calling 3 SF controllers sequentially here...
+      this.timeout(10000);
       // create a test contact and save its returned id
       chai
         .request(app)
@@ -137,26 +194,27 @@ suite("routes : salesforce", function() {
             .request(app)
             .get(`/api/sf/${sf_contact_id}`)
             .end(function(err, res) {
-              console.log(`routes_sf_spec.js > 122`);
-              // console.log(res.body);
+              console.log("routes_sf_spec.js > 169");
+              // assert that correct record was fetched
+              console.log(res.body.Id);
               assert.equal(res.body.Id, sf_contact_id);
               assert.equal(res.status, 200);
               assert.isNull(err);
+              // then delete it to clean up
+              chai
+                .request(app)
+                .delete(`/api/sf/${sf_contact_id}`)
+                .end(function(err, res) {
+                  // assert that record was deleted
+                  assert.equal(res.status, 200);
+                  assert.isNull(err);
+                  assert.equal(
+                    res.body.message,
+                    "Successfully deleted contact"
+                  );
+                  done();
+                });
             });
-          done();
-        });
-    });
-    test("returns an error if ID is missing or malformed", function(done) {
-      chai
-        .request(app)
-        .get("/api/sf/12345")
-        .end(function(err, res) {
-          console.log("routes_sf_spec.js > 133");
-          console.log(res.body);
-          assert.equal(res.status, 500);
-          assert.equal(res.type, "application/json");
-          assert.isNotNull(res.body.message);
-          done();
         });
     });
   });
