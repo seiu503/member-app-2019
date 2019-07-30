@@ -207,15 +207,16 @@ const getAllEmployers = (req, res, next) => {
     }
 
     try {
+      console.log("210");
       conn.query(query, function(err, accounts) {
         if (err) {
-          // console.error(`sf.ctrl.js > 215: ${err}`);
+          console.error(`sf.ctrl.js > 215: ${err}`);
           return res.status(500).json({ message: err.message });
         }
         res.status(200).json(accounts.records);
       });
     } catch (err) {
-      // console.error(`sf.ctrl.js > 221: ${err}`);
+      console.error(`sf.ctrl.js > 221: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   });
