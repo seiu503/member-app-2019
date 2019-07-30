@@ -13,6 +13,10 @@ import * as apiSFActions from "../store/actions/apiSFActions";
 import { stylesPage1 } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage1Container extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
   componentDidMount() {
     // check for contact id in query string
     const values = queryString.parse(this.props.location.search);
@@ -53,9 +57,9 @@ const mapDispatchToProps = dispatch => ({
   apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
-export default withStyles(stylesPage1)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SubmissionFormPage1Container)
-);
+export const SubmissionFormPage1Connected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SubmissionFormPage1Container);
+
+export default withStyles(stylesPage1)(SubmissionFormPage1Connected);
