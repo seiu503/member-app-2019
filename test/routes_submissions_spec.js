@@ -120,6 +120,24 @@ suite("routes : submissions", function() {
           assert.isNull(err);
           sf_contact_id = res.body.sf_contact_id;
           submission_id = res.body.submission_id;
+          test("updates a submission", function(done) {
+            const updates = {
+              first_name: updatedFirstName,
+              text_auth_opt_out: updatedTextAuthOptOut
+            };
+            chai
+              .request(app)
+              .put(`/api/submission/${submission_id}`)
+              .send(updates)
+              .end(function(err, res) {
+                let result = res.body;
+                assert.equal(res.status, 200);
+                assert.isNull(err);
+                assert.property(result, "submission_id");
+                assert.property(result, "salesforce_id");
+                done();
+              });
+          });
           done();
         });
     });
@@ -151,25 +169,6 @@ suite("routes : submissions", function() {
           });
       });
     });
-
-    test("updates a submission", function(done) {
-      const updates = {
-        first_name: updatedFirstName,
-        text_auth_opt_out: updatedTextAuthOptOut
-      };
-      chai
-        .request(app)
-        .put(`/api/submission/${salesforce_id}`)
-        .send(updates)
-        .end(function(err, res) {
-          let result = res.body;
-          assert.equal(res.status, 200);
-          assert.isNull(err);
-          assert.property(result, "submission_id");
-          assert.property(result, "salesforce_id");
-          done();
-        });
-    });
     test("returns error if submission id missing or malformed", function(done) {
       const app = require("../server");
       const updates = {
@@ -182,7 +181,6 @@ suite("routes : submissions", function() {
         .put("/api/submission/123456")
         .send(updates)
         .end(function(err, res) {
-          console.log(res.body);
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
@@ -193,7 +191,7 @@ suite("routes : submissions", function() {
       const app = require("../server");
       chai
         .request(app)
-        .put(`/api/submission/${salesforce_id}`)
+        .put(`/api/submission/${submission_id}`)
         .send({ name: undefined })
         .end(function(err, res) {
           assert.equal(res.status, 404);

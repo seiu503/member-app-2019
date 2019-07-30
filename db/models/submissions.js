@@ -103,7 +103,7 @@ const createSubmission = (
  */
 const updateSubmission = (id, updates) => {
   return db(TABLES.SUBMISSIONS)
-    .where({ salesforce_id: id })
+    .where({ id })
     .first()
     .update(updates)
     .update("updated_at", db.fn.now())

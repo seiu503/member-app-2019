@@ -48,7 +48,7 @@ let sf_contact_id, submission_id, createdAt, updatedAt;
 chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
-suite.only("routes : salesforce", function() {
+suite("routes : salesforce", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -87,8 +87,6 @@ suite.only("routes : salesforce", function() {
         .put("/api/sfcontact/")
         .send({ fullname: "firstname lastname" })
         .end(function(err, res) {
-          console.log("routes_sf_spec.js > 87");
-          console.log(res.body);
           assert.equal(res.status, 500);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
@@ -101,8 +99,6 @@ suite.only("routes : salesforce", function() {
         .put("/api/sfcontact/")
         .send(submissionBody)
         .end(function(err, res) {
-          console.log(`routes_sf_spec.js > 72`);
-          console.log(res.body);
           assert.equal(res.status, 200);
           assert.isNull(err);
           sf_contact_id = res.body.salesforce_id;
@@ -120,8 +116,6 @@ suite.only("routes : salesforce", function() {
         .put("/api/sfcontact/")
         .send(submissionBody)
         .end(function(err, res) {
-          console.log(`routes_sf_spec.js > 72`);
-          console.log(res.body);
           assert.equal(res.status, 200);
           assert.isNull(err);
           assert.property(res.body, "submission_id");
@@ -166,8 +160,6 @@ suite.only("routes : salesforce", function() {
         .request(app)
         .get("/api/sf/12345")
         .end(function(err, res) {
-          console.log("routes_sf_spec.js > 133");
-          console.log(res.body);
           assert.equal(res.status, 500);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
@@ -183,8 +175,6 @@ suite.only("routes : salesforce", function() {
         .post("/api/sf/")
         .send(submissionBody)
         .end(function(err, res) {
-          console.log(`routes_sf_spec.js > 108`);
-          console.log(res.body);
           assert.equal(res.status, 200);
           assert.isNull(err);
           assert.notProperty(res.body, "submission_id");
@@ -194,9 +184,7 @@ suite.only("routes : salesforce", function() {
             .request(app)
             .get(`/api/sf/${sf_contact_id}`)
             .end(function(err, res) {
-              console.log("routes_sf_spec.js > 169");
               // assert that correct record was fetched
-              console.log(res.body.Id);
               assert.equal(res.body.Id, sf_contact_id);
               assert.equal(res.status, 200);
               assert.isNull(err);
