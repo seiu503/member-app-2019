@@ -63,10 +63,10 @@ const mapDispatchToProps = dispatch => ({
   apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
+export const SubmissionFormPage2Connected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SubmissionFormPage2Container);
+
 // add MUI styles and faked lifecycle methods
-export default withStyles(stylesPage2)(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(SubmissionFormPage2Container)
-);
+export default withStyles(stylesPage2)(SubmissionFormPage2Connected);
