@@ -15,7 +15,7 @@ const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
 
-class SubmissionFormPage2Component extends React.Component {
+export class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
