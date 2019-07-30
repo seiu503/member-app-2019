@@ -37,7 +37,7 @@ const testErr = new Error();
 let sf_contact_id, submission_id, errorStub;
 
 chai.use(chaiHttp);
-suite.only("routes : salesforce", function() {
+suite("routes : salesforce", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
