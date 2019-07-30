@@ -3,13 +3,15 @@ const cors = require("cors");
 const helmet = require("helmet");
 const express = require("express");
 const bodyParser = require("body-parser");
+const helmet = require("helmet");
 
 const middleware = [
   morgan("tiny"),
   cors(),
   helmet(),
   bodyParser.json(),
-  bodyParser.urlencoded({ extended: true })
+  bodyParser.urlencoded({ extended: true }),
+  helmet()
 ];
 
 module.exports = middleware;

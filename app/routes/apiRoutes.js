@@ -357,6 +357,30 @@ router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
 
+// DELETE ONE SALESFORCE CONTACT RECORD BY ID
+// This is really only needed for cleanup after testing...
+//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Success or error message.
+//
+router.delete("/sf/:id", sfCtrl.deleteSFContactById);
+
+// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
+// This is really only needed for cleanup after testing...
+//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Success or error message.
+//
+router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
+
 // GET ALL ACTIVE EMPLOYER NAMES
 //   Example: GET >> /api/sfaccts
 //   Secured: no
@@ -365,6 +389,86 @@ router.get("/sf/:id", sfCtrl.getSFContactById);
 //      Id, Name, Sub_Division__c, Agency_Number__c.
 //
 router.get("/sfaccts", sfCtrl.getAllEmployers);
+
+// LOOKUP ONE SALESFORCE CONTACT RECORD (BY ID OR FIRSTNAME/LASTNAME/EMAIL)
+//   Example: PUT >> /api/sfcontact
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              ip_address                       : String
+//              submission_date                  : Timestamp
+//              agency_number                    : String
+//              employer_id                      : String
+//              birthdate                        : String
+//              cell_phone                       : String
+//              employer_name                    : String
+//              first_name                       : String
+//              last_name                        : String
+//              home_street                      : String
+//              home_city                        : String
+//              home_state                       : String
+//              home_zip                         : String
+//              home_email                       : String
+//              preferred_language               : String
+//              terms_agree                      : Boolean
+//              Signature                        : String
+//              text_auth_opt_out                : Boolean
+//              online_campaign_source           : String
+//              contact_id                       : String
+//              legal_language                   : String
+//              maintenance_of_effort            : Date
+//              seiu503_cba_app_date             : Date
+//              direct_pay_auth                  : Date
+//              direct_deposit_auth              : Date
+//              immediate_past_member_status     : String
+//             }
+//   Returns: JSON selected fields from salesforce contact object on success.
+//
+router.put(
+  "/sfcontact",
+  sfCtrl.createOrUpdateSFContact,
+  submissionCtrl.createSubmission,
+  sfCtrl.createSFOnlineMemberApp
+);
+
+// CREATE A SALESFORCE CONTACT RECORD
+//   Example: POST >> /api/sf
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              ip_address                       : String
+//              submission_date                  : Timestamp
+//              agency_number                    : String
+//              employer_id                      : String
+//              birthdate                        : String
+//              cell_phone                       : String
+//              employer_name                    : String
+//              first_name                       : String
+//              last_name                        : String
+//              home_street                      : String
+//              home_city                        : String
+//              home_state                       : String
+//              home_zip                         : String
+//              home_email                       : String
+//              preferred_language               : String
+//              terms_agree                      : Boolean
+//              Signature                        : String
+//              text_auth_opt_out                : Boolean
+//              online_campaign_source           : String
+//              contact_id                       : String
+//              legal_language                   : String
+//              maintenance_of_effort            : Date
+//              seiu503_cba_app_date             : Date
+//              direct_pay_auth                  : Date
+//              direct_deposit_auth              : Date
+//              immediate_past_member_status     : String
+//             }
+//   Returns: Salesforce contact id (if called as standalone)
+//   OR passes contact ID to next middleware.
+//
+router.post("/sf", sfCtrl.createSFContact);
 
 /* ================================ EXPORT ================================= */
 
