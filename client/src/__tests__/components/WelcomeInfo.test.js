@@ -29,6 +29,9 @@ const defaultProps = {
   apiContent: {
     getContentById: () => Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
   },
+  appState: {
+    loading: false
+  },
   classes: {}
 };
 

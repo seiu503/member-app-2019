@@ -12,7 +12,6 @@ import Card from "@material-ui/core/Card";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
 import SamplePhoto from "../img/sample-form-photo.jpg";
-import { openSnackbar } from "../containers/Notifier";
 
 const styles = theme => ({
   root: {
@@ -45,6 +44,8 @@ export class WelcomeInfoUnconnected extends React.Component {
     };
   }
 
+  getHeadline() {}
+
   componentDidMount() {
     const values = queryString.parse(this.props.location.search);
     // if find contact id, call API to fetch contact info for prefill
@@ -55,15 +56,10 @@ export class WelcomeInfoUnconnected extends React.Component {
         this.props.apiContent
           .getContentById(id)
           .then(result => {
-            if (
-              !result ||
-              result.payload.message ||
-              result.type === "GET_CONTENT_BY_ID_FAILURE"
-            ) {
-              openSnackbar(
-                "error",
-                this.props.content.error ||
-                  "An error occured while trying to fetch your content."
+            if (!result || result.payload.message) {
+              console.log(
+                result.payload.message ||
+                  "there was an error loading the content"
               );
             } else {
               switch (result.payload.content_type) {
@@ -79,22 +75,21 @@ export class WelcomeInfoUnconnected extends React.Component {
             }
           })
           .catch(err => {
-            openSnackbar("error", err);
+            console.log(err);
           });
       });
     }
   }
 
   render() {
-    const { classes } = this.props;
-    if (this.props.loading) {
+    if (this.props.appState.loading) {
       return <div>loading...</div>;
     }
     return (
-      <div className={classes.root} data-test="component-welcome-info">
-        <Card className={classes.card}>
+      <div className={this.classes.root} data-test="component-welcome-info">
+        <Card className={this.classes.card}>
           <CardMedia
-            className={classes.media}
+            className={this.classes.media}
             title="Welcome Photo"
             alt="Welcome Photo"
             image={this.state.image || SamplePhoto}
@@ -104,7 +99,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             variant="h3"
             align="center"
             gutterBottom
-            className={classes.head}
+            className={this.classes.head}
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
@@ -115,7 +110,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             variant="body1"
             align="center"
             gutterBottom
-            className={classes.body}
+            className={this.classes.body}
             data-test="body"
           >
             {this.state.body}
