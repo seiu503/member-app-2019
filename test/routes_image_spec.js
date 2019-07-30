@@ -95,7 +95,7 @@ suite("routes : image", function() {
         });
     });
     test("returns an error if file is too large", function(done) {
-      this.timeout(5000);
+      this.timeout(8000);
       chai
         .request(app)
         .post("/api/image/single")

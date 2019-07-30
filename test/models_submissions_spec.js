@@ -102,6 +102,7 @@ describe("submissions model tests", () => {
         salesforce_id
       )
       .then(result => {
+        submission_id = result[0].id;
         assert.deepEqual(result[0].ip_address, ip_address);
         assert.deepEqual(
           moment(result[0].submission_date),
@@ -210,9 +211,9 @@ describe("submissions model tests", () => {
       employer_name: updatedEmployerName,
       text_auth_opt_out: updatedTextAuthOptOut
     };
-    console.log(salesforce_id);
+    // console.log(submission_id);
     return submissions
-      .updateSubmission(salesforce_id, updates)
+      .updateSubmission(submission_id, updates)
       .then(results => {
         assert.equal(results[0].first_name, updatedFirstName);
         assert.equal(results[0].employer_name, updatedEmployerName);

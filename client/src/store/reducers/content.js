@@ -40,7 +40,7 @@ export const INITIAL_STATE = {
     updated_at: ""
   },
   form: {
-    content_type: "",
+    content_type: "headline",
     content: "",
     dialogOpen: false
   },

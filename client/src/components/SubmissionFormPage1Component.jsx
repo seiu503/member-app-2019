@@ -145,10 +145,11 @@ export class SubmissionFormPage1Component extends React.Component {
     const legalLanguage = this.props.legal_language.current.textContent;
 
     const q = queryString.parse(this.props.location.search);
-    if (!salesforceId) {
+    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+
+    if (!salesforceId && q && q.id) {
       salesforceId = q.id;
     }
-    const campaignSource = q.s || "Direct seiu503signup";
 
     const body = {
       ip_address: localIpUrl(),
@@ -179,11 +180,12 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId
     };
 
-    return this.props.apiSubmission
-      .addSubmission(body)
+    return this.props.apiSF
+      .lookupSFContact(body)
       .then(result => {
+        console.log(result.type);
         if (
-          result.type === "ADD_SUBMISSION_FAILURE" ||
+          result.type === "LOOKUP_SF_CONTACT_FAILURE" ||
           this.props.submission.error
         ) {
           openSnackbar(
