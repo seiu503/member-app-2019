@@ -33,7 +33,7 @@ const styles = theme => ({
   }
 });
 
-class WelcomeInfo extends React.Component {
+export class WelcomeInfoUnconnected extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
@@ -121,7 +121,7 @@ class WelcomeInfo extends React.Component {
   }
 }
 
-WelcomeInfo.propTypes = {
+WelcomeInfoUnconnected.propTypes = {
   classes: PropTypes.object
 };
 
@@ -137,5 +137,5 @@ export default withStyles(styles)(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(WelcomeInfo)
+  )(WelcomeInfoUnconnected)
 );

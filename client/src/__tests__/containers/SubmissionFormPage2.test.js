@@ -7,9 +7,9 @@ import { Provider } from "react-redux";
 import { INITIAL_STATE } from "../../store/reducers/submission";
 import * as apiSForce from "../../store/actions/apiSFActions";
 import {
-  SubmissionFormPage1Connected,
-  SubmissionFormPage1Container
-} from "../../containers/SubmissionFormPage1";
+  SubmissionFormPage2Connected,
+  SubmissionFormPage2Container
+} from "../../containers/SubmissionFormPage2";
 import { getSFContactById } from "../../store/actions/apiSFActions";
 
 import configureMockStore from "redux-mock-store";
@@ -21,36 +21,24 @@ let wrapper;
 let pushMock = jest.fn();
 
 const initialState = {
-  ...INITIAL_STATE,
+  submission: {
+    salesforceId: "1"
+  },
   appState: {
     loading: false,
     error: ""
   },
-  formValues: {
-    mm: "",
-    onlineCampaignSource: null
-  }
+  formValues: {}
 };
 
 const defaultProps = {
   submission: {
     error: null,
-    loading: false
-  },
-  initialValues: {
-    mm: "",
-    onlineCampaignSource: null
-  },
-  formValues: {
-    mm: "",
-    onlineCampaignSource: null
-  },
-  location: {
-    search: "id=1"
+    loading: false,
+    salesforceId: "1"
   },
   classes: {},
   apiSF: {
-    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
     getSFContactById: () => Promise.resolve({ type: "GET_SF_CONTACT_SUCCESS" })
   },
   apiSubmission: {
@@ -64,15 +52,15 @@ const defaultProps = {
 const setup = (props = {}) => {
   store = mockStore(defaultProps);
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<SubmissionFormPage2Container {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<SubmissionFormPage2Container /> unconnected", () => {
   it("renders without error", () => {
     wrapper = setup();
     const component = findByTestAttr(
       wrapper,
-      "container-submission-form-page-1"
+      "container-submission-form-page-2"
     );
     expect(component.length).toBe(1);
   });
@@ -81,25 +69,25 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     store = storeFactory(initialState);
     wrapper = mount(
       <Provider store={store}>
-        <SubmissionFormPage1Connected {...defaultProps} />
+        <SubmissionFormPage2Connected {...defaultProps} />
       </Provider>
     );
     const component = findByTestAttr(
       wrapper,
-      "container-submission-form-page-1"
+      "container-submission-form-page-2"
     );
     expect(component.length).toBe(1);
   });
 
   it("should have access to expected props", () => {
     wrapper = setup();
-    expect(wrapper.instance().props.formValues.mm).toBe("");
+    expect(wrapper.instance().props.submission.salesforceId).toBe("1");
   });
 
-  test("calls `getSFContactById` on componentDidMount if id in query", () => {
+  test("calls `getSFContactById` on componentDidMount if SFid in state", () => {
     let props = {
-      location: {
-        search: "id=1"
+      submission: {
+        salesforceId: "1"
       },
       apiSF: { getSFContactById: getSFContactById }
     };
@@ -107,7 +95,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     const dispatchSpy = jest.spyOn(apiSForce, "getSFContactById");
     wrapper = mount(
       <Provider store={store}>
-        <SubmissionFormPage1Connected {...defaultProps} {...props} />
+        <SubmissionFormPage2Connected {...defaultProps} {...props} />
       </Provider>
     );
     console.log(dispatchSpy.mock.calls);

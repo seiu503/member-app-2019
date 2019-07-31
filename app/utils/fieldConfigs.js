@@ -914,6 +914,251 @@ const submissionsTableFields = {
   }
 };
 
+const Page2TableFields = {
+  mail_to_city: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "mail_to_city",
+    clientFieldName: "mailToCity",
+    HtmlInputType: "text",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Mail-To City",
+    SFAPIName: "OtherCity",
+    SFDataType: "Address (Composite)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "mailToCity"
+  },
+  mail_to_state: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "mail_to_state",
+    clientFieldName: "mailToState",
+    HtmlInputType: "select (limit 2 char",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Mail-To State/Province",
+    SFAPIName: "OtherState",
+    SFDataType: "Address (Composite)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "OR"
+  },
+  mail_to_street: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "mail_to_street",
+    clientFieldName: "mailToStreet",
+    HtmlInputType: "text",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Mail-To Street",
+    SFAPIName: "OtherStreet",
+    SFDataType: "Address (Composite)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Multnomah Blvd"
+  },
+  mail_to_postal_code: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "mail_to_postal_code",
+    clientFieldName: "mailToZip",
+    HtmlInputType: "text (limit 5 char)",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Mail-To Zip/Postal Code",
+    SFAPIName: "OtherPostalCode",
+    SFDataType: "Address (Composite)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "97221"
+  },
+  ethnicity: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "ethnicity",
+    clientFieldName: "ethnicity",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Ethnicity",
+    SFAPIName: "Ethnicity__c",
+    SFDataType: "Picklist(text)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "other"
+  },
+  lgbtq_id: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "lgbtq_id",
+    clientFieldName: "lgbtqId",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "LGBTQIA+ ID",
+    SFAPIName: "LGBTQ_ID__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  trans_id: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "trans_id",
+    clientFieldName: "trandId",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Trans ID",
+    SFAPIName: "Trans_ID__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  disability_id: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "disability_id",
+    clientFieldName: "disabillityId",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Disability ID",
+    SFAPIName: "Disability_ID__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  deaf_or_hard_of_hearing: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "deaf_or_hard_of_hearing",
+    clientFieldName: "deafOrHardHearing",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Deaf or hard-of-hearing",
+    SFAPIName: "Deaf_or_hearing_impaired__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  blind_or_visually_impaired: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "blind_or_visually_impaired",
+    clientFieldName: "blindOrVisuallyImpaired",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Blind or visually impaired",
+    SFAPIName: "Blind_or_visually_impaired__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  gender: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "gender",
+    clientFieldName: "gender",
+    HtmlInputType: "select",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Gender (503)",
+    SFAPIName: "Gender__c",
+    SFDataType: "Picklist(text)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "female"
+  },
+  gender_other_description: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "gender_other_description",
+    clientFieldName: "genderOtherDesc",
+    HtmlInputType: "text",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Gender Other - Description",
+    SFAPIName: "Gender_Other_Description__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: ""
+  },
+  gender_pronoun: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "gender_pronoun",
+    clientFieldName: "genderPronoun",
+    HtmlInputType: "select",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Gender Pronoun",
+    SFAPIName: "Prounoun__c",
+    SFDataType: "Picklist(text)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "She/Her"
+  },
+  job_title: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "job_title",
+    clientFieldName: "jobTitle",
+    HtmlInputType: "text",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Job Class/Title",
+    SFAPIName: "Title",
+    SFDataType: "Text(128)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "jobtitle"
+  },
+  hire_date: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "hire_date",
+    clientFieldName: "hireDate",
+    HtmlInputType: "date",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Hire date",
+    SFAPIName: "Hire_Date__c",
+    SFDataType: "Date",
+    SQLDataType: "DATE",
+    testingSample: "01/08/2003"
+  },
+  worksite: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "worksite",
+    clientFieldName: "worksite",
+    HtmlInputType: "text",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Worksite (manual entry from webform",
+    SFAPIName: "Worksite_manual_entry_from_webform__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "worksite"
+  },
+  work_phone: {
+    oldFormPage: "1",
+    req: "Y",
+    postgresFieldName: "work_phone",
+    clientFieldName: "workPhone",
+    HtmlInputType: "tel",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Cell Phone",
+    SFAPIName: "Work_Phone__c",
+    SFDataType: "Phone",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "123-546-7890"
+  },
+  work_email: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "work_email",
+    clientFieldName: "workEmail",
+    HtmlInputType: "email",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Work email",
+    SFAPIName: "Work_Email__c",
+    SFDataType: "Email",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "lastnamef@seiu.com"
+  }
+};
+
+const generatePage2Validate = () => {
+  const sampleData = {};
+  Object.keys(Page2TableFields).map(function(key, index) {
+    let clientFieldName = Page2TableFields[key].clientFieldName;
+    sampleData[clientFieldName] = Page2TableFields[key].testingSample;
+  });
+  return sampleData;
+};
 const generateSampleSubmission = () => {
   const sampleData = {};
   sampleData.submission_id = uuid.v4();
@@ -991,6 +1236,7 @@ module.exports = {
   generateSampleSubmission,
   generateSampleSubmissionFrontEnd,
   generateSampleValidate,
+  generatePage2Validate,
   generateSFContactFieldList,
   formatDate
 };
