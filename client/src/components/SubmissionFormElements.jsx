@@ -1,6 +1,7 @@
 import React from "react";
 import uuid from "uuid";
 import PropTypes from "prop-types";
+import queryString from "query-string";
 
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";

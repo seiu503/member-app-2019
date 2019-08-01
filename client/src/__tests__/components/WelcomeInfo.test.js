@@ -3,18 +3,21 @@ import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import queryString from "query-string";
 import { defaultWelcomeInfo } from "../../utils/index";
+import { MemoryRouter } from "react-router";
 
 import WelcomeInfo, {
   WelcomeInfoUnconnected
 } from "../../components/WelcomeInfo";
-import { getContentById } from "../../store/actions/apiContentActions";
+import {
+  getContentById,
+  addContent
+} from "../../store/actions/apiContentActions";
 import * as Notifier from "../../containers/Notifier";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
 
-let store;
-let wrapper;
+let store, wrapper, props;
 
 const initialState = {
   appState: {
@@ -96,8 +99,108 @@ describe("<WelcomeInfo />", () => {
     );
   });
 
+  describe("switch", () => {
+    test("headline", () => {
+      let getContentMockHeadline = () =>
+        Promise.resolve({
+          payload: {
+            content_type: "headline",
+            content: "fake headline"
+          }
+        });
+      props = {
+        location: {
+          search: "h=1"
+        },
+        apiContent: {
+          getContentById: getContentMockHeadline
+        }
+      };
+      store = storeFactory(initialState);
+      wrapper = mount(
+        <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
+      );
+      return getContentMockHeadline().then(() => {
+        expect(wrapper.state().headline).toEqual("fake headline");
+      });
+    });
+    test("body", () => {
+      let getContentMockBody = () =>
+        Promise.resolve({
+          payload: {
+            content_type: "bodyCopy",
+            content: "fake body"
+          }
+        });
+      props = {
+        location: {
+          search: "b=2"
+        },
+        apiContent: {
+          getContentById: getContentMockBody
+        }
+      };
+      store = storeFactory(initialState);
+      wrapper = mount(
+        <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
+      );
+      return getContentMockBody().then(() => {
+        expect(wrapper.state().body).toEqual("fake body");
+      });
+    });
+    test("image", () => {
+      let getContentMockImage = () =>
+        Promise.resolve({
+          payload: {
+            content_type: "image",
+            content: "fake image"
+          }
+        });
+      props = {
+        location: {
+          search: "i=3"
+        },
+        apiContent: {
+          getContentById: getContentMockImage
+        }
+      };
+      store = storeFactory(initialState);
+      wrapper = mount(
+        <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
+      );
+      return getContentMockImage().then(() => {
+        expect(wrapper.state().image).toEqual("fake image");
+      });
+    });
+    test("break", () => {
+      let getContentMockImage = () =>
+        Promise.resolve({
+          payload: {
+            content_type: "break",
+            content: "bad news"
+          }
+        });
+      props = {
+        location: {
+          search: "i=3"
+        },
+        apiContent: {
+          getContentById: getContentMockImage
+        }
+      };
+      store = storeFactory(initialState);
+      wrapper = mount(
+        <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
+      );
+      let originalState = wrapper.state();
+      return getContentMockImage().then(() => {
+        expect(wrapper.state()).toEqual(originalState);
+      });
+    });
+  });
+
   test("if `getContentById` fails, openSnackbar should be called with error message", () => {
-    let props = {
+    props = {
       location: {
         search: "h=1&b=2&i=3"
       },

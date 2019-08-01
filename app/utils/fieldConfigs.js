@@ -1148,6 +1148,14 @@ const Page2TableFields = {
     SFDataType: "Email",
     SQLDataType: "VARCHAR(255)",
     testingSample: "lastnamef@seiu.com"
+  },
+  african_or_african_american: {
+    clientFieldName: "africanOrAfricanAmerican",
+    testingSample: true
+  },
+  white: {
+    clientFieldName: "white",
+    testingSample: true
   }
 };
 

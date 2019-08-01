@@ -2,7 +2,6 @@ import React from "react";
 import { shallow, mount } from "enzyme";
 
 import * as formElements from "../../components/SubmissionFormElements";
-import { checkProps } from "../../utils/testUtils";
 import checkPropTypes from "check-prop-types";
 
 const {
