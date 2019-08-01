@@ -20,6 +20,17 @@ let wrapper,
 
 let resetMock = jest.fn();
 
+const initialState = {
+  submission: {
+    salesforceId: "1"
+  },
+  appState: {
+    loading: false,
+    error: ""
+  },
+  formValues: {}
+};
+
 // initial props for form
 const defaultProps = {
   submission: {
@@ -139,6 +150,24 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       expect(handleSubmitError.mock.calls.length).toBe(1);
       // testing that clearForm is called when handleSubmit receives Error message
       return handleSubmitError().then(() => {
+        expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+      });
+    });
+
+    it("catches promise reject", () => {
+      testData = generatePage2Validate();
+      handleSubmitError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
+      Notifier.openSnackbar = jest.fn();
+      updateSubmission = handleSubmitError;
+      apiSubmission.updateSubmission = updateSubmission;
+      wrapper = unconnectedSetup();
+      wrapper.find("form").simulate("submit", { testData });
+      expect(handleSubmitError.mock.calls.length).toBe(1);
+      handleSubmitError().then(() => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       });
     });

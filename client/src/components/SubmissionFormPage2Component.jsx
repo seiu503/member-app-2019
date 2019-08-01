@@ -1,6 +1,8 @@
 import React from "react";
 import { Field } from "redux-form";
 import PropTypes from "prop-types";
+import { reduxForm } from "redux-form";
+import validate from "../utils/validators";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -81,7 +83,6 @@ export class SubmissionFormPage2Component extends React.Component {
           }
         }
       });
-      console.log("COMBINEDETHINICITIES", combinedEthnicities);
       return combinedEthnicities;
     };
 
@@ -431,5 +432,12 @@ SubmissionFormPage2Component.propTypes = {
   }).isRequired,
   classes: PropTypes.object
 };
+
+// add reduxForm to component
+export const SubmissionForm2Wrap = reduxForm({
+  form: "submissionPage1",
+  validate,
+  enableReinitialize: true
+})(SubmissionFormPage2Component);
 
 export default SubmissionFormPage2Component;

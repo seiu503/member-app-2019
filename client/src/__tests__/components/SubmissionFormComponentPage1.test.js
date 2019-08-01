@@ -9,25 +9,20 @@ import {
   SubmissionFormWrap
 } from "../../components/SubmissionFormPage1Component";
 import * as Notifier from "../../containers/Notifier";
-import configureMockStore from "redux-mock-store";
 import { INITIAL_STATE } from "../../store/reducers/submission";
-const mockStore = configureMockStore();
 // variables
 let wrapper,
   store,
   handleSubmit,
   apiSubmission,
   apiSF,
-  addSubmission,
   handleSubmitMock,
   handleSubmitSuccess,
   lookupSFContact,
   sfLookupSuccess,
   props,
   testData,
-  handleSubmitError,
   sfLookupError,
-  updateEmployersPicklist,
   sfEmployerLookupSuccess,
   sfEmployerLookupFailure,
   error,
@@ -99,6 +94,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     return shallow(<SubmissionFormPage1Component {...setUpProps} />);
   };
 
+  store = storeFactory(initialState);
   const setup = props => {
     return mount(
       <Provider store={store}>
@@ -261,7 +257,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       .mockImplementation(() =>
         Promise.resolve({ type: "GET_SF_EMPLOYERS_FAILURE" })
       );
-    store = storeFactory(initialState);
     it("calls getSFEmployers on componentDidMount", () => {
       props = {
         handleSubmit: jest.fn(),
