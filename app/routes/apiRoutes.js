@@ -369,9 +369,21 @@ router.get("/sf/:id", sfCtrl.getSFContactById);
 //
 router.delete("/sf/:id", sfCtrl.deleteSFContactById);
 
+// CREATE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
+// This is really only needed for testing...
+//   Example: POST >> /api/sfOMA/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          body : Object { ...submission fields }
+//        }
+//   Returns: OMA object or error message.
+//
+router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
+
 // DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
 // This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
+//   Example: DELETE >> /api/sfOMA/0036100001gYL0HAAW
 //   Secured: no
 //   Expects:
 //     1) request params : {
@@ -426,7 +438,7 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
 router.put(
-  "/sfcontact",
+  "/sf",
   sfCtrl.createOrUpdateSFContact,
   submissionCtrl.createSubmission,
   sfCtrl.createSFOnlineMemberApp

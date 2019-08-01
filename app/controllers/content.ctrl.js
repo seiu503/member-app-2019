@@ -25,7 +25,7 @@ const createContent = (req, res, next) => {
         res.status(200).json(record);
       })
       .catch(err => {
-        console.log(`content.ctrl.js > 28: ${err}`);
+        // console.log(`content.ctrl.js > 28: ${err}`);
         res.status(500).json({ message: err.message });
       });
   } else {
@@ -61,8 +61,7 @@ const updateContent = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log("content.ctrl.js > 69");
-      console.log(err.message);
+      // console.log(`content.ctrl.js > 69: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };

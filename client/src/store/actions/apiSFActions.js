@@ -111,7 +111,7 @@ export function lookupSFContact(body) {
   // console.log(JSON.stringify(body));
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/sfcontact`,
+      endpoint: `${BASE_URL}/api/sf`,
       method: "PUT",
       types: [
         LOOKUP_SF_CONTACT_REQUEST,
