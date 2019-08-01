@@ -1165,6 +1165,7 @@ const generatePage2Validate = () => {
     let clientFieldName = Page2TableFields[key].clientFieldName;
     sampleData[clientFieldName] = Page2TableFields[key].testingSample;
   });
+  sampleData.hireDate = "2019-11-11";
   return sampleData;
 };
 const generateSampleSubmission = () => {
