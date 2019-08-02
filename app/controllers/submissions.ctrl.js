@@ -157,6 +157,7 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
+  console.log(`submissions.ctrl.js > 160: ${id}`);
   try {
     if (!updates || !Object.keys(updates).length) {
       return res.status(404).json({ message: "No updates submitted" });
@@ -188,7 +189,8 @@ const updateSubmission = async (req, res, next) => {
       return next();
     }
   } catch (error) {
-    return res.status(404).json({ message: "Id missing or malformed" });
+    console.log(`submissions.ctrl.js > 192: ${error}`);
+    return res.status(404).json({ message: error.message });
   }
 };
 
