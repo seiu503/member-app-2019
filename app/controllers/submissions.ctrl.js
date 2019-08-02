@@ -131,10 +131,10 @@ const createSubmission = async (req, res, next) => {
     );
 
     if (!createSubmissionResult || createSubmissionResult.message) {
-      console.log(
-        `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
-          "There was an error saving the submission"}`
-      );
+      // console.log(
+      //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
+      //     "There was an error saving the submission"}`
+      // );
       return res.status(500).json({
         message:
           createSubmissionResult.message ||
@@ -171,24 +171,28 @@ const updateSubmission = async (req, res, next) => {
       updates
     );
 
-    if (!updateSubmissionResult || updateSubmissionResult.message) {
-      console.log(
-        `submissions.ctrl.js > 176: ${updateSubmissionResult.message ||
-          "There was an error updating the submission"}`
-      );
+    if (
+      !updateSubmissionResult ||
+      updateSubmissionResult.message ||
+      updateSubmissionResult.length === 0
+    ) {
+      const errmsg =
+        updateSubmissionResult.message ||
+        "There was an error updating the submission";
+      // console.log(`submissions.ctrl.js > 176: ${errmsg}`);
       return res.status(500).json({
-        message:
-          updateSubmissionResult.message ||
-          "An error occured while trying to update this submission"
+        message: errmsg
       });
     } else {
       // passing contact id and submission id to next middleware
-      res.locals.sf_contact_id = id;
+      res.locals.sf_contact_id = updateSubmissionResult[0].salesforce_id;
       res.locals.submission_id = updateSubmissionResult[0].id;
+      res.locals.next = false;
       return next();
     }
   } catch (error) {
-    return res.status(404).json({ message: "Id missing or malformed" });
+    // console.log(`submissions.ctrl.js > 192: ${error}`);
+    return res.status(404).json({ message: error.message });
   }
 };
 
