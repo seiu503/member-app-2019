@@ -16,33 +16,6 @@ const submissionCtrl = require("../controllers/submissions.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
 const sfCtrl = require("../controllers/sf.ctrl");
 
-/* =========================== ROUTE MIDDLEWARE ============================ */
-
-const requireAuth = (req, res, next) => {
-  passport.authenticate("jwt", { session: false }, (err, user, info) => {
-    if (err) {
-      console.log(`apiRoutes.js > 24: ${err}`);
-      return res.status(422).send({ success: false, message: err.message });
-    }
-    if (!user) {
-      console.log(`apiRoutes.js > 28: no user found`);
-      return res.status(422).send({
-        success: false,
-        message: "Sorry, you must log in to view this page."
-      });
-    }
-    if (user) {
-      req.login(user, loginErr => {
-        if (loginErr) {
-          return next(loginErr);
-        } else {
-          return next(null, user);
-        }
-      });
-    }
-  })(req, res, next);
-};
-
 /* ============================== AUTH ROUTES =========================== */
 
 // GOOGLE AUTH WITH PASSPORT
@@ -105,7 +78,7 @@ router.post("/user", userCtrl.createUser);
 //      }
 //   Returns: JSON updated user object on success.
 //
-router.put("/user/:id", requireAuth, userCtrl.updateUser);
+router.put("/user/:id", authCtrl.requireAuth, userCtrl.updateUser);
 
 // GET ONE USER
 //   Example: GET >> /api/user/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -136,7 +109,7 @@ router.get("/user/", userCtrl.getUsers);
 //   Returns: success message on success.
 //
 
-router.delete("/user/:id", requireAuth, userCtrl.deleteUser);
+router.delete("/user/:id", authCtrl.requireAuth, userCtrl.deleteUser);
 
 /* ============================= CONTENT ROUTES ============================ */
 
@@ -150,7 +123,7 @@ router.delete("/user/:id", requireAuth, userCtrl.deleteUser);
 //        }
 //   Returns: JSON content object on success.
 //
-router.post("/content", requireAuth, contentCtrl.createContent);
+router.post("/content", authCtrl.requireAuth, contentCtrl.createContent);
 
 // UPDATE A CONTENT RECORD
 //   Example: PUT >> /api/content/:id
@@ -168,7 +141,7 @@ router.post("/content", requireAuth, contentCtrl.createContent);
 //   Returns: JSON updated content object on success.
 //
 
-router.put("/content/:id", requireAuth, contentCtrl.updateContent);
+router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 
 // GET ONE CONTENT RECORD BY ID
 //   Example: GET >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -198,7 +171,7 @@ router.get("/content/:content_type", contentCtrl.getContentByType);
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content/", requireAuth, contentCtrl.getContent);
+router.get("/content/", authCtrl.requireAuth, contentCtrl.getContent);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -209,7 +182,7 @@ router.get("/content/", requireAuth, contentCtrl.getContent);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/content/:id", requireAuth, contentCtrl.deleteContent);
+router.delete("/content/:id", authCtrl.requireAuth, contentCtrl.deleteContent);
 
 /* ========================= IMAGE ROUTES =========================== */
 
@@ -224,7 +197,7 @@ router.delete("/content/:id", requireAuth, contentCtrl.deleteContent);
 //     location: imageLocation
 //   }
 //
-router.post("/image/single", requireAuth, imageCtrl.singleImgUpload);
+router.post("/image/single", authCtrl.requireAuth, imageCtrl.singleImgUpload);
 
 // DELETE AN IMAGE FROM S3 BUCKET
 // (this route is hit after the content is delete from the postgres database)
@@ -236,7 +209,7 @@ router.post("/image/single", requireAuth, imageCtrl.singleImgUpload);
 //     }
 //   Returns: Success or Error message
 //
-router.delete("/image/:key", requireAuth, imageCtrl.deleteImage);
+router.delete("/image/:key", authCtrl.requireAuth, imageCtrl.deleteImage);
 
 /* =========================== SUBMISSION ROUTES =========================== */
 
@@ -310,7 +283,7 @@ router.put(
   submissionCtrl.updateSubmission,
   sfCtrl.updateSFContact
 );
-// router.put("/submission/:id", requireAuth, submissionCtrl.updateSubmission);
+// router.put("/submission/:id", authCtrl.requireAuth, submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
 //   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -322,7 +295,11 @@ router.put(
 //   Returns: JSON submission object on success.
 //
 // router.get("/submission/:id", submissionCtrl.getSubmissionById);
-router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
+router.get(
+  "/submission/:id",
+  authCtrl.requireAuth,
+  submissionCtrl.getSubmissionById
+);
 
 // GET ALL SUBMISSIONS
 //   Example: GET >> /api/submission/
@@ -330,7 +307,7 @@ router.get("/submission/:id", requireAuth, submissionCtrl.getSubmissionById);
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", requireAuth, submissionCtrl.getSubmissions);
+router.get("/submission/", authCtrl.requireAuth, submissionCtrl.getSubmissions);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -342,7 +319,11 @@ router.get("/submission/", requireAuth, submissionCtrl.getSubmissions);
 //   Returns: success message on success.
 //
 // router.delete("/submission/:id", submissionCtrl.deleteSubmission);
-router.delete("/submission/:id", requireAuth, submissionCtrl.deleteSubmission);
+router.delete(
+  "/submission/:id",
+  authCtrl.requireAuth,
+  submissionCtrl.deleteSubmission
+);
 
 /* =========================== SALESFORCE ROUTES =========================== */
 

@@ -615,6 +615,11 @@ chai-http@^4.3.0:
     qs "^6.5.1"
     superagent "^3.7.0"
 
+chai-passport-strategy@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/chai-passport-strategy/-/chai-passport-strategy-1.0.1.tgz#dab18048f6ea786ec98cb94d4b79c0c62ff3f204"
+  integrity sha1-2rGASPbqeG7JjLlNS3nAxi/z8gQ=
+
 chai@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-4.2.0.tgz#760aa72cf20e3795e84b12877ce0e83737aa29e5"
@@ -4075,6 +4080,11 @@ simple-git@^1.85.0:
   integrity sha512-i9WVsrK2u0G/cASI9nh7voxOk9mhanWY9eGtWBDSYql6m49Yk5/Fan6uZsDr/xmzv8n+eQ8ahKCoEr8cvU3h+g==
   dependencies:
     debug "^4.0.1"
+
+sinon-chai@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-3.3.0.tgz#8084ff99451064910fbe2c2cb8ab540c00b740ea"
+  integrity sha512-r2JhDY7gbbmh5z3Q62pNbrjxZdOAjpsqW/8yxAZRSqLZqowmfGZPGUZPFf3UX36NLis0cv8VEM5IJh9HgkSOAA==
 
 sinon@^7.3.1, sinon@^7.3.2:
   version "7.3.2"
