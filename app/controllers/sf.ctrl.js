@@ -258,7 +258,7 @@ const updateSFContact = (req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            console.error(`sf.ctrl.js > 264: ${err}`);
+            // console.error(`sf.ctrl.js > 264: ${err}`);
             let message = "Error updating contact";
             if (err.errorCode) {
               message = err.errorCode;

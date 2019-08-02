@@ -102,9 +102,6 @@ const createSubmission = (
  *  @returns  {Object}      Updated Submission object.
  */
 const updateSubmission = (id, updates) => {
-  console.log(`submission model: 105`);
-  console.log(id);
-  console.log(updates);
   return db(TABLES.SUBMISSIONS)
     .where({ id })
     .first()

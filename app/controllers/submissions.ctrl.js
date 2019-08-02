@@ -131,10 +131,10 @@ const createSubmission = async (req, res, next) => {
     );
 
     if (!createSubmissionResult || createSubmissionResult.message) {
-      console.log(
-        `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
-          "There was an error saving the submission"}`
-      );
+      // console.log(
+      //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
+      //     "There was an error saving the submission"}`
+      // );
       return res.status(500).json({
         message:
           createSubmissionResult.message ||
@@ -157,7 +157,6 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  console.log(`submissions.ctrl.js > 160: ${id}`);
   try {
     if (!updates || !Object.keys(updates).length) {
       return res.status(404).json({ message: "No updates submitted" });
@@ -180,25 +179,19 @@ const updateSubmission = async (req, res, next) => {
       const errmsg =
         updateSubmissionResult.message ||
         "There was an error updating the submission";
-      console.log(`submissions.ctrl.js > 176: ${errmsg}`);
-      // console.log(updateSubmissionResult);
+      // console.log(`submissions.ctrl.js > 176: ${errmsg}`);
       return res.status(500).json({
-        message:
-          updateSubmissionResult.message ||
-          "An error occured while trying to update this submission"
+        message: errmsg
       });
     } else {
-      console.log("subm.ctrl.js > 186");
-      // console.log(updateSubmissionResult);
       // passing contact id and submission id to next middleware
       res.locals.sf_contact_id = updateSubmissionResult[0].salesforce_id;
       res.locals.submission_id = updateSubmissionResult[0].id;
       res.locals.next = false;
-      console.log(res.locals);
       return next();
     }
   } catch (error) {
-    console.log(`submissions.ctrl.js > 192: ${error}`);
+    // console.log(`submissions.ctrl.js > 192: ${error}`);
     return res.status(404).json({ message: error.message });
   }
 };
