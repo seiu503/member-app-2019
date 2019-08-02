@@ -62,5 +62,55 @@ describe("apiSubmissionActions", () => {
       };
       expect(result).toEqual(expectedResult);
     });
+
+    it("UPDATE_SUBMISSION: Dispatches success action after successful PUT", async () => {
+      nock(`${BASE_URL}`)
+        .put("/api/submission/12345678", submissionBody)
+        .reply(200, submissionBody);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "UPDATE_SUBMISSION_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(
+        actions.updateSubmission(submissionBody)
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_SUBMISSION: Dispatches failure action after failed PUT", async () => {
+      const body = JSON.stringify({
+        message: "There was an error saving the submission"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error saving the submission"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.updateSubmission(submissionBody)
+      );
+      const expectedResult = {
+        payload: { message: "There was an error saving the submission" },
+        type: "UPDATE_SUBMISSION_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+    it("saves a salesForceId", async () => {
+      let id = "123456";
+      const result = await store.dispatch(actions.saveSalesforceId(id));
+      const expectedResult = {
+        payload: { salesforceId: "123456" },
+        type: "SAVE_SALESFORCEID",
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
   });
 });

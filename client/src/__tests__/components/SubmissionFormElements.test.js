@@ -2,7 +2,6 @@ import React from "react";
 import { shallow, mount } from "enzyme";
 
 import * as formElements from "../../components/SubmissionFormElements";
-import { checkProps } from "../../utils/testUtils";
 import checkPropTypes from "check-prop-types";
 
 const {
@@ -11,7 +10,8 @@ const {
   yearOptions,
   renderTextField,
   renderSelect,
-  renderCheckbox
+  renderCheckbox,
+  getKeyByValue
 } = formElements;
 
 let props;
@@ -65,6 +65,21 @@ describe("Helper Functions", () => {
       expect(yearOptionsTest[1]).toBe(thisYear.toString());
       expect(yearOptionsTest[110]).toBe(oldestYear.toString());
       expect(arrayIsReverseSorted(yearOptionsTest)).toBe(true);
+    });
+  });
+
+  describe("getKeyByValue", () => {
+    it("returns first key of value.toLowerCase", () => {
+      const testObject = {
+        key1: "VALUE",
+        key2: "value1",
+        key3: true,
+        key4: 57,
+        key5: "value"
+      };
+      const getKeyByValueTest = getKeyByValue(testObject, "ValUe");
+      expect(typeof getKeyByValueTest).toBe("string");
+      expect(getKeyByValueTest).toBe("key1");
     });
   });
 });

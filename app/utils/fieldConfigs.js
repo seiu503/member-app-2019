@@ -1148,6 +1148,14 @@ const Page2TableFields = {
     SFDataType: "Email",
     SQLDataType: "VARCHAR(255)",
     testingSample: "lastnamef@seiu.com"
+  },
+  african_or_african_american: {
+    clientFieldName: "africanOrAfricanAmerican",
+    testingSample: true
+  },
+  white: {
+    clientFieldName: "white",
+    testingSample: true
   }
 };
 
@@ -1157,6 +1165,7 @@ const generatePage2Validate = () => {
     let clientFieldName = Page2TableFields[key].clientFieldName;
     sampleData[clientFieldName] = Page2TableFields[key].testingSample;
   });
+  sampleData.hireDate = "2019-11-11";
   return sampleData;
 };
 const generateSampleSubmission = () => {
