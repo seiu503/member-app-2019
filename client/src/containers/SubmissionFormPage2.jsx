@@ -23,14 +23,14 @@ export class SubmissionFormPage2Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          console.log("result.payload", result.payload);
+          // console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);
         });
     } else {
       alert("We Did not find your Id, redirecting to main submission page");
-      console.log("no id found, no prefill");
+      // console.log("no id found, no prefill");
 
       //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
       // return this.props.history.push("/")

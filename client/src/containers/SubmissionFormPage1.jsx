@@ -26,7 +26,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          console.log("result.payload", result.payload);
+          // console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);

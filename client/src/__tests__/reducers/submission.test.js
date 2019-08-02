@@ -12,27 +12,6 @@ export const contactsTableFieldsExport = { ...contactsTableFields };
 
 const samplePayload = generateSampleSubmissionFrontEnd();
 const sampleSubmission = generateSampleValidate();
-
-const emptySubmissionPage1 = {
-  firstName: "",
-  lastName: "",
-  dd: "",
-  mm: "",
-  yyyy: "",
-  preferredLanguage: "english",
-  homeStreet: "",
-  homeCity: "",
-  homePostalCode: "",
-  homeState: "",
-  homeEmail: "",
-  mobilePhone: "",
-  employerName: "",
-  textAuthOptOut: false,
-  termsAgree: false,
-  signature: "",
-  signedApplication: false
-};
-
 describe("submission reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
@@ -48,20 +27,6 @@ describe("submission reducer", () => {
       error: null
     });
   });
-  // it("should handle all api SUCCESS actions", () => {
-  //   expect(
-  //     reducer(INITIAL_STATE, {
-  //       type: "ADD_SUBMISSION_SUCCESS",
-  //       payload: samplePayload
-  //     })
-  //   ).toEqual({
-  //     ...INITIAL_STATE,
-  //     error: null,
-  //     formPage1: {
-  //       ...sampleSubmission
-  //     }
-  //   });
-  // });
   it("should handle all api FAILURE actions", () => {
     expect(
       reducer(INITIAL_STATE, {

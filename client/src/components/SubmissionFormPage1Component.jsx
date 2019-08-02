@@ -44,7 +44,7 @@ export class SubmissionFormPage1Component extends React.Component {
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         openSnackbar(
           "error",
           this.props.submission.error ||
@@ -183,7 +183,7 @@ export class SubmissionFormPage1Component extends React.Component {
     return this.props.apiSF
       .lookupSFContact(body)
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         if (
           result.type === "LOOKUP_SF_CONTACT_FAILURE" ||
           this.props.submission.error
@@ -199,7 +199,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         openSnackbar("error", err);
       });
   };
@@ -223,6 +223,7 @@ export class SubmissionFormPage1Component extends React.Component {
             label="Employer Type"
             name="employerType"
             id="employerType"
+            data-test="employer-type-test"
             type="select"
             classes={this.classes}
             component={this.renderSelect}
