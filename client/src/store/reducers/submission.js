@@ -108,22 +108,25 @@ function Submission(state = INITIAL_STATE, action) {
         },
         formPage2: {
           africanOrAfricanAmerican: {
-            $set: ethnicitiesObj.africanOrAfricanAmerican
+            $set: ethnicitiesObj.africanOrAfricanAmerican || false
           },
           arabAmericanMiddleEasternOrNorthAfrican: {
-            $set: ethnicitiesObj.arabAmericanMiddleEasternOrNorthAfrican
+            $set:
+              ethnicitiesObj.arabAmericanMiddleEasternOrNorthAfrican || false
           },
-          asianOrAsianAmerican: { $set: ethnicitiesObj.asianOrAsianAmerican },
-          hispanicOrLatinx: { $set: ethnicitiesObj.hispanicOrLatinx },
+          asianOrAsianAmerican: {
+            $set: ethnicitiesObj.asianOrAsianAmerican || false
+          },
+          hispanicOrLatinx: { $set: ethnicitiesObj.hispanicOrLatinx || false },
           nativeAmericanOrIndigenous: {
-            $set: ethnicitiesObj.nativeAmericanOrIndigenous
+            $set: ethnicitiesObj.nativeAmericanOrIndigenous || false
           },
           nativeHawaiianOrOtherPacificIslander: {
-            $set: ethnicitiesObj.nativeHawaiianOrOtherPacificIslander
+            $set: ethnicitiesObj.nativeHawaiianOrOtherPacificIslander || false
           },
-          white: { $set: ethnicitiesObj.white },
-          other: { $set: ethnicitiesObj.other },
-          declined: { $set: ethnicitiesObj.declined },
+          white: { $set: ethnicitiesObj.white || false },
+          other: { $set: ethnicitiesObj.other || false },
+          declined: { $set: ethnicitiesObj.declined || false },
           mailToCity: { $set: action.payload.OtherCity },
           mailToState: { $set: action.payload.OtherState },
           mailToStreet: { $set: action.payload.OtherStreet },
