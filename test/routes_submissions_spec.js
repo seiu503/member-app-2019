@@ -130,7 +130,7 @@ suite("routes : submissions", function() {
   describe("POST /api/submission/", function() {
     // this route calls 3 chained controllers, 2 of which have to call SF and
     // wait for a response; hence the very long timeout
-    this.timeout(10000);
+    this.timeout(18000);
     const app = require("../server");
     test("creates and returns new submission", function(done) {
       chai

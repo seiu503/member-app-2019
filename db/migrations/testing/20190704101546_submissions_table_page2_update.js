@@ -2,7 +2,7 @@ exports.up = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        knex.schema.table("submissions", function(table) {
+        return knex.schema.table("submissions", function(table) {
           table.string("mail_to_city");
           table.string("mail_to_state");
           table.string("mail_to_street");
@@ -30,7 +30,7 @@ exports.down = function(knex, Promise) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        knex.schema.table("submissions", function(table) {
+        return knex.schema.table("submissions", function(table) {
           table.dropColumn("mail_to_city");
           table.dropColumn("mail_to_state");
           table.dropColumn("mail_to_street");

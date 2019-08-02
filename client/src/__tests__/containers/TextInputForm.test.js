@@ -87,7 +87,7 @@ const unconnectedSetup = () => {
 };
 
 const fakeEvent = {
-  preventDefault: () => console.log("preventDefault")
+  preventDefault: () => {}
 };
 
 describe("<TextInputForm />", () => {

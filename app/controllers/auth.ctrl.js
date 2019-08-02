@@ -4,10 +4,9 @@
 
 /* ================================= SETUP ================================= */
 
-// import model
+const passport = require("passport");
 const users = require("../../db/models/users");
 
-const passport = require("passport");
 const utils = require("../utils");
 const userController = require("./users.ctrl");
 
@@ -46,4 +45,29 @@ exports.googleCallback = (req, res) => {
       return res.redirect("/login");
     }
   }
+};
+
+exports.requireAuth = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (err, user, info) => {
+    if (err) {
+      console.log(`auth.ctrl.js > 53: ${err}`);
+      return res.status(422).send({ success: false, message: err.message });
+    }
+    if (!user) {
+      console.log(`auth.ctrl.js > 57: no user found`);
+      return res.status(422).send({
+        success: false,
+        message: "Sorry, you must log in to view this page."
+      });
+    }
+    if (user) {
+      req.login(user, loginErr => {
+        if (loginErr) {
+          return next(loginErr);
+        } else {
+          return next(null, user);
+        }
+      });
+    }
+  })(req, res, next);
 };

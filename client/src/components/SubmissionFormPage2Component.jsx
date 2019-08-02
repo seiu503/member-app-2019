@@ -117,9 +117,9 @@ export class SubmissionFormPage2Component extends React.Component {
     };
 
     const cleanBody = removeFalsy(body);
-    console.log("CLEANBODY", cleanBody);
+    // console.log("CLEANBODY", cleanBody);
 
-    let id = this.props.submission.salesforceId;
+    let id = this.props.submission.submissionId;
 
     return this.props.apiSubmission
       .updateSubmission(id, cleanBody)
@@ -141,7 +141,7 @@ export class SubmissionFormPage2Component extends React.Component {
       })
 
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         openSnackbar("error", err);
       });
   };

@@ -207,16 +207,15 @@ const getAllEmployers = (req, res, next) => {
     }
 
     try {
-      console.log("210");
       conn.query(query, function(err, accounts) {
         if (err) {
-          console.error(`sf.ctrl.js > 215: ${err}`);
+          // console.error(`sf.ctrl.js > 215: ${err}`);
           return res.status(500).json({ message: err.message });
         }
         res.status(200).json(accounts.records);
       });
     } catch (err) {
-      console.error(`sf.ctrl.js > 221: ${err}`);
+      // console.error(`sf.ctrl.js > 221: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   });
@@ -247,7 +246,7 @@ const updateSFContact = (req, res, next) => {
   updates.AccountId = updatesRaw.employer_id;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      // console.error(`sf.ctrl.js > 252: ${err}`);
+      console.error(`sf.ctrl.js > 252: ${err}`);
       return res.status(500).json({ message: err.message });
     }
 
@@ -266,8 +265,13 @@ const updateSFContact = (req, res, next) => {
             }
             return res.status(500).json({ message });
           } else {
-            // console.error(`sf.ctrl.js > 271: ${err}`);
-            return next();
+            if (res.locals.next) {
+              return next();
+            }
+            return res.status(200).json({
+              salesforce_id: res.locals.sf_contact_id,
+              submission_id: res.locals.submission_id
+            });
           }
         }
       );
