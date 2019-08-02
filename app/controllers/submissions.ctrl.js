@@ -172,20 +172,29 @@ const updateSubmission = async (req, res, next) => {
       updates
     );
 
-    if (!updateSubmissionResult || updateSubmissionResult.message) {
-      console.log(
-        `submissions.ctrl.js > 176: ${updateSubmissionResult.message ||
-          "There was an error updating the submission"}`
-      );
+    if (
+      !updateSubmissionResult ||
+      updateSubmissionResult.message ||
+      updateSubmissionResult.length === 0
+    ) {
+      const errmsg =
+        updateSubmissionResult.message ||
+        "There was an error updating the submission";
+      console.log(`submissions.ctrl.js > 176: ${errmsg}`);
+      // console.log(updateSubmissionResult);
       return res.status(500).json({
         message:
           updateSubmissionResult.message ||
           "An error occured while trying to update this submission"
       });
     } else {
+      console.log("subm.ctrl.js > 186");
+      // console.log(updateSubmissionResult);
       // passing contact id and submission id to next middleware
-      res.locals.sf_contact_id = id;
+      res.locals.sf_contact_id = updateSubmissionResult[0].salesforce_id;
       res.locals.submission_id = updateSubmissionResult[0].id;
+      res.locals.next = false;
+      console.log(res.locals);
       return next();
     }
   } catch (error) {
