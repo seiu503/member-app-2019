@@ -19,6 +19,8 @@ export class SubmissionFormPage1Container extends React.Component {
     this.state = {
       open: false
     };
+    this.handleModalOpen = this.handleModalOpen.bind(this);
+    this.handleModalClose = this.handleModalClose.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -29,9 +31,13 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          console.log("should open modal");
           // open warning/confirmation modal if prefill successfully loaded
-          this.handleModalOpen();
+          if (
+            this.props.submission.formPage1.firstName &&
+            this.props.submission.formPage1.lastName
+          ) {
+            this.handleModalOpen();
+          }
           // console.log("result.payload", result.payload);
         })
         .catch(err => {
@@ -43,8 +49,13 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.submission.formPage1.firstName) {
+
+  //   }
+  // }
+
   handleModalOpen() {
-    console.log("open modal");
     const newState = { ...this.state };
     newState.open = true;
     this.setState({ ...newState });

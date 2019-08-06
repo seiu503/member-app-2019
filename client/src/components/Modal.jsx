@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -7,7 +8,41 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-export default function Modal(props) {
+const styles = theme => ({
+  modalButtonRed: {
+    backgroundColor: theme.palette.danger.main,
+    display: "block",
+    textTransform: "none",
+    width: "100%",
+    marginBottom: 20,
+    padding: 15,
+    color: "white",
+    fontSize: "1.2em",
+    "&:hover": {
+      backgroundColor: theme.palette.danger.light
+    }
+  },
+  modalButtonGreen: {
+    backgroundColor: theme.palette.success.main,
+    display: "block",
+    textTransform: "none",
+    width: "100%",
+    marginLeft: 0,
+    color: "white",
+    fontSize: "1.2em",
+    padding: 15,
+    "&:hover": {
+      backgroundColor: theme.palette.success.light
+    }
+  },
+  dialogActionsOverride: {
+    display: "block",
+    padding: 15
+  }
+});
+
+function Modal(props) {
+  const { classes } = props;
   return (
     <div>
       <Dialog
@@ -25,11 +60,18 @@ export default function Modal(props) {
             {`This form is customized especially for ${props.fullName}.`}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={props.handleModalClose} color="error">
+        <DialogActions className={classes.dialogActionsOverride}>
+          <Button
+            onClick={props.handleModalClose}
+            className={classes.modalButtonRed}
+          >
             {`I'm not ${props.fullName}, get me my own link.`}
           </Button>
-          <Button onClick={props.handleModalClose} color="primary" autoFocus>
+          <Button
+            onClick={props.handleModalClose}
+            className={classes.modalButtonGreen}
+            autoFocus
+          >
             {`Yes, I'm ${props.fullName}`}
           </Button>
         </DialogActions>
@@ -41,5 +83,8 @@ export default function Modal(props) {
 Modal.propTypes = {
   open: PropTypes.bool,
   fullName: PropTypes.string,
-  handleModalClose: PropTypes.func
+  handleModalClose: PropTypes.func,
+  classes: PropTypes.object
 };
+
+export default withStyles(styles)(Modal);
