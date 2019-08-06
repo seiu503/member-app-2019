@@ -8,24 +8,11 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
 export default function Modal(props) {
-  const [setOpen] = React.useState(false);
-
-  function handleClickOpen() {
-    setOpen(true);
-  }
-
-  function handleClose() {
-    setOpen(false);
-  }
-
   return (
     <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
       <Dialog
         open={props.open}
-        onClose={handleClose}
+        onClose={props.handleModalClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         data-test="component-modal"
@@ -39,10 +26,10 @@ export default function Modal(props) {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="error">
+          <Button onClick={props.handleModalClose} color="error">
             {`I'm not ${props.fullName}, get me my own link.`}
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={props.handleModalClose} color="primary" autoFocus>
             {`Yes, I'm ${props.fullName}`}
           </Button>
         </DialogActions>
@@ -53,5 +40,6 @@ export default function Modal(props) {
 
 Modal.propTypes = {
   open: PropTypes.bool,
-  fullName: PropTypes.string
+  fullName: PropTypes.string,
+  handleModalClose: PropTypes.func
 };

@@ -11,11 +11,14 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 
 import { stylesPage1 } from "../components/SubmissionFormElements";
+import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      open: false
+    };
   }
   componentDidMount() {
     // check for contact id in query string
@@ -26,6 +29,9 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
+          console.log("should open modal");
+          // open warning/confirmation modal if prefill successfully loaded
+          this.handleModalOpen();
           // console.log("result.payload", result.payload);
         })
         .catch(err => {
@@ -36,9 +42,30 @@ export class SubmissionFormPage1Container extends React.Component {
       return;
     }
   }
+
+  handleModalOpen() {
+    console.log("open modal");
+    const newState = { ...this.state };
+    newState.open = true;
+    this.setState({ ...newState });
+  }
+
+  handleModalClose() {
+    const newState = { ...this.state };
+    newState.open = false;
+    this.setState({ ...newState });
+  }
+
   render() {
     return (
       <div data-test="container-submission-form-page-1">
+        <Modal
+          open={this.state.open}
+          handleModalClose={this.handleModalClose}
+          fullName={`${this.props.submission.formPage1.firstName} ${
+            this.props.submission.formPage1.lastName
+          }`}
+        />
         <SubmissionFormPage1Wrap {...this.props} />
       </div>
     );
