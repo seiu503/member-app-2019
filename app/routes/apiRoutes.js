@@ -338,6 +338,21 @@ router.delete(
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
 
+// GET ONE SALESFORCE CONTACT RECORD BY FIRST, LAST, EMAIL
+//   Example: GET >> /api/sflookup
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          body : {
+//            first_name: string,
+//            last_name: string,
+//            home_email: string
+//           }
+//        }
+//   Returns: JSON object with salesforce id on success.
+//
+router.put("/sflookup", sfCtrl.lookupSFContactByFLE);
+
 // DELETE ONE SALESFORCE CONTACT RECORD BY ID
 // This is really only needed for cleanup after testing...
 //   Example: DELETE >> /api/sf/0036100001gYL0HAAW

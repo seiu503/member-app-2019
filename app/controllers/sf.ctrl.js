@@ -71,6 +71,7 @@ const deleteSFContactById = (req, res, next) => {
 };
 
 const createSFContact = (req, res, next) => {
+  console.log(`sf.ctrl.js > 74: createSFContact`);
   const bodyRaw = { ...req.body };
   const body = {};
 
@@ -88,7 +89,7 @@ const createSFContact = (req, res, next) => {
 
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      // console.error(`sf.ctrl.js > 91: ${err}`);
+      console.error(`sf.ctrl.js > 91: ${err}`);
       return res.status(500).json({ message: err.message });
     }
 
@@ -99,22 +100,73 @@ const createSFContact = (req, res, next) => {
           if (err.errorCode) {
             message = err.errorCode;
           }
-          // console.error(`sf.ctrl.js > 104: ${err}`);
+          console.error(`sf.ctrl.js > 104: ${err}`);
           return res.status(500).json({ message });
         } else {
           // res.locals.next will be undefined if calling as a
           // standalone function; in that case return data to client
           if (res.locals.next) {
+            console.log(`sf.ctrl.js > 109: returning next`);
             res.locals.sf_contact_id = contact.id || contact.Id;
             return next();
           }
+          console.log(`sf.ctrl.js > 113: returning to client`);
           return res
             .status(200)
             .json({ salesforce_id: contact.id || contact.Id });
         }
       });
     } catch (err) {
-      // console.error(`sf.ctrl.js > 120: ${err}`);
+      console.error(`sf.ctrl.js > 120: ${err}`);
+      return res.status(500).json({ message: err.message });
+    }
+  });
+};
+
+/** Lookup contact in Salesforce by Firstname, Lastname, & Email.
+ *  @param    {Object}   body         first_name, last_name, home_email
+ *  @returns  {Object}                sf_contact_id if successful, or returns
+ *                                    object with error message to client.
+ */
+
+const lookupSFContactByFLE = (req, res, next) => {
+  const { first_name, last_name, home_email } = req.body;
+  // fuzzy match on first name AND exact match on last name
+  // AND exact match on either home OR work email
+  // limit one most recently updated record
+
+  const query = `SELECT Id, ${fieldList.join(
+    ","
+  )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+  conn.login(user, password, function(err, userInfo) {
+    if (err) {
+      // console.error(`sf.ctrl.js > 143: ${err}`);
+      return res.status(500).json({ message: err.message });
+    }
+
+    try {
+      conn.query(query, function(err, contact) {
+        if (err) {
+          // console.error(`sf.ctrl.js > 148: ${err}`);
+          return res.status(500).json({ message: err.message });
+        }
+
+        if (contact.totalSize === 0 || !contact) {
+          // if no contact found, return error message to client
+          return res
+            .status(200)
+            .json({
+              message:
+                "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
+            });
+        }
+        // if contact found, return contact id to client
+        if (contact) {
+          return res.status(200).json({ salesforce_id: contact.records[0].Id });
+        }
+      });
+    } catch (err) {
+      // console.error(`sf.ctrl.js > 194: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   });
@@ -138,6 +190,7 @@ const createSFContact = (req, res, next) => {
  *                                    object with error message to client.
  */
 const createOrUpdateSFContact = (req, res, next) => {
+  console.log(`sf.ctrl.js > 186 > createOrUpdateSFContact`);
   const { contact_id } = req.body;
 
   // if contact id is sent in request body, then this is a prefill
@@ -148,6 +201,7 @@ const createOrUpdateSFContact = (req, res, next) => {
     // doesn't know to look for it there)
     res.locals.sf_contact_id = contact_id;
     res.locals.next = true;
+    console.log(`sf.ctrljs > 197 > found contact id`);
     return updateSFContact(req, res, next);
   }
 
@@ -169,7 +223,7 @@ const createOrUpdateSFContact = (req, res, next) => {
     try {
       conn.query(query, function(err, contact) {
         if (err) {
-          // console.error(`sf.ctrl.js > 175: ${err}`);
+          console.error(`sf.ctrl.js > 175: ${err}`);
           return res.status(500).json({ message: err.message });
         }
 
@@ -177,11 +231,13 @@ const createOrUpdateSFContact = (req, res, next) => {
           // if no contact found, create new contact, then pass id to
           // next middleware in res.locals
           res.locals.next = true;
+          console.log(`sf.ctrl.js > 227: creating new contact`);
           return createSFContact(req, res, next);
         }
         // if contact found, pass contact id to next middleware, which will
         // update it with the submission data from res.body
         if (contact) {
+          console.log(`sf.ctrl.js > 233: found matching contact`);
           res.locals.sf_contact_id = contact.records[0].Id;
           res.locals.next = true;
           return updateSFContact(req, res, next);
@@ -229,6 +285,7 @@ const getAllEmployers = (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 const updateSFContact = (req, res, next) => {
+  console.log(`sf.ctrl.js > 284: updateSFContact`);
   const { sf_contact_id } = res.locals;
   const updatesRaw = { ...req.body };
   const updates = {};
@@ -258,7 +315,7 @@ const updateSFContact = (req, res, next) => {
         },
         function(err, contact) {
           if (err || !contact.success) {
-            // console.error(`sf.ctrl.js > 264: ${err}`);
+            console.error(`sf.ctrl.js > 264: ${err}`);
             let message = "Error updating contact";
             if (err.errorCode) {
               message = err.errorCode;
@@ -266,8 +323,10 @@ const updateSFContact = (req, res, next) => {
             return res.status(500).json({ message });
           } else {
             if (res.locals.next) {
+              console.log(`sf.ctrl.js > 322: returning next`);
               return next();
             }
+            console.log(`sf.ctrl.js > 325: returning to client`);
             return res.status(200).json({
               salesforce_id: res.locals.sf_contact_id,
               submission_id: res.locals.submission_id
@@ -276,7 +335,7 @@ const updateSFContact = (req, res, next) => {
         }
       );
     } catch (err) {
-      // console.error(`sf.ctrl.js > 277: ${err}`);
+      console.error(`sf.ctrl.js > 277: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   });
@@ -378,6 +437,7 @@ const deleteSFOnlineMemberApp = (req, res, next) => {
 
 module.exports = {
   getSFContactById,
+  lookupSFContactByFLE,
   deleteSFContactById,
   createSFContact,
   createOrUpdateSFContact,

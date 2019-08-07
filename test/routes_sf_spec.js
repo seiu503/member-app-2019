@@ -37,7 +37,7 @@ let sf_contact_id, submission_id, errorStub;
 const cb = sinon.fake();
 
 chai.use(chaiHttp);
-suite("routes : salesforce", function() {
+suite.only("routes : salesforce", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -46,6 +46,14 @@ suite("routes : salesforce", function() {
 
   after(() => {
     return db.migrate.rollback();
+    return new Promise(resolve => {
+      chai
+        .request(app)
+        .delete(`/api/sf/${sf_contact_id}`)
+        .end(function(err, res) {
+          resolve();
+        });
+    });
   });
 
   describe("GET /api/sfaccts", function() {
@@ -136,7 +144,27 @@ suite("routes : salesforce", function() {
         });
     });
     describe("PUT /api/sf/ SUCCESS", function() {
+      // cleanup SF data after testing
       afterEach(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        }).then(() => {
+          return new Promise(resolve => {
+            chai
+              .request(app)
+              .delete(`/api/sf/${sf_contact_id}`)
+              .end(function(err, res) {
+                resolve();
+              });
+          });
+        });
+      });
+      after(() => {
         return new Promise(resolve => {
           chai
             .request(app)
@@ -204,9 +232,29 @@ suite("routes : salesforce", function() {
           .post(`/api/sfOMA`)
           .send(submissionBody)
           .end(function(err, res) {
+            sf_contact_id = res.body.salesforce_id;
             sf_OMA_id = res.body.sf_OMA_id;
             resolve();
           });
+      });
+    });
+    afterEach(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
       });
     });
     // delete created OMA
@@ -264,15 +312,48 @@ suite("routes : salesforce", function() {
           .send(submissionBody)
           .end(function(err, res) {
             sf_contact_id = res.body.salesforce_id;
+            sf_OMA_id = res.body.sf_OMA_id;
             resolve();
           });
       });
     });
     afterEach(() => {
-      chai
-        .request(app)
-        .delete(`/api/sf/${sf_contact_id}`)
-        .end(function(err, res) {});
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    after(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
     });
     // test error cases first to avoid race condition with success case
     test("GET CONTACT returns an error if ID is missing or malformed", function(done) {
