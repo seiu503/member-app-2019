@@ -135,6 +135,12 @@ const lookupSFContactByFLE = (req, res, next) => {
   // AND exact match on either home OR work email
   // limit one most recently updated record
 
+  if (!first_name || !last_name || !home_email) {
+    return res
+      .status(500)
+      .json({ message: "Please complete all required fields." });
+  }
+
   const query = `SELECT Id, ${fieldList.join(
     ","
   )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;

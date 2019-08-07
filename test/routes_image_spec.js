@@ -27,8 +27,7 @@ const avatar_url = "http://example.com/avatar.png";
 const google_id = "1234";
 const google_token = "5678";
 
-let id;
-let id2;
+let content_id;
 
 /* ================================= TESTS ================================= */
 
@@ -37,7 +36,7 @@ let authenticateMock;
 let userStub;
 let multerStub;
 
-suite.only("routes : image", function() {
+suite("routes : image", function() {
   // this runs once before the whole suite
   // rollback and migrate testing database
   before(() => {
@@ -90,6 +89,24 @@ suite.only("routes : image", function() {
           "test.png"
         )
         .end(function(err, res) {
+          content_id = res.body.id;
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          done();
+        });
+    });
+    test("updates content after uploading image if content id supplied", function(done) {
+      chai
+        .request(app)
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .field("id", content_id)
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test.png`),
+          "test.png"
+        )
+        .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();
@@ -136,6 +153,28 @@ suite.only("routes : image", function() {
           done();
         });
     });
+    test("returns an error if missing or malformed id in req.body", function(done) {
+      this.timeout(5000);
+      chai
+        .request(app)
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .field("id", "bad")
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test.png`),
+          "test.png"
+        )
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.property(res.body, "message");
+          assert.equal(
+            res.body.message,
+            `update "content" set "content_type" = $1, "content" = $2, "updated_at" = CURRENT_TIMESTAMP where "id" = $3 returning * - invalid input syntax for integer: "bad"`
+          );
+          done();
+        });
+    });
   });
 
   suite("DELETE /api/image/:key", function() {
@@ -155,13 +194,6 @@ suite.only("routes : image", function() {
     });
 
     test("returns error if S3 delete fails", function(done) {
-      // var deleteObjectErrorMock = aws.S3.deleteObject = sinon.stub();
-      // deleteObjectErrorMock.yields({message: 'Error message'}, null);
-      // const errorMock = sinon.stub().yields(({message: 'Error message'}, null) => {});
-      // aws.mock("S3", "deleteObject", errorMock );
-      // const payloadmock = null
-      // const callback = (err,payload) => {}
-      // aws.mock('S3', 'deleteObject', (params, callback) => { callback({message: 'Error message'}, payloadmock); });
       const errorMock = (Err, data) => {};
       const operation = "deleteObject";
       const params = { blah: "any" };
