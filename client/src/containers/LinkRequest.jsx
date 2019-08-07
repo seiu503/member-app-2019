@@ -68,7 +68,6 @@ export class LinkRequestUnconnected extends React.Component {
 
   submit(e) {
     const { firstName, lastName, homeEmail } = this.props.submission.formPage1;
-    console.log(this.props.submission.formPage1);
     const body = {
       first_name: firstName,
       last_name: lastName,
@@ -78,9 +77,7 @@ export class LinkRequestUnconnected extends React.Component {
       .lookupSFContact(body)
       .then(result => {
         if (result.payload.salesforce_id) {
-          console.log("success");
           const id = this.props.submission.salesforceId;
-          console.log(id);
           this.props.history.push(`/?id=${id}`);
         } else {
           // console.log(result.payload);

@@ -69,14 +69,19 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   render() {
+    const fullName = `${this.props.submission.formPage1.firstName} ${
+      this.props.submission.formPage1.lastName
+    }`;
     return (
       <div data-test="container-submission-form-page-1">
         <Modal
-          open={this.state.open}
+          open={
+            this.state.open &&
+            fullName.length &&
+            !this.props.submission.redirect
+          }
           handleClose={this.handleClose}
-          fullName={`${this.props.submission.formPage1.firstName} ${
-            this.props.submission.formPage1.lastName
-          }`}
+          fullName={fullName}
           history={this.props.history}
         />
         <SubmissionFormPage1Wrap {...this.props} />

@@ -39,7 +39,8 @@ export const INITIAL_STATE = {
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
-  formPage2: {}
+  formPage2: {},
+  redirect: false
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -168,12 +169,17 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case ADD_SUBMISSION_SUCCESS:
-    case LOOKUP_SF_CONTACT_SUCCESS:
-      console.log(action.payload);
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         submissionId: { $set: action.payload.submission_id },
         error: { $set: null }
+      });
+
+    case LOOKUP_SF_CONTACT_SUCCESS:
+      return update(state, {
+        salesforceId: { $set: action.payload.salesforce_id },
+        error: { $set: null },
+        redirect: { $set: true }
       });
 
     case UPDATE_SUBMISSION_SUCCESS:
