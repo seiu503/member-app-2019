@@ -77,7 +77,7 @@ export class LinkRequestUnconnected extends React.Component {
     return this.props.apiSF
       .lookupSFContact(body)
       .then(result => {
-        if (result.payload.salesforceId) {
+        if (result.payload.salesforce_id) {
           console.log("success");
           const id = this.props.submission.salesforceId;
           console.log(id);
