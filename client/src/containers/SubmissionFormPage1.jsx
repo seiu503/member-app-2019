@@ -19,8 +19,8 @@ export class SubmissionFormPage1Container extends React.Component {
     this.state = {
       open: false
     };
-    this.handleModalOpen = this.handleModalOpen.bind(this);
-    this.handleModalClose = this.handleModalClose.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -36,7 +36,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.formPage1.firstName &&
             this.props.submission.formPage1.lastName
           ) {
-            this.handleModalOpen();
+            this.handleOpen();
           }
           // console.log("result.payload", result.payload);
         })
@@ -55,13 +55,14 @@ export class SubmissionFormPage1Container extends React.Component {
   //   }
   // }
 
-  handleModalOpen() {
+  handleOpen() {
     const newState = { ...this.state };
     newState.open = true;
     this.setState({ ...newState });
   }
 
-  handleModalClose() {
+  handleClose() {
+    console.log("close");
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
@@ -72,10 +73,11 @@ export class SubmissionFormPage1Container extends React.Component {
       <div data-test="container-submission-form-page-1">
         <Modal
           open={this.state.open}
-          handleModalClose={this.handleModalClose}
+          handleClose={this.handleClose}
           fullName={`${this.props.submission.formPage1.firstName} ${
             this.props.submission.formPage1.lastName
           }`}
+          history={this.props.history}
         />
         <SubmissionFormPage1Wrap {...this.props} />
       </div>

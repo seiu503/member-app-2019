@@ -8,12 +8,20 @@ export const SAVE_SALESFORCEID = "SAVE_SALESFORCEID";
 export const UPDATE_SUBMISSION_REQUEST = "UPDATE_SUBMISSION_REQUEST";
 export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
 export const UPDATE_SUBMISSION_FAILURE = "UPDATE_SUBMISSION_FAILURE";
+export const HANDLE_INPUT = "HANDLE_INPUT";
+
+export function handleInput({ target: { name, value } }) {
+  return {
+    type: HANDLE_INPUT,
+    payload: { name, value }
+  };
+}
 
 export function addSubmission(body) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/submission/`,
-      method: "POST",
+      endpoint: `${BASE_URL}/api/sf/`,
+      method: "PUT",
       types: [
         ADD_SUBMISSION_REQUEST,
         ADD_SUBMISSION_SUCCESS,

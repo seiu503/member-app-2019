@@ -180,12 +180,12 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId
     };
 
-    return this.props.apiSF
-      .lookupSFContact(body)
+    return this.props.apiSubmission
+      .addSubmission(body)
       .then(result => {
         // console.log(result.type);
         if (
-          result.type === "LOOKUP_SF_CONTACT_FAILURE" ||
+          result.type === "ADD_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
           openSnackbar(
@@ -214,11 +214,7 @@ export class SubmissionFormPage1Component extends React.Component {
         data-test="component-submissionformpage1"
       >
         <WelcomeInfo location={this.props.location} />
-        <form
-          id="submissionFormPage1"
-          onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
-          className={this.classes.form}
-        >
+        <form id="submissionFormPage1" className={this.classes.form}>
           <Field
             label="Employer Type"
             name="employerType"
@@ -454,11 +450,14 @@ export class SubmissionFormPage1Component extends React.Component {
           </FormHelperText>
 
           <ButtonWithSpinner
-            type="submit"
+            type="button"
             color="secondary"
             className={this.classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}
+            onClick={() =>
+              this.props.handleSubmit(this.handleSubmit.bind(this))
+            }
           >
             Submit
           </ButtonWithSpinner>

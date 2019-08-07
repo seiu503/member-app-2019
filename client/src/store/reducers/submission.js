@@ -9,7 +9,8 @@ import {
   UPDATE_SUBMISSION_REQUEST,
   UPDATE_SUBMISSION_SUCCESS,
   UPDATE_SUBMISSION_FAILURE,
-  SAVE_SALESFORCEID
+  SAVE_SALESFORCEID,
+  HANDLE_INPUT
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -31,7 +32,10 @@ export const INITIAL_STATE = {
     mm: "",
     homeState: "OR",
     preferredLanguage: "English",
-    employerType: ""
+    employerType: "",
+    firstName: "",
+    lastName: "",
+    homeEmail: ""
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
@@ -42,6 +46,13 @@ function Submission(state = INITIAL_STATE, action) {
   let error;
 
   switch (action.type) {
+    case HANDLE_INPUT:
+      return update(state, {
+        formPage1: {
+          [action.payload.name]: { $set: action.payload.value }
+        }
+      });
+
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
@@ -158,7 +169,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case ADD_SUBMISSION_SUCCESS:
     case LOOKUP_SF_CONTACT_SUCCESS:
-      console.log(action.payload);
+      // console.log(action.payload);
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         submissionId: { $set: action.payload.submission_id },

@@ -47,7 +47,7 @@ function Modal(props) {
     <div>
       <Dialog
         open={props.open}
-        onClose={props.handleModalClose}
+        onClose={props.handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         data-test="component-modal"
@@ -62,13 +62,13 @@ function Modal(props) {
         </DialogContent>
         <DialogActions className={classes.dialogActionsOverride}>
           <Button
-            onClick={props.handleModalClose}
+            onClick={() => props.history.push("/linkrequest")}
             className={classes.modalButtonRed}
           >
             {`I'm not ${props.fullName}, get me my own link.`}
           </Button>
           <Button
-            onClick={props.handleModalClose}
+            onClick={props.handleClose}
             className={classes.modalButtonGreen}
             autoFocus
           >
@@ -83,8 +83,11 @@ function Modal(props) {
 Modal.propTypes = {
   open: PropTypes.bool,
   fullName: PropTypes.string,
-  handleModalClose: PropTypes.func,
-  classes: PropTypes.object
+  handleClose: PropTypes.func,
+  classes: PropTypes.object,
+  history: PropTypes.shape({
+    push: PropTypes.func
+  })
 };
 
 export default withStyles(styles)(Modal);
