@@ -202,7 +202,7 @@ export const stylesPage1 = theme => ({
   formButton: {
     width: "100%",
     padding: 20,
-    margin: "0 0 40px"
+    margin: "25px 0 40px"
   },
   formControl: {
     width: "100%"

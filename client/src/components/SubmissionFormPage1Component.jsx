@@ -4,6 +4,7 @@ import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
 import queryString from "query-string";
 import { reduxForm } from "redux-form";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -26,6 +27,8 @@ const {
   getKeyByValue,
   formatSFDate
 } = formElements;
+
+const reCaptchaRef = React.createRef();
 
 export class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
@@ -113,7 +116,13 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
+  reCaptchaChange = response => {
+    console.log(response, "<= dis your captcha token");
+  };
+
   handleSubmit = values => {
+    const reCaptchaValue = reCaptchaRef.current.getValue();
+    console.log(reCaptchaValue);
     let {
       firstName,
       lastName,
@@ -177,7 +186,8 @@ export class SubmissionFormPage1Component extends React.Component {
       direct_pay_auth: null,
       direct_deposit_auth: null,
       immediate_past_member_status: null,
-      salesforce_id: salesforceId
+      salesforce_id: salesforceId,
+      reCaptchaValue
     };
 
     return this.props.apiSF
@@ -452,6 +462,14 @@ export class SubmissionFormPage1Component extends React.Component {
           <FormHelperText className={this.classes.formHelperText}>
             Enter your full legal name. This will act as your signature.
           </FormHelperText>
+
+          <ReCAPTCHA
+            ref={reCaptchaRef}
+            // this is the real sitekey, using temporary one to test with localhost
+            // sitekey="6Ld5BDYUAAAAANNktEbuuW2dWPRvnzhA2pe7ibYZ"
+            sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
+            onChange={this.reCaptchaChange.bind(this)}
+          />
 
           <ButtonWithSpinner
             type="submit"
