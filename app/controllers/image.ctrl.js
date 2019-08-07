@@ -132,6 +132,10 @@ const singleImgUpload = (req, res, next) => {
 deleteImage = (req, res, next) => {
   const params = { Bucket: s3config.bucket, Key: req.params.key };
   s3.deleteObject(params, (err, data) => {
+    console.log(`image.ctrl.js > 135: err`);
+    console.log(err);
+    console.log(`image.ctrl.js > 137: data`);
+    console.log(data);
     if (err) {
       console.log(err);
       res.status(500).json({

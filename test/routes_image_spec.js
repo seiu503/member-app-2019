@@ -8,6 +8,7 @@ process.env.NODE_ENV = "testing";
 const chai = require("chai");
 const multer = require("multer");
 const aws = require("aws-sdk-mock");
+const awsReal = require("aws-sdk");
 const fs = require("fs");
 const { db, TABLES } = require("../app/config/knex");
 const { assert } = chai;
@@ -36,7 +37,7 @@ let authenticateMock;
 let userStub;
 let multerStub;
 
-suite("routes : image", function() {
+suite.only("routes : image", function() {
   // this runs once before the whole suite
   // rollback and migrate testing database
   before(() => {
@@ -149,6 +150,33 @@ suite("routes : image", function() {
           assert.isNull(err);
           assert.property(res.body, "message");
           assert.equal(res.body.message, "Image deleted.");
+          done();
+        });
+    });
+
+    test("returns error if S3 delete fails", function(done) {
+      // var deleteObjectErrorMock = aws.S3.deleteObject = sinon.stub();
+      // deleteObjectErrorMock.yields({message: 'Error message'}, null);
+      // const errorMock = sinon.stub().yields(({message: 'Error message'}, null) => {});
+      // aws.mock("S3", "deleteObject", errorMock );
+      // const payloadmock = null
+      // const callback = (err,payload) => {}
+      // aws.mock('S3', 'deleteObject', (params, callback) => { callback({message: 'Error message'}, payloadmock); });
+      const errorMock = (Err, data) => {};
+      const operation = "deleteObject";
+      const params = { blah: "any" };
+      const deleteObjectStub = sinon
+        .stub(awsReal.S3.prototype, "makeRequest")
+        .withArgs("deleteObject")
+        .callsFake((operation, params, errorMock) => {
+          errorMock("Error message", null);
+        });
+      chai
+        .request(app)
+        .delete(`/api/image/test.png`)
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.body.message, "Error message");
           done();
         });
     });

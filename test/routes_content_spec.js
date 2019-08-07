@@ -41,7 +41,7 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
 
-suite.only("routes : content", function() {
+suite("routes : content", function() {
   // this runs once before the whole suite
   // rollback and migrate testing database
   before(() => {
