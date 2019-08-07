@@ -105,56 +105,56 @@ const createSubmission = async (req, res, next) => {
       message: `Missing required field ${missingField}`
     });
   } else {
-    const humanity = await verifyHumanity(reCaptchaValue, ip_address);
-    if (!humanity) {
-      console.log("captcha error");
-      res.status(400).json({ message: "Please verify that you are a human" });
-    } else {
-      console.log(humanity);
-      const createSubmissionResult = await submissions.createSubmission(
-        ip_address,
-        submission_date,
-        agency_number,
-        birthdate,
-        cell_phone,
-        employer_name,
-        first_name,
-        last_name,
-        home_street,
-        home_city,
-        home_state,
-        home_zip,
-        home_email,
-        preferred_language,
-        terms_agree,
-        signature,
-        text_auth_opt_out,
-        online_campaign_source,
-        legal_language,
-        maintenance_of_effort,
-        seiu503_cba_app_date,
-        direct_pay_auth,
-        direct_deposit_auth,
-        immediate_past_member_status,
-        salesforce_id
-      );
+    try {
+      await verifyHumanity(reCaptchaValue, ip_address);
+    } catch {
+      return res
+        .status(400)
+        .json({ message: "Please verify that you are a human" });
+    }
+    const createSubmissionResult = await submissions.createSubmission(
+      ip_address,
+      submission_date,
+      agency_number,
+      birthdate,
+      cell_phone,
+      employer_name,
+      first_name,
+      last_name,
+      home_street,
+      home_city,
+      home_state,
+      home_zip,
+      home_email,
+      preferred_language,
+      terms_agree,
+      signature,
+      text_auth_opt_out,
+      online_campaign_source,
+      legal_language,
+      maintenance_of_effort,
+      seiu503_cba_app_date,
+      direct_pay_auth,
+      direct_deposit_auth,
+      immediate_past_member_status,
+      salesforce_id
+    );
 
-      if (!createSubmissionResult || createSubmissionResult.message) {
-        // console.log(
-        //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
-        //     "There was an error saving the submission"}`
-        // );
-        return res.status(500).json({
-          message:
-            createSubmissionResult.message ||
-            "There was an error saving the submission"
-        });
-      } else {
-        // passing contact id and submission id to next middleware
-        res.locals.sf_contact_id = salesforce_id;
-        res.locals.submission_id = createSubmissionResult[0].id;
-        return next();
-      }
+    if (!createSubmissionResult || createSubmissionResult.message) {
+      // console.log(
+      //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
+      //     "There was an error saving the submission"}`
+      // );
+      return res.status(500).json({
+        message:
+          createSubmissionResult.message ||
+          "There was an error saving the submission"
+      });
+    } else {
+      // passing contact id and submission id to next middleware
+      res.locals.sf_contact_id = salesforce_id;
+      res.locals.submission_id = createSubmissionResult[0].id;
+      return next();
     }
   }
 };
@@ -167,21 +167,22 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
+
+  // const { reCaptchaValue, ip_address } = updates;
+  // try {
+  //   await verifyHumanity(reCaptchaValue, ip_address)
+  // } catch (error) {
+  //   console.log(error)
+  //   return res.status(400).json({ message: error.message || "Please verify that you are a human" })
+  // }
   try {
     if (!updates || !Object.keys(updates).length) {
       return res.status(404).json({ message: "No updates submitted" });
     }
-
     if (!id) {
       return res.status(404).json({ message: "No Id Provided in URL" });
     }
-    const { reCaptchaValue, ip_address } = updates;
 
-    // const humanity = await verifyHumanity(reCaptchaValue, ip_address)
-    // if (!humanity) {
-    //   console.log("captcha error", humanity)
-    //   res.status(400).json({ message: "Please verify that you are a human" })
-    // } else {
     const updateSubmissionResult = await submissions.updateSubmission(
       id,
       updates
@@ -206,7 +207,6 @@ const updateSubmission = async (req, res, next) => {
       res.locals.next = false;
       return next();
     }
-    // }
   } catch (error) {
     // console.log(`submissions.ctrl.js > 192: ${error}`);
     return res.status(404).json({ message: error.message });
