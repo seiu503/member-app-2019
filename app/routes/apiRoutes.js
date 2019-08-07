@@ -155,7 +155,7 @@ router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 router.get("/content/:id", contentCtrl.getContentById);
 
 // GET CONTENT BY TYPE
-//   Example: GET >> /api/content/headline
+//   Example: GET >> /api/contenttype/headline
 //   Secured: yes
 //   Expects:
 //     1) request params : {
@@ -163,7 +163,7 @@ router.get("/content/:id", contentCtrl.getContentById);
 //        }
 //   Returns: Array of content objects on success.
 //
-router.get("/content/:content_type", contentCtrl.getContentByType);
+router.get("/contenttype/:content_type", contentCtrl.getContentByType);
 
 // GET ALL CONTENT
 //   Example: GET >> /api/content/
