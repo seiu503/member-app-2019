@@ -470,9 +470,9 @@ export class SubmissionFormPage1Component extends React.Component {
 
           <ReCAPTCHA
             ref={reCaptchaRef}
-            // this is the real sitekey, using temporary one to test with localhost
-            // sitekey="6Ld5BDYUAAAAANNktEbuuW2dWPRvnzhA2pe7ibYZ"
-            sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
+            sitekey="6Ld5BDYUAAAAANNktEbuuW2dWPRvnzhA2pe7ibYZ"
+            // ^^^^^this is the real sitekey, using temporary one to test with localhost
+            // sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
             onChange={this.reCaptchaChange.bind(this)}
           />
 
