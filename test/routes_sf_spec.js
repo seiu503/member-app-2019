@@ -46,14 +46,20 @@ suite.only("routes : salesforce", function() {
 
   after(() => {
     return db.migrate.rollback();
-    return new Promise(resolve => {
-      chai
-        .request(app)
-        .delete(`/api/sf/${sf_contact_id}`)
-        .end(function(err, res) {
-          resolve();
-        });
-    });
+  });
+
+  afterEach(() => {
+    const app = require("../server");
+    if (sf_contact_id) {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sf/${sf_contact_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      });
+    }
   });
 
   describe("GET /api/sfaccts", function() {
