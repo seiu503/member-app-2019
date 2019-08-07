@@ -160,6 +160,11 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforceId = q.id;
     }
 
+    if (!reCaptchaValue) {
+      openSnackbar("error", "Please verify you are human with Captcha");
+      return;
+    }
+
     const body = {
       ip_address: localIpUrl(),
       submission_date: new Date(),
