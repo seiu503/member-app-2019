@@ -17,8 +17,8 @@ export const theme = {
       light: red[700] // #d32f2f
     },
     success: {
-      main: green[600],
-      light: green[400]
+      main: green[600], // #43A047
+      light: green[400] // #66BB6A
     },
     textColor: "#333", // dark gray
     secondaryTextColor: "#531078", // medium purple

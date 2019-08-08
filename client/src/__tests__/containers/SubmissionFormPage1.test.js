@@ -1,5 +1,6 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
+import moment from "moment";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { Provider } from "react-redux";
 
@@ -11,7 +12,6 @@ import {
   SubmissionFormPage1Container
 } from "../../containers/SubmissionFormPage1";
 import { getSFContactById } from "../../store/actions/apiSFActions";
-import { theme } from "../../styles/theme";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -20,6 +20,12 @@ let store;
 let wrapper;
 
 let pushMock = jest.fn();
+
+const reCaptchaRef = {
+  current: {
+    getValue: jest.fn()
+  }
+};
 
 const initialState = {
   ...INITIAL_STATE,
@@ -52,18 +58,23 @@ const defaultProps = {
   classes: {},
   apiSF: {
     getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
-    getSFContactById: () => Promise.resolve({ type: "GET_SF_CONTACT_SUCCESS" })
+    getSFContactById: () =>
+      Promise.resolve({
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: { Birthdate: moment("01-01-1900", "MM-DD-YYYY") }
+      })
   },
   apiSubmission: {
     classes: { test: "test" }
   },
   history: {
     push: pushMock
-  }
+  },
+  reCaptchaRef: { ...reCaptchaRef }
 };
 
 const setup = (props = {}) => {
-  store = mockStore(defaultProps);
+  store = mockStore(initialState);
   const setupProps = { ...defaultProps, ...props };
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
@@ -87,9 +98,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     );
     wrapper = mount(
       <Provider store={store}>
-        <MuiThemeProvider theme={theme}>
-          <SubmissionFormPage1Connected {...defaultProps} />
-        </MuiThemeProvider>
+        <SubmissionFormPage1Connected {...defaultProps} />
       </Provider>
     );
     const component = findByTestAttr(
@@ -118,7 +127,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         <SubmissionFormPage1Connected {...defaultProps} {...props} />
       </Provider>
     );
-    console.log(dispatchSpy.mock.calls);
+    // console.log(dispatchSpy.mock.calls);
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(spyCall).toEqual("1");
   });

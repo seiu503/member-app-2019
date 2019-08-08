@@ -1,3 +1,4 @@
+import moment from "moment";
 import reducer, { INITIAL_STATE } from "../../store/reducers/submission";
 import {
   contactsTableFields,
@@ -84,7 +85,7 @@ describe("submission reducer", () => {
         OtherPostalCode: "12345",
         FirstName: "string",
         LastName: "string",
-        Birthdate: "01/01/1999",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
         Preferred_Language__c: "string",
         MailingStreet: "string",
         MailingPostalCode: "12345",

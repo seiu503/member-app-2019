@@ -10,7 +10,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 
 const styles = theme => ({
   modalButtonRed: {
-    backgroundColor: theme.palette.danger.main,
+    backgroundColor: "#b71c1c", // theme.palette.danger.main
     display: "block",
     textTransform: "none",
     width: "100%",
@@ -19,11 +19,11 @@ const styles = theme => ({
     color: "white",
     fontSize: "1.2em",
     "&:hover": {
-      backgroundColor: theme.palette.danger.light
+      backgroundColor: "#d32f2f" // theme.palette.danger.light
     }
   },
   modalButtonGreen: {
-    backgroundColor: theme.palette.success.main,
+    backgroundColor: "#43A047", // theme.palette.success.main,
     display: "block",
     textTransform: "none",
     width: "100%",
@@ -32,7 +32,7 @@ const styles = theme => ({
     fontSize: "1.2em",
     padding: 15,
     "&:hover": {
-      backgroundColor: theme.palette.success.light
+      backgroundColor: "#66BB6A" // theme.palette.success.light
     }
   },
   dialogActionsOverride: {
