@@ -537,7 +537,9 @@ export class SubmissionFormPage1Component extends React.Component {
                   backgroundColor: "rgba(0, 0, 0, 0)"
                 }}
               />
-              <button onClick={this.clear}>clear</button>
+              <button type="button" onClick={this.clear}>
+                clear
+              </button>
             </div>
           )}
           {this.props.submission.formPage1.signatureType === "draw" && (
