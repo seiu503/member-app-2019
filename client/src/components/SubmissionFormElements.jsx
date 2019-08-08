@@ -210,6 +210,11 @@ export const stylesPage1 = theme => ({
     padding: 20,
     margin: "25px 0 40px"
   },
+  clearButton: {
+    width: "100%",
+    padding: 10,
+    margin: "0"
+  },
   formControl: {
     width: "100%"
   },
@@ -245,7 +250,7 @@ export const stylesPage1 = theme => ({
   sigBox: {
     border: "1px solid lightgrey",
     "border-radius": "5px",
-    margin: "0 0 25px",
+    margin: "0 0 32px",
     width: "598px"
   }
 });

@@ -34,7 +34,6 @@ const {
 } = formElements;
 
 export class SubmissionFormPage1Component extends React.Component {
-  classes = this.props.classes;
   constructor(props) {
     super(props);
     this.state = {};
@@ -250,20 +249,18 @@ export class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
+    const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     return (
-      <div
-        className={this.classes.root}
-        data-test="component-submissionformpage1"
-      >
+      <div className={classes.root} data-test="component-submissionformpage1">
         <WelcomeInfo location={this.props.location} />
         <form
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           id="submissionFormPage1"
-          className={this.classes.form}
+          className={classes.form}
         >
           <Field
             label="Employer Type"
@@ -271,7 +268,7 @@ export class SubmissionFormPage1Component extends React.Component {
             id="employerType"
             data-test="employer-type-test"
             type="select"
-            classes={this.classes}
+            classes={classes}
             component={this.renderSelect}
             options={employerTypesList}
             onChange={e => this.updateEmployersPicklist(e)}
@@ -284,7 +281,7 @@ export class SubmissionFormPage1Component extends React.Component {
               name="employerName"
               id="employerName"
               type="select"
-              classes={this.classes}
+              classes={classes}
               component={this.renderSelect}
               options={employerList}
             />
@@ -294,7 +291,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="firstName"
             id="firstName"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
@@ -302,21 +299,21 @@ export class SubmissionFormPage1Component extends React.Component {
             name="lastName"
             id="lastName"
             label="Last Name"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
             type="text"
           />
 
-          <FormLabel className={this.classes.formLabel} component="legend">
+          <FormLabel className={classes.formLabel} component="legend">
             Birthdate
           </FormLabel>
-          <FormGroup className={this.classes.formGroup}>
+          <FormGroup className={classes.formGroup}>
             <Field
               label="Month"
               name="mm"
               id="mm"
               type="select"
-              classes={this.classes}
+              classes={classes}
               formControlName="formControlDate"
               component={this.renderSelect}
               labelWidth={41}
@@ -329,7 +326,7 @@ export class SubmissionFormPage1Component extends React.Component {
               id="dd"
               type="select"
               formControlName="formControlDate"
-              classes={this.classes}
+              classes={classes}
               component={this.renderSelect}
               labelWidth={24}
               options={dateOptions(this.props)}
@@ -341,7 +338,7 @@ export class SubmissionFormPage1Component extends React.Component {
               id="yyyy"
               type="select"
               formControlName="formControlDate"
-              classes={this.classes}
+              classes={classes}
               component={this.renderSelect}
               labelWidth={30}
               options={yearOptions()}
@@ -353,13 +350,13 @@ export class SubmissionFormPage1Component extends React.Component {
             name="preferredLanguage"
             id="preferredLanguage"
             type="select"
-            classes={this.classes}
+            classes={classes}
             component={this.renderSelect}
             labelWidth={132}
             options={languageOptions}
           />
 
-          <FormLabel className={this.classes.formLabel} component="legend">
+          <FormLabel className={classes.formLabel} component="legend">
             Address
           </FormLabel>
 
@@ -368,11 +365,11 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeStreet"
             id="homeStreet"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
-          <FormHelperText className={this.classes.formHelperText}>
+          <FormHelperText className={classes.formHelperText}>
             Please enter your physical street address here, not a P.O. box.
             There is a space for a mailing address on the next page, if
             different from your physical address.
@@ -383,7 +380,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeCity"
             id="homeCity"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
@@ -392,7 +389,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeState"
             id="homeState"
             type="select"
-            classes={this.classes}
+            classes={classes}
             component={this.renderSelect}
             options={stateList}
             labelWidth={80}
@@ -403,7 +400,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeZip"
             id="homeZip"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
@@ -412,11 +409,11 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeEmail"
             id="homeEmail"
             type="email"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
-          <FormHelperText className={this.classes.formHelperText}>
+          <FormHelperText className={classes.formHelperText}>
             Please use your personal email if you have one, since some employers
             limit union communication via work email. If you don't have a
             personal email, work email is fine. If you don't have an email
@@ -428,11 +425,11 @@ export class SubmissionFormPage1Component extends React.Component {
               name="mobilePhone"
               id="mobilePhone"
               type="tel"
-              classes={this.classes}
+              classes={classes}
               component={this.renderTextField}
             />
 
-            <FormHelperText className={this.classes.formHelperText}>
+            <FormHelperText className={classes.formHelperText}>
               † By providing my phone number, I understand that the Service
               Employees International Union (SEIU), its local unions, and
               affiliates may use automated calling technologies and/or text
@@ -448,7 +445,7 @@ export class SubmissionFormPage1Component extends React.Component {
               id="textAuthOptOut"
               type="checkbox"
               formControlName="controlCheckbox"
-              classes={this.classes}
+              classes={classes}
               component={this.renderCheckbox}
             />
           </FormGroup>
@@ -459,11 +456,11 @@ export class SubmissionFormPage1Component extends React.Component {
             name="termsAgree"
             id="termsAgree"
             type="checkbox"
-            classes={this.classes}
+            classes={classes}
             component={this.renderCheckbox}
           />
           <FormHelperText
-            className={this.classes.formHelperTextLegal}
+            className={classes.formHelperTextLegal}
             id="termsOfServiceLegalLanguage"
             ref={this.props.legal_language}
           >
@@ -486,17 +483,14 @@ export class SubmissionFormPage1Component extends React.Component {
             I notify the Union and my employer in writing, with my valid
             signature, of my desire to revoke this authorization.
           </FormHelperText>
-          <FormControl
-            component="fieldset"
-            className={this.classes.formControl}
-          >
-            <FormLabel component="legend" className={this.classes.radioLabel}>
+          <FormControl component="fieldset" className={classes.formControl}>
+            <FormLabel component="legend" className={classes.radioLabel}>
               Signature Type
             </FormLabel>
             <RadioGroup
               aria-label="Signature Type"
               name="signatureType"
-              className={this.classes.groupLeft}
+              className={classes.groupLeft}
               value={this.props.submission.formPage1.signatureType}
               onChange={this.props.apiSubmission.handleInput}
             >
@@ -514,17 +508,17 @@ export class SubmissionFormPage1Component extends React.Component {
               name="signature"
               id="signature"
               type="text"
-              classes={this.classes}
+              classes={classes}
               component={this.renderTextField}
             />
           )}
           {this.props.submission.formPage1.signatureType === "write" && (
-            <FormHelperText className={this.classes.formHelperText}>
+            <FormHelperText className={classes.formHelperText}>
               Enter your full legal name. This will act as your signature.
             </FormHelperText>
           )}
           {this.props.submission.formPage1.signatureType === "draw" && (
-            <div className={this.classes.sigBox}>
+            <div className={classes.sigBox}>
               <SignatureCanvas
                 ref={ref => {
                   this.sigBox = ref;
@@ -537,13 +531,19 @@ export class SubmissionFormPage1Component extends React.Component {
                   backgroundColor: "rgba(0, 0, 0, 0)"
                 }}
               />
-              <button type="button" onClick={this.clear}>
-                clear
-              </button>
+              <ButtonWithSpinner
+                type="button"
+                onClick={this.clear}
+                color="secondary"
+                className={classes.clearButton}
+                variant="contained"
+              >
+                Clear Signature
+              </ButtonWithSpinner>
             </div>
           )}
           {this.props.submission.formPage1.signatureType === "draw" && (
-            <FormHelperText className={this.classes.formHelperText}>
+            <FormHelperText className={classes.formHelperText}>
               Draw your signature in the box above.
             </FormHelperText>
           )}
@@ -559,7 +559,7 @@ export class SubmissionFormPage1Component extends React.Component {
           <ButtonWithSpinner
             type="submit"
             color="secondary"
-            className={this.classes.formButton}
+            className={classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}
           >
