@@ -158,7 +158,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case ADD_SUBMISSION_SUCCESS:
     case LOOKUP_SF_CONTACT_SUCCESS:
-      console.log(action.payload);
+      // console.log(action.payload);
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         submissionId: { $set: action.payload.submission_id },

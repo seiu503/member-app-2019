@@ -1,3 +1,5 @@
+var request = require("request");
+
 /*
    Route handlers for fetching and updating submissions.
 */
@@ -63,7 +65,8 @@ const createSubmission = async (req, res, next) => {
     direct_pay_auth,
     direct_deposit_auth,
     immediate_past_member_status,
-    salesforce_id
+    salesforce_id,
+    reCaptchaValue
   } = req.body;
 
   if (!salesforce_id || salesforce_id === undefined) {
@@ -102,6 +105,15 @@ const createSubmission = async (req, res, next) => {
       message: `Missing required field ${missingField}`
     });
   } else {
+    try {
+      await verifyHumanity(reCaptchaValue, ip_address);
+    } catch (err) {
+      console.log(`submissions.ctrl.js > 111`);
+      console.log(err);
+      return res
+        .status(400)
+        .json({ message: "Please verify that you are a human" });
+    }
     const createSubmissionResult = await submissions.createSubmission(
       ip_address,
       submission_date,
@@ -157,11 +169,18 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
+
+  // const { reCaptchaValue, ip_address } = updates;
+  // try {
+  //   await verifyHumanity(reCaptchaValue, ip_address)
+  // } catch (error) {
+  //   console.log(error)
+  //   return res.status(400).json({ message: error.message || "Please verify that you are a human" })
+  // }
   try {
     if (!updates || !Object.keys(updates).length) {
       return res.status(404).json({ message: "No updates submitted" });
     }
-
     if (!id) {
       return res.status(404).json({ message: "No Id Provided in URL" });
     }
@@ -242,6 +261,45 @@ const getSubmissionById = (req, res, next) => {
       }
     })
     .catch(err => res.status(404).json({ message: err.message }));
+};
+
+/**
+ *
+ * @param {String} token captcha token returned to form from google
+ * @param {String} ip_address users ipAdress
+ * @returns {Bool} returns true for human, false for bot
+ */
+const verifyHumanity = (token, ip_address) => {
+  console.log("captcha test ran!");
+  return request.post(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      form: {
+        secret: process.env.RECAPTCHA_SECRET_KEY,
+        response: token,
+        remoteip: ip_address
+      }
+    },
+    (err, httpResponse, body) => {
+      if (err) {
+        // console.log(`submissions.ctrl.js > 283`);
+        // console.log(err);
+        Promise.reject(new Error(err));
+      } else {
+        // console.log(`submissions.ctrl.js > 287`);
+        const r = JSON.parse(body);
+        // console.log(r);
+        if (r.success) {
+          // console.log(`submissions.ctrl.js > 291`);
+          // console.log(r.success);
+          Promise.resolve(r.success);
+        } else {
+          // console.log(`submissions.ctrl.js > 295`);
+          Promise.reject(new Error("???"));
+        }
+      }
+    }
+  );
 };
 
 /* ================================ EXPORT ================================= */
