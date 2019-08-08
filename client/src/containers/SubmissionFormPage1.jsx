@@ -69,8 +69,18 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   render() {
-    const fullName = `${this.props.submission.formPage1.firstName} ${
+    const fullName = `${
+      this.props.submission &&
+      this.props.submission.formPage1 &&
+      this.props.submission.formPage1.firstname
+        ? this.props.submission.formPage1.firstName
+        : ""
+    } ${
+      this.props.submission &&
+      this.props.submission.formPage1 &&
       this.props.submission.formPage1.lastName
+        ? this.props.submission.formPage1.lastName
+        : ""
     }`;
     return (
       <div data-test="container-submission-form-page-1">

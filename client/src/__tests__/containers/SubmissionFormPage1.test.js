@@ -11,6 +11,7 @@ import {
   SubmissionFormPage1Container
 } from "../../containers/SubmissionFormPage1";
 import { getSFContactById } from "../../store/actions/apiSFActions";
+import { theme } from "../../styles/theme";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -82,6 +83,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     wrapper = mount(
       <Provider store={store}>
         <SubmissionFormPage1Connected {...defaultProps} />
+      </Provider>
+    );
+    wrapper = mount(
+      <Provider store={store}>
+        <MuiThemeProvider theme={theme}>
+          <SubmissionFormPage1Connected {...defaultProps} />
+        </MuiThemeProvider>
       </Provider>
     );
     const component = findByTestAttr(

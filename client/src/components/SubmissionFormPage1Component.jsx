@@ -114,6 +114,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   handleSubmit = values => {
+    console.log("HANDLE SUBMIT");
     let {
       firstName,
       lastName,

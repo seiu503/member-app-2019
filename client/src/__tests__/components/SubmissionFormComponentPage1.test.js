@@ -47,7 +47,12 @@ const defaultProps = {
   submission: {
     error: null,
     loading: false,
-    employerNames: ["name1", "name2", "name3"]
+    employerNames: ["name1", "name2", "name3"],
+    formPage1: {
+      firstName: "",
+      lastName: "",
+      homeEmail: ""
+    }
   },
   initialValues: {
     mm: "",
@@ -83,7 +88,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   beforeEach(() => {
     touched = false;
     error = null;
-    handleSubmit = fn => fn;
+    handleSubmit = jest.fn();
     apiSubmission = {};
     apiSF = {};
   });
@@ -133,7 +138,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       );
     });
     it("calls handleSubmit on submit", () => {
-      wrapper.simulate("submit");
+      wrapper.instance().handleSubmit = handleSubmit;
+      wrapper.instance().simulate("handleSubmit");
       expect(handleSubmitMock.mock.calls.length).toBe(1);
     });
   });
