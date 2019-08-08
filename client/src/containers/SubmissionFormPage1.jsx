@@ -11,11 +11,16 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 
 import { stylesPage1 } from "../components/SubmissionFormElements";
+import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      open: false
+    };
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -26,19 +31,68 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
+          // open warning/confirmation modal if prefill successfully loaded
+          if (
+            this.props.submission.formPage1.firstName &&
+            this.props.submission.formPage1.lastName
+          ) {
+            this.handleOpen();
+          }
           // console.log("result.payload", result.payload);
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
         });
     } else {
       // console.log("no id found, no prefill");
       return;
     }
   }
+
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.submission.formPage1.firstName) {
+
+  //   }
+  // }
+
+  handleOpen() {
+    const newState = { ...this.state };
+    newState.open = true;
+    this.setState({ ...newState });
+  }
+
+  handleClose() {
+    const newState = { ...this.state };
+    newState.open = false;
+    this.setState({ ...newState });
+  }
+
   render() {
+    const fullName = `${
+      this.props.submission &&
+      this.props.submission.formPage1 &&
+      this.props.submission.formPage1.firstName
+        ? this.props.submission.formPage1.firstName
+        : ""
+    } ${
+      this.props.submission &&
+      this.props.submission.formPage1 &&
+      this.props.submission.formPage1.lastName
+        ? this.props.submission.formPage1.lastName
+        : ""
+    }`;
     return (
       <div data-test="container-submission-form-page-1">
+        <Modal
+          open={
+            this.state.open &&
+            fullName.length &&
+            !this.props.submission.redirect
+          }
+          handleClose={this.handleClose}
+          fullName={fullName}
+          history={this.props.history}
+        />
         <SubmissionFormPage1Wrap {...this.props} />
       </div>
     );

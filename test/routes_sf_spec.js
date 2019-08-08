@@ -29,7 +29,7 @@ const {
 } = require("../app/controllers/sf.ctrl");
 const { generateSampleSubmission } = require("../app/utils/fieldConfigs");
 
-const submissionBody = generateSampleSubmission();
+let submissionBody = generateSampleSubmission();
 
 /* ================================= TESTS ================================= */
 
@@ -37,6 +37,75 @@ let sf_contact_id, submission_id, errorStub;
 const cb = sinon.fake();
 
 chai.use(chaiHttp);
+
+suite("routes : salesforce -- update", function() {
+  before(() => {
+    return db.migrate.rollback().then(() => {
+      return db.migrate.latest();
+    });
+  });
+
+  after(() => {
+    return db.migrate.rollback();
+  });
+  describe("PUT /api/sf/ UPDATE EXISTING", function() {
+    this.timeout(10000);
+    const app = require("../server");
+    // cleanup SF data after testing
+    before(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .post("/api/sf/")
+          .send(submissionBody)
+          .end(function(err, res) {
+            sf_contact_id = res.body.salesforce_id;
+            sf_OMA_id = res.body.sf_OMA_id;
+            resolve();
+          });
+      });
+    });
+    after(() => {
+      return new Promise(resolve => {
+        if (sf_OMA_id) {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    test("MATCH: updates a SF contact, creates submission, creates OMA", function(done) {
+      this.timeout(12000);
+      chai
+        .request(app)
+        .put("/api/sf/")
+        .send(submissionBody)
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          sf_contact_id = res.body.salesforce_id;
+          submission_id = res.body.submission_id;
+          sf_OMA_id = res.body.sf_OMA_id;
+          done();
+        });
+    });
+  });
+});
+
 suite("routes : salesforce", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
@@ -46,6 +115,20 @@ suite("routes : salesforce", function() {
 
   after(() => {
     return db.migrate.rollback();
+  });
+
+  afterEach(() => {
+    const app = require("../server");
+    if (sf_contact_id) {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sf/${sf_contact_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      });
+    }
   });
 
   describe("GET /api/sfaccts", function() {
@@ -136,14 +219,19 @@ suite("routes : salesforce", function() {
         });
     });
     describe("PUT /api/sf/ SUCCESS", function() {
+      // cleanup SF data after testing
       afterEach(() => {
         return new Promise(resolve => {
-          chai
-            .request(app)
-            .delete(`/api/sfOMA/${sf_OMA_id}`)
-            .end(function(err, res) {
-              resolve();
-            });
+          if (sf_OMA_id) {
+            chai
+              .request(app)
+              .delete(`/api/sfOMA/${sf_OMA_id}`)
+              .end(function(err, res) {
+                resolve();
+              });
+          } else {
+            resolve();
+          }
         }).then(() => {
           return new Promise(resolve => {
             chai
@@ -155,21 +243,28 @@ suite("routes : salesforce", function() {
           });
         });
       });
-      test("MATCH: updates a SF contact, creates submission, creates OMA", function(done) {
-        // this route calls a 3 chained controllers; hence the very long timeout
-        this.timeout(12000);
-        chai
-          .request(app)
-          .put("/api/sf/")
-          .send(submissionBody)
-          .end(function(err, res) {
-            assert.equal(res.status, 200);
-            assert.isNull(err);
-            sf_contact_id = res.body.salesforce_id;
-            submission_id = res.body.submission_id;
-            sf_OMA_id = res.body.sf_OMA_id;
-            done();
+      after(() => {
+        return new Promise(resolve => {
+          if (sf_OMA_id) {
+            chai
+              .request(app)
+              .delete(`/api/sfOMA/${sf_OMA_id}`)
+              .end(function(err, res) {
+                resolve();
+              });
+          } else {
+            resolve();
+          }
+        }).then(() => {
+          return new Promise(resolve => {
+            chai
+              .request(app)
+              .delete(`/api/sf/${sf_contact_id}`)
+              .end(function(err, res) {
+                resolve();
+              });
           });
+        });
       });
       test("NO MATCH: creates a SF contact, creates submission, creates OMA", function(done) {
         this.timeout(24000);
@@ -204,9 +299,33 @@ suite("routes : salesforce", function() {
           .post(`/api/sfOMA`)
           .send(submissionBody)
           .end(function(err, res) {
+            sf_contact_id = res.body.salesforce_id;
             sf_OMA_id = res.body.sf_OMA_id;
             resolve();
           });
+      });
+    });
+    afterEach(() => {
+      return new Promise(resolve => {
+        if (sf_OMA_id) {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
       });
     });
     // delete created OMA
@@ -264,15 +383,56 @@ suite("routes : salesforce", function() {
           .send(submissionBody)
           .end(function(err, res) {
             sf_contact_id = res.body.salesforce_id;
+            sf_OMA_id = res.body.sf_OMA_id;
             resolve();
           });
       });
     });
     afterEach(() => {
-      chai
-        .request(app)
-        .delete(`/api/sf/${sf_contact_id}`)
-        .end(function(err, res) {});
+      return new Promise(resolve => {
+        if (sf_OMA_id) {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    after(() => {
+      return new Promise(resolve => {
+        if (sf_OMA_id) {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
     });
     // test error cases first to avoid race condition with success case
     test("GET CONTACT returns an error if ID is missing or malformed", function(done) {
@@ -320,6 +480,158 @@ suite("routes : salesforce", function() {
         .end(function(err, res) {
           // assert that correct record was fetched
           assert.equal(res.body.Id, sf_contact_id);
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          done();
+        });
+    });
+  });
+
+  describe("PUT /api/sflookup", function() {
+    this.timeout(15000);
+    const app = require("../server");
+    beforeEach(() => {
+      submissionBody = generateSampleSubmission();
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .post("/api/sf")
+          .send(submissionBody)
+          .end(function(err, res) {
+            sf_contact_id = res.body.salesforce_id;
+            resolve();
+          });
+      });
+    });
+    afterEach(() => {
+      return new Promise(resolve => {
+        if (sf_OMA_id) {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    after(() => {
+      return new Promise(resolve => {
+        if (sf_OMA_id) {
+          chai
+            .request(app)
+            .delete(`/api/sfOMA/${sf_OMA_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        } else {
+          resolve();
+        }
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    // test error cases first to avoid race condition with success case
+    test("PUT LOOKUP returns an error if fields are missing", function(done) {
+      chai
+        .request(app)
+        .put("/api/sflookup")
+        .send({ firstName: undefined })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.equal(
+            res.body.message,
+            "Please complete all required fields."
+          );
+          done();
+        });
+    });
+    test("PUT LOOKUP returns 500 status if SF login throws error", function(done) {
+      errorStub = sinon
+        .stub(jsforce.Connection.prototype, "login")
+        .yields({ message: "Error message" }, null);
+      chai
+        .request(app)
+        .put(`/api/sflookup`)
+        .send({
+          first_name: "firstname",
+          last_name: "lastname",
+          home_email: "fake@email.com"
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          done();
+          errorStub.restore();
+        });
+    });
+    test("PUT LOOKUP returns 500 status if SF API call throws error", function(done) {
+      errorStub = sinon
+        .stub(jsforce.Connection.prototype, "query")
+        .yields({ message: "Error message" }, null);
+      chai
+        .request(app)
+        .put(`/api/sflookup`)
+        .send({
+          first_name: "firstname",
+          last_name: "lastname",
+          home_email: "fake@email.com"
+        })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          done();
+          errorStub.restore();
+        });
+    });
+    test("PUT LOOKUP returns one SF contact by first/last/email (SUCCESS)", function(done) {
+      chai
+        .request(app)
+        .put(`/api/sflookup`)
+        .send({
+          first_name: "firstname",
+          last_name: "lastname",
+          home_email: "fake@email.com"
+        })
+        .end(function(err, res) {
+          console.log("routes_sf_spec.js");
+          assert.equal(res.body.salesforce_id, sf_contact_id);
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          done();
+        });
+    });
+    test("PUT LOOKUP returns one SF contact by first/last/email (FAIL)", function(done) {
+      chai
+        .request(app)
+        .put(`/api/sflookup`)
+        .send({
+          first_name: "12345VOP0U",
+          last_name: "1Y4NFNL",
+          home_email: "Y123NO87NUHN@email.com"
+        })
+        .end(function(err, res) {
+          assert.equal(
+            res.body.message,
+            "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
+          );
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();

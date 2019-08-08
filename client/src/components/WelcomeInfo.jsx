@@ -75,7 +75,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             }
           })
           .catch(err => {
-            console.log(err);
+            // console.log(err);
           });
       });
     }
