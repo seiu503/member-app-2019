@@ -23,6 +23,7 @@ import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
+import LinkRequest from "./containers/LinkRequest";
 
 const styles = theme => ({
   root: {
@@ -107,6 +108,7 @@ export class AppUnconnected extends Component {
     super(props);
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
+    this.reCaptchaRef = React.createRef();
     this.state = {
       deleteDialogOpen: false,
       animation: false,
@@ -148,6 +150,18 @@ export class AppUnconnected extends Component {
         {this.props.appState.loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
           <Switch>
+            <Route
+              exact
+              path="/"
+              render={routeProps => (
+                <SubmissionFormPage1
+                  setRedirect={this.setRedirect}
+                  legal_language={this.legal_language}
+                  reCaptchaRef={this.reCaptchaRef}
+                  {...routeProps}
+                />
+              )}
+            />
             <Route
               exact
               path="/thankyou"
@@ -196,17 +210,6 @@ export class AppUnconnected extends Component {
             />
             <Route
               exact
-              path="/"
-              render={routeProps => (
-                <SubmissionFormPage1
-                  setRedirect={this.setRedirect}
-                  legal_language={this.legal_language}
-                  {...routeProps}
-                />
-              )}
-            />
-            <Route
-              exact
               path="/page2"
               render={routeProps => (
                 <SubmissionFormPage2
@@ -214,6 +217,11 @@ export class AppUnconnected extends Component {
                   {...routeProps}
                 />
               )}
+            />
+            <Route
+              exact
+              path="/linkrequest"
+              render={routeProps => <LinkRequest {...routeProps} />}
             />
             <Route
               path="*"

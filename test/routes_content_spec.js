@@ -132,6 +132,60 @@ suite("routes : content", function() {
     });
   });
 
+  suite("GET /api/contenttype/:content_type", function() {
+    const app = require("../server");
+
+    test("gets all content records of a specific type", function(done) {
+      chai
+        .request(app)
+        .get(`/api/contenttype/headline`)
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.isArray(res.body);
+          assert.property(res.body[0], "id");
+          assert.property(res.body[0], "created_at");
+          assert.property(res.body[0], "updated_at");
+          assert.property(res.body[0], "content_type");
+          assert.property(res.body[0], "content");
+          done();
+        });
+    });
+
+    test("returns error if content type is missing or malformed", function(done) {
+      chai
+        .request(app)
+        .get("/api/content/undefined")
+        .end(function(err, res) {
+          assert.equal(res.status, 404);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+  });
+
+  suite("GET /api/content", function() {
+    const app = require("../server");
+
+    test("gets all content", function(done) {
+      chai
+        .request(app)
+        .get(`/api/content`)
+        .end(function(err, res) {
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.isArray(res.body);
+          assert.property(res.body[0], "id");
+          assert.property(res.body[0], "created_at");
+          assert.property(res.body[0], "updated_at");
+          assert.property(res.body[0], "content_type");
+          assert.property(res.body[0], "content");
+          done();
+        });
+    });
+  });
+
   suite("PUT /api/content/:id", function() {
     test("updates a content record", function(done) {
       const app = require("../server");

@@ -8,6 +8,7 @@ process.env.NODE_ENV = "testing";
 const chai = require("chai");
 const multer = require("multer");
 const aws = require("aws-sdk-mock");
+const awsReal = require("aws-sdk");
 const fs = require("fs");
 const { db, TABLES } = require("../app/config/knex");
 const { assert } = chai;
@@ -26,8 +27,7 @@ const avatar_url = "http://example.com/avatar.png";
 const google_id = "1234";
 const google_token = "5678";
 
-let id;
-let id2;
+let content_id;
 
 /* ================================= TESTS ================================= */
 
@@ -89,6 +89,24 @@ suite("routes : image", function() {
           "test.png"
         )
         .end(function(err, res) {
+          content_id = res.body.id;
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          done();
+        });
+    });
+    test("updates content after uploading image if content id supplied", function(done) {
+      chai
+        .request(app)
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .field("id", content_id)
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test.png`),
+          "test.png"
+        )
+        .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
           done();
@@ -135,6 +153,28 @@ suite("routes : image", function() {
           done();
         });
     });
+    test("returns an error if missing or malformed id in req.body", function(done) {
+      this.timeout(5000);
+      chai
+        .request(app)
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .field("id", "bad")
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test.png`),
+          "test.png"
+        )
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.property(res.body, "message");
+          assert.equal(
+            res.body.message,
+            `update "content" set "content_type" = $1, "content" = $2, "updated_at" = CURRENT_TIMESTAMP where "id" = $3 returning * - invalid input syntax for integer: "bad"`
+          );
+          done();
+        });
+    });
   });
 
   suite("DELETE /api/image/:key", function() {
@@ -149,6 +189,26 @@ suite("routes : image", function() {
           assert.isNull(err);
           assert.property(res.body, "message");
           assert.equal(res.body.message, "Image deleted.");
+          done();
+        });
+    });
+
+    test("returns error if S3 delete fails", function(done) {
+      const errorMock = (Err, data) => {};
+      const operation = "deleteObject";
+      const params = { blah: "any" };
+      const deleteObjectStub = sinon
+        .stub(awsReal.S3.prototype, "makeRequest")
+        .withArgs("deleteObject")
+        .callsFake((operation, params, errorMock) => {
+          errorMock("Error message", null);
+        });
+      chai
+        .request(app)
+        .delete(`/api/image/test.png`)
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.body.message, "Error message");
           done();
         });
     });

@@ -100,13 +100,13 @@ const singleImgUpload = (req, res, next) => {
           content: imageUrl
         };
         return content
-          .updateContent(id, updates)
+          .updateContent(req.body.id, updates)
           .then(records => {
             const record = records[0];
             res.status(200).json(record);
           })
           .catch(err => {
-            console.log(`imageUpload.ctrl.js > 90: ${err}`);
+            // console.log(`imageUpload.ctrl.js > 109: ${err}`);
             res.status(500).json({ message: err.message });
           });
       } else {
@@ -118,7 +118,7 @@ const singleImgUpload = (req, res, next) => {
             res.status(200).json(record);
           })
           .catch(err => {
-            console.log(`imageUpload.ctrl.js > 90: ${err}`);
+            // console.log(`imageUpload.ctrl.js > 121: ${err}`);
             res.status(500).json({ message: err.message });
           });
       }

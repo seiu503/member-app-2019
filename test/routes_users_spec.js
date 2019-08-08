@@ -36,6 +36,20 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
 
+suite("routes : static", function() {
+  const app = require("../server");
+  test("serves client at '/' route", function(done) {
+    chai
+      .request(app)
+      .get("/")
+      .end(function(err, res) {
+        assert.equal(res.status, 200);
+        assert.isNull(err);
+        done();
+      });
+  });
+});
+
 suite("routes : user", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
@@ -111,6 +125,29 @@ suite("routes : user", function() {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");
             assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+    });
+
+    suite("GET /api/user/", function() {
+      const app = require("../server");
+      test("gets all users", function(done) {
+        chai
+          .request(app)
+          .get(`/api/user/`)
+          .end(function(err, res) {
+            assert.equal(res.status, 200);
+            assert.isNull(err);
+            assert.isArray(res.body);
+            assert.property(res.body[0], "id");
+            assert.property(res.body[0], "created_at");
+            assert.property(res.body[0], "updated_at");
+            assert.property(res.body[0], "email");
+            assert.property(res.body[0], "name");
+            assert.property(res.body[0], "avatar_url");
+            assert.property(res.body[0], "google_id");
+            assert.property(res.body[0], "google_token");
             done();
           });
       });

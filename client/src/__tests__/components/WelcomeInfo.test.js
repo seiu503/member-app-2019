@@ -224,7 +224,9 @@ describe("<WelcomeInfo />", () => {
       .then(() => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        // console.log(err)
+      });
   });
 
   it("has generic content if no ids in query", () => {

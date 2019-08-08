@@ -21,7 +21,7 @@ const moment = require("moment");
 
 /*  Sample Data for new submission */
 const ip_address = "192.0.2.0";
-const submission_date = new Date("05/02/2019");
+const submission_date = new Date();
 const agency_number = "123456";
 const birthdate = new Date("01/02/1999");
 const cell_phone = "123-456-7890";
@@ -102,7 +102,6 @@ const updatedEmployerName = `updatedEmployerName ${utils.randomText()}`;
 const updatedTextAuthOptOut = true;
 
 /*  Test user Data for secured routes */
-
 const name = `firstname ${utils.randomText()}`;
 const email = "fakeemail@test.com";
 const avatar_url = "http://example.com/avatar.png";
@@ -111,7 +110,7 @@ const google_token = "5678";
 
 /* ================================= TESTS ================================= */
 
-let sf_contact_id, submission_id, createdAt, updatedAt;
+let sf_contact_id, submission_id, sf_OMA_id, createdAt, updatedAt;
 
 chai.use(chaiHttp);
 let authenticateMock;
@@ -128,6 +127,45 @@ suite("routes : submissions", function() {
   });
 
   describe("POST /api/submission/", function() {
+    // cleanup SF data after testing
+    afterEach(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    after(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
     // this route calls 3 chained controllers, 2 of which have to call SF and
     // wait for a response; hence the very long timeout
     this.timeout(18000);
@@ -142,24 +180,7 @@ suite("routes : submissions", function() {
           assert.isNull(err);
           sf_contact_id = res.body.sf_contact_id;
           submission_id = res.body.submission_id;
-          test("updates a submission", function(done) {
-            const updates = {
-              first_name: updatedFirstName,
-              text_auth_opt_out: updatedTextAuthOptOut
-            };
-            chai
-              .request(app)
-              .put(`/api/submission/${submission_id}`)
-              .send(updates)
-              .end(function(err, res) {
-                let result = res.body;
-                assert.equal(res.status, 200);
-                assert.isNull(err);
-                assert.property(result, "submission_id");
-                assert.property(result, "salesforce_id");
-                done();
-              });
-          });
+          sf_OMA_id = res.body.sf_OMA_id;
           done();
         });
     });
@@ -180,15 +201,56 @@ suite("routes : submissions", function() {
   describe("PUT /api/submission/:id", function() {
     const app = require("../server");
     this.timeout(10000);
-    before(() => {
+    beforeEach(() => {
       return new Promise(resolve => {
         chai
           .request(app)
           .post("/api/submission/")
           .send(submissionBody)
           .end(function(err, res) {
+            submission_id = res.body.submission_id;
+            sf_OMA_id = res.body.sf_OMA_id;
             resolve();
           });
+      });
+    });
+    // cleanup SF data after testing
+    afterEach(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
+      });
+    });
+    after(() => {
+      return new Promise(resolve => {
+        chai
+          .request(app)
+          .delete(`/api/sfOMA/${sf_OMA_id}`)
+          .end(function(err, res) {
+            resolve();
+          });
+      }).then(() => {
+        return new Promise(resolve => {
+          chai
+            .request(app)
+            .delete(`/api/sf/${sf_contact_id}`)
+            .end(function(err, res) {
+              resolve();
+            });
+        });
       });
     });
     test("returns error if submission id missing or malformed", function(done) {
@@ -219,6 +281,24 @@ suite("routes : submissions", function() {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
+          done();
+        });
+    });
+    test("updates a submission", function(done) {
+      const updates = {
+        first_name: updatedFirstName,
+        text_auth_opt_out: updatedTextAuthOptOut
+      };
+      chai
+        .request(app)
+        .put(`/api/submission/${submission_id}`)
+        .send(updates)
+        .end(function(err, res) {
+          let result = res.body;
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          assert.property(result, "submission_id");
+          assert.property(result, "salesforce_id");
           done();
         });
     });

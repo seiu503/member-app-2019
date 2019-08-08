@@ -98,7 +98,7 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
         <SubmissionFormPage2Connected {...defaultProps} {...props} />
       </Provider>
     );
-    console.log(dispatchSpy.mock.calls);
+    // console.log(dispatchSpy.mock.calls);
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(spyCall).toEqual("1");
   });

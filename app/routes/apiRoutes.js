@@ -155,7 +155,7 @@ router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 router.get("/content/:id", contentCtrl.getContentById);
 
 // GET CONTENT BY TYPE
-//   Example: GET >> /api/content/headline
+//   Example: GET >> /api/contenttype/headline
 //   Secured: yes
 //   Expects:
 //     1) request params : {
@@ -163,7 +163,7 @@ router.get("/content/:id", contentCtrl.getContentById);
 //        }
 //   Returns: Array of content objects on success.
 //
-router.get("/content/:content_type", contentCtrl.getContentByType);
+router.get("/contenttype/:content_type", contentCtrl.getContentByType);
 
 // GET ALL CONTENT
 //   Example: GET >> /api/content/
@@ -337,6 +337,21 @@ router.delete(
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
+
+// GET ONE SALESFORCE CONTACT RECORD BY FIRST, LAST, EMAIL
+//   Example: GET >> /api/sflookup
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          body : {
+//            first_name: string,
+//            last_name: string,
+//            home_email: string
+//           }
+//        }
+//   Returns: JSON object with salesforce id on success.
+//
+router.put("/sflookup", sfCtrl.lookupSFContactByFLE);
 
 // DELETE ONE SALESFORCE CONTACT RECORD BY ID
 // This is really only needed for cleanup after testing...

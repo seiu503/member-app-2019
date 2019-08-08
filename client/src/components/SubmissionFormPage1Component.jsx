@@ -28,8 +28,6 @@ const {
   formatSFDate
 } = formElements;
 
-const reCaptchaRef = React.createRef();
-
 export class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
   constructor(props) {
@@ -121,7 +119,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   handleSubmit = values => {
-    const reCaptchaValue = reCaptchaRef.current.getValue();
+    const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     // console.log(reCaptchaValue);
     let {
       firstName,
@@ -159,12 +157,10 @@ export class SubmissionFormPage1Component extends React.Component {
     if (!salesforceId && q && q.id) {
       salesforceId = q.id;
     }
-
     if (!reCaptchaValue) {
       openSnackbar("error", "Please verify you are human with Captcha");
       return;
     }
-
     const body = {
       ip_address: localIpUrl(),
       submission_date: new Date(),
@@ -194,13 +190,12 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId,
       reCaptchaValue
     };
-
-    return this.props.apiSF
-      .lookupSFContact(body)
+    return this.props.apiSubmission
+      .addSubmission(body)
       .then(result => {
         // console.log(result.type);
         if (
-          result.type === "LOOKUP_SF_CONTACT_FAILURE" ||
+          result.type === "ADD_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
           openSnackbar(
@@ -230,8 +225,8 @@ export class SubmissionFormPage1Component extends React.Component {
       >
         <WelcomeInfo location={this.props.location} />
         <form
-          id="submissionFormPage1"
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
+          id="submissionFormPage1"
           className={this.classes.form}
         >
           <Field
@@ -469,7 +464,7 @@ export class SubmissionFormPage1Component extends React.Component {
           </FormHelperText>
 
           <ReCAPTCHA
-            ref={reCaptchaRef}
+            ref={this.props.reCaptchaRef}
             sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
             // seiu503signup.org 2019 new form
             // ^^^^^this is the real sitekey, using temporary one to test with localhost

@@ -89,7 +89,7 @@ const deleteUser = (req, res, next) => {
 /** Get all users
  *  @returns  {Array|Object}   Array of user objects OR error message
  */
-const getUsers = () => {
+const getUsers = (req, res, next) => {
   return users
     .getUsers()
     .then(users => res.status(200).json(users))
