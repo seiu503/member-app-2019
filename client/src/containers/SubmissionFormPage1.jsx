@@ -62,7 +62,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleClose() {
-    console.log("close");
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
@@ -72,7 +71,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const fullName = `${
       this.props.submission &&
       this.props.submission.formPage1 &&
-      this.props.submission.formPage1.firstname
+      this.props.submission.formPage1.firstName
         ? this.props.submission.formPage1.firstName
         : ""
     } ${

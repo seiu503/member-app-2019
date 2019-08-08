@@ -63,12 +63,6 @@ const defaultProps = {
   }
 };
 
-const testData = {
-  firstName: "firstname",
-  lastName: "lastname",
-  homeEmail: "homeEmail@email.com"
-};
-
 /**
  * Factory function to create a ShallowWrapper for the Dashboard component
  * @function setup
@@ -121,18 +115,16 @@ describe("<LinkRequest />", () => {
   });
 
   test("calls `lookupSFContact` prop on submit", () => {
-    const lookupSFContactMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({
-          type: "LOOKUP_SF_CONTACT_SUCCESS",
-          payload: { salesforce_id: 123 }
-        })
-      );
+    const lookupSFContactMock = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        type: "LOOKUP_SF_CONTACT_SUCCESS",
+        payload: { salesforce_id: 123 }
+      })
+    );
     const props = { apiSF: { lookupSFContact: lookupSFContactMock } };
 
     wrapper = shallow(<LinkRequestUnconnected {...defaultProps} {...props} />);
-    wrapper.find("form").simulate("submit", { testData });
+    wrapper.find("form").simulate("submit", { preventDefault: jest.fn() });
 
     // expect the mock to have been called once on submit
     expect(lookupSFContactMock.mock.calls.length).toBe(1);
@@ -142,21 +134,19 @@ describe("<LinkRequest />", () => {
   });
 
   test("lookupSFContact returns error message if api call fails", () => {
-    lookupSFContactErrorMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({
-          type: "LOOKUP_SF_CONTACT_FAILURE",
-          payload: { sf_contact_id: undefined }
-        })
-      );
+    lookupSFContactErrorMock = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        type: "LOOKUP_SF_CONTACT_FAILURE",
+        payload: { sf_contact_id: undefined }
+      })
+    );
     lookupSFContact = lookupSFContactErrorMock;
     apiSF.lookupSFContact = lookupSFContact;
     const props = {
       apiSF: apiSF
     };
     wrapper = shallow(<LinkRequestUnconnected {...defaultProps} {...props} />);
-    wrapper.find("form").simulate("submit", { testData });
+    wrapper.find("form").simulate("submit", { preventDefault: jest.fn() });
 
     // expect the mock to have been called once on submit
     expect(lookupSFContactErrorMock.mock.calls.length).toBe(1);
