@@ -4,6 +4,7 @@ import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
 import queryString from "query-string";
 import { reduxForm } from "redux-form";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -26,6 +27,8 @@ const {
   getKeyByValue,
   formatSFDate
 } = formElements;
+
+const reCaptchaRef = React.createRef();
 
 export class SubmissionFormPage1Component extends React.Component {
   classes = this.props.classes;
@@ -113,8 +116,13 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
+  reCaptchaChange = response => {
+    // console.log(response, "<= dis your captcha token");
+  };
+
   handleSubmit = values => {
-    console.log("HANDLE SUBMIT");
+    const reCaptchaValue = reCaptchaRef.current.getValue();
+    // console.log(reCaptchaValue);
     let {
       firstName,
       lastName,
@@ -152,6 +160,11 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforceId = q.id;
     }
 
+    if (!reCaptchaValue) {
+      openSnackbar("error", "Please verify you are human with Captcha");
+      return;
+    }
+
     const body = {
       ip_address: localIpUrl(),
       submission_date: new Date(),
@@ -178,7 +191,8 @@ export class SubmissionFormPage1Component extends React.Component {
       direct_pay_auth: null,
       direct_deposit_auth: null,
       immediate_past_member_status: null,
-      salesforce_id: salesforceId
+      salesforce_id: salesforceId,
+      reCaptchaValue
     };
 
     return this.props.apiSubmission
@@ -449,6 +463,15 @@ export class SubmissionFormPage1Component extends React.Component {
           <FormHelperText className={this.classes.formHelperText}>
             Enter your full legal name. This will act as your signature.
           </FormHelperText>
+
+          <ReCAPTCHA
+            ref={reCaptchaRef}
+            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
+            // seiu503signup.org 2019 new form
+            // ^^^^^this is the real sitekey, using temporary one to test with localhost
+            // sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
+            onChange={this.reCaptchaChange.bind(this)}
+          />
 
           <ButtonWithSpinner
             type="button"
