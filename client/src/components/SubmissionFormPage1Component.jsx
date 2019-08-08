@@ -123,6 +123,10 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
+  clear = () => {
+    this.sigBox.clear();
+  };
+
   handleUpload = file => {
     const { authToken } = this.props.appState;
     const filename = file ? file.name.split(".")[0] : "";
@@ -522,14 +526,18 @@ export class SubmissionFormPage1Component extends React.Component {
           {this.props.submission.formPage1.signatureType === "draw" && (
             <div className={this.classes.sigBox}>
               <SignatureCanvas
+                ref={ref => {
+                  this.sigBox = ref;
+                }}
                 penColor="black"
                 canvasProps={{
                   width: 594,
                   height: 100,
                   className: "sigCanvas",
-                  backgroundColor: "rgba(232, 236, 241, 1)"
+                  backgroundColor: "rgba(0, 0, 0, 0)"
                 }}
               />
+              <button onClick={this.clear}>clear</button>
             </div>
           )}
           {this.props.submission.formPage1.signatureType === "draw" && (
