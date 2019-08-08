@@ -112,11 +112,13 @@ export class LinkRequestUnconnected extends React.Component {
           Request your customized membership form
         </Typography>
         <form
+          onSubmit={e => this.submit(e)}
           className={classes.form}
           onError={errors => console.log(errors)}
           id="form"
         >
           <TextField
+            data-test="firstName"
             name="firstName"
             id="firstName"
             label="First Name"
@@ -128,6 +130,7 @@ export class LinkRequestUnconnected extends React.Component {
             className={classes.input}
           />
           <TextField
+            data-test="lastName"
             name="lastName"
             id="lastName"
             label="Last Name"
@@ -139,6 +142,7 @@ export class LinkRequestUnconnected extends React.Component {
             className={classes.input}
           />
           <TextField
+            data-test="homeEmail"
             name="homeEmail"
             id="homeEmail"
             label="Home Email"
@@ -150,12 +154,11 @@ export class LinkRequestUnconnected extends React.Component {
             className={classes.input}
           />
           <ButtonWithSpinner
-            type="button"
+            type="submit"
             color="secondary"
             className={classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}
-            onClick={e => this.submit(e)}
           >
             Lookup
           </ButtonWithSpinner>
@@ -178,7 +181,10 @@ LinkRequestUnconnected.propTypes = {
     handleInput: PropTypes.func,
     clearForm: PropTypes.func
   }),
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  apiSF: PropTypes.shape({
+    lookupSFContact: PropTypes.func
+  })
 };
 
 const mapStateToProps = state => ({

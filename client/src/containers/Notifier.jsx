@@ -86,13 +86,14 @@ export const openSnackbar = (
   // aaaaaand because it's dirty it is impossible to test lol
   // so here let's add yet another unnecessary logical branch just for testing!
   if (
-    (typeof openSnackbarFn === "function" && process.env.NODE_ENV !== "test") ||
+    (typeof openSnackbarFn === "function" &&
+      process.env.NODE_ENV !== "testing") ||
     testBranchOne
   ) {
     return openSnackbarFn(variant, message);
   } else if (
     typeof openSnackbarFn === "function" &&
-    process.env.NODE_ENV === "test" &&
+    process.env.NODE_ENV === "testing" &&
     !testSetTimeout
   ) {
     // so! dirty!! somebody fix this mess!
