@@ -188,6 +188,12 @@ export const stylesPage1 = theme => ({
     flexDirection: "row",
     justifyContent: "center"
   },
+  groupLeft: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  },
   input: {
     width: "100%",
     margin: "0 0 30px 0"
@@ -237,10 +243,10 @@ export const stylesPage1 = theme => ({
     margin: "-50px 0 30px 0"
   },
   sigBox: {
-    border: "2px solid black",
+    border: "1px solid lightgrey",
     "border-radius": "5px",
     margin: "0 0 25px",
-    width: "600px"
+    width: "598px"
   }
 });
 export const stylesPage2 = theme => ({

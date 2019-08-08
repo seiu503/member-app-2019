@@ -10,6 +10,10 @@ import SignatureCanvas from "react-signature-canvas";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
+import FormControl from "@material-ui/core/FormControl";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
 
 import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
@@ -117,6 +121,33 @@ export class SubmissionFormPage1Component extends React.Component {
 
   reCaptchaChange = response => {
     // console.log(response, "<= dis your captcha token");
+  };
+
+  handleUpload = file => {
+    const { authToken } = this.props.appState;
+    const filename = file ? file.name.split(".")[0] : "";
+    const edit = this.props.edit;
+    const id = this.props.edit ? this.props.match.params.id : undefined;
+    this.props.apiContent
+      .uploadImage(authToken, file, edit, id)
+      .then(result => {
+        if (
+          result.type === "UPLOAD_IMAGE_FAILURE" ||
+          this.props.content.error
+        ) {
+          openSnackbar(
+            "error",
+            this.props.content.error ||
+              "An error occured while trying to upload your image."
+          );
+        } else {
+          openSnackbar("success", `${filename} Saved.`);
+          this.props.apiContent.clearForm();
+          this.props.apiContent.getAllContent(authToken);
+          this.props.history.push("/library");
+        }
+      })
+      .catch(err => openSnackbar("error", err));
   };
 
   handleSubmit = values => {
@@ -451,29 +482,61 @@ export class SubmissionFormPage1Component extends React.Component {
             I notify the Union and my employer in writing, with my valid
             signature, of my desire to revoke this authorization.
           </FormHelperText>
-
-          <Field
-            label="Signature"
-            name="signature"
-            id="signature"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-          <FormHelperText className={this.classes.formHelperText}>
-            Enter your full legal name. This will act as your signature.
-          </FormHelperText>
-          <div className={this.classes.sigBox}>
-            <SignatureCanvas
-              penColor="black"
-              canvasProps={{
-                width: 600,
-                height: 100,
-                className: "sigCanvas",
-                backgroundColor: "rgba(232, 236, 241, 1)"
-              }}
+          <FormControl
+            component="fieldset"
+            className={this.classes.formControl}
+          >
+            <FormLabel component="legend" className={this.classes.radioLabel}>
+              Signature Type
+            </FormLabel>
+            <RadioGroup
+              aria-label="Signature Type"
+              name="signatureType"
+              className={this.classes.groupLeft}
+              value={this.props.submission.formPage1.signatureType}
+              onChange={this.props.apiSubmission.handleInput}
+            >
+              <FormControlLabel
+                value="write"
+                control={<Radio />}
+                label="Write"
+              />
+              <FormControlLabel value="draw" control={<Radio />} label="Draw" />
+            </RadioGroup>
+          </FormControl>
+          {this.props.submission.formPage1.signatureType === "write" && (
+            <Field
+              label="Signature"
+              name="signature"
+              id="signature"
+              type="text"
+              classes={this.classes}
+              component={this.renderTextField}
             />
-          </div>
+          )}
+          {this.props.submission.formPage1.signatureType === "write" && (
+            <FormHelperText className={this.classes.formHelperText}>
+              Enter your full legal name. This will act as your signature.
+            </FormHelperText>
+          )}
+          {this.props.submission.formPage1.signatureType === "draw" && (
+            <div className={this.classes.sigBox}>
+              <SignatureCanvas
+                penColor="black"
+                canvasProps={{
+                  width: 594,
+                  height: 100,
+                  className: "sigCanvas",
+                  backgroundColor: "rgba(232, 236, 241, 1)"
+                }}
+              />
+            </div>
+          )}
+          {this.props.submission.formPage1.signatureType === "draw" && (
+            <FormHelperText className={this.classes.formHelperText}>
+              Draw your signature in the box above.
+            </FormHelperText>
+          )}
           <ReCAPTCHA
             ref={this.props.reCaptchaRef}
             sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
