@@ -107,7 +107,9 @@ const createSubmission = async (req, res, next) => {
   } else {
     try {
       await verifyHumanity(reCaptchaValue, ip_address);
-    } catch {
+    } catch (err) {
+      console.log(`submissions.ctrl.js > 111`);
+      console.log(err);
       return res
         .status(400)
         .json({ message: "Please verify that you are a human" });
@@ -280,13 +282,20 @@ const verifyHumanity = (token, ip_address) => {
     },
     (err, httpResponse, body) => {
       if (err) {
+        // console.log(`submissions.ctrl.js > 283`);
+        // console.log(err);
         Promise.reject(new Error(err));
       } else {
+        // console.log(`submissions.ctrl.js > 287`);
         const r = JSON.parse(body);
+        // console.log(r);
         if (r.success) {
+          // console.log(`submissions.ctrl.js > 291`);
+          // console.log(r.success);
           Promise.resolve(r.success);
         } else {
-          Promise.reject(new Error());
+          // console.log(`submissions.ctrl.js > 295`);
+          Promise.reject(new Error("???"));
         }
       }
     }

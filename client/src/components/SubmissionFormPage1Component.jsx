@@ -117,12 +117,12 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   reCaptchaChange = response => {
-    console.log(response, "<= dis your captcha token");
+    // console.log(response, "<= dis your captcha token");
   };
 
   handleSubmit = values => {
     const reCaptchaValue = reCaptchaRef.current.getValue();
-    console.log(reCaptchaValue);
+    // console.log(reCaptchaValue);
     let {
       firstName,
       lastName,
@@ -470,7 +470,8 @@ export class SubmissionFormPage1Component extends React.Component {
 
           <ReCAPTCHA
             ref={reCaptchaRef}
-            sitekey="6Ld5BDYUAAAAANNktEbuuW2dWPRvnzhA2pe7ibYZ"
+            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
+            // seiu503signup.org 2019 new form
             // ^^^^^this is the real sitekey, using temporary one to test with localhost
             // sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
             onChange={this.reCaptchaChange.bind(this)}
