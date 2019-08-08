@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { reduxForm } from "redux-form";
 import ReCAPTCHA from "react-google-recaptcha";
+import SignatureCanvas from "react-signature-canvas";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -467,7 +468,17 @@ export class SubmissionFormPage1Component extends React.Component {
           <FormHelperText className={this.classes.formHelperText}>
             Enter your full legal name. This will act as your signature.
           </FormHelperText>
-
+          <div className={this.classes.sigBox}>
+            <SignatureCanvas
+              penColor="black"
+              canvasProps={{
+                width: 600,
+                height: 100,
+                className: "sigCanvas",
+                backgroundColor: "rgba(232, 236, 241, 1)"
+              }}
+            />
+          </div>
           <ReCAPTCHA
             ref={reCaptchaRef}
             sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"

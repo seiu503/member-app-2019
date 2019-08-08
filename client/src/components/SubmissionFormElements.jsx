@@ -235,6 +235,12 @@ export const stylesPage1 = theme => ({
   },
   formHelperTextLegal: {
     margin: "-50px 0 30px 0"
+  },
+  sigBox: {
+    border: "2px solid black",
+    "border-radius": "5px",
+    margin: "0 0 25px",
+    width: "600px"
   }
 });
 export const stylesPage2 = theme => ({
