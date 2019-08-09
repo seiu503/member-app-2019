@@ -142,7 +142,7 @@ export class TextInputFormUnconnected extends React.Component {
     const edit = this.props.edit;
     const id = this.props.edit ? this.props.match.params.id : undefined;
     this.props.apiContent
-      .uploadImage(authToken, file, edit, id)
+      .uploadImage(file, edit, id)
       .then(result => {
         if (
           result.type === "UPLOAD_IMAGE_FAILURE" ||

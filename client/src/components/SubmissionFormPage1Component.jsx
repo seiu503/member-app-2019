@@ -122,17 +122,36 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  clear = () => {
+  clearSignature = () => {
     this.sigBox.clear();
   };
 
-  handleUpload = file => {
-    const { authToken } = this.props.appState;
-    const filename = file ? file.name.split(".")[0] : "";
-    const edit = this.props.edit;
-    const id = this.props.edit ? this.props.match.params.id : undefined;
+  dataURItoBlob = dataURI => {
+    let binary = atob(dataURI.split(",")[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
+  };
+
+  trimSignature = () => {
+    let dataURL = this.sigBox.getTrimmedCanvas().toDataURL("image/jpeg");
+    console.log("dataURL", dataURL);
+    let blobData = this.dataURItoBlob(dataURL);
+    console.log("blobData", blobData);
+    return blobData;
+  };
+
+  handleUpload = (firstName, lastName) => {
+    let file = this.trimSignature();
+    console.log("file", file);
+    let filename = `${firstName}_${lastName}_signature_${new Date()}`;
+    console.log(filename);
+    console.log(file);
+    // const filename = file ? file.name.split(".")[0] : "";
     this.props.apiContent
-      .uploadImage(authToken, file, edit, id)
+      .uploadImage(file)
       .then(result => {
         if (
           result.type === "UPLOAD_IMAGE_FAILURE" ||
@@ -141,21 +160,18 @@ export class SubmissionFormPage1Component extends React.Component {
           openSnackbar(
             "error",
             this.props.content.error ||
-              "An error occured while trying to upload your image."
+              "An error occured while trying to save your Signature. Please try typing it instead"
           );
         } else {
-          openSnackbar("success", `${filename} Saved.`);
-          this.props.apiContent.clearForm();
-          this.props.apiContent.getAllContent(authToken);
-          this.props.history.push("/library");
+          return result;
         }
       })
       .catch(err => openSnackbar("error", err));
   };
 
-  handleSubmit = values => {
+  handleSubmit = async values => {
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
-    // console.log(reCaptchaValue);
+    let signature;
     let {
       firstName,
       lastName,
@@ -172,9 +188,15 @@ export class SubmissionFormPage1Component extends React.Component {
       employerName,
       textAuthOptOut,
       termsAgree,
-      signature,
       salesforceId
     } = values;
+    if (this.props.formValues.signatureType === "write") {
+      signature = values.signature;
+    }
+    if (this.props.formValues.signatureType === "draw") {
+      signature = await this.handleUpload(firstName, lastName);
+    }
+    console.log("signature", signature);
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
     const employerObject = this.props.submission.employerObjects
@@ -530,10 +552,14 @@ export class SubmissionFormPage1Component extends React.Component {
                   className: "sigCanvas",
                   backgroundColor: "rgba(0, 0, 0, 0)"
                 }}
+                label="Signature"
+                name="signature"
+                id="signature"
+                onChange={this.props.apiSubmission.handleInput}
               />
               <ButtonWithSpinner
                 type="button"
-                onClick={this.clear}
+                onClick={this.clearSignature}
                 color="secondary"
                 className={classes.clearButton}
                 variant="contained"

@@ -70,6 +70,7 @@ const checkFile = (file, cb) => {
  *  @returns  {Object}                 Image name and URL OR error message.
  */
 const singleImgUpload = (req, res, next) => {
+  console.log(req.body);
   upload(req, res, err => {
     // upload image to s3 bucket
     if (err instanceof multer.MulterError) {

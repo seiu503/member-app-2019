@@ -8,6 +8,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
+import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 
 import { stylesPage1 } from "../components/SubmissionFormElements";
@@ -108,6 +109,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
+  apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
