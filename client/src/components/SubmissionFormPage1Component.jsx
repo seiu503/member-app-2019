@@ -137,36 +137,44 @@ export class SubmissionFormPage1Component extends React.Component {
 
   trimSignature = () => {
     let dataURL = this.sigBox.getTrimmedCanvas().toDataURL("image/jpeg");
-    console.log("dataURL", dataURL);
     let blobData = this.dataURItoBlob(dataURL);
-    console.log("blobData", blobData);
     return blobData;
   };
 
   handleUpload = (firstName, lastName) => {
-    let file = this.trimSignature();
-    console.log("file", file);
-    let filename = `${firstName}_${lastName}_signature_${new Date()}`;
-    console.log(filename);
-    console.log(file);
-    // const filename = file ? file.name.split(".")[0] : "";
-    this.props.apiContent
-      .uploadImage(file)
-      .then(result => {
-        if (
-          result.type === "UPLOAD_IMAGE_FAILURE" ||
-          this.props.content.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.content.error ||
-              "An error occured while trying to save your Signature. Please try typing it instead"
-          );
-        } else {
-          return result;
-        }
-      })
-      .catch(err => openSnackbar("error", err));
+    return new Promise((resolve, reject) => {
+      let file = this.trimSignature();
+      let filename = `${firstName}_${lastName}_signature_${new Date()}.jpg`;
+      if (file instanceof Blob) {
+        file.name = filename;
+      }
+      // const filename = file ? file.name.split(".")[0] : "";
+      this.props.apiContent
+        .uploadImage(file)
+        .then(result => {
+          console.log(result);
+          if (
+            result.type === "UPLOAD_IMAGE_FAILURE" ||
+            this.props.content.error
+          ) {
+            console.log(this.props.content.error);
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to save your Signature. Please try typing it instead"
+            );
+            resolve();
+          } else {
+            console.log("returning payload");
+            console.log(result.payload.content);
+            resolve(result.payload.content);
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
+          reject(err);
+        });
+    });
   };
 
   handleSubmit = async values => {
@@ -195,6 +203,7 @@ export class SubmissionFormPage1Component extends React.Component {
     }
     if (this.props.formValues.signatureType === "draw") {
       signature = await this.handleUpload(firstName, lastName);
+      console.log("signature", signature);
     }
     console.log("signature", signature);
     const dobRaw = mm + "/" + dd + "/" + yyyy;
@@ -549,8 +558,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 canvasProps={{
                   width: 594,
                   height: 100,
-                  className: "sigCanvas",
-                  backgroundColor: "rgba(0, 0, 0, 0)"
+                  className: "sigCanvas"
                 }}
                 label="Signature"
                 name="signature"

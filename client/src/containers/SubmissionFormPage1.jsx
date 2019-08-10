@@ -103,6 +103,7 @@ export class SubmissionFormPage1Container extends React.Component {
 const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
+  content: state.content,
   initialValues: state.submission.formPage1,
   formValues: getFormValues("submissionPage1")(state) || {}
 });

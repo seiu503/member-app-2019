@@ -70,25 +70,32 @@ const checkFile = (file, cb) => {
  *  @returns  {Object}                 Image name and URL OR error message.
  */
 const singleImgUpload = (req, res, next) => {
-  console.log(req.body);
   upload(req, res, err => {
+    // console.log(`image.ctrl.js > 74`);
+    // console.log(req.file);
     // upload image to s3 bucket
     if (err instanceof multer.MulterError) {
+      console.log(`image.ctrl.js > 78`);
+      console.log(err);
       return res.status(500).json({
         message: err.message
       });
     }
     if (err) {
+      console.log(`image.ctrl.js > 85`);
+      console.log(err);
       return res.status(500).json({
         message: err.message
       });
     }
     if (!req.file) {
+      console.log(`image.ctrl.js > 92`);
       console.log("No file found");
       return res.status(500).json({
         message: "No file attached. Please choose a file."
       });
     } else {
+      console.log(`image.ctrl.js > 98`);
       // generate url of uploaded image
       const imageUrl = `https://${s3config.bucket}.s3-${
         s3config.region
@@ -111,15 +118,18 @@ const singleImgUpload = (req, res, next) => {
             res.status(500).json({ message: err.message });
           });
       } else {
+        console.log("image.ctrl.js > 121");
         // create new record in postgres DB
         return content
           .newContent("image", imageUrl)
           .then(records => {
+            console.log("image.cgtrl.js > 126");
             const record = records[0];
+            console.log(record);
             res.status(200).json(record);
           })
           .catch(err => {
-            // console.log(`imageUpload.ctrl.js > 121: ${err}`);
+            console.log(`imageUpload.ctrl.js > 132: ${err}`);
             res.status(500).json({ message: err.message });
           });
       }
