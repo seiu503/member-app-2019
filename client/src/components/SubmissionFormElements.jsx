@@ -252,6 +252,16 @@ export const stylesPage1 = theme => ({
     "border-radius": "5px",
     margin: "0 0 32px",
     width: "598px"
+  },
+  buttonLink: {
+    background: "none",
+    color: "inherit",
+    border: "none",
+    padding: "0",
+    font: " inherit",
+    "border-bottom": "1px solid blue",
+    cursor: " pointer",
+    color: "blue"
   }
 });
 export const stylesPage2 = theme => ({

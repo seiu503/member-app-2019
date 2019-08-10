@@ -118,6 +118,16 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
+  toggleSignatureInputType = e => {
+    e.preventDefault();
+    let value =
+      this.props.formValues.signatureType === "draw" ? "write" : "draw";
+    this.props.apiSubmission.handleInput({
+      target: { name: "signatureType", value: value }
+    });
+    return false;
+  };
+
   clearSignature = () => {
     this.sigBox.clear();
   };
@@ -503,25 +513,7 @@ export class SubmissionFormPage1Component extends React.Component {
             I notify the Union and my employer in writing, with my valid
             signature, of my desire to revoke this authorization.
           </FormHelperText>
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend" className={classes.radioLabel}>
-              Signature Type
-            </FormLabel>
-            <RadioGroup
-              aria-label="Signature Type"
-              name="signatureType"
-              className={classes.groupLeft}
-              value={this.props.submission.formPage1.signatureType}
-              onChange={this.props.apiSubmission.handleInput}
-            >
-              <FormControlLabel
-                value="write"
-                control={<Radio />}
-                label="Write"
-              />
-              <FormControlLabel value="draw" control={<Radio />} label="Draw" />
-            </RadioGroup>
-          </FormControl>
+
           {this.props.submission.formPage1.signatureType === "write" && (
             <Field
               label="Signature"
@@ -534,7 +526,16 @@ export class SubmissionFormPage1Component extends React.Component {
           )}
           {this.props.submission.formPage1.signatureType === "write" && (
             <FormHelperText className={classes.formHelperText}>
-              Enter your full legal name. This will act as your signature.
+              Enter your full legal name. This will act as your signature.{" "}
+              <button
+                type="button"
+                className={classes.buttonLink}
+                aria-label="Change Signature Input Method"
+                name="signatureType"
+                onClick={e => this.toggleSignatureInputType(e)}
+              >
+                Click here to draw your signature
+              </button>
             </FormHelperText>
           )}
           {this.props.submission.formPage1.signatureType === "draw" && (
@@ -552,7 +553,6 @@ export class SubmissionFormPage1Component extends React.Component {
                 label="Signature"
                 name="signature"
                 id="signature"
-                onChange={this.props.apiSubmission.handleInput}
               />
               <ButtonWithSpinner
                 type="button"
@@ -567,7 +567,16 @@ export class SubmissionFormPage1Component extends React.Component {
           )}
           {this.props.submission.formPage1.signatureType === "draw" && (
             <FormHelperText className={classes.formHelperText}>
-              Draw your signature in the box above.
+              Draw your signature in the box above.{" "}
+              <button
+                type="button"
+                className={classes.buttonLink}
+                aria-label="Change Signature Input Method"
+                name="signatureType"
+                onClick={e => this.toggleSignatureInputType(e)}
+              >
+                Click here to type your signature
+              </button>
             </FormHelperText>
           )}
           <ReCAPTCHA
@@ -576,7 +585,7 @@ export class SubmissionFormPage1Component extends React.Component {
             // seiu503signup.org 2019 new form
             // ^^^^^this is the real sitekey, using temporary one to test with localhost
             // sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
-            onChange={this.reCaptchaChange.bind(this)}
+            // onChange={this.reCaptchaChange.bind(this)}
           />
 
           <ButtonWithSpinner
