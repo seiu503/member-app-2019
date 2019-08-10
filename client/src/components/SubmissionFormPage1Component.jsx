@@ -44,12 +44,9 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        // console.log(result.type);
-        // console.log(result.payload)
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        // console.log(err);
         openSnackbar(
           "error",
           this.props.submission.error ||
@@ -113,7 +110,6 @@ export class SubmissionFormPage1Component extends React.Component {
         employer => employer.Name
       );
       employerList.unshift("");
-      // console.log(employerList);
       return employerList;
     }
   };
@@ -152,12 +148,10 @@ export class SubmissionFormPage1Component extends React.Component {
       this.props.apiContent
         .uploadImage(file)
         .then(result => {
-          console.log(result);
           if (
             result.type === "UPLOAD_IMAGE_FAILURE" ||
             this.props.content.error
           ) {
-            console.log(this.props.content.error);
             openSnackbar(
               "error",
               this.props.content.error ||
@@ -165,8 +159,6 @@ export class SubmissionFormPage1Component extends React.Component {
             );
             resolve();
           } else {
-            console.log("returning payload");
-            console.log(result.payload.content);
             resolve(result.payload.content);
           }
         })
@@ -203,9 +195,7 @@ export class SubmissionFormPage1Component extends React.Component {
     }
     if (this.props.formValues.signatureType === "draw") {
       signature = await this.handleUpload(firstName, lastName);
-      console.log("signature", signature);
     }
-    console.log("signature", signature);
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
     const employerObject = this.props.submission.employerObjects
@@ -259,7 +249,6 @@ export class SubmissionFormPage1Component extends React.Component {
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
-        // console.log(result.type);
         if (
           result.type === "ADD_SUBMISSION_FAILURE" ||
           this.props.submission.error
