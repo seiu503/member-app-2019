@@ -180,7 +180,10 @@ export const stylesPage1 = theme => ({
   },
   form: {
     maxWidth: 600,
-    margin: "auto"
+    margin: "auto",
+    background: "white",
+    padding: 20,
+    borderRadius: "0 0 4px 4px"
   },
   group: {
     display: "flex",

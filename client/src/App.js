@@ -48,6 +48,13 @@ const styles = theme => ({
     flexDirection: "column",
     justifyContent: "center"
   },
+  appRoot: {
+    width: "100vw",
+    height: "100%",
+    minHeight: "80vh",
+    backgroundImage: 'url("/static/media/sample-form-photo.4e7409ec.jpg")',
+    backgroundPosition: "cover"
+  },
   message: {
     margin: "auto",
     width: "50%",
@@ -100,6 +107,9 @@ const styles = theme => ({
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "block"
+  },
+  form: {
+    background: "white"
   }
 });
 
@@ -143,7 +153,7 @@ export class AppUnconnected extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div data-test="component-app">
+      <div data-test="component-app" className={classes.appRoot}>
         <CssBaseline />
         <NavBar scroll={this.scroll} main_ref={this.main_ref} />
         <Notifier />
