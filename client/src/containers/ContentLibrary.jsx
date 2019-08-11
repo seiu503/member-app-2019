@@ -22,7 +22,9 @@ const styles = theme => ({
     margin: "0 auto",
     width: "100%",
     maxWidth: 1920,
-    paddingBottom: 60
+    paddingBottom: 60,
+    background: "white",
+    minHeight: "100vh"
   },
   section: {
     padding: "60px 0 0 0"
@@ -159,7 +161,7 @@ export class ContentLibraryUnconnected extends React.Component {
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
-      <div data-test="component-content-library">
+      <div data-test="component-content-library" className={classes.root}>
         {this.props.appState.loading && <Spinner />}
         {this.props.content.deleteDialogOpen && (
           <AlertDialog

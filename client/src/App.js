@@ -39,14 +39,7 @@ const styles = theme => ({
   },
   container: {
     maxWidth: 1200,
-    padding: 60,
-    [theme.breakpoints.down("lg")]: {
-      padding: "20px 0"
-    },
-    [theme.breakpoints.down("md")]: {
-      margin: "auto"
-    },
-    margin: "auto 0 auto 50%",
+    margin: "auto",
     height: "100%",
     minHeight: "80vh",
     display: "flex",

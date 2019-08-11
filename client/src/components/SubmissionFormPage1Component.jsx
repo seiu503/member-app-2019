@@ -275,7 +275,10 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     return (
-      <div className={classes.root} data-test="component-submissionformpage1">
+      <div
+        data-test="component-submissionformpage1"
+        className={classes.formContainer}
+      >
         <WelcomeInfo
           location={this.props.location}
           history={this.props.history}
@@ -552,6 +555,7 @@ export class SubmissionFormPage1Component extends React.Component {
                   height: 100,
                   className: "sigCanvas"
                 }}
+                backgroundColor="rgb(255,255,255)"
                 label="Signature"
                 name="signature"
                 id="signature"

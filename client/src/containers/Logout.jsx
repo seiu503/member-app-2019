@@ -44,4 +44,7 @@ export const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch)
 });
 
-export default connect(mapDispatchToProps)(Logout);
+export default connect(
+  null,
+  mapDispatchToProps
+)(Logout);

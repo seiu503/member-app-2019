@@ -169,11 +169,15 @@ export const formatSFDate = date => {
 
 // MUI styles object
 export const stylesPage1 = theme => ({
-  root: {
-    margin: "40px 0"
-  },
-  container: {
-    padding: "80px 0 140px 0"
+  formContainer: {
+    padding: "80px 0 140px 0",
+    [theme.breakpoints.down("lg")]: {
+      padding: "20px 0"
+    },
+    [theme.breakpoints.down("md")]: {
+      margin: "auto"
+    },
+    margin: "auto 0 auto 50%"
   },
   head: {
     color: theme.palette.primary.light
