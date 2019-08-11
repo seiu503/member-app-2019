@@ -36,9 +36,11 @@ const {
 export class SubmissionFormPage1Component extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      signatureType: "draw"
+    };
   }
-
+  sigBox = {};
   componentDidMount() {
     // API call to SF to populate employers picklist
     this.props.apiSF
@@ -82,7 +84,7 @@ export class SubmissionFormPage1Component extends React.Component {
     return employerTypesList;
   };
 
-  updateEmployersPicklist = e => {
+  updateEmployersPicklist = () => {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
@@ -118,14 +120,10 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  toggleSignatureInputType = e => {
-    e.preventDefault();
-    let value =
-      this.props.formValues.signatureType === "draw" ? "write" : "draw";
-    this.props.apiSubmission.handleInput({
-      target: { name: "signatureType", value: value }
-    });
-    return false;
+  toggleSignatureInputType = () => {
+    console.log("tioblesaoihjat;aas;dfl");
+    let value = this.state.signatureType === "draw" ? "write" : "draw";
+    this.setState({ signatureType: value });
   };
 
   clearSignature = () => {
@@ -142,7 +140,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   trimSignature = () => {
-    let dataURL = this.sigBox.getTrimmedCanvas().toDataURL("image/jpeg");
+    let dataURL = this.sigBox.toDataURL("image/jpeg");
     let blobData = this.dataURItoBlob(dataURL);
     return blobData;
   };
@@ -200,11 +198,15 @@ export class SubmissionFormPage1Component extends React.Component {
       termsAgree,
       salesforceId
     } = values;
-    if (this.props.formValues.signatureType === "write") {
+    if (this.state.signatureType === "write") {
       signature = values.signature;
     }
-    if (this.props.formValues.signatureType === "draw") {
+    if (this.state.signatureType === "draw") {
       signature = await this.handleUpload(firstName, lastName);
+    }
+    if (!signature) {
+      openSnackbar("error", "Please provide a signature");
+      return;
     }
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
@@ -301,7 +303,7 @@ export class SubmissionFormPage1Component extends React.Component {
             classes={classes}
             component={this.renderSelect}
             options={employerTypesList}
-            onChange={e => this.updateEmployersPicklist(e)}
+            onChange={() => this.updateEmployersPicklist()}
             labelWidth={100}
           />
           {this.props.formValues.employerType !== "" && (
@@ -514,7 +516,7 @@ export class SubmissionFormPage1Component extends React.Component {
             signature, of my desire to revoke this authorization.
           </FormHelperText>
 
-          {this.props.submission.formPage1.signatureType === "write" && (
+          {this.state.signatureType === "write" && (
             <Field
               label="Signature"
               name="signature"
@@ -524,7 +526,7 @@ export class SubmissionFormPage1Component extends React.Component {
               component={this.renderTextField}
             />
           )}
-          {this.props.submission.formPage1.signatureType === "write" && (
+          {this.state.signatureType === "write" && (
             <FormHelperText className={classes.formHelperText}>
               Enter your full legal name. This will act as your signature.{" "}
               <button
@@ -532,13 +534,13 @@ export class SubmissionFormPage1Component extends React.Component {
                 className={classes.buttonLink}
                 aria-label="Change Signature Input Method"
                 name="signatureType"
-                onClick={e => this.toggleSignatureInputType(e)}
+                onClick={() => this.toggleSignatureInputType()}
               >
                 Click here to draw your signature
               </button>
             </FormHelperText>
           )}
-          {this.props.submission.formPage1.signatureType === "draw" && (
+          {this.state.signatureType === "draw" && (
             <div className={classes.sigBox}>
               <SignatureCanvas
                 ref={ref => {
@@ -548,7 +550,8 @@ export class SubmissionFormPage1Component extends React.Component {
                 canvasProps={{
                   width: 594,
                   height: 100,
-                  className: "sigCanvas"
+                  className: "sigCanvas",
+                  backgroundColor: "white"
                 }}
                 label="Signature"
                 name="signature"
@@ -565,7 +568,7 @@ export class SubmissionFormPage1Component extends React.Component {
               </ButtonWithSpinner>
             </div>
           )}
-          {this.props.submission.formPage1.signatureType === "draw" && (
+          {this.state.signatureType === "draw" && (
             <FormHelperText className={classes.formHelperText}>
               Draw your signature in the box above.{" "}
               <button
@@ -573,7 +576,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 className={classes.buttonLink}
                 aria-label="Change Signature Input Method"
                 name="signatureType"
-                onClick={e => this.toggleSignatureInputType(e)}
+                onClick={() => this.toggleSignatureInputType()}
               >
                 Click here to type your signature
               </button>
