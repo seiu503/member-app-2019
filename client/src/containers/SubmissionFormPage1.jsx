@@ -18,10 +18,12 @@ export class SubmissionFormPage1Container extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      tab: 0
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleTab = this.handleTab.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -68,6 +70,12 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   }
 
+  handleTab(tab) {
+    const newState = { ...this.state };
+    newState.tab = tab;
+    this.setState({ ...newState });
+  }
+
   render() {
     const fullName = `${
       this.props.submission &&
@@ -94,7 +102,11 @@ export class SubmissionFormPage1Container extends React.Component {
           fullName={fullName}
           history={this.props.history}
         />
-        <SubmissionFormPage1Wrap {...this.props} />
+        <SubmissionFormPage1Wrap
+          {...this.props}
+          tab={this.state.tab}
+          handleTab={this.handleTab}
+        />
       </div>
     );
   }

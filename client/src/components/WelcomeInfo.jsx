@@ -23,6 +23,11 @@ const styles = theme => ({
   body: {
     color: "black"
   },
+  headline: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.7rem"
+    }
+  },
   media: {
     height: "auto",
     paddingTop: "56.25%", // 16:9,
@@ -41,6 +46,14 @@ const styles = theme => ({
     paddingRight: 40,
     display: "flex",
     justifyContent: "flex-end"
+  },
+  next: {
+    textTransform: "none",
+    fontSize: "1.3rem",
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
   }
 });
 
@@ -116,7 +129,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             variant="h3"
             align="left"
             gutterBottom
-            className={this.classes.head}
+            className={this.classes.headline}
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
@@ -134,9 +147,9 @@ export class WelcomeInfoUnconnected extends React.Component {
           <div className={this.classes.buttonWrap}>
             <Button
               type="button"
-              onClick={() => this.props.history.push("/")}
+              onClick={() => this.props.handleTab(1)}
               color="primary"
-              className={this.classes.nextButton}
+              className={this.classes.next}
               variant="contained"
             >
               Next
