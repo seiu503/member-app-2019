@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import sanitizeHtml from "sanitize-html";
 
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CardMedia from "@material-ui/core/CardMedia";
 import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
@@ -24,12 +26,21 @@ const styles = theme => ({
   media: {
     height: "auto",
     paddingTop: "56.25%", // 16:9,
-    position: "relative"
+    position: "relative",
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    }
   },
   card: {
     maxWidth: 600,
     margin: "0 auto",
     padding: 20
+  },
+  buttonWrap: {
+    width: "100%",
+    paddingRight: 40,
+    display: "flex",
+    justifyContent: "flex-end"
   }
 });
 
@@ -81,6 +92,12 @@ export class WelcomeInfoUnconnected extends React.Component {
     }
   }
 
+  createMarkup = () => {
+    return {
+      __html: sanitizeHtml(this.state.body)
+    };
+  };
+
   render() {
     if (this.props.appState.loading) {
       return <div>loading...</div>;
@@ -97,7 +114,7 @@ export class WelcomeInfoUnconnected extends React.Component {
 
           <Typography
             variant="h3"
-            align="center"
+            align="left"
             gutterBottom
             className={this.classes.head}
             style={{ paddingTop: 20 }}
@@ -108,13 +125,23 @@ export class WelcomeInfoUnconnected extends React.Component {
 
           <Typography
             variant="body1"
-            align="center"
+            align="left"
             gutterBottom
             className={this.classes.body}
             data-test="body"
-          >
-            {this.state.body}
-          </Typography>
+            dangerouslySetInnerHTML={this.createMarkup()}
+          />
+          <div className={this.classes.buttonWrap}>
+            <Button
+              type="button"
+              onClick={() => this.props.history.push("/")}
+              color="primary"
+              className={this.classes.nextButton}
+              variant="contained"
+            >
+              Next
+            </Button>
+          </div>
         </Card>
       </div>
     );

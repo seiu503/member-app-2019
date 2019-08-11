@@ -25,6 +25,8 @@ import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
 import LinkRequest from "./containers/LinkRequest";
 
+import SamplePhoto from "./img/sample-form-photo.jpg";
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -38,10 +40,13 @@ const styles = theme => ({
   container: {
     maxWidth: 1200,
     padding: 60,
-    [theme.breakpoints.down("md")]: {
-      padding: 20
+    [theme.breakpoints.down("lg")]: {
+      padding: "20px 0"
     },
-    margin: "auto",
+    [theme.breakpoints.down("md")]: {
+      margin: "auto"
+    },
+    margin: "auto 0 auto 50%",
     height: "100%",
     minHeight: "80vh",
     display: "flex",
@@ -52,8 +57,13 @@ const styles = theme => ({
     width: "100vw",
     height: "100%",
     minHeight: "80vh",
-    backgroundImage: 'url("/static/media/sample-form-photo.4e7409ec.jpg")',
-    backgroundPosition: "cover"
+    backgroundImage: `url("${SamplePhoto}")`,
+    // backgroundSize: "cover",
+    backgroundAttachment: "fixed",
+    backgroundPosition: "bottom",
+    [theme.breakpoints.down("sm")]: {
+      backgroundImage: "none"
+    }
   },
   message: {
     margin: "auto",

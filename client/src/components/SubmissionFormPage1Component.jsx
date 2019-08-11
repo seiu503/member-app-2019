@@ -276,7 +276,10 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerList = this.updateEmployersPicklist() || [""];
     return (
       <div className={classes.root} data-test="component-submissionformpage1">
-        <WelcomeInfo location={this.props.location} />
+        <WelcomeInfo
+          location={this.props.location}
+          history={this.props.history}
+        />
         <form
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           id="submissionFormPage1"
