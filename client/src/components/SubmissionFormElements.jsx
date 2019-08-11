@@ -186,7 +186,7 @@ export const stylesPage1 = theme => ({
     maxWidth: 600,
     margin: "auto",
     background: "white",
-    padding: 20,
+    padding: "20px 20px 40px 20px",
     borderRadius: "0 0 4px 4px"
   },
   group: {
@@ -258,12 +258,22 @@ export const stylesPage1 = theme => ({
     border: "1px solid lightgrey",
     "border-radius": "5px",
     margin: "0 0 32px",
-    width: "598px"
+    width: "100%"
   }
 });
 export const stylesPage2 = theme => ({
   root: {
     margin: "80px 0"
+  },
+  formContainer: {
+    padding: "80px 0 140px 0",
+    [theme.breakpoints.down("lg")]: {
+      padding: "20px 0"
+    },
+    [theme.breakpoints.down("md")]: {
+      margin: "auto"
+    },
+    margin: "auto 0 auto 50%"
   },
   container: {
     padding: "80px 0 140px 0"
@@ -273,7 +283,9 @@ export const stylesPage2 = theme => ({
   },
   form: {
     maxWidth: 600,
-    margin: "auto"
+    margin: "auto",
+    padding: "80px 20px",
+    background: "white"
   },
   group: {
     display: "flex",

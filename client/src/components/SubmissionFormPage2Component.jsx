@@ -148,7 +148,7 @@ export class SubmissionFormPage2Component extends React.Component {
   render() {
     return (
       <div
-        className={this.classes.root}
+        className={this.classes.formContainer}
         data-test="component-submissionformpage2"
       >
         <form

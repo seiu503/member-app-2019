@@ -41,7 +41,7 @@ const styles = theme => ({
     maxWidth: 1200,
     margin: "auto",
     height: "100%",
-    minHeight: "80vh",
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center"
@@ -63,7 +63,15 @@ const styles = theme => ({
     width: "50%",
     textAlign: "center",
     height: "50%",
-    lineHeight: "2em"
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      height: "100%"
+    },
+    lineHeight: "2em",
+    background: "white",
+    borderRadius: "4px",
+    padding: 60,
+    fontSize: "1.2em"
   },
   row: {
     display: "flex",
