@@ -51,11 +51,13 @@ const styles = theme => ({
     height: "100%",
     minHeight: "80vh",
     backgroundImage: `url("${SamplePhoto}")`,
-    // backgroundSize: "cover",
     backgroundAttachment: "fixed",
     backgroundPosition: "bottom",
     [theme.breakpoints.down("sm")]: {
       backgroundImage: "none"
+    },
+    [theme.breakpoints.up("xl")]: {
+      backgroundSize: "cover"
     }
   },
   message: {

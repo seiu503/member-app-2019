@@ -231,7 +231,13 @@ export const stylesPage1 = theme => ({
   formControlDate: {
     width: "15%",
     minWidth: 80,
-    margin: "0 15px"
+    margin: "0 15px",
+    "&:first-child": {
+      margin: "0 15px 0 0"
+    },
+    "&:last-child": {
+      margin: "0 0 0 15px"
+    }
   },
   formLabel: {
     margin: "10px 0"
