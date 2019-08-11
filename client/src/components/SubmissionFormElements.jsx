@@ -189,6 +189,24 @@ export const stylesPage1 = theme => ({
     padding: "20px 20px 40px 20px",
     borderRadius: "0 0 4px 4px"
   },
+  buttonWrap: {
+    width: "100%",
+    paddingRight: 20,
+    display: "flex",
+    justifyContent: "flex-end"
+  },
+  next: {
+    textTransform: "none",
+    fontSize: "1.3rem",
+    padding: "6px 20px",
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  formSection: {
+    paddingTop: 20
+  },
   group: {
     display: "flex",
     width: "100%",

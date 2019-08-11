@@ -19,7 +19,7 @@ export class SubmissionFormPage1Container extends React.Component {
     super(props);
     this.state = {
       open: false,
-      tab: 0
+      tab: -1
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -70,9 +70,11 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   }
 
-  handleTab(tab) {
+  handleTab(event, newValue) {
+    console.log(event);
+    console.log(newValue);
     const newState = { ...this.state };
-    newState.tab = tab;
+    newState.tab = newValue;
     this.setState({ ...newState });
   }
 

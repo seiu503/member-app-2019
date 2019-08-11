@@ -43,13 +43,14 @@ const styles = theme => ({
   },
   buttonWrap: {
     width: "100%",
-    paddingRight: 40,
+    paddingRight: 20,
     display: "flex",
     justifyContent: "flex-end"
   },
   next: {
     textTransform: "none",
     fontSize: "1.3rem",
+    padding: "6px 20px",
     color: theme.palette.secondary.main,
     "&:hover": {
       backgroundColor: theme.palette.primary.light
@@ -67,8 +68,6 @@ export class WelcomeInfoUnconnected extends React.Component {
       image: null
     };
   }
-
-  getHeadline() {}
 
   componentDidMount() {
     const values = queryString.parse(this.props.location.search);
@@ -147,7 +146,7 @@ export class WelcomeInfoUnconnected extends React.Component {
           <div className={this.classes.buttonWrap}>
             <Button
               type="button"
-              onClick={() => this.props.handleTab(1)}
+              onClick={e => this.props.handleTab(e, 0)}
               color="primary"
               className={this.classes.next}
               variant="contained"
