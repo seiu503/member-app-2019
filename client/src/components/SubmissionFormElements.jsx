@@ -178,6 +178,13 @@ export const stylesPage1 = theme => ({
     },
     [theme.breakpoints.down("md")]: {
       margin: "44px auto"
+    },
+    [theme.breakpoints.only("xs")]: {
+      width: "100vw",
+      position: "absolute",
+      left: 0,
+      top: 0,
+      margin: "36px auto"
     }
   },
   head: {
@@ -188,7 +195,10 @@ export const stylesPage1 = theme => ({
     margin: "auto",
     background: "white",
     padding: "20px 20px 40px 20px",
-    borderRadius: "0 0 4px 4px"
+    borderRadius: "0 0 4px 4px",
+    [theme.breakpoints.only("xs")]: {
+      padding: "10px 5px 40px 5px"
+    }
   },
   buttonWrap: {
     width: "100%",
@@ -255,14 +265,7 @@ export const stylesPage1 = theme => ({
   },
   formControlDate: {
     width: "15%",
-    minWidth: 80,
-    margin: "0 15px",
-    "&:first-child": {
-      margin: "0 15px 0 0"
-    },
-    "&:last-child": {
-      margin: "0 0 0 15px"
-    }
+    minWidth: 80
   },
   formLabel: {
     margin: "10px 0"
@@ -283,14 +286,28 @@ export const stylesPage1 = theme => ({
     display: "flex",
     flexDirection: "row",
     flexWrap: "nowrap",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    [theme.breakpoints.down("xs")]: {
+      flexWrap: "wrap"
+    }
+  },
+  formGroup2ColShort: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
+    width: 280
   },
   input: {
     width: "100%",
     margin: "0 0 30px 0"
   },
   input2Col: {
-    width: "48%"
+    width: "48%",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      display: "block"
+    }
   },
   controlCheckbox: {
     margin: "-35px 0 40px 0"
@@ -381,21 +398,30 @@ export const renderTextField = ({
   classes,
   twocol,
   short,
+  mobile,
   ...custom
-}) => (
-  <TextField
-    label={label}
-    error={!!(touched && error)}
-    variant="outlined"
-    className={classes.input}
-    style={twocol ? { width: "48%" } : short ? { width: 150 } : {}}
-    helperText={touched && error}
-    required={!!(touched && error)}
-    {...input}
-    {...custom}
-    data-test="component-text-field"
-  />
-);
+}) => {
+  return (
+    <TextField
+      label={label}
+      error={!!(touched && error)}
+      variant="outlined"
+      className={classes.input}
+      style={
+        twocol && !mobile
+          ? { width: "48%" }
+          : short
+          ? { width: 150 }
+          : { width: "100%", marginBottom: 30 }
+      }
+      helperText={touched && error}
+      required={!!(touched && error)}
+      {...input}
+      {...custom}
+      data-test="component-text-field"
+    />
+  );
+};
 
 // custom MUI friendly SELECT input
 export const renderSelect = ({
@@ -407,6 +433,7 @@ export const renderSelect = ({
   labelWidth,
   options,
   short,
+  mobile,
   formControlName,
   ...custom
 }) => (
@@ -416,7 +443,7 @@ export const renderSelect = ({
     error={!!(error && touched)}
     {...custom}
     required={touched && error === "Required"}
-    style={short ? { width: 80 } : {}}
+    style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select

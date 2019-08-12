@@ -18,7 +18,10 @@ import SamplePhoto from "../img/sample-form-photo.jpg";
 const styles = theme => ({
   root: {
     margin: "40px 0 0 0",
-    color: theme.palette.primary.main
+    color: theme.palette.primary.main,
+    [theme.breakpoints.only("xs")]: {
+      margin: 0
+    }
   },
   body: {
     color: "black"
@@ -34,6 +37,9 @@ const styles = theme => ({
     position: "relative",
     [theme.breakpoints.up("md")]: {
       display: "none"
+    },
+    [theme.breakpoints.only("xs")]: {
+      margin: "-24px -20px 0 -20px"
     }
   },
   card: {
