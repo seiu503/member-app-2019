@@ -8,7 +8,6 @@ import Paper from "@material-ui/core/Paper";
 import LooksOneIcon from "@material-ui/icons/LooksOne";
 import LooksTwoIcon from "@material-ui/icons/LooksTwo";
 import Looks3Icon from "@material-ui/icons/Looks3";
-// import Looks4Icon from '@material-ui/icons/Looks4';
 
 const useStyles = makeStyles({
   root: {

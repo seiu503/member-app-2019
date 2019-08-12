@@ -6,6 +6,7 @@ import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
+import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
@@ -70,13 +71,46 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   }
 
-  handleTab(event, newValue) {
+  handleTab(event, newValue, pristine, invalid) {
     console.log("handleTab");
-    console.log(event);
-    console.log(newValue);
-    const newState = { ...this.state };
-    newState.tab = newValue;
-    this.setState({ ...newState });
+    if (newValue > 0) {
+      console.log(`newValue: ${newValue}`);
+      console.log(`pristine: ${pristine}, invalid: ${invalid}`);
+    }
+
+    this.tabValidate(newValue, pristine, invalid).then(valid => {
+      console.log(`valid: ${valid}`);
+      if (valid) {
+        const newState = { ...this.state };
+        newState.tab = newValue;
+        this.setState({ ...newState });
+      } else {
+        openSnackbar(
+          "error",
+          "Plese fix form errors and complete all required fields before proceeding."
+        );
+        return;
+      }
+    });
+  }
+
+  tabValidate(tabIndex, pristine, invalid) {
+    // let requiredFieldsByTab;
+    return new Promise(resolve => {
+      if (tabIndex === 0) {
+        console.log("tab 0");
+        resolve(true);
+      }
+      if (tabIndex === 1 || tabIndex === 2) {
+        console.log("tab 1 or 2");
+        console.log(`pristine: ${pristine}, invalid: ${invalid}`);
+        if (pristine || invalid) {
+          resolve(false);
+        } else {
+          resolve(true);
+        }
+      }
+    });
   }
 
   render() {

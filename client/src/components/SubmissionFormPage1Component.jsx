@@ -1,40 +1,20 @@
 import React from "react";
-import { Field } from "redux-form";
 import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
 import queryString from "query-string";
-import { reduxForm } from "redux-form";
-import ReCAPTCHA from "react-google-recaptcha";
-import SignatureCanvas from "react-signature-canvas";
 
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControl from "@material-ui/core/FormControl";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Radio from "@material-ui/core/Radio";
-import Button from "@material-ui/core/Button";
-import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import withWidth from "@material-ui/core/withWidth";
 
 import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
+import Tab1Form from "./Tab1";
+import Tab2Form from "./Tab2";
+import Tab3Form from "./Tab3";
 import { openSnackbar } from "../containers/Notifier";
-import ButtonWithSpinner from "./ButtonWithSpinner";
 import WelcomeInfo from "./WelcomeInfo";
-import validate from "../utils/validators";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
-const {
-  stateList,
-  monthList,
-  languageOptions,
-  dateOptions,
-  yearOptions,
-  employerTypeMap,
-  getKeyByValue,
-  formatSFDate
-} = formElements;
+const { employerTypeMap, getKeyByValue, formatSFDate } = formElements;
 
 export class SubmissionFormPage1Component extends React.Component {
   constructor(props) {
@@ -122,7 +102,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   clearSignature = () => {
-    this.sigBox.clear();
+    this.props.sigBox.clear();
   };
 
   dataURItoBlob = dataURI => {
@@ -135,7 +115,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   trimSignature = () => {
-    let dataURL = this.sigBox.getTrimmedCanvas().toDataURL("image/jpeg");
+    let dataURL = this.props.sigBox.getTrimmedCanvas().toDataURL("image/jpeg");
     let blobData = this.dataURItoBlob(dataURL);
     return blobData;
   };
@@ -272,8 +252,6 @@ export class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
-    console.log(this.props.tab);
-    console.log(typeof this.props.tab === "number");
     const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
@@ -296,412 +274,59 @@ export class SubmissionFormPage1Component extends React.Component {
             }
           />
         )}
+
         {this.props.tab >= 0 && (
           <div
             style={
               this.props.tab >= 0 ? { display: "block" } : { display: "none" }
             }
           >
-            <NavTabs tab={this.props.tab} handleTab={this.props.handleTab} />
-            <form
-              onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
-              id="submissionFormPage1"
-              className={classes.form}
-            >
-              <div
-                className={classes.formSection}
-                style={
-                  this.props.tab === 0
-                    ? { display: "block" }
-                    : { display: "none" }
-                }
-              >
-                <Field
-                  label="Employer Type"
-                  name="employerType"
-                  id="employerType"
-                  data-test="employer-type-test"
-                  type="select"
-                  classes={classes}
-                  component={this.renderSelect}
-                  options={employerTypesList}
-                  onChange={e => this.updateEmployersPicklist(e)}
-                  labelWidth={100}
-                />
-                {this.props.formValues.employerType !== "" && (
-                  <Field
-                    labelWidth={104}
-                    label="Employer Name"
-                    name="employerName"
-                    id="employerName"
-                    type="select"
-                    classes={classes}
-                    component={this.renderSelect}
-                    options={employerList}
-                  />
-                )}
-                <FormGroup row classes={{ root: classes.formGroup2Col }}>
-                  <Field
-                    twocol
-                    mobile={!isWidthUp("sm", this.props.width)}
-                    label="First Name"
-                    name="firstName"
-                    id="firstName"
-                    type="text"
-                    classes={{ input2col: classes.input2col }}
-                    component={this.renderTextField}
-                  />
-
-                  <Field
-                    twocol
-                    mobile={!isWidthUp("sm", this.props.width)}
-                    name="lastName"
-                    id="lastName"
-                    label="Last Name"
-                    classes={{ input2col: classes.input2col }}
-                    component={this.renderTextField}
-                    type="text"
-                  />
-                </FormGroup>
-
-                <FormLabel className={classes.formLabel} component="legend">
-                  Birthdate
-                </FormLabel>
-                <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
-                  <Field
-                    label="Month"
-                    name="mm"
-                    id="mm"
-                    type="select"
-                    classes={classes}
-                    formControlName="formControlDate"
-                    component={this.renderSelect}
-                    labelWidth={41}
-                    options={monthList}
-                  />
-
-                  <Field
-                    label="Day"
-                    name="dd"
-                    id="dd"
-                    type="select"
-                    formControlName="formControlDate"
-                    classes={classes}
-                    component={this.renderSelect}
-                    labelWidth={24}
-                    options={dateOptions(this.props)}
-                  />
-
-                  <Field
-                    label="Year"
-                    name="yyyy"
-                    id="yyyy"
-                    type="select"
-                    formControlName="formControlDate"
-                    classes={classes}
-                    component={this.renderSelect}
-                    labelWidth={30}
-                    options={yearOptions()}
-                  />
-                </FormGroup>
-
-                <Field
-                  label="Preferred Language"
-                  name="preferredLanguage"
-                  id="preferredLanguage"
-                  type="select"
-                  classes={classes}
-                  component={this.renderSelect}
-                  labelWidth={132}
-                  options={languageOptions}
-                />
-
-                <FormLabel className={classes.formLabel} component="legend">
-                  Address
-                </FormLabel>
-
-                <Field
-                  label="Home Street"
-                  name="homeStreet"
-                  id="homeStreet"
-                  type="text"
-                  classes={classes}
-                  component={this.renderTextField}
-                />
-
-                <FormHelperText className={classes.formHelperText}>
-                  Please enter your physical street address here, not a P.O.
-                  box. There is a space for a mailing address on the next page,
-                  if different from your physical address.
-                </FormHelperText>
-                <FormGroup
-                  className={classes.formGroup}
-                  row
-                  classes={{ root: classes.formGroup2Col }}
-                >
-                  <Field
-                    label="Home City"
-                    name="homeCity"
-                    id="homeCity"
-                    type="text"
-                    twocol
-                    mobile={!isWidthUp("sm", this.props.width)}
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
-
-                  <Field
-                    label="Home State"
-                    name="homeState"
-                    id="homeState"
-                    type="select"
-                    short
-                    mobile={!isWidthUp("sm", this.props.width)}
-                    classes={classes}
-                    component={this.renderSelect}
-                    options={stateList}
-                    labelWidth={80}
-                  />
-
-                  <Field
-                    label="Home Zip"
-                    name="homeZip"
-                    id="homeZip"
-                    short
-                    mobile={!isWidthUp("sm", this.props.width)}
-                    type="text"
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
-                </FormGroup>
-
-                <Field
-                  label="Home Email"
-                  name="homeEmail"
-                  id="homeEmail"
-                  type="email"
-                  classes={classes}
-                  component={this.renderTextField}
-                />
-
-                <FormHelperText className={classes.formHelperText}>
-                  Please use your personal email if you have one, since some
-                  employers limit union communication via work email. If you
-                  don't have a personal email, work email is fine. If you don't
-                  have an email address, call us at 1.844.503.7348 to sign up
-                  over the phone.
-                </FormHelperText>
-                <FormGroup>
-                  <Field
-                    label="Mobile Phone†"
-                    name="mobilePhone"
-                    id="mobilePhone"
-                    type="tel"
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
-
-                  <FormHelperText className={classes.formHelperText}>
-                    † By providing my phone number, I understand that the
-                    Service Employees International Union (SEIU), its local
-                    unions, and affiliates may use automated calling
-                    technologies and/or text message me on my cellular phone on
-                    a periodic basis. SEIU will never charge for text message
-                    alerts. Carrier message and data rates may apply to such
-                    alerts. Reply STOP to stop receiving messages; reply HELP
-                    for more information.
-                  </FormHelperText>
-
-                  <Field
-                    label="Opt Out Of Receiving Mobile Alerts"
-                    name="textAuthOptOut"
-                    id="textAuthOptOut"
-                    type="checkbox"
-                    formControlName="controlCheckbox"
-                    classes={classes}
-                    component={this.renderCheckbox}
-                  />
-                </FormGroup>
-                <div className={classes.buttonWrap}>
-                  <Button
-                    type="button"
-                    onClick={e => this.props.handleTab(e, 1)}
-                    color="primary"
-                    className={classes.next}
-                    variant="contained"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-              <div
-                className={classes.formSection}
-                style={
-                  this.props.tab === 1
-                    ? { display: "block" }
-                    : { display: "none" }
-                }
-              >
-                <Field
-                  formControlName="controlCheckbox"
-                  label="Agree to Terms of Membership"
-                  name="termsAgree"
-                  id="termsAgree"
-                  type="checkbox"
-                  classes={classes}
-                  component={this.renderCheckbox}
-                />
-                <FormHelperText
-                  className={classes.formHelperTextLegal}
-                  id="termsOfServiceLegalLanguage"
-                  ref={this.props.legal_language}
-                >
-                  Your full name, the network address you are accessing this
-                  page from, and the timestamp of submission will serve as
-                  signature indicating: I hereby designate SEIU Local 503, OPEU
-                  (or any successor Union entity) as my desired collective
-                  bargaining agent. I also hereby authorize my employer to
-                  deduct from my wages, commencing with the next payroll period,
-                  all Union dues and other fees or assessments as shall be
-                  certified by SEIU Local 503, OPEU (or any successor Union
-                  entity) and to remit those amounts to such Union. This
-                  authorization/delegation is unconditional, made in
-                  consideration for the cost of representation and other actions
-                  in my behalf by the Union and is made irrespective of my
-                  membership in the Union. This authorization is irrevocable for
-                  a period of one year from the date of execution and from year
-                  to year thereafter unless not less than thirty (30) and not
-                  more than forty-five (45) days prior to the end of any annual
-                  period or the termination of the contract between my employer
-                  and the Union, whichever occurs first, I notify the Union and
-                  my employer in writing, with my valid signature, of my desire
-                  to revoke this authorization.
-                </FormHelperText>
-                <FormControl
-                  component="fieldset"
-                  className={classes.formControl}
-                >
-                  <FormLabel component="legend" className={classes.radioLabel}>
-                    Signature Type
-                  </FormLabel>
-                  <RadioGroup
-                    aria-label="Signature Type"
-                    name="signatureType"
-                    className={classes.groupLeft}
-                    value={this.props.submission.formPage1.signatureType}
-                    onChange={this.props.apiSubmission.handleInput}
-                  >
-                    <FormControlLabel
-                      value="write"
-                      control={<Radio />}
-                      label="Write"
-                    />
-                    <FormControlLabel
-                      value="draw"
-                      control={<Radio />}
-                      label="Draw"
-                    />
-                  </RadioGroup>
-                </FormControl>
-                {this.props.submission.formPage1.signatureType === "write" && (
-                  <Field
-                    label="Signature"
-                    name="signature"
-                    id="signature"
-                    type="text"
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
-                )}
-                {this.props.submission.formPage1.signatureType === "write" && (
-                  <FormHelperText className={classes.formHelperText}>
-                    Enter your full legal name. This will act as your signature.
-                  </FormHelperText>
-                )}
-                {this.props.submission.formPage1.signatureType === "draw" && (
-                  <div className={classes.sigBox}>
-                    <SignatureCanvas
-                      ref={ref => {
-                        this.sigBox = ref;
-                      }}
-                      penColor="black"
-                      canvasProps={{
-                        width: 594,
-                        height: 100,
-                        className: "sigCanvas"
-                      }}
-                      backgroundColor="rgb(255,255,255)"
-                      label="Signature"
-                      name="signature"
-                      id="signature"
-                      onChange={this.props.apiSubmission.handleInput}
-                    />
-                    <ButtonWithSpinner
-                      type="button"
-                      onClick={this.clearSignature}
-                      color="secondary"
-                      className={classes.clearButton}
-                      variant="contained"
-                    >
-                      Clear Signature
-                    </ButtonWithSpinner>
-                  </div>
-                )}
-                {this.props.submission.formPage1.signatureType === "draw" && (
-                  <FormHelperText className={classes.formHelperText}>
-                    Draw your signature in the box above.
-                  </FormHelperText>
-                )}
-                <div className={classes.buttonWrap}>
-                  <Button
-                    type="button"
-                    onClick={e => this.props.handleTab(e, 0)}
-                    color="primary"
-                    className={classes.back}
-                    variant="contained"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={e => this.props.handleTab(e, 2)}
-                    color="primary"
-                    className={classes.next}
-                    variant="contained"
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-              <div
-                className={classes.formSection}
-                style={
-                  this.props.tab === 2
-                    ? { display: "block" }
-                    : { display: "none" }
-                }
-              >
-                <h3>Here's where the payment processing stuff will go...</h3>
-                <ReCAPTCHA
-                  ref={this.props.reCaptchaRef}
-                  sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-                  // seiu503signup.org 2019 new form
-                  // ^^^^^this is the real sitekey, using temporary one to test with localhost
-                  // sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
-                  onChange={this.reCaptchaChange.bind(this)}
-                />
-
-                <ButtonWithSpinner
-                  type="submit"
-                  color="secondary"
-                  className={classes.formButton}
-                  variant="contained"
-                  loading={this.props.submission.loading}
-                >
-                  Submit
-                </ButtonWithSpinner>
-              </div>
-            </form>
+            <NavTabs
+              tab={this.props.tab}
+              handleTab={this.props.handleTab}
+              pristine={this.props.pristine}
+              invalid={this.props.invalid}
+            />
+            {this.props.tab === 0 && (
+              <Tab1Form
+                handleSubmit={e => this.props.handleTab(e, 1)}
+                classes={classes}
+                employerTypesList={employerTypesList}
+                employerList={employerList}
+                updateEmployersPicklist={this.updateEmployersPicklist}
+                renderSelect={this.renderSelect}
+                renderTextField={this.renderTextField}
+                renderCheckbox={this.renderCheckbox}
+                formValues={this.props.formValues}
+                width={this.props.width}
+                handleTab={this.props.handleTab}
+              />
+            )}
+            {this.props.tab === 1 && (
+              <Tab2Form
+                handleSubmit={e => this.props.handleTab(e, 1)}
+                classes={classes}
+                legal_language={this.props.legal_language}
+                sigBox={this.props.sigBox}
+                clearSignature={this.clearSignature}
+                handleInput={this.props.apiSubmission.handleInput}
+                formPage1={this.props.submission.formPage1}
+                renderSelect={this.renderSelect}
+                renderTextField={this.renderTextField}
+                renderCheckbox={this.renderCheckbox}
+                handleTab={this.props.handleTab}
+              />
+            )}
+            {this.props.tab === 2 && (
+              <Tab3Form
+                handleSubmit={e => this.props.handleTab(e, 1)}
+                classes={classes}
+                reCaptchaChange={this.reCaptchaChange}
+                reCaptchaRef={this.props.reCaptchaRef}
+                loading={this.props.submission.loading}
+                handleTab={this.props.handleTab}
+              />
+            )}
           </div>
         )}
       </div>
@@ -710,23 +335,60 @@ export class SubmissionFormPage1Component extends React.Component {
 }
 
 SubmissionFormPage1Component.propTypes = {
-  type: PropTypes.string,
-  appState: PropTypes.shape({
-    authToken: PropTypes.string
-  }),
   submission: PropTypes.shape({
     loading: PropTypes.bool,
     error: PropTypes.string,
-    salesforceId: PropTypes.string
+    salesforceId: PropTypes.string,
+    employerNames: PropTypes.array,
+    employerObjects: PropTypes.arrayOf(
+      PropTypes.shape({
+        Name: PropTypes.string,
+        Sub_Division__c: PropTypes.string
+      })
+    ),
+    formPage1: PropTypes.shape({})
   }).isRequired,
-  classes: PropTypes.object
+  apiSF: PropTypes.shape({
+    getSFEmployers: PropTypes.func
+  }).isRequired,
+  apiSubmission: PropTypes.shape({
+    addSubmission: PropTypes.func,
+    handleInput: PropTypes.func
+  }).isRequired,
+  classes: PropTypes.object,
+  location: PropTypes.shape({
+    search: PropTypes.string
+  }),
+  history: PropTypes.shape({
+    push: PropTypes.func
+  }),
+  formValues: PropTypes.shape({
+    signatureType: PropTypes.string
+  }).isRequired,
+  apiContent: PropTypes.shape({
+    uploadImage: PropTypes.func
+  }).isRequired,
+  content: PropTypes.shape({
+    error: PropTypes.string
+  }).isRequired,
+  legal_language: PropTypes.shape({
+    current: PropTypes.shape({
+      textContent: PropTypes.string
+    })
+  }),
+  sigBox: PropTypes.shape({
+    clear: PropTypes.func,
+    getTrimmedCanvas: PropTypes.func
+  }),
+  handleTab: PropTypes.func,
+  reCaptchaRef: PropTypes.shape({
+    current: PropTypes.shape({
+      getValue: PropTypes.func
+    })
+  }),
+  tab: PropTypes.number,
+  pristine: PropTypes.bool,
+  invalid: PropTypes.bool
 };
 
-// add reduxForm to component
-export const SubmissionFormWrap = reduxForm({
-  form: "submissionPage1",
-  validate,
-  enableReinitialize: true
-})(SubmissionFormPage1Component);
-
-export default withWidth()(SubmissionFormWrap);
+export default withWidth()(SubmissionFormPage1Component);

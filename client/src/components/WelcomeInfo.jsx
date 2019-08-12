@@ -17,6 +17,9 @@ import SamplePhoto from "../img/sample-form-photo.jpg";
 
 const styles = theme => ({
   root: {
+    [theme.breakpoints.up("lg")]: {
+      margin: 0
+    },
     margin: "40px 0 0 0",
     color: theme.palette.primary.main,
     [theme.breakpoints.only("xs")]: {
@@ -152,7 +155,7 @@ export class WelcomeInfoUnconnected extends React.Component {
           <div className={this.classes.buttonWrap}>
             <Button
               type="button"
-              onClick={e => this.props.handleTab(e, 0)}
+              onClick={e => this.props.handleTab(e, 0, true, false)}
               color="primary"
               className={this.classes.next}
               variant="contained"

@@ -131,6 +131,7 @@ export class AppUnconnected extends Component {
     super(props);
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
+    this.sigBox = React.createRef();
     this.reCaptchaRef = React.createRef();
     this.state = {
       deleteDialogOpen: false,
@@ -180,6 +181,7 @@ export class AppUnconnected extends Component {
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
+                  sigBox={this.sigBox}
                   reCaptchaRef={this.reCaptchaRef}
                   {...routeProps}
                 />

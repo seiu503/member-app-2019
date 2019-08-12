@@ -172,9 +172,11 @@ export const stylesPage1 = theme => ({
   formContainer: {
     padding: "80px 0 140px 0",
     margin: "auto 0 auto 50%",
+    [theme.breakpoints.down("xl")]: {
+      margin: "0 0 auto 50%"
+    },
     [theme.breakpoints.down("lg")]: {
-      padding: "20px 0",
-      margin: "44px 0 auto 50%"
+      padding: "20px 0"
     },
     [theme.breakpoints.down("md")]: {
       margin: "44px auto"
@@ -187,6 +189,7 @@ export const stylesPage1 = theme => ({
       margin: "36px auto"
     }
   },
+  sectionContainer: {},
   head: {
     color: theme.palette.primary.light
   },
@@ -202,7 +205,7 @@ export const stylesPage1 = theme => ({
   },
   buttonWrap: {
     width: "100%",
-    paddingRight: 20,
+    padding: "0 20px 40px 0",
     display: "flex",
     justifyContent: "flex-end"
   },
