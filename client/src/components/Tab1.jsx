@@ -1,6 +1,6 @@
 import React from "react";
-import { Field } from "redux-form";
-import { reduxForm } from "redux-form";
+import { Field, reduxForm, getFormValues } from "redux-form";
+import { connect } from "react-redux";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -274,6 +274,12 @@ Tab1.propTypes = {
   handleTab: PropTypes.func
 };
 
+const mapStateToProps = state => ({
+  submission: state.submission,
+  initialValues: state.submission.formPage1,
+  formValues: getFormValues("submissionPage1")(state) || {}
+});
+
 // add reduxForm to component
 export const Tab1Form = reduxForm({
   form: "submissionPage1",
@@ -283,4 +289,7 @@ export const Tab1Form = reduxForm({
   enableReinitialize: true
 })(Tab1);
 
-export default withWidth()(Tab1Form);
+// connect to redux store
+export const Tab1Connected = connect(mapStateToProps)(Tab1Form);
+
+export default withWidth()(Tab1Connected);

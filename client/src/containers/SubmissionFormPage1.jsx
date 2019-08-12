@@ -35,6 +35,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
+          console.log(this.props.submission.formPage1);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
