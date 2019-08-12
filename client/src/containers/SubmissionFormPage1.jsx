@@ -71,8 +71,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleTab(event, newValue) {
-    console.log(event);
-    console.log(newValue);
     const newState = { ...this.state };
     newState.tab = newValue;
     this.setState({ ...newState });

@@ -204,6 +204,16 @@ export const stylesPage1 = theme => ({
       backgroundColor: theme.palette.primary.light
     }
   },
+  back: {
+    textTransform: "none",
+    fontSize: "1.3rem",
+    padding: "6px 20px",
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    },
+    marginRight: 40
+  },
   formSection: {
     paddingTop: 20
   },
@@ -218,10 +228,6 @@ export const stylesPage1 = theme => ({
     width: "100%",
     flexDirection: "row",
     justifyContent: "flex-start"
-  },
-  input: {
-    width: "100%",
-    margin: "0 0 30px 0"
   },
   select: {
     width: "100%",
@@ -271,6 +277,19 @@ export const stylesPage1 = theme => ({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "flex-start"
+  },
+  formGroup2Col: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between"
+  },
+  input: {
+    width: "100%",
+    margin: "0 0 30px 0"
+  },
+  input2Col: {
+    width: "48%"
   },
   controlCheckbox: {
     margin: "-35px 0 40px 0"
@@ -360,6 +379,8 @@ export const renderTextField = ({
   label,
   meta: { touched, error },
   classes,
+  twocol,
+  short,
   ...custom
 }) => (
   <TextField
@@ -367,6 +388,7 @@ export const renderTextField = ({
     error={!!(touched && error)}
     variant="outlined"
     className={classes.input}
+    style={twocol ? { width: "48%" } : short ? { width: 150 } : {}}
     helperText={touched && error}
     required={!!(touched && error)}
     {...input}
@@ -384,6 +406,7 @@ export const renderSelect = ({
   meta: { error, touched },
   labelWidth,
   options,
+  short,
   formControlName,
   ...custom
 }) => (
@@ -393,6 +416,7 @@ export const renderSelect = ({
     error={!!(error && touched)}
     {...custom}
     required={touched && error === "Required"}
+    style={short ? { width: 80 } : {}}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select

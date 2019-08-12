@@ -322,23 +322,27 @@ export class SubmissionFormPage1Component extends React.Component {
                       options={employerList}
                     />
                   )}
-                  <Field
-                    label="First Name"
-                    name="firstName"
-                    id="firstName"
-                    type="text"
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
+                  <FormGroup row classes={{ root: classes.formGroup2Col }}>
+                    <Field
+                      twocol
+                      label="First Name"
+                      name="firstName"
+                      id="firstName"
+                      type="text"
+                      classes={{ input2col: classes.input2col }}
+                      component={this.renderTextField}
+                    />
 
-                  <Field
-                    name="lastName"
-                    id="lastName"
-                    label="Last Name"
-                    classes={classes}
-                    component={this.renderTextField}
-                    type="text"
-                  />
+                    <Field
+                      twocol
+                      name="lastName"
+                      id="lastName"
+                      label="Last Name"
+                      classes={{ input2col: classes.input2col }}
+                      component={this.renderTextField}
+                      type="text"
+                    />
+                  </FormGroup>
 
                   <FormLabel className={classes.formLabel} component="legend">
                     Birthdate
@@ -410,35 +414,43 @@ export class SubmissionFormPage1Component extends React.Component {
                     box. There is a space for a mailing address on the next
                     page, if different from your physical address.
                   </FormHelperText>
+                  <FormGroup
+                    className={classes.formGroup}
+                    row
+                    classes={{ root: classes.formGroup2Col }}
+                  >
+                    <Field
+                      label="Home City"
+                      name="homeCity"
+                      id="homeCity"
+                      type="text"
+                      twocol
+                      classes={classes}
+                      component={this.renderTextField}
+                    />
 
-                  <Field
-                    label="Home City"
-                    name="homeCity"
-                    id="homeCity"
-                    type="text"
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
+                    <Field
+                      label="Home State"
+                      name="homeState"
+                      id="homeState"
+                      type="select"
+                      short
+                      classes={classes}
+                      component={this.renderSelect}
+                      options={stateList}
+                      labelWidth={80}
+                    />
 
-                  <Field
-                    label="Home State"
-                    name="homeState"
-                    id="homeState"
-                    type="select"
-                    classes={classes}
-                    component={this.renderSelect}
-                    options={stateList}
-                    labelWidth={80}
-                  />
-
-                  <Field
-                    label="Home Zip"
-                    name="homeZip"
-                    id="homeZip"
-                    type="text"
-                    classes={classes}
-                    component={this.renderTextField}
-                  />
+                    <Field
+                      label="Home Zip"
+                      name="homeZip"
+                      id="homeZip"
+                      short
+                      type="text"
+                      classes={classes}
+                      component={this.renderTextField}
+                    />
+                  </FormGroup>
 
                   <Field
                     label="Home Email"
@@ -620,6 +632,15 @@ export class SubmissionFormPage1Component extends React.Component {
                     </FormHelperText>
                   )}
                   <div className={classes.buttonWrap}>
+                    <Button
+                      type="button"
+                      onClick={e => this.props.handleTab(e, 0)}
+                      color="primary"
+                      className={classes.back}
+                      variant="contained"
+                    >
+                      Back
+                    </Button>
                     <Button
                       type="button"
                       onClick={e => this.props.handleTab(e, 2)}
