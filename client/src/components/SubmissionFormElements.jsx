@@ -171,13 +171,14 @@ export const formatSFDate = date => {
 export const stylesPage1 = theme => ({
   formContainer: {
     padding: "80px 0 140px 0",
+    margin: "auto 0 auto 50%",
     [theme.breakpoints.down("lg")]: {
-      padding: "20px 0"
+      padding: "20px 0",
+      margin: "44px 0 auto 50%"
     },
     [theme.breakpoints.down("md")]: {
-      margin: "auto"
-    },
-    margin: "auto 0 auto 50%"
+      margin: "44px auto"
+    }
   },
   head: {
     color: theme.palette.primary.light
@@ -310,16 +311,15 @@ export const stylesPage2 = theme => ({
   },
   formContainer: {
     padding: "80px 0 140px 0",
+    margin: "44px 0 auto 50%",
     [theme.breakpoints.down("lg")]: {
-      padding: "20px 0"
-    },
-    [theme.breakpoints.down("md")]: {
-      margin: "auto"
-    },
-    margin: "auto 0 auto 50%"
+      padding: "20px 0",
+      margin: "44px auto"
+    }
   },
   container: {
-    padding: "80px 0 140px 0"
+    padding: "80px 0 140px 0",
+    margin: "44px auto"
   },
   head: {
     color: theme.palette.primary.light

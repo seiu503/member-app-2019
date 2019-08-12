@@ -13,7 +13,8 @@ import Looks3Icon from "@material-ui/icons/Looks3";
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    maxWidth: "100%",
+    maxWidth: 600,
+    margin: "auto",
     borderRadius: "4px 4px 0 0"
   }
 });
