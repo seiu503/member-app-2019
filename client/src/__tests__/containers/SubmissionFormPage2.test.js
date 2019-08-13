@@ -3,8 +3,6 @@ import { mount, shallow } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { Provider } from "react-redux";
 
-// Needed to create simple store to test connected component
-import { INITIAL_STATE } from "../../store/reducers/submission";
 import * as apiSForce from "../../store/actions/apiSFActions";
 import {
   SubmissionFormPage2Connected,
@@ -27,8 +25,7 @@ const initialState = {
   appState: {
     loading: false,
     error: ""
-  },
-  formValues: {}
+  }
 };
 
 const defaultProps = {

@@ -81,13 +81,13 @@ describe("Redux-Form custom Validators", () => {
     expect(validate(combinedData)).toStrictEqual({});
   });
   test("validates properly formed zip codes", () => {
-    testData.homePostalCode = 4444;
+    testData.homeZip = 4444;
     expect(validate(testData)).toStrictEqual({
-      homePostalCode: "Must be at exactly 5 characters long"
+      homeZip: "Must be at exactly 5 characters long"
     });
-    combinedData.mailToPostalCode = 4444;
+    combinedData.mailToZip = 4444;
     expect(validate(combinedData)).toStrictEqual({
-      mailToPostalCode: "Must be at exactly 5 characters long"
+      mailToZip: "Must be at exactly 5 characters long"
     });
   });
   test("validates properly formed hire dates", () => {

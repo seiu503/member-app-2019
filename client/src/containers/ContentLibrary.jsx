@@ -235,7 +235,7 @@ ContentLibraryUnconnected.propTypes = {
   content: PropTypes.shape({
     filteredList: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.string,
+        id: PropTypes.number,
         content_type: PropTypes.string,
         content: PropTypes.string,
         updated_at: PropTypes.string

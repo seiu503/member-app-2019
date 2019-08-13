@@ -5,7 +5,7 @@ import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { Provider } from "react-redux";
 
 // Needed to create simple store to test connected component
-import { INITIAL_STATE } from "../../store/reducers/submission";
+// import { INITIAL_STATE } from "../../store/reducers/submission";
 import * as apiSForce from "../../store/actions/apiSFActions";
 import {
   SubmissionFormPage1Connected,
@@ -28,14 +28,9 @@ const reCaptchaRef = {
 };
 
 const initialState = {
-  ...INITIAL_STATE,
   appState: {
     loading: false,
     error: ""
-  },
-  formValues: {
-    mm: "",
-    onlineCampaignSource: null
   }
 };
 

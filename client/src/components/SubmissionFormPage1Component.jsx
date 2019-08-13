@@ -22,6 +22,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.state = {
       signatureType: "draw"
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -105,7 +106,8 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  handleSubmit = async values => {
+  handleSubmit(values) {
+    console.log("################# handle submit called ################");
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     let signature;
     let {
@@ -203,7 +205,7 @@ export class SubmissionFormPage1Component extends React.Component {
         // console.log(err);
         openSnackbar("error", err);
       });
-  };
+  }
 
   render() {
     const { classes } = this.props;
