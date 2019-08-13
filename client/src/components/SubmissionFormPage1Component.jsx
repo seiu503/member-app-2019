@@ -148,7 +148,7 @@ export class SubmissionFormPage1Component extends React.Component {
   handleUpload = (firstName, lastName) => {
     return new Promise((resolve, reject) => {
       let file = this.trimSignature();
-      let filename = `${firstName}_${lastName}_signature_${new Date()}.jpg`;
+      let filename = `${firstName}_${lastName}_signature_${new Date().toISOString()}.jpg`;
       if (file instanceof Blob) {
         file.name = filename;
       }
@@ -167,7 +167,8 @@ export class SubmissionFormPage1Component extends React.Component {
             );
             resolve();
           } else {
-            resolve(result.payload.content);
+            console.log("LOOK AT ME!!!!!!!!", result.payload);
+            resolve(result.payload);
           }
         })
         .catch(err => {
