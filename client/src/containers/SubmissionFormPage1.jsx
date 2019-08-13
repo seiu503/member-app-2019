@@ -83,7 +83,6 @@ export class SubmissionFormPage1Container extends React.Component {
       if (file instanceof Blob) {
         file.name = filename;
       }
-      // const filename = file ? file.name.split(".")[0] : "";
       this.props.apiContent
         .uploadImage(file)
         .then(result => {

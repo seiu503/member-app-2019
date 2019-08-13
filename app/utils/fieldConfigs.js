@@ -628,6 +628,7 @@ const submissionsTableFields = {
   },
   birthdate: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "birthdate",
     clientFieldName: "birthdate",
@@ -641,6 +642,7 @@ const submissionsTableFields = {
   },
   cell_phone: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "cell_phone",
     clientFieldName: "cellPhone",
@@ -654,6 +656,7 @@ const submissionsTableFields = {
   },
   employer_name: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "employer_name",
     clientFieldName: "employerName",
@@ -667,6 +670,7 @@ const submissionsTableFields = {
   },
   first_name: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "first_name",
     clientFieldName: "firstName",
@@ -680,6 +684,7 @@ const submissionsTableFields = {
   },
   last_name: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "last_name",
     clientFieldName: "lastName",
@@ -693,6 +698,7 @@ const submissionsTableFields = {
   },
   home_street: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "home_street",
     clientFieldName: "homeStreet",
@@ -706,6 +712,7 @@ const submissionsTableFields = {
   },
   home_city: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "home_city",
     clientFieldName: "homeCity",
@@ -719,6 +726,7 @@ const submissionsTableFields = {
   },
   home_state: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "home_state",
     clientFieldName: "homeState",
@@ -732,6 +740,7 @@ const submissionsTableFields = {
   },
   home_zip: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "home_zip",
     clientFieldName: "homeZip",
@@ -745,6 +754,7 @@ const submissionsTableFields = {
   },
   home_email: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "home_email",
     clientFieldName: "homeEmail",
@@ -758,6 +768,7 @@ const submissionsTableFields = {
   },
   preferred_language: {
     oldFormPage: "none",
+    newFormTab: 0,
     req: "Y",
     postgresFieldName: "preferred_language",
     clientFieldName: "preferredLanguage",
@@ -771,6 +782,7 @@ const submissionsTableFields = {
   },
   terms_agree: {
     oldFormPage: "none",
+    newFormTab: 1,
     req: "Y",
     postgresFieldName: "terms_agree",
     clientFieldName: "termsAgree",
@@ -783,6 +795,7 @@ const submissionsTableFields = {
     testingSample: true
   },
   signature: {
+    newFormTab: 1,
     oldFormPage: "none",
     req: "Y",
     postgresFieldName: "signature",
@@ -849,6 +862,7 @@ const submissionsTableFields = {
   },
   maintenance_of_effort: {
     oldFormPage: "none",
+    newFormTab: 1,
     req: "Y",
     postgresFieldName: "maintenance_of_effort",
     clientFieldName: "maintenanceOfEffort",
@@ -875,6 +889,7 @@ const submissionsTableFields = {
   },
   direct_pay_auth: {
     oldFormPage: "none",
+    newFormTab: 1,
     req: "N",
     postgresFieldName: "direct_pay_auth",
     clientFieldName: "directPayAuth",
@@ -888,6 +903,7 @@ const submissionsTableFields = {
   },
   direct_deposit_auth: {
     oldFormPage: "none",
+    newFormTab: 1,
     req: "N",
     postgresFieldName: "direct_deposit_auth",
     clientFieldName: "directDepositAuth",
@@ -1242,6 +1258,7 @@ const generateSFContactFieldList = () => {
 module.exports = {
   contactsTableFields,
   submissionsTableFields,
+  requiredFields,
   generateSampleSubmission,
   generateSampleSubmissionFrontEnd,
   generateSampleValidate,

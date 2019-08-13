@@ -194,18 +194,18 @@ const lookupSFContactByFLE = (req, res, next) => {
  *                                    object with error message to client.
  */
 const createOrUpdateSFContact = (req, res, next) => {
-  // console.log(`sf.ctrl.js > 186 > createOrUpdateSFContact`);
-  const { contact_id } = req.body;
+  // console.log(`sf.ctrl.js > 197 > createOrUpdateSFContact`);
+  const { salesforce_id } = req.body;
 
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to updateSFContact
-  if (contact_id) {
+  if (salesforce_id) {
     // save contact_id to res.locals to pass to next middleware
     // (it was in the body already but updateSFContact
     // doesn't know to look for it there)
-    res.locals.sf_contact_id = contact_id;
+    res.locals.sf_contact_id = salesforce_id;
     res.locals.next = true;
-    // console.log(`sf.ctrljs > 197 > found contact id`);
+    // console.log(`sf.ctrljs > 208 > found contact id (salesforce_id)`);
     return updateSFContact(req, res, next);
   }
 
