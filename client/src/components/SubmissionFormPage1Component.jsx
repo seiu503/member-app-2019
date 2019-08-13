@@ -121,7 +121,6 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   toggleSignatureInputType = () => {
-    console.log("tioblesaoihjat;aas;dfl");
     let value = this.state.signatureType === "draw" ? "write" : "draw";
     this.setState({ signatureType: value });
   };
@@ -167,7 +166,6 @@ export class SubmissionFormPage1Component extends React.Component {
             );
             resolve();
           } else {
-            console.log("LOOK AT ME!!!!!!!!", result.payload);
             resolve(result.payload);
           }
         })

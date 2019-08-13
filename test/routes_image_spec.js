@@ -112,6 +112,24 @@ suite("routes : image", function() {
           done();
         });
     });
+    test("does not make changes to postgres db if image is user signature", function(done) {
+      chai
+        .request(app)
+        .post("/api/image/single")
+        .set("Content-Type", "application/x-www-form-urlencoded")
+        .field("id", content_id)
+        .attach(
+          "image",
+          fs.readFileSync(`${appRoot}/test/assets/test.png`),
+          "test__signature__.png"
+        )
+        .end(function(err, res) {
+          content_id = res.body.id;
+          assert.equal(res.status, 200);
+          assert.isNull(err);
+          done();
+        });
+    });
     test("returns an error if file is too large", function(done) {
       this.timeout(8000);
       chai

@@ -29,7 +29,7 @@ const reCaptchaRef = {
 };
 
 const initialState = {
-  ...INITIAL_STATE,
+  // ...INITIAL_STATE,
   appState: {
     loading: false,
     error: ""

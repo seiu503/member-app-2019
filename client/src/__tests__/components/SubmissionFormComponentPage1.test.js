@@ -5,6 +5,7 @@ import "jest-canvas-mock";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
+import { languageOptions } from "../../components/SubmissionFormElements";
 import {
   SubmissionFormPage1Component,
   SubmissionFormWrap
@@ -27,6 +28,8 @@ let wrapper,
   sfEmployerLookupSuccess,
   sfEmployerLookupFailure,
   error,
+  handleUpload,
+  updateEmployersPicklist,
   touched;
 
 let resetMock = jest.fn();
@@ -68,6 +71,8 @@ const defaultProps = {
   apiSubmission,
   apiSF,
   handleSubmit,
+  handleUpload,
+  updateEmployersPicklist,
   legal_language: {
     current: {
       textContent: "blah"
@@ -97,6 +102,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     handleSubmit = fn => fn;
     apiSubmission = {};
     apiSF = {};
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   // create wrapper with default props and assigned values from above as props
@@ -143,6 +152,11 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         null
       );
     });
+    // it("has languageOptions", () => {
+    //   wrapper = unconnectedSetup();
+    //   let languageSelect = wrapper.find(`[name="preferredLanguage"]`);
+    //   expect(languageSelect.options).toBe(languageOptions)
+    // });
     it("calls handleSubmit on submit", () => {
       wrapper.find("form").simulate("submit");
       expect(handleSubmitMock.mock.calls.length).toBe(1);
@@ -151,6 +165,15 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
   // testing that we are triggering expected behavior for submit success and failure
   describe("submit functionality", () => {
+    it("checks for recaptcha value on submit", () => {
+      testData = generateSampleValidate();
+      wrapper = unconnectedSetup();
+      wrapper.find("form").simulate("submit", { ...testData });
+      expect(
+        wrapper.instance().props.reCaptchaRef.current.getValue.mock.calls.length
+      ).toBe(1);
+    });
+
     it("calls reset after successful Submit", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
@@ -160,11 +183,11 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
-
       // creating wrapper
       wrapper = unconnectedSetup();
       wrapper.instance().props.apiSubmission.addSubmission = addSubmissionSuccess;
-
+      // simulate signatureToggle to switch type to "write"
+      wrapper.find(`[name="signatureType"]`).simulate("click");
       // simulate submit with dummy data
       wrapper.find("form").simulate("submit", { ...testData });
       // testing that submit was called
@@ -174,7 +197,56 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         expect(resetMock.mock.calls.length).toBe(1);
       });
     });
-
+    it("errors if there is no signature", () => {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      addSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+        );
+      // replacing openSnackbar import with mock function
+      Notifier.openSnackbar = jest.fn();
+      // creating wrapper
+      wrapper = unconnectedSetup();
+      addSubmission = addSubmissionError;
+      apiSubmission.addSubmission = addSubmission;
+      // simulate signatureToggle to switch type to "write"
+      wrapper.find(`[name="signatureType"]`).simulate("click");
+      delete testData.signature;
+      // simulate submit with dummy data
+      wrapper.find("form").simulate("submit", { ...testData });
+      // testing that clearForm is called when handleSubmit receives Error message
+      return addSubmissionError().then(() => {
+        expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+      });
+    });
+    it("updates employerPickList on employerType change", () => {
+      const event = { target: { value: "non-profit" } };
+      wrapper = unconnectedSetup();
+      let mockUpdateEmployersPicklist = jest.fn();
+      wrapper.instance().updateEmployersPicklist = mockUpdateEmployersPicklist;
+      const picklist = wrapper.find(`[name="employerType"]`).first();
+      picklist.simulate("change", event);
+      expect(mockUpdateEmployersPicklist).toHaveBeenCalled();
+    });
+    it("toggles signatureType", () => {
+      wrapper = unconnectedSetup();
+      expect(wrapper.instance().state.signatureType).toBe("draw");
+      wrapper
+        .find(`[name="signatureType"]`)
+        .first()
+        .simulate("click");
+      expect(wrapper.instance().state.signatureType).toBe("write");
+      let mockToggle = jest.fn();
+      wrapper.instance().toggleSignatureInputType = mockToggle;
+      wrapper
+        .find(`[name="signatureType"]`)
+        .first()
+        .simulate("click");
+      expect(mockToggle).toHaveBeenCalled();
+    });
     it("provides error feedback after failed Submit", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
@@ -186,13 +258,13 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         );
       // replacing openSnackbar import with mock function
       Notifier.openSnackbar = jest.fn();
-      // replacing form prop functions and placing them in dispatch action object
-      addSubmission = addSubmissionError;
-      apiSubmission.addSubmission = addSubmission;
       // creating wrapper
       wrapper = unconnectedSetup();
+      wrapper.instance().props.apiSubmission.addSubmission = addSubmissionError;
+      // simulate signatureToggle to switch type to "write"
+      wrapper.find(`[name="signatureType"]`).simulate("click");
       // simulate submit with dummy data
-      wrapper.find("form").simulate("submit", { testData });
+      wrapper.find("form").simulate("submit", { ...testData });
       // testing that submit was called
       expect(addSubmissionError.mock.calls.length).toBe(1);
       // testing that clearForm is called when handleSubmit receives Error message
@@ -211,42 +283,63 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         );
       // replacing openSnackbar import with mock function
       Notifier.openSnackbar = jest.fn();
-      // replacing form prop functions and placing them in dispatch action object
-      addSubmission = addSubmissionError;
-      apiSubmission.addSubmission = addSubmission;
       // creating wrapper
       wrapper = unconnectedSetup();
+      wrapper.instance().props.apiSubmission.addSubmission = addSubmissionError;
+      // simulate signatureToggle to switch type to "write"
+      wrapper.find(`[name="signatureType"]`).simulate("click");
       // simulate submit with dummy data
-      wrapper.find("form").simulate("submit", { testData });
-      // testing that submit was called
+      wrapper.find("form").simulate("submit", { ...testData });
       expect(addSubmissionError.mock.calls.length).toBe(1);
       // testing that clearForm is called when handleSubmit receives Error message
       addSubmissionError().then(() => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       });
     });
-    // it("updates employerPicklist on employerType change", () => {
+    it("calls handleUpload if signatureType is 'draw'", () => {
+      testData = generateSampleValidate();
+      addSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+        );
+      // creating wrapper
+      wrapper = unconnectedSetup();
+      wrapper.instance().handleUpload = jest.fn();
+      // simulate submit with dummy data
+      wrapper.find("form").simulate("submit", { ...testData });
+      // testing that submit was called
+      expect(wrapper.instance().handleUpload.mock.calls.length).toBe(1);
+    });
+    it("opens snackbar if no recaptcha value found", () => {
+      testData = generateSampleValidate();
+      Notifier.openSnackbar = jest.fn();
+      wrapper = unconnectedSetup();
+      wrapper.instance().props.reCaptchaRef.current.getValue = jest
+        .fn()
+        .mockImplementation(() => null);
+      wrapper.find(`[name="signatureType"]`).simulate("click");
+      wrapper.find("form").simulate("submit", { ...testData });
+      expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+    });
+    // it("opens snackbar on handleUpload failure", () => {
     //   testData = generateSampleValidate();
-    //   // test function that will count calls as well as return error object
-    //   const updateEmployersPicklistMock = jest.fn();
+    //   Notifier.openSnackbar = jest.fn();
     //   // creating wrapper
-    //   sfEmployerLookupSuccess = jest
+    //   wrapper = unconnectedSetup();
+    //   wrapper.instance().handleUpload = jest
     //     .fn()
     //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+    //       Promise.reject({ type: "UPLOAD_IMAGE_FAILURE" })
     //     );
-    //   props = {
-    //     handleSubmit: jest.fn(),
-    //     updateEmployersPicklist: updateEmployersPicklistMock,
-    //     apiSF: {
-    //       getSFEmployers: sfEmployerLookupSuccess
-    //     }
-    //   }
-    //   wrapper = setup(props);
-    //   wrapper.find(`[data-test="employer-type-test"]`).first().props().onChange({target:{value: ""}});
+    //   // simulate submit with dummy data
+    //   wrapper.find("form").simulate("submit", { ...testData });
     //   // testing that submit was called
-    //   expect(updateEmployersPicklistMock.mock.calls.length).toBe(1);
-    // })
+    //   expect(wrapper.instance().handleUpload.mock.calls.length).toBe(1);
+    //   return wrapper.instance().handleUpload().then(() => {
+    //     expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+    //   });
+    // });
   });
 
   describe("componentDidMount", () => {
@@ -287,4 +380,15 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       expect(sfEmployerLookupFailure.mock.calls.length).toBe(1);
     });
   });
+
+  // describe("componentDidUpdate", () => {
+  //   it("calls loadEmployerPickList on componentUpdate", () => {
+  //     wrapper = unconnectedSetup();
+  //     let mockLoadEmployers = jest.fn()
+  //     wrapper.instance().loadEmployersPicklist = mockLoadEmployers;
+  //     expect(mockLoadEmployers.mock.calls.length).toBe(0);
+  //     wrapper.setProps({ submission: { employerNames: [1, 2, 3, 4, 5] } });
+  //     expect(mockLoadEmployers.mock.calls.length).toBe(1);
+  //   });
+  // });
 });
