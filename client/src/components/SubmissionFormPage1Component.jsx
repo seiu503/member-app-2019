@@ -551,9 +551,9 @@ export class SubmissionFormPage1Component extends React.Component {
                 canvasProps={{
                   width: 594,
                   height: 100,
-                  className: "sigCanvas",
-                  backgroundColor: "white"
+                  className: "sigCanvas"
                 }}
+                backgroundColor="rgb(255,255,255)"
                 label="Signature"
                 name="signature"
                 id="signature"

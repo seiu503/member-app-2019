@@ -3,6 +3,7 @@ import { mount, shallow } from "enzyme";
 import moment from "moment";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { Provider } from "react-redux";
+import "jest-canvas-mock";
 
 // Needed to create simple store to test connected component
 import { INITIAL_STATE } from "../../store/reducers/submission";

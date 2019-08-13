@@ -29,7 +29,6 @@ export const INITIAL_STATE = {
   error: null,
   salesforceId: null,
   formPage1: {
-    signatureType: "draw",
     mm: "",
     homeState: "OR",
     preferredLanguage: "English",
