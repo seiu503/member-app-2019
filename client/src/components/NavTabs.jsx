@@ -24,7 +24,6 @@ export default function NavTabs(props) {
     <Paper className={classes.root}>
       <Tabs
         value={props.tab}
-        onChange={props.handleTab}
         variant="fullWidth"
         indicatorColor="primary"
         textColor="primary"
@@ -35,18 +34,21 @@ export default function NavTabs(props) {
           aria-label="1"
           id="tab1"
           index={0}
+          disabled
         />
         <Tab
           icon={<LooksTwoIcon style={{ color: "#531078" }} />}
           aria-label="2"
           id="tab2"
           index={1}
+          disabled
         />
         <Tab
           icon={<Looks3Icon style={{ color: "#531078" }} />}
           aria-label="3"
           id="tab3"
           index={2}
+          disabled
         />
       </Tabs>
     </Paper>

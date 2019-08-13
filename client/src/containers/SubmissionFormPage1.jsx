@@ -1,5 +1,13 @@
 import React from "react";
-import { getFormValues } from "redux-form";
+import {
+  getFormValues,
+  submit,
+  isSubmitting,
+  isPristine,
+  isValid,
+  getFormSubmitErrors
+} from "redux-form";
+
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
@@ -208,13 +216,18 @@ const mapStateToProps = state => ({
   appState: state.appState,
   content: state.content,
   initialValues: state.submission.formPage1,
-  formValues: getFormValues("submissionPage1")(state) || {}
+  formValues: getFormValues("submissionPage1")(state) || {},
+  pristine: isPristine("submissionPage1")(state),
+  submitting: isSubmitting("submissionPage1")(state),
+  valid: isValid("submissionPage1")(state),
+  submitErrors: getFormSubmitErrors("submissionPage1")(state)
 });
 
 const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
-  apiSF: bindActionCreators(apiSFActions, dispatch)
+  apiSF: bindActionCreators(apiSFActions, dispatch),
+  submitForm: () => dispatch(submit("submissionPage1"))
 });
 
 export const SubmissionFormPage1Connected = connect(

@@ -126,7 +126,6 @@ export class SubmissionFormPage1Component extends React.Component {
       termsAgree,
       salesforceId
     } = values;
-    console.log(termsAgree);
     signature = this.props.submission.formPage1.signature;
     if (!signature) {
       openSnackbar("error", "Please provide a signature");
@@ -182,7 +181,7 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId,
       reCaptchaValue
     };
-    console.log(body.terms_agree);
+    // console.log(body);
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
@@ -242,7 +241,10 @@ export class SubmissionFormPage1Component extends React.Component {
               tab={this.props.tab}
               handleTab={this.props.handleTab}
               pristine={this.props.pristine}
-              invalid={this.props.invalid}
+              valid={this.props.valid}
+              submitting={this.props.submitting}
+              submitForm={this.props.submitForm}
+              formValues={this.props.formValues}
             />
             {this.props.tab === 0 && (
               <Tab1Form
@@ -258,6 +260,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 formValues={this.props.formValues}
                 width={this.props.width}
                 handleTab={this.props.handleTab}
+                submitErrors={this.props.submitErrors}
               />
             )}
             {this.props.tab === 1 && (

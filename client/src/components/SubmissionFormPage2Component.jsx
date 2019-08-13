@@ -7,6 +7,8 @@ import validate from "../utils/validators";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
+import CheckCircleOutline from "@material-ui/icons/CheckCircleOutline";
+import Divider from "@material-ui/core/Divider";
 
 import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
@@ -156,17 +158,25 @@ export class SubmissionFormPage2Component extends React.Component {
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           className={this.classes.form}
         >
-          <FormHelperText
-            className={this.classes.formHelperText}
-            id="page2IntroText"
-          >
-            Your membership application has been received and will be reviewed
-            shortly. In the mean time, please help your fellow union members get
-            to know you better by telling us a little more about yourself. SEIU
-            Local 503 is committed to honoring the diversity of all members.
-            This optional demographic information helps us understand the social
-            identities of our membership.
-          </FormHelperText>
+          <div className={this.classes.successWrap}>
+            <div className={this.classes.checkIcon}>
+              <CheckCircleOutline
+                style={{ color: "#66BB6A", height: 100, width: 100 }}
+              />
+            </div>
+            <FormHelperText
+              className={this.classes.page2IntroText}
+              id="page2IntroText"
+            >
+              Your membership application has been received and will be reviewed
+              shortly. In the mean time, please help your fellow union members
+              get to know you better by telling us a little more about yourself.
+              SEIU Local 503 is committed to honoring the diversity of all
+              members. This optional demographic information helps us understand
+              the social identities of our membership.
+            </FormHelperText>
+          </div>
+          <Divider style={{ margin: 20 }} />
           <FormLabel className={this.classes.formLabel} component="legend">
             Check as many as apply to your race/ethnicity
           </FormLabel>

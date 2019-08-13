@@ -34,6 +34,7 @@ export const Tab2 = props => {
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
         className={classes.form}
+        style={{ paddingTop: 40 }}
       >
         <Field
           formControlName="controlCheckbox"

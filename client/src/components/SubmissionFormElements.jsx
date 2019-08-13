@@ -342,6 +342,15 @@ export const stylesPage1 = theme => ({
     "border-radius": "5px",
     margin: "0 0 32px",
     width: "100%"
+  },
+  buttonLink: {
+    background: "none",
+    border: "none",
+    padding: "0",
+    font: " inherit",
+    "border-bottom": "1px solid blue",
+    cursor: " pointer",
+    color: "blue"
   }
 });
 export const stylesPage2 = theme => ({
@@ -357,16 +366,37 @@ export const stylesPage2 = theme => ({
     }
   },
   container: {
-    padding: "80px 0 140px 0",
+    padding: "40px 0 140px 0",
     margin: "44px auto"
   },
   head: {
     color: theme.palette.primary.light
   },
+  checkIcon: {
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center"
+    }
+  },
+  successWrap: {
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexWrap: "wrap"
+    }
+  },
+  page2IntroText: {
+    fontSize: "1.2rem",
+    lineHeight: "1.4em",
+    padding: "0 0 .5em .5em",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 0 .5em 0"
+    }
+  },
   form: {
     maxWidth: 600,
     margin: "auto",
-    padding: "80px 20px",
+    padding: "20px",
     background: "white"
   },
   group: {
