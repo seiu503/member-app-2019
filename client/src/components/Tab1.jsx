@@ -43,10 +43,10 @@ export const Tab1 = props => {
       >
         <div className={classes.formSection}>
           <Field
+            data-test="select-employer-type"
             label="Employer Type"
             name="employerType"
             id="employerType"
-            data-test="employer-type-test"
             type="select"
             classes={classes}
             component={renderSelect}

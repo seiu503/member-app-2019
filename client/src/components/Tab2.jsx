@@ -99,49 +99,51 @@ export const Tab2 = props => {
           </FormHelperText>
         )}
         {signatureType === "draw" && (
-          <div className={classes.sigBox}>
-            <SignatureCanvas
-              ref={sigBox}
-              penColor="black"
-              canvasProps={{
-                width: 594,
-                height: 100,
-                className: "sigCanvas"
-              }}
-              backgroundColor="rgb(255,255,255)"
-              label="Signature"
-              name="signature"
-              id="signature"
-              onChange={handleInput}
-            />
-            <Button
-              type="button"
-              onClick={clearSignature}
-              color="secondary"
-              className={classes.clearButton}
-              variant="contained"
-            >
-              Clear Signature
-            </Button>
-          </div>
-        )}
-        {signatureType === "draw" && (
-          <FormHelperText className={classes.formHelperText}>
-            Draw your signature in the box above.
-            <button
-              type="button"
-              className={classes.buttonLink}
-              aria-label="Change Signature Input Method"
-              name="signatureType"
-              onClick={() => toggleSignatureInputType()}
-            >
-              Click here to type your signature
-            </button>
-          </FormHelperText>
+          <React.Fragment>
+            <div className={classes.sigBox}>
+              <SignatureCanvas
+                ref={sigBox}
+                penColor="black"
+                canvasProps={{
+                  width: 594,
+                  height: 100,
+                  className: "sigCanvas"
+                }}
+                backgroundColor="rgb(255,255,255)"
+                label="Signature"
+                name="signature"
+                id="signature"
+                onChange={handleInput}
+              />
+              <Button
+                type="button"
+                onClick={clearSignature}
+                color="secondary"
+                className={classes.clearButton}
+                variant="contained"
+              >
+                Clear Signature
+              </Button>
+            </div>
+            <FormHelperText className={classes.formHelperText}>
+              Draw your signature in the box above.
+              <button
+                type="button"
+                data-test="button-sig-toggle"
+                className={classes.buttonLink}
+                aria-label="Change Signature Input Method"
+                name="signatureType"
+                onClick={() => toggleSignatureInputType()}
+              >
+                Click here to type your signature
+              </button>
+            </FormHelperText>
+          </React.Fragment>
         )}
         <div className={classes.buttonWrap}>
           <Button
             type="button"
+            data-test="button-back"
             onClick={e => handleTab(e, 0)}
             color="primary"
             className={classes.back}

@@ -21,7 +21,7 @@ const useStyles = makeStyles({
 export default function NavTabs(props) {
   const classes = useStyles();
   return (
-    <Paper className={classes.root}>
+    <Paper className={classes.root} data-test="component-navtabs">
       <Tabs
         value={props.tab}
         variant="fullWidth"

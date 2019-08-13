@@ -4,7 +4,8 @@ import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import { Tab3, Tab3Form } from "../../components/Tab3";
+import { Tab1, Tab1Form } from "../../components/Tab1";
+import * as formElements from "../../components/SubmissionFormElements";
 
 // variables
 let wrapper,
@@ -13,6 +14,8 @@ let wrapper,
   apiSubmission,
   apiSF,
   handleSubmitMock,
+  updateEmployersPicklist,
+  updateEmployersPicklistMock,
   testData,
   component;
 
@@ -20,27 +23,27 @@ let wrapper,
 const defaultProps = {
   onSubmit: jest.fn(),
   classes: { test: "test" },
-  reCaptchaChange: jest.fn(),
-  reCaptchaRef: { current: {} },
+  formValues: {},
+  renderTextField: formElements.renderTextField,
+  renderCheckbox: formElements.renderCheckbox,
+  renderSelect: formElements.renderSelect,
   loading: false,
   pristine: false,
-  invalid: false
+  invalid: false,
+  employerTypesList: [""],
+  employerList: [""],
+  updateEmployersPicklist: jest.fn(),
+  width: "lg",
+  handleTab: jest.fn(),
+  handleInput: jest.fn()
 };
 
-describe("<Tab3 />", () => {
+describe("<Tab1 />", () => {
   // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function
-  // gain access to touched and error to test validation
-  // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
     handleSubmit = fn => fn;
   });
 
-  // create wrapper with default props and assigned values from above as props
-  // const unconnectedSetup = props => {
-  //   const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-  //   return shallow(<Tab3Form {...setUpProps} {...props} />);
-  // };
-  //
   const initialState = {};
 
   store = storeFactory(initialState);
@@ -48,7 +51,7 @@ describe("<Tab3 />", () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return mount(
       <Provider store={store}>
-        <Tab3Form {...setUpProps} {...props} />
+        <Tab1Form {...setUpProps} {...props} />
       </Provider>
     );
   };
@@ -66,16 +69,18 @@ describe("<Tab3 />", () => {
 
     const props = {
       handleSubmit: fn => fn,
-      classes: {}
+      classes: {},
+      formValues: {},
+      updateEmployersPicklist: jest.fn()
     };
 
     it("renders without error", () => {
-      const component = findByTestAttr(wrapper, "component-tab3");
+      const component = findByTestAttr(wrapper, "component-tab1");
       expect(component.length).toBe(1);
     });
 
     it("calls handleSubmit on submit", () => {
-      wrapper = shallow(<Tab3 {...props} />);
+      wrapper = shallow(<Tab1 {...props} />);
       handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;
 
@@ -86,6 +91,19 @@ describe("<Tab3 />", () => {
       component = wrapper.find("form");
       component.simulate("submit", { ...testData });
       expect(handleSubmit.mock.calls.length).toBe(1);
+    });
+
+    it("calls updateEmployersPicklist on select change", () => {
+      wrapper = shallow(<Tab1 {...props} />);
+      updateEmployersPicklistMock = jest.fn();
+      updateEmployersPicklist = updateEmployersPicklistMock;
+
+      wrapper.setProps({
+        updateEmployersPicklist: updateEmployersPicklistMock
+      });
+      component = findByTestAttr(wrapper, "select-employer-type");
+      component.simulate("change");
+      expect(updateEmployersPicklist.mock.calls.length).toBe(1);
     });
   });
 });

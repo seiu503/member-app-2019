@@ -4,7 +4,8 @@ import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import { Tab3, Tab3Form } from "../../components/Tab3";
+import { Tab2, Tab2Form } from "../../components/Tab2";
+import * as formElements from "../../components/SubmissionFormElements";
 
 // variables
 let wrapper,
@@ -13,6 +14,8 @@ let wrapper,
   apiSubmission,
   apiSF,
   handleSubmitMock,
+  toggleSignatureInputType,
+  handleToggleSigTypeMock,
   testData,
   component;
 
@@ -24,23 +27,25 @@ const defaultProps = {
   reCaptchaRef: { current: {} },
   loading: false,
   pristine: false,
-  invalid: false
+  invalid: false,
+  renderTextField: formElements.renderTextField,
+  renderCheckbox: formElements.renderCheckbox,
+  handleTab: jest.fn(),
+  legal_language: { current: {} },
+  sigBox: { current: {} },
+  clearSignature: jest.fn(),
+  handleInput: jest.fn(),
+  formPage1: {},
+  signatureType: "draw",
+  toggleSignatureInputType: jest.fn()
 };
 
-describe("<Tab3 />", () => {
+describe("<Tab2 />", () => {
   // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function
-  // gain access to touched and error to test validation
-  // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
     handleSubmit = fn => fn;
   });
 
-  // create wrapper with default props and assigned values from above as props
-  // const unconnectedSetup = props => {
-  //   const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-  //   return shallow(<Tab3Form {...setUpProps} {...props} />);
-  // };
-  //
   const initialState = {};
 
   store = storeFactory(initialState);
@@ -48,7 +53,7 @@ describe("<Tab3 />", () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return mount(
       <Provider store={store}>
-        <Tab3Form {...setUpProps} {...props} />
+        <Tab2Form {...setUpProps} {...props} />
       </Provider>
     );
   };
@@ -66,16 +71,17 @@ describe("<Tab3 />", () => {
 
     const props = {
       handleSubmit: fn => fn,
-      classes: {}
+      classes: {},
+      signatureType: "draw"
     };
 
     it("renders without error", () => {
-      const component = findByTestAttr(wrapper, "component-tab3");
+      const component = findByTestAttr(wrapper, "component-tab2");
       expect(component.length).toBe(1);
     });
 
     it("calls handleSubmit on submit", () => {
-      wrapper = shallow(<Tab3 {...props} />);
+      wrapper = shallow(<Tab2 {...props} />);
       handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;
 
@@ -86,6 +92,20 @@ describe("<Tab3 />", () => {
       component = wrapper.find("form");
       component.simulate("submit", { ...testData });
       expect(handleSubmit.mock.calls.length).toBe(1);
+    });
+
+    it("calls toggleSignatureInputType on button click", () => {
+      wrapper = shallow(<Tab2 {...props} />);
+      handleToggleSigTypeMock = jest.fn();
+      toggleSignatureInputType = handleToggleSigTypeMock;
+
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+
+      wrapper.setProps({ toggleSignatureInputType: handleToggleSigTypeMock });
+      component = findByTestAttr(wrapper, "button-sig-toggle");
+      component.simulate("click");
+      expect(toggleSignatureInputType.mock.calls.length).toBe(1);
     });
   });
 });

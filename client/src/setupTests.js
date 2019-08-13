@@ -7,3 +7,4 @@ Enzyme.configure({
 });
 
 global.fetch = require("jest-fetch-mock");
+global.canvas = require("jest-canvas-mock");
