@@ -23,7 +23,7 @@ const {
 
 export const Tab1 = props => {
   const {
-    handleSubmit,
+    onSubmit,
     classes,
     employerTypesList,
     employerList,
@@ -32,12 +32,15 @@ export const Tab1 = props => {
     renderTextField,
     renderCheckbox,
     formValues,
-    width,
-    handleTab
+    width
   } = props;
   return (
     <div data-test="component-tab1" className={classes.sectionContainer}>
-      <form onSubmit={handleSubmit} id="tab2" className={classes.form}>
+      <form
+        onSubmit={props.handleSubmit(onSubmit)}
+        id="tab2"
+        className={classes.form}
+      >
         <div className={classes.formSection}>
           <Field
             label="Employer Type"
@@ -246,7 +249,6 @@ export const Tab1 = props => {
           <div className={classes.buttonWrap}>
             <Button
               type="submit"
-              onClick={e => handleTab(e, 1)}
               color="primary"
               className={classes.next}
               variant="contained"
@@ -262,7 +264,7 @@ export const Tab1 = props => {
 
 Tab1.propTypes = {
   classes: PropTypes.object,
-  handleSubmit: PropTypes.func,
+  onSubmit: PropTypes.func,
   employerTypesList: PropTypes.array,
   employerList: PropTypes.array,
   updateEmployersPicklist: PropTypes.func,
@@ -271,7 +273,8 @@ Tab1.propTypes = {
   renderCheckbox: PropTypes.func,
   formValues: PropTypes.object,
   width: PropTypes.string,
-  handleTab: PropTypes.func
+  handleTab: PropTypes.func,
+  handleInput: PropTypes.func
 };
 
 const mapStateToProps = state => ({
@@ -286,7 +289,8 @@ export const Tab1Form = reduxForm({
   validate,
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true,
-  enableReinitialize: true
+  enableReinitialize: true,
+  keepDirtyOnReinitialize: true
 })(Tab1);
 
 // connect to redux store

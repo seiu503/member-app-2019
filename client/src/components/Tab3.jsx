@@ -10,17 +10,21 @@ import validate from "../utils/validators";
 
 export const Tab3 = props => {
   const {
-    handleSubmit,
+    onSubmit,
     classes,
     reCaptchaChange,
     reCaptchaRef,
     loading,
-    pristine,
     invalid
   } = props;
+  console.log(`invalid: ${invalid}`);
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
-      <form onSubmit={handleSubmit} id="tab3" className={classes.form}>
+      <form
+        onSubmit={props.handleSubmit(onSubmit)}
+        id="tab3"
+        className={classes.form}
+      >
         <h3>Here's where the payment processing stuff will go...</h3>
         <ReCAPTCHA
           ref={reCaptchaRef}
@@ -34,7 +38,7 @@ export const Tab3 = props => {
           className={classes.formButton}
           variant="contained"
           loading={loading}
-          disabled={pristine || invalid}
+          disabled={invalid}
         >
           Submit
         </ButtonWithSpinner>
@@ -44,7 +48,7 @@ export const Tab3 = props => {
 };
 
 Tab3.propTypes = {
-  handleSubmit: PropTypes.func,
+  onSubmit: PropTypes.func,
   classes: PropTypes.object,
   reCaptchaChange: PropTypes.func,
   reCaptchaRef: PropTypes.object,

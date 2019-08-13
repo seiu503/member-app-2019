@@ -16,7 +16,7 @@ import validate from "../utils/validators";
 
 export const Tab2 = props => {
   const {
-    handleSubmit,
+    onSubmit,
     classes,
     renderTextField,
     renderCheckbox,
@@ -29,7 +29,11 @@ export const Tab2 = props => {
   } = props;
   return (
     <div data-test="component-tab2" className={classes.sectionContainer}>
-      <form onSubmit={handleSubmit} id="tab2" className={classes.form}>
+      <form
+        onSubmit={props.handleSubmit(onSubmit)}
+        id="tab2"
+        className={classes.form}
+      >
         <Field
           formControlName="controlCheckbox"
           label="Agree to Terms of Membership"
@@ -136,7 +140,6 @@ export const Tab2 = props => {
           </Button>
           <Button
             type="submit"
-            onClick={e => handleTab(e, 2)}
             color="primary"
             className={classes.next}
             variant="contained"
@@ -150,7 +153,7 @@ export const Tab2 = props => {
 };
 
 Tab2.propTypes = {
-  handleSubmit: PropTypes.func,
+  onSubmit: PropTypes.func,
   classes: PropTypes.object,
   renderTextField: PropTypes.func,
   renderCheckbox: PropTypes.func,
@@ -168,7 +171,8 @@ export const Tab2Form = reduxForm({
   validate,
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true,
-  enableReinitialize: true
+  enableReinitialize: true,
+  keepDirtyOnReinitialize: true
 })(Tab2);
 
 export default Tab2Form;

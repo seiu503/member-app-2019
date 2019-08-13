@@ -1,4 +1,5 @@
 const validate = values => {
+  console.log(values.termsAgree);
   const errors = {};
   const requiredFields = [
     "firstName",

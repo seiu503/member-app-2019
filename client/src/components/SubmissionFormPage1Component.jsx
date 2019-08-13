@@ -27,6 +27,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
+        // console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {
@@ -62,6 +63,7 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
     employerTypesList.unshift("");
+    // console.log(employerTypesList);
     return employerTypesList;
   };
 
@@ -188,6 +190,8 @@ export class SubmissionFormPage1Component extends React.Component {
       : { Name: "" };
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
+    console.log(this.props.legal_language);
+    console.log(this.props.legal_language.current);
     const legalLanguage = this.props.legal_language.current.textContent;
 
     const q = queryString.parse(this.props.location.search);
@@ -229,6 +233,7 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId,
       reCaptchaValue
     };
+    console.log(body);
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
@@ -257,6 +262,8 @@ export class SubmissionFormPage1Component extends React.Component {
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = this.updateEmployersPicklist() || [""];
+    // console.log(employerTypesList.length);
+    // console.log(employerList.length);
     return (
       <div
         data-test="component-submissionformpage1"
@@ -289,10 +296,11 @@ export class SubmissionFormPage1Component extends React.Component {
             />
             {this.props.tab === 0 && (
               <Tab1Form
-                handleSubmit={e => this.props.handleTab(e, 1)}
+                onSubmit={e => this.props.handleTab(e, 1)}
                 classes={classes}
                 employerTypesList={employerTypesList}
                 employerList={employerList}
+                handleInput={this.props.apiSubmission.handleInput}
                 updateEmployersPicklist={this.updateEmployersPicklist}
                 renderSelect={this.renderSelect}
                 renderTextField={this.renderTextField}
@@ -304,7 +312,7 @@ export class SubmissionFormPage1Component extends React.Component {
             )}
             {this.props.tab === 1 && (
               <Tab2Form
-                handleSubmit={e => this.props.handleTab(e, 1)}
+                onSubmit={e => this.props.handleTab(e, 2)}
                 classes={classes}
                 legal_language={this.props.legal_language}
                 sigBox={this.props.sigBox}
@@ -315,11 +323,12 @@ export class SubmissionFormPage1Component extends React.Component {
                 renderTextField={this.renderTextField}
                 renderCheckbox={this.renderCheckbox}
                 handleTab={this.props.handleTab}
+                initialize={this.props.initialize}
               />
             )}
             {this.props.tab === 2 && (
               <Tab3Form
-                handleSubmit={e => this.props.handleTab(e, 1)}
+                onSubmit={this.handleSubmit}
                 classes={classes}
                 reCaptchaChange={this.reCaptchaChange}
                 reCaptchaRef={this.props.reCaptchaRef}
