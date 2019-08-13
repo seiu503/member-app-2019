@@ -173,7 +173,7 @@ export const stylesPage1 = theme => ({
     padding: "80px 0 140px 0",
     margin: "auto 0 auto 50%",
     [theme.breakpoints.down("xl")]: {
-      margin: "0 0 auto 50%"
+      margin: "44px 0 auto 50%"
     },
     [theme.breakpoints.down("lg")]: {
       padding: "20px 0"
@@ -189,7 +189,26 @@ export const stylesPage1 = theme => ({
       margin: "36px auto"
     }
   },
-  sectionContainer: {},
+  sectionContainer: {
+    // padding: "80px 0 140px 0",
+    // margin: "auto 0",
+    // [theme.breakpoints.down("xl")]: {
+    //   // margin: "0 0 auto 50%"
+    // },
+    // [theme.breakpoints.down("lg")]: {
+    //   padding: "20px 0"
+    // },
+    // [theme.breakpoints.down("md")]: {
+    //   margin: "44px auto"
+    // },
+    // [theme.breakpoints.only("xs")]: {
+    //   width: "100vw",
+    //   position: "absolute",
+    //   left: 0,
+    //   top: 0,
+    //   margin: "36px auto"
+    // }
+  },
   head: {
     color: theme.palette.primary.light
   },
@@ -487,7 +506,7 @@ export const renderCheckbox = ({
         <Checkbox
           color="primary"
           checked={input.value ? true : false}
-          onChange={input.onChange}
+          // onChange={input.onChange}
           {...custom}
           {...input}
           className={classes.checkbox}

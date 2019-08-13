@@ -25,7 +25,8 @@ export const Tab2 = props => {
     sigBox,
     clearSignature,
     handleInput,
-    formPage1
+    signatureType,
+    toggleSignatureInputType
   } = props;
   return (
     <div data-test="component-tab2" className={classes.sectionContainer}>
@@ -74,14 +75,14 @@ export const Tab2 = props => {
             aria-label="Signature Type"
             name="signatureType"
             className={classes.groupLeft}
-            value={formPage1.signatureType}
+            value={signatureType}
             onChange={handleInput}
           >
             <FormControlLabel value="write" control={<Radio />} label="Write" />
             <FormControlLabel value="draw" control={<Radio />} label="Draw" />
           </RadioGroup>
         </FormControl>
-        {formPage1.signatureType === "write" && (
+        {signatureType === "write" && (
           <Field
             label="Signature"
             name="signature"
@@ -91,12 +92,12 @@ export const Tab2 = props => {
             component={renderTextField}
           />
         )}
-        {formPage1.signatureType === "write" && (
+        {signatureType === "write" && (
           <FormHelperText className={classes.formHelperText}>
             Enter your full legal name. This will act as your signature.
           </FormHelperText>
         )}
-        {formPage1.signatureType === "draw" && (
+        {signatureType === "draw" && (
           <div className={classes.sigBox}>
             <SignatureCanvas
               ref={sigBox}
@@ -123,9 +124,18 @@ export const Tab2 = props => {
             </Button>
           </div>
         )}
-        {formPage1.signatureType === "draw" && (
+        {signatureType === "draw" && (
           <FormHelperText className={classes.formHelperText}>
             Draw your signature in the box above.
+            <button
+              type="button"
+              className={classes.buttonLink}
+              aria-label="Change Signature Input Method"
+              name="signatureType"
+              onClick={() => toggleSignatureInputType()}
+            >
+              Click here to type your signature
+            </button>
           </FormHelperText>
         )}
         <div className={classes.buttonWrap}>
@@ -162,7 +172,9 @@ Tab2.propTypes = {
   sigBox: PropTypes.object,
   clearSignature: PropTypes.func,
   handleInput: PropTypes.func,
-  formPage1: PropTypes.object
+  formPage1: PropTypes.object,
+  signatureType: PropTypes.string,
+  toggleSignatureInputType: PropTypes.func
 };
 
 // add reduxForm to component
@@ -172,7 +184,8 @@ export const Tab2Form = reduxForm({
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true,
   enableReinitialize: true,
-  keepDirtyOnReinitialize: true
+  keepDirtyOnReinitialize: true,
+  updateUnregisteredFields: true
 })(Tab2);
 
 export default Tab2Form;

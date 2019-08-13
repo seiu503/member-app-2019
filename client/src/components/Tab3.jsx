@@ -17,7 +17,6 @@ export const Tab3 = props => {
     loading,
     invalid
   } = props;
-  console.log(`invalid: ${invalid}`);
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form
@@ -63,7 +62,9 @@ export const Tab3Form = reduxForm({
   validate,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
-  enableReinitialize: true
+  enableReinitialize: true,
+  keepDirtyOnReinitialize: true,
+  updateUnregisteredFields: true
 })(Tab3);
 
 export default Tab3Form;

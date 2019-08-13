@@ -19,7 +19,9 @@ const { employerTypeMap, getKeyByValue, formatSFDate } = formElements;
 export class SubmissionFormPage1Component extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      signatureType: "draw"
+    };
   }
 
   componentDidMount() {
@@ -103,57 +105,6 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  clearSignature = () => {
-    this.props.sigBox.clear();
-  };
-
-  dataURItoBlob = dataURI => {
-    let binary = atob(dataURI.split(",")[1]);
-    let array = [];
-    for (let i = 0; i < binary.length; i++) {
-      array.push(binary.charCodeAt(i));
-    }
-    return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
-  };
-
-  trimSignature = () => {
-    let dataURL = this.props.sigBox.getTrimmedCanvas().toDataURL("image/jpeg");
-    let blobData = this.dataURItoBlob(dataURL);
-    return blobData;
-  };
-
-  handleUpload = (firstName, lastName) => {
-    return new Promise((resolve, reject) => {
-      let file = this.trimSignature();
-      let filename = `${firstName}_${lastName}_signature_${new Date()}.jpg`;
-      if (file instanceof Blob) {
-        file.name = filename;
-      }
-      // const filename = file ? file.name.split(".")[0] : "";
-      this.props.apiContent
-        .uploadImage(file)
-        .then(result => {
-          if (
-            result.type === "UPLOAD_IMAGE_FAILURE" ||
-            this.props.content.error
-          ) {
-            openSnackbar(
-              "error",
-              this.props.content.error ||
-                "An error occured while trying to save your Signature. Please try typing it instead"
-            );
-            resolve();
-          } else {
-            resolve(result.payload.content);
-          }
-        })
-        .catch(err => {
-          openSnackbar("error", err);
-          reject(err);
-        });
-    });
-  };
-
   handleSubmit = async values => {
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     let signature;
@@ -175,11 +126,11 @@ export class SubmissionFormPage1Component extends React.Component {
       termsAgree,
       salesforceId
     } = values;
-    if (this.props.formValues.signatureType === "write") {
-      signature = values.signature;
-    }
-    if (this.props.formValues.signatureType === "draw") {
-      signature = await this.handleUpload(firstName, lastName);
+    console.log(termsAgree);
+    signature = this.props.submission.formPage1.signature;
+    if (!signature) {
+      openSnackbar("error", "Please provide a signature");
+      return;
     }
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
@@ -190,9 +141,7 @@ export class SubmissionFormPage1Component extends React.Component {
       : { Name: "" };
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
-    console.log(this.props.legal_language);
-    console.log(this.props.legal_language.current);
-    const legalLanguage = this.props.legal_language.current.textContent;
+    const legalLanguage = this.props.submission.formPage1.legalLanguage;
 
     const q = queryString.parse(this.props.location.search);
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
@@ -233,7 +182,7 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId,
       reCaptchaValue
     };
-    console.log(body);
+    console.log(body.terms_agree);
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
@@ -247,7 +196,7 @@ export class SubmissionFormPage1Component extends React.Component {
               "An error occurred while trying to submit your information."
           );
         } else {
-          this.props.reset("submissionPage1");
+          // this.props.reset("submissionPage1");
           this.props.history.push(`/page2`);
         }
       })
@@ -256,6 +205,7 @@ export class SubmissionFormPage1Component extends React.Component {
         openSnackbar("error", err);
       });
   };
+
   render() {
     const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
@@ -312,13 +262,16 @@ export class SubmissionFormPage1Component extends React.Component {
             )}
             {this.props.tab === 1 && (
               <Tab2Form
-                onSubmit={e => this.props.handleTab(e, 2)}
+                onSubmit={e =>
+                  this.props.handleTab(e, 2, this.props.formValues)
+                }
                 classes={classes}
                 legal_language={this.props.legal_language}
                 sigBox={this.props.sigBox}
+                signatureType={this.props.signatureType}
+                toggleSignatureInputType={this.props.toggleSignatureInputType}
                 clearSignature={this.clearSignature}
                 handleInput={this.props.apiSubmission.handleInput}
-                formPage1={this.props.submission.formPage1}
                 renderSelect={this.renderSelect}
                 renderTextField={this.renderTextField}
                 renderCheckbox={this.renderCheckbox}

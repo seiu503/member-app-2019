@@ -290,7 +290,8 @@ export const Tab1Form = reduxForm({
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true,
   enableReinitialize: true,
-  keepDirtyOnReinitialize: true
+  keepDirtyOnReinitialize: true,
+  updateUnregisteredFields: true
 })(Tab1);
 
 // connect to redux store

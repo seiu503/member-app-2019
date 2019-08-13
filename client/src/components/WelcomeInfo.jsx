@@ -155,7 +155,7 @@ export class WelcomeInfoUnconnected extends React.Component {
           <div className={this.classes.buttonWrap}>
             <Button
               type="button"
-              onClick={e => this.props.handleTab(e, 0, true, false)}
+              onClick={e => this.props.handleTab(e, 0)}
               color="primary"
               className={this.classes.next}
               variant="contained"

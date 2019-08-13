@@ -6,7 +6,7 @@ import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
-// import { openSnackbar } from "./Notifier";
+import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
@@ -20,11 +20,14 @@ export class SubmissionFormPage1Container extends React.Component {
     super(props);
     this.state = {
       open: false,
-      tab: undefined
+      tab: undefined,
+      legalLanguage: "",
+      signatureType: "draw"
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleTab = this.handleTab.bind(this);
+    this.handleUpload = this.handleUpload.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -53,12 +56,6 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (prevProps.submission.formPage1.firstName) {
-
-  //   }
-  // }
-
   handleOpen() {
     const newState = { ...this.state };
     newState.open = true;
@@ -71,49 +68,101 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   }
 
-  handleTab(event, newValue) {
-    console.log("handleTab");
-    // if (newValue > 0) {
-    //   console.log(`newValue: ${newValue}`);
-    //   console.log(`pristine: ${pristine}, invalid: ${invalid}`);
-    // }
-
-    // this.tabValidate(newValue, pristine, invalid).then(valid => {
-    //   console.log(`valid: ${valid}`);
-    //   if (valid) {
-    const newState = { ...this.state };
-    newState.tab = newValue;
-    this.setState({ ...newState }, () => {
-      console.log("handleTab state set");
+  handleUpload(firstName, lastName) {
+    return new Promise((resolve, reject) => {
+      let file = this.trimSignature();
+      let filename = `${firstName}_${lastName}_signature_${new Date()}.jpg`;
+      if (file instanceof Blob) {
+        file.name = filename;
+      }
+      // const filename = file ? file.name.split(".")[0] : "";
+      this.props.apiContent
+        .uploadImage(file)
+        .then(result => {
+          if (
+            result.type === "UPLOAD_IMAGE_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to save your Signature. Please try typing it instead"
+            );
+            resolve();
+          } else {
+            resolve(result.payload.content);
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
+          reject(err);
+        });
     });
-    //   } else {
-    //     openSnackbar(
-    //       "error",
-    //       "Plese fix form errors and complete all required fields before proceeding."
-    //     );
-    //     return;
-    //   }
-    // });
   }
 
-  // tabValidate(tabIndex, pristine, invalid) {
-  //   // let requiredFieldsByTab;
-  //   return new Promise(resolve => {
-  //     if (tabIndex === 0) {
-  //       console.log("tab 0");
-  //       resolve(true);
-  //     }
-  //     if (tabIndex === 1 || tabIndex === 2) {
-  //       console.log("tab 1 or 2");
-  //       console.log(`pristine: ${pristine}, invalid: ${invalid}`);
-  //       if (pristine || invalid) {
-  //         resolve(false);
-  //       } else {
-  //         resolve(true);
-  //       }
-  //     }
-  //   });
-  // }
+  toggleSignatureInputType = () => {
+    let value = this.state.signatureType === "draw" ? "write" : "draw";
+    this.setState({ signatureType: value });
+  };
+
+  clearSignature = () => {
+    this.props.sigBox.current.clear();
+  };
+
+  dataURItoBlob = dataURI => {
+    let binary = atob(dataURI.split(",")[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
+  };
+
+  trimSignature = () => {
+    let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
+    let blobData = this.dataURItoBlob(dataURL);
+    return blobData;
+  };
+
+  handleTab(event, newValue, formValues) {
+    if (newValue === 2) {
+      // save legal_language to redux store before ref disappears
+      const legalLanguage = this.props.legal_language.current.textContent;
+      this.props.apiSubmission.handleInput({
+        target: { name: "legalLanguage", value: legalLanguage }
+      });
+      // perform signature processing steps and save value to redux store
+      // before ref disappears
+      if (this.state.signatureType === "write") {
+        this.props.apiSubmission.handleInput({
+          target: { name: "signature", value: formValues.signature }
+        });
+        const newState = { ...this.state };
+        newState.tab = newValue;
+        this.setState({ ...newState });
+        return;
+      }
+      if (this.state.signatureType === "draw") {
+        this.handleUpload(formValues.firstName, formValues.lastName)
+          .then(sigUrl => {
+            this.props.apiSubmission.handleInput({
+              target: { name: "signature", value: sigUrl }
+            });
+            const newState = { ...this.state };
+            newState.tab = newValue;
+            this.setState({ ...newState });
+            return;
+          })
+          .catch(err => {
+            openSnackbar("error", err);
+          });
+      }
+    } else {
+      const newState = { ...this.state };
+      newState.tab = newValue;
+      this.setState({ ...newState });
+    }
+  }
 
   render() {
     const fullName = `${
@@ -145,6 +194,9 @@ export class SubmissionFormPage1Container extends React.Component {
           {...this.props}
           tab={this.state.tab}
           handleTab={this.handleTab}
+          handleUpload={this.handleUpload}
+          signatureType={this.state.signatureType}
+          toggleSignatureInputType={this.toggleSignatureInputType}
         />
       </div>
     );

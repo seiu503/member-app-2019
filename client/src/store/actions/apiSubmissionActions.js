@@ -11,10 +11,6 @@ export const UPDATE_SUBMISSION_FAILURE = "UPDATE_SUBMISSION_FAILURE";
 export const HANDLE_INPUT = "HANDLE_INPUT";
 
 export function handleInput({ target: { name, value } }) {
-  console.log("handleInput");
-  // if (name === 'firstName') {
-  console.log(value);
-  // }
   return {
     type: HANDLE_INPUT,
     payload: { name, value }
