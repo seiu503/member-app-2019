@@ -5,7 +5,8 @@ import {
   isSubmitting,
   isPristine,
   isValid,
-  getFormSubmitErrors
+  getFormSubmitErrors,
+  reset
 } from "redux-form";
 
 import { bindActionCreators } from "redux";
@@ -219,7 +220,8 @@ const mapStateToProps = state => ({
   pristine: isPristine("submissionPage1")(state),
   submitting: isSubmitting("submissionPage1")(state),
   valid: isValid("submissionPage1")(state),
-  submitErrors: getFormSubmitErrors("submissionPage1")(state)
+  submitErrors: getFormSubmitErrors("submissionPage1")(state),
+  reset: reset
 });
 
 const mapDispatchToProps = dispatch => ({

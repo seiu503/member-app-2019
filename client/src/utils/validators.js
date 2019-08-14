@@ -15,7 +15,8 @@ const validate = values => {
     "mobilePhone",
     "employerName",
     "employerType",
-    "termsAgree"
+    "termsAgree",
+    "signature"
   ];
   requiredFields.forEach(field => {
     if (!values[field]) {

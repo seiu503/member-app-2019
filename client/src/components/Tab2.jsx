@@ -3,11 +3,6 @@ import { Field } from "redux-form";
 import { reduxForm } from "redux-form";
 import SignatureCanvas from "react-signature-canvas";
 
-import FormLabel from "@material-ui/core/FormLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
 import PropTypes from "prop-types";
@@ -68,35 +63,21 @@ export const Tab2 = props => {
           whichever occurs first, I notify the Union and my employer in writing,
           with my valid signature, of my desire to revoke this authorization.
         </FormHelperText>
-        <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend" className={classes.radioLabel}>
-            Signature Type
-          </FormLabel>
-          <RadioGroup
-            aria-label="Signature Type"
-            name="signatureType"
-            className={classes.groupLeft}
-            value={signatureType}
-            onChange={handleInput}
-          >
-            <FormControlLabel value="write" control={<Radio />} label="Write" />
-            <FormControlLabel value="draw" control={<Radio />} label="Draw" />
-          </RadioGroup>
-        </FormControl>
+
         {signatureType === "write" && (
-          <Field
-            label="Signature"
-            name="signature"
-            id="signature"
-            type="text"
-            classes={classes}
-            component={renderTextField}
-          />
-        )}
-        {signatureType === "write" && (
-          <FormHelperText className={classes.formHelperText}>
-            Enter your full legal name. This will act as your signature.
-          </FormHelperText>
+          <React.Fragment>
+            <Field
+              label="Signature"
+              name="signature"
+              id="signature"
+              type="text"
+              classes={classes}
+              component={renderTextField}
+            />
+            <FormHelperText className={classes.formHelperText}>
+              Enter your full legal name. This will act as your signature.
+            </FormHelperText>
+          </React.Fragment>
         )}
         {signatureType === "draw" && (
           <React.Fragment>
@@ -126,7 +107,7 @@ export const Tab2 = props => {
               </Button>
             </div>
             <FormHelperText className={classes.formHelperText}>
-              Draw your signature in the box above.
+              Draw your signature in the box above.&nbsp;
               <button
                 type="button"
                 data-test="button-sig-toggle"

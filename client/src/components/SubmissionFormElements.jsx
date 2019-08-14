@@ -326,7 +326,6 @@ export const stylesPage1 = theme => ({
   },
   buttonLink: {
     background: "none",
-    width: "100%",
     border: "none",
     padding: "0",
     font: " inherit",
