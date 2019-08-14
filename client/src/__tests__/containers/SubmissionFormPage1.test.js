@@ -10,13 +10,11 @@ import { Provider } from "react-redux";
 import "jest-canvas-mock";
 
 import * as apiSForce from "../../store/actions/apiSFActions";
-import * as apiContent from "../../store/actions/apiContentActions";
 import {
   SubmissionFormPage1Connected,
   SubmissionFormPage1Container
 } from "../../containers/SubmissionFormPage1";
 import { getSFContactById } from "../../store/actions/apiSFActions";
-import { uploadImage } from "../../store/actions/apiContentActions";
 import { handleInput } from "../../store/actions/apiSubmissionActions";
 
 import configureMockStore from "redux-mock-store";
@@ -260,7 +258,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       <SubmissionFormPage1Container {...defaultProps} {...props} />
     );
     const handleUploadMock = jest.fn().mockImplementation(() => {
-      console.log("handleUploadMock");
       return "url";
     });
     wrapper.instance().handleUpload = handleUploadMock;
@@ -269,24 +266,4 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     wrapper.instance().handleTab({ target: "fake" }, 1, {});
     expect(wrapper.instance().state.tab).toBe(1);
   });
-
-  // it("calls handleUpload if signatureType is 'draw'", () => {
-  //     testData = generateSampleValidate();
-  //     addSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-  //       );
-  //     // creating wrapper
-  //     wrapper = unconnectedSetup();
-  //     wrapper.setProps({tab: 2})
-  //     wrapper.instance().state.signatureType = "draw";
-  //     wrapper.instance().handleUpload = jest.fn();
-  //     wrapper.update();
-  //     // simulate submit with dummy data
-  //     console.log(wrapper.debug());
-  //     wrapper.find("ReduxForm").simulate("submit", { ...testData });
-  //     // testing that submit was called
-  //     expect(wrapper.instance().handleUpload.mock.calls.length).toBe(1);
-  //   });
 });

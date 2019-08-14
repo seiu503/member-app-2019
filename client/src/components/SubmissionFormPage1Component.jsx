@@ -107,9 +107,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   handleSubmit(values) {
-    console.log("110");
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
-    console.log("112", reCaptchaValue);
     let signature;
     let {
       firstName,
@@ -129,24 +127,18 @@ export class SubmissionFormPage1Component extends React.Component {
       termsAgree,
       salesforceId
     } = values;
-    console.log("132");
     signature = this.props.submission.formPage1.signature;
-    console.log("134", signature);
     if (!signature) {
-      console.log("136");
       openSnackbar("error", "Please provide a signature");
       return;
     }
-    console.log("140");
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
-    console.log("143");
     const employerObject = this.props.submission.employerObjects
       ? this.props.submission.employerObjects.filter(
           obj => obj.Name.toLowerCase() === employerName.toLowerCase()
         )[0]
       : { Name: "" };
-    console.log("149");
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
     const legalLanguage = this.props.submission.formPage1.legalLanguage;
@@ -158,11 +150,9 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforceId = q.id;
     }
     if (!reCaptchaValue) {
-      console.log("161");
       openSnackbar("error", "Please verify you are human with Captcha");
       return;
     }
-    console.log("165");
     const body = {
       ip_address: localIpUrl(),
       submission_date: new Date(),
@@ -192,13 +182,10 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId,
       reCaptchaValue
     };
-    console.log("188");
-    console.log(body);
+
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
-        console.log("194");
-        console.log(result);
         if (
           result.type === "ADD_SUBMISSION_FAILURE" ||
           this.props.submission.error

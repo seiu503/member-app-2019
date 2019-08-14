@@ -5,14 +5,10 @@ import "jest-canvas-mock";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import { languageOptions } from "../../components/SubmissionFormElements";
-import {
-  SubmissionFormPage1Component,
-  SubmissionFormWrap
-} from "../../components/SubmissionFormPage1Component";
+import { SubmissionFormPage1Component } from "../../components/SubmissionFormPage1Component";
 
 import * as Notifier from "../../containers/Notifier";
-import { INITIAL_STATE } from "../../store/reducers/submission";
+
 // variables
 let wrapper,
   store,
@@ -26,15 +22,10 @@ let wrapper,
   props,
   testData,
   tab,
-  component,
-  sfLookupError,
   sfEmployerLookupSuccess,
   sfEmployerLookupFailure,
-  getSFEmployersSuccess,
-  error,
   handleUpload,
-  updateEmployersPicklist,
-  touched;
+  updateEmployersPicklist;
 
 let resetMock = jest.fn();
 
@@ -100,8 +91,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   // gain access to touched and error to test validation
   // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
-    touched = false;
-    error = null;
     handleSubmit = fn => fn;
     apiSubmission = {};
     apiSF = {
@@ -162,26 +151,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         null
       );
     });
-
-    // it("has languageOptions", () => {
-    //   wrapper = unconnectedSetup();
-    //   let languageSelect = wrapper.find(`[name="preferredLanguage"]`);
-    //   expect(languageSelect.options).toBe(languageOptions)
-    // });
-    // it("calls handleSubmit on submit", () => {
-    //   testData = generateSampleValidate();
-    //   addSubmissionSuccess = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-    //     );
-    //   wrapper = unconnectedSetup();
-    //   wrapper.setProps({ tab: 2, apiSubmission: { addSubmission: addSubmissionSuccess }});
-    //   wrapper.instance().handleSubmit = handleSubmitMock;
-    //   wrapper.update();
-    //   wrapper.find("ReduxForm").simulate("submit", { ...testData });
-    //   expect(handleSubmitMock.mock.calls.length).toBe(1);
-    // });
   });
 
   // testing that we are triggering expected behavior for submit success and failure
@@ -224,8 +193,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       });
       wrapper.instance().props.apiSubmission.addSubmission = addSubmissionSuccess;
       wrapper.update();
-      // simulate signatureToggle to switch type to "write"
-      // wrapper.find(`[name="signatureType"]`).simulate("click");
       // simulate submit with dummy data
       wrapper.find("ReduxForm").simulate("submit", { ...testData });
       // testing that submit was called
@@ -255,8 +222,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       wrapper.update();
       addSubmission = addSubmissionError;
       apiSubmission.addSubmission = addSubmission;
-      // simulate signatureToggle to switch type to "write"
-      // wrapper.find(`[name="signatureType"]`).simulate("click");
       delete testData.signature;
       // simulate submit with dummy data
       wrapper.find("ReduxForm").simulate("submit", { ...testData });
@@ -265,37 +230,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       });
     });
-    // it("updates employerPickList on employerType change", () => {
-    //   const event = { target: { value: "non-profit" } };
-    //   wrapper = unconnectedSetup();
-    //   let mockUpdateEmployersPicklist = jest.fn();
-    //   wrapper.instance().updateEmployersPicklist = mockUpdateEmployersPicklist;
-    //   const picklist = wrapper.find(`[name="employerType"]`).first();
-    //   picklist.simulate("change", event);
-    //   expect(mockUpdateEmployersPicklist).toHaveBeenCalled();
-    // });
-    // it("toggles signatureType", () => {
-    //   wrapper = unconnectedSetup();
-    //   wrapper.setProps({
-    //     tab: 1
-    //   });
-    //   wrapper.update();
-    //   expect(wrapper.instance().state.signatureType).toBe("draw");
-    //   console.log('######################');
-    //   console.log(wrapper.debug());
-    //   wrapper
-    //     .find(`[name="signatureType"]`)
-    //     .first()
-    //     .simulate("click");
-    //   expect(wrapper.instance().state.signatureType).toBe("write");
-    //   let mockToggle = jest.fn();
-    //   wrapper.instance().toggleSignatureInputType = mockToggle;
-    //   wrapper
-    //     .find(`[name="signatureType"]`)
-    //     .first()
-    //     .simulate("click");
-    //   expect(mockToggle).toHaveBeenCalled();
-    // });
+
     it("provides error feedback after failed Submit", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
@@ -320,13 +255,11 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       });
       wrapper.update();
       wrapper.instance().props.apiSubmission.addSubmission = addSubmissionError;
-      // simulate signatureToggle to switch type to "write"
-      // wrapper.find(`[name="signatureType"]`).simulate("click");
       // simulate submit with dummy data
       wrapper.find("ReduxForm").simulate("submit", { ...testData });
       // testing that submit was called
       expect(addSubmissionError.mock.calls.length).toBe(1);
-      // testing that clearForm is called when handleSubmit receives Error message
+      // testing that openSnackbar is called when handleSubmit receives Error message
       return addSubmissionError().then(() => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       });
