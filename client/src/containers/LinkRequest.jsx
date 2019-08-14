@@ -16,7 +16,8 @@ import ButtonWithSpinner from "../components/ButtonWithSpinner";
 const styles = theme => ({
   root: {},
   container: {
-    padding: "80px 0 140px 0"
+    padding: "80px 0 140px 0",
+    background: "white"
   },
   head: {
     color: theme.palette.primary.light,

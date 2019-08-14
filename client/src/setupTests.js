@@ -7,3 +7,10 @@ Enzyme.configure({
 });
 
 global.fetch = require("jest-fetch-mock");
+global.canvas = require("jest-canvas-mock");
+// global.File = class MockFile {
+//     filename: string;
+//     constructor(parts: (string | Blob | ArrayBuffer | ArrayBufferView)[], filename: string, properties ? : FilePropertyBag) {
+//       this.filename = filename;
+//     }
+//   }

@@ -25,6 +25,8 @@ import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
 import LinkRequest from "./containers/LinkRequest";
 
+import SamplePhoto from "./img/sample-form-photo.jpg";
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -37,23 +39,41 @@ const styles = theme => ({
   },
   container: {
     maxWidth: 1200,
-    padding: 60,
-    [theme.breakpoints.down("md")]: {
-      padding: 20
-    },
     margin: "auto",
     height: "100%",
-    minHeight: "80vh",
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center"
+  },
+  appRoot: {
+    width: "100vw",
+    height: "100%",
+    minHeight: "80vh",
+    backgroundImage: `url("${SamplePhoto}")`,
+    backgroundAttachment: "fixed",
+    backgroundPosition: "bottom",
+    [theme.breakpoints.down("sm")]: {
+      backgroundImage: "none"
+    },
+    [theme.breakpoints.up("xl")]: {
+      backgroundSize: "cover"
+    }
   },
   message: {
     margin: "auto",
     width: "50%",
     textAlign: "center",
     height: "50%",
-    lineHeight: "2em"
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      height: "100%"
+    },
+    lineHeight: "2em",
+    background: "white",
+    borderRadius: "4px",
+    padding: 60,
+    fontSize: "1.2em"
   },
   row: {
     display: "flex",
@@ -100,6 +120,9 @@ const styles = theme => ({
     left: "50%",
     transform: "translate(-50%, -50%)",
     display: "block"
+  },
+  form: {
+    background: "white"
   }
 });
 
@@ -108,6 +131,7 @@ export class AppUnconnected extends Component {
     super(props);
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
+    this.sigBox = React.createRef();
     this.reCaptchaRef = React.createRef();
     this.state = {
       deleteDialogOpen: false,
@@ -143,7 +167,7 @@ export class AppUnconnected extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div data-test="component-app">
+      <div data-test="component-app" className={classes.appRoot}>
         <CssBaseline />
         <NavBar scroll={this.scroll} main_ref={this.main_ref} />
         <Notifier />
@@ -157,6 +181,7 @@ export class AppUnconnected extends Component {
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
+                  sigBox={this.sigBox}
                   reCaptchaRef={this.reCaptchaRef}
                   {...routeProps}
                 />

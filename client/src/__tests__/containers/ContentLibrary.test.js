@@ -26,20 +26,20 @@ const defaultProps = {
     deleteDialogOpen: false,
     allContent: [
       {
-        id: "5eb92d2e-ae94-47c9-bdb4-4780c3b0b33c",
+        id: 1,
         content_type: "image",
         content: "http:www.example.com/image.png",
         updated_at: "2019-06-11T16:58:01.012Z"
       },
       {
-        id: "5eb92d2e-ae94-47c9-bdb4-4780c3b0a12b",
+        id: 2,
         content_type: "bodyCopy",
         content: "Here is some body copy.",
         updated_at: "2019-06-12T16:58:01.012Z"
       }
     ],
     currentContent: {
-      id: "5eb92d2e-ae94-47c9-bdb4-4780c3b0b33c",
+      id: 2,
       content_type: "bodyCopy",
       content: "Here is some body copy.",
       updated_at: "2019-06-11T16:58:01.012Z"

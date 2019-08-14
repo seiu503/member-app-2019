@@ -3,8 +3,6 @@ import { mount, shallow } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { Provider } from "react-redux";
 
-// Needed to create simple store to test connected component
-import { INITIAL_STATE } from "../../store/reducers/submission";
 import * as apiSForce from "../../store/actions/apiSFActions";
 import {
   SubmissionFormPage2Connected,
@@ -27,8 +25,7 @@ const initialState = {
   appState: {
     loading: false,
     error: ""
-  },
-  formValues: {}
+  }
 };
 
 const defaultProps = {
@@ -102,28 +99,4 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(spyCall).toEqual("1");
   });
-
-  // test("alert pops up if no SF Id", () => {
-  //   let props = {
-  //     submission: {
-  //       error: null,
-  //   loading: false,
-  //       salesforceId: null
-  //     },
-  //     apiSF: { getSFContactById: getSFContactById }
-  //   };
-  //   store = storeFactory(initialState);
-  //   window.alert = jest.fn();
-  //   wrapper = setup(props)
-  //   console.log(wrapper.instance().props.submission)
-  //   console.log(window.alert.mock);
-  //   expect(window.alert).toHaveBeenCalled();
-  // })
 });
-
-// jest.spyOn(window, 'alert').mockImplementation(() => { });
-// const formWrapper = wrapper.find(Form).dive();
-// jest.spyOn(formWrapper.instance(), '_handleSubmit');
-// formWrapper.find("form").simulate("submit");
-// expect(formWrapper.instance()._handleSubmit).toBeCalled();
-// expect(window.alert).toBeCalledWith(...);

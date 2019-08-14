@@ -35,7 +35,8 @@ export const INITIAL_STATE = {
     employerType: "",
     firstName: "",
     lastName: "",
-    homeEmail: ""
+    homeEmail: "",
+    legalLanguage: ""
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],

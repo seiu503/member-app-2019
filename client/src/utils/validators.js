@@ -15,7 +15,8 @@ const validate = values => {
     "mobilePhone",
     "employerName",
     "employerType",
-    "termsAgree"
+    "termsAgree",
+    "signature"
   ];
   requiredFields.forEach(field => {
     if (!values[field]) {
@@ -54,11 +55,11 @@ const validate = values => {
   ) {
     errors.hireDate = "Invalid Date (please us 'yyyy-mm-dd' format)";
   }
-  if (values.homePostalCode && values.homePostalCode.length !== 5) {
-    errors.homePostalCode = `Must be at exactly 5 characters long`;
+  if (values.homeZip && values.homeZip.length !== 5) {
+    errors.homeZip = `Must be at exactly 5 characters long`;
   }
-  if (values.mailToPostalCode && values.mailToPostalCode.length !== 5) {
-    errors.mailToPostalCode = `Must be at exactly 5 characters long`;
+  if (values.mailToZip && values.mailToZip.length !== 5) {
+    errors.mailToZip = `Must be at exactly 5 characters long`;
   }
   return errors;
 };

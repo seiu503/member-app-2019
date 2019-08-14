@@ -1,24 +1,26 @@
 import React from "react";
 import { mount, shallow } from "enzyme";
 import moment from "moment";
-import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import {
+  findByTestAttr,
+  storeFactory,
+  fakeDataURI
+} from "../../utils/testUtils";
 import { Provider } from "react-redux";
 import "jest-canvas-mock";
 
-// Needed to create simple store to test connected component
-import { INITIAL_STATE } from "../../store/reducers/submission";
 import * as apiSForce from "../../store/actions/apiSFActions";
 import {
   SubmissionFormPage1Connected,
   SubmissionFormPage1Container
 } from "../../containers/SubmissionFormPage1";
 import { getSFContactById } from "../../store/actions/apiSFActions";
+import { handleInput } from "../../store/actions/apiSubmissionActions";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
 
-let store;
-let wrapper;
+let store, wrapper, trimSignatureMock;
 
 let pushMock = jest.fn();
 
@@ -28,15 +30,17 @@ const reCaptchaRef = {
   }
 };
 
+const sigBox = {
+  current: {
+    toDataURL: jest.fn(),
+    clear: jest.fn()
+  }
+};
+
 const initialState = {
-  // ...INITIAL_STATE,
   appState: {
     loading: false,
     error: ""
-  },
-  formValues: {
-    mm: "",
-    onlineCampaignSource: null
   }
 };
 
@@ -71,7 +75,8 @@ const defaultProps = {
   history: {
     push: pushMock
   },
-  reCaptchaRef: { ...reCaptchaRef }
+  reCaptchaRef: { ...reCaptchaRef },
+  sigBox: { ...sigBox }
 };
 
 const setup = (props = {}) => {
@@ -92,11 +97,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
   it("renders connected component", () => {
     store = storeFactory(initialState);
-    wrapper = mount(
-      <Provider store={store}>
-        <SubmissionFormPage1Connected {...defaultProps} />
-      </Provider>
-    );
     wrapper = mount(
       <Provider store={store}>
         <SubmissionFormPage1Connected {...defaultProps} />
@@ -131,5 +131,139 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     // console.log(dispatchSpy.mock.calls);
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(spyCall).toEqual("1");
+  });
+
+  test("`handeOpen` opens modal", () => {
+    wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+    wrapper.instance().handleOpen();
+    expect(wrapper.instance().state.open).toBe(true);
+  });
+
+  test("`handeClose` closes modal", () => {
+    wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+    wrapper.instance().handleClose();
+    expect(wrapper.instance().state.open).toBe(false);
+  });
+
+  test("`handeUpload` calls apiContent.uploadImage", () => {
+    let uploadImageMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "UPLOAD_IMAGE_SUCCESS" })
+      );
+    let props = {
+      apiContent: { uploadImage: uploadImageMock }
+    };
+
+    wrapper = shallow(
+      <SubmissionFormPage1Container {...defaultProps} {...props} />
+    );
+
+    let blob = new Blob([""], { type: "image/jpg" });
+    blob["lastModifiedDate"] = "";
+    blob["name"] = "filename";
+    let fakeFile = blob;
+    trimSignatureMock = jest.fn().mockImplementation(() => fakeFile);
+    wrapper.instance().trimSignature = trimSignatureMock;
+    wrapper.instance().handleUpload("firstname", "lastname");
+    expect(uploadImageMock.mock.calls.length).toBe(1);
+  });
+
+  test("`handeTab` saves legalLanguage and signature if newValue === 2", () => {
+    let handleInputMock = jest.fn();
+    let props = {
+      apiSubmission: { handleInput: handleInputMock },
+      legal_language: {
+        current: {
+          textContent: ""
+        }
+      }
+    };
+
+    wrapper = shallow(
+      <SubmissionFormPage1Container {...defaultProps} {...props} />
+    );
+
+    wrapper.instance().handleTab({ target: "fake" }, 2, {});
+    expect(handleInputMock.mock.calls.length).toBe(1);
+  });
+
+  test("`handeTab` sets state.tab (2)", () => {
+    let props = {
+      apiSubmission: { handleInput: handleInput },
+      legal_language: {
+        current: {
+          textContent: ""
+        }
+      }
+    };
+
+    wrapper = shallow(
+      <SubmissionFormPage1Container {...defaultProps} {...props} />
+    );
+    wrapper.instance().state.signatureType = "write";
+    wrapper.instance().handleTab({ target: "fake" }, 2, {});
+    expect(wrapper.instance().state.tab).toBe(2);
+  });
+
+  test("`handeTab` sets state.tab (other)", () => {
+    let props = {
+      apiSubmission: { handleInput: handleInput },
+      legal_language: {
+        current: {
+          textContent: ""
+        }
+      }
+    };
+
+    wrapper = shallow(
+      <SubmissionFormPage1Container {...defaultProps} {...props} />
+    );
+    wrapper.instance().state.signatureType = "write";
+    wrapper.instance().handleTab({ target: "fake" }, 1, {});
+    expect(wrapper.instance().state.tab).toBe(1);
+  });
+
+  test("`dataURItoBlob` returns Blob", () => {
+    let props = {
+      legal_language: {
+        current: {
+          textContent: ""
+        }
+      }
+    };
+    wrapper = shallow(
+      <SubmissionFormPage1Container {...defaultProps} {...props} />
+    );
+    const testBlob = wrapper.instance().dataURItoBlob(fakeDataURI);
+    expect(typeof testBlob).toBe("object");
+    expect(testBlob.type).toBe("image/jpeg");
+  });
+
+  test("`handleTab` saves sigUrl", () => {
+    let props = {
+      apiSubmission: { handleInput: handleInput },
+      legal_language: {
+        current: {
+          textContent: ""
+        }
+      },
+      formValues: {
+        firstName: "first",
+        lastName: "last"
+      }
+    };
+
+    wrapper = shallow(
+      <SubmissionFormPage1Container {...defaultProps} {...props} />
+    );
+    const handleUploadMock = jest.fn().mockImplementation(() => {
+      return "url";
+    });
+    wrapper.instance().handleUpload = handleUploadMock;
+    wrapper.update();
+    wrapper.instance().state.signatureType = "draw";
+    wrapper.instance().handleTab({ target: "fake" }, 1, {});
+    expect(wrapper.instance().state.tab).toBe(1);
   });
 });

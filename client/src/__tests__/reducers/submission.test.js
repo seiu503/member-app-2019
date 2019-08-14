@@ -136,7 +136,8 @@ describe("submission reducer", () => {
           preferredLanguage: "string",
           termsAgree: false,
           signature: null,
-          textAuthOptOut: false
+          textAuthOptOut: false,
+          legalLanguage: ""
         },
         formPage2: {
           africanOrAfricanAmerican: false,

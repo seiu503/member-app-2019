@@ -169,18 +169,67 @@ export const formatSFDate = date => {
 
 // MUI styles object
 export const stylesPage1 = theme => ({
-  root: {
-    margin: "40px 0"
+  formContainer: {
+    padding: "80px 0 140px 0",
+    margin: "auto 0 auto 50%",
+    [theme.breakpoints.down("xl")]: {
+      margin: "44px 0 auto 50%"
+    },
+    [theme.breakpoints.down("lg")]: {
+      padding: "20px 0"
+    },
+    [theme.breakpoints.down("md")]: {
+      margin: "44px auto"
+    },
+    [theme.breakpoints.only("xs")]: {
+      width: "100vw",
+      position: "absolute",
+      left: 0,
+      top: 0,
+      margin: "36px auto"
+    }
   },
-  container: {
-    padding: "80px 0 140px 0"
-  },
+  sectionContainer: {},
   head: {
     color: theme.palette.primary.light
   },
   form: {
     maxWidth: 600,
-    margin: "auto"
+    margin: "auto",
+    background: "white",
+    padding: "20px 20px 40px 20px",
+    borderRadius: "0 0 4px 4px",
+    [theme.breakpoints.only("xs")]: {
+      padding: "10px 5px 40px 5px"
+    }
+  },
+  buttonWrap: {
+    width: "100%",
+    padding: "0 20px 40px 0",
+    display: "flex",
+    justifyContent: "flex-end"
+  },
+  next: {
+    textTransform: "none",
+    fontSize: "1.3rem",
+    padding: "6px 20px",
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  back: {
+    textTransform: "none",
+    fontSize: "1.3rem",
+    padding: "6px 20px",
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    },
+    marginRight: 40
+  },
+  formSection: {
+    paddingTop: 20
   },
   group: {
     display: "flex",
@@ -193,10 +242,6 @@ export const stylesPage1 = theme => ({
     width: "100%",
     flexDirection: "row",
     justifyContent: "flex-start"
-  },
-  input: {
-    width: "100%",
-    margin: "0 0 30px 0"
   },
   select: {
     width: "100%",
@@ -223,8 +268,7 @@ export const stylesPage1 = theme => ({
   },
   formControlDate: {
     width: "15%",
-    minWidth: 80,
-    margin: "0 15px"
+    minWidth: 80
   },
   formLabel: {
     margin: "10px 0"
@@ -241,6 +285,33 @@ export const stylesPage1 = theme => ({
     flexWrap: "wrap",
     justifyContent: "flex-start"
   },
+  formGroup2Col: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
+    [theme.breakpoints.down("xs")]: {
+      flexWrap: "wrap"
+    }
+  },
+  formGroup2ColShort: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
+    width: 280
+  },
+  input: {
+    width: "100%",
+    margin: "0 0 30px 0"
+  },
+  input2Col: {
+    width: "48%",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      display: "block"
+    }
+  },
   controlCheckbox: {
     margin: "-35px 0 40px 0"
   },
@@ -251,11 +322,10 @@ export const stylesPage1 = theme => ({
     border: "1px solid lightgrey",
     "border-radius": "5px",
     margin: "0 0 32px",
-    width: "598px"
+    width: "100%"
   },
   buttonLink: {
     background: "none",
-    color: "inherit",
     border: "none",
     padding: "0",
     font: " inherit",
@@ -268,15 +338,47 @@ export const stylesPage2 = theme => ({
   root: {
     margin: "80px 0"
   },
+  formContainer: {
+    padding: "80px 0 140px 0",
+    margin: "44px 0 auto 50%",
+    [theme.breakpoints.down("lg")]: {
+      padding: "20px 0",
+      margin: "44px auto"
+    }
+  },
   container: {
-    padding: "80px 0 140px 0"
+    padding: "40px 0 140px 0",
+    margin: "44px auto"
   },
   head: {
     color: theme.palette.primary.light
   },
+  checkIcon: {
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "center"
+    }
+  },
+  successWrap: {
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexWrap: "wrap"
+    }
+  },
+  page2IntroText: {
+    fontSize: "1.2rem",
+    lineHeight: "1.4em",
+    padding: "0 0 .5em .5em",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 0 .5em 0"
+    }
+  },
   form: {
     maxWidth: 600,
-    margin: "auto"
+    margin: "auto",
+    padding: "20px",
+    background: "white"
   },
   group: {
     display: "flex",
@@ -327,20 +429,32 @@ export const renderTextField = ({
   label,
   meta: { touched, error },
   classes,
+  twocol,
+  short,
+  mobile,
   ...custom
-}) => (
-  <TextField
-    label={label}
-    error={!!(touched && error)}
-    variant="outlined"
-    className={classes.input}
-    helperText={touched && error}
-    required={!!(touched && error)}
-    {...input}
-    {...custom}
-    data-test="component-text-field"
-  />
-);
+}) => {
+  return (
+    <TextField
+      label={label}
+      error={!!(touched && error)}
+      variant="outlined"
+      className={classes.input}
+      style={
+        twocol && !mobile
+          ? { width: "48%" }
+          : short
+          ? { width: 150 }
+          : { width: "100%", marginBottom: 30 }
+      }
+      helperText={touched && error}
+      required={!!(touched && error)}
+      {...input}
+      {...custom}
+      data-test="component-text-field"
+    />
+  );
+};
 
 // custom MUI friendly SELECT input
 export const renderSelect = ({
@@ -351,6 +465,8 @@ export const renderSelect = ({
   meta: { error, touched },
   labelWidth,
   options,
+  short,
+  mobile,
   formControlName,
   ...custom
 }) => (
@@ -360,6 +476,7 @@ export const renderSelect = ({
     error={!!(error && touched)}
     {...custom}
     required={touched && error === "Required"}
+    style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
   >
     <InputLabel htmlFor={name}>{label}</InputLabel>
     <Select
@@ -400,7 +517,7 @@ export const renderCheckbox = ({
         <Checkbox
           color="primary"
           checked={input.value ? true : false}
-          onChange={input.onChange}
+          // onChange={input.onChange}
           {...custom}
           {...input}
           className={classes.checkbox}

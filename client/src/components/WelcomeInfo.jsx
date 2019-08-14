@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import sanitizeHtml from "sanitize-html";
 
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CardMedia from "@material-ui/core/CardMedia";
 import Card from "@material-ui/core/Card";
+import Button from "@material-ui/core/Button";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
@@ -15,21 +17,53 @@ import SamplePhoto from "../img/sample-form-photo.jpg";
 
 const styles = theme => ({
   root: {
-    margin: "40px 0",
-    color: theme.palette.primary.main
+    [theme.breakpoints.up("lg")]: {
+      margin: 0
+    },
+    margin: "40px 0 0 0",
+    color: theme.palette.primary.main,
+    [theme.breakpoints.only("xs")]: {
+      margin: 0
+    }
   },
   body: {
     color: "black"
   },
+  headline: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.7rem"
+    }
+  },
   media: {
     height: "auto",
     paddingTop: "56.25%", // 16:9,
-    position: "relative"
+    position: "relative",
+    [theme.breakpoints.up("md")]: {
+      display: "none"
+    },
+    [theme.breakpoints.only("xs")]: {
+      margin: "-24px -20px 0 -20px"
+    }
   },
   card: {
     maxWidth: 600,
     margin: "0 auto",
     padding: 20
+  },
+  buttonWrap: {
+    width: "100%",
+    paddingRight: 20,
+    display: "flex",
+    justifyContent: "flex-end"
+  },
+  next: {
+    textTransform: "none",
+    fontSize: "1.3rem",
+    padding: "6px 20px",
+    color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
   }
 });
 
@@ -43,8 +77,6 @@ export class WelcomeInfoUnconnected extends React.Component {
       image: null
     };
   }
-
-  getHeadline() {}
 
   componentDidMount() {
     const values = queryString.parse(this.props.location.search);
@@ -81,6 +113,12 @@ export class WelcomeInfoUnconnected extends React.Component {
     }
   }
 
+  createMarkup = () => {
+    return {
+      __html: sanitizeHtml(this.state.body)
+    };
+  };
+
   render() {
     if (this.props.appState.loading) {
       return <div>loading...</div>;
@@ -97,9 +135,9 @@ export class WelcomeInfoUnconnected extends React.Component {
 
           <Typography
             variant="h3"
-            align="center"
+            align="left"
             gutterBottom
-            className={this.classes.head}
+            className={this.classes.headline}
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
@@ -108,13 +146,23 @@ export class WelcomeInfoUnconnected extends React.Component {
 
           <Typography
             variant="body1"
-            align="center"
+            align="left"
             gutterBottom
             className={this.classes.body}
             data-test="body"
-          >
-            {this.state.body}
-          </Typography>
+            dangerouslySetInnerHTML={this.createMarkup()}
+          />
+          <div className={this.classes.buttonWrap}>
+            <Button
+              type="button"
+              onClick={e => this.props.handleTab(e, 0)}
+              color="primary"
+              className={this.classes.next}
+              variant="contained"
+            >
+              Next
+            </Button>
+          </div>
         </Card>
       </div>
     );
