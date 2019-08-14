@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import { Tab1, Tab1Form } from "../../components/Tab1";
+import { Tab1, Tab1Form, Tab1Connected } from "../../components/Tab1";
 import * as formElements from "../../components/SubmissionFormElements";
 
 // variables
@@ -104,6 +104,22 @@ describe("<Tab1 />", () => {
       component = findByTestAttr(wrapper, "select-employer-type");
       component.simulate("change");
       expect(updateEmployersPicklist.mock.calls.length).toBe(1);
+    });
+
+    it("renders connected component", () => {
+      const setUpProps = {
+        ...defaultProps,
+        handleSubmit,
+        apiSubmission,
+        apiSF
+      };
+      wrapper = mount(
+        <Provider store={store}>
+          <Tab1Connected {...setUpProps} {...props} />
+        </Provider>
+      );
+      const component = findByTestAttr(wrapper, "component-tab1");
+      expect(component.length).toBe(1);
     });
   });
 });

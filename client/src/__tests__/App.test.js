@@ -8,12 +8,16 @@ import { validateToken } from "../store/actions/apiProfileActions";
 import "jest-canvas-mock";
 
 import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
+import SubmissionFormPage2 from "../containers/SubmissionFormPage2";
 import Dashboard from "../containers/Dashboard";
 import NotFound from "../components/NotFound";
+import FormThankYou from "../components/FormThankYou";
+import LinkRequest from "../containers/LinkRequest";
 // import ContentLibrary from "../containers/ContentLibrary";
 import TextInputForm from "../containers/TextInputForm";
 // import Logout from "../containers/Logout";
 
+// this import is here only to get coverage for the theme file
 import { theme } from "../styles/theme";
 
 import configureMockStore from "redux-mock-store";
@@ -190,10 +194,28 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
     });
+    test(' "/thankyou" path should render ThankYou component', () => {
+      wrapper = routeSetup("/thankyou");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(FormThankYou)).toHaveLength(1);
+    });
+    test(' "/linkrequest" path should render LinkRequest component', () => {
+      wrapper = routeSetup("/linkrequest");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(LinkRequest)).toHaveLength(1);
+    });
     test(' "/edit" path should render TextInputForm component', () => {
       wrapper = routeSetup("/edit/1234");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
+    });
+    test(' "/page2" path should render SubmissionFormPage2 component', () => {
+      const jsdomAlert = window.alert; // remember the jsdom alert
+      window.alert = () => {}; // provide an empty implementation for window.alert
+      wrapper = routeSetup("/page2");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(SubmissionFormPage2)).toHaveLength(1);
+      window.alert = jsdomAlert; // restore the jsdom alert
     });
     // test(' "/logout" path should render Logout component', () => {
     //   wrapper = routeSetup('/logout');
