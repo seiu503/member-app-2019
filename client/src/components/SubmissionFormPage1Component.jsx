@@ -5,10 +5,15 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { reduxForm } from "redux-form";
 import ReCAPTCHA from "react-google-recaptcha";
+import SignatureCanvas from "react-signature-canvas";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
+import FormControl from "@material-ui/core/FormControl";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Radio from "@material-ui/core/Radio";
 
 import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
@@ -29,23 +34,21 @@ const {
 } = formElements;
 
 export class SubmissionFormPage1Component extends React.Component {
-  classes = this.props.classes;
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      signatureType: "draw"
+    };
   }
-
+  sigBox = {};
   componentDidMount() {
     // API call to SF to populate employers picklist
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        // console.log(result.type);
-        // console.log(result.payload)
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        // console.log(err);
         openSnackbar(
           "error",
           this.props.submission.error ||
@@ -81,7 +84,7 @@ export class SubmissionFormPage1Component extends React.Component {
     return employerTypesList;
   };
 
-  updateEmployersPicklist = e => {
+  updateEmployersPicklist = () => {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
@@ -109,7 +112,6 @@ export class SubmissionFormPage1Component extends React.Component {
         employer => employer.Name
       );
       employerList.unshift("");
-      // console.log(employerList);
       return employerList;
     }
   };
@@ -118,9 +120,65 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  handleSubmit = values => {
+  toggleSignatureInputType = () => {
+    let value = this.state.signatureType === "draw" ? "write" : "draw";
+    this.setState({ signatureType: value });
+  };
+
+  clearSignature = () => {
+    this.sigBox.clear();
+  };
+
+  dataURItoBlob = dataURI => {
+    let binary = atob(dataURI.split(",")[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], { type: "image/jpeg" });
+  };
+
+  trimSignature = () => {
+    let dataURL = this.sigBox.toDataURL("image/jpeg");
+    let blobData = this.dataURItoBlob(dataURL);
+    return blobData;
+  };
+
+  handleUpload = (firstName, lastName) => {
+    return new Promise((resolve, reject) => {
+      let file = this.trimSignature();
+      let filename = `${firstName}_${lastName}__signature__${new Date().toISOString()}.jpg`;
+      if (file instanceof Blob) {
+        file.name = filename;
+      }
+      // const filename = file ? file.name.split(".")[0] : "";
+      this.props.apiContent
+        .uploadImage(file)
+        .then(result => {
+          if (
+            result.type === "UPLOAD_IMAGE_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while trying to save your Signature. Please try typing it instead"
+            );
+            resolve();
+          } else {
+            resolve(result.payload);
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
+          reject(err);
+        });
+    });
+  };
+
+  handleSubmit = async values => {
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
-    // console.log(reCaptchaValue);
+    let signature;
     let {
       firstName,
       lastName,
@@ -137,9 +195,18 @@ export class SubmissionFormPage1Component extends React.Component {
       employerName,
       textAuthOptOut,
       termsAgree,
-      signature,
       salesforceId
     } = values;
+    if (this.state.signatureType === "write") {
+      signature = values.signature;
+    }
+    if (this.state.signatureType === "draw") {
+      signature = await this.handleUpload(firstName, lastName);
+    }
+    if (!signature) {
+      openSnackbar("error", "Please provide a signature");
+      return;
+    }
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
     const employerObject = this.props.submission.employerObjects
@@ -193,7 +260,6 @@ export class SubmissionFormPage1Component extends React.Component {
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
-        // console.log(result.type);
         if (
           result.type === "ADD_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -214,20 +280,18 @@ export class SubmissionFormPage1Component extends React.Component {
       });
   };
   render() {
+    const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     return (
-      <div
-        className={this.classes.root}
-        data-test="component-submissionformpage1"
-      >
+      <div className={classes.root} data-test="component-submissionformpage1">
         <WelcomeInfo location={this.props.location} />
         <form
           onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
           id="submissionFormPage1"
-          className={this.classes.form}
+          className={classes.form}
         >
           <Field
             label="Employer Type"
@@ -235,10 +299,10 @@ export class SubmissionFormPage1Component extends React.Component {
             id="employerType"
             data-test="employer-type-test"
             type="select"
-            classes={this.classes}
+            classes={classes}
             component={this.renderSelect}
             options={employerTypesList}
-            onChange={e => this.updateEmployersPicklist(e)}
+            onChange={() => this.updateEmployersPicklist()}
             labelWidth={100}
           />
           {this.props.formValues.employerType !== "" && (
@@ -248,7 +312,7 @@ export class SubmissionFormPage1Component extends React.Component {
               name="employerName"
               id="employerName"
               type="select"
-              classes={this.classes}
+              classes={classes}
               component={this.renderSelect}
               options={employerList}
             />
@@ -258,7 +322,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="firstName"
             id="firstName"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
@@ -266,21 +330,21 @@ export class SubmissionFormPage1Component extends React.Component {
             name="lastName"
             id="lastName"
             label="Last Name"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
             type="text"
           />
 
-          <FormLabel className={this.classes.formLabel} component="legend">
+          <FormLabel className={classes.formLabel} component="legend">
             Birthdate
           </FormLabel>
-          <FormGroup className={this.classes.formGroup}>
+          <FormGroup className={classes.formGroup}>
             <Field
               label="Month"
               name="mm"
               id="mm"
               type="select"
-              classes={this.classes}
+              classes={classes}
               formControlName="formControlDate"
               component={this.renderSelect}
               labelWidth={41}
@@ -293,7 +357,7 @@ export class SubmissionFormPage1Component extends React.Component {
               id="dd"
               type="select"
               formControlName="formControlDate"
-              classes={this.classes}
+              classes={classes}
               component={this.renderSelect}
               labelWidth={24}
               options={dateOptions(this.props)}
@@ -305,7 +369,7 @@ export class SubmissionFormPage1Component extends React.Component {
               id="yyyy"
               type="select"
               formControlName="formControlDate"
-              classes={this.classes}
+              classes={classes}
               component={this.renderSelect}
               labelWidth={30}
               options={yearOptions()}
@@ -317,13 +381,13 @@ export class SubmissionFormPage1Component extends React.Component {
             name="preferredLanguage"
             id="preferredLanguage"
             type="select"
-            classes={this.classes}
+            classes={classes}
             component={this.renderSelect}
             labelWidth={132}
             options={languageOptions}
           />
 
-          <FormLabel className={this.classes.formLabel} component="legend">
+          <FormLabel className={classes.formLabel} component="legend">
             Address
           </FormLabel>
 
@@ -332,11 +396,11 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeStreet"
             id="homeStreet"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
-          <FormHelperText className={this.classes.formHelperText}>
+          <FormHelperText className={classes.formHelperText}>
             Please enter your physical street address here, not a P.O. box.
             There is a space for a mailing address on the next page, if
             different from your physical address.
@@ -347,7 +411,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeCity"
             id="homeCity"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
@@ -356,7 +420,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeState"
             id="homeState"
             type="select"
-            classes={this.classes}
+            classes={classes}
             component={this.renderSelect}
             options={stateList}
             labelWidth={80}
@@ -367,7 +431,7 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeZip"
             id="homeZip"
             type="text"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
@@ -376,11 +440,11 @@ export class SubmissionFormPage1Component extends React.Component {
             name="homeEmail"
             id="homeEmail"
             type="email"
-            classes={this.classes}
+            classes={classes}
             component={this.renderTextField}
           />
 
-          <FormHelperText className={this.classes.formHelperText}>
+          <FormHelperText className={classes.formHelperText}>
             Please use your personal email if you have one, since some employers
             limit union communication via work email. If you don't have a
             personal email, work email is fine. If you don't have an email
@@ -392,11 +456,11 @@ export class SubmissionFormPage1Component extends React.Component {
               name="mobilePhone"
               id="mobilePhone"
               type="tel"
-              classes={this.classes}
+              classes={classes}
               component={this.renderTextField}
             />
 
-            <FormHelperText className={this.classes.formHelperText}>
+            <FormHelperText className={classes.formHelperText}>
               † By providing my phone number, I understand that the Service
               Employees International Union (SEIU), its local unions, and
               affiliates may use automated calling technologies and/or text
@@ -412,7 +476,7 @@ export class SubmissionFormPage1Component extends React.Component {
               id="textAuthOptOut"
               type="checkbox"
               formControlName="controlCheckbox"
-              classes={this.classes}
+              classes={classes}
               component={this.renderCheckbox}
             />
           </FormGroup>
@@ -423,11 +487,11 @@ export class SubmissionFormPage1Component extends React.Component {
             name="termsAgree"
             id="termsAgree"
             type="checkbox"
-            classes={this.classes}
+            classes={classes}
             component={this.renderCheckbox}
           />
           <FormHelperText
-            className={this.classes.formHelperTextLegal}
+            className={classes.formHelperTextLegal}
             id="termsOfServiceLegalLanguage"
             ref={this.props.legal_language}
           >
@@ -451,31 +515,85 @@ export class SubmissionFormPage1Component extends React.Component {
             signature, of my desire to revoke this authorization.
           </FormHelperText>
 
-          <Field
-            label="Signature"
-            name="signature"
-            id="signature"
-            type="text"
-            classes={this.classes}
-            component={this.renderTextField}
-          />
-          <FormHelperText className={this.classes.formHelperText}>
-            Enter your full legal name. This will act as your signature.
-          </FormHelperText>
-
+          {this.state.signatureType === "write" && (
+            <Field
+              label="Signature"
+              name="signature"
+              id="signature"
+              type="text"
+              classes={classes}
+              component={this.renderTextField}
+            />
+          )}
+          {this.state.signatureType === "write" && (
+            <FormHelperText className={classes.formHelperText}>
+              Enter your full legal name. This will act as your signature.{" "}
+              <button
+                type="button"
+                className={classes.buttonLink}
+                aria-label="Change Signature Input Method"
+                name="signatureType"
+                onClick={() => this.toggleSignatureInputType()}
+              >
+                Click here to draw your signature
+              </button>
+            </FormHelperText>
+          )}
+          {this.state.signatureType === "draw" && (
+            <div className={classes.sigBox}>
+              <SignatureCanvas
+                ref={ref => {
+                  this.sigBox = ref;
+                }}
+                penColor="black"
+                canvasProps={{
+                  width: 594,
+                  height: 100,
+                  className: "sigCanvas"
+                }}
+                backgroundColor="rgb(255,255,255)"
+                label="Signature"
+                name="signature"
+                id="signature"
+              />
+              <ButtonWithSpinner
+                type="button"
+                onClick={this.clearSignature}
+                color="secondary"
+                className={classes.clearButton}
+                variant="contained"
+              >
+                Clear Signature
+              </ButtonWithSpinner>
+            </div>
+          )}
+          {this.state.signatureType === "draw" && (
+            <FormHelperText className={classes.formHelperText}>
+              Draw your signature in the box above.{" "}
+              <button
+                type="button"
+                className={classes.buttonLink}
+                aria-label="Change Signature Input Method"
+                name="signatureType"
+                onClick={() => this.toggleSignatureInputType()}
+              >
+                Click here to type your signature
+              </button>
+            </FormHelperText>
+          )}
           <ReCAPTCHA
             ref={this.props.reCaptchaRef}
             sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
             // seiu503signup.org 2019 new form
             // ^^^^^this is the real sitekey, using temporary one to test with localhost
             // sitekey="6LdV6rEUAAAAAOa5zY1Hcl2XHvTb94JmGSa1p33F"
-            onChange={this.reCaptchaChange.bind(this)}
+            // onChange={this.reCaptchaChange.bind(this)}
           />
 
           <ButtonWithSpinner
             type="submit"
             color="secondary"
-            className={this.classes.formButton}
+            className={classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}
           >

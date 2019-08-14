@@ -197,7 +197,8 @@ router.delete("/content/:id", authCtrl.requireAuth, contentCtrl.deleteContent);
 //     location: imageLocation
 //   }
 //
-router.post("/image/single", authCtrl.requireAuth, imageCtrl.singleImgUpload);
+router.post("/image/single", imageCtrl.singleImgUpload);
+// router.post("/image/single", authCtrl.requireAuth, imageCtrl.singleImgUpload);
 
 // DELETE AN IMAGE FROM S3 BUCKET
 // (this route is hit after the content is delete from the postgres database)

@@ -197,9 +197,18 @@ export function addContent(token, body) {
  *   UPLOAD_IMAGE_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function uploadImage(token, image, id) {
+
+export function uploadImage(image, id) {
+  // console.log("image", image);
+
   const data = new FormData();
-  data.append("image", image);
+  data.append("image", image, image.name);
+
+  // for (var key of data.entries()) {
+  //     console.log(key[0]);
+  //     console.dir(key[1]);
+  //   }
+
   if (id) {
     data.append("id", id);
   }
@@ -227,9 +236,6 @@ export function uploadImage(token, image, id) {
           }
         }
       ],
-      headers: {
-        Authorization: `Bearer ${token}`
-      },
       body: data
     }
   };

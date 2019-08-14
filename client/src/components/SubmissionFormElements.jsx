@@ -188,6 +188,12 @@ export const stylesPage1 = theme => ({
     flexDirection: "row",
     justifyContent: "center"
   },
+  groupLeft: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  },
   input: {
     width: "100%",
     margin: "0 0 30px 0"
@@ -203,6 +209,11 @@ export const stylesPage1 = theme => ({
     width: "100%",
     padding: 20,
     margin: "25px 0 40px"
+  },
+  clearButton: {
+    width: "100%",
+    padding: 10,
+    margin: "0"
   },
   formControl: {
     width: "100%"
@@ -235,6 +246,22 @@ export const stylesPage1 = theme => ({
   },
   formHelperTextLegal: {
     margin: "-50px 0 30px 0"
+  },
+  sigBox: {
+    border: "1px solid lightgrey",
+    "border-radius": "5px",
+    margin: "0 0 32px",
+    width: "598px"
+  },
+  buttonLink: {
+    background: "none",
+    color: "inherit",
+    border: "none",
+    padding: "0",
+    font: " inherit",
+    "border-bottom": "1px solid blue",
+    cursor: " pointer",
+    color: "blue"
   }
 });
 export const stylesPage2 = theme => ({

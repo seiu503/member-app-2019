@@ -40,6 +40,7 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
+  // console.log('submissions.ctrl.js > 43: createSubmission');
   let {
     ip_address,
     submission_date,
@@ -95,69 +96,70 @@ const createSubmission = async (req, res, next) => {
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (!terms_agree) {
+    // console.log('submissions.ctrl.js > 99');
     return res.status(422).json({
       reason: "ValidationError",
       message: "Must agree to terms of service"
     });
   } else if (missingField) {
+    // console.log('submissions.ctrl.js > 105');
     return res.status(422).json({
       reason: "ValidationError",
       message: `Missing required field ${missingField}`
     });
-  } else {
-    try {
-      await verifyHumanity(reCaptchaValue, ip_address);
-    } catch (err) {
-      console.log(`submissions.ctrl.js > 111`);
-      console.log(err);
+  } else if (process.env.NODE_ENV !== "testing") {
+    // console.log('submissions.ctrl.js > 108');
+    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
+      // console.log(`submissions.ctrl.js > 111`);
+      // console.log(err);
       return res
         .status(400)
         .json({ message: "Please verify that you are a human" });
-    }
-    const createSubmissionResult = await submissions.createSubmission(
-      ip_address,
-      submission_date,
-      agency_number,
-      birthdate,
-      cell_phone,
-      employer_name,
-      first_name,
-      last_name,
-      home_street,
-      home_city,
-      home_state,
-      home_zip,
-      home_email,
-      preferred_language,
-      terms_agree,
-      signature,
-      text_auth_opt_out,
-      online_campaign_source,
-      legal_language,
-      maintenance_of_effort,
-      seiu503_cba_app_date,
-      direct_pay_auth,
-      direct_deposit_auth,
-      immediate_past_member_status,
-      salesforce_id
-    );
+    });
+  }
+  const createSubmissionResult = await submissions.createSubmission(
+    ip_address,
+    submission_date,
+    agency_number,
+    birthdate,
+    cell_phone,
+    employer_name,
+    first_name,
+    last_name,
+    home_street,
+    home_city,
+    home_state,
+    home_zip,
+    home_email,
+    preferred_language,
+    terms_agree,
+    signature,
+    text_auth_opt_out,
+    online_campaign_source,
+    legal_language,
+    maintenance_of_effort,
+    seiu503_cba_app_date,
+    direct_pay_auth,
+    direct_deposit_auth,
+    immediate_past_member_status,
+    salesforce_id
+  );
 
-    if (!createSubmissionResult || createSubmissionResult.message) {
-      // console.log(
-      //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
-      //     "There was an error saving the submission"}`
-      // );
-      return res.status(500).json({
-        message:
-          createSubmissionResult.message ||
-          "There was an error saving the submission"
-      });
-    } else {
-      // passing contact id and submission id to next middleware
-      res.locals.sf_contact_id = salesforce_id;
-      res.locals.submission_id = createSubmissionResult[0].id;
-      return next();
-    }
+  if (!createSubmissionResult || createSubmissionResult.message) {
+    // console.log(
+    //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
+    //     "There was an error saving the submission"}`
+    // );
+    return res.status(500).json({
+      message:
+        createSubmissionResult.message ||
+        "There was an error saving the submission"
+    });
+  } else {
+    // passing contact id and submission id to next middleware
+    res.locals.sf_contact_id = salesforce_id;
+    res.locals.submission_id = createSubmissionResult[0].id;
+    return next();
   }
 };
 
@@ -270,36 +272,43 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = (token, ip_address) => {
-  console.log("captcha test ran!");
-  return request.post(
-    "https://www.google.com/recaptcha/api/siteverify",
-    {
-      form: {
-        secret: process.env.RECAPTCHA_SECRET_KEY,
-        response: token,
-        remoteip: ip_address
-      }
-    },
-    (err, httpResponse, body) => {
-      if (err) {
-        // console.log(`submissions.ctrl.js > 283`);
-        // console.log(err);
-        Promise.reject(new Error(err));
-      } else {
-        // console.log(`submissions.ctrl.js > 287`);
-        const r = JSON.parse(body);
-        // console.log(r);
-        if (r.success) {
-          // console.log(`submissions.ctrl.js > 291`);
-          // console.log(r.success);
-          Promise.resolve(r.success);
+  // console.log("captcha test ran!");
+  if (process.env.NODE_ENV === "testing") {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+  return new Promise((resolve, reject) => {
+    return request.post(
+      "https://www.google.com/recaptcha/api/siteverify",
+      {
+        form: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: token,
+          remoteip: ip_address
+        }
+      },
+      (err, httpResponse, body) => {
+        if (err) {
+          // console.log(`submissions.ctrl.js > 283`);
+          // console.log(err);
+          reject(new Error(err));
         } else {
-          // console.log(`submissions.ctrl.js > 295`);
-          Promise.reject(new Error("???"));
+          // console.log(`submissions.ctrl.js > 287`);
+          const r = JSON.parse(body);
+          // console.log(r['error-codes']);
+          if (r.success) {
+            // console.log(`submissions.ctrl.js > 291`);
+            // console.log(r.success);
+            resolve(r.success);
+          } else {
+            // console.log(`submissions.ctrl.js > 295`);
+            reject(new Error(`reCaptcha Error: ${r["error-codes"][0]}`));
+          }
         }
       }
-    }
-  );
+    );
+  });
 };
 
 /* ================================ EXPORT ================================= */

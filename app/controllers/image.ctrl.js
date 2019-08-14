@@ -71,19 +71,25 @@ const checkFile = (file, cb) => {
  */
 const singleImgUpload = (req, res, next) => {
   upload(req, res, err => {
+    // console.log(req.file);
     // upload image to s3 bucket
     if (err instanceof multer.MulterError) {
+      // console.log(`image.ctrl.js > 78`);
+      // console.log(err);
       return res.status(500).json({
         message: err.message
       });
     }
     if (err) {
+      // console.log(`image.ctrl.js > 85`);
+      // console.log(err);
       return res.status(500).json({
         message: err.message
       });
     }
     if (!req.file) {
-      console.log("No file found");
+      // console.log(`image.ctrl.js > 92`);
+      // console.log("No file found");
       return res.status(500).json({
         message: "No file attached. Please choose a file."
       });
@@ -92,6 +98,10 @@ const singleImgUpload = (req, res, next) => {
       const imageUrl = `https://${s3config.bucket}.s3-${
         s3config.region
       }.amazonaws.com/${req.file.originalname}`;
+      // check if apiCall is for admin image or user signature image
+      if (req.file.originalname.includes("__signature__")) {
+        return res.status(200).json(imageUrl);
+      }
       // check if we're creating a new DB record or updating existing
       if (req.body.id) {
         // update existing record
@@ -118,7 +128,7 @@ const singleImgUpload = (req, res, next) => {
             res.status(200).json(record);
           })
           .catch(err => {
-            // console.log(`imageUpload.ctrl.js > 121: ${err}`);
+            // console.log(`imageUpload.ctrl.js > 132: ${err}`);
             res.status(500).json({ message: err.message });
           });
       }
