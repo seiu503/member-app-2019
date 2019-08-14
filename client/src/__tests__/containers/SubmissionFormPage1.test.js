@@ -242,7 +242,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     expect(testBlob.type).toBe("image/jpeg");
   });
 
-  test("`handeTab` saves sigUrl", () => {
+  test("`handleTab` saves sigUrl", () => {
     let props = {
       apiSubmission: { handleInput: handleInput },
       legal_language: {
@@ -269,4 +269,24 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     wrapper.instance().handleTab({ target: "fake" }, 1, {});
     expect(wrapper.instance().state.tab).toBe(1);
   });
+
+  // it("calls handleUpload if signatureType is 'draw'", () => {
+  //     testData = generateSampleValidate();
+  //     addSubmissionSuccess = jest
+  //       .fn()
+  //       .mockImplementation(() =>
+  //         Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+  //       );
+  //     // creating wrapper
+  //     wrapper = unconnectedSetup();
+  //     wrapper.setProps({tab: 2})
+  //     wrapper.instance().state.signatureType = "draw";
+  //     wrapper.instance().handleUpload = jest.fn();
+  //     wrapper.update();
+  //     // simulate submit with dummy data
+  //     console.log(wrapper.debug());
+  //     wrapper.find("ReduxForm").simulate("submit", { ...testData });
+  //     // testing that submit was called
+  //     expect(wrapper.instance().handleUpload.mock.calls.length).toBe(1);
+  //   });
 });
