@@ -24,7 +24,7 @@ export class SubmissionFormPage1Component extends React.Component {
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
-
+  sigBox = {};
   componentDidMount() {
     // API call to SF to populate employers picklist
     this.props.apiSF
@@ -70,7 +70,7 @@ export class SubmissionFormPage1Component extends React.Component {
     return employerTypesList;
   };
 
-  updateEmployersPicklist = e => {
+  updateEmployersPicklist = () => {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
@@ -107,7 +107,6 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   handleSubmit(values) {
-    console.log("################# handle submit called ################");
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     let signature;
     let {
@@ -128,6 +127,7 @@ export class SubmissionFormPage1Component extends React.Component {
       termsAgree,
       salesforceId
     } = values;
+
     signature = this.props.submission.formPage1.signature;
     if (!signature) {
       openSnackbar("error", "Please provide a signature");

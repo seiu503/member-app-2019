@@ -7,6 +7,7 @@ import {
   fakeDataURI
 } from "../../utils/testUtils";
 import { Provider } from "react-redux";
+import "jest-canvas-mock";
 
 import * as apiSForce from "../../store/actions/apiSFActions";
 import * as apiContent from "../../store/actions/apiContentActions";

@@ -36,6 +36,7 @@
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "canvas": "^2.6.0",
+    "canvas-prebuilt": "^2.0.0-alpha.14",
     "check-prop-types": "^1.1.2",
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.13.1",

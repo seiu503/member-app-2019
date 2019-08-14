@@ -5,6 +5,7 @@ import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../utils/testUtils";
 import { AppConnected, AppUnconnected } from "../App";
 import { validateToken } from "../store/actions/apiProfileActions";
+import "jest-canvas-mock";
 
 import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
 import Dashboard from "../containers/Dashboard";

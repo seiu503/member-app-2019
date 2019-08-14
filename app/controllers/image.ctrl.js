@@ -98,6 +98,10 @@ const singleImgUpload = (req, res, next) => {
       const imageUrl = `https://${s3config.bucket}.s3-${
         s3config.region
       }.amazonaws.com/${req.file.originalname}`;
+      // check if apiCall is for admin image or user signature image
+      if (req.file.originalname.includes("__signature__")) {
+        return res.status(200).json(imageUrl);
+      }
       // check if we're creating a new DB record or updating existing
       if (req.body.id) {
         // update existing record
