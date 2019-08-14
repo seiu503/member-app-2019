@@ -21,7 +21,7 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 
-import { stylesPage1 } from "../components/SubmissionFormElements";
+import { stylesPage1, blankSig } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {
@@ -128,8 +128,12 @@ export class SubmissionFormPage1Container extends React.Component {
 
   trimSignature = () => {
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
-    let blobData = this.dataURItoBlob(dataURL);
-    return blobData;
+    if (dataURL === blankSig) {
+      throw "Please draw your signature or click the link to type it instead";
+    } else {
+      let blobData = this.dataURItoBlob(dataURL);
+      return blobData;
+    }
   };
 
   handleTab(event, newValue, formValues) {
