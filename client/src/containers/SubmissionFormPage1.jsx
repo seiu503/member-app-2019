@@ -21,7 +21,11 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 
-import { stylesPage1, blankSig } from "../components/SubmissionFormElements";
+import {
+  stylesPage1,
+  blankSig,
+  formatSFDate
+} from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {
@@ -80,7 +84,9 @@ export class SubmissionFormPage1Container extends React.Component {
   handleUpload(firstName, lastName) {
     return new Promise((resolve, reject) => {
       let file = this.trimSignature();
-      let filename = `${firstName}_${lastName}_signature_${new Date()}.jpg`;
+      let filename = `${firstName}_${lastName}_signature_${formatSFDate(
+        new Date()
+      )}.jpg`;
       if (file instanceof Blob) {
         file.name = filename;
       }
@@ -154,8 +160,6 @@ export class SubmissionFormPage1Container extends React.Component {
           this.props.direct_pay.current.innerHTML
         );
       }
-
-      console.log(legalLanguage);
 
       this.props.apiSubmission.handleInput({
         target: { name: "legalLanguage", value: legalLanguage }

@@ -125,13 +125,17 @@ export class SubmissionFormPage1Component extends React.Component {
       employerName,
       textAuthOptOut,
       termsAgree,
-      salesforceId
+      salesforceId,
+      directPayAuth,
+      directDepositAuth
     } = values;
     signature = this.props.submission.formPage1.signature;
     if (!signature) {
       openSnackbar("error", "Please provide a signature");
       return;
     }
+    const direct_pay_auth = directPayAuth ? new Date() : null;
+    const direct_deposit_auth = directDepositAuth ? new Date() : null;
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
     const employerObject = this.props.submission.employerObjects
@@ -176,13 +180,13 @@ export class SubmissionFormPage1Component extends React.Component {
       legal_language: legalLanguage,
       maintenance_of_effort: new Date(),
       seiu503_cba_app_date: new Date(),
-      direct_pay_auth: null,
-      direct_deposit_auth: null,
+      direct_pay_auth,
+      direct_deposit_auth,
       immediate_past_member_status: null,
       salesforce_id: salesforceId,
       reCaptchaValue
     };
-
+    console.log(body);
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {
