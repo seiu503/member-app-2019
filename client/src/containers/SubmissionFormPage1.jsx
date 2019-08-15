@@ -129,7 +129,9 @@ export class SubmissionFormPage1Container extends React.Component {
   trimSignature = () => {
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
     if (dataURL === blankSig) {
-      throw "Please draw your signature or click the link to type it instead";
+      throw new Error(
+        "Please draw your signature or click the link to type it instead"
+      );
     } else {
       let blobData = this.dataURItoBlob(dataURL);
       return blobData;
@@ -139,7 +141,22 @@ export class SubmissionFormPage1Container extends React.Component {
   handleTab(event, newValue, formValues) {
     if (newValue === 2) {
       // save legal_language to redux store before ref disappears
-      const legalLanguage = this.props.legal_language.current.textContent;
+      let legalLanguage = this.props.legal_language.current.innerHTML;
+      if (formValues.directDepositAuth) {
+        legalLanguage = legalLanguage.concat(
+          "<hr>",
+          this.props.direct_deposit.current.innerHTML
+        );
+      }
+      if (formValues.directPayAuth) {
+        legalLanguage = legalLanguage.concat(
+          "<hr>",
+          this.props.direct_pay.current.innerHTML
+        );
+      }
+
+      console.log(legalLanguage);
+
       this.props.apiSubmission.handleInput({
         target: { name: "legalLanguage", value: legalLanguage }
       });

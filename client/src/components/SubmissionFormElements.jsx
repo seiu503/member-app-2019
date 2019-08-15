@@ -316,7 +316,9 @@ export const stylesPage1 = theme => ({
     margin: "-35px 0 40px 0"
   },
   formHelperTextLegal: {
-    margin: "-50px 0 30px 0"
+    margin: "-50px 0 50px 0",
+    fontSize: "14px",
+    lineHeight: "1.2em"
   },
   sigBox: {
     border: "1px solid lightgrey",

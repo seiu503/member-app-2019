@@ -890,7 +890,7 @@ const submissionsTableFields = {
   direct_pay_auth: {
     oldFormPage: "none",
     newFormTab: 1,
-    req: "N",
+    req: "P",
     postgresFieldName: "direct_pay_auth",
     clientFieldName: "directPayAuth",
     HtmlInputType: "(formula; no user-facing input)",
@@ -904,7 +904,7 @@ const submissionsTableFields = {
   direct_deposit_auth: {
     oldFormPage: "none",
     newFormTab: 1,
-    req: "N",
+    req: "P",
     postgresFieldName: "direct_deposit_auth",
     clientFieldName: "directDepositAuth",
     HtmlInputType: "(formula; no user-facing input)",

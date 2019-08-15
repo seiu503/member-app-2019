@@ -271,6 +271,8 @@ export class SubmissionFormPage1Component extends React.Component {
                 }
                 classes={classes}
                 legal_language={this.props.legal_language}
+                direct_pay={this.props.direct_pay}
+                direct_deposit={this.props.direct_deposit}
                 sigBox={this.props.sigBox}
                 signatureType={this.props.signatureType}
                 toggleSignatureInputType={this.props.toggleSignatureInputType}
@@ -279,6 +281,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 renderSelect={this.renderSelect}
                 renderTextField={this.renderTextField}
                 renderCheckbox={this.renderCheckbox}
+                formValues={this.props.formValues}
                 handleTab={this.props.handleTab}
                 initialize={this.props.initialize}
               />
