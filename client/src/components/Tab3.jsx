@@ -1,6 +1,7 @@
 import React from "react";
 import { reduxForm } from "redux-form";
 import ReCAPTCHA from "react-google-recaptcha";
+import Iframe from "react-iframe";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 
@@ -15,7 +16,8 @@ export const Tab3 = props => {
     reCaptchaChange,
     reCaptchaRef,
     loading,
-    invalid
+    invalid,
+    iFrameURL
   } = props;
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
@@ -24,7 +26,20 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
-        <h3>Here's where the payment processing stuff will go...</h3>
+        {iFrameURL && (
+          <div className={classes.iframeWrap}>
+            <Iframe
+              url={iFrameURL}
+              width="100%"
+              height="100px"
+              id="iFrame"
+              className={classes.iframe}
+              display="initial"
+              position="relative"
+            />
+          </div>
+        )}
+
         <ReCAPTCHA
           ref={reCaptchaRef}
           sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"

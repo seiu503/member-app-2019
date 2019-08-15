@@ -298,6 +298,8 @@ export class SubmissionFormPage1Component extends React.Component {
                 reCaptchaRef={this.props.reCaptchaRef}
                 loading={this.props.submission.loading}
                 handleTab={this.props.handleTab}
+                pamentRequired={this.props.submission.formPage1.paymentRequired}
+                iFrameURL={this.props.submission.payment.cardAddingUrl}
               />
             )}
           </div>

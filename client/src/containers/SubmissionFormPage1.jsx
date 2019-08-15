@@ -8,6 +8,7 @@ import {
   getFormSubmitErrors,
   reset
 } from "redux-form";
+import uuid from "uuid";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -157,7 +158,6 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.apiSubmission.handleInput({
           target: { name: "paymentRequired", value: true }
         });
-        let iFrameURL;
         const dobRaw =
           formValues.mm + "/" + formValues.dd + "/" + formValues.yyyy;
         const birthdate = formatSFDate(dobRaw);
@@ -171,13 +171,16 @@ export class SubmissionFormPage1Container extends React.Component {
             zip: formValues.homeZip
           },
           email: formValues.homeEmail,
-          language: formValues.preferredLanguage,
+          language: "en-US",
+          // ^^ this needs to be formValues.preferredLanguage
+          // but API only accepts 1 of 2 ISO codes for now
           cellPhone: formValues.mobilePhone,
           birthDate: birthdate,
           employerExternalId: "SW001",
           // ^^ fixed value for dev / staging
           // this will be Agency number in production
-          employeeExternalId: "1234567",
+          employeeExternalId: uuid.v4(),
+          // ^^ random uuid for now, will be Submission ID in production
           agreesToMessages: !formValues.textAuthOptOut,
           duesAmount: 1.23, // required by unioni.se, sending default
           duesCurrency: "USD", // required by unioni.se, sending default
@@ -188,15 +191,18 @@ export class SubmissionFormPage1Container extends React.Component {
           deductionCurrency: "USD", // required by unioni.se, sending default
           deductionDayOfMonth: 15 // required by unioni.se, sending default
         };
+        console.log(JSON.stringify(body));
         try {
           const result = await this.props.apiSF.getIframeURL(body);
-          if (result.payload.cardAddingUrl) {
-            iFrameURL = result.payload.cardAddingUrl;
-          } else if (result.payload.message) {
-            openSnackbar("error", result.payload.message);
+          if (!result.payload.cardAddingUrl || result.payload.message) {
+            return openSnackbar(
+              "error",
+              result.payload.message ||
+                "Sorry, something went wrong. Please try again."
+            );
           }
         } catch (err) {
-          openSnackbar(
+          return openSnackbar(
             "error",
             err || "Sorry, something went wrong. Please try again."
           );
@@ -236,9 +242,10 @@ export class SubmissionFormPage1Container extends React.Component {
             formValues.lastName
           );
         } catch (err) {
-          openSnackbar(
+          return openSnackbar(
             "error",
-            err || "An error occured while trying to save your Signature"
+            err ||
+              "An error occured while trying to save your Signature. Please try again."
           );
         }
 
