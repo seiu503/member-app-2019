@@ -22,7 +22,10 @@ import {
   GET_SF_EMPLOYERS_FAILURE,
   LOOKUP_SF_CONTACT_REQUEST,
   LOOKUP_SF_CONTACT_SUCCESS,
-  LOOKUP_SF_CONTACT_FAILURE
+  LOOKUP_SF_CONTACT_FAILURE,
+  GET_IFRAME_URL_REQUEST,
+  GET_IFRAME_URL_SUCCESS,
+  GET_IFRAME_URL_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -36,12 +39,19 @@ export const INITIAL_STATE = {
     firstName: "",
     lastName: "",
     homeEmail: "",
-    legalLanguage: ""
+    legalLanguage: "",
+    paymentRequired: false
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
   formPage2: {},
-  redirect: false
+  redirect: false,
+  payment: {
+    cardAddingUrl: "",
+    memberId: "",
+    stripeCustomerId: "",
+    memberShortId: ""
+  }
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -60,6 +70,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_REQUEST:
     case GET_SF_EMPLOYERS_REQUEST:
     case LOOKUP_SF_CONTACT_REQUEST:
+    case GET_IFRAME_URL_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -195,6 +206,16 @@ function Submission(state = INITIAL_STATE, action) {
         redirect: { $set: true }
       });
 
+    case GET_IFRAME_URL_SUCCESS:
+      return update(state, {
+        payment: {
+          cardAddingUrl: { $set: action.payload.cardAddingUrl },
+          memberId: { $set: action.payload.memberId },
+          stripeCustomerId: { $set: action.payload.stripeCustomerId },
+          memberShortId: { $set: action.payload.memberShortId }
+        }
+      });
+
     case UPDATE_SUBMISSION_SUCCESS:
       return update(state, {
         formPage2SubmitSucess: { $set: true }
@@ -205,6 +226,7 @@ function Submission(state = INITIAL_STATE, action) {
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_EMPLOYERS_FAILURE:
     case LOOKUP_SF_CONTACT_FAILURE:
+    case GET_IFRAME_URL_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

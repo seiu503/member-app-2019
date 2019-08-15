@@ -76,8 +76,8 @@ export const Tab2 = props => {
           </p>
         </div>
 
-        {(formValues.employerType === "state homecare or personal support" ||
-          formValues.employerType === "State Homecare or Personal Support") && (
+        {formValues.employerType.toLowerCase() ===
+          "state homecare or personal support" && (
           <React.Fragment>
             <Field
               formControlName="controlCheckbox"

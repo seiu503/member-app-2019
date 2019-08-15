@@ -144,7 +144,8 @@ export const employerTypeMap = {
   "Local Gov": "Local Government",
   AFH: "Adult Foster Home",
   "Child Care": "Child Care",
-  "Private Homecare": "Private Homecare Agency"
+  "Private Homecare": "Private Homecare Agency",
+  Community: "Community Member"
 };
 
 // helper function for reverse lookup from above object

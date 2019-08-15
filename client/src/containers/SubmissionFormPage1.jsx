@@ -144,8 +144,65 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   };
 
-  handleTab(event, newValue, formValues) {
+  async handleTab(event, newValue, formValues) {
     if (newValue === 2) {
+      // if submission type requires payment processing, then fetch iFrame URL
+      // for use in next tab
+      if (
+        formValues.employerType.toLowerCase() === "community member" ||
+        "retired" ||
+        "adult foster home"
+      ) {
+        // set payment required to true
+        this.props.apiSubmission.handleInput({
+          target: { name: "paymentRequired", value: true }
+        });
+        let iFrameURL;
+        const dobRaw =
+          formValues.mm + "/" + formValues.dd + "/" + formValues.yyyy;
+        const birthdate = formatSFDate(dobRaw);
+        const body = {
+          firstName: formValues.firstName,
+          lastName: formValues.lastName,
+          address: {
+            addressLine1: formValues.homeStreet,
+            city: formValues.homeCity,
+            state: formValues.homeState,
+            zip: formValues.homeZip
+          },
+          email: formValues.homeEmail,
+          language: formValues.preferredLanguage,
+          cellPhone: formValues.mobilePhone,
+          birthDate: birthdate,
+          employerExternalId: "SW001",
+          // ^^ fixed value for dev / staging
+          // this will be Agency number in production
+          employeeExternalId: "1234567",
+          agreesToMessages: !formValues.textAuthOptOut,
+          duesAmount: 1.23, // required by unioni.se, sending default
+          duesCurrency: "USD", // required by unioni.se, sending default
+          duesDayOfMonth: 15, // required by unioni.se, sending default
+          duesActiveFrom: "2019-05-20", // required by unioni.se, sending default data
+          deductionType: "CAPE", // required by unioni.se, sending default
+          deductionAmount: 2.34, // required by unioni.se, sending default
+          deductionCurrency: "USD", // required by unioni.se, sending default
+          deductionDayOfMonth: 15 // required by unioni.se, sending default
+        };
+        try {
+          const result = await this.props.apiSF.getIframeURL(body);
+          if (result.payload.cardAddingUrl) {
+            iFrameURL = result.payload.cardAddingUrl;
+          } else if (result.payload.message) {
+            openSnackbar("error", result.payload.message);
+          }
+        } catch (err) {
+          openSnackbar(
+            "error",
+            err || "Sorry, something went wrong. Please try again."
+          );
+        }
+      }
+
       // save legal_language to redux store before ref disappears
       let legalLanguage = this.props.legal_language.current.innerHTML;
       if (formValues.directDepositAuth) {
@@ -160,37 +217,42 @@ export class SubmissionFormPage1Container extends React.Component {
           this.props.direct_pay.current.innerHTML
         );
       }
-
       this.props.apiSubmission.handleInput({
         target: { name: "legalLanguage", value: legalLanguage }
       });
+
       // perform signature processing steps and save value to redux store
       // before ref disappears
       if (this.state.signatureType === "write") {
         this.props.apiSubmission.handleInput({
           target: { name: "signature", value: formValues.signature }
         });
-        const newState = { ...this.state };
-        newState.tab = newValue;
-        this.setState({ ...newState });
-        return;
       }
       if (this.state.signatureType === "draw") {
-        this.handleUpload(formValues.firstName, formValues.lastName)
-          .then(sigUrl => {
-            this.props.apiSubmission.handleInput({
-              target: { name: "signature", value: sigUrl }
-            });
-            const newState = { ...this.state };
-            newState.tab = newValue;
-            this.setState({ ...newState });
-            return;
-          })
-          .catch(err => {
-            openSnackbar("error", err);
-          });
+        let sigUrl;
+        try {
+          sigUrl = await this.handleUpload(
+            formValues.firstName,
+            formValues.lastName
+          );
+        } catch (err) {
+          openSnackbar(
+            "error",
+            err || "An error occured while trying to save your Signature"
+          );
+        }
+
+        this.props.apiSubmission.handleInput({
+          target: { name: "signature", value: sigUrl }
+        });
       }
+
+      // navigate to next tab
+      const newState = { ...this.state };
+      newState.tab = newValue;
+      this.setState({ ...newState });
     } else {
+      // navigate to next tab
       const newState = { ...this.state };
       newState.tab = newValue;
       this.setState({ ...newState });
