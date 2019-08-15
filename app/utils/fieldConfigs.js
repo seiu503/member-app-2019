@@ -927,14 +927,15 @@ const submissionsTableFields = {
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Not a Member"
-  },
+  }
+};
 
-  // all fields below here are for payment processing only
-  // required fields in this section are all conditional
-  // -- "P" = only required if the submission is a 'payment required'
-  // submission, which we'll have to check for and set
-  // during the transition from tab 1 & tab 2 of formPage1
-
+// all fields below here are for payment processing only
+// required fields in this section are all conditional
+// -- "P" = only required if the submission is a 'payment required'
+// submission, which we'll have to check for and set
+// during the transition from tab 1 & tab 2 of formPage1
+const paymentFields = {
   duesAmount: {
     oldFormPage: "none",
     req: "P", // unioni.se required
@@ -994,7 +995,6 @@ const submissionsTableFields = {
     unioniseFieldName: "deductionType",
     testingSample: "Voluntary"
   },
-
   deductionAmount: {
     oldFormPage: "none",
     req: "P", // unioni.se required
@@ -1361,6 +1361,7 @@ const generateSFContactFieldList = () => {
 module.exports = {
   contactsTableFields,
   submissionsTableFields,
+  paymentFields,
   requiredFields,
   generateSampleSubmission,
   generateSampleSubmissionFrontEnd,

@@ -186,7 +186,7 @@ export class SubmissionFormPage1Component extends React.Component {
       salesforce_id: salesforceId,
       reCaptchaValue
     };
-    console.log(body);
+    // console.log(body);
     return this.props.apiSubmission
       .addSubmission(body)
       .then(result => {

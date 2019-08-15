@@ -125,6 +125,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       // testing that reset is called when handleSubmit receives success message
       return handleSubmitSuccess().then(() => {
         expect(resetMock.mock.calls.length).toBe(1);
+        resetMock.mockClear();
       });
     });
 
@@ -169,6 +170,33 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       expect(handleSubmitError.mock.calls.length).toBe(1);
       handleSubmitError().then(() => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
+      });
+    });
+
+    it("handles ethnicities edge cases: declined", () => {
+      // imported function that creates dummy data for form
+      testData = generatePage2Validate();
+      testData.declined = true;
+      // test function that will count calls as well as return success object
+      handleSubmitSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+        );
+
+      // creating wrapper
+      wrapper = unconnectedSetup();
+
+      wrapper.instance().props.apiSubmission.updateSubmission = handleSubmitSuccess;
+
+      // simulate submit with dummy data
+      wrapper.find("form").simulate("submit", { testData });
+      // testing that submit was called
+      expect(handleSubmitSuccess.mock.calls.length).toBe(1);
+      // testing that reset is called when handleSubmit receives success message
+      return handleSubmitSuccess().then(() => {
+        expect(resetMock.mock.calls.length).toBe(1);
+        resetMock.mockClear();
       });
     });
   });

@@ -38,7 +38,7 @@ const cb = sinon.fake();
 
 chai.use(chaiHttp);
 
-suite("routes : salesforce -- update", function() {
+suite.only("routes : salesforce -- update", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -106,7 +106,7 @@ suite("routes : salesforce -- update", function() {
   });
 });
 
-suite("routes : salesforce", function() {
+suite.only("routes : salesforce", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();

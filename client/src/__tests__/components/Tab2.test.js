@@ -36,6 +36,7 @@ const defaultProps = {
   clearSignature: jest.fn(),
   handleInput: jest.fn(),
   formPage1: {},
+  formValues: { employerType: "" },
   signatureType: "draw",
   toggleSignatureInputType: jest.fn()
 };
@@ -72,7 +73,8 @@ describe("<Tab2 />", () => {
     const props = {
       handleSubmit: fn => fn,
       classes: {},
-      signatureType: "draw"
+      signatureType: "draw",
+      formValues: { employerType: "" }
     };
 
     it("renders without error", () => {

@@ -35,14 +35,10 @@ export function getSFContactById(id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -77,14 +73,10 @@ export function getSFEmployers() {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -120,14 +112,10 @@ export function lookupSFContact(body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }

@@ -175,8 +175,22 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSubmission: { handleInput: handleInputMock },
       legal_language: {
         current: {
-          textContent: ""
+          innerHTML: ""
         }
+      },
+      direct_deposit: {
+        current: {
+          innerHTML: ""
+        }
+      },
+      direct_pay: {
+        current: {
+          innerHTML: ""
+        }
+      },
+      formValues: {
+        directPayAuth: true,
+        directDepositAuth: true
       }
     };
 
@@ -184,7 +198,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       <SubmissionFormPage1Container {...defaultProps} {...props} />
     );
 
-    wrapper.instance().handleTab({ target: "fake" }, 2, {});
+    wrapper.instance().handleTab({ target: "fake" }, 2, {
+      directPayAuth: true,
+      directDepositAuth: true
+    });
     expect(handleInputMock.mock.calls.length).toBe(1);
   });
 
@@ -193,7 +210,17 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSubmission: { handleInput: handleInput },
       legal_language: {
         current: {
-          textContent: ""
+          innerHTML: ""
+        }
+      },
+      direct_deposit: {
+        current: {
+          innerHTML: ""
+        }
+      },
+      direct_pay: {
+        current: {
+          innerHTML: ""
         }
       }
     };
@@ -211,7 +238,17 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSubmission: { handleInput: handleInput },
       legal_language: {
         current: {
-          textContent: ""
+          innerHTML: ""
+        }
+      },
+      direct_deposit: {
+        current: {
+          innerHTML: ""
+        }
+      },
+      direct_pay: {
+        current: {
+          innerHTML: ""
         }
       }
     };
@@ -228,7 +265,17 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     let props = {
       legal_language: {
         current: {
-          textContent: ""
+          innerHTML: ""
+        }
+      },
+      direct_deposit: {
+        current: {
+          innerHTML: ""
+        }
+      },
+      direct_pay: {
+        current: {
+          innerHTML: ""
         }
       }
     };
@@ -245,7 +292,17 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSubmission: { handleInput: handleInput },
       legal_language: {
         current: {
-          textContent: ""
+          innerHTML: ""
+        }
+      },
+      direct_deposit: {
+        current: {
+          innerHTML: ""
+        }
+      },
+      direct_pay: {
+        current: {
+          innerHTML: ""
         }
       },
       formValues: {

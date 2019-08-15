@@ -78,14 +78,10 @@ export function getContentById(id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -118,14 +114,10 @@ export function getAllContent(token) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -164,14 +156,10 @@ export function addContent(token, body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -224,14 +212,10 @@ export function uploadImage(image, id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -267,14 +251,10 @@ export function updateContent(token, id, body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -312,14 +292,10 @@ export function deleteContent(token, id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -353,14 +329,10 @@ export function deleteImage(token, key) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
