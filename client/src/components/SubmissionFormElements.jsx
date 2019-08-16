@@ -537,6 +537,274 @@ export const renderCheckbox = ({
   </FormControl>
 );
 
+export const hcwDirectDepositAuthText = (
+  <React.Fragment>
+    <p>
+      Your full name, the network address you are accessing this page from, and
+      the timestamp of submission will serve as signature indicating:
+    </p>
+    <p>
+      I authorize the State of Oregon, or its fiscal agents, to provide SEIU
+      Local 503’s Designated Secure Payment Processor (DSPP), my HCW/PSW UID,
+      and the information for the bank account (bank account number, account
+      holder’s name and routing number) on file with my employer (“Account”)
+      that I have designated to receive the proceeds of my paycheck via direct
+      deposit, and for my dues and/or other contributions to be deducted from
+      this account one (1) business day after each pay processing date
+      designated by my employer. If my employer makes direct deposit of my
+      paycheck to a checking account and a savings account, I hereby authorize
+      my employer to provide to Local 503’s DSPP the information for the
+      checking account and for my dues and/or other contributions to be deducted
+      from this account one (1) business day after each pay processing date
+      designated by my employer.
+    </p>
+    <p>
+      I understand that after the DSPP receives my Account information, SEIU or
+      its designee will make reasonable efforts to contact me to confirm the
+      accuracy of the Account information provided by my employer at least 10
+      days in advance of making the first electronic funds transfer from my
+      Account.
+    </p>
+    <p>
+      I understand it is my responsibility to notify the Union of any changes to
+      my Account information.
+    </p>
+  </React.Fragment>
+);
+
+export const hcwDPAText = (
+  <React.Fragment>
+    <p>
+      Your full name, the network address you are accessing this page from, and
+      the timestamp of submission will serve as signature indicating:
+    </p>
+    <p>
+      In the event payroll deduction from my employer is not available or is not
+      deemed practical by the Union, I authorize SEIU Local 503 to make
+      withdrawals from my checking or savings account, in accordance with the
+      authorization provided below or to another account I provide and authorize
+      separately. I am authorized to make decisions about the account provided
+      to the Union. SEIU will notify me of the transition to direct pay at the
+      current mailing address on file with SEIU prior to initiating the first
+      payment via debit card, credit card, checking, or savings account, as
+      authorized below.
+    </p>
+    <p>
+      I hereby authorize SEIU to initiate a recurring, automatic electronic
+      funds transfer with my financial institution beginning on the date listed
+      in the transition notice provided to me in order to deduct from the
+      account listed below (or separately provided) amount of 1.7% of my gross
+      earnings, and issue fund payments at a prorated amount up to $2.75 per
+      month, except that the total minimum deduction shall be no less than $2.30
+      per pay period and the maximum deduction shall be no more than $150 per
+      pay period. Because the dues deduction is based on a percentage of gross
+      earnings, the dollar amount deducted may change each month based on
+      payroll dates and if my hours of work or rate of pay changes, and I agree
+      to not receive any advance notice before the dues payment is deducted as
+      long as the amount is between $2.30 and $150 per pay period. My authorized
+      deductions shall be made based on the gross pay amount in the paycheck
+      immediately preceding the pay processing date of the current transaction
+      and shall be made one (1) business day after each pay processing date
+      designated by my employer.
+    </p>
+    <p>
+      The dues amount may change if authorized according to the requirements of
+      the SEIU Local 503 Union Bylaws or the Service Employees International
+      Union Constitution and Bylaws. If this happens, I authorize SEIU to
+      initiate a recurring, automatic electronic funds transfer in the amount of
+      the new dues amount when notified by SEIU in writing of the new amount and
+      with at least ten (10) days’ notice before the next funds transfer date.
+      In the case of checking and savings accounts, adjusting entries to correct
+      errors are also authorized. I agree that these withdrawals and adjustments
+      may be made electronically and under the Rules of the National Automated
+      Clearing House Association. This authorization shall remain in effect
+      until I revoke my authorization in writing or with another permitted
+      method.
+    </p>
+    <p>
+      I acknowledge that failure to pay my dues on a timely basis may affect my
+      membership standing in the Union, as set forth in the SEIU Local 503
+      Bylaws. Contributions to SEIU are not tax deductible as charitable
+      contributions. However, they may be tax deductible as ordinary and
+      necessary business expenses.
+    </p>
+  </React.Fragment>
+);
+
+export const afhDPAText = (
+  <React.Fragment>
+    <p>
+      Your full name, the network address you are accessing this page from, and
+      the timestamp of submission will serve as signature indicating:
+    </p>
+    <p>
+      I authorize SEIU Local 503 or its Designated Secure Payment Processor
+      (DSPP) to make withdrawals from my checking or savings account, in
+      accordance with the authorization provided below or to another account I
+      provide and authorize separately. I am authorized to make decisions about
+      the account provided to the Union.
+    </p>
+    <p>
+      I hereby authorize SEIU to initiate a recurring, automatic electronic
+      funds transfer with my financial institution or a recurring, automatic
+      credit card payment in the amount of 1.7% of Medicaid DD Base Rate, per
+      Medicaid client for my membership dues, and issue fund payments of $2.75
+      per month, except that the total minimum deduction shall be no less than
+      $5.00 a month and the maximum deduction shall be no more than $300 a
+      month. Because the dues amount is based on a percentage of the base
+      Medicaid DD Base Rate, per Medicaid client, the dollar amount charged may
+      change each month based on the base rate or the number of clients and I
+      agree to not receive any advance notice before the dues payment is
+      deducted as long as the amount is between $5.00 and $300 a month.
+    </p>
+    <p>
+      The dues amount may change if authorized according to the requirements of
+      the SEIU Local 503 Union Bylaws or the Service Employees International
+      Union Constitution and Bylaws. If this happens, I authorize SEIU to
+      initiate a recurring, automatic electronic funds transfer or a recurring,
+      automatic credit card payment in the amount of the new dues amount when
+      notified by SEIU in writing of the new amount and with at least ten (10)
+      days’ notice before the next funds transfer date. In the case of checking
+      and savings accounts, adjusting entries to correct errors are also
+      authorized. I agree that these withdrawals and adjustments may be made
+      electronically and under the Rules of the National Automated Clearing
+      House Association. This authorization shall remain in effect until I
+      revoke my authorization in writing or with another permitted method.
+    </p>
+    <p>
+      I understand it is my responsibility to notify the Union of any changes to
+      my Account information, any changes to the number of Medicaid clients and
+      any changes to my bargaining unit status.
+    </p>
+    <p>
+      I acknowledge that failure to pay my dues on a timely basis may affect my
+      membership standing in the Union, as set forth in the SEIU Local 503
+      Bylaws.
+    </p>
+    <p>
+      Contributions to SEIU are not tax deductible as charitable contributions.
+      However, they may be tax deductible as ordinary and necessary business
+      expenses.
+    </p>
+  </React.Fragment>
+);
+
+export const retireeDPAText = freq => (
+  <React.Fragment>
+    <p>
+      Your full name, the network address you are accessing this page from, and
+      the timestamp of submission will serve as signature indicating:
+    </p>
+    <p>
+      I hereby authorizeSEIU Local 503 or its Designated Secure Payment
+      Processor (DSPP to initiate a recurring, automatic electronic funds
+      transfer from my checking or savings account or recurring, automatic
+      credit card payment in the amount of{" "}
+      {freq === "m" ? "$5 per month." : "$60 per year."}
+    </p>
+    <p>
+      The dues amount may change if authorized according to the requirements of
+      the SEIU Local 503 Union Bylaws or the Service Employees International
+      Union Constitution and Bylaws. If this happens, I authorize SEIU to
+      initiate a recurring, automatic electronic funds transfer or a recurring,
+      automatic credit card payment in the amount of the new dues amount when
+      notified by SEIU in writing of the new amount and with at least ten (10)
+      days’ notice before the next funds transfer date. In the case of checking
+      and savings accounts, adjusting entries to correct errors are also
+      authorized. I agree that these withdrawals and adjustments may be made
+      electronically and under the Rules of the National Automated Clearing
+      House Association. This authorization shall remain in effect until I
+      revoke my authorization in writing or with another permitted method.
+    </p>
+    <p>
+      I understand it is my responsibility to notify the Union of any changes to
+      my Account information.
+    </p>
+    <p>
+      I acknowledge that failure to pay my dues on a timely basis may affect my
+      membership standing in the Union, as set forth in the SEIU Local 503
+      Bylaws.
+    </p>
+    <p>
+      Contributions to SEIU are not tax deductible as charitable contributions.
+      However, they may be tax deductible as ordinary and necessary business
+      expenses.
+    </p>
+  </React.Fragment>
+);
+
+export const communityDPAText = (
+  <React.Fragment>
+    <p>
+      Your full name, the network address you are accessing this page from, and
+      the timestamp of submission will serve as signature indicating:
+    </p>
+    <p>
+      I hereby authorizeSEIU Local 503 or its Designated Secure Payment
+      Processor (DSPP to initiate a recurring, automatic electronic funds
+      transfer from my checking or savings account or recurring, automatic
+      credit card payment in the amount of $10 per month.
+    </p>
+    <p>
+      The dues amount may change if authorized according to the requirements of
+      the SEIU Local 503 Union Bylaws or the Service Employees International
+      Union Constitution and Bylaws. If this happens, I authorize SEIU to
+      initiate a recurring, automatic electronic funds transfer or a recurring,
+      automatic credit card payment in the amount of the new dues amount when
+      notified by SEIU in writing of the new amount and with at least ten (10)
+      days’ notice before the next funds transfer date. In the case of checking
+      and savings accounts, adjusting entries to correct errors are also
+      authorized. I agree that these withdrawals and adjustments may be made
+      electronically and under the Rules of the National Automated Clearing
+      House Association. This authorization shall remain in effect until I
+      revoke my authorization in writing or with another permitted method.
+    </p>
+    <p>
+      I understand it is my responsibility to notify the Union of any changes to
+      my Account information.
+    </p>
+    <p>
+      I acknowledge that failure to pay my dues on a timely basis may affect my
+      membership standing in the Union, as set forth in the SEIU Local 503
+      Bylaws.
+    </p>
+    <p>
+      Contributions to SEIU are not tax deductible as charitable contributions.
+      However, they may be tax deductible as ordinary and necessary business
+      expenses.
+    </p>
+  </React.Fragment>
+);
+
+export const membershipTerms = (
+  <React.Fragment>
+    <p>
+      Your full name, the network address you are accessing this page from, and
+      the timestamp of submission will serve as signature indicating:
+    </p>
+    <p>
+      I hereby designate SEIU Local 503, OPEU (or any successor Union entity) as
+      my desired collective bargaining agent. I also hereby authorize my
+      employer to deduct from my wages, commencing with the next payroll period,
+      all Union dues and other fees or assessments as shall be certified by SEIU
+      Local 503, OPEU (or any successor Union entity) and to remit those amounts
+      to such Union. This authorization/delegation is unconditional, made in
+      consideration for the cost of representation and other actions in my
+      behalf by the Union and is made irrespective of my membership in the
+      Union.
+    </p>
+    <p>
+      This authorization is irrevocable for a period of one year from the date
+      of execution and from year to year thereafter unless not less than thirty
+      (30) and not more than forty-five (45) days prior to the end of any annual
+      period or the termination of the contract between my employer and the
+      Union, whichever occurs first, I notify the Union and my employer in
+      writing, with my valid signature, of my desire to revoke this
+      authorization.
+    </p>
+  </React.Fragment>
+);
+
 export const blankSig =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
 
