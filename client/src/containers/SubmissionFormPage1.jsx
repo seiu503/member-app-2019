@@ -83,9 +83,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleUpload(firstName, lastName) {
+    console.log("handleUpload");
     return new Promise((resolve, reject) => {
       let file = this.trimSignature();
-      let filename = `${firstName}_${lastName}_signature_${formatSFDate(
+      let filename = `${firstName}_${lastName}__signature__${formatSFDate(
         new Date()
       )}.jpg`;
       if (file instanceof Blob) {

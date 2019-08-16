@@ -187,15 +187,11 @@ export function addContent(token, body) {
  */
 
 export function uploadImage(image, id) {
-  // console.log("image", image);
+  console.log("uploadImage", image);
 
   const data = new FormData();
+  console.log(image.name);
   data.append("image", image, image.name);
-
-  // for (var key of data.entries()) {
-  //     console.log(key[0]);
-  //     console.dir(key[1]);
-  //   }
 
   if (id) {
     data.append("id", id);

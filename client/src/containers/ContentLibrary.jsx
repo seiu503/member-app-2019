@@ -100,9 +100,23 @@ const styles = theme => ({
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
-    this.props.apiContent.getAllContent(authToken).then(result => {
-      // console.log(result);
-    });
+    this.props.apiContent
+      .getAllContent(authToken)
+      .then(result => {
+        if (
+          result.type === "GET_ALL_CONTENT_FAILURE" ||
+          this.props.content.error
+        ) {
+          openSnackbar(
+            "error",
+            this.props.content.error ||
+              "An error occured while fetching content"
+          );
+        }
+      })
+      .catch(err => {
+        openSnackbar("error", err);
+      });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -114,7 +128,19 @@ export class ContentLibraryUnconnected extends React.Component {
       this.props.apiContent
         .getAllContent(this.props.appState.authToken)
         .then(result => {
-          // console.log(result);
+          if (
+            result.type === "GET_ALL_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while fetching content"
+            );
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
         });
     }
   }
