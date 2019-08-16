@@ -35,6 +35,7 @@ export const Tab2 = props => {
     toggleSignatureInputType,
     formValues
   } = props;
+  // console.log(formValues.employerType);
   const hcw =
     formValues.employerType.toLowerCase() ===
     "state homecare or personal support";

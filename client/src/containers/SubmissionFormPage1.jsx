@@ -299,6 +299,7 @@ export class SubmissionFormPage1Container extends React.Component {
           handleUpload={this.handleUpload}
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}
+          clearSignature={this.clearSignature}
         />
       </div>
     );

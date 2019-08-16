@@ -280,7 +280,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 sigBox={this.props.sigBox}
                 signatureType={this.props.signatureType}
                 toggleSignatureInputType={this.props.toggleSignatureInputType}
-                clearSignature={this.clearSignature}
+                clearSignature={this.props.clearSignature}
                 handleInput={this.props.apiSubmission.handleInput}
                 renderSelect={this.renderSelect}
                 renderTextField={this.renderTextField}
