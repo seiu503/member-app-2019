@@ -151,8 +151,8 @@ export class SubmissionFormPage1Container extends React.Component {
       // for use in next tab
       if (
         formValues.employerType.toLowerCase() === "community member" ||
-        "retired" ||
-        "adult foster home"
+        formValues.employerType.toLowerCase() === "retired" ||
+        formValues.employerType.toLowerCase() === "adult foster home"
       ) {
         // set payment required to true
         this.props.apiSubmission.handleInput({
