@@ -259,23 +259,25 @@ const createOrUpdateSFContact = (req, res, next) => {
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
 const getAllEmployers = (req, res, next) => {
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
+  // query returns all agency-level employers plus a one-off by Id
+  // for the community member account record
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Agency_Number__c = 991 OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
   conn.login(user, password, function(err, userInfo) {
     if (err) {
-      // console.error(`sf.ctrl.js > 208: ${err}`);
+      console.error(`sf.ctrl.js > 267: ${err}`);
       return res.status(500).json({ message: err.message });
     }
 
     try {
       conn.query(query, function(err, accounts) {
         if (err) {
-          // console.error(`sf.ctrl.js > 215: ${err}`);
+          console.error(`sf.ctrl.js > 274: ${err}`);
           return res.status(500).json({ message: err.message });
         }
         res.status(200).json(accounts.records);
       });
     } catch (err) {
-      // console.error(`sf.ctrl.js > 221: ${err}`);
+      console.error(`sf.ctrl.js > 280: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   });

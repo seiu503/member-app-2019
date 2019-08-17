@@ -70,8 +70,10 @@ const checkFile = (file, cb) => {
  *  @returns  {Object}                 Image name and URL OR error message.
  */
 const singleImgUpload = (req, res, next) => {
+  console.log("singleImgUpload");
   upload(req, res, err => {
-    // console.log(req.file);
+    console.log("image.ctrl.js > 75");
+    console.log(req.file);
     // upload image to s3 bucket
     if (err instanceof multer.MulterError) {
       // console.log(`image.ctrl.js > 78`);
@@ -100,7 +102,12 @@ const singleImgUpload = (req, res, next) => {
       }.amazonaws.com/${req.file.originalname}`;
       // check if apiCall is for admin image or user signature image
       if (req.file.originalname.includes("__signature__")) {
+        console.log("this is a signature");
+        console.log(`req.file.originalname: ${req.file.originalname}`);
         return res.status(200).json(imageUrl);
+      } else {
+        console.log("this is not a signature");
+        console.log(`req.file.originalname: ${req.file.originalname}`);
       }
       // check if we're creating a new DB record or updating existing
       if (req.body.id) {

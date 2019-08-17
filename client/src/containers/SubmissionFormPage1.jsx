@@ -13,6 +13,7 @@ import uuid from "uuid";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
+import isoConv from "iso-language-converter";
 
 import { withStyles } from "@material-ui/core/styles";
 
@@ -83,7 +84,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleUpload(firstName, lastName) {
-    console.log("handleUpload");
     return new Promise((resolve, reject) => {
       let file = this.trimSignature();
       let filename = `${firstName}_${lastName}__signature__${formatSFDate(
@@ -146,6 +146,13 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   };
 
+  //  just navigate to previous tab, don't run validation on current tab
+  back = (event, newValue) => {
+    const newState = { ...this.state };
+    newState.tab = newValue;
+    this.setState({ ...newState });
+  };
+
   async handleTab(event, newValue, formValues) {
     if (newValue === 2) {
       // if submission type requires payment processing, then fetch iFrame URL
@@ -162,6 +169,14 @@ export class SubmissionFormPage1Container extends React.Component {
         const dobRaw =
           formValues.mm + "/" + formValues.dd + "/" + formValues.yyyy;
         const birthdate = formatSFDate(dobRaw);
+        // convert language to ISO code for unioni.se
+        let language = isoConv(formValues.preferredLanguage);
+        if (language === "en") {
+          language = "en-US";
+        }
+        if (language === "es") {
+          language = "es-US";
+        }
         const body = {
           firstName: formValues.firstName,
           lastName: formValues.lastName,
@@ -172,7 +187,7 @@ export class SubmissionFormPage1Container extends React.Component {
             zip: formValues.homeZip
           },
           email: formValues.homeEmail,
-          language: "en-US",
+          language,
           // ^^ this needs to be formValues.preferredLanguage
           // but API only accepts 1 of 2 ISO codes for now
           cellPhone: formValues.mobilePhone,
@@ -192,7 +207,7 @@ export class SubmissionFormPage1Container extends React.Component {
           deductionCurrency: "USD", // required by unioni.se, sending default
           deductionDayOfMonth: 15 // required by unioni.se, sending default
         };
-        console.log(JSON.stringify(body));
+        // console.log(JSON.stringify(body));
         try {
           const result = await this.props.apiSF.getIframeURL(body);
           if (!result.payload.cardAddingUrl || result.payload.message) {
@@ -297,6 +312,7 @@ export class SubmissionFormPage1Container extends React.Component {
           {...this.props}
           tab={this.state.tab}
           handleTab={this.handleTab}
+          back={this.back}
           handleUpload={this.handleUpload}
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}

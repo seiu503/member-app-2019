@@ -145,7 +145,7 @@ export const employerTypeMap = {
   AFH: "Adult Foster Home",
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
-  Community: "Community Member"
+  "Community Members": "Community Member"
 };
 
 // helper function for reverse lookup from above object
@@ -209,6 +209,12 @@ export const stylesPage1 = theme => ({
     padding: "0 20px 40px 0",
     display: "flex",
     justifyContent: "flex-end"
+  },
+  buttonWrapTab3: {
+    width: "100%",
+    padding: "40px 20px 0 0",
+    display: "flex",
+    justifyContent: "flex-start"
   },
   next: {
     textTransform: "none",

@@ -57,9 +57,13 @@ export class SubmissionFormPage1Component extends React.Component {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
     const employerTypesListRaw = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.map(
-          employer => employer.Sub_Division__c
-        )
+      ? this.props.submission.employerObjects.map(employer => {
+          if (employer.Name === "Community Members") {
+            return "Community Members";
+          } else {
+            return employer.Sub_Division__c;
+          }
+        })
       : [""];
     const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
     const employerTypesList = employerTypesCodes.map(code =>
@@ -83,6 +87,7 @@ export class SubmissionFormPage1Component extends React.Component {
       // console.log("no formValues in props");
     }
 
+    // console.log(employerTypeUserSelect);
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
@@ -94,10 +99,25 @@ export class SubmissionFormPage1Component extends React.Component {
               getKeyByValue(employerTypeMap, employerTypeUserSelect)
           )
         : [{ Name: "" }];
-      const employerList = employerObjectsFiltered.map(
-        employer => employer.Name
-      );
+      let employerList = employerObjectsFiltered.map(employer => employer.Name);
+      if (employerTypeUserSelect.toLowerCase() === "community member") {
+        employerList = ["Community Member"];
+      }
       employerList.unshift("");
+
+      // set value of employer name field for single-child employer types
+      if (employerTypeUserSelect.toLowerCase() === "retired") {
+        this.props.formValues.employerName = "Retirees";
+      }
+      if (employerTypeUserSelect.toLowerCase() === "adult foster home") {
+        this.props.formValues.employerName = "Adult Foster Care";
+      }
+      if (employerTypeUserSelect.toLowerCase() === "child care") {
+        this.props.formValues.employerName = "Family Child Care";
+      }
+      if (employerTypeUserSelect.toLowerCase() === "community member") {
+        this.props.formValues.employerName = "Community Member";
+      }
       return employerList;
     }
   };
@@ -287,6 +307,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 renderCheckbox={this.renderCheckbox}
                 formValues={this.props.formValues}
                 handleTab={this.props.handleTab}
+                back={this.props.back}
                 initialize={this.props.initialize}
               />
             )}
@@ -298,6 +319,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 reCaptchaRef={this.props.reCaptchaRef}
                 loading={this.props.submission.loading}
                 handleTab={this.props.handleTab}
+                back={this.props.back}
                 pamentRequired={this.props.submission.formPage1.paymentRequired}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
               />

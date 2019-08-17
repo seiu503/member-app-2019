@@ -18,6 +18,28 @@ const validate = values => {
     "termsAgree",
     "signature"
   ];
+  const conditionalRequiredFields = [
+    {
+      requiredField: "directPayAuth",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home", "retired", "community member"]
+    },
+    {
+      requiredField: "medicaidResidents",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home"]
+    },
+    {
+      requiredField: "paymentType",
+      controllingField: "employerType",
+      controllingValues: ["retired"]
+    },
+    {
+      requiredField: "paymentMethod",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home", "retired", "community member"]
+    }
+  ];
   requiredFields.forEach(field => {
     if (!values[field]) {
       errors[field] = "Required";

@@ -4,6 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import Iframe from "react-iframe";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
+import Button from "@material-ui/core/Button";
 
 import PropTypes from "prop-types";
 
@@ -17,7 +18,8 @@ export const Tab3 = props => {
     reCaptchaRef,
     loading,
     invalid,
-    iFrameURL
+    iFrameURL,
+    back
   } = props;
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
@@ -45,6 +47,18 @@ export const Tab3 = props => {
           sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
           onChange={reCaptchaChange}
         />
+        <div className={classes.buttonWrapTab3}>
+          <Button
+            type="button"
+            data-test="button-back"
+            onClick={e => back(e, 1)}
+            color="primary"
+            className={classes.back}
+            variant="contained"
+          >
+            Back
+          </Button>
+        </div>
 
         <ButtonWithSpinner
           type="submit"
