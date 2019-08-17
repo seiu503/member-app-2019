@@ -341,6 +341,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 loading={this.props.submission.loading}
                 handleTab={this.props.handleTab}
                 back={this.props.back}
+                formValues={this.props.formValues}
                 pamentRequired={this.props.submission.formPage1.paymentRequired}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
               />

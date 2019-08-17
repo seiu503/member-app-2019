@@ -89,6 +89,8 @@ function Submission(state = INITIAL_STATE, action) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
         // attached account/employer type is "Parent Employer" or "Agency"
+        // and neither exist for Community Members bc it was created sloppily
+        // and is missing several fields...
         let subDivision = "";
         if (action.payload.Account.WS_Subdivision_from_Agency__c) {
           subDivision = action.payload.Account.WS_Subdivision_from_Agency__c;

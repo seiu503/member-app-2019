@@ -1,10 +1,11 @@
 import React from "react";
-import { reduxForm } from "redux-form";
+import { Field, reduxForm } from "redux-form";
 import ReCAPTCHA from "react-google-recaptcha";
 import Iframe from "react-iframe";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
+import * as formElements from "./SubmissionFormElements";
 
 import PropTypes from "prop-types";
 
@@ -19,8 +20,11 @@ export const Tab3 = props => {
     loading,
     invalid,
     iFrameURL,
-    back
+    back,
+    formValues
   } = props;
+  console.log(formValues);
+  console.log(formValues.paymentType);
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form
@@ -28,7 +32,19 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
-        {iFrameURL && (
+        {formValues.employerName.toLowerCase() === "retirees" && (
+          <Field
+            // labelWidth={104}
+            label="How would you like to pay your union dues?"
+            name="paymentType"
+            id="paymentType"
+            type="radio"
+            classes={classes}
+            component={formElements.renderRadioGroup}
+            options={formElements.paymentTypes}
+          />
+        )}
+        {iFrameURL && formValues.paymentType !== "Check" && (
           <div className={classes.iframeWrap}>
             <Iframe
               url={iFrameURL}

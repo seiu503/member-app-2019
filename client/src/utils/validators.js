@@ -40,6 +40,14 @@ const validate = values => {
       controllingValues: ["adult foster home", "retired", "community member"]
     }
   ];
+  conditionalRequiredFields.forEach(obj => {
+    if (
+      obj["controllingValues"].includes(values[obj["controllingField"]]) &&
+      !values[obj["requiredField"]]
+    ) {
+      errors[obj["requiredField"]] = "Required";
+    }
+  });
   requiredFields.forEach(field => {
     if (!values[field]) {
       errors[field] = "Required";

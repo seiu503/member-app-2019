@@ -1,5 +1,5 @@
 import React from "react";
-import uuid from "uuid";
+import shortid from "shortid";
 import PropTypes from "prop-types";
 
 import TextField from "@material-ui/core/TextField";
@@ -10,6 +10,9 @@ import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import FormLabel from "@material-ui/core/FormLabel";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
 
 // hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
 export const stateList = [
@@ -133,6 +136,8 @@ export const yearOptions = () => {
   return years;
 };
 
+export const paymentTypes = ["Check", "Card"];
+
 // user-friendly names for employer type codes
 export const employerTypeMap = {
   PNP: "Non-Profit",
@@ -224,6 +229,11 @@ export const stylesPage1 = theme => ({
     "&:hover": {
       backgroundColor: theme.palette.primary.light
     }
+  },
+  verticalGroup: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
   },
   back: {
     textTransform: "none",
@@ -498,7 +508,7 @@ export const renderSelect = ({
       data-test="component-select"
     >
       {options.map(item => (
-        <option key={uuid.v4()} value={item.toLowerCase()}>
+        <option key={shortid()} value={item.toLowerCase()}>
           {item}
         </option>
       ))}
@@ -526,7 +536,6 @@ export const renderCheckbox = ({
         <Checkbox
           color="primary"
           checked={input.value ? true : false}
-          // onChange={input.onChange}
           {...custom}
           {...input}
           className={classes.checkbox}
@@ -535,6 +544,48 @@ export const renderCheckbox = ({
         />
       }
     />
+    {touched && error && (
+      <FormHelperText className={classes.checkboxErrorText}>
+        {error}
+      </FormHelperText>
+    )}
+  </FormControl>
+);
+
+// custom MUI friendly RADIO group
+export const renderRadioGroup = ({
+  input,
+  label,
+  options,
+  validate,
+  classes,
+  meta: { touched, error },
+  formControlName,
+  ...custom
+}) => (
+  <FormControl
+    component="fieldset"
+    error={!!(touched && error)}
+    className={classes[formControlName] || classes.formControl}
+  >
+    <FormLabel component="legend" className={classes.radioLabel}>
+      {label}
+    </FormLabel>
+
+    <RadioGroup
+      aria-label={formControlName}
+      name={formControlName}
+      className={classes.verticalGroup}
+    >
+      {options.map(item => (
+        <FormControlLabel
+          key={shortid()}
+          value={item}
+          control={<Radio />}
+          label={item}
+        />
+      ))}
+    </RadioGroup>
     {touched && error && (
       <FormHelperText className={classes.checkboxErrorText}>
         {error}
