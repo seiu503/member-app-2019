@@ -6,6 +6,8 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --exit",
     "start": "webpack -d | node server.js",
+    "prod-build": "cd client && yarn build",
+    "prod-start": "cd .. && yarn server",
     "client": "cd client && yarn build && yarn start",
     "server": "LOG_LEVEL=debug supervisor --inspect server.js",
     "sass": "cd client && yarn dev",
