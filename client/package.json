@@ -105,5 +105,6 @@
       "!src/index.js",
       "!src/serviceWorker.js"
     ]
-  }
+  },
+  "homepage": "http://test.seiu503signup.org"
 }
