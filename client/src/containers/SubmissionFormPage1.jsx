@@ -106,10 +106,12 @@ export class SubmissionFormPage1Container extends React.Component {
             );
             resolve();
           } else {
+            console.log(result.payload.content);
             resolve(result.payload.content);
           }
         })
         .catch(err => {
+          console.log(err);
           openSnackbar("error", err);
           reject(err);
         });
@@ -155,6 +157,35 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab(event, newValue, formValues) {
     if (newValue === 2) {
+      // perform signature processing steps and save value to redux store
+      // before ref disappears
+      if (this.state.signatureType === "write") {
+        this.props.apiSubmission.handleInput({
+          target: { name: "signature", value: formValues.signature }
+        });
+      }
+      if (this.state.signatureType === "draw") {
+        console.log("draw");
+        let sigUrl;
+        try {
+          sigUrl = await this.handleUpload(
+            formValues.firstName,
+            formValues.lastName
+          );
+          console.log(sigUrl);
+          this.props.apiSubmission.handleInput({
+            target: { name: "signature", value: sigUrl }
+          });
+          console.log(this.props.submission.formPage1.signature);
+        } catch (err) {
+          return openSnackbar(
+            "error",
+            err ||
+              "An error occured while trying to save your Signature. Please try again."
+          );
+        }
+      }
+
       // if submission type requires payment processing, then fetch iFrame URL
       // for use in next tab
       if (
@@ -242,33 +273,6 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSubmission.handleInput({
         target: { name: "legalLanguage", value: legalLanguage }
       });
-
-      // perform signature processing steps and save value to redux store
-      // before ref disappears
-      if (this.state.signatureType === "write") {
-        this.props.apiSubmission.handleInput({
-          target: { name: "signature", value: formValues.signature }
-        });
-      }
-      if (this.state.signatureType === "draw") {
-        let sigUrl;
-        try {
-          sigUrl = await this.handleUpload(
-            formValues.firstName,
-            formValues.lastName
-          );
-        } catch (err) {
-          return openSnackbar(
-            "error",
-            err ||
-              "An error occured while trying to save your Signature. Please try again."
-          );
-        }
-
-        this.props.apiSubmission.handleInput({
-          target: { name: "signature", value: sigUrl }
-        });
-      }
 
       // navigate to next tab
       const newState = { ...this.state };

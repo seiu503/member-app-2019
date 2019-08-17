@@ -206,6 +206,7 @@ const createOrUpdateSFContact = (req, res, next) => {
     res.locals.sf_contact_id = salesforce_id;
     res.locals.next = true;
     console.log(`sf.ctrljs > 208 > found contact id (salesforce_id)`);
+    console.log(res.locals.sf_contact_id);
     return updateSFContact(req, res, next);
   }
 
@@ -307,6 +308,7 @@ const updateSFContact = (req, res, next) => {
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
   updates.AccountId = updatesRaw.employer_id;
+  console.log(`sf.ctrl.js > 310: ${updatesRaw.employer_id}`);
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.error(`sf.ctrl.js > 310: ${err}`);
@@ -324,7 +326,7 @@ const updateSFContact = (req, res, next) => {
             console.error(`sf.ctrl.js > 322: ${err}`);
             let message = "Error updating contact";
             if (err.errorCode) {
-              message = err.errorCode;
+              message = `Error updating contact: ${err.errorCode}`;
             }
             return res.status(500).json({ message });
           } else {

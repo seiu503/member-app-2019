@@ -159,12 +159,18 @@ export class SubmissionFormPage1Component extends React.Component {
     const dobRaw = mm + "/" + dd + "/" + yyyy;
     const birthdate = formatSFDate(dobRaw);
     const employerObject = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.filter(
-          obj => obj.Name.toLowerCase() === employerName.toLowerCase()
-        )[0]
+      ? this.props.submission.employerObjects.filter(obj => {
+          if (employerName.toLowerCase() === "community member") {
+            return obj.Name.toLowerCase() === "community members";
+          }
+          return obj.Name.toLowerCase() === employerName.toLowerCase();
+        })[0]
       : { Name: "" };
+    console.log(employerObject);
     const employerId = employerObject.Id;
+    console.log(employerId);
     const agencyNumber = employerObject.Agency_Number__c;
+    console.log(agencyNumber);
     const legalLanguage = this.props.submission.formPage1.legalLanguage;
 
     const q = queryString.parse(this.props.location.search);

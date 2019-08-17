@@ -104,7 +104,7 @@ const singleImgUpload = (req, res, next) => {
       if (req.file.originalname.includes("__signature__")) {
         console.log("this is a signature");
         console.log(`req.file.originalname: ${req.file.originalname}`);
-        return res.status(200).json(imageUrl);
+        return res.status(200).json({ content: imageUrl });
       } else {
         console.log("this is not a signature");
         console.log(`req.file.originalname: ${req.file.originalname}`);
