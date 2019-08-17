@@ -129,7 +129,9 @@ export class SubmissionFormPage1Container extends React.Component {
   trimSignature = () => {
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
     if (dataURL === blankSig) {
-      throw "Please draw your signature or click the link to type it instead";
+      throw new Error(
+        "Please draw your signature or click the link to type it instead"
+      );
     } else {
       let blobData = this.dataURItoBlob(dataURL);
       return blobData;
