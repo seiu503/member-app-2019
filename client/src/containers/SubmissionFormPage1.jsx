@@ -53,6 +53,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
+          console.log(result.payload);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -60,7 +61,6 @@ export class SubmissionFormPage1Container extends React.Component {
           ) {
             this.handleOpen();
           }
-          // console.log("result.payload", result.payload);
         })
         .catch(err => {
           // console.log(err);

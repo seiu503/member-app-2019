@@ -94,6 +94,11 @@ function Submission(state = INITIAL_STATE, action) {
           subDivision = action.payload.Account.WS_Subdivision_from_Agency__c;
         } else if (action.payload.Account.Sub_Division__c) {
           subDivision = action.payload.Account.Sub_Division__c;
+        } else if (
+          !action.payload.Account.WS_Subdivision_from_Agency__c &&
+          !action.payload.Account.Sub_Division__c
+        ) {
+          subDivision = action.payload.Account.Name;
         }
         const employerType = employerTypeMap[subDivision];
         // if employer attached to contact record is 'Employer' record type,

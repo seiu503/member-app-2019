@@ -84,7 +84,7 @@ export class SubmissionFormPage1Component extends React.Component {
     if (Object.keys(this.props.formValues).length) {
       employerTypeUserSelect = this.props.formValues.employerType;
     } else {
-      // console.log("no formValues in props");
+      console.log("no formValues in props");
     }
 
     // console.log(employerTypeUserSelect);
@@ -100,22 +100,37 @@ export class SubmissionFormPage1Component extends React.Component {
           )
         : [{ Name: "" }];
       let employerList = employerObjectsFiltered.map(employer => employer.Name);
-      if (employerTypeUserSelect.toLowerCase() === "community member") {
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "community member"
+      ) {
         employerList = ["Community Member"];
       }
       employerList.unshift("");
 
       // set value of employer name field for single-child employer types
-      if (employerTypeUserSelect.toLowerCase() === "retired") {
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "retired"
+      ) {
         this.props.formValues.employerName = "Retirees";
       }
-      if (employerTypeUserSelect.toLowerCase() === "adult foster home") {
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "adult foster home"
+      ) {
         this.props.formValues.employerName = "Adult Foster Care";
       }
-      if (employerTypeUserSelect.toLowerCase() === "child care") {
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "child care"
+      ) {
         this.props.formValues.employerName = "Family Child Care";
       }
-      if (employerTypeUserSelect.toLowerCase() === "community member") {
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "community member"
+      ) {
         this.props.formValues.employerName = "Community Member";
       }
       return employerList;
