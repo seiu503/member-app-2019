@@ -60,17 +60,27 @@ if (process.env.NODE_ENV === "production") {
 app.use("/api", apiRoutes);
 app.use("/", staticRoutes);
 
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   console.log("root route, serving client");
   res.status(200).sendFile(path.join(__dirname, "/client/build/index.html"));
 });
 
 // launch ======================================================================
-var port = process.env.PORT || 8080;
+// var port = process.env.PORT || 8080;
+// if (!module.parent) {
+//   app.listen(port, function() {
+//     console.log("Node.js listening on port " + port + "...");
+//   });
+// }
+
+// changing server port for nginx
+var port = 8080;
 if (!module.parent) {
   app.listen(port, function() {
     console.log("Node.js listening on port " + port + "...");
   });
 }
+
+module.exports = app;
 
 module.exports = app;
