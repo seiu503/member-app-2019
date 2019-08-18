@@ -3298,7 +3298,9 @@
               (a.trimSignature = function() {
                 var e = a.props.sigBox.current.toDataURL("image/jpeg");
                 if (e === Ea)
-                  throw "Please draw your signature or click the link to type it instead";
+                  throw new Error(
+                    "Please draw your signature or click the link to type it instead"
+                  );
                 return a.dataURItoBlob(e);
               }),
               (a.state = {
@@ -5690,4 +5692,4 @@
   },
   [[313, 1, 2]]
 ]);
-//# sourceMappingURL=main.b75d109c.chunk.js.map
+//# sourceMappingURL=main.8bebae9f.chunk.js.map
