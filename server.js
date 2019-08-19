@@ -26,7 +26,8 @@ passport.deserializeUser(auth.user.deserialize);
 
 const pg = require("pg");
 const configDB = require("./app/config/knex");
-const client = new pg.Client(configDB.db);
+console.log(configDB.configConnection);
+const client = new pg.Client(configDB.configConnection);
 client.connect(err => {
   if (err) {
     return console.error("could not connect to postgres", err);
