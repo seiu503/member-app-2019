@@ -1,0 +1,30 @@
+{
+  "Headline": [
+    "Your Customized Link",
+    "Su enlace personalizado",
+    "Ваша отдельная ссылка",
+    "Liên kết dành riêng cho quý vị",
+    "您的专属定制的链接"
+  ],
+  "Text before name": [
+    "The link below is a customized link for",
+    "El siguiente es un enlace personalizado para",
+    "Ссылка ниже была специального подготовлена для",
+    "Liên kết dưới đây là một liên kết dành riêng cho",
+    "以下链接为专属定制的链接"
+  ],
+  "Error message headline": [
+    "No link found",
+    "No se encontró ningún enlace",
+    "Ссылка отсутствует",
+    "Không tìm thấy liên kết",
+    "未找到链接"
+  ],
+  "Error message body": [
+    "Sorry, we were unable to generate a customized link for___________. Please use this blank form instead: ",
+    "Lo sentimos, no pudimos generar un enlace personalizado para___________. En su lugar, use el siguiente formulario en blanco:",
+    "Приносим свои извинения за то, что мы не смогли сгенерировать персональную ссылку для___________. Пожалуйста, вместо нее используйте этот пустой бланк:",
+    "Xin lỗi quý vị, chúng tôi không thể tạo liên kết tùy chỉnh cho ___________. Vui lòng sử dụng biểu mẫu để trống này thay thế:",
+    "对不起，我们无法为___________生成自定义链接。请使用此空白表格代替："
+  ]
+}

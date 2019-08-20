@@ -6,11 +6,14 @@ import PropTypes from "prop-types";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withStyles } from "@material-ui/core/styles";
+import { withLocalize } from "react-localize-redux";
+import { renderToStaticMarkup } from "react-dom/server";
 
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiContentActions from "./store/actions/apiContentActions";
 
+import { globalTranslations } from "./translations/global.json";
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
 import FormThankYou from "./components/FormThankYou";
@@ -133,6 +136,17 @@ export class AppUnconnected extends Component {
     this.legal_language = React.createRef();
     this.sigBox = React.createRef();
     this.reCaptchaRef = React.createRef();
+    this.props.initialize({
+      languages: [
+        { name: "English", code: "en" },
+        { name: "Spanish", code: "es" },
+        { name: "Russian", code: "ru" },
+        { name: "Vietnamese", code: "vi" },
+        { name: "Chinese", code: "zh-Hans" }
+      ],
+      translation: globalTranslations,
+      options: { renderToStaticMarkup }
+    });
     this.state = {
       deleteDialogOpen: false,
       animation: false,
