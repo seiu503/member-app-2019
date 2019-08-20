@@ -29,9 +29,8 @@ const getSFContactById = async (req, res, next) => {
     ","
   )}, Id FROM Contact WHERE Id = \'${id}\'`;
   let conn = new jsforce.Connection({ loginUrl });
-  let userInfo;
   try {
-    userInfo = await conn.login(user, password);
+    await conn.login(user, password);
   } catch (err) {
     // console.error(`sf.ctrl.js > 36: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -39,7 +38,7 @@ const getSFContactById = async (req, res, next) => {
   let contact;
   try {
     contact = await conn.query(query);
-    res.status(200).json(contact.records[0]);
+    return res.status(200).json(contact.records[0]);
   } catch (err) {
     // console.error(`sf.ctrl.js > 44: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -50,27 +49,22 @@ const getSFContactById = async (req, res, next) => {
  *  @param    {String}   id   Salesforce Contact ID
  *  @returns  {Object}        Success or error message.
  */
-const deleteSFContactById = (req, res, next) => {
+const deleteSFContactById = async (req, res, next) => {
   const { id } = req.params;
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      // console.error(`sf.ctrl.js > 54: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-
-    try {
-      conn.sobject("Contact").destroy(id, function(err, ret) {
-        if (err || !ret.success) {
-          // console.error(`sf.ctrl.js > 61: ${err}`);
-          return res.status(500).json({ message: err.message });
-        }
-        res.status(200).json({ message: "Successfully deleted contact" });
-      });
-    } catch (err) {
-      // console.error(`sf.ctrl.js > 67: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-  });
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 58: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  try {
+    let result = await conn.sobject("Contact").destroy(id);
+    return res.status(200).json({ message: "Successfully deleted contact" });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 65: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 const createSFContact = (req, res, next) => {
