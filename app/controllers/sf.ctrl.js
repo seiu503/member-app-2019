@@ -165,7 +165,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  *                                    key/value pairs of fields to be updated.
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
-exports.updateSFContact = (req, res, next) => {
+exports.updateSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 284: updateSFContact`);
   const { sf_contact_id } = res.locals;
   const updatesRaw = { ...req.body };
@@ -184,45 +184,31 @@ exports.updateSFContact = (req, res, next) => {
   updates.AccountId = updatesRaw.employer_id;
 
   let conn = new jsforce.Connection({ loginUrl });
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      // console.error(`sf.ctrl.js > 189: ${err}`);
-      return res.status(500).json({ message: err.message });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 190: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let contact;
+  try {
+    contact = await conn.sobject("Contact").update({
+      Id: sf_contact_id,
+      ...updates
+    });
+    if (res.locals.next) {
+      // console.log(`sf.ctrl.js > 210: returning next`);
+      return next();
     }
-    try {
-      conn.sobject("Contact").update(
-        {
-          Id: sf_contact_id,
-          ...updates
-        },
-        function(err, contact) {
-          console.log(`sf.ctrl.js > 198: contact`);
-          console.log(contact);
-          if (err || !contact.success) {
-            console.error(`sf.ctrl.js > 202: ${err}`);
-            let message = "Error updating contact";
-            if (err.errorCode) {
-              message = err.errorCode;
-            }
-            return res.status(500).json({ message });
-          } else {
-            if (res.locals.next) {
-              // console.log(`sf.ctrl.js > 210: returning next`);
-              return next();
-            }
-            // console.log(`sf.ctrl.js > 213: returning to client`);
-            return res.status(200).json({
-              salesforce_id: res.locals.sf_contact_id,
-              submission_id: res.locals.submission_id
-            });
-          }
-        }
-      );
-    } catch (err) {
-      console.error(`sf.ctrl.js > 222: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-  });
+    // console.log(`sf.ctrl.js > 213: returning to client`);
+    return res.status(200).json({
+      salesforce_id: res.locals.sf_contact_id,
+      submission_id: res.locals.submission_id
+    });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 210: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Lookup contact in Salesforce, by id if prefill,
