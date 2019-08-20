@@ -209,7 +209,7 @@ suite.only("sf.ctrl.js", function() {
     });
   });
 
-  suite.only("sfCtrl > createSFContact", function() {
+  suite("sfCtrl > createSFContact", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
@@ -312,6 +312,106 @@ suite.only("sf.ctrl.js", function() {
         assert.calledWith(jsforceStub.sobject, "Contact");
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: sobjectError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > lookupSFContactByFLE", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        const first_name = "firstname",
+          last_name = "lastname",
+          home_email = "fake@email.com";
+        query = `SELECT Id, ${fieldList.join(
+          ","
+        )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+        req = mockReq({
+          body: {
+            first_name,
+            last_name,
+            home_email
+          }
+        });
+        responseStub = { records: [contactStub] };
+        queryStub = sandbox.stub().returns((null, responseStub));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          query: queryStub
+        };
+        jsforceConnectionStub = sandbox
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("finds a single contact by first, last, email", async function() {
+      responseStub = { salesforce_id: "0035500000VFkjOAAT" };
+      try {
+        await sfCtrl.lookupSFContactByFLE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(jsforceStub.query, query);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns a message if matching contact not found", async function() {
+      let message =
+        "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help.";
+      queryStub = sandbox.stub().returns({ totalSize: 0 });
+      jsforceStub.query = queryStub;
+      try {
+        await sfCtrl.lookupSFContactByFLE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(jsforceStub.query, query);
+        assert.calledWith(res.json, { message });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+
+      try {
+        await sfCtrl.lookupSFContactByFLE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if query fails", async function() {
+      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryStub = sandbox.stub().throws(new Error(queryError));
+      jsforceStub.query = queryStub;
+
+      try {
+        await sfCtrl.lookupSFContactByFLE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.query);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: queryError });
       } catch (err) {
         console.log(err);
       }

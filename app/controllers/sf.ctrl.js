@@ -68,7 +68,7 @@ const deleteSFContactById = async (req, res, next) => {
 };
 
 const createSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 75: createSFContact`);
+  // console.log(`sf.ctrl.js > 75: createSFContact`);
   const bodyRaw = { ...req.body };
   const body = {};
 
@@ -114,8 +114,8 @@ const createSFContact = async (req, res, next) => {
  *                                    object with error message to client.
  */
 
-const lookupSFContactByFLE = (req, res, next) => {
-  console.log("lookupSFContactByFLE");
+const lookupSFContactByFLE = async (req, res, next) => {
+  // console.log("lookupSFContactByFLE");
   const { first_name, last_name, home_email } = req.body;
   // fuzzy match on first name AND exact match on last name
   // AND exact match on either home OR work email
@@ -130,36 +130,32 @@ const lookupSFContactByFLE = (req, res, next) => {
   const query = `SELECT Id, ${fieldList.join(
     ","
   )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      console.error(`sf.ctrl.js > 143: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
 
-    try {
-      conn.query(query, function(err, contact) {
-        if (err) {
-          console.error(`sf.ctrl.js > 148: ${err}`);
-          return res.status(500).json({ message: err.message });
-        }
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 138: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 
-        if (contact.totalSize === 0 || !contact) {
-          // if no contact found, return error message to client
-          return res.status(200).json({
-            message:
-              "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
-          });
-        }
-        // if contact found, return contact id to client
-        if (contact) {
-          return res.status(200).json({ salesforce_id: contact.records[0].Id });
-        }
+  let contact;
+  try {
+    contact = await conn.query(query);
+    if (contact.totalSize === 0 || !contact) {
+      // if no contact found, return error message to client
+      return res.status(200).json({
+        message:
+          "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
       });
-    } catch (err) {
-      console.error(`sf.ctrl.js > 194: ${err}`);
-      return res.status(500).json({ message: err.message });
     }
-  });
+    return res
+      .status(200)
+      .json({ salesforce_id: contact.records[0].Id || contact.records[0].id });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 194: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Lookup contact in Salesforce, by id if prefill,
