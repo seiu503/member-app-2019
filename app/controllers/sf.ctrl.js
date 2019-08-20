@@ -67,7 +67,7 @@ const deleteSFContactById = async (req, res, next) => {
   }
 };
 
-const createSFContact = (req, res, next) => {
+const createSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 75: createSFContact`);
   const bodyRaw = { ...req.body };
   const body = {};
@@ -84,40 +84,28 @@ const createSFContact = (req, res, next) => {
   delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
 
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      console.error(`sf.ctrl.js > 91: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 91: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 
-    try {
-      conn.sobject("Contact").create({ ...body }, function(err, contact) {
-        if (err || !contact.success) {
-          let message = "Error creating contact";
-          if (err.errorCode) {
-            message = err.errorCode;
-          }
-          console.error(`sf.ctrl.js > 104: ${err}`);
-          return res.status(500).json({ message });
-        } else {
-          // res.locals.next will be undefined if calling as a
-          // standalone function; in that case return data to client
-          if (res.locals.next) {
-            console.log(`sf.ctrl.js > 109: returning next`);
-            res.locals.sf_contact_id = contact.id || contact.Id;
-            return next();
-          }
-          console.log(`sf.ctrl.js > 113: returning to client`);
-          return res
-            .status(200)
-            .json({ salesforce_id: contact.id || contact.Id });
-        }
-      });
-    } catch (err) {
-      console.error(`sf.ctrl.js > 120: ${err}`);
-      return res.status(500).json({ message: err.message });
+  let contact;
+  try {
+    contact = await conn.sobject("Contact").create({ ...body });
+    if (res.locals.next) {
+      // console.log(`sf.ctrl.js > 99: returning next`);
+      res.locals.sf_contact_id = contact.Id || contact.id;
+      return next();
     }
-  });
+    // console.log(`sf.ctrl.js > 103: returning to client`);
+    return res.status(200).json({ salesforce_id: contact.Id || contact.id });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 108: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Lookup contact in Salesforce by Firstname, Lastname, & Email.
