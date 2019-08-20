@@ -6,9 +6,14 @@ const {
   formatDate
 } = require("../utils/fieldConfigs");
 
-const conn = new jsforce.Connection({
-  loginUrl: "https://test.salesforce.com" // setup for sandbox
-});
+// setup for sandbox in both dev and prod for now
+// switch to production on launch
+let loginUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://test.salesforce.com"
+    : "https://test.salesforce.com";
+
+let conn = new jsforce.Connection({ loginUrl });
 const user = process.env.SALESFORCE_USER;
 const password = process.env.SALESFORCE_PWD;
 const fieldList = generateSFContactFieldList();
@@ -17,31 +22,28 @@ const fieldList = generateSFContactFieldList();
  *  @param    {String}   id  	Salesforce Contact ID
  *  @returns  {Object}       	Salesforce Contact object OR error message.
  */
-const getSFContactById = (req, res, next) => {
+const getSFContactById = async (req, res, next) => {
   console.log(`sf.ctrl.js > getSFContactById`);
   const { id } = req.params;
+  // console.log(id);
   const query = `SELECT ${fieldList.join(
     ","
   )}, Id FROM Contact WHERE Id = \'${id}\'`;
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      console.error(`sf.ctrl.js > 27: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-
-    try {
-      conn.query(query, function(err, contact) {
-        if (err) {
-          console.error(`sf.ctrl.js > 34: ${err}`);
-          return res.status(500).json({ message: err.message });
-        }
-        res.status(200).json(contact.records[0]);
-      });
-    } catch (err) {
-      console.error(`sf.ctrl.js > 40: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-  });
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 33: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let contact;
+  try {
+    contact = await conn.query(query);
+    res.status(200).json(contact.records[0]);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 41: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Delete one contact from Salesforce by Salesforce Contact ID
@@ -220,13 +222,15 @@ const createOrUpdateSFContact = (req, res, next) => {
   const query = `SELECT Id, ${fieldList.join(
     ","
   )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+  console.log(`sf.ctrl.js > 225`);
   conn.login(user, password, function(err, userInfo) {
     if (err) {
       console.error(`sf.ctrl.js > 168: ${err}`);
       return res.status(500).json({ message: err.message });
     }
-
+    console.log(`sf.ctrl.js > 231`);
     try {
+      console.log(`sf.ctrl.js > 233`);
       conn.query(query, function(err, contact) {
         if (err) {
           console.error(`sf.ctrl.js > 175: ${err}`);
@@ -243,8 +247,9 @@ const createOrUpdateSFContact = (req, res, next) => {
         // if contact found, pass contact id to next middleware, which will
         // update it with the submission data from res.body
         if (contact) {
-          console.log(`sf.ctrl.js > 233: found matching contact`);
+          console.log(`sf.ctrl.js > 250: found matching contact`);
           res.locals.sf_contact_id = contact.records[0].Id;
+          console.log(res.locals.sf_contact_id);
           res.locals.next = true;
           return updateSFContact(req, res, next);
         }
@@ -299,22 +304,31 @@ const updateSFContact = (req, res, next) => {
   const updates = {};
   // convert updates object to key/value pairs using
   // SF API field names
+  console.log(`sf.ctrl.js > 307`);
   Object.keys(updatesRaw).forEach(key => {
     if (contactsTableFields[key]) {
       const sfFieldName = contactsTableFields[key].SFAPIName;
       updates[sfFieldName] = updatesRaw[key];
     }
   });
+  console.log(`sf.ctrl.js > 314`);
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
   updates.AccountId = updatesRaw.employer_id;
+
+  let conn = new jsforce.Connection({ loginUrl });
+  console.log(`sf.ctrl.js > 321`);
   conn.login(user, password, function(err, userInfo) {
+    console.log(`sf.ctrl.js > 323: err`);
+    console.log(err);
+    console.log(`sf.ctrl.js > 325: userInfo`);
+    console.log(userInfo);
     if (err) {
-      console.error(`sf.ctrl.js > 252: ${err}`);
+      console.error(`sf.ctrl.js > 328: ${err}`);
       return res.status(500).json({ message: err.message });
     }
-
+    console.log(`sf.ctrl.js > 331`);
     try {
       conn.sobject("Contact").update(
         {
@@ -322,8 +336,10 @@ const updateSFContact = (req, res, next) => {
           ...updates
         },
         function(err, contact) {
+          console.log(`sf.ctrl.js > 339: contact`);
+          console.log(contact);
           if (err || !contact.success) {
-            console.error(`sf.ctrl.js > 264: ${err}`);
+            console.error(`sf.ctrl.js > 342: ${err}`);
             let message = "Error updating contact";
             if (err.errorCode) {
               message = err.errorCode;
@@ -331,10 +347,10 @@ const updateSFContact = (req, res, next) => {
             return res.status(500).json({ message });
           } else {
             if (res.locals.next) {
-              console.log(`sf.ctrl.js > 322: returning next`);
+              console.log(`sf.ctrl.js > 350: returning next`);
               return next();
             }
-            console.log(`sf.ctrl.js > 325: returning to client`);
+            console.log(`sf.ctrl.js > 353: returning to client`);
             return res.status(200).json({
               salesforce_id: res.locals.sf_contact_id,
               submission_id: res.locals.submission_id

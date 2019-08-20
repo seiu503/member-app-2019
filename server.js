@@ -26,7 +26,6 @@ passport.deserializeUser(auth.user.deserialize);
 
 const pg = require("pg");
 const configDB = require("./app/config/knex");
-console.log(configDB.configConnection);
 const client = new pg.Client(configDB.configConnection);
 client.connect(err => {
   if (err) {
