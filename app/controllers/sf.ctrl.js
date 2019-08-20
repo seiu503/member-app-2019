@@ -30,8 +30,9 @@ const getSFContactById = async (req, res, next) => {
     ","
   )}, Id FROM Contact WHERE Id = \'${id}\'`;
   let conn = new jsforce.Connection({ loginUrl });
+  let userInfo;
   try {
-    await conn.login(user, password);
+    userInfo = await conn.login("user", password);
   } catch (err) {
     console.error(`sf.ctrl.js > 33: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -39,6 +40,7 @@ const getSFContactById = async (req, res, next) => {
   let contact;
   try {
     contact = await conn.query(query);
+    console.log(contact);
     res.status(200).json(contact.records[0]);
   } catch (err) {
     console.error(`sf.ctrl.js > 41: ${err}`);
