@@ -22,10 +22,13 @@ let loginError,
   queryStub,
   loginStub,
   sandbox,
+  next,
   res = mockRes(),
   req = mockReq(),
-  next,
-  contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
+  first_name = "firstname",
+  last_name = "lastname",
+  home_email = "fake@email.com";
+contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
 
 suite.only("sf.ctrl.js", function() {
   suite("sfCtrl > getSFContactById", function() {
@@ -322,9 +325,6 @@ suite.only("sf.ctrl.js", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
-        const first_name = "firstname",
-          last_name = "lastname",
-          home_email = "fake@email.com";
         query = `SELECT Id, ${fieldList.join(
           ","
         )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
@@ -408,6 +408,147 @@ suite.only("sf.ctrl.js", function() {
 
       try {
         await sfCtrl.lookupSFContactByFLE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.query);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: queryError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > createOrUpdateSFContact", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        const first_name = "firstname",
+          last_name = "lastname",
+          home_email = "fake@email.com";
+        query = `SELECT Id, ${fieldList.join(
+          ","
+        )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+        req = mockReq({
+          body: {
+            salesforce_id: "123456789"
+          }
+        });
+        responseStub = { records: [contactStub] };
+        queryStub = sandbox.stub().returns((null, responseStub));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          query: queryStub
+        };
+        jsforceConnectionStub = sandbox
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("if id in req body, calls updateSFContact", async function() {
+      let updateSFContactStub = sandbox.stub(sfCtrl, "updateSFContact");
+      try {
+        await sfCtrl.createOrUpdateSFContact(req, res);
+        assert.called(updateSFContactStub);
+        updateSFContactStub.restore();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("if no id in req params and no matching contact found, calls createSFContact", async function() {
+      contactStub = { totalSize: 0 };
+      let createSFContactStub = sandbox.stub(sfCtrl, "createSFContact");
+      query = `SELECT Id, ${fieldList.join(
+        ","
+      )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+      req = mockReq({
+        params: {},
+        body: {
+          first_name,
+          last_name,
+          home_email
+        }
+      });
+      queryStub = sandbox.stub().returns(contactStub);
+      jsforceStub.query = queryStub;
+      try {
+        let result = await sfCtrl.createOrUpdateSFContact(req, res, next);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.query, query);
+        assert.called(createSFContactStub);
+        createSFContactStub.restore();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("if no id in req params and matching contact found, calls updateSFContact", async function() {
+      let updateSFContactStub = sandbox.stub(sfCtrl, "updateSFContact");
+      query = `SELECT Id, ${fieldList.join(
+        ","
+      )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+      req = mockReq({
+        params: {},
+        body: {
+          first_name,
+          last_name,
+          home_email
+        }
+      });
+      queryStub = sandbox.stub().returns({ records: [contactStub] });
+      jsforceStub.query = queryStub;
+      try {
+        let result = await sfCtrl.createOrUpdateSFContact(req, res, next);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.query, query);
+        assert.called(updateSFContactStub);
+        updateSFContactStub.restore();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+
+      try {
+        await sfCtrl.createOrUpdateSFContact(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns error if query fails", async function() {
+      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryStub = sandbox.stub().throws(new Error(queryError));
+      jsforceStub.query = queryStub;
+      req = mockReq({
+        params: {},
+        body: {
+          first_name,
+          last_name,
+          home_email
+        }
+      });
+
+      try {
+        await sfCtrl.createOrUpdateSFContact(req, res);
         assert.called(jsforceConnectionStub);
         assert.called(jsforceStub.query);
         assert.calledWith(res.status, 500);
