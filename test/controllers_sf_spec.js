@@ -67,7 +67,7 @@ suite.only("sfCtrl > getSFContactById", function() {
     }
   });
 
-  test.only("returns error if login fails", async function() {
+  test("returns error if login fails", async function() {
     loginError =
       "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
     loginStub = sinon.stub().throws(new Error(loginError));
@@ -85,6 +85,28 @@ suite.only("sfCtrl > getSFContactById", function() {
       assert.called(jsforceStub.login);
       assert.calledWith(res.status, 500);
       assert.calledWith(res.json, { message: loginError });
+    } catch (err) {
+      console.log(err);
+    }
+  });
+
+  test("returns error if query fails", async function() {
+    queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+    queryStub = sinon.stub().throws(new Error(queryError));
+    jsforceStub.query = queryStub;
+
+    const res = mockRes();
+    const req = mockReq({
+      params: {
+        id: "123456789"
+      }
+    });
+    try {
+      await sfCtrl.getSFContactById(req, res);
+      assert.called(jsforceConnectionStub);
+      assert.called(jsforceStub.query);
+      assert.calledWith(res.status, 500);
+      assert.calledWith(res.json, { message: queryError });
     } catch (err) {
       console.log(err);
     }

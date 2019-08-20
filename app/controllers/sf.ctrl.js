@@ -23,27 +23,25 @@ const fieldList = generateSFContactFieldList();
  *  @returns  {Object}       	Salesforce Contact object OR error message.
  */
 const getSFContactById = async (req, res, next) => {
-  console.log(`sf.ctrl.js > getSFContactById`);
+  // console.log(`sf.ctrl.js > getSFContactById`);
   const { id } = req.params;
-  // console.log(id);
   const query = `SELECT ${fieldList.join(
     ","
   )}, Id FROM Contact WHERE Id = \'${id}\'`;
   let conn = new jsforce.Connection({ loginUrl });
   let userInfo;
   try {
-    userInfo = await conn.login("user", password);
+    userInfo = await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 33: ${err}`);
+    // console.error(`sf.ctrl.js > 36: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
   try {
     contact = await conn.query(query);
-    console.log(contact);
     res.status(200).json(contact.records[0]);
   } catch (err) {
-    console.error(`sf.ctrl.js > 41: ${err}`);
+    // console.error(`sf.ctrl.js > 44: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
