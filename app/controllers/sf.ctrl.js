@@ -290,29 +290,28 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  *  @param    {none}
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
-exports.getAllEmployers = (req, res, next) => {
-  console.log("getAllEmployers");
+exports.getAllEmployers = async (req, res, next) => {
+  // console.log("getAllEmployers");
   const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      // console.error(`sf.ctrl.js > 312: ${err}`);
-      return res.status(500).json({ message: err.message });
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 300: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let accounts = [];
+  try {
+    accounts = await conn.query(query);
+    // console.log(`sf.ctrl.js > 306: returning employers to client`);
+    if (!accounts || !accounts.records || !accounts.records.length) {
+      return res.status(500).json({ message: "Error while fetching accounts" });
     }
-
-    try {
-      conn.query(query, function(err, accounts) {
-        if (err) {
-          console.error(`sf.ctrl.js > 319: ${err}`);
-          return res.status(500).json({ message: err.message });
-        }
-        console.log(`sf.ctrl.js > 322: returning employers to client`);
-        res.status(200).json(accounts.records);
-      });
-    } catch (err) {
-      console.error(`sf.ctrl.js > 326: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-  });
+    return res.status(200).json(accounts.records);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 312: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Create an OnlineMemberApps object in Salesforce with submission data

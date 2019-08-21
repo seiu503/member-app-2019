@@ -41,8 +41,6 @@ suite.only("sf.ctrl.js", function() {
           }
         });
         responseStub = { records: [contactStub] };
-        jsforceSObjectCreateStub = sandbox.stub();
-        jsforceSObjectUpdateStub = sandbox.stub();
         queryStub = sandbox.stub().returns((null, responseStub));
         loginStub = sandbox.stub();
         jsforceStub = {
@@ -669,6 +667,92 @@ suite.only("sf.ctrl.js", function() {
         assert.calledWith(jsforceStub.sobject, "Contact");
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: sobjectError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > getAllEmployers", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq();
+        responseStub = [contactStub];
+        queryStub = sandbox.stub().returns((null, { records: responseStub }));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          query: queryStub
+        };
+        jsforceConnectionStub = sandbox
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("gets all Employers", async function() {
+      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
+      try {
+        await sfCtrl.getAllEmployers(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.query, query);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if no employers found", async function() {
+      queryError = "Error while fetching accounts";
+      queryStub = sandbox.stub().returns(new Error(queryError), null);
+      jsforceStub.query = queryStub;
+
+      try {
+        await sfCtrl.getAllEmployers(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.query);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: queryError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+
+      try {
+        await sfCtrl.getAllEmployers(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if query fails", async function() {
+      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryStub = sandbox.stub().throws(new Error(queryError));
+      jsforceStub.query = queryStub;
+
+      try {
+        await sfCtrl.getAllEmployers(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.query);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: queryError });
       } catch (err) {
         console.log(err);
       }
