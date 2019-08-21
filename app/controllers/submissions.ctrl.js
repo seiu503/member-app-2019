@@ -263,7 +263,9 @@ const getSubmissionById = (req, res, next) => {
           .status(404)
           .json({ message: submission.message || "Submission not found" });
       } else {
-        res.status(200).json(submission);
+        // for testing
+        res.locals.testData = submission;
+        return res.status(200).json(submission);
       }
     })
     .catch(err => res.status(404).json({ message: err.message }));
@@ -276,17 +278,21 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = (token, ip_address) => {
-  if (process.env.NODE_ENV === "testing") {
-    return new Promise((resolve, reject) => {
-      resolve();
-    });
-  }
+  // if (process.env.NODE_ENV === "testing") {
+  //   return new Promise((resolve, reject) => {
+  //     resolve();
+  //   });
+  // }
   return new Promise((resolve, reject) => {
+    const key =
+      process.env.NODE_ENV === "testing"
+        ? process.env.TEST_RECAPTCHA_SECRET_KEY
+        : process.env.RECAPTCHA_SECRET_KEY;
     return request.post(
       "https://www.google.com/recaptcha/api/siteverify",
       {
         form: {
-          secret: process.env.RECAPTCHA_SECRET_KEY,
+          secret: key,
           response: token,
           remoteip: ip_address
         }
@@ -321,5 +327,6 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   getSubmissionById,
-  getSubmissions
+  getSubmissions,
+  verifyHumanity
 };

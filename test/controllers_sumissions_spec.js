@@ -3,6 +3,7 @@ const sinon = require("sinon");
 const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
+const nock = require("nock");
 const passport = require("passport");
 const submCtrl = require("../app/controllers/submissions.ctrl.js");
 const submissions = require("../db/models/submissions");
@@ -12,6 +13,7 @@ const {
   Page2TableFields
 } = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
+const localIpUrl = require("local-ip-url");
 require("../app/config/passport")(passport);
 
 let submissionBody = generateSampleSubmission();
@@ -25,10 +27,11 @@ let responseStub,
   dbMethodStub,
   dbMethods = {},
   authenticateMock,
+  token,
   res = mockRes(),
   req = mockReq();
 
-suite.only("sumissions.ctrl.js", function() {
+suite("sumissions.ctrl.js", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -45,7 +48,7 @@ suite.only("sumissions.ctrl.js", function() {
     authenticateMock.restore();
   });
 
-  suite.only("submCtrl > createSubmission", function() {
+  suite("submCtrl > createSubmission", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
@@ -143,7 +146,7 @@ suite.only("sumissions.ctrl.js", function() {
     });
   });
 
-  suite.only("submCtrl > updateSubmission", function() {
+  suite("submCtrl > updateSubmission", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
@@ -228,7 +231,7 @@ suite.only("sumissions.ctrl.js", function() {
     });
   });
 
-  suite.only("submCtrl > getSubmissions", function() {
+  suite("submCtrl > getSubmissions", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
@@ -278,7 +281,78 @@ suite.only("sumissions.ctrl.js", function() {
     });
   });
 
-  suite.only("submCtrl > deleteSubmission", function() {
+  suite("submCtrl > getSubmissionById", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq({
+          params: {
+            id
+          }
+        });
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      res = mockRes();
+    });
+
+    test("gets one submission by Id and returns 200", async function() {
+      try {
+        await submCtrl.getSubmissionById(req, res);
+        assert.calledWith(res.status, 200);
+        let result = res.locals.testData;
+        delete submissionBody.submission_id;
+        delete submissionBody.account_subdivision;
+        delete submissionBody.contact_id;
+        // test that reponse matches data submitted
+        // for each key that exists in the response
+        Object.keys(submissionBody).forEach(key => {
+          chai.assert.property(result, key);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 404 if submission not found", async function() {
+      errorMsg = "Submission not found";
+      dbMethodStub = sandbox.stub().returns(new Error(errorMsg));
+      submissionModelsStub = sandbox
+        .stub(submissions, "getSubmissionById")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.getSubmissionById(req, res);
+        assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "Submission not found";
+      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sandbox
+        .stub(submissions, "getSubmissionById")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.getSubmissionById(req, res);
+        assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+  });
+
+  suite("submCtrl > deleteSubmission", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
@@ -339,6 +413,32 @@ suite.only("sumissions.ctrl.js", function() {
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
         // console.log(err);
+      }
+    });
+  });
+
+  suite("submCtrl > verifyHumanity", function() {
+    beforeEach(function() {
+      token = "faketoken";
+      ip = localIpUrl();
+      const scope = nock("https://www.google.com")
+        .post("/recaptcha/api/siteverify")
+        .reply(200, {
+          success: true
+        });
+    });
+
+    afterEach(() => {
+      nock.restore();
+    });
+
+    test("when called with valid token, verifyHumanity returns success", async function() {
+      let result;
+      try {
+        result = await submCtrl.verifyHumanity(token, ip);
+        assert.match(result, true);
+      } catch (err) {
+        console.log(err);
       }
     });
   });
