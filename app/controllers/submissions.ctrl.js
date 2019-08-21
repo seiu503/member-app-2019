@@ -221,19 +221,19 @@ const updateSubmission = async (req, res, next) => {
  *  @param    {String}   id   Id of the submission to delete.
  *  @returns  Success or error message.
  */
-const deleteSubmission = (req, res, next) => {
-  return submissions
-    .deleteSubmission(req.params.id)
-    .then(result => {
-      if (result.message === "Submission deleted successfully") {
-        return res.status(200).json({ message: result.message });
-      } else {
-        return res.status(404).json({
-          message: "An error occurred and the submission was not deleted."
-        });
-      }
-    })
-    .catch(err => res.status(404).json({ message: err.message }));
+const deleteSubmission = async (req, res, next) => {
+  let result;
+  try {
+    result = await submissions.deleteSubmission(req.params.id);
+    if (result.message === "Submission deleted successfully") {
+      return res.status(200).json({ message: result.message });
+    }
+    return res.status(500).json({
+      message: "An error occurred and the submission was not deleted."
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Get all submissions
