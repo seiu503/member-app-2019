@@ -366,32 +366,23 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
  *  @returns  {Object}   Success or error message
  */
 
-exports.deleteSFOnlineMemberApp = (req, res, next) => {
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      // console.error(`sf.ctrl.js > 397: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
+exports.deleteSFOnlineMemberApp = async (req, res, next) => {
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 91: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 
-    try {
-      const { id } = req.params;
-      conn.sobject("OnlineMemberApp__c").destroy(id, function(err, ret) {
-        if (err || !ret.success) {
-          // console.error(`sf.ctrl.js > 405: ${err}`);
-          let message = "Error deleting online member application";
-          if (err.errorCode) {
-            message = err.errorCode;
-          }
-          return res.status(500).json({ message });
-        } else {
-          return res
-            .status(200)
-            .json({ message: "Successfully deleted Online Member App" });
-        }
-      });
-    } catch (err) {
-      // console.error(`sf.ctrl.js > 418: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-  });
+  try {
+    const { id } = req.params;
+    await conn.sobject("OnlineMemberApp__c").destroy(id);
+    return res
+      .status(200)
+      .json({ message: "Successfully deleted Online Member App" });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 418: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };

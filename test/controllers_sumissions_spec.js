@@ -1,40 +1,149 @@
 const { mockReq, mockRes } = require("sinon-express-mock");
 const sinon = require("sinon");
+const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
-const sfCtrl = require("../app/controllers/sf.ctrl.js");
-const jsforce = require("jsforce");
-const {
-  generateSFContactFieldList,
-  generateSampleSubmission
-} = require("../app/utils/fieldConfigs");
-const fieldList = generateSFContactFieldList();
+const passport = require("passport");
+const submCtrl = require("../app/controllers/submissions.ctrl.js");
+const submissions = require("../db/models/submissions");
+const { generateSampleSubmission } = require("../app/utils/fieldConfigs");
+const { db } = require("../app/config/knex");
+require("../app/config/passport")(passport);
 
 let submissionBody = generateSampleSubmission();
 
-let loginError,
-  queryError,
-  sobjectError,
-  responseStub,
-  query,
-  jsforceSObjectCreateStub,
-  jsforceSObjectUpdateStub,
-  queryStub,
-  loginStub,
+let responseStub,
+  id,
   sandbox,
   next,
+  result,
+  errorMsg,
+  dbMethodStub,
+  authenticateMock,
+  dbMethods,
   res = mockRes(),
-  req = mockReq(),
-  first_name = "firstname",
-  last_name = "lastname",
-  home_email = "fake@email.com";
-contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
+  req = mockReq();
 
-suite("sf.ctrl.js", function() {
-  afterEach(function() {
-    res = mockRes();
+suite.only("sumissions.ctrl.js", function() {
+  before(() => {
+    return db.migrate.rollback().then(() => {
+      return db.migrate.latest();
+    });
   });
-  suite("sfCtrl > getSFContactById", function() {
+
+  after(() => {
+    return db.migrate.rollback();
+  });
+  beforeEach(() => {
+    authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+  });
+  afterEach(function() {
+    authenticateMock.restore();
+  });
+
+  suite.only("submCtrl > createSubmission", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        submissionBody.salesforce_id = "123";
+        req = mockReq({
+          body: submissionBody
+        });
+        next = sandbox.stub();
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      res = mockRes();
+      responseStub = {};
+    });
+
+    test("creates a single Submission and returns next", async function() {
+      responseStub = { ...submissionBody };
+
+      try {
+        result = await submCtrl.createSubmission(req, res, next);
+        chai.assert(res.locals.sf_contact_id);
+        chai.assert(res.locals.submission_id);
+        assert.match(result, next());
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 422 if terms_agree missing", async function() {
+      delete req.body.terms_agree;
+      responseStub = {
+        reason: "ValidationError",
+        message: "Must agree to terms of service"
+      };
+      try {
+        await submCtrl.createSubmission(req, res, next);
+        assert.calledWith(res.status, 422);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 422 if other required field missing", async function() {
+      req = mockReq({
+        body: submissionBody
+      });
+      delete req.body.first_name;
+      req.body.terms_agree = true;
+      responseStub = {
+        reason: "ValidationError",
+        message: "Missing required field first_name"
+      };
+      try {
+        await submCtrl.createSubmission(req, res, next);
+        assert.calledWith(res.status, 422);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    // test("returns 422 if reCaptchaValue missing", async function() {
+    //   delete req.body.reCaptchaValue;
+    //   responseStub = {
+    //     message: "Please verify that you are a human"
+    //   }
+    //   try {
+    //     await submCtrl.createSubmission(req, res, next);
+    //     assert.calledWith(res.status, 422);
+    //     assert.calledWith(res.json, responseStub)
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "There was an error saving the submission";
+      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
+      // dbMethods = sandbox.stub().returns({
+      //   createSubmission: dbMethodStub
+      // });
+      submissionModelsStub = sandbox
+        .stub(submissions, "createSubmission")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.createSubmission(req, res);
+        assert.called(submissionModelsStub);
+        assert.called(dbMethods.createSubmission);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+  });
+
+  suite("submCtrl > getSubmissionById", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
@@ -43,16 +152,7 @@ suite("sf.ctrl.js", function() {
             id: "123456789"
           }
         });
-        responseStub = { records: [contactStub] };
-        queryStub = sandbox.stub().returns((null, responseStub));
-        loginStub = sandbox.stub();
-        jsforceStub = {
-          login: loginStub,
-          query: queryStub
-        };
-        jsforceConnectionStub = sandbox
-          .stub(jsforce, "Connection")
-          .returns(jsforceStub);
+        responseStub = { ...submissionBody };
         resolve();
       });
     });
@@ -61,49 +161,35 @@ suite("sf.ctrl.js", function() {
       sandbox.restore();
     });
 
-    test("gets a single contact by Id", async function() {
-      query = `SELECT ${fieldList.join(
-        ","
-      )}, Id FROM Contact WHERE Id = \'123456789\'`;
+    test("gets a single submission by Id", async function() {
       try {
-        await sfCtrl.getSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.query, query);
-        assert.calledWith(res.json, contactStub);
+        await submCtrl.getSubmissionById(req, res);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(res.json, responseStub);
       } catch (err) {
         console.log(err);
       }
     });
 
-    test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
-      loginStub = sandbox.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
+    test("returns error if no submission found", async function() {
+      errorMsg = "Submission not found";
 
       try {
-        await sfCtrl.getSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
+        await submCtrl.getSubmissionById(req, res);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
         console.log(err);
       }
     });
 
-    test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
-      queryStub = sandbox.stub().throws(new Error(queryError));
-      jsforceStub.query = queryStub;
+    test("returns error if db call throws error", async function() {
+      errorMsg = "Error: MALFORMED_QUERY: unexpected token: query";
 
       try {
-        await sfCtrl.getSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.query);
+        await sfCtrl.getSubmissionById(req, res);
         assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: queryError });
+        assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
         console.log(err);
       }

@@ -113,7 +113,7 @@ const createSubmission = async (req, res, next) => {
       // console.log(`submissions.ctrl.js > 111`);
       // console.log(err);
       return res
-        .status(400)
+        .status(422)
         .json({ message: "Please verify that you are a human" });
     });
   }
