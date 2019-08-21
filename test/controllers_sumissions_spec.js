@@ -20,14 +20,15 @@ let responseStub,
   errorMsg,
   dbMethodStub,
   authenticateMock,
-  dbMethods,
   res = mockRes(),
   req = mockReq();
 
 suite.only("sumissions.ctrl.js", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
+      return db.migrate.latest().then(() => {
+        console.log("db.migrate completed ##########");
+      });
     });
   });
 
@@ -61,12 +62,11 @@ suite.only("sumissions.ctrl.js", function() {
     });
 
     test("creates a single Submission and returns next", async function() {
-      responseStub = { ...submissionBody };
-
       try {
         result = await submCtrl.createSubmission(req, res, next);
         chai.assert(res.locals.sf_contact_id);
         chai.assert(res.locals.submission_id);
+        id = res.locals.submission_id;
         assert.match(result, next());
       } catch (err) {
         console.log(err);
@@ -124,9 +124,6 @@ suite.only("sumissions.ctrl.js", function() {
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error saving the submission";
       dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
-      // dbMethods = sandbox.stub().returns({
-      //   createSubmission: dbMethodStub
-      // });
       submissionModelsStub = sandbox
         .stub(submissions, "createSubmission")
         .returns(dbMethodStub);
@@ -135,6 +132,91 @@ suite.only("sumissions.ctrl.js", function() {
         await submCtrl.createSubmission(req, res);
         assert.called(submissionModelsStub);
         assert.called(dbMethods.createSubmission);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+  });
+
+  suite.only("submCtrl > updateSubmission", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        submissionBody.salesforce_id = "123";
+        delete submissionBody.submission_id;
+        delete submissionBody.account_subdivision;
+        delete submissionBody.contact_id;
+        req = mockReq({
+          body: submissionBody,
+          params: {
+            id
+          }
+        });
+        next = sinon.stub();
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      res = mockRes();
+    });
+
+    test("updates a submission and returns next", async function() {
+      try {
+        await submCtrl.updateSubmission(req, res, next);
+        chai.assert(res.locals.sf_contact_id !== undefined);
+        chai.assert(res.locals.submission_id !== undefined);
+        assert.match(result, next());
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 422 if req.body missing", async function() {
+      req.body = {};
+      responseStub = {
+        message: "No updates submitted"
+      };
+      try {
+        await submCtrl.updateSubmission(req, res, next);
+        assert.calledWith(res.status, 422);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 422 if req.params.id missing", async function() {
+      req = mockReq({
+        body: submissionBody,
+        params: {}
+      });
+      responseStub = {
+        message: "No Id Provided in URL"
+      };
+      try {
+        await submCtrl.updateSubmission(req, res, next);
+        assert.calledWith(res.status, 422);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "There was an error updating the submission";
+      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sandbox
+        .stub(submissions, "updateSubmission")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.updateSubmission(req, res);
+        assert.called(submissionModelsStub);
+        assert.called(dbMethods.updateSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
@@ -634,122 +716,6 @@ suite.only("sumissions.ctrl.js", function() {
         assert.called(jsforceStub.query);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: queryError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
-  suite("sfCtrl > updateSFContact", function() {
-    beforeEach(function() {
-      sandbox = sinon.createSandbox();
-      return new Promise(resolve => {
-        req = mockReq({
-          body: submissionBody
-        });
-        jsforceSObjectUpdateStub = sandbox.stub().returns((null, contactStub));
-        loginStub = sandbox.stub();
-        jsforceStub = {
-          login: loginStub,
-          sobject: sandbox.stub().returns({
-            update: jsforceSObjectUpdateStub
-          })
-        };
-        resolve();
-      });
-    });
-
-    afterEach(() => {
-      sandbox.restore();
-    });
-
-    test("updates a SF contact", async function() {
-      responseStub = {
-        salesforce_id: "0035500000VFkjOAAT",
-        submission_id: "0035500000VFkjOAAT"
-      };
-      res.locals = {
-        sf_contact_id: "0035500000VFkjOAAT",
-        submission_id: "0035500000VFkjOAAT"
-      };
-      jsforceConnectionStub = sandbox
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.updateSFContact(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns next if res.locals.next is set", async function() {
-      next = sandbox.stub();
-      jsforceConnectionStub = sandbox
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-      res.locals.next = next;
-
-      try {
-        const result = await sfCtrl.updateSFContact(req, res, next);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.match(result, next());
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
-      loginStub = sandbox.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
-      jsforceConnectionStub = sandbox
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      const res = mockRes();
-      const req = mockReq({
-        body: submissionBody
-      });
-      try {
-        await sfCtrl.updateSFContact(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if sobject update fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
-      jsforceSObjectUpdateStub = sandbox.stub().throws(new Error(sobjectError));
-      jsforceStub = {
-        login: loginStub,
-        sobject: sandbox.stub().returns({ update: jsforceSObjectUpdateStub })
-      };
-      jsforceConnectionStub = sandbox
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      const res = mockRes();
-      const req = mockReq({
-        body: submissionBody
-      });
-      try {
-        await sfCtrl.updateSFContact(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.sobject, "Contact");
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: sobjectError });
       } catch (err) {
         console.log(err);
       }

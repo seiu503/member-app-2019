@@ -181,10 +181,10 @@ const updateSubmission = async (req, res, next) => {
   // }
   try {
     if (!updates || !Object.keys(updates).length) {
-      return res.status(404).json({ message: "No updates submitted" });
+      return res.status(422).json({ message: "No updates submitted" });
     }
     if (!id) {
-      return res.status(404).json({ message: "No Id Provided in URL" });
+      return res.status(422).json({ message: "No Id Provided in URL" });
     }
 
     const updateSubmissionResult = await submissions.updateSubmission(
@@ -200,7 +200,7 @@ const updateSubmission = async (req, res, next) => {
       const errmsg =
         updateSubmissionResult.message ||
         "There was an error updating the submission";
-      // console.log(`submissions.ctrl.js > 176: ${errmsg}`);
+      // console.error(`submissions.ctrl.js > 205: ${errmsg}`);
       return res.status(500).json({
         message: errmsg
       });
@@ -212,7 +212,7 @@ const updateSubmission = async (req, res, next) => {
       return next();
     }
   } catch (error) {
-    // console.log(`submissions.ctrl.js > 192: ${error}`);
+    // console.error(`submissions.ctrl.js > 217: ${error}`);
     return res.status(404).json({ message: error.message });
   }
 };
