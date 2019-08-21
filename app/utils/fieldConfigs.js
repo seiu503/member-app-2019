@@ -1259,6 +1259,7 @@ module.exports = {
   contactsTableFields,
   submissionsTableFields,
   requiredFields,
+  Page2TableFields,
   generateSampleSubmission,
   generateSampleSubmissionFrontEnd,
   generateSampleValidate,

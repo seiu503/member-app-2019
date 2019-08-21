@@ -242,8 +242,12 @@ const deleteSubmission = async (req, res, next) => {
 const getSubmissions = (req, res, next) => {
   return submissions
     .getSubmissions()
-    .then(submissions => res.status(200).json(submissions))
-    .catch(err => res.status(404).json({ message: err.message }));
+    .then(submissions => {
+      // for testing
+      res.locals.testData = submissions[0];
+      return res.status(200).json(submissions);
+    })
+    .catch(err => res.status(500).json({ message: err.message }));
 };
 
 /** Get one submission
@@ -272,7 +276,6 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = (token, ip_address) => {
-  // console.log("captcha test ran!");
   if (process.env.NODE_ENV === "testing") {
     return new Promise((resolve, reject) => {
       resolve();

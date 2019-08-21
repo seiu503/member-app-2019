@@ -6,7 +6,11 @@ const { suite, test } = require("mocha");
 const passport = require("passport");
 const submCtrl = require("../app/controllers/submissions.ctrl.js");
 const submissions = require("../db/models/submissions");
-const { generateSampleSubmission } = require("../app/utils/fieldConfigs");
+const {
+  generateSampleSubmission,
+  submissionsTableFields,
+  Page2TableFields
+} = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
 require("../app/config/passport")(passport);
 
@@ -27,9 +31,7 @@ let responseStub,
 suite.only("sumissions.ctrl.js", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
-      return db.migrate.latest().then(() => {
-        console.log("db.migrate completed ##########");
-      });
+      return db.migrate.latest();
     });
   });
 
@@ -218,6 +220,56 @@ suite.only("sumissions.ctrl.js", function() {
         await submCtrl.updateSubmission(req, res);
         assert.called(submissionModelsStub);
         assert.called(dbMethods.updateSubmission);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+  });
+
+  suite.only("submCtrl > getSubmissions", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq();
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      res = mockRes();
+    });
+
+    test("gets all submissions and returns 200", async function() {
+      responseStub = [{ ...submissionBody }];
+      responseStub[0].first_name = "firstname";
+      try {
+        await submCtrl.getSubmissions(req, res);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(res.json, sinon.match.array);
+        let result = res.locals.testData;
+        // test that reponse matches data submitted
+        // for each key that exists in the response
+        Object.keys(submissionBody).forEach(key => {
+          chai.assert.property(result, key);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "An error occurred and the submission was not deleted.";
+      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sandbox
+        .stub(submissions, "getSubmissions")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.getSubmissions(req, res);
+        assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
