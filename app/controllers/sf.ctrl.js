@@ -319,56 +319,46 @@ exports.getAllEmployers = async (req, res, next) => {
  *  @returns  does not return to client; passes salesforce_id to next function
  */
 
-exports.createSFOnlineMemberApp = (req, res, next) => {
-  conn.login(user, password, function(err, userInfo) {
-    if (err) {
-      // console.error(`sf.ctrl.js > 340: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
+exports.createSFOnlineMemberApp = async (req, res, next) => {
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 91: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 
-    try {
-      const dataRaw = { ...req.body };
-      const data = {};
-      // convert data object to key/value pairs using
-      // SF API field names
-      Object.keys(dataRaw).forEach(key => {
-        if (submissionsTableFields[key]) {
-          const sfFieldName = submissionsTableFields[key].SFAPIName;
-          data[sfFieldName] = dataRaw[key];
-        }
-      });
-      data.Worker__c = res.locals.sf_contact_id;
-      data.Birthdate__c = formatDate(dataRaw.birthdate);
-      delete data["Account.Id"];
-      delete data["Account.Agency_Number__c"];
-      delete data["Account.WS_Subdivision_from_Agency__c"];
+  let oma;
+  try {
+    const dataRaw = { ...req.body };
+    const data = {};
+    // convert data object to key/value pairs using
+    // SF API field names
+    Object.keys(dataRaw).forEach(key => {
+      if (submissionsTableFields[key]) {
+        const sfFieldName = submissionsTableFields[key].SFAPIName;
+        data[sfFieldName] = dataRaw[key];
+      }
+    });
+    data.Worker__c = res.locals.sf_contact_id;
+    data.Birthdate__c = formatDate(dataRaw.birthdate);
+    delete data["Account.Id"];
+    delete data["Account.Agency_Number__c"];
+    delete data["Account.WS_Subdivision_from_Agency__c"];
 
-      conn.sobject("OnlineMemberApp__c").create(
-        {
-          ...data
-        },
-        function(err, OMA) {
-          if (err || !OMA.success) {
-            console.error(`sf.ctrl.js > 367: ${err}`);
-            let message = "Error creating online member application";
-            if (err.errorCode) {
-              message = err.errorCode;
-            }
-            return res.status(500).json({ message });
-          } else {
-            return res.status(200).json({
-              salesforce_id: res.locals.sf_contact_id,
-              submission_id: res.locals.submission_id,
-              sf_OMA_id: OMA.id
-            });
-          }
-        }
-      );
-    } catch (err) {
-      console.error(`sf.ctrl.js > 383: ${err}`);
-      return res.status(500).json({ message: err.message });
-    }
-  });
+    OMA = await conn.sobject("OnlineMemberApp__c").create({
+      ...data
+    });
+
+    return res.status(200).json({
+      salesforce_id: res.locals.sf_contact_id,
+      submission_id: res.locals.submission_id,
+      sf_OMA_id: OMA.id || OMA.Id
+    });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 360: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Delete OnlineMemberApp by Id

@@ -31,6 +31,9 @@ let loginError,
 contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
 
 suite.only("sf.ctrl.js", function() {
+  afterEach(function() {
+    res = mockRes();
+  });
   suite("sfCtrl > getSFContactById", function() {
     beforeEach(function() {
       sandbox = sinon.createSandbox();
@@ -753,6 +756,99 @@ suite.only("sf.ctrl.js", function() {
         assert.called(jsforceStub.query);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: queryError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > createSFOnlineMemberApp", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq({
+          body: submissionBody
+        });
+        res.locals = {
+          sf_contact_id: "0035500000VFkjOAAT",
+          submission_id: "0035500000VFkjOAAT"
+        };
+        contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
+        jsforceSObjectCreateStub = sandbox.stub().returns((null, contactStub));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          sobject: sandbox.stub().returns({
+            create: jsforceSObjectCreateStub
+          })
+        };
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("creates a SF OMA object", async function() {
+      responseStub = {
+        salesforce_id: "0035500000VFkjOAAT",
+        submission_id: "0035500000VFkjOAAT",
+        sf_OMA_id: "0035500000VFkjOAAT"
+      };
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.createSFOnlineMemberApp(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.createSFOnlineMemberApp(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if sobject create fails", async function() {
+      sobjectError =
+        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      jsforceSObjectCreateStub = sandbox.stub().throws(new Error(sobjectError));
+      jsforceStub = {
+        login: loginStub,
+        sobject: sandbox.stub().returns({ create: jsforceSObjectCreateStub })
+      };
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.createSFOnlineMemberApp(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.sobject, "OnlineMemberApp__c");
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: sobjectError });
       } catch (err) {
         console.log(err);
       }
