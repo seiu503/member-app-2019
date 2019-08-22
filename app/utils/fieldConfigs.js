@@ -1363,6 +1363,7 @@ module.exports = {
   submissionsTableFields,
   paymentFields,
   requiredFields,
+  Page2TableFields,
   generateSampleSubmission,
   generateSampleSubmissionFrontEnd,
   generateSampleValidate,

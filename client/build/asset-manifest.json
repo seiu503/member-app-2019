@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.53be2f87.chunk.css",
+    "main.js": "/static/js/main.b920d196.chunk.js",
+    "main.js.map": "/static/js/main.b920d196.chunk.js.map",
+    "runtime~main.js": "/static/js/runtime~main.a8a9905a.js",
+    "runtime~main.js.map": "/static/js/runtime~main.a8a9905a.js.map",
+    "static/js/2.5ff8b43e.chunk.js": "/static/js/2.5ff8b43e.chunk.js",
+    "static/js/2.5ff8b43e.chunk.js.map": "/static/js/2.5ff8b43e.chunk.js.map",
+    "index.html": "/index.html",
+    "precache-manifest.fbe717d517a451677ada03826bbcc5ab.js": "/precache-manifest.fbe717d517a451677ada03826bbcc5ab.js",
+    "service-worker.js": "/service-worker.js",
+    "static/css/main.53be2f87.chunk.css.map": "/static/css/main.53be2f87.chunk.css.map",
+    "static/media/purple_bokeh.jpg": "/static/media/purple_bokeh.1f5ffdfd.jpg",
+    "static/media/sample-form-photo.jpg": "/static/media/sample-form-photo.7696ac29.jpg",
+    "static/media/seiu503_white.svg": "/static/media/seiu503_white.76473b62.svg"
+  }
+}

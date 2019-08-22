@@ -113,7 +113,7 @@ export class SubmissionFormPage1Container extends React.Component {
         .catch(err => {
           console.log(err);
           openSnackbar("error", err);
-          reject(err);
+          console.log(err);
         });
     });
   }

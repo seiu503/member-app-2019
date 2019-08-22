@@ -6,8 +6,10 @@
   "scripts": {
     "test": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --exit",
     "start": "webpack -d | node server.js",
+    "prod-start": "cd .. && yarn server",
     "client": "cd client && yarn build && yarn start",
     "server": "LOG_LEVEL=debug supervisor --inspect server.js",
+    "prod-server": "LOG_LEVEL=debug supervisord --inspect server.js",
     "sass": "cd client && yarn dev",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" \"yarn sass\""
   },
@@ -45,7 +47,8 @@
     "pg": "^7.11.0",
     "request": "^2.88.0",
     "serve-favicon": "^2.5.0",
-    "url": "^0.11.0",
+    "travis": "^0.1.1",
+    "util": "^0.12.1",
     "uuid": "^3.3.2",
     "yargs": "^13.2.4"
   },
@@ -57,12 +60,16 @@
     "husky": "^2.3.0",
     "jest-localstorage-mock": "^2.4.0",
     "lint-staged": "^8.1.7",
+    "local-ip-url": "^1.0.2",
     "mocha": "^6.1.4",
     "moment": "^2.24.0",
+    "nock": "^10.0.6",
     "nyc": "^14.1.1",
     "prettier": "^1.17.1",
     "sinon": "^7.3.2",
-    "sinon-chai": "^3.3.0"
+    "sinon-chai": "^3.3.0",
+    "sinon-express-mock": "^2.2.0",
+    "stream": "^0.0.2"
   },
   "lint-staged": {
     "*.{js,jsx}": [

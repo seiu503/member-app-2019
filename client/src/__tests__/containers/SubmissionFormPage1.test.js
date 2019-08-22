@@ -76,7 +76,10 @@ const defaultProps = {
     push: pushMock
   },
   reCaptchaRef: { ...reCaptchaRef },
-  sigBox: { ...sigBox }
+  sigBox: { ...sigBox },
+  content: {
+    error: null
+  }
 };
 
 const setup = (props = {}) => {
@@ -146,11 +149,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`handeUpload` calls apiContent.uploadImage", () => {
-    let uploadImageMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ type: "UPLOAD_IMAGE_SUCCESS" })
-      );
+    let uploadImageMock = jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        type: "UPLOAD_IMAGE_SUCCESS",
+        payload: { content: "sigUrl" }
+      })
+    );
     let props = {
       apiContent: { uploadImage: uploadImageMock }
     };
@@ -169,7 +173,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     expect(uploadImageMock.mock.calls.length).toBe(1);
   });
 
-  test("`handeTab` saves legalLanguage and signature if newValue === 2", () => {
+  test("`handleTab` saves legalLanguage and signature if newValue === 2", () => {
     let handleInputMock = jest.fn();
     let props = {
       apiSubmission: { handleInput: handleInputMock },
@@ -207,7 +211,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
   test("`handeTab` sets state.tab (2)", () => {
     let props = {
-      apiSubmission: { handleInput: handleInput },
+      apiSubmission: { handleInput },
       legal_language: {
         current: {
           innerHTML: ""
@@ -235,7 +239,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
   test("`handeTab` sets state.tab (other)", () => {
     let props = {
-      apiSubmission: { handleInput: handleInput },
+      apiSubmission: { handleInput },
       legal_language: {
         current: {
           innerHTML: ""
@@ -288,8 +292,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`handleTab` saves sigUrl", () => {
+    let handleInputMock = jest.fn();
     let props = {
-      apiSubmission: { handleInput: handleInput },
+      apiSubmission: { handleInput: handleInputMock },
       legal_language: {
         current: {
           innerHTML: ""
@@ -314,13 +319,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     wrapper = shallow(
       <SubmissionFormPage1Container {...defaultProps} {...props} />
     );
-    const handleUploadMock = jest.fn().mockImplementation(() => {
-      return "url";
-    });
+    const handleUploadMock = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve("url"));
     wrapper.instance().handleUpload = handleUploadMock;
     wrapper.update();
     wrapper.instance().state.signatureType = "draw";
-    wrapper.instance().handleTab({ target: "fake" }, 1, {});
-    expect(wrapper.instance().state.tab).toBe(1);
+    wrapper.instance().handleTab({ target: "fake" }, 2, {});
+    wrapper.update();
+    expect(handleInputMock.mock.calls.length).toBe(1);
   });
 });
