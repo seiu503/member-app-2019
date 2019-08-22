@@ -1,19 +1,19 @@
 {
-  "Headline": [
+  "headline": [
     "Request a customized form link",
     "Solicite un enlace a un formulario personalizado",
     "Запросить ссылку на отдельный документ",
     "Yêu cầu một liên kết riêng cho mẫu đăng ký",
     "申请获得专属定制的表格链接"
   ],
-  "Intro": [
+  "intro": [
     "Submit this form to request a customized link for",
     "Envíe este formulario para solicitar un enlace personalizado para",
     "Подать этот документ для запроса ссылки на отдельный документ для",
     "Gửi mẫu này để yêu cầu một liên kết riêng cho",
     "提交本表格，以申请获得专属定制的链接"
   ],
-  "Button text": [
+  "buttonText": [
     "Request Link",
     "Solicite un enlace a un formulario personalizado",
     "Запросить ссылку",

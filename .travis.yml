@@ -5,6 +5,9 @@ cache:
   yarn: true
   directories:
     - node_modules
+branches:
+  only:
+    - master
 services:
   - postgresql
 before_install:

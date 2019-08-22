@@ -1,26 +1,26 @@
 {
-  "Modal above name": [
+  "modalAboveName": [
     "Are you _________________? This form is customized especially for:",
     "¿Es usted _________________? Este formulario está personalizado especialmente para:",
     "Являетесь ли вы _________________? Этот документ был специально разработан для:",
     "Quý vị có phải là _________________? Mẫu này đã được tạo riêng cho:",
     "您是否是 _________________? 本表格专供以下人士填写："
   ],
-  "Modal below name": [
+  "modalBelowName": [
     "If this is not you, do not complete this form!",
     "Si usted no es esta persona, ¡no complete este formulario!",
     "Если вы не подпадаете под это описание, не заполняйте этот документ!",
     "Nếu đây không phải là quý vị, vui lòng đừng hoàn thành mẫu này!",
     "如果您不符合条件，请勿填写本表格！"
   ],
-  "Modal confirm button": [
+  "modalConfirmButton": [
     "Yes, I'm ___________________",
     "Sí, soy ___________________",
     "Да, я являюсь ___________________",
     "Vâng, tôi là ___________________",
     "是，我是 ___________________"
   ],
-  "Modal error button": [
+  "modalErrorButton": [
     "I'm not __________________, get me my own link.",
     "No soy __________________, envíenme mi propio enlace.",
     "Я не являюсь __________________, предоставьте мне отдельную ссылку.",
