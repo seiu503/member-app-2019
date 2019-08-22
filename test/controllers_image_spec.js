@@ -5,7 +5,7 @@ const { assert } = sinon;
 const { suite, test } = require("mocha");
 const nock = require("nock");
 const multer = require("multer");
-const MulterWrapper = require("../app/utils/multer.js");
+const { Uploader, checkFile } = require("../app/utils/multer.js");
 const aws = require("aws-sdk");
 const fs = require("fs");
 const passport = require("passport");
@@ -21,6 +21,7 @@ let responseStub,
   cbStub,
   next,
   result,
+  uploader,
   errorMsg,
   dbMethodStub,
   contentModelStub,
@@ -51,18 +52,12 @@ suite.only("image.ctrl.js", function() {
   after(() => {
     return db.migrate.rollback();
   });
-  beforeEach(() => {
-    multerStub = sandbox
-      .stub(MulterWrapper, "multer")
-      .returns(multer({ storage: multer.memoryStorage() }));
-  });
-  afterEach(function() {
-    sandbox.restore();
-  });
 
   suite("submCtrl > singleImgUpload", function() {
     beforeEach(function() {
-      uploadStub = sandbox.stub(imgCtrl, "upload").returns(multerStub);
+      multerStub = sandbox
+        .stub(Uploader.prototype, "startUpload")
+        .resolves(multer({ storage: multer.memoryStorage() }));
       return new Promise(resolve => {
         req = mockReq({
           file
@@ -80,7 +75,7 @@ suite.only("image.ctrl.js", function() {
     test("returns 500 if multer error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      uploadStub.returns(new multer.MulterError(errorMsg));
+      multerStub.returns(new multer.MulterError(errorMsg));
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.notCalled(contentModelStub);
@@ -95,7 +90,7 @@ suite.only("image.ctrl.js", function() {
     test("returns 500 if upload error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      uploadStub.returns(new Error(errorMsg));
+      multerStub.returns(new Error(errorMsg));
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.notCalled(contentModelStub);
@@ -110,12 +105,11 @@ suite.only("image.ctrl.js", function() {
     test("returns 500 if no file attached", async function() {
       errorMsg = "No file attached. Please choose a file.";
       responseStub = { message: errorMsg };
-      uploadStub.returns(multerStub);
       req = mockReq();
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.notCalled(contentModelStub);
-        assert.called(uploadStub);
+        assert.called(multerStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
@@ -123,14 +117,14 @@ suite.only("image.ctrl.js", function() {
       }
     });
 
-    test("upload a single image", async function() {
+    test("uploads a single image", async function() {
       req = mockReq({
         file
       });
       responseStub = { content_type: "image", content: imageUrl };
       contentModelStub = sandbox
         .stub(content, "newContent")
-        .returns([responseStub]);
+        .resolves([responseStub]);
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.called(contentModelStub);
@@ -164,7 +158,7 @@ suite.only("image.ctrl.js", function() {
       responseStub = { content_type: "image", content: imageUrl };
       contentModelStub = sandbox
         .stub(content, "updateContent")
-        .returns([responseStub]);
+        .resolves([responseStub]);
       req = mockReq({
         file,
         body: {
@@ -285,7 +279,7 @@ suite.only("image.ctrl.js", function() {
     });
   });
 
-  suite("submCtrl > checkFile", function() {
+  suite("multer.js > checkFile", function() {
     beforeEach(function() {
       cbStub = sandbox.stub();
     });
@@ -303,7 +297,7 @@ suite.only("image.ctrl.js", function() {
         originalname: "test.png"
       };
       try {
-        result = await imgCtrl.checkFile(file, cbStub);
+        result = await checkFile(file, cbStub);
         assert.calledWith(cbStub, null, true);
         sandbox.restore();
       } catch (err) {
@@ -321,7 +315,7 @@ suite.only("image.ctrl.js", function() {
         originalname: "test.svg"
       };
       try {
-        result = await imgCtrl.checkFile(file, cbStub);
+        result = await checkFile(file, cbStub);
         assert.calledWith(cbStub, {
           message: errorMsg
         });

@@ -7,8 +7,8 @@ const s3config = require("../config/aws");
 let S3 = new aws.S3(s3config);
 
 const checkFile = (file, cb) => {
-  console.log(`multer.js > 32`);
-  console.log(file);
+  // console.log(`multer.js > 32`);
+  // console.log(file);
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
@@ -54,18 +54,14 @@ class Uploader {
 
   async startUpload(req, res, next) {
     let filename;
-    console.log("multer 60");
     try {
       const upload = util.promisify(this.upload.single("image"));
       await upload(req, res);
-      filename = req.file.filename;
-      console.log("multer 65");
+      return;
     } catch (err) {
-      console.log(`multer.js > 66: ${err}`);
+      console.log(`multer.js > 62: ${err}`);
       return res.status(500).json({ message: err.message });
     }
-    console.log("multer 70");
-    return;
   }
 }
 

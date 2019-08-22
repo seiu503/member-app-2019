@@ -7,8 +7,9 @@
 const multer = require("multer");
 const content = require("../../db/models/content");
 const { Uploader } = require("../utils/multer.js");
-const uploader = new Uploader();
+const aws = require("aws-sdk");
 const s3config = require("../config/aws");
+let S3 = new aws.S3(s3config);
 
 /** Upload a single image
  *  @param    {File}   file            Uploaded file.
@@ -17,7 +18,7 @@ const s3config = require("../config/aws");
 exports.singleImgUpload = async (req, res, next) => {
   // upload image to s3 bucket
   console.log(`image.ctrl.js > 20`);
-
+  const uploader = new Uploader();
   uploader
     .startUpload(req, res, next)
     .then(() => {
