@@ -6,8 +6,7 @@ const { suite, test } = require("mocha");
 const nock = require("nock");
 const multer = require("multer");
 const MulterWrapper = require("../app/utils/multer.js");
-// const aws = require("aws-sdk-mock");
-// const awsReal = require("aws-sdk");
+const aws = require("aws-sdk");
 const fs = require("fs");
 const passport = require("passport");
 const imgCtrl = require("../app/controllers/image.ctrl.js");
@@ -77,7 +76,56 @@ suite.only("image.ctrl.js", function() {
       responseStub = {};
     });
 
+    test("returns 500 if multer error", async function() {
+      errorMsg = "Error";
+      responseStub = { message: errorMsg };
+      uploadStub.returns(new multer.MulterError(errorMsg));
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub);
+        assert.called(multerStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if upload error", async function() {
+      errorMsg = "Error";
+      responseStub = { message: errorMsg };
+      uploadStub.returns(new Error(errorMsg));
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub);
+        assert.called(multerStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if no file attached", async function() {
+      errorMsg = "No file attached. Please choose a file.";
+      responseStub = { message: errorMsg };
+      uploadStub.returns(multerStub);
+      req = mockReq();
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub);
+        assert.called(uploadStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
     test("upload a single image", async function() {
+      req = mockReq({
+        file
+      });
       responseStub = { content_type: "image", content: imageUrl };
       contentModelStub = sandbox
         .stub(content, "newContent")
@@ -95,6 +143,9 @@ suite.only("image.ctrl.js", function() {
     test("returns 500 on newContent server error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
+      req = mockReq({
+        file
+      });
       contentModelStub = sandbox
         .stub(content, "newContent")
         .throws(new Error(errorMsg));
@@ -113,9 +164,12 @@ suite.only("image.ctrl.js", function() {
       contentModelStub = sandbox
         .stub(content, "updateContent")
         .returns([responseStub]);
-      req.body = {
-        id: "123"
-      };
+      req = mockReq({
+        file,
+        body: {
+          id: "123"
+        }
+      });
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.called(contentModelStub);
@@ -132,9 +186,12 @@ suite.only("image.ctrl.js", function() {
       contentModelStub = sandbox
         .stub(content, "updateContent")
         .throws(new Error(errorMsg));
-      req.body = {
-        id: "123"
-      };
+      req = mockReq({
+        file,
+        body: {
+          id: "123"
+        }
+      });
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.called(contentModelStub);
@@ -174,46 +231,51 @@ suite.only("image.ctrl.js", function() {
         console.log(err);
       }
     });
+  });
 
-    test("returns 500 if upload error", async function() {
-      errorMsg = "Error";
-      responseStub = { message: errorMsg };
-      uploadStub.throws(new Error(errorMsg));
+  suite("submCtrl > deleteImage", function() {
+    beforeEach(function() {
+      s3 = { deleteObject: sandbox.stub() };
+      s3Stub = sandbox.stub(aws, "S3").returns(s3);
+      return new Promise(resolve => {
+        req = mockReq({
+          file
+        });
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      res = mockRes();
+      responseStub = {};
+    });
+
+    test("deletes an image", async function() {
+      responseStub = { message: "Image deleted." };
+      req = mockReq({
+        params: {
+          key: "123"
+        }
+      });
       try {
-        result = await imgCtrl.singleImgUpload(req, res);
-        assert.notCalled(contentModelStub);
-        assert.called(uploadStub);
-        assert.calledWith(res.status, 500);
+        result = await imgCtrl.deleteImage(req, res);
+        assert.called(s3Stub);
+        assert.calledWith(res.status, 200);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
-    test("returns 500 if multer error", async function() {
+    test("returns 500 if S3 error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      uploadStub.throws(new multer.MulterError(errorMsg));
+      s3 = { deleteObject: sandbox.stub().throws(new Error(errorMsg)) };
+      s3Stub.returns(s3);
       try {
-        result = await imgCtrl.singleImgUpload(req, res);
-        assert.notCalled(contentModelStub);
-        assert.called(uploadStub);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        // console.log(err);
-      }
-    });
-
-    test("returns 500 if no file attached", async function() {
-      errorMsg = "No file attached. Please choose a file.";
-      responseStub = { message: errorMsg };
-      uploadStub.restore();
-      req.file = null;
-      try {
-        result = await imgCtrl.singleImgUpload(req, res);
-        assert.notCalled(contentModelStub);
-        assert.called(uploadStub);
+        result = await imgCtrl.deleteImage(req, res);
+        assert.called(s3Stub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
