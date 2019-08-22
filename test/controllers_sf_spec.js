@@ -4,6 +4,7 @@ const { assert } = sinon;
 const { suite, test } = require("mocha");
 const sfCtrl = require("../app/controllers/sf.ctrl.js");
 const jsforce = require("jsforce");
+const { upload } = require("../app/controllers/image.ctrl");
 const {
   generateSFContactFieldList,
   generateSampleSubmission

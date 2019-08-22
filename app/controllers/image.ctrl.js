@@ -20,7 +20,7 @@ const s3 = new aws.S3(s3config);
 /**
  * Upload to s3 bucket with multer
  */
-const upload = MulterWrapper.multer({
+exports.upload = MulterWrapper.multer({
   storage: multerS3({
     s3: s3,
     bucket: s3config.bucket,
@@ -69,77 +69,69 @@ const checkFile = (file, cb) => {
  *  @param    {File}   file            Uploaded file.
  *  @returns  {Object}                 Image name and URL OR error message.
  */
-const singleImgUpload = (req, res, next) => {
-  upload(req, res, err => {
-    // console.log(req.file);
-    // upload image to s3 bucket
-    if (err instanceof multer.MulterError) {
-      // console.log(`image.ctrl.js > 78`);
-      // console.log(err);
-      return res.status(500).json({
-        message: err.message
-      });
+exports.singleImgUpload = async (req, res, next) => {
+  const result = await exports.upload(req, res);
+  // console.log(req.file);
+  // upload image to s3 bucket
+  if (result instanceof multer.MulterError) {
+    console.log(`image.ctrl.js > 78`);
+    console.log(err);
+    return res.status(500).json({
+      message: err.message
+    });
+  }
+  if (result instanceof Error) {
+    console.log(`image.ctrl.js > 85`);
+    console.log(err);
+    return res.status(500).json({
+      message: err.message
+    });
+  }
+  if (!req.file) {
+    console.log(`image.ctrl.js > 92`);
+    console.log("No file found");
+    return res.status(500).json({
+      message: "No file attached. Please choose a file."
+    });
+  } else {
+    // generate url of uploaded image
+    const imageUrl = `https://${s3config.bucket}.s3-${
+      s3config.region
+    }.amazonaws.com/${req.file.originalname}`;
+    // check if apiCall is for admin image or user signature image
+    if (req.file.originalname.includes("__signature__")) {
+      return res.status(200).json(imageUrl);
     }
-    if (err) {
-      // console.log(`image.ctrl.js > 85`);
-      // console.log(err);
-      return res.status(500).json({
-        message: err.message
-      });
-    }
-    if (!req.file) {
-      // console.log(`image.ctrl.js > 92`);
-      // console.log("No file found");
-      return res.status(500).json({
-        message: "No file attached. Please choose a file."
-      });
+    // check if we're creating a new DB record or updating existing
+    if (req.body.id) {
+      // update existing record
+      const updates = {
+        content_type: "image",
+        content: imageUrl
+      };
+      try {
+        const records = await content.updateContent(req.body.id, updates);
+        return res.status(200).json(records[0]);
+      } catch (err) {
+        // console.log(`imageUpload.ctrl.js > 109: ${err}`);
+        return res.status(500).json({ message: err.message });
+      }
     } else {
-      // generate url of uploaded image
-      const imageUrl = `https://${s3config.bucket}.s3-${
-        s3config.region
-      }.amazonaws.com/${req.file.originalname}`;
-      // check if apiCall is for admin image or user signature image
-      if (req.file.originalname.includes("__signature__")) {
-        return res.status(200).json(imageUrl);
-      }
-      // check if we're creating a new DB record or updating existing
-      if (req.body.id) {
-        // update existing record
-        const updates = {
-          content_type: "image",
-          content: imageUrl
-        };
-        return content
-          .updateContent(req.body.id, updates)
-          .then(records => {
-            const record = records[0];
-            res.status(200).json(record);
-          })
-          .catch(err => {
-            // console.log(`imageUpload.ctrl.js > 109: ${err}`);
-            res.status(500).json({ message: err.message });
-          });
-      } else {
-        // create new record in postgres DB
-        return content
-          .newContent("image", imageUrl)
-          .then(records => {
-            const record = records[0];
-            res.status(200).json(record);
-          })
-          .catch(err => {
-            // console.log(`imageUpload.ctrl.js > 132: ${err}`);
-            res.status(500).json({ message: err.message });
-          });
+      // create new record in postgres DB
+      try {
+        const records = await content.newContent("image", imageUrl);
+        return res.status(200).json(records[0]);
+      } catch (err) {
+        return res.status(500).json({ message: err.message });
       }
     }
-  });
+  }
 };
 
 /**
  * Delete file from S3 bucket
  */
-deleteImage = (req, res, next) => {
+exports.deleteImage = (req, res, next) => {
   const params = { Bucket: s3config.bucket, Key: req.params.key };
   s3.deleteObject(params, (err, data) => {
     if (err) {
@@ -151,11 +143,4 @@ deleteImage = (req, res, next) => {
       return res.status(200).json({ message: "Image deleted." });
     }
   });
-};
-
-/* ================================ EXPORT ================================= */
-
-module.exports = {
-  singleImgUpload,
-  deleteImage
 };
