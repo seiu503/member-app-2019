@@ -17,7 +17,6 @@ let S3 = new aws.S3(s3config);
  */
 exports.singleImgUpload = async (req, res, next) => {
   // upload image to s3 bucket
-  console.log(`image.ctrl.js > 20`);
   const uploader = new Uploader();
   uploader
     .startUpload(req, res, next)
@@ -25,8 +24,8 @@ exports.singleImgUpload = async (req, res, next) => {
       // console.log(`image.ctrl.js > 77`);
       // console.log(req.file);
       if (!req.file) {
-        console.log(`image.ctrl.js > 27`);
-        console.log("No file found");
+        // console.log(`image.ctrl.js > 27`);
+        // console.log("No file found");
         return res.status(500).json({
           message: "No file attached. Please choose a file."
         });
@@ -70,12 +69,12 @@ exports.singleImgUpload = async (req, res, next) => {
     })
     .catch(err => {
       if (err instanceof multer.MulterError) {
-        console.log(`image.ctrl.js > 71: ${err}`);
+        // console.log(`image.ctrl.js > 71: ${err}`);
         return res.status(500).json({
           message: err.message
         });
       }
-      console.log(`image.ctrl.js > 76: ${err}`);
+      // console.log(`image.ctrl.js > 76: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };

@@ -22,6 +22,7 @@ let responseStub,
   next,
   result,
   uploader,
+  uploadMethodStub,
   errorMsg,
   dbMethodStub,
   contentModelStub,
@@ -42,7 +43,7 @@ let responseStub,
   }.amazonaws.com/test.png`,
   sandbox = sinon.createSandbox();
 
-suite.only("image.ctrl.js", function() {
+suite("image.ctrl.js", function() {
   before(() => {
     return db.migrate.rollback().then(() => {
       return db.migrate.latest();
@@ -75,7 +76,7 @@ suite.only("image.ctrl.js", function() {
     test("returns 500 if multer error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      multerStub.returns(new multer.MulterError(errorMsg));
+      multerStub.rejects(new multer.MulterError(errorMsg));
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.notCalled(contentModelStub);
@@ -90,7 +91,7 @@ suite.only("image.ctrl.js", function() {
     test("returns 500 if upload error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      multerStub.returns(new Error(errorMsg));
+      multerStub.rejects(new Error(errorMsg));
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.notCalled(contentModelStub);
@@ -143,7 +144,7 @@ suite.only("image.ctrl.js", function() {
       });
       contentModelStub = sandbox
         .stub(content, "newContent")
-        .throws(new Error(errorMsg));
+        .rejects(new Error(errorMsg));
       try {
         result = await imgCtrl.singleImgUpload(req, res);
         assert.called(contentModelStub);
@@ -180,7 +181,7 @@ suite.only("image.ctrl.js", function() {
       responseStub = { message: errorMsg };
       contentModelStub = sandbox
         .stub(content, "updateContent")
-        .throws(new Error(errorMsg));
+        .rejects(new Error(errorMsg));
       req = mockReq({
         file,
         body: {
@@ -322,6 +323,64 @@ suite.only("image.ctrl.js", function() {
         sandbox.restore();
       } catch (err) {
         console.log(err);
+      }
+    });
+  });
+
+  suite("multer.js > startUpload", function() {
+    beforeEach(function() {
+      cbStub = sandbox.stub();
+      uploadMethodStub = sandbox
+        .stub()
+        .resolves(multer({ storage: multer.memoryStorage() }));
+      uploaderStub = sandbox.createStubInstance(Uploader, {
+        upload: uploadMethodStub
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("uploads a file", async function() {
+      file = {
+        name: "test.png",
+        lastModified: 1566194288671,
+        size: 36212,
+        mimetype: "image/png",
+        originalname: "test.png"
+      };
+      req = mockReq({
+        file
+      });
+      try {
+        uploader = new Uploader();
+        result = await uploader.startUpload(req, res, next);
+        assert.called(uploadMethodStub);
+        sandbox.restore();
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if upload error", async function() {
+      errorMsg = "Error: Only jpeg, jpg, png, and gif files accepted.";
+      file = {
+        name: "test.svg",
+        lastModified: 1566194288671,
+        size: 36212,
+        mimetype: "image/svg",
+        originalname: "test.svg"
+      };
+      try {
+        uploader = new Uploader();
+        result = await uploader.startUpload(req, res, next);
+        assert.called(uploadMethodStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, errorMsg);
+        sandbox.restore();
+      } catch (err) {
+        // console.log(err);
       }
     });
   });

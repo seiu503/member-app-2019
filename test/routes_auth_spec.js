@@ -33,8 +33,8 @@ describe("routes : auth", () => {
         .request(app)
         .get("/api/auth/google")
         .end(function(err, res) {
-          // assert.equal(res.status, 200);
-          // assert.isNull(err);
+          assert.equal(res.status, 200);
+          assert.isNull(err);
           done();
         });
     });
@@ -46,8 +46,8 @@ describe("routes : auth", () => {
         .request(app)
         .get("/api/auth/google/callback")
         .end(function(err, res) {
-          // assert.equal(res.status, 200);
-          // assert.isNull(err);
+          assert.equal(res.status, 200);
+          assert.isNull(err);
           done();
         });
     });

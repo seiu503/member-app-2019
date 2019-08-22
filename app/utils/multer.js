@@ -59,7 +59,7 @@ class Uploader {
       await upload(req, res);
       return;
     } catch (err) {
-      console.log(`multer.js > 62: ${err}`);
+      // console.log(`multer.js > 62: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   }
