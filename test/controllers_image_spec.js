@@ -19,7 +19,6 @@ const { upload } = require("../app/controllers/image.ctrl");
 
 let responseStub,
   id,
-  sandbox,
   next,
   result,
   errorMsg,
@@ -28,16 +27,19 @@ let responseStub,
   dbMethods = {},
   authenticateMock,
   token,
-  imageUrl,
   res = mockRes(),
-  req = mockReq();
-(appRoot = process.cwd()),
-  (file = {
+  req = mockReq(),
+  appRoot = process.cwd(),
+  file = {
     name: "test.png",
     originalname: "test.png",
     type: "image/png",
     size: 5000
-  });
+  },
+  imageUrl = `https://${s3config.bucket}.s3-${
+    s3config.region
+  }.amazonaws.com/test.png`,
+  sandbox = sinon.createSandbox();
 
 suite.only("image.ctrl.js", function() {
   before(() => {
@@ -50,33 +52,17 @@ suite.only("image.ctrl.js", function() {
     return db.migrate.rollback();
   });
   beforeEach(() => {
-    // authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
-    multerStub = sinon
+    multerStub = sandbox
       .stub(MulterWrapper, "multer")
       .returns(multer({ storage: multer.memoryStorage() }));
-    // // S3 deleteObject mock - return a success message
-    // aws.mock("S3", "deleteObject", { message: "Image deleted." });
-    // const mockedPutObject = sinon.stub();
-    // aws.mock('S3', "putObject", () => {
-    //   return class S3 {
-    //     putObject(params, cb) {
-    //       mockedPutObject(params, cb);
-    //     }
-    //   }
-    // });
   });
   afterEach(function() {
-    // authenticateMock.restore();
-    // multerStub.restore();
-    // aws.restore("S3");
     sandbox.restore();
   });
 
   suite("submCtrl > singleImgUpload", function() {
     beforeEach(function() {
-      sandbox = sinon.createSandbox();
-      uploadMock = sandbox.stub(imgCtrl, "upload").returns(multerStub);
-      uploadMock;
+      uploadStub = sandbox.stub(imgCtrl, "upload").returns(multerStub);
       return new Promise(resolve => {
         req = mockReq({
           file
@@ -92,9 +78,6 @@ suite.only("image.ctrl.js", function() {
     });
 
     test("upload a single image", async function() {
-      imageUrl = `https://${s3config.bucket}.s3-${
-        s3config.region
-      }.amazonaws.com/test.png`;
       responseStub = { content_type: "image", content: imageUrl };
       contentModelStub = sandbox
         .stub(content, "newContent")
@@ -106,6 +89,135 @@ suite.only("image.ctrl.js", function() {
         assert.calledWith(res.json, responseStub);
       } catch (err) {
         console.log(err);
+      }
+    });
+
+    test("returns 500 on newContent server error", async function() {
+      errorMsg = "Error";
+      responseStub = { message: errorMsg };
+      contentModelStub = sandbox
+        .stub(content, "newContent")
+        .throws(new Error(errorMsg));
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.called(contentModelStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("upload an image to replace existing content", async function() {
+      responseStub = { content_type: "image", content: imageUrl };
+      contentModelStub = sandbox
+        .stub(content, "updateContent")
+        .returns([responseStub]);
+      req.body = {
+        id: "123"
+      };
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.called(contentModelStub);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 on updateContent server error", async function() {
+      errorMsg = "Error";
+      responseStub = { message: errorMsg };
+      contentModelStub = sandbox
+        .stub(content, "updateContent")
+        .throws(new Error(errorMsg));
+      req.body = {
+        id: "123"
+      };
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.called(contentModelStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns image url and doesn't save to postgres on signature upload", async function() {
+      (responseStub = `https://${s3config.bucket}.s3-${
+        s3config.region
+      }.amazonaws.com/test__signature__.png`),
+        (file = {
+          name: "test__signature__.png",
+          originalname: "test__signature__.png",
+          type: "image/png",
+          size: 5000
+        });
+      req = mockReq({
+        file
+      });
+      const contentModelStub1 = sandbox
+        .stub(content, "updateContent")
+        .throws(new Error(errorMsg));
+      const contentModelStub2 = sandbox
+        .stub(content, "newContent")
+        .throws(new Error(errorMsg));
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub1);
+        assert.notCalled(contentModelStub2);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if upload error", async function() {
+      errorMsg = "Error";
+      responseStub = { message: errorMsg };
+      uploadStub.throws(new Error(errorMsg));
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub);
+        assert.called(uploadStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if multer error", async function() {
+      errorMsg = "Error";
+      responseStub = { message: errorMsg };
+      uploadStub.throws(new multer.MulterError(errorMsg));
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub);
+        assert.called(uploadStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if no file attached", async function() {
+      errorMsg = "No file attached. Please choose a file.";
+      responseStub = { message: errorMsg };
+      uploadStub.restore();
+      req.file = null;
+      try {
+        result = await imgCtrl.singleImgUpload(req, res);
+        assert.notCalled(contentModelStub);
+        assert.called(uploadStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        // console.log(err);
       }
     });
   });
