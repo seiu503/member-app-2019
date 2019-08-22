@@ -39,7 +39,7 @@ exports.upload = MulterWrapper.multer({
   }),
   limits: { fileSize: 2000000 }, // In bytes: 2000000 bytes = 2 MB
   fileFilter: function(req, file, cb) {
-    checkFile(file, cb);
+    exports.checkFile(file, cb);
   }
 }).single("image");
 
@@ -49,7 +49,9 @@ exports.upload = MulterWrapper.multer({
  * @param cb
  * @return {*}
  */
-const checkFile = (file, cb) => {
+exports.checkFile = (file, cb) => {
+  console.log(`image.ctrl.js > 53`);
+  console.log(file);
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
@@ -70,30 +72,31 @@ const checkFile = (file, cb) => {
  *  @returns  {Object}                 Image name and URL OR error message.
  */
 exports.singleImgUpload = async (req, res, next) => {
-  const result = await exports.upload(req, res);
+  const result = await exports.upload(req, res, next);
   // upload image to s3 bucket
 
-  if (!req.file) {
-    // console.log(`image.ctrl.js > 92`);
-    // console.log("No file found");
-    return res.status(500).json({
-      message: "No file attached. Please choose a file."
-    });
-  }
+  // if (!req.file) {
+  //   console.log(`image.ctrl.js > 92`);
+  //   console.log("No file found");
+  //   return res.status(500).json({
+  //     message: "No file attached. Please choose a file."
+  //   });
+  // }
   if (result instanceof multer.MulterError) {
-    // console.log(`image.ctrl.js > 78`);
-    // console.log(result);
+    console.log(`image.ctrl.js > 78`);
+    console.log(result);
     return res.status(500).json({
       message: result.message
     });
   }
   if (result instanceof Error) {
-    // console.log(`image.ctrl.js > 85`);
-    // console.log(result);
+    console.log(`image.ctrl.js > 85`);
+    console.log(result);
     return res.status(500).json({
       message: result.message
     });
   }
+
   // generate url of uploaded image
   const imageUrl = `https://${s3config.bucket}.s3-${
     s3config.region
@@ -113,7 +116,7 @@ exports.singleImgUpload = async (req, res, next) => {
       const records = await content.updateContent(req.body.id, updates);
       return res.status(200).json(records[0]);
     } catch (err) {
-      // console.log(`imageUpload.ctrl.js > 109: ${err}`);
+      console.log(`imageUpload.ctrl.js > 109: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   } else {
@@ -122,6 +125,7 @@ exports.singleImgUpload = async (req, res, next) => {
       const records = await content.newContent("image", imageUrl);
       return res.status(200).json(records[0]);
     } catch (err) {
+      console.log(`image.ctrl.js > 125: ${err}`);
       return res.status(500).json({ message: err.message });
     }
   }

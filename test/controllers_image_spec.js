@@ -18,6 +18,7 @@ const { upload } = require("../app/controllers/image.ctrl");
 
 let responseStub,
   id,
+  cbStub,
   next,
   result,
   errorMsg,
@@ -280,6 +281,53 @@ suite.only("image.ctrl.js", function() {
         assert.calledWith(res.json, responseStub);
       } catch (err) {
         // console.log(err);
+      }
+    });
+  });
+
+  suite("submCtrl > checkFile", function() {
+    beforeEach(function() {
+      cbStub = sandbox.stub();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("if allowed filetype, returns true", async function() {
+      file = {
+        name: "test.png",
+        lastModified: 1566194288671,
+        size: 36212,
+        mimetype: "image/png",
+        originalname: "test.png"
+      };
+      try {
+        result = await imgCtrl.checkFile(file, cbStub);
+        assert.calledWith(cbStub, null, true);
+        sandbox.restore();
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("if invalid filetype, returns error message", async function() {
+      errorMsg = "Error: Only jpeg, jpg, png, and gif files accepted.";
+      file = {
+        name: "test.svg",
+        lastModified: 1566194288671,
+        size: 36212,
+        mimetype: "image/svg",
+        originalname: "test.svg"
+      };
+      try {
+        result = await imgCtrl.checkFile(file, cbStub);
+        assert.calledWith(cbStub, {
+          message: errorMsg
+        });
+        sandbox.restore();
+      } catch (err) {
+        console.log(err);
       }
     });
   });
