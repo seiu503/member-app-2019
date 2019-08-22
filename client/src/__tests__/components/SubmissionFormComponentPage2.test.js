@@ -159,7 +159,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       handleSubmitError = jest
         .fn()
         .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
       Notifier.openSnackbar = jest.fn();
       updateSubmission = handleSubmitError;

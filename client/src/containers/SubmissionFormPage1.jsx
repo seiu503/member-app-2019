@@ -103,7 +103,7 @@ export class SubmissionFormPage1Container extends React.Component {
         })
         .catch(err => {
           openSnackbar("error", err);
-          reject(err);
+          console.log(err);
         });
     });
   }
@@ -168,6 +168,8 @@ export class SubmissionFormPage1Container extends React.Component {
             return;
           })
           .catch(err => {
+            // console.log('174');
+            // console.log(err);
             openSnackbar("error", err);
           });
       }
