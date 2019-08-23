@@ -295,7 +295,7 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  */
 exports.getAllEmployers = async (req, res, next) => {
   // console.log("getAllEmployers");
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

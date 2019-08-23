@@ -146,7 +146,7 @@ export const employerTypeMap = {
   "Nursing Homes": "Nursing Home",
   "State Homecare": "State Homecare or Personal Support",
   "Higher Ed": "Higher Education",
-  "Local Gov": "Local Government",
+  "Local Gov": "Local Government (City, County, School District)",
   AFH: "Adult Foster Home",
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
@@ -753,7 +753,7 @@ export const retireeDPAText = freq => (
       the timestamp of submission will serve as signature indicating:
     </p>
     <p>
-      I hereby authorizeSEIU Local 503 or its Designated Secure Payment
+      I hereby authorize SEIU Local 503 or its Designated Secure Payment
       Processor (DSPP to initiate a recurring, automatic electronic funds
       transfer from my checking or savings account or recurring, automatic
       credit card payment in the amount of{" "}
@@ -797,7 +797,7 @@ export const communityDPAText = (
       the timestamp of submission will serve as signature indicating:
     </p>
     <p>
-      I hereby authorizeSEIU Local 503 or its Designated Secure Payment
+      I hereby authorize SEIU Local 503 or its Designated Secure Payment
       Processor (DSPP to initiate a recurring, automatic electronic funds
       transfer from my checking or savings account or recurring, automatic
       credit card payment in the amount of $10 per month.
