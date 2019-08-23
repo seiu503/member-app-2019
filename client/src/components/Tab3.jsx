@@ -6,6 +6,7 @@ import Iframe from "react-iframe";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
 import * as formElements from "./SubmissionFormElements";
+import Typography from "@material-ui/core/Typography";
 
 import PropTypes from "prop-types";
 
@@ -24,7 +25,7 @@ export const Tab3 = props => {
     formValues
   } = props;
   // console.log(formValues);
-  // console.log(formValues.paymentType);
+  console.log(formValues.paymentType);
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form
@@ -39,23 +40,37 @@ export const Tab3 = props => {
             name="paymentType"
             id="paymentType"
             type="radio"
+            direction="horiz"
+            className={classes.horizRadio}
             classes={classes}
             component={formElements.renderRadioGroup}
             options={formElements.paymentTypes}
           />
         )}
         {iFrameURL && formValues.paymentType !== "Check" && (
-          <div className={classes.iframeWrap}>
-            <Iframe
-              url={iFrameURL}
-              width="100%"
-              height="100px"
-              id="iFrame"
-              className={classes.iframe}
-              display="initial"
-              position="relative"
-            />
-          </div>
+          <React.Fragment>
+            <div className={classes.paymentCopy}>
+              <Typography component="p" className={classes.body}>
+                Your card will not be charged until the first date of monthly
+                dues deduction (the xx day of each month). Add a payment method
+                here to ensure your membership stays current.
+              </Typography>
+              <Typography component="h2" className={classes.head}>
+                Add a payment method
+              </Typography>
+            </div>
+            <div className={classes.iframeWrap}>
+              <Iframe
+                url={iFrameURL}
+                width="100%"
+                height="100px"
+                id="iFrame"
+                className={classes.iframe}
+                display="initial"
+                position="relative"
+              />
+            </div>
+          </React.Fragment>
         )}
 
         <ReCAPTCHA

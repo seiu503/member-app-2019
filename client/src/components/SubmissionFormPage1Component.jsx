@@ -30,7 +30,6 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {
@@ -59,7 +58,6 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerTypesListRaw = this.props.submission.employerObjects
       ? this.props.submission.employerObjects.map(employer => {
           if (employer.Name === "Community Members") {
-            console.log("community members");
             return "Community Members";
           } else {
             return employer.Sub_Division__c;
@@ -71,7 +69,6 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
     employerTypesList.unshift("");
-    console.log(employerTypesList);
     return employerTypesList;
   };
 
@@ -85,7 +82,7 @@ export class SubmissionFormPage1Component extends React.Component {
     if (Object.keys(this.props.formValues).length) {
       employerTypeUserSelect = this.props.formValues.employerType;
     } else {
-      console.log("no formValues in props");
+      // console.log("no formValues in props");
     }
 
     // console.log(employerTypeUserSelect);

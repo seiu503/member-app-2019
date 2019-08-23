@@ -262,9 +262,6 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       }
 
-      console.log(this.props.legal_language);
-      console.log(this.props.direct_deposit);
-      console.log(this.props.direct_pay);
       // save legal_language to redux store before ref disappears
       let legalLanguage = this.props.legal_language.current.innerHTML;
       if (formValues.directDepositAuth && this.props.direct_deposit.current) {

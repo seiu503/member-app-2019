@@ -13,3 +13,11 @@ code {
     max-width: 100% !important;
     overflow: hidden;
   }
+
+#iframe .button {
+	background-color: #2c0940;
+}
+
+#iframe .button:hover {
+	background-color: #531078;
+}

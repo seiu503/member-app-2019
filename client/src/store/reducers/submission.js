@@ -59,7 +59,6 @@ function Submission(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case HANDLE_INPUT:
-      console.log(action.payload);
       return update(state, {
         formPage1: {
           [action.payload.name]: { $set: action.payload.value }

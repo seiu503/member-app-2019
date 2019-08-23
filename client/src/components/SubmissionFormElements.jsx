@@ -235,6 +235,11 @@ export const stylesPage1 = theme => ({
     display: "flex",
     flexDirection: "column"
   },
+  horizGroup: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row"
+  },
   back: {
     textTransform: "none",
     fontSize: "1.3rem",
@@ -351,6 +356,10 @@ export const stylesPage1 = theme => ({
     "border-bottom": "1px solid blue",
     cursor: " pointer",
     color: "blue"
+  },
+  horizRadio: {
+    display: "flex",
+    flexDirection: "row"
   }
 });
 export const stylesPage2 = theme => ({
@@ -559,6 +568,7 @@ export const renderRadioGroup = ({
   options,
   validate,
   classes,
+  direction,
   meta: { touched, error },
   formControlName,
   ...custom
@@ -575,7 +585,9 @@ export const renderRadioGroup = ({
     <RadioGroup
       aria-label={formControlName}
       name={formControlName}
-      className={classes.verticalGroup}
+      className={
+        direction === "vert" ? classes.verticalGroup : classes.horizGroup
+      }
     >
       {options.map(item => (
         <FormControlLabel
