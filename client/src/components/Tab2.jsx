@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 
 import validate from "../utils/validators";
+import { scrollToFirstError } from "../utils";
 import {
   hcwDirectDepositAuthText,
   hcwDPAText,
@@ -224,7 +225,8 @@ export const Tab2Form = reduxForm({
   forceUnregisterOnUnmount: true,
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  updateUnregisteredFields: true
+  updateUnregisteredFields: true,
+  onSubmitFail: errors => scrollToFirstError(errors)
 })(Tab2);
 
 export default Tab2Form;

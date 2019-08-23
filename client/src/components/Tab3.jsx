@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 
 import validate from "../utils/validators";
+import { scrollToFirstError } from "../utils";
 
 export const Tab3 = props => {
   const {
@@ -156,7 +157,8 @@ export const Tab3Form = reduxForm({
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  updateUnregisteredFields: true
+  updateUnregisteredFields: true,
+  onSubmitFail: errors => scrollToFirstError(errors)
 })(Tab3);
 
 // connect to redux store
