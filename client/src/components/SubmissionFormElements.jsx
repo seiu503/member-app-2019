@@ -197,7 +197,9 @@ export const stylesPage1 = theme => ({
   },
   sectionContainer: {},
   head: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
+    fontSize: "2em",
+    fontWeight: 700
   },
   form: {
     maxWidth: 600,
@@ -360,6 +362,10 @@ export const stylesPage1 = theme => ({
   horizRadio: {
     display: "flex",
     flexDirection: "row"
+  },
+  body: {},
+  paymentCopy: {
+    paddingBottom: "1.5em"
   }
 });
 export const stylesPage2 = theme => ({
@@ -379,7 +385,9 @@ export const stylesPage2 = theme => ({
     margin: "44px auto"
   },
   head: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
+    fontSize: "2em",
+    fontWeight: 700
   },
   checkIcon: {
     [theme.breakpoints.down("xs")]: {
@@ -878,6 +886,15 @@ export const membershipTerms = (
 
 export const blankSig =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
+
+export const retireeDuesCopy =
+  "Monthly dues are $5 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+
+export const afhDuesCopy =
+  "Monthly dues are $14.84 per Medicaid resident in your home(s), plus $2.75 per month to a fund used to advocate for issues that affect providers. Dues will be deducted [on the first day of each month?] from the payment method you provide below.";
+
+export const commDuesCopy =
+  "Monthly dues are $10 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
 TextField.propTypes = {
   input: PropTypes.shape({

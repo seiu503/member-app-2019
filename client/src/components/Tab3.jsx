@@ -26,7 +26,19 @@ export const Tab3 = props => {
     formValues
   } = props;
   // console.log(formValues);
+  console.log(formValues.employerType.toLowerCase());
   console.log(formValues.paymentType);
+  let duesCopy = "";
+  switch (formValues.employerType.toLowerCase()) {
+    case "adult foster home":
+      duesCopy = formElements.afhDuesCopy;
+      break;
+    case "retired":
+      duesCopy = formElements.retireeDuesCopy;
+      break;
+    default:
+      duesCopy = formElements.commDuesCopy;
+  }
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form
@@ -34,8 +46,8 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
-        {formValues.employerName &&
-          formValues.employerName.toLowerCase() === "retirees" && (
+        {formValues.employerType &&
+          formValues.employerType.toLowerCase() === "retired" && (
             <Field
               // labelWidth={104}
               label="How would you like to pay your union dues?"
@@ -50,31 +62,42 @@ export const Tab3 = props => {
               options={formElements.paymentTypes}
             />
           )}
-        {iFrameURL && formValues.paymentType !== "Check" && (
-          <React.Fragment>
+        {iFrameURL &&
+          (formValues.paymentType !== "Check" ? (
+            <React.Fragment>
+              <div className={classes.paymentCopy}>
+                <Typography component="p" className={classes.body}>
+                  {duesCopy}
+                </Typography>
+                <Typography component="h2" className={classes.head}>
+                  Add a payment method
+                </Typography>
+              </div>
+              <div className={classes.iframeWrap}>
+                <Iframe
+                  url={iFrameURL}
+                  width="100%"
+                  height="100px"
+                  id="iFrame"
+                  className={classes.iframe}
+                  display="initial"
+                  position="relative"
+                />
+              </div>
+            </React.Fragment>
+          ) : (
             <div className={classes.paymentCopy}>
-              <Typography component="p" className={classes.body}>
-                Your card will not be charged until the first date of monthly
-                dues deduction (the xx day of each month). Add a payment method
-                here to ensure your membership stays current.
-              </Typography>
               <Typography component="h2" className={classes.head}>
-                Add a payment method
+                To pay your dues by check:
+              </Typography>
+              <Typography component="p" className={classes.body}>
+                Please mail your payment of $5 (monthly) or $60 (annually) to
+                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
+                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
+                bylaws.
               </Typography>
             </div>
-            <div className={classes.iframeWrap}>
-              <Iframe
-                url={iFrameURL}
-                width="100%"
-                height="100px"
-                id="iFrame"
-                className={classes.iframe}
-                display="initial"
-                position="relative"
-              />
-            </div>
-          </React.Fragment>
-        )}
+          ))}
 
         <ReCAPTCHA
           ref={reCaptchaRef}
