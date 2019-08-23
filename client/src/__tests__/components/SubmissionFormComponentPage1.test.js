@@ -14,7 +14,7 @@ let wrapper,
   store,
   handleSubmit,
   apiSubmission,
-  apiSF,
+  apiSF = {},
   handleSubmitMock,
   addSubmission,
   addSubmissionSuccess,
@@ -46,7 +46,18 @@ const defaultProps = {
       firstName: "",
       lastName: "",
       homeEmail: "",
-      signature: "string"
+      signature: "string",
+      paymentRequired: false
+    },
+    employerObjects: [
+      {
+        Name: "employer_name",
+        Id: "123",
+        Agency_Number__c: "456"
+      }
+    ],
+    payment: {
+      cardAddingUrl: ""
     }
   },
   initialValues: {
@@ -168,7 +179,15 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       wrapper = unconnectedSetup();
       wrapper.setProps({
         tab: 2,
-        apiSubmission: { addSubmission: addSubmissionSuccess }
+        apiSubmission: { addSubmission: addSubmissionSuccess },
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            cardAddingUrl: ""
+          }
+        }
       });
       wrapper.update();
       wrapper.find("ReduxForm").simulate("submit", { ...testData });
@@ -177,7 +196,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       ).toBe(1);
     });
 
-    it("calls reset after successful Submit", () => {
+    it("calls reset after successful submit", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return success object
@@ -245,13 +264,14 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // creating wrapper
       wrapper = unconnectedSetup();
       wrapper.setProps({
+        ...defaultProps,
         tab: 2,
         reCaptchaRef: {
           current: {
             getValue: jest.fn().mockImplementation(() => "mock value")
           }
         },
-        submission: { formPage1: { signature: "string" } }
+        apiSubmission: {}
       });
       wrapper.update();
       wrapper.instance().props.apiSubmission.addSubmission = addSubmissionError;

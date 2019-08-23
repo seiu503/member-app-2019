@@ -44,19 +44,38 @@ const initialState = {
   }
 };
 
+const formValues = {
+  firstName: "firstName",
+  lastName: "lastName",
+  homeEmail: "homeEmail",
+  homeStreet: "homeStreet",
+  homeCity: "homeCity",
+  homeZip: "homeZip",
+  homeState: "homeState",
+  signature: "signature",
+  employerType: "employerType",
+  employerName: "employerName",
+  mobilePhone: "mobilePhone",
+  mm: "12",
+  dd: "01",
+  yyyy: "1999",
+  preferredLanguage: "English",
+  textAuthOptOut: false
+};
+
 const defaultProps = {
   submission: {
     error: null,
-    loading: false
+    loading: false,
+    formPage1: {
+      signature: ""
+    }
   },
   initialValues: {
     mm: "",
     onlineCampaignSource: null
   },
-  formValues: {
-    mm: "",
-    onlineCampaignSource: null
-  },
+  formValues,
   location: {
     search: "id=1"
   },
@@ -114,7 +133,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
   it("should have access to expected props", () => {
     wrapper = setup();
-    expect(wrapper.instance().props.formValues.mm).toBe("");
+    expect(wrapper.instance().props.formValues.mm).toBe("12");
   });
 
   test("calls `getSFContactById` on componentDidMount if id in query", () => {
@@ -131,7 +150,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         <SubmissionFormPage1Connected {...defaultProps} {...props} />
       </Provider>
     );
-    // console.log(dispatchSpy.mock.calls);
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(spyCall).toEqual("1");
   });
@@ -173,10 +191,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     expect(uploadImageMock.mock.calls.length).toBe(1);
   });
 
-  test("`handleTab` saves legalLanguage and signature if newValue === 2", () => {
+  test("`handleTab` saves legalLanguage and signature if newValue === 2", async function() {
     let handleInputMock = jest.fn();
+    let handleUploadMock = jest
+      .fn()
+      .mockImplementation(() => Promise.resolve("http://www.example.com/png"));
     let props = {
-      apiSubmission: { handleInput: handleInputMock },
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       legal_language: {
         current: {
           innerHTML: ""
@@ -201,15 +224,21 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     wrapper = shallow(
       <SubmissionFormPage1Container {...defaultProps} {...props} />
     );
-
-    wrapper.instance().handleTab({ target: "fake" }, 2, {
+    wrapper.instance().handleUpload = handleUploadMock;
+    await wrapper.instance().handleTab({ target: "fake" }, 2, {
       directPayAuth: true,
-      directDepositAuth: true
+      directDepositAuth: true,
+      employerName: "homecare",
+      paymentType: "card",
+      employerType: "retired",
+      preferredLanguage: "English"
     });
-    expect(handleInputMock.mock.calls.length).toBe(1);
+    // two calls to handleInput --
+    // one for legal language, one for signature
+    expect(handleInputMock.mock.calls.length).toBe(2);
   });
 
-  test("`handeTab` sets state.tab (2)", () => {
+  test("`handleTab` sets state.tab - 2", () => {
     let props = {
       apiSubmission: { handleInput },
       legal_language: {
@@ -233,11 +262,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       <SubmissionFormPage1Container {...defaultProps} {...props} />
     );
     wrapper.instance().state.signatureType = "write";
-    wrapper.instance().handleTab({ target: "fake" }, 2, {});
+    wrapper.instance().handleTab({ target: "fake" }, 2, formValues);
     expect(wrapper.instance().state.tab).toBe(2);
   });
 
-  test("`handeTab` sets state.tab (other)", () => {
+  test("`handeTab` sets state.tab - other", () => {
     let props = {
       apiSubmission: { handleInput },
       legal_language: {
@@ -289,44 +318,5 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     const testBlob = wrapper.instance().dataURItoBlob(fakeDataURI);
     expect(typeof testBlob).toBe("object");
     expect(testBlob.type).toBe("image/jpeg");
-  });
-
-  test("`handleTab` saves sigUrl", () => {
-    let handleInputMock = jest.fn();
-    let props = {
-      apiSubmission: { handleInput: handleInputMock },
-      legal_language: {
-        current: {
-          innerHTML: ""
-        }
-      },
-      direct_deposit: {
-        current: {
-          innerHTML: ""
-        }
-      },
-      direct_pay: {
-        current: {
-          innerHTML: ""
-        }
-      },
-      formValues: {
-        firstName: "first",
-        lastName: "last"
-      }
-    };
-
-    wrapper = shallow(
-      <SubmissionFormPage1Container {...defaultProps} {...props} />
-    );
-    const handleUploadMock = jest
-      .fn()
-      .mockImplementation(() => Promise.resolve("url"));
-    wrapper.instance().handleUpload = handleUploadMock;
-    wrapper.update();
-    wrapper.instance().state.signatureType = "draw";
-    wrapper.instance().handleTab({ target: "fake" }, 2, {});
-    wrapper.update();
-    expect(handleInputMock.mock.calls.length).toBe(1);
   });
 });

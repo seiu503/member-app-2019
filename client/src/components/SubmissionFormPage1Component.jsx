@@ -181,11 +181,8 @@ export class SubmissionFormPage1Component extends React.Component {
           return obj.Name.toLowerCase() === employerName.toLowerCase();
         })[0]
       : { Name: "" };
-    console.log(employerObject);
     const employerId = employerObject.Id;
-    console.log(employerId);
     const agencyNumber = employerObject.Agency_Number__c;
-    console.log(agencyNumber);
     const legalLanguage = this.props.submission.formPage1.legalLanguage;
 
     const q = queryString.parse(this.props.location.search);
@@ -342,7 +339,9 @@ export class SubmissionFormPage1Component extends React.Component {
                 handleTab={this.props.handleTab}
                 back={this.props.back}
                 formValues={this.props.formValues}
-                pamentRequired={this.props.submission.formPage1.paymentRequired}
+                paymentRequired={
+                  this.props.submission.formPage1.paymentRequired
+                }
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
               />
             )}

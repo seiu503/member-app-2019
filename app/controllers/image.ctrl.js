@@ -21,7 +21,7 @@ exports.singleImgUpload = async (req, res, next) => {
   uploader
     .startUpload(req, res, next)
     .then(() => {
-      // console.log(`image.ctrl.js > 77`);
+      // console.log(`image.ctrl.js > 24`);
       // console.log(req.file);
       if (!req.file) {
         // console.log(`image.ctrl.js > 27`);
@@ -36,12 +36,7 @@ exports.singleImgUpload = async (req, res, next) => {
       }.amazonaws.com/${req.file.originalname}`;
       // check if apiCall is for admin image or user signature image
       if (req.file.originalname.includes("__signature__")) {
-        console.log("this is a signature");
-        console.log(`req.file.originalname: ${req.file.originalname}`);
         return res.status(200).json({ content: imageUrl });
-      } else {
-        console.log("this is not a signature");
-        console.log(`req.file.originalname: ${req.file.originalname}`);
       }
       // check if we're creating a new DB record or updating existing
       if (req.body.id) {

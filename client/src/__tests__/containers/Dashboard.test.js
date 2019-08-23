@@ -96,7 +96,7 @@ describe("<Dashboard />", () => {
     expect(wrapper.instance().props.appState.loggedIn).toBe(true);
   });
 
-  test("calls `getProfile` prop on componentWillMount", () => {
+  test("calls `getProfile` prop on componentDidMount", () => {
     const getProfileMock = jest
       .fn()
       .mockImplementation(() =>
@@ -105,6 +105,7 @@ describe("<Dashboard />", () => {
     const props = { api: { getProfile: getProfileMock } };
 
     wrapper = shallow(<DashboardUnconnected {...defaultProps} {...props} />);
+    wrapper.instance().componentDidMount();
 
     // expect the mock to have been called once during component mount
     expect(getProfileMock.mock.calls.length).toBe(1);
@@ -159,7 +160,7 @@ describe("<Dashboard />", () => {
 
     wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
     wrapper.instance().props.history.push = pushMock;
-    wrapper.instance().componentWillMount();
+    wrapper.instance().componentDidMount();
 
     // expect(pushMock).toHaveBeenCalledTimes(1);
     // expect(pushMock).toHaveBeenCalledWith("/test");

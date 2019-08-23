@@ -199,9 +199,11 @@ suite("image.ctrl.js", function() {
     });
 
     test("returns image url and doesn't save to postgres on signature upload", async function() {
-      (responseStub = `https://${s3config.bucket}.s3-${
-        s3config.region
-      }.amazonaws.com/test__signature__.png`),
+      (responseStub = {
+        content: `https://${s3config.bucket}.s3-${
+          s3config.region
+        }.amazonaws.com/test__signature__.png`
+      }),
         (file = {
           name: "test__signature__.png",
           originalname: "test__signature__.png",

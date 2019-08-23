@@ -15,7 +15,7 @@ const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
 const id = "0036100001bqfvxAAA";
 
-describe.only("apiSFActions", () => {
+describe("apiSFActions", () => {
   describe("api actions", () => {
     afterEach(() => {
       nock.cleanAll();

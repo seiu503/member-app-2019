@@ -134,6 +134,7 @@ describe("submission reducer", () => {
           homeZip: "12345",
           homeEmail: "string@string.com",
           preferredLanguage: "string",
+          paymentRequired: false,
           termsAgree: false,
           signature: null,
           textAuthOptOut: false,

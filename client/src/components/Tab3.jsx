@@ -23,8 +23,8 @@ export const Tab3 = props => {
     back,
     formValues
   } = props;
-  console.log(formValues);
-  console.log(formValues.paymentType);
+  // console.log(formValues);
+  // console.log(formValues.paymentType);
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form

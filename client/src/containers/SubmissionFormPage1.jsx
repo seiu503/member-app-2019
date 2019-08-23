@@ -53,7 +53,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          console.log(result.payload);
+          // console.log(result.payload);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -106,14 +106,13 @@ export class SubmissionFormPage1Container extends React.Component {
             );
             resolve();
           } else {
-            console.log(result.payload.content);
+            // console.log(result.payload.content);
             resolve(result.payload.content);
           }
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           openSnackbar("error", err);
-          console.log(err);
         });
     });
   }
@@ -155,29 +154,34 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   };
 
+  // this is a hot mess and needs to be split
+  // out into a dozen smaller utility functions
+  // the whole iframe fetch routine should be a separate function
+  // so should saving sig & legal language
   async handleTab(event, newValue, formValues) {
     if (newValue === 2) {
       // perform signature processing steps and save value to redux store
       // before ref disappears
       if (this.state.signatureType === "write") {
+        // console.log('163');
         this.props.apiSubmission.handleInput({
           target: { name: "signature", value: formValues.signature }
         });
       }
       if (this.state.signatureType === "draw") {
-        console.log("draw");
+        // console.log('169');
         let sigUrl;
         try {
           sigUrl = await this.handleUpload(
             formValues.firstName,
             formValues.lastName
           );
-          console.log(sigUrl);
+          // console.log(`177: ${sigUrl}`);
           this.props.apiSubmission.handleInput({
             target: { name: "signature", value: sigUrl }
           });
-          console.log(this.props.submission.formPage1.signature);
         } catch (err) {
+          // console.log(`184: ${err}`);
           return openSnackbar(
             "error",
             err ||
@@ -242,6 +246,7 @@ export class SubmissionFormPage1Container extends React.Component {
         try {
           const result = await this.props.apiSF.getIframeURL(body);
           if (!result.payload.cardAddingUrl || result.payload.message) {
+            // console.log('253');
             return openSnackbar(
               "error",
               result.payload.message ||
@@ -249,6 +254,7 @@ export class SubmissionFormPage1Container extends React.Component {
             );
           }
         } catch (err) {
+          // console.log(`261: ${err}`);
           return openSnackbar(
             "error",
             err || "Sorry, something went wrong. Please try again."
@@ -273,7 +279,6 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSubmission.handleInput({
         target: { name: "legalLanguage", value: legalLanguage }
       });
-
       // navigate to next tab
       const newState = { ...this.state };
       newState.tab = newValue;

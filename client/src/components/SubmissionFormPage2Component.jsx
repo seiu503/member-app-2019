@@ -323,7 +323,7 @@ export class SubmissionFormPage2Component extends React.Component {
           </FormGroup>
 
           <FormLabel className={this.classes.formLabel} component="legend">
-            Employemnt Info
+            Employment Info
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field

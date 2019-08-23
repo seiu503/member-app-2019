@@ -59,6 +59,7 @@ function Submission(state = INITIAL_STATE, action) {
 
   switch (action.type) {
     case HANDLE_INPUT:
+      console.log(action.payload);
       return update(state, {
         formPage1: {
           [action.payload.name]: { $set: action.payload.value }
@@ -117,13 +118,14 @@ function Submission(state = INITIAL_STATE, action) {
           ethnicities = action.payload.Ethnicity__c.split(", ");
         }
         const ethnicitiesObj = {};
-        for (const item of ethnicities) {
+        ethnicities.map(item => {
           if (item === "Declined") {
             ethnicitiesObj.declined = true;
           } else {
             ethnicitiesObj[item] = true;
           }
-        }
+          return null;
+        });
         return update(state, {
           formPage1: {
             mm: { $set: moment(action.payload.Birthdate).format("MM") },

@@ -24,7 +24,11 @@ const defaultProps = {
   reCaptchaRef: { current: {} },
   loading: false,
   pristine: false,
-  invalid: false
+  invalid: false,
+  formValues: {
+    paymentType: "card",
+    employerName: "blah"
+  }
 };
 
 describe("<Tab3 />", () => {
@@ -66,7 +70,11 @@ describe("<Tab3 />", () => {
 
     const props = {
       handleSubmit: fn => fn,
-      classes: {}
+      classes: {},
+      formValues: {
+        paymentType: "card",
+        employerName: "homecare"
+      }
     };
 
     it("renders without error", () => {
