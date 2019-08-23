@@ -40,7 +40,8 @@ export const INITIAL_STATE = {
     lastName: "",
     homeEmail: "",
     legalLanguage: "",
-    paymentRequired: false
+    paymentRequired: false,
+    paymentType: ""
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],

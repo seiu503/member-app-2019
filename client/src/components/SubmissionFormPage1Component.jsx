@@ -42,7 +42,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.submission.employerNames.length < 2) {
+    if (this.props.submission.employerNames.length < 3) {
       this.loadEmployersPicklist();
     }
   }
@@ -69,6 +69,7 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
     employerTypesList.unshift("");
+    // console.log(employerTypesList);
     return employerTypesList;
   };
 

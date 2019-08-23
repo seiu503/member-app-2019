@@ -34,6 +34,7 @@ export const Tab1 = props => {
     formValues,
     width
   } = props;
+
   return (
     <div data-test="component-tab1" className={classes.sectionContainer}>
       <form

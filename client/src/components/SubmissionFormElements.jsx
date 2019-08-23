@@ -511,13 +511,13 @@ export const renderSelect = ({
       native
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={classes.select}
-      value={input.value.toLowerCase()}
+      value={input.value ? input.value.toLowerCase() : ""}
       onChange={input.onChange}
       {...custom}
       data-test="component-select"
     >
       {options.map(item => (
-        <option key={shortid()} value={item.toLowerCase()}>
+        <option key={shortid()} value={item ? item.toLowerCase() : ""}>
           {item}
         </option>
       ))}
@@ -588,6 +588,8 @@ export const renderRadioGroup = ({
       className={
         direction === "vert" ? classes.verticalGroup : classes.horizGroup
       }
+      value={input.value}
+      onChange={(event, value) => input.onChange(value)}
     >
       {options.map(item => (
         <FormControlLabel

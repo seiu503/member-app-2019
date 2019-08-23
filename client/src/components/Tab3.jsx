@@ -1,5 +1,6 @@
 import React from "react";
-import { Field, reduxForm } from "redux-form";
+import { Field, reduxForm, getFormValues } from "redux-form";
+import { connect } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import Iframe from "react-iframe";
 
@@ -33,20 +34,22 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
-        {formValues.employerName.toLowerCase() === "retirees" && (
-          <Field
-            // labelWidth={104}
-            label="How would you like to pay your union dues?"
-            name="paymentType"
-            id="paymentType"
-            type="radio"
-            direction="horiz"
-            className={classes.horizRadio}
-            classes={classes}
-            component={formElements.renderRadioGroup}
-            options={formElements.paymentTypes}
-          />
-        )}
+        {formValues.employerName &&
+          formValues.employerName.toLowerCase() === "retirees" && (
+            <Field
+              // labelWidth={104}
+              label="How would you like to pay your union dues?"
+              name="paymentType"
+              formControlName="paymentType"
+              id="paymentType"
+              type="radio"
+              direction="horiz"
+              className={classes.horizRadio}
+              classes={classes}
+              component={formElements.renderRadioGroup}
+              options={formElements.paymentTypes}
+            />
+          )}
         {iFrameURL && formValues.paymentType !== "Check" && (
           <React.Fragment>
             <div className={classes.paymentCopy}>
@@ -116,6 +119,12 @@ Tab3.propTypes = {
   invalid: PropTypes.bool
 };
 
+const mapStateToProps = state => ({
+  submission: state.submission,
+  initialValues: state.submission.formPage1,
+  formValues: getFormValues("submissionPage1")(state) || {}
+});
+
 // add reduxForm to component
 export const Tab3Form = reduxForm({
   form: "submissionPage1",
@@ -127,4 +136,7 @@ export const Tab3Form = reduxForm({
   updateUnregisteredFields: true
 })(Tab3);
 
-export default Tab3Form;
+// connect to redux store
+export const Tab3Connected = connect(mapStateToProps)(Tab3Form);
+
+export default Tab3Connected;
