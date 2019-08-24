@@ -192,20 +192,17 @@ export class SubmissionFormPage1Component extends React.Component {
       paymentType,
       paymentMethodAdded
     } = values;
-    console.log("196");
-    console.log(this.props.submission.formPage1.paymentRequired);
-    console.log(paymentType);
-    console.log(paymentMethodAdded);
     if (
       this.props.submission.formPage1.paymentRequired &&
       paymentType === "Card" &&
       !paymentMethodAdded
     ) {
-      console.log("please add payment");
-      openSnackbar("error", "Please add a payment method");
+      openSnackbar(
+        "error",
+        "Please click 'Add a Card' to add a payment method"
+      );
       return;
     }
-    console.log("202");
     if (!reCaptchaValue) {
       openSnackbar("error", "Please verify you are human with Captcha");
       return;
