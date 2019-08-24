@@ -39,13 +39,38 @@ export class SubmissionFormPage1Component extends React.Component {
             "An error occurred while trying to fetch data from salesforce."
         );
       });
+    // add event listener to listen for iframe message
+    // to confirm payment method added
+    window.addEventListener("message", this.receiveMessage, false);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.submission.employerNames.length < 3) {
       this.loadEmployersPicklist();
     }
+    if (document.body.getAttribute("iframeListener") !== "true") {
+      window.addEventListener("message", this.receiveMessage, false);
+    }
   }
+
+  // check for messages from iframe
+  receiveMessage = event => {
+    // Do we trust the sender of this message?
+    // ******* This will need to be changed to the
+    // unioni.se prod url in production **********
+    if (event.origin !== "https://lab.unioni.se") {
+      return;
+    }
+
+    if (event.data.notification.type === "success") {
+      // formValues.paymentMethodAdded = true;
+      // this.props.apiSubmission.handleInput({ name: 'paymentMethodAdded', value: true });
+      this.props.changeFieldValue("paymentMethodAdded", true);
+      console.log(this.props.formValues.paymentMethodAdded);
+    }
+    // then set payment method added in redux store
+    //
+  };
 
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
@@ -140,7 +165,9 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
+  // split this up into smaller functions this is a 🗑🔥
   handleSubmit(values) {
+    console.log("handleSubmit");
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     let signature;
     let {
@@ -161,8 +188,28 @@ export class SubmissionFormPage1Component extends React.Component {
       termsAgree,
       salesforceId,
       directPayAuth,
-      directDepositAuth
+      directDepositAuth,
+      paymentType,
+      paymentMethodAdded
     } = values;
+    console.log("196");
+    console.log(this.props.submission.formPage1.paymentRequired);
+    console.log(paymentType);
+    console.log(paymentMethodAdded);
+    if (
+      this.props.submission.formPage1.paymentRequired &&
+      paymentType === "Card" &&
+      !paymentMethodAdded
+    ) {
+      console.log("please add payment");
+      openSnackbar("error", "Please add a payment method");
+      return;
+    }
+    console.log("202");
+    if (!reCaptchaValue) {
+      openSnackbar("error", "Please verify you are human with Captcha");
+      return;
+    }
     signature = this.props.submission.formPage1.signature;
     if (!signature) {
       openSnackbar("error", "Please provide a signature");
@@ -183,10 +230,8 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerId = employerObject.Id;
     const agencyNumber = employerObject.Agency_Number__c;
     const legalLanguage = this.props.submission.formPage1.legalLanguage;
-
     const q = queryString.parse(this.props.location.search);
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
-
     if (!salesforceId && q && q.id) {
       salesforceId = q.id;
     }
@@ -246,7 +291,6 @@ export class SubmissionFormPage1Component extends React.Component {
         openSnackbar("error", err);
       });
   }
-
   render() {
     const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
@@ -341,6 +385,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 paymentRequired={
                   this.props.submission.formPage1.paymentRequired
                 }
+                changeFieldValue={this.props.changeFieldValue}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
               />
             )}
@@ -350,7 +395,6 @@ export class SubmissionFormPage1Component extends React.Component {
     );
   }
 }
-
 SubmissionFormPage1Component.propTypes = {
   submission: PropTypes.shape({
     loading: PropTypes.bool,
@@ -407,5 +451,4 @@ SubmissionFormPage1Component.propTypes = {
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };
-
 export default withWidth()(SubmissionFormPage1Component);

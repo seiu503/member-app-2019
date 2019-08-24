@@ -41,7 +41,8 @@ export const INITIAL_STATE = {
     homeEmail: "",
     legalLanguage: "",
     paymentRequired: false,
-    paymentType: ""
+    paymentType: "",
+    paymentMethodAdded: false
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],

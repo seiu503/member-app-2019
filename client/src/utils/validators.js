@@ -18,6 +18,7 @@ const validate = values => {
     "termsAgree",
     "signature"
   ];
+  console.log("val 21");
   const conditionalRequiredFields = [
     {
       requiredField: "directPayAuth",
@@ -35,11 +36,22 @@ const validate = values => {
       controllingValues: ["retired"]
     },
     {
-      requiredField: "paymentMethod",
+      requiredField: "paymentMethodAdded",
       controllingField: "employerType",
       controllingValues: ["adult foster home", "retired", "community member"]
     }
   ];
+  console.log("val 44");
+  if (
+    (values.employerType === "adult foster home" ||
+      values.employerType === "retired" ||
+      values.employerType === "community member") &&
+    values.paymentMethod === "Card" &&
+    !values.paymentMethodAdded
+  ) {
+    errors.paymentMethodAdded = `Please add a payment method.`;
+  }
+  console.log("val 48");
   conditionalRequiredFields.forEach(obj => {
     if (
       obj["controllingValues"].includes(values[obj["controllingField"]]) &&
@@ -48,6 +60,7 @@ const validate = values => {
       errors[obj["requiredField"]] = "Required";
     }
   });
+  console.log("val 57");
   requiredFields.forEach(field => {
     if (!values[field]) {
       errors[field] = "Required";

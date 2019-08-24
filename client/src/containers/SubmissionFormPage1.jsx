@@ -6,7 +6,8 @@ import {
   isPristine,
   isValid,
   getFormSubmitErrors,
-  reset
+  reset,
+  change
 } from "redux-form";
 import uuid from "uuid";
 
@@ -349,7 +350,10 @@ const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
-  submitForm: () => dispatch(submit("submissionPage1"))
+  submitForm: () => dispatch(submit("submissionPage1")),
+  changeFieldValue: (field, value) => {
+    dispatch(change("submissionPage1", field, value));
+  }
 });
 
 export const SubmissionFormPage1Connected = connect(

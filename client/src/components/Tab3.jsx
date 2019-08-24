@@ -24,21 +24,24 @@ export const Tab3 = props => {
     invalid,
     iFrameURL,
     back,
-    formValues
+    formValues,
+    changeFieldValue
   } = props;
   // console.log(formValues);
-  console.log(formValues.employerType.toLowerCase());
-  console.log(formValues.paymentType);
+  // console.log(formValues.employerType.toLowerCase());
+  // console.log(formValues.paymentType);
   let duesCopy = "";
   switch (formValues.employerType.toLowerCase()) {
     case "adult foster home":
       duesCopy = formElements.afhDuesCopy;
+      changeFieldValue("paymentType", "Card");
       break;
     case "retired":
       duesCopy = formElements.retireeDuesCopy;
       break;
     default:
       duesCopy = formElements.commDuesCopy;
+      changeFieldValue("paymentType", "Card");
   }
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
@@ -64,7 +67,7 @@ export const Tab3 = props => {
             />
           )}
         {iFrameURL &&
-          (formValues.paymentType !== "Check" ? (
+          (formValues.paymentType === "Card" ? (
             <React.Fragment>
               <div className={classes.paymentCopy}>
                 <Typography component="p" className={classes.body}>
@@ -86,7 +89,7 @@ export const Tab3 = props => {
                 />
               </div>
             </React.Fragment>
-          ) : (
+          ) : formValues.paymentType === "Check" ? (
             <div className={classes.paymentCopy}>
               <Typography component="h2" className={classes.head}>
                 To pay your dues by check:
@@ -98,6 +101,8 @@ export const Tab3 = props => {
                 bylaws.
               </Typography>
             </div>
+          ) : (
+            ""
           ))}
 
         <ReCAPTCHA

@@ -43,15 +43,18 @@ export const defaultWelcomeInfo = {
 export const scrollToFirstError = errors => {
   // search through errors object to find only those currently mounted in DOM
   // (some errors will be on future tabs and can't be scrolled to yet)
-  const errorsArray = Object.keys(errors);
-  const firstError = errorsArray.find(
-    error => !!document.getElementById(error)
-  );
-  const el = document.getElementById(firstError);
-  const position =
-    el.getBoundingClientRect().top + document.documentElement.scrollTop;
+  if (errors) {
+    console.log(errors);
+    const errorsArray = Object.keys(errors);
+    const firstError = errorsArray.find(
+      error => !!document.getElementById(error)
+    );
+    const el = document.getElementById(firstError);
+    const position =
+      el.getBoundingClientRect().top + document.documentElement.scrollTop;
 
-  const offset = 200;
+    const offset = 200;
 
-  window.scrollTo({ top: position - offset, behavior: "smooth" });
+    window.scrollTo({ top: position - offset, behavior: "smooth" });
+  }
 };
