@@ -25,12 +25,16 @@ import {
   LOOKUP_SF_CONTACT_FAILURE,
   GET_IFRAME_URL_REQUEST,
   GET_IFRAME_URL_SUCCESS,
-  GET_IFRAME_URL_FAILURE
+  GET_IFRAME_URL_FAILURE,
+  CREATE_SF_CONTACT_REQUEST,
+  CREATE_SF_CONTACT_SUCCESS,
+  CREATE_SF_CONTACT_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
   error: null,
   salesforceId: null,
+  submissionId: null,
   formPage1: {
     mm: "",
     homeState: "OR",
@@ -43,7 +47,8 @@ export const INITIAL_STATE = {
     paymentRequired: false,
     paymentType: "",
     paymentMethodAdded: false,
-    medicaidResidents: 0
+    medicaidResidents: 0,
+    immediatePastMemberStatus: "Not a Member"
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
@@ -74,6 +79,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_EMPLOYERS_REQUEST:
     case LOOKUP_SF_CONTACT_REQUEST:
     case GET_IFRAME_URL_REQUEST:
+    case CREATE_SF_CONTACT_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -147,7 +153,10 @@ function Submission(state = INITIAL_STATE, action) {
             preferredLanguage: { $set: action.payload.Preferred_Language__c },
             termsAgree: { $set: false },
             signature: { $set: null },
-            textAuthOptOut: { $set: false }
+            textAuthOptOut: { $set: false },
+            immediatePastMemberStatus: {
+              $set: action.payload.Binary_Membership__c
+            }
           },
           formPage2: {
             africanOrAfricanAmerican: {
@@ -212,6 +221,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case LOOKUP_SF_CONTACT_SUCCESS:
+    case CREATE_SF_CONTACT_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         error: { $set: null },
@@ -239,6 +249,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_EMPLOYERS_FAILURE:
     case LOOKUP_SF_CONTACT_FAILURE:
     case GET_IFRAME_URL_FAILURE:
+    case CREATE_SF_CONTACT_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

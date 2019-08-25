@@ -52,7 +52,10 @@ import {
   LOOKUP_SF_CONTACT_FAILURE,
   GET_IFRAME_URL_REQUEST,
   GET_IFRAME_URL_SUCCESS,
-  GET_IFRAME_URL_FAILURE
+  GET_IFRAME_URL_FAILURE,
+  CREATE_SF_CONTACT_SUCCESS,
+  CREATE_SF_CONTACT_REQUEST,
+  CREATE_SF_CONTACT_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -72,11 +75,6 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, {
         loggedIn: { $set: true },
         authToken: { $set: action.payload.token },
-        loading: { $set: false }
-      });
-
-    case GET_PROFILE_SUCCESS:
-      return update(state, {
         loading: { $set: false }
       });
 
@@ -107,6 +105,7 @@ function appState(state = INITIAL_STATE, action) {
     case GET_SF_EMPLOYERS_REQUEST:
     case LOOKUP_SF_CONTACT_REQUEST:
     case GET_IFRAME_URL_REQUEST:
+    case CREATE_SF_CONTACT_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -125,6 +124,7 @@ function appState(state = INITIAL_STATE, action) {
     case DELETE_CONTENT_FAILURE:
     case GET_ALL_CONTENT_SUCCESS:
     case GET_ALL_CONTENT_FAILURE:
+    case GET_PROFILE_SUCCESS:
     case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
@@ -138,6 +138,8 @@ function appState(state = INITIAL_STATE, action) {
     case LOOKUP_SF_CONTACT_FAILURE:
     case GET_IFRAME_URL_SUCCESS:
     case GET_IFRAME_URL_FAILURE:
+    case CREATE_SF_CONTACT_SUCCESS:
+    case CREATE_SF_CONTACT_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

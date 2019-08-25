@@ -10,6 +10,9 @@ export const GET_SF_EMPLOYERS_FAILURE = "GET_SF_EMPLOYERS_FAILURE";
 export const LOOKUP_SF_CONTACT_REQUEST = "LOOKUP_SF_CONTACT_REQUEST";
 export const LOOKUP_SF_CONTACT_SUCCESS = "LOOKUP_SF_CONTACT_SUCCESS";
 export const LOOKUP_SF_CONTACT_FAILURE = "LOOKUP_SF_CONTACT_FAILURE";
+export const CREATE_SF_CONTACT_REQUEST = "CREATE_SF_CONTACT_REQUEST";
+export const CREATE_SF_CONTACT_SUCCESS = "CREATE_SF_CONTACT_SUCCESS";
+export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
 export const GET_IFRAME_URL_REQUEST = "GET_IFRAME_URL_REQUEST";
 export const GET_IFRAME_URL_SUCCESS = "GET_IFRAME_URL_SUCCESS";
 export const GET_IFRAME_URL_FAILURE = "GET_IFRAME_URL_FAILURE";
@@ -112,6 +115,46 @@ export function lookupSFContact(body) {
         LOOKUP_SF_CONTACT_SUCCESS,
         {
           type: LOOKUP_SF_CONTACT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+/*
+ * Function: createSFContact -- create a SF Contact
+ * @param {string} id
+ * This action dispatches additional actions as it executes:
+ *   CREATE_SF_CONTACT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   CREATE_SF_CONTACT_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   CREATE_SF_CONTACT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function createSFContact(body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sf`,
+      method: "PUT",
+      types: [
+        CREATE_SF_CONTACT_REQUEST,
+        CREATE_SF_CONTACT_SUCCESS,
+        {
+          type: CREATE_SF_CONTACT_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";

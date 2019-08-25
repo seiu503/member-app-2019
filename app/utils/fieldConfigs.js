@@ -570,6 +570,18 @@ const contactsTableFields = {
     SFDataType: "Email",
     SQLDataType: "VARCHAR(255)",
     testingSample: "lastnamef@seiu.com"
+  },
+  immediate_past_member_status: {
+    req: "N",
+    postgresFieldName: "work_email",
+    clientFieldName: "workEmail",
+    HtmlInputType: "email",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Binary Membership",
+    SFAPIName: "Binary_Membership__c",
+    SFDataType: "Formula(text)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Not a Member"
   }
 };
 

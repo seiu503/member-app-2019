@@ -1,7 +1,5 @@
 import React from "react";
-import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
-import queryString from "query-string";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -10,11 +8,10 @@ import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
-import { openSnackbar } from "../containers/Notifier";
 import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
-const { employerTypeMap, getKeyByValue, formatSFDate } = formElements;
+const { employerTypeMap, getKeyByValue } = formElements;
 
 export class SubmissionFormPage1Component extends React.Component {
   constructor(props) {
@@ -33,11 +30,8 @@ export class SubmissionFormPage1Component extends React.Component {
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        openSnackbar(
-          "error",
-          this.props.submission.error ||
-            "An error occurred while trying to fetch data from salesforce."
-        );
+        console.log(err);
+        this.props.handleError(err);
       });
     // add event listener to listen for iframe message
     // to confirm payment method added
@@ -165,128 +159,55 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  // split this up into smaller functions this is a 🗑🔥
-  handleSubmit(values) {
-    console.log("handleSubmit");
-    const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
-    let signature;
-    let {
-      firstName,
-      lastName,
-      dd,
-      mm,
-      yyyy,
-      preferredLanguage,
-      homeStreet,
-      homeZip,
-      homeState,
-      homeCity,
-      homeEmail,
-      mobilePhone,
-      employerName,
-      textAuthOptOut,
-      termsAgree,
-      salesforceId,
-      directPayAuth,
-      directDepositAuth,
-      paymentType,
-      paymentMethodAdded
-    } = values;
+  async handleSubmit(formValues) {
+    console.log("handleSubmit (update submission)");
+
+    // submit validation: payment method
     if (
       this.props.submission.formPage1.paymentRequired &&
-      paymentType === "Card" &&
-      !paymentMethodAdded
+      formValues.paymentType === "Card" &&
+      !formValues.paymentMethodAdded
     ) {
-      openSnackbar(
-        "error",
+      console.log("No payment method added");
+      return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
-      return;
     }
-    if (!reCaptchaValue) {
-      openSnackbar("error", "Please verify you are human with Captcha");
-      return;
-    }
-    signature = this.props.submission.formPage1.signature;
-    if (!signature) {
-      openSnackbar("error", "Please provide a signature");
-      return;
-    }
-    const direct_pay_auth = directPayAuth ? new Date() : null;
-    const direct_deposit_auth = directDepositAuth ? new Date() : null;
-    const birthdate = formatBirthdate(values);
-    const employerObject = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.filter(obj => {
-          if (employerName.toLowerCase() === "community member") {
-            return obj.Name.toLowerCase() === "community members";
-          }
-          return obj.Name.toLowerCase() === employerName.toLowerCase();
-        })[0]
-      : { Name: "" };
-    const employerId = employerObject.Id;
-    const agencyNumber = employerObject.Agency_Number__c;
-    const legalLanguage = this.props.submission.formPage1.legalLanguage;
-    const q = queryString.parse(this.props.location.search);
-    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
-    if (!salesforceId && q && q.id) {
-      salesforceId = q.id;
-    }
-    if (!reCaptchaValue) {
-      openSnackbar("error", "Please verify you are human with Captcha");
-      return;
-    }
-    const body = {
-      ip_address: localIpUrl(),
-      submission_date: new Date(),
-      agency_number: agencyNumber,
-      birthdate,
-      cell_phone: mobilePhone,
-      employer_name: employerName,
-      employer_id: employerId,
-      first_name: firstName,
-      last_name: lastName,
-      home_street: homeStreet,
-      home_city: homeCity,
-      home_state: homeState,
-      home_zip: homeZip,
-      home_email: homeEmail,
-      preferred_language: preferredLanguage,
-      terms_agree: termsAgree,
-      signature: signature,
-      text_auth_opt_out: textAuthOptOut,
-      online_campaign_source: campaignSource,
-      legal_language: legalLanguage,
-      maintenance_of_effort: new Date(),
-      seiu503_cba_app_date: new Date(),
-      direct_pay_auth,
-      direct_deposit_auth,
-      immediate_past_member_status: null,
-      salesforce_id: salesforceId,
-      reCaptchaValue
+    const id = this.props.apiSubmission.submissionId;
+    const updates = {
+      paymentType: formValues.paymentType,
+      paymentMethodAdded: formValues.paymentMethodAdded,
+      medicaidResidents: formValues.medicaidResidents,
+      cardAddingUrl: this.props.submission.payment.cardAddingUrl,
+      memberId: this.props.submission.payment.memberId,
+      stripeCustomerId: this.props.submission.payment.stripeCustomerId,
+      memberShortId: this.props.submission.payment.memberShortId
     };
-    // console.log(body);
-    return this.props.apiSubmission
-      .addSubmission(body)
-      .then(result => {
-        if (
-          result.type === "ADD_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.submission.error ||
-              "An error occurred while trying to submit your information."
-          );
-        } else {
-          this.props.reset("submissionPage1");
-          this.props.history.push(`/page2`);
-        }
-      })
-      .catch(err => {
-        // console.log(err);
-        openSnackbar("error", err);
-      });
+    console.log(updates);
+    // change this to async / await
+    // also write to directJoinRate__c and OMA__c
+    try {
+      const result = await this.props.apiSubmission.updateSubmission(
+        id,
+        updates
+      );
+      if (
+        result.type === "UPDATE_SUBMISSION_FAILURE" ||
+        this.props.submission.error
+      ) {
+        console.log(this.props.submission.error);
+        this.props.handleError(this.props.submission.error);
+      } else {
+        this.props.reset("submissionPage1");
+        // redirect to CAPE here...
+        this.props.history.push(`/page2`);
+      }
+    } catch (err) {
+      console.log(err);
+      this.props.handleError(err);
+    }
   }
+
   render() {
     const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [

@@ -399,14 +399,12 @@ router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 //
 router.get("/sfaccts", sfCtrl.getAllEmployers);
 
-// LOOKUP ONE SALESFORCE CONTACT RECORD (BY ID OR FIRSTNAME/LASTNAME/EMAIL)
+// CREATE SALESFORCE CONTACT RECORD
 //   Example: PUT >> /api/sfcontact
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
 //          Object {
-//              ip_address                       : String
-//              submission_date                  : Timestamp
 //              agency_number                    : String
 //              employer_id                      : String
 //              birthdate                        : String
@@ -420,26 +418,11 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //              home_zip                         : String
 //              home_email                       : String
 //              preferred_language               : String
-//              terms_agree                      : Boolean
-//              Signature                        : String
 //              text_auth_opt_out                : Boolean
-//              online_campaign_source           : String
-//              contact_id                       : String
-//              legal_language                   : String
-//              maintenance_of_effort            : Date
-//              seiu503_cba_app_date             : Date
-//              direct_pay_auth                  : Date
-//              direct_deposit_auth              : Date
-//              immediate_past_member_status     : String
 //             }
-//   Returns: JSON selected fields from salesforce contact object on success.
+//   Returns: Contact Id or error message.
 //
-router.put(
-  "/sf",
-  sfCtrl.createOrUpdateSFContact,
-  submissionCtrl.createSubmission,
-  sfCtrl.createSFOnlineMemberApp
-);
+router.put("/sf", sfCtrl.createSFContact);
 
 // CREATE A SALESFORCE CONTACT RECORD
 //   Example: POST >> /api/sf

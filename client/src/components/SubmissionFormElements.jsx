@@ -179,6 +179,17 @@ export const formatBirthdate = formValues => {
   return formatSFDate(dobRaw);
 };
 
+// find matching employer object from redux store
+export const findEmployerObject = (employerObjects, employerName) =>
+  employerObjects
+    ? employerObjects.filter(obj => {
+        if (employerName.toLowerCase() === "community member") {
+          return obj.Name.toLowerCase() === "community members";
+        }
+        return obj.Name.toLowerCase() === employerName.toLowerCase();
+      })[0]
+    : { Name: "" };
+
 // MUI styles object
 export const stylesPage1 = theme => ({
   formContainer: {
