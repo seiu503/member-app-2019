@@ -173,6 +173,12 @@ export const formatSFDate = date => {
   return [year, month, day].join("-");
 };
 
+// convert MM DD YYYY to SF-formatted birthdate
+export const formatBirthdate = formValues => {
+  const dobRaw = `${formValues.mm}/${formValues.dd}/${formValues.yyyy}`;
+  return formatSFDate(dobRaw);
+};
+
 // MUI styles object
 export const stylesPage1 = theme => ({
   formContainer: {

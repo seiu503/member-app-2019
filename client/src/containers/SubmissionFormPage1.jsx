@@ -155,6 +155,47 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   };
 
+  async createPartialSubmission() {
+    // create partial submission using data in tabs 1 & 2
+    // for afh/retiree/comm, submission will not be finalized
+    // until payment method added in tab 3
+  }
+
+  async createSFContact() {}
+
+  formatBirthdate(formValues) {
+    const dobRaw = `${formValues.mm}/${formValues.dd}/${formValues.yyyy}`;
+    return formatSFDate(dobRaw);
+  }
+
+  async handleTab1(formValues) {
+    // handle moving from tab 1 to tab 2:
+    // lookup SF contact if no id provided
+
+    // first check if SF contact id already exists (prefill case)
+    if (this.props.submission.salesforceId) {
+      // skip lookup, move to next tab
+      return;
+    }
+
+    // otherwise, lookup contact by first/last/email
+    const body = {
+      first_name: formValues.firstName,
+      last_name: formValues.lastName,
+      home_email: formValues.homeEmail
+    };
+    await this.props.apiSF.lookupSFContact(body);
+    console.log(this.props.submission.salesforceId);
+
+    // if lookup was successful, return and move to next tab
+    if (this.props.submission.salesforceId) {
+      // skip create, move to next tab
+      return;
+    }
+
+    // otherwise, create new contact with submission data and return Id
+  }
+
   // this is a hot mess and needs to be split
   // out into a dozen smaller utility functions
   // the whole iframe fetch routine should be a separate function

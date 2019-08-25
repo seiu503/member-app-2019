@@ -214,8 +214,7 @@ export class SubmissionFormPage1Component extends React.Component {
     }
     const direct_pay_auth = directPayAuth ? new Date() : null;
     const direct_deposit_auth = directDepositAuth ? new Date() : null;
-    const dobRaw = mm + "/" + dd + "/" + yyyy;
-    const birthdate = formatSFDate(dobRaw);
+    const birthdate = formatBirthdate(values);
     const employerObject = this.props.submission.employerObjects
       ? this.props.submission.employerObjects.filter(obj => {
           if (employerName.toLowerCase() === "community member") {

@@ -129,6 +129,7 @@ function Submission(state = INITIAL_STATE, action) {
           return null;
         });
         return update(state, {
+          salesforceId: { $set: action.payload.Id },
           formPage1: {
             mm: { $set: moment(action.payload.Birthdate).format("MM") },
             dd: { $set: moment(action.payload.Birthdate).format("DD") },
