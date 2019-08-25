@@ -40,15 +40,6 @@ const validate = values => {
       controllingValues: ["adult foster home", "retired", "community member"]
     }
   ];
-  if (
-    (values.employerType === "adult foster home" ||
-      values.employerType === "retired" ||
-      values.employerType === "community member") &&
-    values.paymentMethod === "Card" &&
-    !values.paymentMethodAdded
-  ) {
-    errors.paymentMethodAdded = `Please add a payment method.`;
-  }
   conditionalRequiredFields.forEach(obj => {
     if (
       obj["controllingValues"].includes(values[obj["controllingField"]]) &&
@@ -62,6 +53,23 @@ const validate = values => {
       errors[field] = "Required";
     }
   });
+  if (
+    values.employerType &&
+    (values.employerType.toLowerCase() === "adult foster home" ||
+      values.employerType.toLowerCase() === "retired" ||
+      values.employerType.toLowerCase() === "community member") &&
+    values.paymentMethod === "Card" &&
+    !values.paymentMethodAdded
+  ) {
+    errors.paymentMethodAdded = `Please add a payment method.`;
+  }
+  if (
+    values.employerType &&
+    values.employerType.toLowerCase() === "adult foster home" &&
+    values.medicaidResidents < 1
+  ) {
+    errors.medicaidResidents = `Please enter the number of Medicaid Residents in your home(s).`;
+  }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)

@@ -73,6 +73,18 @@ export const Tab1 = props => {
               options={employerList}
             />
           )}
+          {formValues.employerType &&
+            formValues.employerType.toLowerCase() === "adult foster home" && (
+              <Field
+                label="Number of Medicaid Residents"
+                name="medicaidResidents"
+                id="medicaidResidents"
+                type="number"
+                classes={classes}
+                component={renderTextField}
+                InputProps={{ inputProps: { min: 0, max: 9 } }}
+              />
+            )}
           <FormGroup row classes={{ root: classes.formGroup2Col }}>
             <Field
               twocol

@@ -271,6 +271,12 @@ export const stylesPage1 = theme => ({
     width: "100%",
     margin: "0 0 30px 0"
   },
+  selectRight: {
+    textAlign: "right",
+    width: "100%",
+    margin: "0 0 30px 0",
+    direction: "rtl"
+  },
   failedText: {
     color: "red"
   },
@@ -492,12 +498,15 @@ export const renderTextField = ({
   );
 };
 
+const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
+
 // custom MUI friendly SELECT input
 export const renderSelect = ({
   input,
   name,
   label,
   classes,
+  align,
   meta: { error, touched },
   labelWidth,
   options,
@@ -518,14 +527,18 @@ export const renderSelect = ({
     <Select
       native
       input={<OutlinedInput labelWidth={labelWidth} />}
-      className={classes.select}
+      className={align === "right" ? classes.selectRight : classes.select}
       value={input.value ? input.value.toLowerCase() : ""}
-      onChange={input.onChange}
+      onChange={(event, value) => input.onChange(value)}
       {...custom}
       data-test="component-select"
     >
       {options.map(item => (
-        <option key={shortid()} value={item ? item.toLowerCase() : ""}>
+        <option
+          key={shortid()}
+          value={item ? item.toLowerCase() : ""}
+          style={selectStyle(align)}
+        >
           {item}
         </option>
       ))}
@@ -890,8 +903,10 @@ export const blankSig =
 export const retireeDuesCopy =
   "Monthly dues are $5 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
-export const afhDuesCopy =
-  "Monthly dues are $14.84 per Medicaid resident in your home(s), plus $2.75 per month to a fund used to advocate for issues that affect providers. Dues will be deducted [on the first day of each month?] from the payment method you provide below.";
+export const afhDuesCopy = afhDuesRate =>
+  `Monthly dues are $${afhDuesRate.toFixed(
+    2
+  )} -- calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted [on the first day of each month?] from the payment method you provide below.`;
 
 export const commDuesCopy =
   "Monthly dues are $10 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";

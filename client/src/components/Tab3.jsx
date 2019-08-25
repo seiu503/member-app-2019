@@ -23,6 +23,7 @@ export const Tab3 = props => {
     loading,
     invalid,
     iFrameURL,
+    afhDuesRate,
     back,
     formValues,
     changeFieldValue
@@ -33,7 +34,7 @@ export const Tab3 = props => {
   let duesCopy = "";
   switch (formValues.employerType.toLowerCase()) {
     case "adult foster home":
-      duesCopy = formElements.afhDuesCopy;
+      duesCopy = formElements.afhDuesCopy(afhDuesRate);
       changeFieldValue("paymentType", "Card");
       break;
     case "retired":

@@ -191,8 +191,20 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       }
 
-      // if submission type requires payment processing, then fetch iFrame URL
+      // for AFH, calculate dues rate:
+      let afhDuesRate;
+      if (formValues.employerType.toLowerCase() === "adult foster home") {
+        afhDuesRate = formValues.medicaidResidents * 14.84 + 2.75;
+        console.log(afhDuesRate);
+        this.props.apiSubmission.handleInput({
+          target: { name: "afhDuesRate", value: afhDuesRate }
+        });
+      }
+
+      // if submission type requires payment processing, fetch iFrame URL
       // for use in next tab
+      //
+      // once we start saving activePaymentMethod.last4 in SF, we can skip this call for people who have an active payment method and only make it in tab 3 if they tell us they want to add a new method
       if (
         formValues.employerType.toLowerCase() === "community member" ||
         formValues.employerType.toLowerCase() === "retired" ||

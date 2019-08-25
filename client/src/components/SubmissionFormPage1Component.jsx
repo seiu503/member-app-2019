@@ -384,6 +384,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 }
                 changeFieldValue={this.props.changeFieldValue}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
+                afhDuesRate={this.props.submission.formPage1.afhDuesRate}
               />
             )}
           </div>

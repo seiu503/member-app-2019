@@ -42,7 +42,8 @@ export const INITIAL_STATE = {
     legalLanguage: "",
     paymentRequired: false,
     paymentType: "",
-    paymentMethodAdded: false
+    paymentMethodAdded: false,
+    medicaidResidents: 0
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
