@@ -32,12 +32,8 @@ export class SubmissionFormPage2Component extends React.Component {
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
 
-  handleSubmit = async values => {
+  calcEthnicity = values => {
     const {
-      mailToCity,
-      mailToState,
-      mailToStreet,
-      mailToZip,
       africanOrAfricanAmerican,
       arabAmericanMiddleEasternOrNorthAfrican,
       asianOrAsianAmerican,
@@ -46,7 +42,51 @@ export class SubmissionFormPage2Component extends React.Component {
       nativeHawaiianOrOtherPacificIslander,
       white,
       other,
-      declined,
+      declined
+    } = values;
+    if (declined) {
+      return "declined";
+    }
+    let combinedEthnicities = "";
+    const ethnicities = {
+      africanOrAfricanAmerican,
+      arabAmericanMiddleEasternOrNorthAfrican,
+      asianOrAsianAmerican,
+      hispanicOrLatinx,
+      nativeAmericanOrIndigenous,
+      nativeHawaiianOrOtherPacificIslander,
+      white,
+      other
+    };
+    const ethnicitiesArray = Object.entries(ethnicities);
+    ethnicitiesArray.forEach(i => {
+      if (i[1]) {
+        if (combinedEthnicities === "") {
+          combinedEthnicities = i[0];
+        } else {
+          combinedEthnicities += `, ${i[0]}`;
+        }
+      }
+    });
+    return combinedEthnicities;
+  };
+
+  removeFalsy = obj => {
+    let newObj = {};
+    Object.keys(obj).forEach(prop => {
+      if (obj[prop]) {
+        newObj[prop] = obj[prop];
+      }
+    });
+    return newObj;
+  };
+
+  handleSubmit = async values => {
+    const {
+      mailToCity,
+      mailToState,
+      mailToStreet,
+      mailToZip,
       lgbtqId,
       transId,
       disabilityId,
@@ -61,40 +101,15 @@ export class SubmissionFormPage2Component extends React.Component {
       workPhone,
       hireDate
     } = values;
-    const ethnicity = () => {
-      if (declined) {
-        return "declined";
-      }
-      let combinedEthnicities = "";
-      const ethnicities = {
-        africanOrAfricanAmerican,
-        arabAmericanMiddleEasternOrNorthAfrican,
-        asianOrAsianAmerican,
-        hispanicOrLatinx,
-        nativeAmericanOrIndigenous,
-        nativeHawaiianOrOtherPacificIslander,
-        white,
-        other
-      };
-      const ethnicitiesArray = Object.entries(ethnicities);
-      ethnicitiesArray.forEach(i => {
-        if (i[1]) {
-          if (combinedEthnicities === "") {
-            combinedEthnicities = i[0];
-          } else {
-            combinedEthnicities += `, ${i[0]}`;
-          }
-        }
-      });
-      return combinedEthnicities;
-    };
+
+    const ethnicity = this.calcEthnicity(values);
 
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
       mail_to_postal_code: mailToZip,
-      ethnicity: ethnicity(),
+      ethnicity,
       lgbtq_id: lgbtqId,
       trans_id: transId,
       disability_id: disabilityId,
@@ -109,17 +124,8 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-    const removeFalsy = obj => {
-      let newObj = {};
-      Object.keys(obj).forEach(prop => {
-        if (obj[prop]) {
-          newObj[prop] = obj[prop];
-        }
-      });
-      return newObj;
-    };
 
-    const cleanBody = removeFalsy(body);
+    const cleanBody = this.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
       const params = queryString.parse(this.props.location.search);
@@ -172,6 +178,7 @@ export class SubmissionFormPage2Component extends React.Component {
       return formElements.handleError(err);
     }
   };
+
   render() {
     return (
       <div
