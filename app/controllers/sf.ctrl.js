@@ -166,8 +166,8 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 exports.updateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 284: updateSFContact`);
-  const { sf_contact_id } = res.locals;
+  console.log(`sf.ctrl.js > 284: updateSFContact`);
+  const { id } = req.params;
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -187,26 +187,32 @@ exports.updateSFContact = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 190: ${err}`);
+    console.error(`sf.ctrl.js > 190: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
   try {
     contact = await conn.sobject("Contact").update({
-      Id: sf_contact_id,
+      Id: id,
       ...updates
     });
     if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 210: returning next`);
+      console.log(`sf.ctrl.js > 210: returning next`);
       return next();
     }
-    // console.log(`sf.ctrl.js > 213: returning to client`);
-    return res.status(200).json({
-      salesforce_id: res.locals.sf_contact_id,
-      submission_id: res.locals.submission_id
-    });
+
+    let response = {
+      salesforce_id: id
+    };
+    if (res.locals.submission_id) {
+      response.submission_id = res.locals.submission_id;
+    }
+    console.log(response);
+
+    console.log(`sf.ctrl.js > 213: returning to client`);
+    return res.status(200).json(response);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 210: ${err}`);
+    console.error(`sf.ctrl.js > 210: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

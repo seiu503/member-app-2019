@@ -41,8 +41,11 @@ const validate = values => {
     }
   ];
   conditionalRequiredFields.forEach(obj => {
+    let matchValue = values[obj["controllingField"]]
+      ? values[obj["controllingField"]].toLowerCase()
+      : "";
     if (
-      obj["controllingValues"].includes(values[obj["controllingField"]]) &&
+      obj["controllingValues"].includes(matchValue) &&
       !values[obj["requiredField"]]
     ) {
       errors[obj["requiredField"]] = "Required";

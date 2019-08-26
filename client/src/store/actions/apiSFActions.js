@@ -13,6 +13,9 @@ export const LOOKUP_SF_CONTACT_FAILURE = "LOOKUP_SF_CONTACT_FAILURE";
 export const CREATE_SF_CONTACT_REQUEST = "CREATE_SF_CONTACT_REQUEST";
 export const CREATE_SF_CONTACT_SUCCESS = "CREATE_SF_CONTACT_SUCCESS";
 export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
+export const UPDATE_SF_CONTACT_REQUEST = "UPDATE_SF_CONTACT_REQUEST";
+export const UPDATE_SF_CONTACT_SUCCESS = "UPDATE_SF_CONTACT_SUCCESS";
+export const UPDATE_SF_CONTACT_FAILURE = "UPDATE_SF_CONTACT_FAILURE";
 export const CREATE_SF_OMA_REQUEST = "CREATE_SF_OMA_REQUEST";
 export const CREATE_SF_OMA_SUCCESS = "CREATE_SF_OMA_SUCCESS";
 export const CREATE_SF_OMA_FAILURE = "CREATE_SF_OMA_FAILURE";
@@ -152,12 +155,52 @@ export function createSFContact(body) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sf`,
-      method: "PUT",
+      method: "POST",
       types: [
         CREATE_SF_CONTACT_REQUEST,
         CREATE_SF_CONTACT_SUCCESS,
         {
           type: CREATE_SF_CONTACT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+/*
+ * Function: updateSFContact -- update a SF Contact
+ * @param {object} body
+ * This action dispatches additional actions as it executes:
+ *   UPDATE_SF_CONTACT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   UPDATE_SF_CONTACT_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   UPDATE_SF_CONTACT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function updateSFContact(id, body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sf/${id}`,
+      method: "PUT",
+      types: [
+        UPDATE_SF_CONTACT_REQUEST,
+        UPDATE_SF_CONTACT_SUCCESS,
+        {
+          type: UPDATE_SF_CONTACT_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
@@ -192,7 +235,7 @@ export function createSFOMA(body) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sfOMA`,
-      method: "PUT",
+      method: "POST",
       types: [
         CREATE_SF_OMA_REQUEST,
         CREATE_SF_OMA_SUCCESS,

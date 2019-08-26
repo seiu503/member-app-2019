@@ -49,10 +49,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
   componentDidMount() {
     // check for contact id in query string
-    const values = queryString.parse(this.props.location.search);
+    const params = queryString.parse(this.props.location.search);
     // if find contact id, call API to fetch contact info for prefill
-    if (values.id) {
-      const { id } = values;
+    if (params.id) {
+      const { id } = params;
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
@@ -129,8 +129,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   toggleSignatureInputType = () => {
-    let value = this.state.signatureType === "draw" ? "write" : "draw";
-    this.setState({ signatureType: value });
+    let type = this.state.signatureType === "draw" ? "write" : "draw";
+    this.setState({ signatureType: type });
   };
 
   clearSignature = () => {
@@ -159,7 +159,7 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   // just navigate to tab, don't run validation on current tab
-  changeTab = (event, newValue) => {
+  changeTab = newValue => {
     const newState = { ...this.state };
     newState.tab = newValue;
     this.setState({ ...newState });
@@ -168,17 +168,12 @@ export class SubmissionFormPage1Container extends React.Component {
   prepForSubmission(values) {
     let returnValues = { ...values };
 
-    // submit validation: signature
-    const signature = this.props.submission.formPage1.signature;
-    if (!signature) {
-      return openSnackbar("error", "Please provide a signature");
-    }
-    returnValues.signature = signature;
-
     // set default date values for DPA & DDA if relevant
-    returnValues.direct_pay_auth = values.directPayAuth ? new Date() : null;
+    returnValues.direct_pay_auth = values.directPayAuth
+      ? formatSFDate(new Date())
+      : null;
     returnValues.direct_deposit_auth = values.directDepositAuth
-      ? new Date()
+      ? formatSFDate(new Date())
       : null;
 
     // set legal language
@@ -261,21 +256,23 @@ export class SubmissionFormPage1Container extends React.Component {
     };
   }
 
-  async createSubmission(formValues) {
+  async createSubmission() {
+    const { formValues } = this.props;
+
     // create initial submission using data in tabs 1 & 2
     // for afh/retiree/comm, submission will not be
     // finalized and written to salesforce
     // until payment method added in tab 3
 
     return new Promise((resolve, reject) => {
-      const body = this.generateSubmissionBody(formValues);
+      const body = this.generateSubmissionBody(this.props.formValues);
 
       try {
         this.props.apiSubmission.addSubmission(body);
         // if no payment is required, we're done with saving the submission
         // we can write the OMA to SF and then move on to the CAPE ask
         if (!formValues.paymentRequired) {
-          this.props.apiSF.addSFOMA(body);
+          this.props.apiSF.createSFOMA(body);
           resolve();
           // goto CAPE ...
         }
@@ -290,7 +287,7 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  async prepForContact(values) {
+  prepForContact(values) {
     let returnValues = { ...values };
 
     // format birthdate
@@ -308,8 +305,8 @@ export class SubmissionFormPage1Container extends React.Component {
     return returnValues;
   }
 
-  async createSFContact(formValues) {
-    const values = this.prepForContact(formValues);
+  async createSFContact() {
+    const values = this.prepForContact(this.props.formValues);
     let {
       firstName,
       lastName,
@@ -346,16 +343,65 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     try {
-      await this.props.apiSubmission.createSFContact(body);
-      console.log(this.props.submission.salesforce_id);
+      await this.props.apiSF.createSFContact(body);
+      console.log(this.props.submission.salesforceId);
     } catch (err) {
       console.log(err);
       return this.handleError(err);
     }
   }
 
-  async handleTab1(event, newValue, formValues) {
-    console.log("handleTab1");
+  async updateSFContact() {
+    const values = this.prepForContact(this.props.formValues);
+    let {
+      firstName,
+      lastName,
+      birthdate,
+      employerId,
+      agencyNumber,
+      preferredLanguage,
+      homeStreet,
+      homeZip,
+      homeState,
+      homeCity,
+      homeEmail,
+      mobilePhone,
+      employerName,
+      textAuthOptOut
+    } = values;
+
+    let id = this.props.submission.salesforceId;
+
+    const body = {
+      agency_number: agencyNumber,
+      birthdate,
+      cell_phone: mobilePhone,
+      employer_name: employerName,
+      employer_id: employerId,
+      first_name: firstName,
+      last_name: lastName,
+      home_street: homeStreet,
+      home_city: homeCity,
+      home_state: homeState,
+      home_zip: homeZip,
+      home_email: homeEmail,
+      preferred_language: preferredLanguage,
+      text_auth_opt_out: textAuthOptOut
+      // reCaptchaValue
+    };
+
+    try {
+      const result = await this.props.apiSF.updateSFContact(id, body);
+      console.log(result.payload);
+      console.log(this.props.submission.salesforceId);
+    } catch (err) {
+      console.log(err);
+      return this.handleError(err);
+    }
+  }
+
+  async handleTab1() {
+    const { formValues } = this.props;
     // handle moving from tab 1 to tab 2:
     // lookup SF contact if no id provided
 
@@ -367,10 +413,10 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
-      // skip lookup, save partial submission and move to next tab
+      // update existing contact, move to next tab
       try {
-        await this.createSubmission(formValues);
-        return this.changeTab(event, newValue);
+        await this.updateSFContact();
+        return this.changeTab(1);
       } catch (err) {
         console.log(err);
         return this.handleError(err);
@@ -393,33 +439,24 @@ export class SubmissionFormPage1Container extends React.Component {
 
     console.log(this.props.submission.salesforceId);
 
-    // if lookup was successful, save partial submission and move to next tab
+    // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
-      // skip create, move to next tab
-      await this.createSubmission(formValues);
-      return this.changeTab(event, newValue);
+      await this.updateSFContact();
+      return this.changeTab(1);
     }
 
     // otherwise, create new contact with submission data,
-    // then save partial submission
     // then move to next tab
     try {
-      await this.createSFContact(formValues);
-    } catch (err) {
-      console.log(err);
-      return this.handleError(err);
-    }
-
-    try {
-      await this.createSubmission(formValues);
-      return this.changeTab(event, newValue);
+      await this.createSFContact();
     } catch (err) {
       console.log(err);
       return this.handleError(err);
     }
   }
 
-  async getIframeURL(formValues) {
+  async getIframeURL() {
+    const { formValues } = this.props;
     // if submission type requires payment processing, fetch iFrame URL
     // for use in next tab
 
@@ -486,7 +523,8 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
-  async saveLegalLanguage(formValues) {
+  async saveLegalLanguage() {
+    const { formValues } = this.props;
     // save legal_language to redux store before ref disappears
     let legalLanguage = this.props.legal_language.current.innerHTML;
     if (formValues.directDepositAuth && this.props.direct_deposit.current) {
@@ -514,15 +552,11 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  async saveSignature(formValues) {
+  async saveSignature() {
+    const { formValues } = this.props;
     // perform signature processing steps and save value to redux store
     // before ref disappears
-    if (this.state.signatureType === "write") {
-      // console.log('381');
-      return this.props.apiSubmission.handleInput({
-        target: { name: "signature", value: formValues.signature }
-      });
-    }
+
     if (this.state.signatureType === "draw") {
       // console.log('387');
       let sigUrl;
@@ -532,22 +566,28 @@ export class SubmissionFormPage1Container extends React.Component {
           formValues.lastName
         );
         // console.log(`394: ${sigUrl}`);
-        return this.props.apiSubmission.handleInput({
-          target: { name: "signature", value: sigUrl }
-        });
+        this.props.changeFieldValue("signature", sigUrl);
+        return sigUrl;
       } catch (err) {
-        console.log(err);
-        return this.handleError(err);
+        // console.log(err);
+        this.handleError(err);
       }
     }
   }
 
-  async addSFOMA(values) {}
+  async handleTab2() {
+    const { formValues } = this.props;
 
-  async handleTab2(event, newValue, formValues) {
-    // perform signature processing steps and save value to redux store
-    // before ref disappears
-    this.saveSignature(formValues);
+    // submit validation: signature
+    try {
+      const signature = await this.saveSignature();
+      if (!signature) {
+        return openSnackbar("error", "Please provide a signature");
+      }
+    } catch (err) {
+      console.log(err);
+      return this.handleError(err);
+    }
 
     // for AFH, calculate dues rate:
     if (formValues.employerType.toLowerCase() === "adult foster home") {
@@ -572,18 +612,24 @@ export class SubmissionFormPage1Container extends React.Component {
     // save legal language
     this.saveLegalLanguage(formValues);
 
-    // navigate to next tab
-    return this.changeTab(event, newValue);
+    // save partial submission, then move to next tab
+    try {
+      await this.createSubmission();
+      return this.changeTab(2);
+    } catch (err) {
+      console.log(err);
+      return this.handleError(err);
+    }
   }
 
-  handleTab(event, newValue, formValues) {
+  handleTab(newValue) {
     if (newValue === 1) {
-      return this.handleTab1(event, newValue, formValues);
+      return this.handleTab1();
     }
     if (newValue === 2) {
-      return this.handleTab2(event, newValue, formValues);
+      return this.handleTab2();
     } else {
-      return this.changeTab(event, newValue);
+      return this.changeTab(newValue);
     }
   }
 

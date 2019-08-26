@@ -215,11 +215,6 @@ router.delete("/image/:key", authCtrl.requireAuth, imageCtrl.deleteImage);
 /* =========================== SUBMISSION ROUTES =========================== */
 
 // CREATE A SUBMISSION
-// This route calls 3 controller functions:
-// (1) Creates a submission in the Postgres DB
-// (2) Creates an 'OnlineMemberApp__c' object in Salesforce
-// (3) Updates the corresponding contact record in Salesforce with any
-//     new or changed fields from the submission
 //
 //   Example: POST >> /api/submission/
 //   Secured: No
@@ -255,12 +250,7 @@ router.delete("/image/:key", authCtrl.requireAuth, imageCtrl.deleteImage);
 //        }
 //   Returns: JSON created submission object on success.
 //
-router.post(
-  "/submission",
-  submissionCtrl.createSubmission,
-  sfCtrl.createSFOnlineMemberApp,
-  sfCtrl.updateSFContact
-);
+router.post("/submission", submissionCtrl.createSubmission);
 
 // UPDATE A SUBMISSION
 //   Example: PUT >> /api/submission/:id
@@ -279,11 +269,7 @@ router.post(
 //      }
 //   Returns: JSON updated submission object on success.
 //
-router.put(
-  "/submission/:id",
-  submissionCtrl.updateSubmission,
-  sfCtrl.updateSFContact
-);
+router.put("/submission/:id", submissionCtrl.updateSubmission);
 // router.put("/submission/:id", authCtrl.requireAuth, submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
@@ -400,7 +386,7 @@ router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 router.get("/sfaccts", sfCtrl.getAllEmployers);
 
 // CREATE SALESFORCE CONTACT RECORD
-//   Example: PUT >> /api/sfcontact
+//   Example: POST >> /api/sfcontact
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
@@ -422,10 +408,10 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //             }
 //   Returns: Contact Id or error message.
 //
-router.put("/sf", sfCtrl.createSFContact);
+router.post("/sf", sfCtrl.createSFContact);
 
-// CREATE A SALESFORCE CONTACT RECORD
-//   Example: POST >> /api/sf
+// UPDATE A SALESFORCE CONTACT RECORD
+//   Example: PUT >> /api/sf/0035500000VFAE9AAP
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
@@ -460,7 +446,7 @@ router.put("/sf", sfCtrl.createSFContact);
 //   Returns: Salesforce contact id (if called as standalone)
 //   OR passes contact ID to next middleware.
 //
-router.post("/sf", sfCtrl.createSFContact);
+router.put("/sf/:id", sfCtrl.updateSFContact);
 
 /* ================================ EXPORT ================================= */
 

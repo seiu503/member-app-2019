@@ -58,7 +58,10 @@ import {
   CREATE_SF_CONTACT_FAILURE,
   CREATE_SF_OMA_REQUEST,
   CREATE_SF_OMA_SUCCESS,
-  CREATE_SF_OMA_FAILURE
+  CREATE_SF_OMA_FAILURE,
+  UPDATE_SF_CONTACT_SUCCESS,
+  UPDATE_SF_CONTACT_REQUEST,
+  UPDATE_SF_CONTACT_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -110,6 +113,7 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_URL_REQUEST:
     case CREATE_SF_CONTACT_REQUEST:
     case CREATE_SF_OMA_REQUEST:
+    case UPDATE_SF_CONTACT_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -146,6 +150,8 @@ function appState(state = INITIAL_STATE, action) {
     case CREATE_SF_CONTACT_FAILURE:
     case CREATE_SF_OMA_SUCCESS:
     case CREATE_SF_OMA_FAILURE:
+    case UPDATE_SF_CONTACT_SUCCESS:
+    case UPDATE_SF_CONTACT_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

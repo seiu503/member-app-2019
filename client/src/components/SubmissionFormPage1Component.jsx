@@ -199,7 +199,7 @@ export class SubmissionFormPage1Component extends React.Component {
         this.props.handleError(this.props.submission.error);
       } else {
         const body = this.props.generateSubmissionBody(formValues);
-        this.props.apiSF.addSFOMA(body);
+        this.props.apiSF.createSFOMA(body);
         this.props.reset("submissionPage1");
         // redirect to CAPE here...
         this.props.history.push(`/page2`);
@@ -253,7 +253,7 @@ export class SubmissionFormPage1Component extends React.Component {
             />
             {this.props.tab === 0 && (
               <Tab1Form
-                onSubmit={e => this.props.handleTab(e, 1)}
+                onSubmit={() => this.props.handleTab(1)}
                 classes={classes}
                 employerTypesList={employerTypesList}
                 employerList={employerList}
@@ -266,13 +266,13 @@ export class SubmissionFormPage1Component extends React.Component {
                 width={this.props.width}
                 handleTab={this.props.handleTab}
                 submitErrors={this.props.submitErrors}
+                reCaptchaChange={this.reCaptchaChange}
+                reCaptchaRef={this.props.reCaptchaRef}
               />
             )}
             {this.props.tab === 1 && (
               <Tab2Form
-                onSubmit={e =>
-                  this.props.handleTab(e, 2, this.props.formValues)
-                }
+                onSubmit={() => this.props.handleTab(2)}
                 classes={classes}
                 legal_language={this.props.legal_language}
                 direct_pay={this.props.direct_pay}
@@ -295,8 +295,6 @@ export class SubmissionFormPage1Component extends React.Component {
               <Tab3Form
                 onSubmit={this.handleSubmit}
                 classes={classes}
-                reCaptchaChange={this.reCaptchaChange}
-                reCaptchaRef={this.props.reCaptchaRef}
                 loading={this.props.submission.loading}
                 handleTab={this.props.handleTab}
                 back={this.props.back}

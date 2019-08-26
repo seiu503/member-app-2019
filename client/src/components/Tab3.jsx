@@ -1,7 +1,6 @@
 import React from "react";
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
-import ReCAPTCHA from "react-google-recaptcha";
 import Iframe from "react-iframe";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
@@ -18,8 +17,6 @@ export const Tab3 = props => {
   const {
     onSubmit,
     classes,
-    reCaptchaChange,
-    reCaptchaRef,
     loading,
     invalid,
     iFrameURL,
@@ -105,17 +102,11 @@ export const Tab3 = props => {
           ) : (
             ""
           ))}
-
-        <ReCAPTCHA
-          ref={reCaptchaRef}
-          sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-          onChange={reCaptchaChange}
-        />
         <div className={classes.buttonWrapTab3}>
           <Button
             type="button"
             data-test="button-back"
-            onClick={e => back(e, 1)}
+            onClick={() => back(1)}
             color="primary"
             className={classes.back}
             variant="contained"

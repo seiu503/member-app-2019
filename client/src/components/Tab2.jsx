@@ -181,7 +181,7 @@ export const Tab2 = props => {
           <Button
             type="button"
             data-test="button-back"
-            onClick={e => back(e, 0)}
+            onClick={() => back(0)}
             color="primary"
             className={classes.back}
             variant="contained"

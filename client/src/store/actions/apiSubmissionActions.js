@@ -20,8 +20,8 @@ export function handleInput({ target: { name, value } }) {
 export function addSubmission(body) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/sf/`,
-      method: "PUT",
+      endpoint: `${BASE_URL}/api/submission`,
+      method: "POST",
       types: [
         ADD_SUBMISSION_REQUEST,
         ADD_SUBMISSION_SUCCESS,
