@@ -2,11 +2,6 @@
 
 const jwt = require("jsonwebtoken");
 
-/** Helper method to remove duplicates from an array **/
-const onlyUnique = (value, index, self) => {
-  return self.indexOf(value) === index;
-};
-
 /** Helper method to generate random text strings for testing */
 const randomText = () => {
   let text = "";
@@ -41,7 +36,6 @@ generateToken = user => {
 };
 
 module.exports = {
-  onlyUnique,
   randomText,
   handleError,
   setUserInfo,

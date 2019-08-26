@@ -1327,22 +1327,7 @@ const requiredFields = [
   "termsAgree",
   "signature"
 ];
-const generateSampleSubmissionFrontEnd = () => {
-  const sampleData = {};
-  sampleData.submission_id = uuid.v4();
-  Object.keys(submissionsTableFields).map(function(key, index) {
-    if (requiredFields.includes(submissionsTableFields[key].clientFieldName)) {
-      let clientFieldName = submissionsTableFields[key].postgresFieldName;
-      sampleData[clientFieldName] = submissionsTableFields[key].testingSample;
-    }
-  });
-  sampleData.birthdate = new Date("1/1/2001");
-  sampleData.dd = "01";
-  sampleData.mm = "01";
-  sampleData.yyyy = "2001";
-  sampleData.termsAgree = true;
-  return sampleData;
-};
+
 const generateSampleValidate = () => {
   const sampleData = {};
   Object.keys(submissionsTableFields).map(function(key, index) {
@@ -1377,7 +1362,6 @@ module.exports = {
   requiredFields,
   Page2TableFields,
   generateSampleSubmission,
-  generateSampleSubmissionFrontEnd,
   generateSampleValidate,
   generatePage2Validate,
   generateSFContactFieldList,

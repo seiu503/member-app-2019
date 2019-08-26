@@ -51,7 +51,7 @@ exports.singleImgUpload = async (req, res, next) => {
             return res.status(200).json(records[0]);
           })
           .catch(err => {
-            console.log(`imageUpload.ctrl.js > 53: ${err}`);
+            // console.log(`image.ctrl.js > 53: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       } else {
@@ -62,7 +62,7 @@ exports.singleImgUpload = async (req, res, next) => {
             return res.status(200).json(records[0]);
           })
           .catch(err => {
-            console.log(`image.ctrl.js > 64: ${err}`);
+            // console.log(`image.ctrl.js > 64: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       }

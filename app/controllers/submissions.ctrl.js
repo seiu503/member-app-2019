@@ -40,7 +40,7 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  console.log("submissions.ctrl.js > 43: createSubmission");
+  // console.log("submissions.ctrl.js > 43: createSubmission");
   let {
     ip_address,
     submission_date,
@@ -156,6 +156,7 @@ const createSubmission = async (req, res, next) => {
         "There was an error saving the submission"
     });
   } else {
+    res.locals.submission_id = createSubmissionResult[0].id;
     return res
       .status(200)
       .json({ salesforce_id, submission_id: createSubmissionResult[0].id });
@@ -170,8 +171,8 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  console.log(`subm.ctrl.js > 173: ${id}`);
-  console.log(updates);
+  // console.log(`subm.ctrl.js > 173: ${id}`);
+  // console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
       return res.status(422).json({ message: "No updates submitted" });
@@ -193,18 +194,20 @@ const updateSubmission = async (req, res, next) => {
       const errmsg =
         updateSubmissionResult.message ||
         "There was an error updating the submission";
-      console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+      // console.error(`submissions.ctrl.js > 205: ${errmsg}`);
       return res.status(500).json({
         message: errmsg
       });
     } else {
-      console.log("subm.ctrl.js > 201: returning to client");
+      // console.log("subm.ctrl.js > 201: returning to client");
+      // saving to res.locals to make id available for testing
+      res.locals.submission_id = updateSubmissionResult[0].id;
       return res
         .status(200)
         .json({ submission_id: updateSubmissionResult[0].id });
     }
   } catch (error) {
-    console.error(`submissions.ctrl.js > 217: ${error}`);
+    // console.error(`submissions.ctrl.js > 217: ${error}`);
     return res.status(404).json({ message: error.message });
   }
 };
@@ -270,11 +273,6 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = (token, ip_address) => {
-  // if (process.env.NODE_ENV === "testing") {
-  //   return new Promise((resolve, reject) => {
-  //     resolve();
-  //   });
-  // }
   return new Promise((resolve, reject) => {
     const key =
       process.env.NODE_ENV === "testing"
