@@ -165,13 +165,46 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   };
 
-  async createSubmission(formValues) {
-    // create initial submission using data in tabs 1 & 2
-    // for afh/retiree/comm, submission will not be
-    // finalized and written to salesforce
-    // until payment method added in tab 3
+  prepForSubmission(values) {
+    let returnValues = { ...values };
 
-    const values = this.cleanupSubmissionData(formValues);
+    // submit validation: signature
+    const signature = this.props.submission.formPage1.signature;
+    if (!signature) {
+      return openSnackbar("error", "Please provide a signature");
+    }
+    returnValues.signature = signature;
+
+    // set default date values for DPA & DDA if relevant
+    returnValues.direct_pay_auth = values.directPayAuth ? new Date() : null;
+    returnValues.direct_deposit_auth = values.directDepositAuth
+      ? new Date()
+      : null;
+
+    // set legal language
+    returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+
+    // set campaign source
+    const q = queryString.parse(this.props.location.search);
+    returnValues.campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+
+    // set salesforce id
+    if (!values.salesforceId) {
+      if (q && q.id) {
+        returnValues.salesforceId = q.id;
+      }
+      if (this.props.submission.salesforce_id) {
+        returnValues.salesforceId = this.props.submission.salesforce_id;
+      }
+    }
+
+    return returnValues;
+  }
+
+  generateSubmissionBody(values) {
+    const firstValues = this.prepForContact(values);
+    const secondValues = this.prepForSubmission(firstValues);
+
     let {
       firstName,
       lastName,
@@ -188,40 +221,16 @@ export class SubmissionFormPage1Container extends React.Component {
       employerName,
       textAuthOptOut,
       immediatePastMemberStatus,
-      directPayAuth,
-      directDepositAuth,
+      direct_pay_auth,
+      direct_deposit_auth,
       salesforceId,
-      termsAgree
-    } = values;
+      termsAgree,
+      campaignSource,
+      legalLanguage,
+      signature
+    } = secondValues;
 
-    // submit validation: signature
-    const signature = this.props.submission.formPage1.signature;
-    if (!signature) {
-      return openSnackbar("error", "Please provide a signature");
-    }
-
-    // set default date values for DPA & DDA if relevant
-    const direct_pay_auth = directPayAuth ? new Date() : null;
-    const direct_deposit_auth = directDepositAuth ? new Date() : null;
-
-    // set legal language
-    const legalLanguage = this.props.submission.formPage1.legalLanguage;
-
-    // set campaign source
-    const q = queryString.parse(this.props.location.search);
-    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
-
-    // set salesforce id
-    if (!salesforceId) {
-      if (q && q.id) {
-        salesforceId = q.id;
-      }
-      if (this.props.submission.salesforce_id) {
-        salesforceId = this.props.submission.salesforce_id;
-      }
-    }
-
-    const body = {
+    return {
       ip_address: localIpUrl(),
       submission_date: new Date(),
       agency_number: agencyNumber,
@@ -250,21 +259,38 @@ export class SubmissionFormPage1Container extends React.Component {
       salesforce_id: salesforceId
       // reCaptchaValue
     };
-
-    try {
-      await this.props.apiSubmission.addSubmission(body);
-      // if no payment is required, we're done with saving the submission
-      // we can write the OMA to SF and then move on to the CAPE ask
-      // add OMA ...
-      // goto CAPE ...
-      // if payment is required then we need to move to next tab
-    } catch (err) {
-      console.log(err);
-      return this.handleError(err);
-    }
   }
 
-  async cleanupSubmissionData(values) {
+  async createSubmission(formValues) {
+    // create initial submission using data in tabs 1 & 2
+    // for afh/retiree/comm, submission will not be
+    // finalized and written to salesforce
+    // until payment method added in tab 3
+
+    return new Promise((resolve, reject) => {
+      const body = this.generateSubmissionBody(formValues);
+
+      try {
+        this.props.apiSubmission.addSubmission(body);
+        // if no payment is required, we're done with saving the submission
+        // we can write the OMA to SF and then move on to the CAPE ask
+        if (!formValues.paymentRequired) {
+          this.props.apiSF.addSFOMA(body);
+          resolve();
+          // goto CAPE ...
+        }
+        resolve();
+
+        // if payment is required then we need to move to next tab
+      } catch (err) {
+        console.log(err);
+        this.handleError(err);
+        reject(err);
+      }
+    });
+  }
+
+  async prepForContact(values) {
     let returnValues = { ...values };
 
     // format birthdate
@@ -283,7 +309,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSFContact(formValues) {
-    const values = this.cleanupSubmissionData(formValues);
+    const values = this.prepForContact(formValues);
     let {
       firstName,
       lastName,
@@ -516,6 +542,8 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  async addSFOMA(values) {}
+
   async handleTab2(event, newValue, formValues) {
     // perform signature processing steps and save value to redux store
     // before ref disappears
@@ -594,7 +622,7 @@ export class SubmissionFormPage1Container extends React.Component {
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}
           clearSignature={this.clearSignature}
-          cleanupSubmissionData={this.cleanupSubmissionData}
+          generateSubmissionBody={this.generateSubmissionBody}
           handleError={this.handleError}
         />
       </div>

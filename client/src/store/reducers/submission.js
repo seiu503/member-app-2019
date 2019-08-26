@@ -28,7 +28,10 @@ import {
   GET_IFRAME_URL_FAILURE,
   CREATE_SF_CONTACT_REQUEST,
   CREATE_SF_CONTACT_SUCCESS,
-  CREATE_SF_CONTACT_FAILURE
+  CREATE_SF_CONTACT_FAILURE,
+  CREATE_SF_OMA_REQUEST,
+  CREATE_SF_OMA_SUCCESS,
+  CREATE_SF_OMA_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -80,6 +83,7 @@ function Submission(state = INITIAL_STATE, action) {
     case LOOKUP_SF_CONTACT_REQUEST:
     case GET_IFRAME_URL_REQUEST:
     case CREATE_SF_CONTACT_REQUEST:
+    case CREATE_SF_OMA_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -228,6 +232,11 @@ function Submission(state = INITIAL_STATE, action) {
         redirect: { $set: true }
       });
 
+    case CREATE_SF_OMA_SUCCESS:
+      return update(state, {
+        error: { $set: null }
+      });
+
     case GET_IFRAME_URL_SUCCESS:
       return update(state, {
         payment: {
@@ -250,6 +259,7 @@ function Submission(state = INITIAL_STATE, action) {
     case LOOKUP_SF_CONTACT_FAILURE:
     case GET_IFRAME_URL_FAILURE:
     case CREATE_SF_CONTACT_FAILURE:
+    case CREATE_SF_OMA_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

@@ -198,6 +198,8 @@ export class SubmissionFormPage1Component extends React.Component {
         console.log(this.props.submission.error);
         this.props.handleError(this.props.submission.error);
       } else {
+        const body = this.props.generateSubmissionBody(formValues);
+        this.props.apiSF.addSFOMA(body);
         this.props.reset("submissionPage1");
         // redirect to CAPE here...
         this.props.history.push(`/page2`);
