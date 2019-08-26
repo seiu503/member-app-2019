@@ -173,19 +173,20 @@ export class SubmissionFormPage1Component extends React.Component {
         "Please click 'Add a Card' to add a payment method"
       );
     }
-    const id = this.props.apiSubmission.submissionId;
+    const id = this.props.submission.submissionId;
+    console.log(id);
     const updates = {
-      paymentType: formValues.paymentType,
-      paymentMethodAdded: formValues.paymentMethodAdded,
-      medicaidResidents: formValues.medicaidResidents,
-      cardAddingUrl: this.props.submission.payment.cardAddingUrl,
-      memberId: this.props.submission.payment.memberId,
-      stripeCustomerId: this.props.submission.payment.stripeCustomerId,
-      memberShortId: this.props.submission.payment.memberShortId
+      payment_type: formValues.paymentType,
+      payment_method_added: formValues.paymentMethodAdded,
+      medicaid_residents: formValues.medicaidResidents,
+      card_adding_url: this.props.submission.payment.cardAddingUrl,
+      member_id: this.props.submission.payment.memberId,
+      stripe_customer_id: this.props.submission.payment.stripeCustomerId,
+      member_short_id: this.props.submission.payment.memberShortId
     };
     console.log(updates);
-    // change this to async / await
-    // also write to directJoinRate__c and OMA__c
+
+    // also write to directJoinRate__c ######### <== TODO
     try {
       const result = await this.props.apiSubmission.updateSubmission(
         id,

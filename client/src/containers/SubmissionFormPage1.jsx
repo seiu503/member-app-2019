@@ -222,7 +222,8 @@ export class SubmissionFormPage1Container extends React.Component {
       termsAgree,
       campaignSource,
       legalLanguage,
-      signature
+      signature,
+      reCaptchaValue
     } = secondValues;
 
     return {
@@ -251,8 +252,8 @@ export class SubmissionFormPage1Container extends React.Component {
       direct_pay_auth,
       direct_deposit_auth,
       immediate_past_member_status: immediatePastMemberStatus,
-      salesforce_id: salesforceId
-      // reCaptchaValue
+      salesforce_id: salesforceId,
+      reCaptchaValue
     };
   }
 
@@ -264,27 +265,25 @@ export class SubmissionFormPage1Container extends React.Component {
     // finalized and written to salesforce
     // until payment method added in tab 3
 
-    return new Promise((resolve, reject) => {
-      const body = this.generateSubmissionBody(this.props.formValues);
+    const body = this.generateSubmissionBody(this.props.formValues);
 
-      try {
-        this.props.apiSubmission.addSubmission(body);
-        // if no payment is required, we're done with saving the submission
-        // we can write the OMA to SF and then move on to the CAPE ask
-        if (!formValues.paymentRequired) {
-          this.props.apiSF.createSFOMA(body);
-          resolve();
-          // goto CAPE ...
-        }
-        resolve();
-
-        // if payment is required then we need to move to next tab
-      } catch (err) {
-        console.log(err);
-        this.handleError(err);
-        reject(err);
+    try {
+      const result = await this.props.apiSubmission.addSubmission(body);
+      console.log(result.payload);
+      console.log(this.props.submission.submissionId);
+      // if no payment is required, we're done with saving the submission
+      // we can write the OMA to SF and then move on to the CAPE ask
+      if (!formValues.paymentRequired) {
+        return this.props.apiSF.createSFOMA(body);
+        // goto CAPE ...
       }
-    });
+      return;
+
+      // if payment is required then we need to move to next tab
+    } catch (err) {
+      console.log(err);
+      return this.handleError(err);
+    }
   }
 
   prepForContact(values) {
@@ -321,7 +320,8 @@ export class SubmissionFormPage1Container extends React.Component {
       homeEmail,
       mobilePhone,
       employerName,
-      textAuthOptOut
+      textAuthOptOut,
+      reCaptchaValue
     } = values;
 
     const body = {
@@ -338,8 +338,8 @@ export class SubmissionFormPage1Container extends React.Component {
       home_zip: homeZip,
       home_email: homeEmail,
       preferred_language: preferredLanguage,
-      text_auth_opt_out: textAuthOptOut
-      // reCaptchaValue
+      text_auth_opt_out: textAuthOptOut,
+      reCaptchaValue
     };
 
     try {
@@ -367,7 +367,8 @@ export class SubmissionFormPage1Container extends React.Component {
       homeEmail,
       mobilePhone,
       employerName,
-      textAuthOptOut
+      textAuthOptOut,
+      reCaptchaValue
     } = values;
 
     let id = this.props.submission.salesforceId;
@@ -386,8 +387,8 @@ export class SubmissionFormPage1Container extends React.Component {
       home_zip: homeZip,
       home_email: homeEmail,
       preferred_language: preferredLanguage,
-      text_auth_opt_out: textAuthOptOut
-      // reCaptchaValue
+      text_auth_opt_out: textAuthOptOut,
+      reCaptchaValue
     };
 
     try {
@@ -410,6 +411,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (!reCaptchaValue) {
       return openSnackbar("error", "Please verify you are human with Captcha");
     }
+    this.props.changeFieldValue("reCaptchaValue", reCaptchaValue);
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {

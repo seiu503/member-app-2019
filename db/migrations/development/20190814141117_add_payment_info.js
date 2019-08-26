@@ -1,13 +1,37 @@
-exports.up = function(knex, Promise) {};
+exports.up = function(knex, Promise) {
+  return Promise.all([
+    knex.schema.hasTable("submissions").then(function(exists) {
+      if (exists) {
+        return knex.schema.table("submissions", function(table) {
+          table.string("payment_type");
+          table.decimal("medicaid_residents", 1, 0);
+          table.string("member_short_id");
+          table.string("member_id");
+          table.string("card_adding_url");
+          table.string("stripe_customer_id");
+          table.string("active_method_last_four");
+          table.boolean("payment_method_added");
+        });
+      }
+    })
+  ]);
+};
 
-exports.down = function(knex, Promise) {};
-
-// fields to add, to dev / test / prod migrations and fields table:
-// paymentType (req only for retirees, text one of 'check' | 'card', no SF info yet)
-// medicaidRes (req only for afh, numeric(1,0), Direct_join_rate__c.AFH_Number_of_Residents__c)
-// memberShortId (req only for pmt required, returned from unioni.se, no SF info yet)
-// memberId (req only for pmt required, returned from unioni.se, no SF info yet)
-// stripeCustomerId (req only for pmt required, returned from unioni.se, no SF info yet)
-// cardAddingUrl (req only for pmt required, returned from unioni.se, no SF info yet)
-// paymentMethodAdded (bool, req only for pmt required)
-// activePaymentMethodLast4 (returned from unionise if existing payment method, but maybe we can get from SF direct_join_rate instead?)
+exports.down = function(knex, Promise) {
+  return Promise.all([
+    knex.schema.hasTable("submissions").then(function(exists) {
+      if (exists) {
+        return knex.schema.table("submissions", function(table) {
+          table.dropColumn("payment_type");
+          table.dropColumn("medicaid_residents", 1, 0);
+          table.dropColumn("member_short_id");
+          table.dropColumn("member_id");
+          table.dropColumn("card_adding_url");
+          table.dropColumn("stripe_customer_id");
+          table.dropColumn("active_method_last_four");
+          table.dropColumn("payment_method_added");
+        });
+      }
+    })
+  ]);
+};
