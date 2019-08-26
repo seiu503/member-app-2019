@@ -13,7 +13,7 @@ import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiContentActions from "./store/actions/apiContentActions";
 
-import { globalTranslations } from "./translations/global.json";
+import globalTranslations from "./translations/global.json";
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
 import FormThankYou from "./components/FormThankYou";
@@ -145,7 +145,11 @@ export class AppUnconnected extends Component {
         { name: "Chinese", code: "zh-Hans" }
       ],
       translation: globalTranslations,
-      options: { renderToStaticMarkup }
+      options: {
+        renderToStaticMarkup,
+        renderInnerHtml: false,
+        defaultLanguage: "zh-Hans"
+      }
     });
     this.state = {
       deleteDialogOpen: false,
@@ -329,4 +333,4 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withStyles(styles)(withRouter(AppConnected));
+export default withStyles(styles)(withLocalize(withRouter(AppConnected)));

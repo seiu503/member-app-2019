@@ -3,6 +3,9 @@ import { Field } from "redux-form";
 import PropTypes from "prop-types";
 import { reduxForm } from "redux-form";
 import validate from "../utils/validators";
+import { Translate } from "react-localize-redux";
+import { withLocalize } from "react-localize-redux";
+import page2Translations from "../translations/page2.json";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -24,6 +27,7 @@ export class SubmissionFormPage2Component extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    // this.props.addTranslation(page2Translations);
   }
 
   // reusable MUI form components
@@ -181,13 +185,15 @@ export class SubmissionFormPage2Component extends React.Component {
             Check as many as apply to your race/ethnicity
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
-            <Field
-              label="African or African-American"
-              name="africanOrAfricanAmerican"
-              id="africanOrAfricanAmerican"
-              classes={this.classes}
-              component={this.renderCheckbox}
-            />
+            <Translate id="africanOrAfricanamerican">
+              <Field
+                label="African or African-American"
+                name="africanOrAfricanAmerican"
+                id="africanOrAfricanAmerican"
+                classes={this.classes}
+                component={this.renderCheckbox}
+              />
+            </Translate>
             <Field
               label="Arab American, Middle Eastern, or North African"
               name="arabAmericanMiddleEasternOrNorthAfrican"
@@ -444,8 +450,8 @@ SubmissionFormPage2Component.propTypes = {
 };
 
 // add reduxForm to component
-export const SubmissionForm2Wrap = reduxForm({
-  form: "submissionPage1",
+export const SubmissionFormPage2Wrap = reduxForm({
+  form: "submissionPage2",
   validate,
   enableReinitialize: true
 })(SubmissionFormPage2Component);

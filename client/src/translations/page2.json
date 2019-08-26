@@ -1,283 +1,285 @@
 {
-  "Headline": [
+  "thankYou": [
     "Thank you!",
     "¡Gracias!",
     "С благодарностью!",
     "Xin cảm ơn quý vị!",
     "谢谢大家！"
   ],
-  "Intro paragraph": [
+  "introParagraph": [
     "Your membership application has been received and will be reviewed shortly. In the mean time, please help your fellow union members get to know you better by telling us a little more about yourself. SEIU Local 503 is committed to honoring the diversity of all members. This optional demographic information helps us understand the social identities of our membership.",
     "Hemos recibido su solicitud de membresía y la revisaremos dentro de poco. Mientras tanto, ayude a sus compañeros miembros del sindicato a conocerlo(a) mejor al contarnos un poco sobre usted. SEIU Local 503 está comprometido a respetar la diversidad de todos nuestros miembros. Esta información demográfica opcional nos ayuda a entender las identidades sociales de nuestros miembros.",
     "Ваше заявление на вступление в члены профсоюза было получено и будет рассмотрено в ближайшее время. Тем временем, пожалуйста, помогите остальным членам профсоюза познакомиться с вами поближе, поделившись с ними дополнительной информацией о себе. Администрация местного отделения 503 профсоюза SEIU привержено принципу уважительного отношения к культурному и этническому разнообразию всех своих членов. Эти демографические данные, указываемые по выбору, помогают нам понять социальную идентичность членов нашего профсоюза.",
     "Mẫu đăng ký thành viên của quý vị đã được nhận và sẽ sớm được xem xét. Trong lúc chờ đợi, vui lòng chia sẻ thêm một chút thông tin về bản thân quý vị để giúp các đoàn viên làm quen với quý vị. SEIU Local 503 cam kết tôn trọng tính đa dạng của tất cả các thành viên. Thông tin nhân khẩu tùy chọn này sẽ giúp chúng tôi hiểu bản sắc xã hội của các thành viên.",
     "我们已收到您的会员资格申请，并将很快进行审核。同时，请告诉我们更多关于您的事情，帮助您的工会会员更好地了解您。SEIU Local 503 致力于尊重所有会员的多样性。此可选的人口统计信息有助于我们了解会员的社会身份。"
   ],
-  "Field label": [
+  "fieldLabel": [
     "Check as many as apply to your race/ethnicity",
     "Marque todas las opciones que correspondan a su raza o grupo étnico",
     "Отметьте все применимые к вам варианты расовой/этнической принадлежности.",
     "Đánh dấu tất cả những ô áp dụng đối với chủng tộc/sắc tộc của quý vị",
     "请勾选所有符合您的种族／族裔的选项"
   ],
-  "Ethnicity picklist option": [
+  "africanOrAfricanamerican": [
     "African or African-American",
     "Africano o afroestadounidense",
     "Африканец или афроамериканец",
     "Người Châu Phi hoặc người Mỹ gốc Phi",
     "非洲裔或非洲裔美国人"
   ],
-  "Ethnicity picklist option": [
+  "arabAmericanMiddleEasternOrNorthAfrican": [
     "Arab American, Middle Eastern, or North African",
     "Oriente Medio, árabe estadounidense o del norte de África",
     "Американец арабского происхождения, выходец из стран Ближнего Востока или Северной Африки",
     "Người Mỹ gốc Ả Rập, Trung Mỹ hoặc Bắc Phi",
     "阿拉伯裔美国人、中东或北非"
   ],
-  "Ethnicity picklist option": [
+  "asianOrAsianAmerican": [
     "Asian or Asian American",
     "Asiático o asiático estadounidense",
     "Азиат или американец азиатского происхождения",
     "Người Châu Á hoặc người Mỹ gốc Á",
     "亚裔或亚裔美国人"
   ],
-  "Ethnicity picklist option": [
+  "hispanicOrLatinx": [
     "Hispanic or Latinx",
     "Hispano o latino",
     "Испаноязычный или латиноамериканец",
     "Người gốc Tây Ban Nha hoặc Người La-tinh",
     "西班牙裔／拉丁裔"
   ],
-  "Ethnicity picklist option": [
+  "nativeAmericanOrIndigenous": [
     "Native American or Indigenous",
     "Indígena estadounidense o indígena",
     "Коренной житель Америки или индеец",
     "Người Mỹ bản xứ hoặc Người bản địa",
     "美洲原住民或土著人"
   ],
-  "Ethnicity picklist option": [
+  "nativeHawaiianOrOtherPacificIslander": [
     "Native Hawaiian or Other Pacific Islander",
     "Nativo de Hawái o de otra isla del Pacífico",
     "Коренной житель Гавайских или других островов Тихого океана",
     "Người Hawaii Bản xứ hoặc Cư dân Vùng Đảo Thái Bình Dương khác",
     "夏威夷原住民或其他太平洋岛民"
   ],
-  "Ethnicity picklist option": [
+  "white": [
     "White",
     "Blanco",
     "Европеец",
     "Người Da Trắng",
     "白人"
   ],
-  "Ethnicity picklist option": [
+  "other": [
     "Other",
     "Otro",
     "Другое",
     "Câu trả lời khác",
     "其他"
   ],
-  "Ethnicity picklist option": [
+  "declined": [
     "Declined",
     "No deseo contestar",
     "Отказываюсь отвечать",
     "Từ chối",
     "拒绝"
   ],
-  "Field label": [
+  "otherSocailIdentities": [
     "Other Socail Identities",
     "Otras identidades sociales",
     "Другая социальная идентичность",
     "Các bản sắc xã hội khác",
     "其他社会身份"
   ],
-  "Social identities picklist option": [
+  "lgbtqId": [
     "I identify as LGBTQIA+",
     "Me identifico como LGBTQIA+",
     "Я отношу себя к представителям ЛГБТКИА+ сообщества",
     "Tôi xác định mình là LGBTQIA+",
     "我认定自己是男女同性恋者、双性恋者、变性人、跨性别者、双性人、无性恋者及其他 （LGBTQIA+）"
   ],
-  "Social identities picklist option": [
+  "transId": [
     "I identify as transgender",
     "Me identifico como transgénero",
     "Я отношу себя к трансгендерам",
     "Tôi xác định mình là người chuyển giới",
     "我认定自己为跨性别者"
   ],
-  "Social identities picklist option": [
+  "disabilityId": [
     "I identify as disabled or a person with a disability",
     "Me identifico como persona discapacitada o una persona con discapacidad",
     "Я отношу себя к инвалидам или лицам с ограниченными возможностями здоровья",
     "Tôi xác định mình là người khuyết tật hoặc người có một khuyết tật",
     "我认定自己为残疾人或残障人士"
   ],
-  "Social identities picklist option": [
+  "deafOrHardOfHearing": [
     "I identify as Deaf or hard-of-hearing",
     "Me identifico como persona sorda o con dificultades auditivas",
     "Я отношу себя к глухим или слабослышащим",
     "Tôi xác định mình bị điếc hoặc khiếm thính",
     "我认定自己为失聪者或有听力障碍"
   ],
-  "Social identities picklist option": [
+  "blindOrVisuallyImpaired": [
     "I identify as Blind or visually impaired",
     "Me identifico como persona ciega o con discapacidad visual",
     "Я отношу себя к незрячим или слабовидящим",
     "Tôi xác định mình bị mù hoặc khiếm thị",
     "我认定自己为失明者或有视力障碍"
   ],
-  "Field label": [
+  "gender": [
     "Gender",
     "Género",
     "Пол",
     "Giới tính",
     "性别"
   ],
-  "Gender picklist option": [
+  "female": [
     "Female",
     "Femenino",
     "Женский",
     "Nữ",
     "女"
   ],
-  "Gender picklist option": [
+  "male": [
     "Male",
     "Masculino",
     "Мужской",
     "Nam",
     "男"
   ],
-  "Gender picklist option": [
+  "nonBinary": [
     "Non-Binary",
     "No binario",
     "Лицо неопределенного пола",
     "Không phân biệt nam nữ",
     "非二元性别"
   ],
-  "Gender picklist option": [
+  "genderOther": [
     "Other",
     "Otro",
     "Другое",
     "Câu trả lời khác",
     "其他"
   ],
-  "Field label": [
+  "genderOtherDescription": [
     "Gender Other - Description",
     "Otro género - descripción",
     "Другой пол – описание",
     "Giới tính khác - Mô tả",
     "其他性别 —— 请描述"
   ],
-  "Pronouns picklist option": [
+  "genderPronoun": [
     "Your Pronouns",
     "Sus pronombres",
     "Применимые к вам местоимения",
     "Đại từ của quý vị",
     "您的代名词"
   ],
-  "Pronouns picklist option": [
-    "She/Her/Hers,Ella",
+  "sherHerHers": [
+    "She/Her/Hers",
+    "Ella",
     "Она/ее/ей",
     "Cô/Bà",
     "她／她的"
   ],
-  "Pronouns picklist option": [
+  "heHimHis": [
     "He/Him/His",
-    "Él,Он/его/ему",
+    "Él",
+    "Он/его/ему",
     "Anh/Ông",
     "他／他的"
   ],
-  "Pronouns picklist option": [
+  "theyThemTheirs": [
     "They/Them/Their(s)",
     "Elle/Elles",
     "Они/их/им",
     "Họ",
     "他们／他们的"
   ],
-  "Pronouns picklist option": [
+  "pronounOther": [
     "Other",
     "Otro",
     "Другое",
     "Câu trả lời khác",
     "其他"
   ],
-  "Subhead": [
+  "employmentInfo": [
     "Employment Info",
     "Información sobre el empleo",
     "Информация о трудоустройстве",
     "Thông tin về việc làm",
     "就业信息"
   ],
-  "Field label": [
+  "jobClassTitle": [
     "Job Class/Title",
     "Clase/puesto laboral",
     "Рабочая категория/должность",
     "Cấp lớp/Danh hiệu việc làm",
     "职务／职衔"
   ],
-  "Field label": [
+  "hireDate": [
     "Hire Date",
     "Fecha de contratación",
     "Дата приема на работу",
     "Ngày được tuyển dụng",
     "雇佣日期"
   ],
-  "Field label": [
+  "worksite": [
     "Worksite",
     "Sitio de trabajo",
     "Место работы",
     "Nơi làm việc",
     "工作地点"
   ],
-  "Field label": [
+  "workEmail": [
     "Work Email",
     "Correo electrónico del trabajo",
     "Рабочая эл. почта",
     "Email nơi làm việc",
     "工作电子邮箱"
   ],
-  "Field label": [
+  "workPhone": [
     "Work phone",
     "Teléfono del trabajo",
     "Рабочий телефон",
     "Điện thoại nơi làm việc",
     "工作电话"
   ],
-  "Subhead": [
+  "mailingAddress": [
     "Mailing Address",
     "Dirección postal",
     "Почтовый адрес",
     "Địa chỉ nơi nhận thư",
     "邮寄地址"
   ],
-  "Field hint": [
+  "fieldHint": [
     "If different from residence address",
     "Si es diferente al domicilio",
     "Если отличается от адреса проживания",
     "Nếu khác với địa chỉ nơi thường trú",
     "若与居住地址不同"
   ],
-  "Field label": [
+  "mailingStreet": [
     "Mailing Street",
     "Calle y número postal",
     "Улица (почтовый адрес)",
     "Tên đường và số nhà",
     "邮寄街道"
   ],
-  "Field label": [
+  "mailingCity": [
     "Mailing City",
     "Ciudad postal",
     "Город (почтовый адрес)",
     "Thành phố",
     "邮寄城市"
   ],
-  "Field label": [
+  "mailingState": [
     "Mailing State",
     "Estado postal",
     "Штат (почтовый адрес)",
     "Tiểu bang",
     "邮寄州"
   ],
-  "Field label": [
+  "mailingZip": [
     "Mailing Zip",
     "Código postal",
     "Почтовый индекс (почтовый адрес)",
