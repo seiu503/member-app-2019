@@ -546,7 +546,7 @@ export const renderSelect = ({
       input={<OutlinedInput labelWidth={labelWidth} />}
       className={align === "right" ? classes.selectRight : classes.select}
       value={input.value ? input.value.toLowerCase() : ""}
-      onChange={(event, value) => input.onChange(value)}
+      onChange={input.onChange}
       {...custom}
       data-test="component-select"
     >
