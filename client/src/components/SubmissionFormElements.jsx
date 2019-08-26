@@ -923,7 +923,7 @@ export const retireeDuesCopy =
 export const afhDuesCopy = afhDuesRate =>
   `Monthly dues are $${afhDuesRate.toFixed(
     2
-  )} -- calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted [on the first day of each month?] from the payment method you provide below.`;
+  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted [on the first day of each month?] from the payment method you provide below.`;
 
 export const commDuesCopy =
   "Monthly dues are $10 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";

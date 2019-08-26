@@ -228,6 +228,12 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case UPDATE_SUBMISSION_SUCCESS:
+      return update(state, {
+        submissionId: { $set: action.payload.submission_id },
+        error: { $set: null }
+      });
+
     case LOOKUP_SF_CONTACT_SUCCESS:
     case CREATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_SUCCESS:
@@ -250,11 +256,6 @@ function Submission(state = INITIAL_STATE, action) {
           stripeCustomerId: { $set: action.payload.stripeCustomerId },
           memberShortId: { $set: action.payload.memberShortId }
         }
-      });
-
-    case UPDATE_SUBMISSION_SUCCESS:
-      return update(state, {
-        formPage2SubmitSucess: { $set: true }
       });
 
     case ADD_SUBMISSION_FAILURE:

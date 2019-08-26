@@ -170,14 +170,8 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-
-  // const { reCaptchaValue, ip_address } = updates;
-  // try {
-  //   await verifyHumanity(reCaptchaValue, ip_address)
-  // } catch (error) {
-  //   console.log(error)
-  //   return res.status(400).json({ message: error.message || "Please verify that you are a human" })
-  // }
+  console.log(`subm.ctrl.js > 173: ${id}`);
+  console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
       return res.status(422).json({ message: "No updates submitted" });
@@ -199,19 +193,18 @@ const updateSubmission = async (req, res, next) => {
       const errmsg =
         updateSubmissionResult.message ||
         "There was an error updating the submission";
-      // console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+      console.error(`submissions.ctrl.js > 205: ${errmsg}`);
       return res.status(500).json({
         message: errmsg
       });
     } else {
-      // passing contact id and submission id to next middleware
-      res.locals.sf_contact_id = updateSubmissionResult[0].salesforce_id;
-      res.locals.submission_id = updateSubmissionResult[0].id;
-      res.locals.next = false;
-      return next();
+      console.log("subm.ctrl.js > 201: returning to client");
+      return res
+        .status(200)
+        .json({ submission_id: updateSubmissionResult[0].id });
     }
   } catch (error) {
-    // console.error(`submissions.ctrl.js > 217: ${error}`);
+    console.error(`submissions.ctrl.js > 217: ${error}`);
     return res.status(404).json({ message: error.message });
   }
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-// import queryString from "query-string";
+import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
@@ -17,20 +17,26 @@ export class SubmissionFormPage2Container extends React.Component {
   componentDidMount() {
     // check state for contact id from page1
     let id = this.props.submission.salesforceId;
+    if (!id) {
+      // check for contact id in query string
+      const params = queryString.parse(this.props.location.search);
+      if (params.id) {
+        id = params.id;
+      }
+    }
 
     // if find contact id, call API to fetch contact info for prefill
     if (id) {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          // console.log("result.payload", result.payload);
+          console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);
         });
     } else {
-      alert("We Did not find your Id, redirecting to main submission page");
-      // console.log("no id found, no prefill");
+      console.log("no id found");
 
       //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
       // return this.props.history.push("/")

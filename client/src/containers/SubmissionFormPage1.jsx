@@ -46,6 +46,9 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleTab = this.handleTab.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
+    this.prepForContact = this.prepForContact.bind(this);
+    this.prepForSubmission = this.prepForSubmission.bind(this);
+    this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -164,6 +167,24 @@ export class SubmissionFormPage1Container extends React.Component {
     newState.tab = newValue;
     this.setState({ ...newState });
   };
+
+  prepForContact(values) {
+    let returnValues = { ...values };
+
+    // format birthdate
+    const birthdate = formatBirthdate(values);
+    returnValues.birthdate = birthdate;
+
+    // find employer object and set employer-related fields
+    const employerObject = findEmployerObject(
+      this.props.submission.employerObjects,
+      values.employerName
+    );
+    returnValues.employerId = employerObject.Id;
+    returnValues.agencyNumber = employerObject.Agency_Number__c;
+
+    return returnValues;
+  }
 
   prepForSubmission(values) {
     let returnValues = { ...values };
@@ -284,24 +305,6 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(err);
       return this.handleError(err);
     }
-  }
-
-  prepForContact(values) {
-    let returnValues = { ...values };
-
-    // format birthdate
-    const birthdate = formatBirthdate(values);
-    returnValues.birthdate = birthdate;
-
-    // find employer object and set employer-related fields
-    const employerObject = findEmployerObject(
-      this.props.submission.employerObjects,
-      values.employerName
-    );
-    returnValues.employerId = employerObject.Id;
-    returnValues.agencyNumber = employerObject.Agency_Number__c;
-
-    return returnValues;
   }
 
   async createSFContact() {

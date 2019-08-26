@@ -203,7 +203,10 @@ export class SubmissionFormPage1Component extends React.Component {
         this.props.apiSF.createSFOMA(body);
         this.props.reset("submissionPage1");
         // redirect to CAPE here...
-        this.props.history.push(`/page2`);
+        console.log(this.props.submission.salesforceId);
+        this.props.history.push(
+          `/page2/?id=${this.props.submission.salesforceId}`
+        );
       }
     } catch (err) {
       console.log(err);
