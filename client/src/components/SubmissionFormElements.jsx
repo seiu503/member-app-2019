@@ -1,6 +1,7 @@
 import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
+import { openSnackbar } from "../containers/Notifier";
 
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
@@ -13,6 +14,13 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+
+export const handleError = err => {
+  return openSnackbar(
+    "error",
+    err || "Sorry, something went wrong. Please try again."
+  );
+};
 
 // hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
 export const stateList = [

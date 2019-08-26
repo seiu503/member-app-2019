@@ -11,7 +11,7 @@ import SubmissionFormPage2Component from "../components/SubmissionFormPage2Compo
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
-import { stylesPage2 } from "../components/SubmissionFormElements";
+import { stylesPage2, handleError } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage2Container extends React.Component {
   componentDidMount() {
@@ -34,6 +34,7 @@ export class SubmissionFormPage2Container extends React.Component {
         })
         .catch(err => {
           console.log(err);
+          handleError(err);
         });
     } else {
       console.log("no id found");

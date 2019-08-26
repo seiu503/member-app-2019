@@ -29,7 +29,8 @@ import {
   blankSig,
   formatSFDate,
   formatBirthdate,
-  findEmployerObject
+  findEmployerObject,
+  handleError
 } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
@@ -70,7 +71,7 @@ export class SubmissionFormPage1Container extends React.Component {
         })
         .catch(err => {
           console.log(err);
-          return this.handleError(err);
+          return handleError(err);
         });
     } else {
       // console.log("no id found, no prefill");
@@ -88,13 +89,6 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
-  }
-
-  handleError(err) {
-    return openSnackbar(
-      "error",
-      err || "Sorry, something went wrong. Please try again."
-    );
   }
 
   handleUpload(firstName, lastName) {
@@ -126,7 +120,7 @@ export class SubmissionFormPage1Container extends React.Component {
         })
         .catch(err => {
           console.log(err);
-          return this.handleError(err);
+          return handleError(err);
         });
     });
   }
@@ -273,7 +267,7 @@ export class SubmissionFormPage1Container extends React.Component {
       direct_pay_auth,
       direct_deposit_auth,
       immediate_past_member_status: immediatePastMemberStatus,
-      salesforce_id: salesforceId,
+      salesforce_id: salesforceId || this.props.submission.salesforceId,
       reCaptchaValue
     };
   }
@@ -289,7 +283,12 @@ export class SubmissionFormPage1Container extends React.Component {
     const body = this.generateSubmissionBody(this.props.formValues);
 
     try {
-      const result = await this.props.apiSubmission.addSubmission(body);
+      const result = await this.props.apiSubmission
+        .addSubmission(body)
+        .catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
       console.log(result.payload);
       console.log(this.props.submission.submissionId);
       // if no payment is required, we're done with saving the submission
@@ -303,7 +302,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // if payment is required then we need to move to next tab
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
   }
 
@@ -346,11 +345,14 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     try {
-      await this.props.apiSF.createSFContact(body);
+      await this.props.apiSF.createSFContact(body).catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
       console.log(this.props.submission.salesforceId);
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
   }
 
@@ -395,12 +397,17 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     try {
-      const result = await this.props.apiSF.updateSFContact(id, body);
+      const result = await this.props.apiSF
+        .updateSFContact(id, body)
+        .catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
       console.log(result.payload);
       console.log(this.props.submission.salesforceId);
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
   }
 
@@ -420,11 +427,14 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.salesforceId) {
       // update existing contact, move to next tab
       try {
-        await this.updateSFContact();
+        await this.updateSFContact().catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
         return this.changeTab(1);
       } catch (err) {
         console.log(err);
-        return this.handleError(err);
+        return handleError(err);
       }
     }
 
@@ -436,27 +446,37 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     try {
-      await this.props.apiSF.lookupSFContact(body);
+      let result = await this.props.apiSF.lookupSFContact(body).catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+      console.log(result.payload);
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
-
-    console.log(this.props.submission.salesforceId);
 
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
-      await this.updateSFContact();
+      await this.updateSFContact().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
       return this.changeTab(1);
     }
 
     // otherwise, create new contact with submission data,
     // then move to next tab
     try {
-      await this.createSFContact();
+      await this.createSFContact().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+      console.log(this.props.submission.salesforceId);
+      return this.changeTab(1);
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
   }
 
@@ -513,7 +533,10 @@ export class SubmissionFormPage1Container extends React.Component {
     };
     console.log(JSON.stringify(body));
     try {
-      const result = await this.props.apiSF.getIframeURL(body);
+      const result = await this.props.apiSF.getIframeURL(body).catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
       if (!result.payload.cardAddingUrl || result.payload.message) {
         // console.log('253');
         return openSnackbar(
@@ -524,7 +547,7 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
   }
 
@@ -569,13 +592,16 @@ export class SubmissionFormPage1Container extends React.Component {
         sigUrl = await this.handleUpload(
           formValues.firstName,
           formValues.lastName
-        );
+        ).catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
         // console.log(`394: ${sigUrl}`);
         this.props.changeFieldValue("signature", sigUrl);
         return sigUrl;
       } catch (err) {
         // console.log(err);
-        this.handleError(err);
+        handleError(err);
       }
     }
   }
@@ -585,13 +611,16 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // submit validation: signature
     try {
-      const signature = await this.saveSignature();
+      const signature = await this.saveSignature().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
       if (!signature) {
         return openSnackbar("error", "Please provide a signature");
       }
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
 
     // for AFH, calculate dues rate:
@@ -607,10 +636,13 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.employerType.toLowerCase() === "adult foster home"
     ) {
       try {
-        await this.getIframeURL(formValues);
+        await this.getIframeURL(formValues).catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
       } catch (err) {
         console.log(err);
-        return this.handleError(err);
+        return handleError(err);
       }
     }
 
@@ -619,20 +651,29 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // save partial submission, then move to next tab
     try {
-      await this.createSubmission();
+      await this.createSubmission().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
       return this.changeTab(2);
     } catch (err) {
       console.log(err);
-      return this.handleError(err);
+      return handleError(err);
     }
   }
 
   handleTab(newValue) {
     if (newValue === 1) {
-      return this.handleTab1();
+      return this.handleTab1().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
     }
     if (newValue === 2) {
-      return this.handleTab2();
+      return this.handleTab2().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
     } else {
       return this.changeTab(newValue);
     }
@@ -674,7 +715,7 @@ export class SubmissionFormPage1Container extends React.Component {
           toggleSignatureInputType={this.toggleSignatureInputType}
           clearSignature={this.clearSignature}
           generateSubmissionBody={this.generateSubmissionBody}
-          handleError={this.handleError}
+          handleError={handleError}
         />
       </div>
     );
