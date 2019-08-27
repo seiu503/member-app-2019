@@ -184,7 +184,7 @@ export class SubmissionFormPage1Component extends React.Component {
       stripe_customer_id: this.props.submission.payment.stripeCustomerId,
       member_short_id: this.props.submission.payment.memberShortId
     };
-    console.log(updates);
+    // console.log(updates);
 
     // also write to directJoinRate__c ######### <== TODO
     try {
