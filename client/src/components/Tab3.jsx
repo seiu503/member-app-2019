@@ -54,7 +54,7 @@ export const Tab3 = props => {
         {formValues.employerType &&
           formValues.employerType.toLowerCase() === "retired" && (
             <Field
-              // labelWidth={104}
+              data-test="radio-payment-type"
               label="How would you like to pay your union dues?"
               name="paymentType"
               formControlName="paymentType"
@@ -69,7 +69,7 @@ export const Tab3 = props => {
           )}
         {iFrameURL &&
           (formValues.paymentType === "Card" ? (
-            <React.Fragment>
+            <div data-test="component-iframe">
               <div className={classes.paymentCopy}>
                 <Typography component="p" className={classes.body}>
                   {duesCopy}
@@ -89,7 +89,7 @@ export const Tab3 = props => {
                   position="relative"
                 />
               </div>
-            </React.Fragment>
+            </div>
           ) : formValues.paymentType === "Check" ? (
             <div className={classes.paymentCopy}>
               <Typography component="h2" className={classes.head}>

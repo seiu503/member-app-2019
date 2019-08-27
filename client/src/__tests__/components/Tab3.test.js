@@ -3,6 +3,7 @@ import { shallow, mount } from "enzyme";
 import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import * as utils from "../../utils/index";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import { Tab3, Tab3Form } from "../../components/Tab3";
 
@@ -17,6 +18,7 @@ let wrapper,
   component;
 
 const changeFieldValueMock = jest.fn();
+const backMock = jest.fn();
 
 // initial props for form
 const defaultProps = {
@@ -33,7 +35,8 @@ const defaultProps = {
     employerType: "adult foster home"
   },
   afhDuesRate: 17.59304,
-  changeFieldValue: changeFieldValueMock
+  changeFieldValue: changeFieldValueMock,
+  back: backMock
 };
 
 describe("<Tab3 />", () => {
@@ -99,6 +102,59 @@ describe("<Tab3 />", () => {
       component = wrapper.find("form");
       component.simulate("submit", { ...testData });
       expect(handleSubmit.mock.calls.length).toBe(1);
+    });
+
+    it("calls `back` on back button click", () => {
+      wrapper = shallow(<Tab3 {...props} />);
+
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+
+      wrapper.setProps({ back: backMock });
+      component = findByTestAttr(wrapper, "button-back");
+      component.simulate("click");
+      expect(backMock.mock.calls.length).toBe(1);
+    });
+  });
+  describe("conditional render", () => {
+    it("renders Payment Type radio for retirees", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "Retired"
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "radio-payment-type");
+      expect(component.length).toBeGreaterThan(1);
+    });
+
+    it("renders card adding iframe if payment type = `Card`", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "adult foster home",
+          paymentType: "Card"
+        },
+        iFrameURL: "example.com"
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "component-iframe");
+      expect(component.length).toBe(1);
+    });
+
+    it("doesn't render iframe or payment type field for other employer types", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "state homecare or personal support"
+        }
+      };
+      wrapper = setup(props);
+      const iframe = findByTestAttr(wrapper, "component-iframe");
+      const radio = findByTestAttr(wrapper, "radio-payment-type");
+      expect(iframe.length).toBe(0);
+      expect(radio.length).toBe(0);
     });
   });
 });
