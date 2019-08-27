@@ -179,7 +179,8 @@ export class AppUnconnected extends Component {
           .catch(err => console.log(err));
       }
     }
-    this.props.setActiveLanguage(detectDefaultLanguage());
+    const defaultLanguage = detectDefaultLanguage();
+    this.props.setActiveLanguage(defaultLanguage);
   }
 
   render() {
