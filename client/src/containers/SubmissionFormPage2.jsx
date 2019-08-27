@@ -30,15 +30,14 @@ export class SubmissionFormPage2Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          console.log("result.payload", result.payload);
+          // console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);
           handleError(err);
         });
     } else {
-      console.log("no id found");
-
+      // console.log("no id found");
       //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
       // return this.props.history.push("/")
     }

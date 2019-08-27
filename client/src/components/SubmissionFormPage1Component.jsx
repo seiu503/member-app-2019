@@ -160,21 +160,18 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   async handleSubmit(formValues) {
-    console.log("handleSubmit (update submission)");
-
     // submit validation: payment method
     if (
       this.props.submission.formPage1.paymentRequired &&
       formValues.paymentType === "Card" &&
       !formValues.paymentMethodAdded
     ) {
-      console.log("No payment method added");
+      // console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
     }
     const id = this.props.submission.submissionId;
-    console.log(id);
     const updates = {
       payment_type: formValues.paymentType,
       payment_method_added: formValues.paymentMethodAdded,
@@ -196,20 +193,19 @@ export class SubmissionFormPage1Component extends React.Component {
         result.type === "UPDATE_SUBMISSION_FAILURE" ||
         this.props.submission.error
       ) {
-        console.log(this.props.submission.error);
+        // console.log(this.props.submission.error);
         this.props.handleError(this.props.submission.error);
       } else {
         const body = this.props.generateSubmissionBody(formValues);
         this.props.apiSF.createSFOMA(body);
         this.props.reset("submissionPage1");
         // redirect to CAPE here...
-        console.log(this.props.submission.salesforceId);
         this.props.history.push(
           `/page2/?id=${this.props.submission.salesforceId}`
         );
       }
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       this.props.handleError(err);
     }
   }

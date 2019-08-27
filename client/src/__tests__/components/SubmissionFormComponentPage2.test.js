@@ -113,9 +113,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
   // testing that we are triggering expected behavior for submit success and failure
   describe("submit functionality", () => {
     it("calls reset after successful Submit", async function() {
-      let resetMock = jest
-        .fn()
-        .mockImplementation(() => console.log("reset mock"));
+      let resetMock = jest.fn();
       const props = {
         reset: resetMock
       };
