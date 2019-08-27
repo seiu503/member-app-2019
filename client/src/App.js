@@ -3,17 +3,16 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
+import { withLocalize } from "react-localize-redux";
+import { renderToStaticMarkup } from "react-dom/server";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withStyles } from "@material-ui/core/styles";
-import { withLocalize } from "react-localize-redux";
-import { renderToStaticMarkup } from "react-dom/server";
 
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiContentActions from "./store/actions/apiContentActions";
 
-import globalTranslations from "./translations/global.json";
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
 import FormThankYou from "./components/FormThankYou";
@@ -144,11 +143,9 @@ export class AppUnconnected extends Component {
         { name: "Vietnamese", code: "vi" },
         { name: "Chinese", code: "zh-Hans" }
       ],
-      translation: globalTranslations,
       options: {
         renderToStaticMarkup,
-        renderInnerHtml: false,
-        defaultLanguage: "zh-Hans"
+        renderInnerHtml: false
       }
     });
     this.state = {
@@ -333,4 +330,4 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withStyles(styles)(withLocalize(withRouter(AppConnected)));
+export default withStyles(styles)(withRouter(withLocalize(AppConnected)));

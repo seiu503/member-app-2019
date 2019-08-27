@@ -13,15 +13,15 @@ import { LocalizeProvider } from "react-localize-redux";
 
 render(
   <Provider store={store}>
-    <LocalizeProvider>
-      <BrowserRouter>
-        <ScrollToTop>
-          <MuiThemeProvider theme={theme}>
+    <BrowserRouter>
+      <ScrollToTop>
+        <MuiThemeProvider theme={theme}>
+          <LocalizeProvider store={store}>
             <App />
-          </MuiThemeProvider>
-        </ScrollToTop>
-      </BrowserRouter>
-    </LocalizeProvider>
+          </LocalizeProvider>
+        </MuiThemeProvider>
+      </ScrollToTop>
+    </BrowserRouter>
   </Provider>,
   document.getElementById("root")
 );

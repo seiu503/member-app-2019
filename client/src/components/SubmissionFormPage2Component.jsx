@@ -2,10 +2,9 @@ import React from "react";
 import { Field } from "redux-form";
 import PropTypes from "prop-types";
 import { reduxForm } from "redux-form";
+import { withLocalize, Translate } from "react-localize-redux";
 import validate from "../utils/validators";
-import { Translate } from "react-localize-redux";
-import { withLocalize } from "react-localize-redux";
-import page2Translations from "../translations/page2.json";
+import page2 from "../translations/page2.json";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -27,7 +26,7 @@ export class SubmissionFormPage2Component extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    // this.props.addTranslation(page2Translations);
+    this.props.addTranslation(page2);
   }
 
   // reusable MUI form components
@@ -172,12 +171,14 @@ export class SubmissionFormPage2Component extends React.Component {
               className={this.classes.page2IntroText}
               id="page2IntroText"
             >
-              Your membership application has been received and will be reviewed
-              shortly. In the mean time, please help your fellow union members
-              get to know you better by telling us a little more about yourself.
-              SEIU Local 503 is committed to honoring the diversity of all
-              members. This optional demographic information helps us understand
-              the social identities of our membership.
+              <Translate id="introParagraph">
+                Your membership application has been received and will be
+                reviewed shortly. In the mean time, please help your fellow
+                union members get to know you better by telling us a little more
+                about yourself. SEIU Local 503 is committed to honoring the
+                diversity of all members. This optional demographic information
+                helps us understand the social identities of our membership.
+              </Translate>
             </FormHelperText>
           </div>
           <Divider style={{ margin: 20 }} />
@@ -185,15 +186,13 @@ export class SubmissionFormPage2Component extends React.Component {
             Check as many as apply to your race/ethnicity
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
-            <Translate id="africanOrAfricanamerican">
-              <Field
-                label="African or African-American"
-                name="africanOrAfricanAmerican"
-                id="africanOrAfricanAmerican"
-                classes={this.classes}
-                component={this.renderCheckbox}
-              />
-            </Translate>
+            <Field
+              label="African or African-American"
+              name="africanOrAfricanAmerican"
+              id="africanOrAfricanAmerican"
+              classes={this.classes}
+              component={this.renderCheckbox}
+            />
             <Field
               label="Arab American, Middle Eastern, or North African"
               name="arabAmericanMiddleEasternOrNorthAfrican"
@@ -456,4 +455,4 @@ export const SubmissionFormPage2Wrap = reduxForm({
   enableReinitialize: true
 })(SubmissionFormPage2Component);
 
-export default SubmissionFormPage2Component;
+export default withLocalize(SubmissionFormPage2Wrap);

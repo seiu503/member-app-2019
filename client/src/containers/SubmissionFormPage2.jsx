@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
+import SubmissionFormPage2Wrap from "../components/SubmissionFormPage2Component";
 // import Spinner from "../components/Spinner";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
@@ -45,11 +45,11 @@ export class SubmissionFormPage2Container extends React.Component {
   }
 }
 
-export const SubmissionFormPage2Wrap = reduxForm({
-  form: "submissionPage2",
-  validate,
-  enableReinitialize: true
-})(SubmissionFormPage2Component);
+// export const SubmissionFormPage2Wrap = reduxForm({
+//   form: "submissionPage2",
+//   validate,
+//   enableReinitialize: true
+// })(SubmissionFormPage2Component);
 
 const mapStateToProps = state => ({
   submission: state.submission,

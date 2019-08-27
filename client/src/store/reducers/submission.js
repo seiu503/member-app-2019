@@ -38,9 +38,11 @@ export const INITIAL_STATE = {
     homeEmail: "",
     legalLanguage: ""
   },
+  formPage2: {
+    gender: ""
+  },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
-  formPage2: {},
   redirect: false
 };
 
