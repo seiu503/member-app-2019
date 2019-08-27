@@ -73,6 +73,7 @@ export const Tab2 = props => {
           <React.Fragment>
             <Field
               formControlName="controlCheckbox"
+              data-test="checkbox-DPA"
               label="Direct Pay Authorization"
               name="directPayAuth"
               id="directPayAuth"
@@ -101,6 +102,7 @@ export const Tab2 = props => {
           <React.Fragment>
             <Field
               formControlName="controlCheckbox"
+              data-test="checkbox-DDA"
               label="Direct Deposit Authorization"
               name="directDepositAuth"
               id="directDepositAuth"
@@ -124,6 +126,7 @@ export const Tab2 = props => {
           <React.Fragment>
             <Field
               label="Signature"
+              data-test="input-signature"
               name="signature"
               id="signature"
               type="text"

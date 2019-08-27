@@ -57,13 +57,8 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     if (event.data.notification.type === "success") {
-      // formValues.paymentMethodAdded = true;
-      // this.props.apiSubmission.handleInput({ name: 'paymentMethodAdded', value: true });
       this.props.changeFieldValue("paymentMethodAdded", true);
-      console.log(this.props.formValues.paymentMethodAdded);
     }
-    // then set payment method added in redux store
-    //
   };
 
   // reusable MUI form components

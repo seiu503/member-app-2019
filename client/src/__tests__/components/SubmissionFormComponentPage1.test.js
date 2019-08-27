@@ -29,7 +29,8 @@ let wrapper,
   sfEmployerLookupSuccess,
   sfEmployerLookupFailure,
   handleUpload,
-  updateEmployersPicklist;
+  loadEmployersPicklistMock,
+  changeFieldValueMock;
 
 let resetMock = jest.fn();
 
@@ -78,7 +79,6 @@ const defaultProps = {
   apiSF,
   handleSubmit,
   handleUpload,
-  updateEmployersPicklist,
   legal_language: {
     current: {
       textContent: "blah"
@@ -357,12 +357,78 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         handleSubmit: jest.fn(),
         apiSF: {
           getSFEmployers: sfEmployerLookupSuccess
+        },
+        formValues: {
+          // to get code coverage for retiree edge cases
+          employerType: "Retirees"
         }
       };
       // creating wrapper
       wrapper = setup(props);
       // testing that getSFEmployers was called
       expect(sfEmployerLookupSuccess.mock.calls.length).toBe(1);
+    });
+
+    it("calls loadEmployersPicklist on componentDidUpdate if employer list has not yet loaded", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      loadEmployersPicklistMock = jest.fn();
+      props = {
+        submission: {
+          employerNames: [""]
+        },
+        formValues: {
+          // to get code coverage for community member edge cases
+          employerType: "Community Member"
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        }
+      };
+      // creating wrapper
+      wrapper = unconnectedSetup(props);
+
+      wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
+      wrapper.instance().componentDidUpdate();
+
+      // testing that loadEmployersPicklist was called
+      expect(loadEmployersPicklistMock.mock.calls.length).toBe(1);
+    });
+
+    it("receives messages from unioni.se card adding iframe", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      const fakeEvent = {
+        data: {
+          notification: {
+            type: "success"
+          }
+        },
+        origin: "https://lab.unioni.se"
+      };
+      const changeFieldValueMock = jest.fn();
+      const props = {
+        changeFieldValue: changeFieldValueMock,
+        formValues: {
+          // to get code coverage for afh edge cases
+          employerType: "Adult Foster Home"
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        }
+      };
+      wrapper = unconnectedSetup(props);
+      wrapper.instance().receiveMessage(fakeEvent);
+
+      // changeFieldValue("paymentMethodAdded", true);
+      expect(changeFieldValueMock.mock.calls[0][0]).toBe("paymentMethodAdded");
+      expect(changeFieldValueMock.mock.calls[0][1]).toBe(true);
     });
 
     it("opens snackbar when employer search fails", () => {
