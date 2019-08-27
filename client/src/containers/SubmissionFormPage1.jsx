@@ -283,7 +283,8 @@ export class SubmissionFormPage1Container extends React.Component {
     const body = this.generateSubmissionBody(this.props.formValues);
 
     try {
-      const result = await this.props.apiSubmission
+      await this.props.apiSubmission
+        // const result = await this.props.apiSubmission
         .addSubmission(body)
         .catch(err => {
           console.log(err);
@@ -444,7 +445,8 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     try {
-      let result = await this.props.apiSF.lookupSFContact(body).catch(err => {
+      // let result = await this.props.apiSF.lookupSFContact(body).catch(err => {
+      await this.props.apiSF.lookupSFContact(body).catch(err => {
         console.log(err);
         return handleError(err);
       });

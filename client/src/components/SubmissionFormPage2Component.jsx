@@ -101,9 +101,7 @@ export class SubmissionFormPage2Component extends React.Component {
       workPhone,
       hireDate
     } = values;
-
     const ethnicity = this.calcEthnicity(values);
-
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
@@ -124,7 +122,6 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-
     const cleanBody = this.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
@@ -133,20 +130,17 @@ export class SubmissionFormPage2Component extends React.Component {
         salesforceId = params.id;
       }
     }
-
     cleanBody.salesforce_id = salesforceId;
     // console.log("CLEANBODY", cleanBody);
 
     let id = this.props.submission.submissionId;
-
     try {
       const result = await this.props.apiSubmission
         .updateSubmission(id, cleanBody)
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return formElements.handleError(err);
         });
-
       if (
         result.type === "UPDATE_SUBMISSION_FAILURE" ||
         this.props.submission.error
@@ -158,23 +152,23 @@ export class SubmissionFormPage2Component extends React.Component {
         .updateSFContact(salesforceId, cleanBody)
         .then(result => {
           if (
-            result.type === "UPDATE_SUBMISSION_FAILURE" ||
-            this.props.submission.error
+            result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
+            !this.props.submission.error
           ) {
-            console.log(this.props.submission.error);
-            return formElements.handleError(this.props.submission.error);
-          } else {
-            openSnackbar("success", "Your information was updated!");
             this.props.reset("submissionPage2");
+            openSnackbar("success", "Your information was updated!");
             this.props.history.push(`/thankyou`);
+          } else {
+            // console.log(this.props.submission.error);
+            return formElements.handleError(this.props.submission.error);
           }
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return formElements.handleError(err);
         });
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       return formElements.handleError(err);
     }
   };
