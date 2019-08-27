@@ -190,7 +190,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         }
       });
       wrapper.update();
-      wrapper.find("ReduxForm").simulate("submit", { ...testData });
+      console.log(wrapper.debug());
+      wrapper.find("Connect(ReduxForm)").simulate("submit", { ...testData });
       expect(
         wrapper.instance().props.reCaptchaRef.current.getValue.mock.calls.length
       ).toBe(1);

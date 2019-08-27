@@ -29,18 +29,21 @@ export const Tab3 = props => {
   // console.log(formValues.employerType.toLowerCase());
   // console.log(formValues.paymentType);
   let duesCopy = "";
-  switch (formValues.employerType.toLowerCase()) {
-    case "adult foster home":
-      duesCopy = formElements.afhDuesCopy(afhDuesRate);
-      changeFieldValue("paymentType", "Card");
-      break;
-    case "retired":
-      duesCopy = formElements.retireeDuesCopy;
-      break;
-    default:
-      duesCopy = formElements.commDuesCopy;
-      changeFieldValue("paymentType", "Card");
+  if (formValues.employerType) {
+    switch (formValues.employerType.toLowerCase()) {
+      case "adult foster home":
+        duesCopy = formElements.afhDuesCopy(afhDuesRate);
+        changeFieldValue("paymentType", "Card");
+        break;
+      case "retired":
+        duesCopy = formElements.retireeDuesCopy;
+        break;
+      default:
+        duesCopy = formElements.commDuesCopy;
+        changeFieldValue("paymentType", "Card");
+    }
   }
+
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form

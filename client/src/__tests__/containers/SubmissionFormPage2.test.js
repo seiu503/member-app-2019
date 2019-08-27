@@ -36,11 +36,10 @@ const defaultProps = {
   },
   classes: {},
   apiSF: {
-    getSFContactById: () => Promise.resolve({ type: "GET_SF_CONTACT_SUCCESS" })
+    getSFContactById: () => Promise.resolve({ type: "GET_SF_CONTACT_SUCCESS" }),
+    updateSFContact: () => Promise.resolve({ type: UPDATE_SF_CONTACT_SUCCESS })
   },
-  apiSubmission: {
-    classes: { test: "test" }
-  },
+  apiSubmission: {},
   history: {
     push: pushMock
   }
@@ -63,10 +62,16 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
   });
 
   it("renders connected component", () => {
+    let props = {
+      submission: {
+        salesforceId: "1"
+      },
+      apiSF: { getSFContactById }
+    };
     store = storeFactory(initialState);
     wrapper = mount(
       <Provider store={store}>
-        <SubmissionFormPage2Connected {...defaultProps} />
+        <SubmissionFormPage2Connected {...defaultProps} {...props} />
       </Provider>
     );
     const component = findByTestAttr(
@@ -86,7 +91,7 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
       submission: {
         salesforceId: "1"
       },
-      apiSF: { getSFContactById: getSFContactById }
+      apiSF: { getSFContactById }
     };
     store = storeFactory(initialState);
     const dispatchSpy = jest.spyOn(apiSForce, "getSFContactById");

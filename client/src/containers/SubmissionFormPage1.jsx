@@ -289,8 +289,8 @@ export class SubmissionFormPage1Container extends React.Component {
           console.log(err);
           return handleError(err);
         });
-      console.log(result.payload);
-      console.log(this.props.submission.submissionId);
+      // console.log(result.payload);
+      // console.log(this.props.submission.submissionId);
       // if no payment is required, we're done with saving the submission
       // we can write the OMA to SF and then move on to the CAPE ask
       if (!formValues.paymentRequired) {
@@ -349,7 +349,7 @@ export class SubmissionFormPage1Container extends React.Component {
         console.log(err);
         return handleError(err);
       });
-      console.log(this.props.submission.salesforceId);
+      // console.log(this.props.submission.salesforceId);
     } catch (err) {
       console.log(err);
       return handleError(err);
@@ -422,7 +422,6 @@ export class SubmissionFormPage1Container extends React.Component {
       return openSnackbar("error", "Please verify you are human with Captcha");
     }
     this.props.changeFieldValue("reCaptchaValue", reCaptchaValue);
-
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
       // update existing contact, move to next tab
@@ -437,7 +436,6 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(err);
       }
     }
-
     // otherwise, lookup contact by first/last/email
     const body = {
       first_name: formValues.firstName,
@@ -450,12 +448,11 @@ export class SubmissionFormPage1Container extends React.Component {
         console.log(err);
         return handleError(err);
       });
-      console.log(result.payload);
+      // console.log(result.payload);
     } catch (err) {
       console.log(err);
       return handleError(err);
     }
-
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
       await this.updateSFContact().catch(err => {
@@ -472,7 +469,7 @@ export class SubmissionFormPage1Container extends React.Component {
         console.log(err);
         return handleError(err);
       });
-      console.log(this.props.submission.salesforceId);
+      // console.log(this.props.submission.salesforceId);
       return this.changeTab(1);
     } catch (err) {
       console.log(err);
@@ -531,7 +528,7 @@ export class SubmissionFormPage1Container extends React.Component {
       deductionCurrency: "USD", // required by unioni.se, sending default
       deductionDayOfMonth: 15 // required by unioni.se, sending default
     };
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
     try {
       const result = await this.props.apiSF.getIframeURL(body).catch(err => {
         console.log(err);
@@ -567,14 +564,11 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.direct_pay.current.innerHTML
       );
     }
-    this.props.apiSubmission.handleInput({
-      target: { name: "legalLanguage", value: legalLanguage }
-    });
+    this.props.changeFieldValue("legalLanguage", legalLanguage);
   }
 
   async calculateAFHDuesRate(medicaidResidents) {
     let afhDuesRate = medicaidResidents * 14.84 + 2.75;
-    console.log(afhDuesRate);
     this.props.apiSubmission.handleInput({
       target: { name: "afhDuesRate", value: afhDuesRate }
     });
@@ -586,29 +580,28 @@ export class SubmissionFormPage1Container extends React.Component {
     // before ref disappears
 
     if (this.state.signatureType === "draw") {
-      // console.log('387');
       let sigUrl;
       try {
         sigUrl = await this.handleUpload(
           formValues.firstName,
           formValues.lastName
         ).catch(err => {
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
-        // console.log(`394: ${sigUrl}`);
+        // console.log(`599: ${sigUrl}`);
         this.props.changeFieldValue("signature", sigUrl);
         return sigUrl;
       } catch (err) {
-        // console.log(err);
+        console.log(err);
         handleError(err);
       }
     }
+    return formValues.signature;
   }
 
   async handleTab2() {
     const { formValues } = this.props;
-
     // submit validation: signature
     try {
       const signature = await this.saveSignature().catch(err => {
@@ -647,7 +640,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // save legal language
-    this.saveLegalLanguage(formValues);
+    this.saveLegalLanguage();
 
     // save partial submission, then move to next tab
     try {

@@ -10,6 +10,7 @@ import * as Notifier from "../../containers/Notifier";
 let wrapper,
   handleSubmit,
   apiSubmission,
+  apiSF,
   updateSubmission,
   handleSubmitMock,
   handleSubmitSuccess,
@@ -43,6 +44,7 @@ const defaultProps = {
   // need these here for form to have access to their definitions later
   apiSubmission,
   handleSubmit,
+  apiSF,
   location: {
     search: ""
   },
@@ -61,11 +63,12 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     error = null;
     handleSubmit = fn => fn;
     apiSubmission = {};
+    apiSF = {};
   });
 
   // create wrapper with default props and assigned values from above as props
   const unconnectedSetup = () => {
-    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission };
+    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return shallow(<SubmissionFormPage2Component {...setUpProps} />);
   };
 

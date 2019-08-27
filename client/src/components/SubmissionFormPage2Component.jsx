@@ -151,7 +151,7 @@ export class SubmissionFormPage2Component extends React.Component {
         result.type === "UPDATE_SUBMISSION_FAILURE" ||
         this.props.submission.error
       ) {
-        console.log(this.props.submission.error);
+        // console.log(this.props.submission.error);
         return formElements.handleError(this.props.submission.error);
       }
       this.props.apiSF
@@ -471,6 +471,9 @@ SubmissionFormPage2Component.propTypes = {
     loading: PropTypes.bool,
     error: PropTypes.string,
     salesforceId: PropTypes.string
+  }).isRequired,
+  apiSF: PropTypes.shape({
+    updateSFContact: PropTypes.func
   }).isRequired,
   classes: PropTypes.object
 };

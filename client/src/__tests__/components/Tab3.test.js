@@ -16,6 +16,8 @@ let wrapper,
   testData,
   component;
 
+const changeFieldValueMock = jest.fn();
+
 // initial props for form
 const defaultProps = {
   onSubmit: jest.fn(),
@@ -27,8 +29,11 @@ const defaultProps = {
   invalid: false,
   formValues: {
     paymentType: "card",
-    employerName: "blah"
-  }
+    employerName: "blah",
+    employerType: "adult foster home"
+  },
+  afhDuesRate: 17.59304,
+  changeFieldValue: changeFieldValueMock
 };
 
 describe("<Tab3 />", () => {
