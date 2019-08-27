@@ -3,7 +3,7 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
-import { withLocalize } from "react-localize-redux";
+import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,7 @@ import { withStyles } from "@material-ui/core/styles";
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiContentActions from "./store/actions/apiContentActions";
+import { detectDefaultLanguage } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -141,11 +142,12 @@ export class AppUnconnected extends Component {
         { name: "Spanish", code: "es" },
         { name: "Russian", code: "ru" },
         { name: "Vietnamese", code: "vi" },
-        { name: "Chinese", code: "zh-Hans" }
+        { name: "Chinese", code: "zh" }
       ],
       options: {
         renderToStaticMarkup,
-        renderInnerHtml: false
+        renderInnerHtml: false,
+        defaultLanguage: "en"
       }
     });
     this.state = {
@@ -177,6 +179,7 @@ export class AppUnconnected extends Component {
           .catch(err => console.log(err));
       }
     }
+    this.props.setActiveLanguage(detectDefaultLanguage());
   }
 
   render() {
@@ -322,7 +325,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiContentActions: bindActionCreators(apiContentActions, dispatch),
-  apiProfile: bindActionCreators(apiProfileActions, dispatch)
+  apiProfile: bindActionCreators(apiProfileActions, dispatch),
+  setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });
 
 export const AppConnected = connect(
