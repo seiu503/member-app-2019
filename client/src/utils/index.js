@@ -48,7 +48,6 @@ export const detectDefaultLanguage = () => {
     for (let i = 0; i < acceptableLangs.length; i++) {
       if (userLang.includes(acceptableLangs[i], 0)) {
         defaultLanguage = acceptableLangs[i];
-        console.log(defaultLanguage);
         return defaultLanguage;
       }
     }
