@@ -147,7 +147,8 @@ describe("submission reducer", () => {
           legalLanguage: "",
           paymentType: "",
           medicaidResidents: 0,
-          paymentMethodAdded: false
+          paymentMethodAdded: false,
+          afhDuesRate: 0
         },
         formPage2: {
           africanOrAfricanAmerican: false,

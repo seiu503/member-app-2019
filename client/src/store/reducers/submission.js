@@ -54,7 +54,8 @@ export const INITIAL_STATE = {
     paymentType: "",
     paymentMethodAdded: false,
     medicaidResidents: 0,
-    immediatePastMemberStatus: "Not a Member"
+    immediatePastMemberStatus: "Not a Member",
+    afhDuesRate: 0
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
