@@ -17,7 +17,6 @@ import Slide from "@material-ui/core/Slide";
 
 import { skip } from "../utils";
 import logo from "../img/seiu503_white.svg";
-import LanguageToggle from "../components/LanguageToggle";
 
 const styles = theme => ({
   root: {
@@ -256,7 +255,6 @@ export class NavBar extends React.Component {
                 Membership Application
               </Link>
             </Typography>
-            <LanguageToggle />
             <IconButton
               className={classes.menuButton}
               color="secondary"
