@@ -388,18 +388,13 @@ export class SubmissionFormPage1Container extends React.Component {
       reCaptchaValue
     };
 
-    const result = await this.props.apiSF
-      .updateSFContact(id, body)
-      .catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
-    // console.log(result.payload);
-    // console.log(this.props.submission.salesforceId);
+    await this.props.apiSF.updateSFContact(id, body).catch(err => {
+      // console.log(err);
+      return handleError(err);
+    });
   }
 
   async handleTab1() {
-    // return new Promise( async (resolve, reject) => {
     const { formValues } = this.props;
     // handle moving from tab 1 to tab 2:
     // lookup SF contact if no id provided
@@ -407,7 +402,6 @@ export class SubmissionFormPage1Container extends React.Component {
     // submit validation: recaptcha
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     if (!reCaptchaValue) {
-      // resolve(openSnackbar("error", "Please verify you are human with Captcha"));
       return openSnackbar("error", "Please verify you are human with Captcha");
     }
     this.props.changeFieldValue("reCaptchaValue", reCaptchaValue);
@@ -417,10 +411,8 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.updateSFContact().catch(err => {
         console.log(err);
         return handleError(err);
-        // resolve(handleError(err));
       });
       return this.changeTab(1);
-      // resolve(this.changeTab(1));
     }
 
     // otherwise, lookup contact by first/last/email
@@ -432,7 +424,6 @@ export class SubmissionFormPage1Container extends React.Component {
     await this.props.apiSF.lookupSFContact(body).catch(err => {
       // console.log(err);
       return handleError(err);
-      // resolve(handleError(err));
     });
     // console.log(result);
 
@@ -441,19 +432,16 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.updateSFContact().catch(err => {
         console.log(err);
         return handleError(err);
-        // resolve(handleError(err));
       });
       return this.changeTab(1);
-      // resolve(this.changeTab(1));
     }
     // otherwise, create new contact with submission data,
     // then move to next tab
     await this.createSFContact().catch(err => {
       console.log(err);
-      resolve(handleError(err));
+      return handleError(err);
     });
-
-    // });
+    return this.changeTab(1);
   }
 
   async getIframeURL() {

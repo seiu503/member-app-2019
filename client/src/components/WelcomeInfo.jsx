@@ -83,7 +83,8 @@ export class WelcomeInfoUnconnected extends React.Component {
     // if find contact id, call API to fetch contact info for prefill
     if (values.h || values.b || values.i) {
       const { h, i, b } = values;
-      const queryIds = [h, i, b];
+      let idArray = [h, i, b];
+      const queryIds = idArray.filter(id => (id ? id : null));
       queryIds.forEach(id => {
         this.props.apiContent
           .getContentById(id)
