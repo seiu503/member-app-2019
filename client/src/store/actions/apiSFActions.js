@@ -312,10 +312,9 @@ export function getIframeURL(body) {
           }
         }
       ],
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   'Accept': 'application/json',
-      // },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body: JSON.stringify(body)
     }
   };
