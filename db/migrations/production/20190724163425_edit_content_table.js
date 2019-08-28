@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema.hasTable("content").then(function(exists) {
     if (exists) {
       return knex.schema.hasColumn("content", "id").then(function(exists) {
@@ -19,7 +19,7 @@ exports.up = function(knex, Promise) {
   });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema.hasTable("content").then(function(exists) {
     if (exists) {
       return knex.schema.dropTable("content").then(function() {

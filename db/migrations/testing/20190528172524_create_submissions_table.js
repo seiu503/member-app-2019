@@ -1,9 +1,8 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (!exists) {
         return knex.schema.createTable("submissions", function(table) {
-          table.uuid("submission_id").primary();
           table.string("ip_address").notNullable();
           table.date("submission_date").notNullable();
           table.string("agency_number");
@@ -25,7 +24,7 @@ exports.up = function(knex, Promise) {
           table.string("contact_id");
           table.string("legal_language").notNullable();
           table.date("maintenance_of_effort").notNullable();
-          table.date("seiu503_cba_app_date").notNullable();
+          table.date("503_cba_app_date").notNullable();
           table.date("direct_pay_auth");
           table.date("direct_deposit_auth");
           table.string("immediate_past_member_status");
@@ -37,7 +36,7 @@ exports.up = function(knex, Promise) {
   ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {

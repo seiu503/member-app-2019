@@ -1,4 +1,4 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (!exists) {
@@ -36,7 +36,7 @@ exports.up = function(knex, Promise) {
   ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {

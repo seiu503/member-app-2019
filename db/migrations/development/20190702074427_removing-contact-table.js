@@ -1,23 +1,21 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return knex.schema
-    .hasTable("contacts")
+    .hasTable("contacts_submissions")
     .then(function(exists) {
       if (exists) {
-        return knex.schema.dropTable("contacts");
+        return knex.schema.dropTable("contacts_submissions");
       }
     })
     .then(function() {
-      return knex.schema
-        .hasTable("contacts_submissions")
-        .then(function(exists) {
-          if (exists) {
-            return knex.schema.dropTable("contacts_submissions");
-          }
-        });
+      return knex.schema.hasTable("contacts").then(function(exists) {
+        if (exists) {
+          return knex.schema.dropTable("contacts");
+        }
+      });
     });
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return knex.schema
     .hasTable("contacts")
     .then(function(exists) {

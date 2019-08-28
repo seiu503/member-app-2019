@@ -1,9 +1,9 @@
-exports.up = function(knex, Promise) {
+exports.up = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
         return knex.schema.table("submissions", function(table) {
-          table.string("salesforce_id").notNullable().unique;
+          table.uuid("salesforce_id").notNullable().unique;
           table.renameColumn("submission_id", "id");
           table.dropColumn("contact_id");
         });
@@ -12,12 +12,8 @@ exports.up = function(knex, Promise) {
   ]);
 };
 
-exports.down = function(knex, Promise) {
+exports.down = function(knex) {
   return Promise.all([
-    knex
-      .table("submissions")
-      .where({ salesforce_id: "0036100001gYL0HAAW" })
-      .del(),
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
         return knex.schema.table("submissions", function(table) {

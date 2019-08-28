@@ -1,12 +1,19 @@
-exports.up = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.hasTable("contacts_submissions").then(function(exists) {
+exports.up = function(knex) {
+  return knex.schema
+    .hasTable("contacts_submissions")
+    .then(function(exists) {
       if (exists) {
-        return knex.schema.table("contacts_submissions", function(table) {
-          table.dropForeign("contact_id");
-          table.dropForeign("submission_id");
-        });
+        return knex.schema
+          .hasColumn("contacts_submissions", "contact_id")
+          .then(function(exists) {
+            return knex.schema.table("contacts_submissions", function(table) {
+              table.dropForeign("contact_id");
+              table.dropForeign("submission_id");
+            });
+          });
       }
+    })
+    .then(function() {
       return knex.schema.table("contacts_submissions", function(table) {
         table
           .foreign("contact_id")
@@ -17,17 +24,16 @@ exports.up = function(knex, Promise) {
           .references("submissions.submission_id")
           .onDelete("CASCADE");
       });
-    })
-  ]);
+    });
 };
 
-exports.down = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.hasTable("contacts_submissions").then(function(exists) {
-      if (exists) {
-        knex.schema
-          .hasColumn("contacts_submissions", "contact-id")
-          .then(function(exists) {
+exports.down = function(knex) {
+  return knex.schema.hasTable("contacts_submissions").then(function(exists) {
+    if (exists) {
+      return knex.schema
+        .hasColumn("contacts_submissions", "contact_id")
+        .then(function(exists) {
+          if (exists) {
             return knex.schema.table("contacts_submissions", function(table) {
               table.dropForeign("contact_id");
               table.dropForeign("submission_id");
@@ -36,8 +42,8 @@ exports.down = function(knex, Promise) {
                 .foreign("submission_id")
                 .references("submissions.submission_id");
             });
-          });
-      }
-    })
-  ]);
+          }
+        });
+    }
+  });
 };

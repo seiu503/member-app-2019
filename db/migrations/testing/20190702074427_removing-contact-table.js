@@ -1,21 +1,24 @@
-exports.up = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.hasTable("contacts").then(function(exists) {
-      if (exists) {
-        return knex.schema.dropTable("contacts");
-      }
-    }),
-    knex.schema.hasTable("contacts_submissions").then(function(exists) {
+exports.up = function(knex) {
+  return knex.schema
+    .hasTable("contacts_submissions")
+    .then(function(exists) {
       if (exists) {
         return knex.schema.dropTable("contacts_submissions");
       }
     })
-  ]);
+    .then(function() {
+      return knex.schema.hasTable("contacts").then(function(exists) {
+        if (exists) {
+          return knex.schema.dropTable("contacts");
+        }
+      });
+    });
 };
 
-exports.down = function(knex, Promise) {
-  return Promise.all([
-    knex.schema.hasTable("contacts").then(function(exists) {
+exports.down = function(knex) {
+  return knex.schema
+    .hasTable("contacts")
+    .then(function(exists) {
       if (!exists) {
         return knex.schema.createTable("contacts", function(table) {
           table.uuid("contact_id").primary();
@@ -61,21 +64,30 @@ exports.down = function(knex, Promise) {
           table.timestamp("updated_at").defaultTo(knex.fn.now());
         });
       }
-    }),
-    knex.schema.hasTable("contacts_submissions").then(function(exists) {
-      if (!exists) {
-        return knex.schema.createTable("contacts_submissions", function(table) {
-          table.uuid("id").primary();
-          table
-            .uuid("contact_id")
-            .references("contacts.contact_id")
-            .onDelete("CASCADE");
-          table
-            .uuid("submission_id")
-            .references("submissions.submission_id")
-            .onDelete("CASCADE");
-        });
-      }
     })
-  ]);
+    .then(function() {
+      return knex.schema
+        .hasTable("contacts_submissions")
+        .then(function(exists) {
+          if (!exists) {
+            return knex.schema.hasTable("submissions").then(function(exists) {
+              if (exists) {
+                return knex.schema.createTable("contacts_submissions", function(
+                  table
+                ) {
+                  table.uuid("id").primary();
+                  table
+                    .uuid("contact_id")
+                    .references("contacts.contact_id")
+                    .onDelete("CASCADE");
+                  table
+                    .uuid("submission_id")
+                    .references("submissions.submission_id")
+                    .onDelete("CASCADE");
+                });
+              }
+            });
+          }
+        });
+    });
 };
