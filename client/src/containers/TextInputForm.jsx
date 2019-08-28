@@ -255,7 +255,7 @@ export class TextInputFormUnconnected extends React.Component {
               aria-label="Content Type"
               name="content_type"
               className={classes.group}
-              value={this.props.content.form.content_type}
+              value={this.props.content.form.content_type || ""}
               onChange={this.props.apiContent.handleInput}
             >
               <FormControlLabel

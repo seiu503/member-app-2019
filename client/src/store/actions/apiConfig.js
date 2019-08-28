@@ -5,7 +5,7 @@
 /* ================================= SETUP ================================= */
 
 const prodUrl = " http://test.seiu503signup.org"; // NO TRAILING SLASH
-const devUrl = "http://localhost:3001"; // server url for local install
+const devUrl = "http://localhost:8080"; // server url for local install
 const clientUrl = "http://localhost:3000"; // client url for local install
 
 /* ================================ EXPORTS ================================ */

@@ -65,3 +65,21 @@ export const detectDefaultLanguage = () => {
   }
   return defaultLanguage;
 };
+
+export const scrollToFirstError = errors => {
+  // search through errors object to find only those currently mounted in DOM
+  // (some errors will be on future tabs and can't be scrolled to yet)
+  if (errors) {
+    const errorsArray = Object.keys(errors);
+    const firstError = errorsArray.find(
+      error => !!document.getElementById(error)
+    );
+    const el = document.getElementById(firstError);
+    const position =
+      el.getBoundingClientRect().top + document.documentElement.scrollTop;
+
+    const offset = 200;
+
+    window.scrollTo({ top: position - offset, behavior: "smooth" });
+  }
+};

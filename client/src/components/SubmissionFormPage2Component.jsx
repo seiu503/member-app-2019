@@ -5,6 +5,7 @@ import { reduxForm } from "redux-form";
 import { withLocalize, Translate } from "react-localize-redux";
 import validate from "../utils/validators";
 import page2 from "../translations/page2.json";
+import queryString from "query-string";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -34,12 +35,8 @@ export class SubmissionFormPage2Component extends React.Component {
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
 
-  handleSubmit = values => {
+  calcEthnicity = values => {
     const {
-      mailToCity,
-      mailToState,
-      mailToStreet,
-      mailToZip,
       africanOrAfricanAmerican,
       arabAmericanMiddleEasternOrNorthAfrican,
       asianOrAsianAmerican,
@@ -48,7 +45,51 @@ export class SubmissionFormPage2Component extends React.Component {
       nativeHawaiianOrOtherPacificIslander,
       white,
       other,
-      declined,
+      declined
+    } = values;
+    if (declined) {
+      return "declined";
+    }
+    let combinedEthnicities = "";
+    const ethnicities = {
+      africanOrAfricanAmerican,
+      arabAmericanMiddleEasternOrNorthAfrican,
+      asianOrAsianAmerican,
+      hispanicOrLatinx,
+      nativeAmericanOrIndigenous,
+      nativeHawaiianOrOtherPacificIslander,
+      white,
+      other
+    };
+    const ethnicitiesArray = Object.entries(ethnicities);
+    ethnicitiesArray.forEach(i => {
+      if (i[1]) {
+        if (combinedEthnicities === "") {
+          combinedEthnicities = i[0];
+        } else {
+          combinedEthnicities += `, ${i[0]}`;
+        }
+      }
+    });
+    return combinedEthnicities;
+  };
+
+  removeFalsy = obj => {
+    let newObj = {};
+    Object.keys(obj).forEach(prop => {
+      if (obj[prop]) {
+        newObj[prop] = obj[prop];
+      }
+    });
+    return newObj;
+  };
+
+  handleSubmit = async values => {
+    const {
+      mailToCity,
+      mailToState,
+      mailToStreet,
+      mailToZip,
       lgbtqId,
       transId,
       disabilityId,
@@ -63,40 +104,13 @@ export class SubmissionFormPage2Component extends React.Component {
       workPhone,
       hireDate
     } = values;
-    const ethnicity = () => {
-      if (declined) {
-        return "declined";
-      }
-      let combinedEthnicities = "";
-      const ethnicities = {
-        africanOrAfricanAmerican,
-        arabAmericanMiddleEasternOrNorthAfrican,
-        asianOrAsianAmerican,
-        hispanicOrLatinx,
-        nativeAmericanOrIndigenous,
-        nativeHawaiianOrOtherPacificIslander,
-        white,
-        other
-      };
-      const ethnicitiesArray = Object.entries(ethnicities);
-      ethnicitiesArray.forEach(i => {
-        if (i[1]) {
-          if (combinedEthnicities === "") {
-            combinedEthnicities = i[0];
-          } else {
-            combinedEthnicities += `, ${i[0]}`;
-          }
-        }
-      });
-      return combinedEthnicities;
-    };
-
+    const ethnicity = this.calcEthnicity(values);
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
       mail_to_postal_code: mailToZip,
-      ethnicity: ethnicity(),
+      ethnicity,
       lgbtq_id: lgbtqId,
       trans_id: transId,
       disability_id: disabilityId,
@@ -111,45 +125,57 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-    const removeFalsy = obj => {
-      let newObj = {};
-      Object.keys(obj).forEach(prop => {
-        if (obj[prop]) {
-          newObj[prop] = obj[prop];
-        }
-      });
-      return newObj;
-    };
-
-    const cleanBody = removeFalsy(body);
+    const cleanBody = this.removeFalsy(body);
+    let salesforceId = this.props.submission.salesforceId;
+    if (!salesforceId) {
+      const params = queryString.parse(this.props.location.search);
+      if (params.id) {
+        salesforceId = params.id;
+      }
+    }
+    cleanBody.salesforce_id = salesforceId;
     // console.log("CLEANBODY", cleanBody);
 
     let id = this.props.submission.submissionId;
-
-    return this.props.apiSubmission
-      .updateSubmission(id, cleanBody)
-      .then(result => {
-        if (
-          result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.submission.error ||
-              "An error occurred while trying to update your information."
-          );
-        } else {
-          openSnackbar("success", "Your information was updated!");
-          this.props.reset("submissionPage2");
-          this.props.history.push(`/thankyou`);
-        }
-      })
-
-      .catch(err => {
-        // console.log(err);
-        openSnackbar("error", err);
-      });
+    try {
+      const result = await this.props.apiSubmission
+        .updateSubmission(id, cleanBody)
+        .catch(err => {
+          // console.log(err);
+          return formElements.handleError(err);
+        });
+      if (
+        result.type === "UPDATE_SUBMISSION_FAILURE" ||
+        this.props.submission.error
+      ) {
+        // console.log(this.props.submission.error);
+        return formElements.handleError(this.props.submission.error);
+      }
+      this.props.apiSF
+        .updateSFContact(salesforceId, cleanBody)
+        .then(result => {
+          if (
+            result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
+            !this.props.submission.error
+          ) {
+            this.props.reset("submissionPage2");
+            openSnackbar("success", "Your information was updated!");
+            this.props.history.push(`/thankyou`);
+          } else {
+            // console.log(this.props.submission.error);
+            return formElements.handleError(this.props.submission.error);
+          }
+        })
+        .catch(err => {
+          // console.log(err);
+          return formElements.handleError(err);
+        });
+    } catch (err) {
+      // console.log(err);
+      return formElements.handleError(err);
+    }
   };
+
   render() {
     return (
       <div
@@ -328,7 +354,7 @@ export class SubmissionFormPage2Component extends React.Component {
           </FormGroup>
 
           <FormLabel className={this.classes.formLabel} component="legend">
-            Employemnt Info
+            Employment Info
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field
@@ -444,6 +470,9 @@ SubmissionFormPage2Component.propTypes = {
     loading: PropTypes.bool,
     error: PropTypes.string,
     salesforceId: PropTypes.string
+  }).isRequired,
+  apiSF: PropTypes.shape({
+    updateSFContact: PropTypes.func
   }).isRequired,
   classes: PropTypes.object
 };

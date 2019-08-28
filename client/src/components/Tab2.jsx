@@ -5,9 +5,19 @@ import SignatureCanvas from "react-signature-canvas";
 
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 
 import validate from "../utils/validators";
+import { scrollToFirstError } from "../utils";
+import {
+  hcwDirectDepositAuthText,
+  hcwDPAText,
+  afhDPAText,
+  retireeDPAText,
+  communityDPAText,
+  membershipTerms
+} from "./SubmissionFormElements";
 
 export const Tab2 = props => {
   const {
@@ -15,14 +25,25 @@ export const Tab2 = props => {
     classes,
     renderTextField,
     renderCheckbox,
-    handleTab,
+    back,
     legal_language,
+    direct_pay,
+    direct_deposit,
     sigBox,
     clearSignature,
     handleInput,
     signatureType,
-    toggleSignatureInputType
+    toggleSignatureInputType,
+    formValues
   } = props;
+  // console.log(formValues.employerType);
+  const hcw =
+    formValues.employerType.toLowerCase() ===
+    "state homecare or personal support";
+  const afh = formValues.employerType.toLowerCase() === "adult foster home";
+  const retiree = formValues.employerType.toLowerCase() === "retired";
+  const community =
+    formValues.employerType.toLowerCase() === "community member";
   return (
     <div data-test="component-tab2" className={classes.sectionContainer}>
       <form
@@ -40,34 +61,72 @@ export const Tab2 = props => {
           classes={classes}
           component={renderCheckbox}
         />
-        <FormHelperText
+        <div
           className={classes.formHelperTextLegal}
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
-          Your full name, the network address you are accessing this page from,
-          and the timestamp of submission will serve as signature indicating: I
-          hereby designate SEIU Local 503, OPEU (or any successor Union entity)
-          as my desired collective bargaining agent. I also hereby authorize my
-          employer to deduct from my wages, commencing with the next payroll
-          period, all Union dues and other fees or assessments as shall be
-          certified by SEIU Local 503, OPEU (or any successor Union entity) and
-          to remit those amounts to such Union. This authorization/delegation is
-          unconditional, made in consideration for the cost of representation
-          and other actions in my behalf by the Union and is made irrespective
-          of my membership in the Union. This authorization is irrevocable for a
-          period of one year from the date of execution and from year to year
-          thereafter unless not less than thirty (30) and not more than
-          forty-five (45) days prior to the end of any annual period or the
-          termination of the contract between my employer and the Union,
-          whichever occurs first, I notify the Union and my employer in writing,
-          with my valid signature, of my desire to revoke this authorization.
-        </FormHelperText>
+          {membershipTerms}
+        </div>
 
+        {(hcw || afh || community || retiree) && (
+          <React.Fragment>
+            <Field
+              formControlName="controlCheckbox"
+              data-test="checkbox-DPA"
+              label="Direct Pay Authorization"
+              name="directPayAuth"
+              id="directPayAuth"
+              type="checkbox"
+              classes={classes}
+              component={renderCheckbox}
+            />
+            <div
+              className={classes.formHelperTextLegal}
+              id="directPayAuthLegalLanguage"
+              ref={direct_pay}
+            >
+              {hcw
+                ? hcwDPAText
+                : afh
+                ? afhDPAText
+                : retiree
+                ? retireeDPAText("m")
+                : community
+                ? communityDPAText
+                : ""}
+            </div>
+          </React.Fragment>
+        )}
+        {hcw && (
+          <React.Fragment>
+            <Field
+              formControlName="controlCheckbox"
+              data-test="checkbox-DDA"
+              label="Direct Deposit Authorization"
+              name="directDepositAuth"
+              id="directDepositAuth"
+              type="checkbox"
+              classes={classes}
+              component={renderCheckbox}
+            />
+            <div
+              className={classes.formHelperTextLegal}
+              id="directDepositAuthLegalLanguage"
+              ref={direct_deposit}
+            >
+              {hcwDirectDepositAuthText}
+            </div>
+          </React.Fragment>
+        )}
+        <Typography component="h3" className={classes.fieldLabel}>
+          Signature
+        </Typography>
         {signatureType === "write" && (
           <React.Fragment>
             <Field
               label="Signature"
+              data-test="input-signature"
               name="signature"
               id="signature"
               type="text"
@@ -125,7 +184,7 @@ export const Tab2 = props => {
           <Button
             type="button"
             data-test="button-back"
-            onClick={e => handleTab(e, 0)}
+            onClick={() => back(0)}
             color="primary"
             className={classes.back}
             variant="contained"
@@ -169,7 +228,8 @@ export const Tab2Form = reduxForm({
   forceUnregisterOnUnmount: true,
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  updateUnregisteredFields: true
+  updateUnregisteredFields: true,
+  onSubmitFail: errors => scrollToFirstError(errors)
 })(Tab2);
 
 export default Tab2Form;

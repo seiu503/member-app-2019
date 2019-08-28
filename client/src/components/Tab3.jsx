@@ -1,22 +1,49 @@
 import React from "react";
-import { reduxForm } from "redux-form";
-import ReCAPTCHA from "react-google-recaptcha";
+import { Field, reduxForm, getFormValues } from "redux-form";
+import { connect } from "react-redux";
+import Iframe from "react-iframe";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
+import Button from "@material-ui/core/Button";
+import * as formElements from "./SubmissionFormElements";
+import Typography from "@material-ui/core/Typography";
 
 import PropTypes from "prop-types";
 
 import validate from "../utils/validators";
+import { scrollToFirstError } from "../utils";
 
 export const Tab3 = props => {
   const {
     onSubmit,
     classes,
-    reCaptchaChange,
-    reCaptchaRef,
     loading,
-    invalid
+    invalid,
+    iFrameURL,
+    afhDuesRate,
+    back,
+    formValues,
+    changeFieldValue
   } = props;
+  // console.log(formValues);
+  // console.log(formValues.employerType.toLowerCase());
+  // console.log(formValues.paymentType);
+  let duesCopy = "";
+  if (formValues.employerType) {
+    switch (formValues.employerType.toLowerCase()) {
+      case "adult foster home":
+        duesCopy = formElements.afhDuesCopy(afhDuesRate);
+        changeFieldValue("paymentType", "Card");
+        break;
+      case "retired":
+        duesCopy = formElements.retireeDuesCopy;
+        break;
+      default:
+        duesCopy = formElements.commDuesCopy;
+        changeFieldValue("paymentType", "Card");
+    }
+  }
+
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
       <form
@@ -24,12 +51,72 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
-        <h3>Here's where the payment processing stuff will go...</h3>
-        <ReCAPTCHA
-          ref={reCaptchaRef}
-          sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-          onChange={reCaptchaChange}
-        />
+        {formValues.employerType &&
+          formValues.employerType.toLowerCase() === "retired" && (
+            <Field
+              data-test="radio-payment-type"
+              label="How would you like to pay your union dues?"
+              name="paymentType"
+              formControlName="paymentType"
+              id="paymentType"
+              type="radio"
+              direction="horiz"
+              className={classes.horizRadio}
+              classes={classes}
+              component={formElements.renderRadioGroup}
+              options={formElements.paymentTypes}
+            />
+          )}
+        {iFrameURL &&
+          (formValues.paymentType === "Card" ? (
+            <div data-test="component-iframe">
+              <div className={classes.paymentCopy}>
+                <Typography component="p" className={classes.body}>
+                  {duesCopy}
+                </Typography>
+                <Typography component="h2" className={classes.head}>
+                  Add a payment method
+                </Typography>
+              </div>
+              <div className={classes.iframeWrap}>
+                <Iframe
+                  url={iFrameURL}
+                  width="100%"
+                  height="100px"
+                  id="iFrame"
+                  className={classes.iframe}
+                  display="initial"
+                  position="relative"
+                />
+              </div>
+            </div>
+          ) : formValues.paymentType === "Check" ? (
+            <div className={classes.paymentCopy}>
+              <Typography component="h2" className={classes.head}>
+                To pay your dues by check:
+              </Typography>
+              <Typography component="p" className={classes.body}>
+                Please mail your payment of $5 (monthly) or $60 (annually) to
+                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
+                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
+                bylaws.
+              </Typography>
+            </div>
+          ) : (
+            ""
+          ))}
+        <div className={classes.buttonWrapTab3}>
+          <Button
+            type="button"
+            data-test="button-back"
+            onClick={() => back(1)}
+            color="primary"
+            className={classes.back}
+            variant="contained"
+          >
+            Back
+          </Button>
+        </div>
 
         <ButtonWithSpinner
           type="submit"
@@ -56,6 +143,12 @@ Tab3.propTypes = {
   invalid: PropTypes.bool
 };
 
+const mapStateToProps = state => ({
+  submission: state.submission,
+  initialValues: state.submission.formPage1,
+  formValues: getFormValues("submissionPage1")(state) || {}
+});
+
 // add reduxForm to component
 export const Tab3Form = reduxForm({
   form: "submissionPage1",
@@ -64,7 +157,11 @@ export const Tab3Form = reduxForm({
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  updateUnregisteredFields: true
+  updateUnregisteredFields: true,
+  onSubmitFail: errors => scrollToFirstError(errors)
 })(Tab3);
 
-export default Tab3Form;
+// connect to redux store
+export const Tab3Connected = connect(mapStateToProps)(Tab3Form);
+
+export default Tab3Connected;

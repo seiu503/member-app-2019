@@ -215,11 +215,6 @@ router.delete("/image/:key", authCtrl.requireAuth, imageCtrl.deleteImage);
 /* =========================== SUBMISSION ROUTES =========================== */
 
 // CREATE A SUBMISSION
-// This route calls 3 controller functions:
-// (1) Creates a submission in the Postgres DB
-// (2) Creates an 'OnlineMemberApp__c' object in Salesforce
-// (3) Updates the corresponding contact record in Salesforce with any
-//     new or changed fields from the submission
 //
 //   Example: POST >> /api/submission/
 //   Secured: No
@@ -255,12 +250,7 @@ router.delete("/image/:key", authCtrl.requireAuth, imageCtrl.deleteImage);
 //        }
 //   Returns: JSON created submission object on success.
 //
-router.post(
-  "/submission",
-  submissionCtrl.createSubmission,
-  sfCtrl.createSFOnlineMemberApp,
-  sfCtrl.updateSFContact
-);
+router.post("/submission", submissionCtrl.createSubmission);
 
 // UPDATE A SUBMISSION
 //   Example: PUT >> /api/submission/:id
@@ -279,12 +269,7 @@ router.post(
 //      }
 //   Returns: JSON updated submission object on success.
 //
-router.put(
-  "/submission/:id",
-  submissionCtrl.updateSubmission,
-  sfCtrl.updateSFContact
-);
-// router.put("/submission/:id", authCtrl.requireAuth, submissionCtrl.updateSubmission);
+router.put("/submission/:id", submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
 //   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -399,14 +384,12 @@ router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 //
 router.get("/sfaccts", sfCtrl.getAllEmployers);
 
-// LOOKUP ONE SALESFORCE CONTACT RECORD (BY ID OR FIRSTNAME/LASTNAME/EMAIL)
-//   Example: PUT >> /api/sfcontact
+// CREATE SALESFORCE CONTACT RECORD
+//   Example: POST >> /api/sfcontact
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
 //          Object {
-//              ip_address                       : String
-//              submission_date                  : Timestamp
 //              agency_number                    : String
 //              employer_id                      : String
 //              birthdate                        : String
@@ -420,29 +403,14 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //              home_zip                         : String
 //              home_email                       : String
 //              preferred_language               : String
-//              terms_agree                      : Boolean
-//              Signature                        : String
 //              text_auth_opt_out                : Boolean
-//              online_campaign_source           : String
-//              contact_id                       : String
-//              legal_language                   : String
-//              maintenance_of_effort            : Date
-//              seiu503_cba_app_date             : Date
-//              direct_pay_auth                  : Date
-//              direct_deposit_auth              : Date
-//              immediate_past_member_status     : String
 //             }
-//   Returns: JSON selected fields from salesforce contact object on success.
+//   Returns: Contact Id or error message.
 //
-router.put(
-  "/sf",
-  sfCtrl.createOrUpdateSFContact,
-  submissionCtrl.createSubmission,
-  sfCtrl.createSFOnlineMemberApp
-);
+router.post("/sf", sfCtrl.createSFContact);
 
-// CREATE A SALESFORCE CONTACT RECORD
-//   Example: POST >> /api/sf
+// UPDATE A SALESFORCE CONTACT RECORD
+//   Example: PUT >> /api/sf/0035500000VFAE9AAP
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
@@ -477,7 +445,7 @@ router.put(
 //   Returns: Salesforce contact id (if called as standalone)
 //   OR passes contact ID to next middleware.
 //
-router.post("/sf", sfCtrl.createSFContact);
+router.put("/sf/:id", sfCtrl.updateSFContact);
 
 /* ================================ EXPORT ================================= */
 

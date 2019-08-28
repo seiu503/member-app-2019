@@ -40,7 +40,7 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  // console.log('submissions.ctrl.js > 43: createSubmission');
+  // console.log("submissions.ctrl.js > 43: createSubmission");
   let {
     ip_address,
     submission_date,
@@ -113,7 +113,7 @@ const createSubmission = async (req, res, next) => {
       // console.log(`submissions.ctrl.js > 111`);
       // console.log(err);
       return res
-        .status(400)
+        .status(422)
         .json({ message: "Please verify that you are a human" });
     });
   }
@@ -156,10 +156,10 @@ const createSubmission = async (req, res, next) => {
         "There was an error saving the submission"
     });
   } else {
-    // passing contact id and submission id to next middleware
-    res.locals.sf_contact_id = salesforce_id;
     res.locals.submission_id = createSubmissionResult[0].id;
-    return next();
+    return res
+      .status(200)
+      .json({ salesforce_id, submission_id: createSubmissionResult[0].id });
   }
 };
 
@@ -171,20 +171,14 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-
-  // const { reCaptchaValue, ip_address } = updates;
-  // try {
-  //   await verifyHumanity(reCaptchaValue, ip_address)
-  // } catch (error) {
-  //   console.log(error)
-  //   return res.status(400).json({ message: error.message || "Please verify that you are a human" })
-  // }
+  // console.log(`subm.ctrl.js > 173: ${id}`);
+  // console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
-      return res.status(404).json({ message: "No updates submitted" });
+      return res.status(422).json({ message: "No updates submitted" });
     }
     if (!id) {
-      return res.status(404).json({ message: "No Id Provided in URL" });
+      return res.status(422).json({ message: "No Id Provided in URL" });
     }
 
     const updateSubmissionResult = await submissions.updateSubmission(
@@ -200,19 +194,20 @@ const updateSubmission = async (req, res, next) => {
       const errmsg =
         updateSubmissionResult.message ||
         "There was an error updating the submission";
-      // console.log(`submissions.ctrl.js > 176: ${errmsg}`);
+      // console.error(`submissions.ctrl.js > 205: ${errmsg}`);
       return res.status(500).json({
         message: errmsg
       });
     } else {
-      // passing contact id and submission id to next middleware
-      res.locals.sf_contact_id = updateSubmissionResult[0].salesforce_id;
+      // console.log("subm.ctrl.js > 201: returning to client");
+      // saving to res.locals to make id available for testing
       res.locals.submission_id = updateSubmissionResult[0].id;
-      res.locals.next = false;
-      return next();
+      return res
+        .status(200)
+        .json({ submission_id: updateSubmissionResult[0].id });
     }
   } catch (error) {
-    // console.log(`submissions.ctrl.js > 192: ${error}`);
+    // console.error(`submissions.ctrl.js > 217: ${error}`);
     return res.status(404).json({ message: error.message });
   }
 };
@@ -221,19 +216,19 @@ const updateSubmission = async (req, res, next) => {
  *  @param    {String}   id   Id of the submission to delete.
  *  @returns  Success or error message.
  */
-const deleteSubmission = (req, res, next) => {
-  return submissions
-    .deleteSubmission(req.params.id)
-    .then(result => {
-      if (result.message === "Submission deleted successfully") {
-        return res.status(200).json({ message: result.message });
-      } else {
-        return res.status(404).json({
-          message: "An error occurred and the submission was not deleted."
-        });
-      }
-    })
-    .catch(err => res.status(404).json({ message: err.message }));
+const deleteSubmission = async (req, res, next) => {
+  let result;
+  try {
+    result = await submissions.deleteSubmission(req.params.id);
+    if (result.message === "Submission deleted successfully") {
+      return res.status(200).json({ message: result.message });
+    }
+    return res.status(500).json({
+      message: "An error occurred and the submission was not deleted."
+    });
+  } catch (err) {
+    return res.status(500).json({ message: err.message });
+  }
 };
 
 /** Get all submissions
@@ -242,8 +237,12 @@ const deleteSubmission = (req, res, next) => {
 const getSubmissions = (req, res, next) => {
   return submissions
     .getSubmissions()
-    .then(submissions => res.status(200).json(submissions))
-    .catch(err => res.status(404).json({ message: err.message }));
+    .then(submissions => {
+      // for testing
+      res.locals.testData = submissions[0];
+      return res.status(200).json(submissions);
+    })
+    .catch(err => res.status(500).json({ message: err.message }));
 };
 
 /** Get one submission
@@ -259,7 +258,9 @@ const getSubmissionById = (req, res, next) => {
           .status(404)
           .json({ message: submission.message || "Submission not found" });
       } else {
-        res.status(200).json(submission);
+        // for testing
+        res.locals.testData = submission;
+        return res.status(200).json(submission);
       }
     })
     .catch(err => res.status(404).json({ message: err.message }));
@@ -272,18 +273,16 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = (token, ip_address) => {
-  // console.log("captcha test ran!");
-  if (process.env.NODE_ENV === "testing") {
-    return new Promise((resolve, reject) => {
-      resolve();
-    });
-  }
   return new Promise((resolve, reject) => {
+    const key =
+      process.env.NODE_ENV === "testing"
+        ? process.env.TEST_RECAPTCHA_SECRET_KEY
+        : process.env.RECAPTCHA_SECRET_KEY;
     return request.post(
       "https://www.google.com/recaptcha/api/siteverify",
       {
         form: {
-          secret: process.env.RECAPTCHA_SECRET_KEY,
+          secret: key,
           response: token,
           remoteip: ip_address
         }
@@ -318,5 +317,6 @@ module.exports = {
   updateSubmission,
   deleteSubmission,
   getSubmissionById,
-  getSubmissions
+  getSubmissions,
+  verifyHumanity
 };

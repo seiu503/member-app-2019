@@ -1,7 +1,5 @@
 import React from "react";
-import localIpUrl from "local-ip-url";
 import PropTypes from "prop-types";
-import queryString from "query-string";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -10,11 +8,10 @@ import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
-import { openSnackbar } from "../containers/Notifier";
 import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
-const { employerTypeMap, getKeyByValue, formatSFDate } = formElements;
+const { employerTypeMap, getKeyByValue } = formElements;
 
 export class SubmissionFormPage1Component extends React.Component {
   constructor(props) {
@@ -30,23 +27,39 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        // console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        openSnackbar(
-          "error",
-          this.props.submission.error ||
-            "An error occurred while trying to fetch data from salesforce."
-        );
+        console.log(err);
+        this.props.handleError(err);
       });
+    // add event listener to listen for iframe message
+    // to confirm payment method added
+    window.addEventListener("message", this.receiveMessage, false);
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.submission.employerNames.length < 2) {
+    if (this.props.submission.employerNames.length < 3) {
       this.loadEmployersPicklist();
     }
+    if (document.body.getAttribute("iframeListener") !== "true") {
+      window.addEventListener("message", this.receiveMessage, false);
+    }
   }
+
+  // check for messages from iframe
+  receiveMessage = event => {
+    // Do we trust the sender of this message?
+    // ******* This will need to be changed to the
+    // unioni.se prod url in production **********
+    if (event.origin !== "https://lab.unioni.se") {
+      return;
+    }
+
+    if (event.data.notification.type === "success") {
+      this.props.changeFieldValue("paymentMethodAdded", true);
+    }
+  };
 
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
@@ -57,9 +70,13 @@ export class SubmissionFormPage1Component extends React.Component {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
     const employerTypesListRaw = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.map(
-          employer => employer.Sub_Division__c
-        )
+      ? this.props.submission.employerObjects.map(employer => {
+          if (employer.Name === "Community Members") {
+            return "Community Members";
+          } else {
+            return employer.Sub_Division__c;
+          }
+        })
       : [""];
     const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
     const employerTypesList = employerTypesCodes.map(code =>
@@ -83,6 +100,7 @@ export class SubmissionFormPage1Component extends React.Component {
       // console.log("no formValues in props");
     }
 
+    // console.log(employerTypeUserSelect);
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
@@ -94,10 +112,40 @@ export class SubmissionFormPage1Component extends React.Component {
               getKeyByValue(employerTypeMap, employerTypeUserSelect)
           )
         : [{ Name: "" }];
-      const employerList = employerObjectsFiltered.map(
-        employer => employer.Name
-      );
+      let employerList = employerObjectsFiltered.map(employer => employer.Name);
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "community member"
+      ) {
+        employerList = ["Community Member"];
+      }
       employerList.unshift("");
+
+      // set value of employer name field for single-child employer types
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "retired"
+      ) {
+        this.props.formValues.employerName = "Retirees";
+      }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "adult foster home"
+      ) {
+        this.props.formValues.employerName = "Adult Foster Care";
+      }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "child care"
+      ) {
+        this.props.formValues.employerName = "Family Child Care";
+      }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "community member"
+      ) {
+        this.props.formValues.employerName = "Community Member";
+      }
       return employerList;
     }
   };
@@ -106,104 +154,55 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
-  handleSubmit(values) {
-    const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
-    let signature;
-    let {
-      firstName,
-      lastName,
-      dd,
-      mm,
-      yyyy,
-      preferredLanguage,
-      homeStreet,
-      homeZip,
-      homeState,
-      homeCity,
-      homeEmail,
-      mobilePhone,
-      employerName,
-      textAuthOptOut,
-      termsAgree,
-      salesforceId
-    } = values;
-    signature = this.props.submission.formPage1.signature;
-    if (!signature) {
-      openSnackbar("error", "Please provide a signature");
-      return;
+  async handleSubmit(formValues) {
+    // submit validation: payment method
+    if (
+      this.props.submission.formPage1.paymentRequired &&
+      formValues.paymentType === "Card" &&
+      !formValues.paymentMethodAdded
+    ) {
+      // console.log("No payment method added");
+      return this.props.handleError(
+        "Please click 'Add a Card' to add a payment method"
+      );
     }
-    const dobRaw = mm + "/" + dd + "/" + yyyy;
-    const birthdate = formatSFDate(dobRaw);
-    const employerObject = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.filter(
-          obj => obj.Name.toLowerCase() === employerName.toLowerCase()
-        )[0]
-      : { Name: "" };
-    const employerId = employerObject.Id;
-    const agencyNumber = employerObject.Agency_Number__c;
-    const legalLanguage = this.props.submission.formPage1.legalLanguage;
-
-    const q = queryString.parse(this.props.location.search);
-    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
-
-    if (!salesforceId && q && q.id) {
-      salesforceId = q.id;
-    }
-    if (!reCaptchaValue) {
-      openSnackbar("error", "Please verify you are human with Captcha");
-      return;
-    }
-    const body = {
-      ip_address: localIpUrl(),
-      submission_date: new Date(),
-      agency_number: agencyNumber,
-      birthdate,
-      cell_phone: mobilePhone,
-      employer_name: employerName,
-      employer_id: employerId,
-      first_name: firstName,
-      last_name: lastName,
-      home_street: homeStreet,
-      home_city: homeCity,
-      home_state: homeState,
-      home_zip: homeZip,
-      home_email: homeEmail,
-      preferred_language: preferredLanguage,
-      terms_agree: termsAgree,
-      signature: signature,
-      text_auth_opt_out: textAuthOptOut,
-      online_campaign_source: campaignSource,
-      legal_language: legalLanguage,
-      maintenance_of_effort: new Date(),
-      seiu503_cba_app_date: new Date(),
-      direct_pay_auth: null,
-      direct_deposit_auth: null,
-      immediate_past_member_status: null,
-      salesforce_id: salesforceId,
-      reCaptchaValue
+    const id = this.props.submission.submissionId;
+    const updates = {
+      payment_type: formValues.paymentType,
+      payment_method_added: formValues.paymentMethodAdded,
+      medicaid_residents: formValues.medicaidResidents,
+      card_adding_url: this.props.submission.payment.cardAddingUrl,
+      member_id: this.props.submission.payment.memberId,
+      stripe_customer_id: this.props.submission.payment.stripeCustomerId,
+      member_short_id: this.props.submission.payment.memberShortId
     };
+    // console.log(updates);
 
-    return this.props.apiSubmission
-      .addSubmission(body)
-      .then(result => {
-        if (
-          result.type === "ADD_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.submission.error ||
-              "An error occurred while trying to submit your information."
-          );
-        } else {
-          this.props.reset("submissionPage1");
-          this.props.history.push(`/page2`);
-        }
-      })
-      .catch(err => {
-        // console.log(err);
-        openSnackbar("error", err);
-      });
+    // also write to directJoinRate__c ######### <== TODO
+    try {
+      const result = await this.props.apiSubmission.updateSubmission(
+        id,
+        updates
+      );
+      if (
+        result.type === "UPDATE_SUBMISSION_FAILURE" ||
+        this.props.submission.error
+      ) {
+        // console.log(this.props.submission.error);
+        this.props.handleError(this.props.submission.error);
+      } else {
+        const body = this.props.generateSubmissionBody(formValues);
+        this.props.apiSF.createSFOMA(body);
+        this.props.reset("submissionPage1");
+        // redirect to CAPE here...
+        this.props.history.push(
+          `/page2/?id=${this.props.submission.salesforceId}`
+        );
+      }
+    } catch (err) {
+      // console.log(err);
+      this.props.handleError(err);
+    }
   }
 
   render() {
@@ -249,7 +248,7 @@ export class SubmissionFormPage1Component extends React.Component {
             />
             {this.props.tab === 0 && (
               <Tab1Form
-                onSubmit={e => this.props.handleTab(e, 1)}
+                onSubmit={() => this.props.handleTab(1)}
                 classes={classes}
                 employerTypesList={employerTypesList}
                 employerList={employerList}
@@ -262,24 +261,28 @@ export class SubmissionFormPage1Component extends React.Component {
                 width={this.props.width}
                 handleTab={this.props.handleTab}
                 submitErrors={this.props.submitErrors}
+                reCaptchaChange={this.reCaptchaChange}
+                reCaptchaRef={this.props.reCaptchaRef}
               />
             )}
             {this.props.tab === 1 && (
               <Tab2Form
-                onSubmit={e =>
-                  this.props.handleTab(e, 2, this.props.formValues)
-                }
+                onSubmit={() => this.props.handleTab(2)}
                 classes={classes}
                 legal_language={this.props.legal_language}
+                direct_pay={this.props.direct_pay}
+                direct_deposit={this.props.direct_deposit}
                 sigBox={this.props.sigBox}
                 signatureType={this.props.signatureType}
                 toggleSignatureInputType={this.props.toggleSignatureInputType}
-                clearSignature={this.clearSignature}
+                clearSignature={this.props.clearSignature}
                 handleInput={this.props.apiSubmission.handleInput}
                 renderSelect={this.renderSelect}
                 renderTextField={this.renderTextField}
                 renderCheckbox={this.renderCheckbox}
+                formValues={this.props.formValues}
                 handleTab={this.props.handleTab}
+                back={this.props.back}
                 initialize={this.props.initialize}
               />
             )}
@@ -287,10 +290,16 @@ export class SubmissionFormPage1Component extends React.Component {
               <Tab3Form
                 onSubmit={this.handleSubmit}
                 classes={classes}
-                reCaptchaChange={this.reCaptchaChange}
-                reCaptchaRef={this.props.reCaptchaRef}
                 loading={this.props.submission.loading}
                 handleTab={this.props.handleTab}
+                back={this.props.back}
+                formValues={this.props.formValues}
+                paymentRequired={
+                  this.props.submission.formPage1.paymentRequired
+                }
+                changeFieldValue={this.props.changeFieldValue}
+                iFrameURL={this.props.submission.payment.cardAddingUrl}
+                afhDuesRate={this.props.formValues.afhDuesRate}
               />
             )}
           </div>
@@ -299,7 +308,6 @@ export class SubmissionFormPage1Component extends React.Component {
     );
   }
 }
-
 SubmissionFormPage1Component.propTypes = {
   submission: PropTypes.shape({
     loading: PropTypes.bool,
@@ -356,5 +364,4 @@ SubmissionFormPage1Component.propTypes = {
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };
-
 export default withWidth()(SubmissionFormPage1Component);

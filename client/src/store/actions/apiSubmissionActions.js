@@ -20,8 +20,8 @@ export function handleInput({ target: { name, value } }) {
 export function addSubmission(body) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/sf/`,
-      method: "PUT",
+      endpoint: `${BASE_URL}/api/submission`,
+      method: "POST",
       types: [
         ADD_SUBMISSION_REQUEST,
         ADD_SUBMISSION_SUCCESS,
@@ -30,14 +30,10 @@ export function addSubmission(body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -63,14 +59,10 @@ export function updateSubmission(id, body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }

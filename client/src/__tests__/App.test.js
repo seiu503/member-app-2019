@@ -134,7 +134,7 @@ describe("<App />", () => {
       call =>
         call[0].hasOwnProperty("@@redux-api-middleware/RSAA") &&
         call[0]["@@redux-api-middleware/RSAA"].endpoint ===
-          "http://localhost:3001/api/user/1234"
+          "http://localhost:8080/api/user/1234"
     )[0];
     expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
       JSON.parse(JSON.stringify(validateToken("5678", "1234")))

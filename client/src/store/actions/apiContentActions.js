@@ -78,14 +78,10 @@ export function getContentById(id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -118,14 +114,10 @@ export function getAllContent(token) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -164,14 +156,10 @@ export function addContent(token, body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -199,15 +187,10 @@ export function addContent(token, body) {
  */
 
 export function uploadImage(image, id) {
-  // console.log("image", image);
+  // console.log("uploadImage", image);
 
   const data = new FormData();
   data.append("image", image, image.name);
-
-  // for (var key of data.entries()) {
-  //     console.log(key[0]);
-  //     console.dir(key[1]);
-  //   }
 
   if (id) {
     data.append("id", id);
@@ -224,14 +207,10 @@ export function uploadImage(image, id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -267,14 +246,10 @@ export function updateContent(token, id, body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -312,14 +287,10 @@ export function deleteContent(token, id) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -353,14 +324,10 @@ export function deleteImage(token, key) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }

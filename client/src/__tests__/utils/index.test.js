@@ -14,6 +14,17 @@ describe("utils/index", () => {
     const dummyElement = document.createElement("div");
     document.getElementById = jest.fn().mockImplementation(() => dummyElement);
     utils.skip("div");
+    it("`scrollToFirstError` scrolls to first error", () => {
+      const dummyElement = document.createElement("div");
+      document.getElementById = jest
+        .fn()
+        .mockImplementation(() => dummyElement);
+      const scrollToSpy = jest.fn();
+      global.scrollTo = scrollToSpy;
+      const errors = [{ test: "testError" }];
+      utils.scrollToFirstError(errors);
+      expect(scrollToSpy).toHaveBeenCalled();
+    });
   });
   describe("`detectDefaultLanguage` returns language set by browser", () => {
     let languageGetter, languageArrGetter;

@@ -83,7 +83,8 @@ export class WelcomeInfoUnconnected extends React.Component {
     // if find contact id, call API to fetch contact info for prefill
     if (values.h || values.b || values.i) {
       const { h, i, b } = values;
-      const queryIds = [h, i, b];
+      let idArray = [h, i, b];
+      const queryIds = idArray.filter(id => (id ? id : null));
       queryIds.forEach(id => {
         this.props.apiContent
           .getContentById(id)
@@ -155,7 +156,7 @@ export class WelcomeInfoUnconnected extends React.Component {
           <div className={this.classes.buttonWrap}>
             <Button
               type="button"
-              onClick={e => this.props.handleTab(e, 0)}
+              onClick={() => this.props.handleTab(0)}
               color="primary"
               className={this.classes.next}
               variant="contained"
