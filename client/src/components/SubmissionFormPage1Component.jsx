@@ -27,6 +27,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
+        console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {
@@ -83,7 +84,7 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
     employerTypesList.unshift("");
-    // console.log(employerTypesList);
+    console.log(employerTypesList);
     return employerTypesList;
   };
 
