@@ -1,7 +1,10 @@
 import React from "react";
-import { shallow } from "enzyme";
-import { findByTestAttr } from "../../utils/testUtils";
-import { ContentLibraryUnconnected } from "../../containers/ContentLibrary";
+import { shallow, mount } from "enzyme";
+import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import {
+  ContentLibraryUnconnected,
+  ContentLibraryConnected
+} from "../../containers/ContentLibrary";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -15,6 +18,37 @@ let deleteImageMock,
   getAllContentMock,
   getAllContentErrorMock,
   wrapper;
+
+const initialState = {
+  appState: {
+    loggedIn: false,
+    authToken: ""
+  },
+  profile: {
+    profile: {
+      _id: "",
+      name: "",
+      avatar_url: ""
+    },
+    error: "",
+    loading: false
+  },
+  content: {
+    error: "",
+    loading: false,
+    currentContent: {
+      content_type: "headline",
+      content: "test"
+    },
+    allContent: [
+      {
+        content_type: "headline",
+        content: "test",
+        id: 123
+      }
+    ]
+  }
+};
 
 const defaultProps = {
   appState: {
@@ -75,6 +109,17 @@ describe("<ContentLibrary />", () => {
   });
 
   it("renders without error", () => {
+    const component = findByTestAttr(wrapper, "component-content-library");
+    expect(component.length).toBe(1);
+  });
+
+  it("renders connected component", () => {
+    store = storeFactory(initialState);
+    wrapper = shallow(
+      <ContentLibraryConnected {...defaultProps} store={store} />
+    )
+      .dive()
+      .dive();
     const component = findByTestAttr(wrapper, "component-content-library");
     expect(component.length).toBe(1);
   });

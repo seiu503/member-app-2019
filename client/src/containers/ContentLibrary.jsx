@@ -301,11 +301,9 @@ const mapDispatchToProps = dispatch => ({
   apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
-export default withStyles(styles)(
-  withRouter(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(ContentLibraryUnconnected)
-  )
-);
+export const ContentLibraryConnected = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ContentLibraryUnconnected);
+
+export default withRouter(withStyles(styles)(ContentLibraryConnected));
