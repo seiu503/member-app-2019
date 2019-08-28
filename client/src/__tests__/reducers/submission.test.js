@@ -183,6 +183,45 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
+    test("getSFEmployers", () => {
+      const payload = [
+        {
+          Name: "test",
+          Agency_Number__c: 123,
+          Sub_Division__c: "Nursing Homes",
+          Id: "12345"
+        },
+        {
+          Name: "test2",
+          Agency_Number__c: 123,
+          Sub_Division__c: "Nursing Homes",
+          Id: "12345"
+        }
+      ];
+      const action = {
+        type: "GET_SF_EMPLOYERS_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        employerObjects: [
+          {
+            Name: "test",
+            Agency_Number__c: 123,
+            Sub_Division__c: "Nursing Homes",
+            Id: "12345"
+          },
+          {
+            Name: "test2",
+            Agency_Number__c: 123,
+            Sub_Division__c: "Nursing Homes",
+            Id: "12345"
+          }
+        ],
+        employerNames: ["test", "test2"]
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
     test("saveSalesForceId", () => {
       const action = {
         type: "SAVE_SALESFORCEID",
@@ -193,6 +232,57 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         salesforceId: "1"
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getIframeURL", () => {
+      const action = {
+        type: "GET_IFRAME_URL_SUCCESS",
+        payload: {
+          cardAddingUrl: "url",
+          memberId: "string",
+          stripeCustomerId: "string",
+          memberShortId: "string"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        payment: {
+          cardAddingUrl: "url",
+          memberId: "string",
+          stripeCustomerId: "string",
+          memberShortId: "string"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createSFOMA", () => {
+      const action = {
+        type: "CREATE_SF_OMA_SUCCESS",
+        payload: {
+          salesforce_id: "string",
+          submission_id: "string",
+          sf_OMA_id: "string"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("lookupSFContact", () => {
+      const action = {
+        type: "LOOKUP_SF_CONTACT_SUCCESS",
+        payload: {
+          salesforce_id: "string"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        salesforceId: "string",
+        error: null,
+        redirect: true
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

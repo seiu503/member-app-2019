@@ -44,7 +44,6 @@ export const scrollToFirstError = errors => {
   // search through errors object to find only those currently mounted in DOM
   // (some errors will be on future tabs and can't be scrolled to yet)
   if (errors) {
-    console.log(errors);
     const errorsArray = Object.keys(errors);
     const firstError = errorsArray.find(
       error => !!document.getElementById(error)
