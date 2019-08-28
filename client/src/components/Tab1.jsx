@@ -1,5 +1,11 @@
 import React from "react";
-import { Field, reduxForm, getFormValues } from "redux-form";
+import ReCAPTCHA from "react-google-recaptcha";
+import {
+  Field,
+  reduxForm,
+  getFormValues,
+  getFormSubmitErrors
+} from "redux-form";
 import { connect } from "react-redux";
 
 import FormLabel from "@material-ui/core/FormLabel";
@@ -11,6 +17,7 @@ import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
 import validate from "../utils/validators";
+import { scrollToFirstError } from "../utils";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const {
@@ -32,8 +39,11 @@ export const Tab1 = props => {
     renderTextField,
     renderCheckbox,
     formValues,
-    width
+    width,
+    reCaptchaChange,
+    reCaptchaRef
   } = props;
+
   return (
     <div data-test="component-tab1" className={classes.sectionContainer}>
       <form
@@ -66,6 +76,18 @@ export const Tab1 = props => {
               options={employerList}
             />
           )}
+          {formValues.employerType &&
+            formValues.employerType.toLowerCase() === "adult foster home" && (
+              <Field
+                label="Number of Medicaid Residents"
+                name="medicaidResidents"
+                id="medicaidResidents"
+                type="number"
+                classes={classes}
+                component={renderTextField}
+                InputProps={{ inputProps: { min: 0, max: 9 } }}
+              />
+            )}
           <FormGroup row classes={{ root: classes.formGroup2Col }}>
             <Field
               twocol
@@ -246,6 +268,11 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
+          <ReCAPTCHA
+            ref={reCaptchaRef}
+            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
+            onChange={reCaptchaChange}
+          />
           <div className={classes.buttonWrap}>
             <Button
               type="submit"
@@ -280,7 +307,8 @@ Tab1.propTypes = {
 const mapStateToProps = state => ({
   submission: state.submission,
   initialValues: state.submission.formPage1,
-  formValues: getFormValues("submissionPage1")(state) || {}
+  formValues: getFormValues("submissionPage1")(state) || {},
+  submitErrors: getFormSubmitErrors("submissionPage1")(state)
 });
 
 // add reduxForm to component
@@ -291,7 +319,8 @@ export const Tab1Form = reduxForm({
   forceUnregisterOnUnmount: true,
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  updateUnregisteredFields: true
+  updateUnregisteredFields: true,
+  onSubmitFail: errors => scrollToFirstError(errors)
 })(Tab1);
 
 // connect to redux store

@@ -6,6 +6,7 @@ import "jest-canvas-mock";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import { SubmissionFormPage1Component } from "../../components/SubmissionFormPage1Component";
+import * as formElements from "../../components/SubmissionFormElements";
 
 import * as Notifier from "../../containers/Notifier";
 
@@ -14,18 +15,22 @@ let wrapper,
   store,
   handleSubmit,
   apiSubmission,
-  apiSF,
+  apiSF = {},
   handleSubmitMock,
+  handleErrorMock,
   addSubmission,
   addSubmissionSuccess,
   addSubmissionError,
+  updateSubmissionSuccess,
+  updateSubmissionError,
   props,
   testData,
   tab,
   sfEmployerLookupSuccess,
   sfEmployerLookupFailure,
   handleUpload,
-  updateEmployersPicklist;
+  loadEmployersPicklistMock,
+  changeFieldValueMock;
 
 let resetMock = jest.fn();
 
@@ -46,7 +51,18 @@ const defaultProps = {
       firstName: "",
       lastName: "",
       homeEmail: "",
-      signature: "string"
+      signature: "string",
+      paymentRequired: false
+    },
+    employerObjects: [
+      {
+        Name: "employer_name",
+        Id: "123",
+        Agency_Number__c: "456"
+      }
+    ],
+    payment: {
+      cardAddingUrl: ""
     }
   },
   initialValues: {
@@ -63,7 +79,6 @@ const defaultProps = {
   apiSF,
   handleSubmit,
   handleUpload,
-  updateEmployersPicklist,
   legal_language: {
     current: {
       textContent: "blah"
@@ -83,7 +98,8 @@ const defaultProps = {
   },
   content: {},
   apiContent: {},
-  tab
+  tab,
+  generateSubmissionBody: jest.fn()
 };
 
 describe("Unconnected <SubmissionFormPage1 />", () => {
@@ -91,10 +107,17 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   // gain access to touched and error to test validation
   // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
+    updateSubmissionSuccess = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+      );
     handleSubmit = fn => fn;
-    apiSubmission = {};
+    handleErrorMock = jest.fn();
+    apiSubmission = { updateSubmission: updateSubmissionSuccess };
     apiSF = {
-      getSFEmployers: jest.fn()
+      getSFEmployers: jest.fn(),
+      createSFOMA: jest.fn()
     };
   });
 
@@ -158,80 +181,124 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
-    it("checks for recaptcha value on submit", () => {
+    it("calls handleError if payment required but no payment method added", () => {
+      updateSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+        );
       testData = generateSampleValidate();
       addSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
-      wrapper = unconnectedSetup();
-      wrapper.setProps({
+      const props = {
         tab: 2,
-        apiSubmission: { addSubmission: addSubmissionSuccess }
-      });
-      wrapper.update();
-      wrapper.find("ReduxForm").simulate("submit", { ...testData });
-      expect(
-        wrapper.instance().props.reCaptchaRef.current.getValue.mock.calls.length
-      ).toBe(1);
+        apiSubmission: {
+          addSubmission: addSubmissionSuccess,
+          updateSubmission: updateSubmissionSuccess
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            cardAddingUrl: ""
+          }
+        },
+        formValues: {
+          paymentType: "Card",
+          paymentMethodAdded: false
+        },
+        handleError: handleErrorMock
+      };
+      wrapper = unconnectedSetup(props);
+
+      const formValues = {
+        paymentType: "Card",
+        paymentMethodAdded: false
+      };
+      const values = { ...formValues, ...testData };
+      wrapper.find("Connect(ReduxForm)").simulate("submit", { ...values });
+      expect(handleErrorMock.mock.calls.length).toBe(1);
     });
 
-    it("calls reset after successful Submit", () => {
+    it("calls reset after successful submit", async function() {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return success object
-      addSubmissionSuccess = jest
+      updateSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
         );
       // creating wrapper
-      wrapper = unconnectedSetup();
-      wrapper.setProps({
-        tab: 2
-      });
-      wrapper.instance().props.apiSubmission.addSubmission = addSubmissionSuccess;
-      wrapper.update();
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          formPage1: {
+            paymentRequired: false
+          },
+          payment: {
+            cardAddingUrl: ""
+          }
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionSuccess
+        }
+      };
+      wrapper = unconnectedSetup(props);
+
       // simulate submit with dummy data
-      wrapper.find("ReduxForm").simulate("submit", { ...testData });
+      wrapper.find("Connect(ReduxForm)").simulate("submit", { ...testData });
       // testing that submit was called
-      expect(addSubmissionSuccess.mock.calls.length).toBe(1);
+      expect(updateSubmissionSuccess.mock.calls.length).toBe(1);
       // testing that reset is called when handleSubmit receives success message
-      return addSubmissionSuccess().then(() => {
+      try {
+        await updateSubmissionSuccess();
         expect(resetMock.mock.calls.length).toBe(1);
-      });
+      } catch (err) {
+        console.log(err);
+      }
     });
-    it("errors if there is no signature", () => {
+
+    it("errors if there is no signature", async function() {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return success object
-      addSubmissionError = jest
+      updateSubmissionError = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
 
       // replacing openSnackbar import with mock function
-      Notifier.openSnackbar = jest.fn();
+      formElements.handleError = handleErrorMock;
       // creating wrapper
-      wrapper = unconnectedSetup();
-      wrapper.setProps({
-        tab: 2
-      });
-      wrapper.update();
-      addSubmission = addSubmissionError;
-      apiSubmission.addSubmission = addSubmission;
+      const props = {
+        tab: 2,
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock
+      };
+      wrapper = unconnectedSetup(props);
+
       delete testData.signature;
       // simulate submit with dummy data
-      wrapper.find("ReduxForm").simulate("submit", { ...testData });
+      wrapper.find("Connect(ReduxForm)").simulate("submit", { ...testData });
       // testing that clearForm is called when handleSubmit receives Error message
-      return addSubmissionError().then(() => {
-        expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
-      });
+      try {
+        await updateSubmissionError();
+        expect(formElements.handleError.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
     });
 
-    it("provides error feedback after failed Submit", () => {
+    it("provides error feedback after failed Submit", async function() {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return error object
@@ -240,29 +307,34 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
         );
-      // replacing openSnackbar import with mock function
-      Notifier.openSnackbar = jest.fn();
+
       // creating wrapper
-      wrapper = unconnectedSetup();
-      wrapper.setProps({
+      const props = {
+        ...defaultProps,
         tab: 2,
         reCaptchaRef: {
           current: {
             getValue: jest.fn().mockImplementation(() => "mock value")
           }
         },
-        submission: { formPage1: { signature: "string" } }
-      });
-      wrapper.update();
-      wrapper.instance().props.apiSubmission.addSubmission = addSubmissionError;
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock
+      };
+      wrapper = unconnectedSetup(props);
+
       // simulate submit with dummy data
-      wrapper.find("ReduxForm").simulate("submit", { ...testData });
+      wrapper.find("Connect(ReduxForm)").simulate("submit", { ...testData });
       // testing that submit was called
-      expect(addSubmissionError.mock.calls.length).toBe(1);
+      expect(updateSubmissionError.mock.calls.length).toBe(1);
       // testing that openSnackbar is called when handleSubmit receives Error message
-      return addSubmissionError().then(() => {
-        expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
-      });
+      try {
+        await updateSubmissionError();
+        expect(handleErrorMock.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
     });
     it("provides error feedback after promise rejected", () => {
       // imported function that creates dummy data for form
@@ -275,19 +347,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         );
     });
 
-    it("opens snackbar if no recaptcha value found", () => {
-      testData = generateSampleValidate();
-      Notifier.openSnackbar = jest.fn();
-      wrapper = unconnectedSetup();
-      wrapper.setProps({ tab: 2 });
-      wrapper.update();
-      wrapper.instance().props.reCaptchaRef.current.getValue = jest
-        .fn()
-        .mockImplementation(() => null);
-      wrapper.find("ReduxForm").simulate("submit", { ...testData });
-      expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
-    });
-
     it("calls getSFEmployers on componentDidMount", () => {
       sfEmployerLookupSuccess = jest
         .fn()
@@ -298,12 +357,78 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         handleSubmit: jest.fn(),
         apiSF: {
           getSFEmployers: sfEmployerLookupSuccess
+        },
+        formValues: {
+          // to get code coverage for retiree edge cases
+          employerType: "Retirees"
         }
       };
       // creating wrapper
       wrapper = setup(props);
       // testing that getSFEmployers was called
       expect(sfEmployerLookupSuccess.mock.calls.length).toBe(1);
+    });
+
+    it("calls loadEmployersPicklist on componentDidUpdate if employer list has not yet loaded", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      loadEmployersPicklistMock = jest.fn();
+      props = {
+        submission: {
+          employerNames: [""]
+        },
+        formValues: {
+          // to get code coverage for community member edge cases
+          employerType: "Community Member"
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        }
+      };
+      // creating wrapper
+      wrapper = unconnectedSetup(props);
+
+      wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
+      wrapper.instance().componentDidUpdate();
+
+      // testing that loadEmployersPicklist was called
+      expect(loadEmployersPicklistMock.mock.calls.length).toBe(1);
+    });
+
+    it("receives messages from unioni.se card adding iframe", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      const fakeEvent = {
+        data: {
+          notification: {
+            type: "success"
+          }
+        },
+        origin: "https://lab.unioni.se"
+      };
+      const changeFieldValueMock = jest.fn();
+      const props = {
+        changeFieldValue: changeFieldValueMock,
+        formValues: {
+          // to get code coverage for afh edge cases
+          employerType: "Adult Foster Home"
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        }
+      };
+      wrapper = unconnectedSetup(props);
+      wrapper.instance().receiveMessage(fakeEvent);
+
+      // changeFieldValue("paymentMethodAdded", true);
+      expect(changeFieldValueMock.mock.calls[0][0]).toBe("paymentMethodAdded");
+      expect(changeFieldValueMock.mock.calls[0][1]).toBe(true);
     });
 
     it("opens snackbar when employer search fails", () => {

@@ -570,6 +570,18 @@ const contactsTableFields = {
     SFDataType: "Email",
     SQLDataType: "VARCHAR(255)",
     testingSample: "lastnamef@seiu.com"
+  },
+  immediate_past_member_status: {
+    req: "N",
+    postgresFieldName: "work_email",
+    clientFieldName: "workEmail",
+    HtmlInputType: "email",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Binary Membership",
+    SFAPIName: "Binary_Membership__c",
+    SFDataType: "Formula(text)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Not a Member"
   }
 };
 
@@ -890,7 +902,7 @@ const submissionsTableFields = {
   direct_pay_auth: {
     oldFormPage: "none",
     newFormTab: 1,
-    req: "N",
+    req: "P",
     postgresFieldName: "direct_pay_auth",
     clientFieldName: "directPayAuth",
     HtmlInputType: "(formula; no user-facing input)",
@@ -904,7 +916,7 @@ const submissionsTableFields = {
   direct_deposit_auth: {
     oldFormPage: "none",
     newFormTab: 1,
-    req: "N",
+    req: "P",
     postgresFieldName: "direct_deposit_auth",
     clientFieldName: "directDepositAuth",
     HtmlInputType: "(formula; no user-facing input)",
@@ -927,6 +939,109 @@ const submissionsTableFields = {
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Not a Member"
+  }
+};
+
+// all fields below here are for payment processing only
+// required fields in this section are all conditional
+// -- "P" = only required if the submission is a 'payment required'
+// submission, which we'll have to check for and set
+// during the transition from tab 1 & tab 2 of formPage1
+const paymentFields = {
+  duesAmount: {
+    oldFormPage: "none",
+    req: "P", // unioni.se required
+    postgresFieldName: "dues_amount",
+    clientFieldName: "duesAmount",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Dues Amount",
+    SFAPIName: "Dues_Amount__c",
+    SFDataType: "Currency(3, 2)",
+    SQLDataType: "NUMERIC(3, 2)",
+    unioniseFieldName: "duesAmount",
+    testingSample: 1.23
+  },
+  duesCurrency: {
+    // this is required by unioni.se
+    // but is always going to be "USD"
+    // so doesn't need to be stored in postgres
+    req: "P", // unioni.se required
+    unioniseFieldName: "duesCurrency",
+    testingSample: "USD"
+  },
+  duesDayOfMonth: {
+    oldFormPage: "none",
+    req: "P", // unioni.se required
+    postgresFieldName: "dues_day_of_month",
+    clientFieldName: "duesDayOfMonth",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Dues Day",
+    SFAPIName: "Dues_Day__c",
+    SFDataType: "Number(2, 0)",
+    SQLDataType: "NUMERIC(2, 0)",
+    unioniseFieldName: "duesDayOfMonth",
+    testingSample: 15
+  },
+  duesActiveFrom: {
+    oldFormPage: "none",
+    req: "P", // unioni.se required, format: "yyyy-MM-dd"
+    postgresFieldName: "dues_active_from",
+    clientFieldName: "duesActiveFrom",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Start Date",
+    SFAPIName: "Start_Date__c",
+    SFDataType: "Date",
+    SQLDataType: "DATE",
+    unioniseFieldName: "duesActiveFrom",
+    testingSample: "2019-05-20"
+  },
+  deductionType: {
+    // required by unioni.se (one of: "COPE", "CAPE", "Voluntary", "Objection")
+    // but is always going to be "Voluntary" for now
+    // so doesn't need to be stored in postgres
+    // may need to change this later if we start processing CAPE in this form
+    req: "P", // unioni.se required
+    unioniseFieldName: "deductionType",
+    testingSample: "Voluntary"
+  },
+  deductionAmount: {
+    oldFormPage: "none",
+    req: "P", // unioni.se required
+    postgresFieldName: "deduction_amount",
+    clientFieldName: "deductionAmount",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Total Deduction",
+    SFAPIName: "Total_Deduction__c",
+    SFDataType: "Formula (Currency)",
+    SQLDataType: "NUMERIC(3, 2)",
+    unioniseFieldName: "deductionAmount",
+    testingSample: 2.34
+  },
+  deductionCurrency: {
+    // this is required by unioni.se
+    // but is always going to be "USD"
+    // so doesn't need to be stored in postgres
+    req: "P", // unioni.se required
+    unioniseFieldName: "deductionCurrency",
+    testingSample: "USD"
+  },
+  deductionDayOfMonth: {
+    oldFormPage: "none",
+    req: "P", // unioni.se required
+    postgresFieldName: "deduction_day_of_month",
+    clientFieldName: "deductionDayOfMonth",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Dues Day",
+    SFAPIName: "Dues_Day__c",
+    SFDataType: "Number(2, 0)",
+    SQLDataType: "NUMERIC(2, 0)",
+    unioniseFieldName: "deductionDayOfMonth",
+    testingSample: 15
   }
 };
 
@@ -1212,22 +1327,7 @@ const requiredFields = [
   "termsAgree",
   "signature"
 ];
-const generateSampleSubmissionFrontEnd = () => {
-  const sampleData = {};
-  sampleData.submission_id = uuid.v4();
-  Object.keys(submissionsTableFields).map(function(key, index) {
-    if (requiredFields.includes(submissionsTableFields[key].clientFieldName)) {
-      let clientFieldName = submissionsTableFields[key].postgresFieldName;
-      sampleData[clientFieldName] = submissionsTableFields[key].testingSample;
-    }
-  });
-  sampleData.birthdate = new Date("1/1/2001");
-  sampleData.dd = "01";
-  sampleData.mm = "01";
-  sampleData.yyyy = "2001";
-  sampleData.termsAgree = true;
-  return sampleData;
-};
+
 const generateSampleValidate = () => {
   const sampleData = {};
   Object.keys(submissionsTableFields).map(function(key, index) {
@@ -1258,10 +1358,10 @@ const generateSFContactFieldList = () => {
 module.exports = {
   contactsTableFields,
   submissionsTableFields,
+  paymentFields,
   requiredFields,
   Page2TableFields,
   generateSampleSubmission,
-  generateSampleSubmissionFrontEnd,
   generateSampleValidate,
   generatePage2Validate,
   generateSFContactFieldList,

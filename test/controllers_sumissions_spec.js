@@ -67,13 +67,17 @@ suite("sumissions.ctrl.js", function() {
       responseStub = {};
     });
 
-    test("creates a single Submission and returns next", async function() {
+    test("creates a single Submission and returns submission id", async function() {
+      responseStub = {};
       try {
         result = await submCtrl.createSubmission(req, res, next);
-        chai.assert(res.locals.sf_contact_id);
         chai.assert(res.locals.submission_id);
         id = res.locals.submission_id;
-        assert.match(result, next());
+        assert.calledWith(res.status, 200);
+        assert.calledWith(res.json, {
+          salesforce_id: "123",
+          submission_id: id
+        });
       } catch (err) {
         console.log(err);
       }
@@ -170,12 +174,14 @@ suite("sumissions.ctrl.js", function() {
       res = mockRes();
     });
 
-    test("updates a submission and returns next", async function() {
+    test("updates a submission and returns submission id to client", async function() {
       try {
         await submCtrl.updateSubmission(req, res, next);
-        chai.assert(res.locals.sf_contact_id !== undefined);
         chai.assert(res.locals.submission_id !== undefined);
-        assert.match(result, next());
+        id = res.locals.submission_id;
+        console.log(id);
+        assert.calledWith(res.status, 200);
+        assert.calledWith(res.json, { submission_id: id });
       } catch (err) {
         console.log(err);
       }
@@ -283,6 +289,7 @@ suite("sumissions.ctrl.js", function() {
 
   suite("submCtrl > getSubmissionById", function() {
     beforeEach(function() {
+      console.log(id);
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         req = mockReq({

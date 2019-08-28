@@ -11,7 +11,7 @@ export const styles = theme => ({
     maxWidth: 1200
   },
   button: {
-    margin: theme.spacing.unit,
+    margin: 8,
     flex: "0 0 auto",
     [theme.breakpoints.down("sm")]: {
       position: "absolute",

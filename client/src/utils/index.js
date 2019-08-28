@@ -39,3 +39,21 @@ export const defaultWelcomeInfo = {
 <p>We have strength in numbers. Click "Next" to join tens of thousands of public service workers and care providers who make Oregon a great place to work and live. By joining, you commit to maintaining your membership for one year, or paying a non-member fee equivalent. Dues are 1.7% of your salary + $2.75/month.</p>`,
   headline: `SEIU 503: It’s about more than a better job – it’s about a better world.`
 };
+
+export const scrollToFirstError = errors => {
+  // search through errors object to find only those currently mounted in DOM
+  // (some errors will be on future tabs and can't be scrolled to yet)
+  if (errors) {
+    const errorsArray = Object.keys(errors);
+    const firstError = errorsArray.find(
+      error => !!document.getElementById(error)
+    );
+    const el = document.getElementById(firstError);
+    const position =
+      el.getBoundingClientRect().top + document.documentElement.scrollTop;
+
+    const offset = 200;
+
+    window.scrollTo({ top: position - offset, behavior: "smooth" });
+  }
+};

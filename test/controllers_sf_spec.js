@@ -580,12 +580,15 @@ suite("sf.ctrl.js", function() {
 
     test("updates a SF contact", async function() {
       responseStub = {
-        salesforce_id: "0035500000VFkjOAAT",
-        submission_id: "0035500000VFkjOAAT"
+        salesforce_id: "sfid0035500000VFkjOAAT",
+        submission_id: "submid0035500000VFkjOAAT"
+      };
+      req.params = {
+        id: "sfid0035500000VFkjOAAT"
       };
       res.locals = {
-        sf_contact_id: "0035500000VFkjOAAT",
-        submission_id: "0035500000VFkjOAAT"
+        sf_contact_id: "sfid0035500000VFkjOAAT",
+        submission_id: "submid0035500000VFkjOAAT"
       };
       jsforceConnectionStub = sandbox
         .stub(jsforce, "Connection")
@@ -695,7 +698,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("gets all Employers", async function() {
-      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
+      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
       try {
         await sfCtrl.getAllEmployers(req, res);
         assert.called(jsforceConnectionStub);

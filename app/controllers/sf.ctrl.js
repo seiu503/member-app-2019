@@ -167,7 +167,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  */
 exports.updateSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 284: updateSFContact`);
-  const { sf_contact_id } = res.locals;
+  const { id } = req.params;
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -193,18 +193,24 @@ exports.updateSFContact = async (req, res, next) => {
   let contact;
   try {
     contact = await conn.sobject("Contact").update({
-      Id: sf_contact_id,
+      Id: id,
       ...updates
     });
     if (res.locals.next) {
       // console.log(`sf.ctrl.js > 210: returning next`);
       return next();
     }
+
+    let response = {
+      salesforce_id: id
+    };
+    if (res.locals.submission_id) {
+      response.submission_id = res.locals.submission_id;
+    }
+    // console.log(response);
+
     // console.log(`sf.ctrl.js > 213: returning to client`);
-    return res.status(200).json({
-      salesforce_id: res.locals.sf_contact_id,
-      submission_id: res.locals.submission_id
-    });
+    return res.status(200).json(response);
   } catch (err) {
     // console.error(`sf.ctrl.js > 210: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -228,8 +234,10 @@ exports.updateSFContact = async (req, res, next) => {
  *                                    next middleware. If failed, returns
  *                                    object with error message to client.
  */
+
 exports.createOrUpdateSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 197 > createOrUpdateSFContact`);
+
   const { salesforce_id } = req.body;
 
   // if contact id is sent in request body, then this is a prefill
@@ -240,6 +248,7 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
     // doesn't know to look for it there)
     res.locals.sf_contact_id = salesforce_id;
     res.locals.next = true;
+
     // console.log(`sf.ctrljs > 208 > found contact id (salesforce_id)`);
     return exports.updateSFContact(req, res, next);
   }
@@ -292,7 +301,7 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  */
 exports.getAllEmployers = async (req, res, next) => {
   // console.log("getAllEmployers");
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider')`;
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

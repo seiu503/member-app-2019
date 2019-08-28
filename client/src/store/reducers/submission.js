@@ -22,12 +22,25 @@ import {
   GET_SF_EMPLOYERS_FAILURE,
   LOOKUP_SF_CONTACT_REQUEST,
   LOOKUP_SF_CONTACT_SUCCESS,
-  LOOKUP_SF_CONTACT_FAILURE
+  LOOKUP_SF_CONTACT_FAILURE,
+  GET_IFRAME_URL_REQUEST,
+  GET_IFRAME_URL_SUCCESS,
+  GET_IFRAME_URL_FAILURE,
+  CREATE_SF_CONTACT_REQUEST,
+  CREATE_SF_CONTACT_SUCCESS,
+  CREATE_SF_CONTACT_FAILURE,
+  UPDATE_SF_CONTACT_SUCCESS,
+  UPDATE_SF_CONTACT_REQUEST,
+  UPDATE_SF_CONTACT_FAILURE,
+  CREATE_SF_OMA_REQUEST,
+  CREATE_SF_OMA_SUCCESS,
+  CREATE_SF_OMA_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
   error: null,
   salesforceId: null,
+  submissionId: null,
   formPage1: {
     mm: "",
     homeState: "OR",
@@ -36,12 +49,24 @@ export const INITIAL_STATE = {
     firstName: "",
     lastName: "",
     homeEmail: "",
-    legalLanguage: ""
+    legalLanguage: "",
+    paymentRequired: false,
+    paymentType: "",
+    paymentMethodAdded: false,
+    medicaidResidents: 0,
+    immediatePastMemberStatus: "Not a Member",
+    afhDuesRate: 0
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
   formPage2: {},
-  redirect: false
+  redirect: false,
+  payment: {
+    cardAddingUrl: "",
+    memberId: "",
+    stripeCustomerId: "",
+    memberShortId: ""
+  }
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -60,6 +85,10 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_REQUEST:
     case GET_SF_EMPLOYERS_REQUEST:
     case LOOKUP_SF_CONTACT_REQUEST:
+    case GET_IFRAME_URL_REQUEST:
+    case CREATE_SF_CONTACT_REQUEST:
+    case CREATE_SF_OMA_REQUEST:
+    case UPDATE_SF_CONTACT_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -78,11 +107,18 @@ function Submission(state = INITIAL_STATE, action) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
         // attached account/employer type is "Parent Employer" or "Agency"
+        // and neither exist for Community Members bc it was created sloppily
+        // and is missing several fields...
         let subDivision = "";
         if (action.payload.Account.WS_Subdivision_from_Agency__c) {
           subDivision = action.payload.Account.WS_Subdivision_from_Agency__c;
         } else if (action.payload.Account.Sub_Division__c) {
           subDivision = action.payload.Account.Sub_Division__c;
+        } else if (
+          !action.payload.Account.WS_Subdivision_from_Agency__c &&
+          !action.payload.Account.Sub_Division__c
+        ) {
+          subDivision = action.payload.Account.Name;
         }
         const employerType = employerTypeMap[subDivision];
         // if employer attached to contact record is 'Employer' record type,
@@ -99,14 +135,16 @@ function Submission(state = INITIAL_STATE, action) {
           ethnicities = action.payload.Ethnicity__c.split(", ");
         }
         const ethnicitiesObj = {};
-        for (const item of ethnicities) {
+        ethnicities.map(item => {
           if (item === "Declined") {
             ethnicitiesObj.declined = true;
           } else {
             ethnicitiesObj[item] = true;
           }
-        }
+          return null;
+        });
         return update(state, {
+          salesforceId: { $set: action.payload.Id },
           formPage1: {
             mm: { $set: moment(action.payload.Birthdate).format("MM") },
             dd: { $set: moment(action.payload.Birthdate).format("DD") },
@@ -124,7 +162,10 @@ function Submission(state = INITIAL_STATE, action) {
             preferredLanguage: { $set: action.payload.Preferred_Language__c },
             termsAgree: { $set: false },
             signature: { $set: null },
-            textAuthOptOut: { $set: false }
+            textAuthOptOut: { $set: false },
+            immediatePastMemberStatus: {
+              $set: action.payload.Binary_Membership__c
+            }
           },
           formPage2: {
             africanOrAfricanAmerican: {
@@ -188,16 +229,34 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case UPDATE_SUBMISSION_SUCCESS:
+      return update(state, {
+        submissionId: { $set: action.payload.submission_id },
+        error: { $set: null }
+      });
+
     case LOOKUP_SF_CONTACT_SUCCESS:
+    case CREATE_SF_CONTACT_SUCCESS:
+    case UPDATE_SF_CONTACT_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         error: { $set: null },
         redirect: { $set: true }
       });
 
-    case UPDATE_SUBMISSION_SUCCESS:
+    case CREATE_SF_OMA_SUCCESS:
       return update(state, {
-        formPage2SubmitSucess: { $set: true }
+        error: { $set: null }
+      });
+
+    case GET_IFRAME_URL_SUCCESS:
+      return update(state, {
+        payment: {
+          cardAddingUrl: { $set: action.payload.cardAddingUrl },
+          memberId: { $set: action.payload.memberId },
+          stripeCustomerId: { $set: action.payload.stripeCustomerId },
+          memberShortId: { $set: action.payload.memberShortId }
+        }
       });
 
     case ADD_SUBMISSION_FAILURE:
@@ -205,6 +264,10 @@ function Submission(state = INITIAL_STATE, action) {
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_EMPLOYERS_FAILURE:
     case LOOKUP_SF_CONTACT_FAILURE:
+    case GET_IFRAME_URL_FAILURE:
+    case CREATE_SF_CONTACT_FAILURE:
+    case CREATE_SF_OMA_FAILURE:
+    case UPDATE_SF_CONTACT_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

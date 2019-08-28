@@ -18,11 +18,61 @@ const validate = values => {
     "termsAgree",
     "signature"
   ];
+  const conditionalRequiredFields = [
+    {
+      requiredField: "directPayAuth",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home", "retired", "community member"]
+    },
+    {
+      requiredField: "medicaidResidents",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home"]
+    },
+    {
+      requiredField: "paymentType",
+      controllingField: "employerType",
+      controllingValues: ["retired"]
+    },
+    {
+      requiredField: "paymentMethodAdded",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home", "retired", "community member"]
+    }
+  ];
+  conditionalRequiredFields.forEach(obj => {
+    let matchValue = values[obj["controllingField"]]
+      ? values[obj["controllingField"]].toLowerCase()
+      : "";
+    if (
+      obj["controllingValues"].includes(matchValue) &&
+      !values[obj["requiredField"]]
+    ) {
+      errors[obj["requiredField"]] = "Required";
+    }
+  });
   requiredFields.forEach(field => {
     if (!values[field]) {
       errors[field] = "Required";
     }
   });
+  if (
+    values.employerType &&
+    (values.employerType.toLowerCase() === "adult foster home" ||
+      values.employerType.toLowerCase() === "retired" ||
+      values.employerType.toLowerCase() === "community member") &&
+    values.paymentMethod === "Card" &&
+    !values.paymentMethodAdded
+  ) {
+    errors.paymentMethodAdded = `Please add a payment method.`;
+  }
+  if (
+    values.employerType &&
+    values.employerType.toLowerCase() === "adult foster home" &&
+    values.medicaidResidents < 1
+  ) {
+    errors.medicaidResidents = `Please enter the number of Medicaid Residents in your home(s).`;
+  }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)

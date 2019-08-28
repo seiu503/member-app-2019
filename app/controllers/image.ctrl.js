@@ -21,7 +21,7 @@ exports.singleImgUpload = async (req, res, next) => {
   uploader
     .startUpload(req, res, next)
     .then(() => {
-      // console.log(`image.ctrl.js > 77`);
+      // console.log(`image.ctrl.js > 24`);
       // console.log(req.file);
       if (!req.file) {
         // console.log(`image.ctrl.js > 27`);
@@ -36,7 +36,7 @@ exports.singleImgUpload = async (req, res, next) => {
       }.amazonaws.com/${req.file.originalname}`;
       // check if apiCall is for admin image or user signature image
       if (req.file.originalname.includes("__signature__")) {
-        return res.status(200).json(imageUrl);
+        return res.status(200).json({ content: imageUrl });
       }
       // check if we're creating a new DB record or updating existing
       if (req.body.id) {
@@ -51,7 +51,7 @@ exports.singleImgUpload = async (req, res, next) => {
             return res.status(200).json(records[0]);
           })
           .catch(err => {
-            console.log(`imageUpload.ctrl.js > 53: ${err}`);
+            // console.log(`image.ctrl.js > 53: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       } else {
@@ -62,7 +62,7 @@ exports.singleImgUpload = async (req, res, next) => {
             return res.status(200).json(records[0]);
           })
           .catch(err => {
-            console.log(`image.ctrl.js > 64: ${err}`);
+            // console.log(`image.ctrl.js > 64: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       }

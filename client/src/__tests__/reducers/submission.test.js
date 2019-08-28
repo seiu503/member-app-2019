@@ -61,16 +61,20 @@ describe("submission reducer", () => {
     });
     test("updateSubmission", () => {
       const action = {
-        type: "UPDATE_SUBMISSION_SUCCESS"
+        type: "UPDATE_SUBMISSION_SUCCESS",
+        payload: {
+          submission_id: "2"
+        }
       };
       const expectedState = {
         ...INITIAL_STATE,
-        formPage2SubmitSucess: true
+        submissionId: "2"
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
     test("getSFContact", () => {
       const payload = {
+        Id: "123",
         Display_Name_for_forms__c: "string",
         Account: {
           CVRSOS__ParentName__c: "string",
@@ -111,7 +115,8 @@ describe("submission reducer", () => {
         Hire_Date__c: "2019-11-11",
         Worksite_manual_entry_from_webform__c: "string",
         Work_Email__c: "string@string.com",
-        Work_Phone__c: "123-456-7890"
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member"
       };
       const action = {
         type: "GET_SF_CONTACT_SUCCESS",
@@ -132,12 +137,18 @@ describe("submission reducer", () => {
           homeCity: "string",
           homeState: "or",
           homeZip: "12345",
+          immediatePastMemberStatus: "Not a Member",
           homeEmail: "string@string.com",
           preferredLanguage: "string",
+          paymentRequired: false,
           termsAgree: false,
           signature: null,
           textAuthOptOut: false,
-          legalLanguage: ""
+          legalLanguage: "",
+          paymentType: "",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -166,7 +177,48 @@ describe("submission reducer", () => {
           workEmail: "string@string.com",
           workPhone: "123-456-7890",
           hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFEmployers", () => {
+      const payload = [
+        {
+          Name: "test",
+          Agency_Number__c: 123,
+          Sub_Division__c: "Nursing Homes",
+          Id: "12345"
+        },
+        {
+          Name: "test2",
+          Agency_Number__c: 123,
+          Sub_Division__c: "Nursing Homes",
+          Id: "12345"
         }
+      ];
+      const action = {
+        type: "GET_SF_EMPLOYERS_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        employerObjects: [
+          {
+            Name: "test",
+            Agency_Number__c: 123,
+            Sub_Division__c: "Nursing Homes",
+            Id: "12345"
+          },
+          {
+            Name: "test2",
+            Agency_Number__c: 123,
+            Sub_Division__c: "Nursing Homes",
+            Id: "12345"
+          }
+        ],
+        employerNames: ["test", "test2"]
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
@@ -180,6 +232,57 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         salesforceId: "1"
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getIframeURL", () => {
+      const action = {
+        type: "GET_IFRAME_URL_SUCCESS",
+        payload: {
+          cardAddingUrl: "url",
+          memberId: "string",
+          stripeCustomerId: "string",
+          memberShortId: "string"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        payment: {
+          cardAddingUrl: "url",
+          memberId: "string",
+          stripeCustomerId: "string",
+          memberShortId: "string"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createSFOMA", () => {
+      const action = {
+        type: "CREATE_SF_OMA_SUCCESS",
+        payload: {
+          salesforce_id: "string",
+          submission_id: "string",
+          sf_OMA_id: "string"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("lookupSFContact", () => {
+      const action = {
+        type: "LOOKUP_SF_CONTACT_SUCCESS",
+        payload: {
+          salesforce_id: "string"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        salesforceId: "string",
+        error: null,
+        redirect: true
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

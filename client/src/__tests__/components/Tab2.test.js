@@ -36,6 +36,7 @@ const defaultProps = {
   clearSignature: jest.fn(),
   handleInput: jest.fn(),
   formPage1: {},
+  formValues: { employerType: "" },
   signatureType: "draw",
   toggleSignatureInputType: jest.fn()
 };
@@ -72,7 +73,8 @@ describe("<Tab2 />", () => {
     const props = {
       handleSubmit: fn => fn,
       classes: {},
-      signatureType: "draw"
+      signatureType: "draw",
+      formValues: { employerType: "" }
     };
 
     it("renders without error", () => {
@@ -106,6 +108,42 @@ describe("<Tab2 />", () => {
       component = findByTestAttr(wrapper, "button-sig-toggle");
       component.simulate("click");
       expect(toggleSignatureInputType.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("conditional render", () => {
+    it("renders DPA checkbox for payment required employer types", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "Retired"
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "checkbox-DPA");
+      expect(component.length).toBeGreaterThan(1);
+    });
+
+    it("renders DDA checkbox for hcw", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "state homecare or personal support"
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "checkbox-DDA");
+      expect(component.length).toBeGreaterThan(1);
+    });
+
+    it("renders standard signature input for sig type === `write`", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        signatureType: "write"
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "input-signature");
+      expect(component.length).toBeGreaterThan(1);
     });
   });
 });
