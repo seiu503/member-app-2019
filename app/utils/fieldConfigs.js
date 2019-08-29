@@ -948,87 +948,87 @@ const submissionsTableFields = {
 // submission, which we'll have to check for and set
 // during the transition from tab 1 & tab 2 of formPage1
 const paymentFields = {
-  duesAmount: {
-    oldFormPage: "none",
-    req: "P", // unioni.se required
-    postgresFieldName: "dues_amount",
-    clientFieldName: "duesAmount",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "Direct_join_rate__c",
-    SFFieldLabel: "Dues Amount",
-    SFAPIName: "Dues_Amount__c",
-    SFDataType: "Currency(3, 2)",
-    SQLDataType: "NUMERIC(3, 2)",
-    unioniseFieldName: "duesAmount",
-    testingSample: 1.23
-  },
-  duesCurrency: {
-    // this is required by unioni.se
-    // but is always going to be "USD"
-    // so doesn't need to be stored in postgres
-    req: "P", // unioni.se required
-    unioniseFieldName: "duesCurrency",
-    testingSample: "USD"
-  },
-  duesDayOfMonth: {
-    oldFormPage: "none",
-    req: "P", // unioni.se required
-    postgresFieldName: "dues_day_of_month",
-    clientFieldName: "duesDayOfMonth",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "Direct_join_rate__c",
-    SFFieldLabel: "Dues Day",
-    SFAPIName: "Dues_Day__c",
-    SFDataType: "Number(2, 0)",
-    SQLDataType: "NUMERIC(2, 0)",
-    unioniseFieldName: "duesDayOfMonth",
-    testingSample: 10
-  },
-  duesActiveFrom: {
-    oldFormPage: "none",
-    req: "P", // unioni.se required, format: "yyyy-MM-dd"
-    postgresFieldName: "dues_active_from",
-    clientFieldName: "duesActiveFrom",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "Direct_join_rate__c",
-    SFFieldLabel: "Start Date",
-    SFAPIName: "Start_Date__c",
-    SFDataType: "Date",
-    SQLDataType: "DATE",
-    unioniseFieldName: "duesActiveFrom",
-    testingSample: "2019-05-20"
-  },
-  deductionType: {
-    // required by unioni.se (one of: "COPE", "CAPE", "Voluntary", "Objection")
-    // but is always going to be "Voluntary" for now
-    // so doesn't need to be stored in postgres
-    // may need to change this later if we start processing CAPE in this form
-    req: "P", // unioni.se required
-    unioniseFieldName: "deductionType",
-    testingSample: "Voluntary"
-  },
-  deductionAmount: {
-    oldFormPage: "none",
-    req: "P", // unioni.se required
-    postgresFieldName: "deduction_amount",
-    clientFieldName: "deductionAmount",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "Direct_join_rate__c",
-    SFFieldLabel: "Total Deduction",
-    SFAPIName: "Total_Deduction__c",
-    SFDataType: "Formula (Currency)",
-    SQLDataType: "NUMERIC(3, 2)",
-    unioniseFieldName: "deductionAmount",
-    testingSample: 2.34
-  },
-  deductionCurrency: {
-    // this is required by unioni.se
-    // but is always going to be "USD"
-    // so doesn't need to be stored in postgres
-    req: "P", // unioni.se required
-    unioniseFieldName: "deductionCurrency",
-    testingSample: "USD"
-  },
+  // duesAmount: {
+  //   oldFormPage: "none",
+  //   req: "P", // unioni.se required
+  //   postgresFieldName: "dues_amount",
+  //   clientFieldName: "duesAmount",
+  //   HtmlInputType: "(formula; no user-facing input)",
+  //   SFTable: "Direct_join_rate__c",
+  //   SFFieldLabel: "Dues Amount",
+  //   SFAPIName: "Dues_Amount__c",
+  //   SFDataType: "Currency(3, 2)",
+  //   SQLDataType: "NUMERIC(3, 2)",
+  //   unioniseFieldName: "duesAmount",
+  //   testingSample: 1.23
+  // },
+  // duesCurrency: {
+  //   // this is required by unioni.se
+  //   // but is always going to be "USD"
+  //   // so doesn't need to be stored in postgres
+  //   req: "P", // unioni.se required
+  //   unioniseFieldName: "duesCurrency",
+  //   testingSample: "USD"
+  // },
+  // duesDayOfMonth: {
+  //   oldFormPage: "none",
+  //   req: "P", // unioni.se required
+  //   postgresFieldName: "dues_day_of_month",
+  //   clientFieldName: "duesDayOfMonth",
+  //   HtmlInputType: "(formula; no user-facing input)",
+  //   SFTable: "Direct_join_rate__c",
+  //   SFFieldLabel: "Dues Day",
+  //   SFAPIName: "Dues_Day__c",
+  //   SFDataType: "Number(2, 0)",
+  //   SQLDataType: "NUMERIC(2, 0)",
+  //   unioniseFieldName: "duesDayOfMonth",
+  //   testingSample: 10
+  // },
+  // duesActiveFrom: {
+  //   oldFormPage: "none",
+  //   req: "P", // unioni.se required, format: "yyyy-MM-dd"
+  //   postgresFieldName: "dues_active_from",
+  //   clientFieldName: "duesActiveFrom",
+  //   HtmlInputType: "(formula; no user-facing input)",
+  //   SFTable: "Direct_join_rate__c",
+  //   SFFieldLabel: "Start Date",
+  //   SFAPIName: "Start_Date__c",
+  //   SFDataType: "Date",
+  //   SQLDataType: "DATE",
+  //   unioniseFieldName: "duesActiveFrom",
+  //   testingSample: "2019-05-20"
+  // },
+  // deductionType: {
+  //   // required by unioni.se (one of: "COPE", "CAPE", "Voluntary", "Objection")
+  //   // but is always going to be "Voluntary" for now
+  //   // so doesn't need to be stored in postgres
+  //   // may need to change this later if we start processing CAPE in this form
+  //   req: "P", // unioni.se required
+  //   unioniseFieldName: "deductionType",
+  //   testingSample: "Voluntary"
+  // },
+  // deductionAmount: {
+  //   oldFormPage: "none",
+  //   req: "P", // unioni.se required
+  //   postgresFieldName: "deduction_amount",
+  //   clientFieldName: "deductionAmount",
+  //   HtmlInputType: "(formula; no user-facing input)",
+  //   SFTable: "Direct_join_rate__c",
+  //   SFFieldLabel: "Total Deduction",
+  //   SFAPIName: "Total_Deduction__c",
+  //   SFDataType: "Formula (Currency)",
+  //   SQLDataType: "NUMERIC(3, 2)",
+  //   unioniseFieldName: "deductionAmount",
+  //   testingSample: 2.34
+  // },
+  // deductionCurrency: {
+  //   // this is required by unioni.se
+  //   // but is always going to be "USD"
+  //   // so doesn't need to be stored in postgres
+  //   req: "P", // unioni.se required
+  //   unioniseFieldName: "deductionCurrency",
+  //   testingSample: "USD"
+  // },
   deductionDayOfMonth: {
     oldFormPage: "none",
     req: "P", // unioni.se required
@@ -1052,7 +1052,7 @@ const paymentFields = {
     SFAPIName: "Active_Account_Last_4__c",
     SFDataType: "Text(4)",
     SQLDataType: "Text",
-    unioniseFieldName: "deductionDayOfMonth",
+    unioniseFieldName: "activeMethod.last4",
     testingSample: "1234"
   },
   memberShortId: {
@@ -1068,11 +1068,30 @@ const paymentFields = {
   },
   paymentMethod: {
     SFTable: "Direct_join_rate__c",
-    SFFieldLabel: "Paymet Method",
+    SFFieldLabel: "Payment Method",
     SFAPIName: "Payment_Method__c",
     SFDataType: "Picklist(text)", // 'Paper Check' | 'Unionise'
     postgresFieldName: "payment_method",
-    clientFieldName: "paymentMethod"
+    clientFieldName: "paymentMethod",
+    testingSample: "Unionise"
+  },
+  medicaidResidents: {
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "AFH Number of Residents",
+    SFAPIName: "AFH_Number_of_Residents__c",
+    SFDataType: "Number(1,0)",
+    postgresFieldName: "medicaid_residents",
+    clientFieldName: "medicaidResidents",
+    testingSample: 2
+  },
+  paymentErrorHold: {
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Payment Error Hold",
+    SFAPIName: "Payment_Error_Hold__c",
+    SFDataType: "Boolean",
+    // postgresFieldName: "payment_error_hold", // not saved to postgres
+    clientFieldName: "paymentErrorHold",
+    testingSample: false
   }
 };
 
