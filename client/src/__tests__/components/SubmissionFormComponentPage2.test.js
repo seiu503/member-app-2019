@@ -51,7 +51,8 @@ const defaultProps = {
   reset: jest.fn(),
   history: {
     push: jest.fn()
-  }
+  },
+  addTranslation: jest.fn()
 };
 
 describe("Unconnected <SubmissionFormPage2 />", () => {

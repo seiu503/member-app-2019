@@ -2,7 +2,9 @@ import React from "react";
 import { Field } from "redux-form";
 import PropTypes from "prop-types";
 import { reduxForm } from "redux-form";
+import { withLocalize, Translate } from "react-localize-redux";
 import validate from "../utils/validators";
+import page2 from "../translations/page2.json";
 import queryString from "query-string";
 
 import FormLabel from "@material-ui/core/FormLabel";
@@ -25,6 +27,7 @@ export class SubmissionFormPage2Component extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.props.addTranslation(page2);
   }
 
   // reusable MUI form components
@@ -194,12 +197,14 @@ export class SubmissionFormPage2Component extends React.Component {
               className={this.classes.page2IntroText}
               id="page2IntroText"
             >
-              Your membership application has been received and will be reviewed
-              shortly. In the mean time, please help your fellow union members
-              get to know you better by telling us a little more about yourself.
-              SEIU Local 503 is committed to honoring the diversity of all
-              members. This optional demographic information helps us understand
-              the social identities of our membership.
+              <Translate id="introParagraph">
+                Your membership application has been received and will be
+                reviewed shortly. In the mean time, please help your fellow
+                union members get to know you better by telling us a little more
+                about yourself. SEIU Local 503 is committed to honoring the
+                diversity of all members. This optional demographic information
+                helps us understand the social identities of our membership.
+              </Translate>
             </FormHelperText>
           </div>
           <Divider style={{ margin: 20 }} />
@@ -473,10 +478,10 @@ SubmissionFormPage2Component.propTypes = {
 };
 
 // add reduxForm to component
-export const SubmissionForm2Wrap = reduxForm({
-  form: "submissionPage1",
+export const SubmissionFormPage2Wrap = reduxForm({
+  form: "submissionPage2",
   validate,
   enableReinitialize: true
 })(SubmissionFormPage2Component);
 
-export default SubmissionFormPage2Component;
+export default withLocalize(SubmissionFormPage2Wrap);

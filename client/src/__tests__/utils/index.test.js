@@ -24,4 +24,26 @@ describe("utils/index", () => {
     utils.scrollToFirstError(errors);
     expect(scrollToSpy).toHaveBeenCalled();
   });
+  describe("`detectDefaultLanguage` returns language set by browser", () => {
+    let languageGetter, languageArrGetter;
+    it("defaults to `en`", () => {
+      languageArrGetter = jest.spyOn(window.navigator, "languages", "get");
+      languageArrGetter.mockReturnValue(null);
+      languageGetter = jest.spyOn(window.navigator, "language", "get");
+      languageGetter.mockReturnValue(null);
+      expect(utils.detectDefaultLanguage()).toEqual("en");
+    });
+    it("detects on window.languages array", () => {
+      languageGetter = jest.spyOn(window.navigator, "language", "get");
+      languageGetter.mockReturnValue(null);
+      languageArrGetter = jest.spyOn(window.navigator, "languages", "get");
+      languageArrGetter.mockReturnValue(["de", "ja", "es"]);
+      expect(utils.detectDefaultLanguage()).toEqual("es");
+    });
+    it("detects on window.language", () => {
+      languageGetter = jest.spyOn(window.navigator, "language", "get");
+      languageGetter.mockReturnValue("es");
+      expect(utils.detectDefaultLanguage()).toEqual("es");
+    });
+  });
 });
