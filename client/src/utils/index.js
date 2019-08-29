@@ -40,6 +40,31 @@ export const defaultWelcomeInfo = {
   headline: `SEIU 503: It’s about more than a better job – it’s about a better world.`
 };
 
+export const detectDefaultLanguage = () => {
+  let defaultLanguage = "en";
+  const acceptableLangs = ["en", "es", "ru", "vi", "zh"];
+  if (window.navigator.language) {
+    const userLang = window.navigator.language.toLowerCase();
+    for (let i = 0; i < acceptableLangs.length; i++) {
+      if (userLang.includes(acceptableLangs[i], 0)) {
+        defaultLanguage = acceptableLangs[i];
+        return defaultLanguage;
+      }
+    }
+  } else if (window.navigator.languages) {
+    const langArr = window.navigator.languages;
+    for (let i = 0; i < acceptableLangs.length; i++) {
+      for (let j = 0; j < langArr.length; j++) {
+        if (langArr[j].toLowerCase().includes(acceptableLangs[i], 0)) {
+          defaultLanguage = acceptableLangs[i];
+          return defaultLanguage;
+        }
+      }
+    }
+  }
+  return defaultLanguage;
+};
+
 export const scrollToFirstError = errors => {
   // search through errors object to find only those currently mounted in DOM
   // (some errors will be on future tabs and can't be scrolled to yet)

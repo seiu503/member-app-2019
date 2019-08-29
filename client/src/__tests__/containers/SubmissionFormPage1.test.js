@@ -46,14 +46,12 @@ let updateSFContactError = jest
     Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
   );
 
-let lookupSFContactSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({
-      type: "LOOKUP_SF_CONTACT_SUCCESS",
-      payload: { salesforce_id: "123" }
-    })
-  );
+let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "LOOKUP_SF_CONTACT_SUCCESS",
+    payload: { salesforce_id: "123" }
+  })
+);
 
 let lookupSFContactError = jest
   .fn()
@@ -61,14 +59,12 @@ let lookupSFContactError = jest
     Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
   );
 
-let createSFContactSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({
-      type: "CREATE_SF_CONTACT_SUCCESS",
-      payload: { salesforce_id: "123" }
-    })
-  );
+let createSFContactSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "CREATE_SF_CONTACT_SUCCESS",
+    payload: { salesforce_id: "123" }
+  })
+);
 
 let createSFContactError = jest
   .fn()

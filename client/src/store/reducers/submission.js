@@ -57,9 +57,11 @@ export const INITIAL_STATE = {
     immediatePastMemberStatus: "Not a Member",
     afhDuesRate: 0
   },
+  formPage2: {
+    gender: ""
+  },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
-  formPage2: {},
   redirect: false,
   payment: {
     cardAddingUrl: "",
