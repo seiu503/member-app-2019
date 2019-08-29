@@ -1,27 +1,13 @@
 import { RSAA } from "redux-api-middleware";
 import BASE_URL from "./apiConfig.js";
 
+/* =============================== CONTACTS ================================ */
+
+/* +++++++++++++++++++++++++++++ CONTACTS: GET +++++++++++++++++++++++++++++ */
+
 export const GET_SF_CONTACT_REQUEST = "GET_SF_CONTACT_REQUEST";
 export const GET_SF_CONTACT_SUCCESS = "GET_SF_CONTACT_SUCCESS";
 export const GET_SF_CONTACT_FAILURE = "GET_SF_CONTACT_FAILURE";
-export const GET_SF_EMPLOYERS_REQUEST = "GET_SF_EMPLOYERS_REQUEST";
-export const GET_SF_EMPLOYERS_SUCCESS = "GET_SF_EMPLOYERS_SUCCESS";
-export const GET_SF_EMPLOYERS_FAILURE = "GET_SF_EMPLOYERS_FAILURE";
-export const LOOKUP_SF_CONTACT_REQUEST = "LOOKUP_SF_CONTACT_REQUEST";
-export const LOOKUP_SF_CONTACT_SUCCESS = "LOOKUP_SF_CONTACT_SUCCESS";
-export const LOOKUP_SF_CONTACT_FAILURE = "LOOKUP_SF_CONTACT_FAILURE";
-export const CREATE_SF_CONTACT_REQUEST = "CREATE_SF_CONTACT_REQUEST";
-export const CREATE_SF_CONTACT_SUCCESS = "CREATE_SF_CONTACT_SUCCESS";
-export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
-export const UPDATE_SF_CONTACT_REQUEST = "UPDATE_SF_CONTACT_REQUEST";
-export const UPDATE_SF_CONTACT_SUCCESS = "UPDATE_SF_CONTACT_SUCCESS";
-export const UPDATE_SF_CONTACT_FAILURE = "UPDATE_SF_CONTACT_FAILURE";
-export const CREATE_SF_OMA_REQUEST = "CREATE_SF_OMA_REQUEST";
-export const CREATE_SF_OMA_SUCCESS = "CREATE_SF_OMA_SUCCESS";
-export const CREATE_SF_OMA_FAILURE = "CREATE_SF_OMA_FAILURE";
-export const GET_IFRAME_URL_REQUEST = "GET_IFRAME_URL_REQUEST";
-export const GET_IFRAME_URL_SUCCESS = "GET_IFRAME_URL_SUCCESS";
-export const GET_IFRAME_URL_FAILURE = "GET_IFRAME_URL_FAILURE";
 
 /*
  * Function: getSFContactById -- get a single SF Contact by id
@@ -62,83 +48,11 @@ export function getSFContactById(id) {
   };
 }
 
-/*
- * Function: getSFEmployers -- get all active SF Employers
- * This action dispatches additional actions as it executes:
- *   GET_SF_CONTACT_REQUEST:
- *     Initiates a spinner on the home page.
- *   GET_SF_CONTACT_SUCCESS:
- *     If Content successfully retrieved, hides spinner
- *   GET_SF_CONTACT_FAILURE:
- *     If database error, hides spinner, displays error toastr
- */
-export function getSFEmployers() {
-  return {
-    [RSAA]: {
-      endpoint: `${BASE_URL}/api/sfaccts`,
-      method: "GET",
-      types: [
-        GET_SF_EMPLOYERS_REQUEST,
-        GET_SF_EMPLOYERS_SUCCESS,
-        {
-          type: GET_SF_EMPLOYERS_FAILURE,
-          payload: (action, state, res) => {
-            return res.json().then(data => {
-              let message = "Sorry, something went wrong :(";
-              if (data && data.message) {
-                message = data.message;
-              }
-              return { message };
-            });
-          }
-        }
-      ],
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }
-  };
-}
+/* +++++++++++++++++++++++++++++ CONTACTS: POST ++++++++++++++++++++++++++++ */
 
-/*
- * Function: lookupSFContact -- lookup a SF contact (by id OR name/email)
- * @param {body}      Complete submission body
- * This action dispatches additional actions as it executes:
- *   LOOKUP_SF_CONTACT_REQUEST:
- *     Initiates a spinner on the home page.
- *   LOOKUP_SF_CONTACT_SUCCESS:
- *     If Content successfully retrieved, hides spinner
- *   LOOKUP_SF_CONTACT_FAILURE:
- *     If database error, hides spinner, displays error toastr
- */
-export function lookupSFContact(body) {
-  return {
-    [RSAA]: {
-      endpoint: `${BASE_URL}/api/sflookup`,
-      method: "PUT",
-      types: [
-        LOOKUP_SF_CONTACT_REQUEST,
-        LOOKUP_SF_CONTACT_SUCCESS,
-        {
-          type: LOOKUP_SF_CONTACT_FAILURE,
-          payload: (action, state, res) => {
-            return res.json().then(data => {
-              let message = "Sorry, something went wrong :(";
-              if (data && data.message) {
-                message = data.message;
-              }
-              return { message };
-            });
-          }
-        }
-      ],
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body)
-    }
-  };
-}
+export const CREATE_SF_CONTACT_REQUEST = "CREATE_SF_CONTACT_REQUEST";
+export const CREATE_SF_CONTACT_SUCCESS = "CREATE_SF_CONTACT_SUCCESS";
+export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
 
 /*
  * Function: createSFContact -- create a SF Contact
@@ -180,6 +94,12 @@ export function createSFContact(body) {
   };
 }
 
+/* +++++++++++++++++++++++++++++ CONTACTS: PUT ++++++++++++++++++++++++++++ */
+
+export const UPDATE_SF_CONTACT_REQUEST = "UPDATE_SF_CONTACT_REQUEST";
+export const UPDATE_SF_CONTACT_SUCCESS = "UPDATE_SF_CONTACT_SUCCESS";
+export const UPDATE_SF_CONTACT_FAILURE = "UPDATE_SF_CONTACT_FAILURE";
+
 /*
  * Function: updateSFContact -- update a SF Contact
  * @param {object} body
@@ -219,6 +139,60 @@ export function updateSFContact(id, body) {
     }
   };
 }
+
+/* +++++++++++++++++++++++++++++ CONTACTS: LOOKUP ++++++++++++++++++++++++++ */
+
+export const LOOKUP_SF_CONTACT_REQUEST = "LOOKUP_SF_CONTACT_REQUEST";
+export const LOOKUP_SF_CONTACT_SUCCESS = "LOOKUP_SF_CONTACT_SUCCESS";
+export const LOOKUP_SF_CONTACT_FAILURE = "LOOKUP_SF_CONTACT_FAILURE";
+
+/*
+ * Function: lookupSFContact -- lookup a SF contact (by id OR name/email)
+ * @param {body}      Complete submission body
+ * This action dispatches additional actions as it executes:
+ *   LOOKUP_SF_CONTACT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   LOOKUP_SF_CONTACT_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   LOOKUP_SF_CONTACT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function lookupSFContact(body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sflookup`,
+      method: "PUT",
+      types: [
+        LOOKUP_SF_CONTACT_REQUEST,
+        LOOKUP_SF_CONTACT_SUCCESS,
+        {
+          type: LOOKUP_SF_CONTACT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+/* ======================== ONLINE MEMBER APPS (OMA) ======================= */
+
+/* +++++++++++++++++++++++++++++++ OMA: POST +++++++++++++++++++++++++++++++ */
+
+export const CREATE_SF_OMA_REQUEST = "CREATE_SF_OMA_REQUEST";
+export const CREATE_SF_OMA_SUCCESS = "CREATE_SF_OMA_SUCCESS";
+export const CREATE_SF_OMA_FAILURE = "CREATE_SF_OMA_FAILURE";
 
 /*
  * Function: createSFOMA -- create a SF Online Member App record
@@ -260,9 +234,202 @@ export function createSFOMA(body) {
   };
 }
 
+/* ======================== DIRECT JOIN RATEST (DJR) ======================= */
+
+/* +++++++++++++++++++++++++++++++ DJR: POST +++++++++++++++++++++++++++++++ */
+
+export const CREATE_SF_DJR_REQUEST = "CREATE_SF_DJR_REQUEST";
+export const CREATE_SF_DJR_SUCCESS = "CREATE_SF_DJR_SUCCESS";
+export const CREATE_SF_DJR_FAILURE = "CREATE_SF_DJR_FAILURE";
+
 /*
- * Function: getIframeURL -- get an iFrame URL from unioni.se
- * for payment info collection
+ * Function: createSFDJR -- create a SF Direct Join Rate record
+ * @param {object} body
+ * This action dispatches additional actions as it executes:
+ *   CREATE_SF_DJR_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   CREATE_SF_DJR_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   CREATE_SF_DJR_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function createSFDJR(body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfDJR`,
+      method: "POST",
+      types: [
+        CREATE_SF_DJR_REQUEST,
+        CREATE_SF_DJR_SUCCESS,
+        {
+          type: CREATE_SF_DJR_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+/* +++++++++++++++++++++++++++++ DJR: PUT ++++++++++++++++++++++++++++ */
+
+export const UPDATE_SF_DJR_REQUEST = "UPDATE_SF_DJR_REQUEST";
+export const UPDATE_SF_DJR_SUCCESS = "UPDATE_SF_DJR_SUCCESS";
+export const UPDATE_SF_DJR_FAILURE = "UPDATE_SF_DJR_FAILURE";
+
+/*
+ * Function: updateSFDJR -- update a SF Direct Join Rate
+ * @param {object} body
+ * This action dispatches additional actions as it executes:
+ *   UPDATE_SF_DJR_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   UPDATE_SF_DJR_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   UPDATE_SF_DJR_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function updateSFDJR(id, body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfDJR/${id}`,
+      method: "PUT",
+      types: [
+        UPDATE_SF_DJR_REQUEST,
+        UPDATE_SF_DJR_SUCCESS,
+        {
+          type: UPDATE_SF_DJR_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+/* +++++++++++++++++++++++++++++ DJR: GET +++++++++++++++++++++++++++++ */
+
+export const GET_SF_DJR_REQUEST = "GET_SF_DJR_REQUEST";
+export const GET_SF_DJR_SUCCESS = "GET_SF_DJR_SUCCESS";
+export const GET_SF_DJR_FAILURE = "GET_SF_DJR_FAILURE";
+
+/*
+ * Function: getSFDJRById -- get a single SF DJR by id
+ * @param {string} id
+ * This action dispatches additional actions as it executes:
+ *   GET_SF_DJR_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   GET_SF_DJR_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   GET_SF_DJR_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function getSFDJRById(id) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfDJR/${id}`,
+      method: "GET",
+      types: [
+        GET_SF_DJR_REQUEST,
+        GET_SF_DJR_SUCCESS,
+        {
+          type: GET_SF_DJR_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  };
+}
+
+/* ================================ ACCOUNTS =============================== */
+
+/* +++++++++++++++++++++++++++++ ACCOUNTS: GET +++++++++++++++++++++++++++++ */
+
+export const GET_SF_EMPLOYERS_REQUEST = "GET_SF_EMPLOYERS_REQUEST";
+export const GET_SF_EMPLOYERS_SUCCESS = "GET_SF_EMPLOYERS_SUCCESS";
+export const GET_SF_EMPLOYERS_FAILURE = "GET_SF_EMPLOYERS_FAILURE";
+
+/*
+ * Function: getSFEmployers -- get all active SF Employers
+ * This action dispatches additional actions as it executes:
+ *   GET_SF_CONTACT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   GET_SF_CONTACT_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   GET_SF_CONTACT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function getSFEmployers() {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfaccts`,
+      method: "GET",
+      types: [
+        GET_SF_EMPLOYERS_REQUEST,
+        GET_SF_EMPLOYERS_SUCCESS,
+        {
+          type: GET_SF_EMPLOYERS_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  };
+}
+
+/* ================================ UNIONISE =============================== */
+
+/* +++++++++++++++++++++++++++++ MEMBERS: POST +++++++++++++++++++++++++++++ */
+
+export const GET_IFRAME_URL_REQUEST = "GET_IFRAME_URL_REQUEST";
+export const GET_IFRAME_URL_SUCCESS = "GET_IFRAME_URL_SUCCESS";
+export const GET_IFRAME_URL_FAILURE = "GET_IFRAME_URL_FAILURE";
+
+/*
+ * Function: getIframeURL -- create a unioni.se member record,
+ *   which returns a card-adding iFrame URL for payment info collection
  * @param {body}
  * {
     "firstName": "Test",

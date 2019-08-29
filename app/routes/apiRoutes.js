@@ -456,7 +456,7 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 /* ========================== DIRECT JOIN RATES =========================== */
 
 // GET ONE SALESFORCE DJR RECORD BY SF CONTACT ID
-//   Example: GET >> /api/sfdjr/0036100001gYL0HAAW
+//   Example: GET >> /api/sfDJR/0036100001gYL0HAAW
 //   Secured: no
 //   Expects:
 //     1) request params : {
@@ -464,10 +464,10 @@ router.get("/sfaccts", sfCtrl.getAllEmployers);
 //        }
 //   Returns: JSON selected fields from salesforce DJR object on success.
 //
-router.get("/sfdjr/:id", sfCtrl.getSFDJRById);
+router.get("/sfDJR/:id", sfCtrl.getSFDJRById);
 
 // CREATE SALESFORCE DJR RECORD
-//   Example: POST >> /api/sfdjr
+//   Example: POST >> /api/sfDJR
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
@@ -478,10 +478,10 @@ router.get("/sfdjr/:id", sfCtrl.getSFDJRById);
 //             }
 //   Returns: { sf_djr_id } or error message.
 //
-router.post("/sfdjr", sfCtrl.createSFDJR);
+router.post("/sfDJR", sfCtrl.createSFDJR);
 
 // UPDATE A SALESFORCE DJR RECORD BY SF CONTACT ID
-//   Example: PUT >> /api/sfdjr/0035500000VFAE9AAP
+//   Example: PUT >> /api/sfDJR/0035500000VFAE9AAP
 //   Secured: no
 //   Expects:
 //     1) request body properties : {
@@ -492,7 +492,7 @@ router.post("/sfdjr", sfCtrl.createSFDJR);
 //   Returns: { sf_djr_id } or error message.
 //   OR passes contact ID to next middleware.
 //
-router.put("/sfdjr/:id", sfCtrl.updateSFDJR);
+router.put("/sfDJR/:id", sfCtrl.updateSFDJR);
 
 /* ================================ EXPORT ================================= */
 
