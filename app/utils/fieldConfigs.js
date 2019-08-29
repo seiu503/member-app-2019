@@ -1386,6 +1386,17 @@ const generateSFContactFieldList = () => {
   return fieldList;
 };
 
+const generateSFDJRFieldList = () => {
+  const fieldList = [];
+  Object.keys(paymentFields).map(function(key, index) {
+    if (paymentFields[key].SFTable === "Direct_join_rate__c") {
+      fieldList.push(paymentFields[key].SFAPIName);
+    }
+  });
+  console.log(fieldList);
+  return fieldList;
+};
+
 module.exports = {
   contactsTableFields,
   submissionsTableFields,
@@ -1396,5 +1407,6 @@ module.exports = {
   generateSampleValidate,
   generatePage2Validate,
   generateSFContactFieldList,
+  generateSFDJRFieldList,
   formatDate
 };

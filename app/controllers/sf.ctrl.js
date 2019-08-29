@@ -3,6 +3,8 @@ const {
   contactsTableFields,
   submissionsTableFields,
   generateSFContactFieldList,
+  generateSFDJRFieldList,
+  paymentFields,
   formatDate
 } = require("../utils/fieldConfigs");
 
@@ -17,6 +19,7 @@ let conn = new jsforce.Connection({ loginUrl });
 const user = process.env.SALESFORCE_USER;
 const password = process.env.SALESFORCE_PWD;
 const fieldList = generateSFContactFieldList();
+const paymentFieldList = generateSFDJRFieldList();
 
 /** Fetch one contact from Salesforce by Salesforce Contact ID
  *  @param    {String}   id  	Salesforce Contact ID
@@ -45,6 +48,33 @@ exports.getSFContactById = async (req, res, next) => {
   }
 };
 
+/** Get one Direct Join Rate record from Salesforce by Salesforce Contact ID
+ *  @param    {String}   id   Salesforce Contact ID
+ *  @returns  {Object}        Salesforce Direct Join Rate object OR error msg.
+ */
+exports.getSFDJRById = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > getSFDJRById`);
+  const { id } = req.params;
+  const query = `SELECT ${paymentFieldList.join(
+    ","
+  )}, Id FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 64: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let contact;
+  try {
+    contact = await conn.query(query);
+    return res.status(200).json(contact.records[0]);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 72: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 /** Delete one contact from Salesforce by Salesforce Contact ID
  *  @param    {String}   id   Salesforce Contact ID
  *  @returns  {Object}        Success or error message.
@@ -67,6 +97,10 @@ exports.deleteSFContactById = async (req, res, next) => {
   }
 };
 
+/** Create a new Salesforce Contact
+ *  @param    {body}          Full submission data object
+ *  @returns  {Object}        { sf_contact_id } or error message
+ */
 exports.createSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 75: createSFContact`);
   const bodyRaw = { ...req.body };
@@ -104,6 +138,53 @@ exports.createSFContact = async (req, res, next) => {
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
     // console.error(`sf.ctrl.js > 108: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/** Create a new Salesforce Direct Join Rate record
+ *  @param    {body}          Payment fields object:
+ *                                 Worker__c (salesforceId)
+ *                                 Unioni_se_MemberID__c (memberShortId)
+ *                                 Payment_Method__c (paymentMethod)
+ *                                 Dues_Type__c ('Flat' || 'Percentage')
+ *  @returns  {Object}        { sf_djr_id } or error message
+ */
+exports.createSFDJR = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > 75: createSFDJR`);
+  const bodyRaw = { ...req.body };
+  const body = {};
+
+  // convert raw body to key/value pairs using SF API field names
+  Object.keys(bodyRaw).forEach(key => {
+    if (paymentFields[key]) {
+      const sfFieldName = paymentFields[key].SFAPIName;
+      body[sfFieldName] = bodyRaw[key];
+    }
+  });
+
+  body.Worker__c = bodyRaw.salesforceId;
+
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 172: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+
+  let djr;
+  try {
+    djr = await conn.sobject("Direct_join_rate__c").create({ ...body });
+    if (res.locals.next) {
+      console.log(`sf.ctrl.js > 180: returning next`);
+      res.locals.sf_djr_id = djr.Id || djr.id;
+      return next();
+    }
+    console.log(`sf.ctrl.js > 184: returning to client`);
+    return res.status(200).json({ sf_djr_id: djr.Id || djr.id });
+  } catch (err) {
+    console.error(`sf.ctrl.js > 187: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -213,6 +294,59 @@ exports.updateSFContact = async (req, res, next) => {
     return res.status(200).json(response);
   } catch (err) {
     // console.error(`sf.ctrl.js > 210: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/** Update a DJR record in Salesforce by Salesforce Contact ID
+ *  @param    {String}   id           Salesforce Contact ID
+ *  @param    {Object}   body         Raw paymentFields data used to generate
+ *                                    updates object, containing
+ *                                    key/value pairs of fields to be updated.
+ *  @returns  {Object}        Salesforce DJR id OR error message.
+ */
+exports.updateSFDJR = async (req, res, next) => {
+  console.log(`sf.ctrl.js > 309: updateSFDJR`);
+  const { id } = req.params;
+  const updatesRaw = { ...req.body };
+  const updates = {};
+  // convert updates object to key/value pairs using
+  // SF API field names
+  Object.keys(updatesRaw).forEach(key => {
+    if (paymentFields[key]) {
+      const sfFieldName = paymentFields[key].SFAPIName;
+      updates[sfFieldName] = updatesRaw[key];
+    }
+  });
+
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 190: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let djr;
+  try {
+    djr = await conn.sobject("Direct_join_rate__c").update({
+      Worker__c: id,
+      ...updates
+    });
+    if (res.locals.next) {
+      // console.log(`sf.ctrl.js > 210: returning next`);
+      return next();
+    }
+
+    let response = {
+      sf_djr_id: djr.id || djr.Id,
+      sf_contact_id: id
+    };
+    res.locals.sf_djr_id = djr.id || djr.Id;
+
+    console.log(`sf.ctrl.js > 346: returning to client`);
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 349: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
