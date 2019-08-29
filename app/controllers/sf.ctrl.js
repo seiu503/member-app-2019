@@ -65,10 +65,10 @@ exports.getSFDJRById = async (req, res, next) => {
     console.error(`sf.ctrl.js > 64: ${err}`);
     return res.status(500).json({ message: err.message });
   }
-  let contact;
+  let djr;
   try {
-    contact = await conn.query(query);
-    return res.status(200).json(contact.records[0]);
+    djr = await conn.query(query);
+    return res.status(200).json(djr.records[0]);
   } catch (err) {
     console.error(`sf.ctrl.js > 72: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -337,10 +337,7 @@ exports.updateSFDJR = async (req, res, next) => {
       return next();
     }
 
-    let response = {
-      sf_djr_id: djr.id || djr.Id,
-      sf_contact_id: id
-    };
+    let response = { sf_djr_id: djr.id || djr.Id };
     res.locals.sf_djr_id = djr.id || djr.Id;
 
     console.log(`sf.ctrl.js > 346: returning to client`);

@@ -82,3 +82,6 @@ export const scrollToFirstError = errors => {
     window.scrollTo({ top: position - offset, behavior: "smooth" });
   }
 };
+
+export const ordinalSuffix = n =>
+  ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";

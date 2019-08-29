@@ -982,7 +982,7 @@ const paymentFields = {
     SFDataType: "Number(2, 0)",
     SQLDataType: "NUMERIC(2, 0)",
     unioniseFieldName: "duesDayOfMonth",
-    testingSample: 15
+    testingSample: 10
   },
   duesActiveFrom: {
     oldFormPage: "none",
