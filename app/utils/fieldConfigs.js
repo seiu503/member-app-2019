@@ -1042,6 +1042,37 @@ const paymentFields = {
     SQLDataType: "NUMERIC(2, 0)",
     unioniseFieldName: "deductionDayOfMonth",
     testingSample: 15
+  },
+  activeMethodLast4: {
+    req: "N",
+    postgresFieldName: "active_method_last_four",
+    clientFieldName: "activeMethodLast4",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Active Account Last 4",
+    SFAPIName: "Active_Account_Last_4__c",
+    SFDataType: "Text(4)",
+    SQLDataType: "Text",
+    unioniseFieldName: "deductionDayOfMonth",
+    testingSample: "1234"
+  },
+  memberShortId: {
+    req: "N",
+    postgresFieldName: "member_short_id",
+    clientFieldName: "memberShortId", // unioni.se member unique id
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Unioni.se MemberID",
+    SFAPIName: "Unioni_se_MemberID__c",
+    SFDataType: "Text(10)",
+    unioniseFieldName: "memberId",
+    testingSample: "BPA9DS6T"
+  },
+  paymentMethod: {
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Paymet Method",
+    SFAPIName: "Payment_Method__c",
+    SFDataType: "Picklist(text)", // 'Paper Check' | 'Unionise'
+    postgresFieldName: "payment_method",
+    clientFieldName: "paymentMethod"
   }
 };
 
