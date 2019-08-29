@@ -427,15 +427,15 @@ exports.getSFDJRById = async (req, res, next) => {
 /* ++++++++++++++++++++++++++++++ DJR: POST ++++++++++++++++++++++++++++++++ */
 
 /** Create a new Salesforce Direct Join Rate record
- *  @param    {body}          Payment fields object:
- *                                 Worker__c (salesforceId)
- *                                 Unioni_se_MemberID__c (memberShortId)
- *                                 Payment_Method__c (paymentMethod)
- *                                 Dues_Type__c ('Flat' || 'Percentage')
+ *  @param    {body}   Payment fields object:
+ *                       Worker__c (salesforceId) REQUIRED (others optional)
+ *                       Unioni_se_MemberID__c (memberShortId)
+ *                       Payment_Method__c (paymentMethod)
+ *                       AFH_Number_of_Residents__c (medicaidResidents)
  *  @returns  {Object}        { sf_djr_id } or error message
  */
 exports.createSFDJR = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 75: createSFDJR`);
+  console.log(`sf.ctrl.js > 438: createSFDJR`);
   const bodyRaw = { ...req.body };
   const body = {};
 

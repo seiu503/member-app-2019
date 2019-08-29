@@ -394,6 +394,80 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
+  async getSFDJRById() {
+    const id = this.props.submission.salesforceId;
+    this.props.apiSF
+      .getSFDJRById(id)
+      .then(result => {
+        console.log(result.payload);
+        if (
+          result.type === "GET_SF_DJR_FAILURE" ||
+          this.props.submission.error
+        ) {
+          console.log(this.props.submission.error);
+          return handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async createSFDJR() {
+    const medicaidResidents =
+      this.props.submission.formPage1.medicaidResidents || 0;
+    const body = {
+      Worker__c: this.props.submission.salesforceId,
+      Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
+      Payment_Method__c: this.props.submission.formPage1.paymentType,
+      AFH_Number_of_Residents__c: medicaidResidents
+    };
+    this.props.apiSF
+      .createSFDJR(body)
+      .then(result => {
+        console.log(result.payload);
+        if (
+          result.type === "CREATE_SF_DJR_FAILURE" ||
+          this.props.submission.error
+        ) {
+          console.log(this.props.submission.error);
+          return handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async updateSFDJR() {
+    const id = this.props.submission.salesforceId;
+    const medicaidResidents =
+      this.props.submission.formPage1.medicaidResidents || 0;
+    const updates = {
+      Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
+      Payment_Method__c: this.props.submission.formPage1.paymentType,
+      AFH_Number_of_Residents__c: medicaidResidents
+    };
+    this.props.apiSF
+      .updateSFDJR(id, updates)
+      .then(result => {
+        console.log(result.payload);
+        if (
+          result.type === "UPDATE_SF_DJR_FAILURE" ||
+          this.props.submission.error
+        ) {
+          console.log(this.props.submission.error);
+          return handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+  }
+
   async handleTab1() {
     const { formValues } = this.props;
     // handle moving from tab 1 to tab 2:
