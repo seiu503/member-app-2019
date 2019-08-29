@@ -1,0 +1,681 @@
+{
+  "employerType": [
+    "EMPLOYER TYPE",
+    "Tipo de empleador",
+    "Вид работодателя",
+    "Thể loại nhân viên",
+    "雇主类型"
+  ],
+  "adultFosterCareType": [
+    "Adult Foster Care",
+    "Hogares de cuidado temporal para adultos (Adult Foster Care)",
+    "Семейный приют для взрослых",
+    "Chăm sóc nuôi dưỡng người lớn",
+    "成人寄养护理"
+  ],
+  "familyChildCareType": [
+    "Family Child Care",
+    "Cuidado infantil familiar",
+    "Учреждение по уходу за детьми семейного типа",
+    "Chăm sóc trẻ em gia đình",
+    "家庭托儿服务"
+  ],
+  "homecareOrPersonalSupportWorker": [
+    "Homecare or Personal Support Worker",
+    "Trabajador de atención domiciliaria o de apoyo personal",
+    "Работник надомного или индивидуального обслуживания",
+    "Nhân viên chăm sóc tại gia hay nhân viên hỗ trợ cá nhân",
+    "居家护理或私人护理工作者"
+  ],
+  "localGovernment": [
+    "Local Government",
+    "Gobierno local",
+    "Местные органы власти",
+    "Chính quyền địa phương",
+    "当地政府"
+  ],
+  "nursingHomes": [
+    "Nursing Homes",
+    "Hogares de ancianos",
+    "Дома престарелых с медсестринским уходом",
+    "Viện an dưỡng",
+    "疗养院"
+  ],
+  "oregonUniversitySystem": [
+    "Oregon University System",
+    "Sistema universitario de Oregon",
+    "Система университетов штата Орегон",
+    "Hệ thống Đại học Oregon (Oregon University System)",
+    "俄勒冈州大学系统"
+  ],
+  "non-profit": [
+    "Non-Profit",
+    "Organización sin fines de lucro",
+    "Некоммерческая организация",
+    "Tổ chức phi lợi nhuận",
+    "非营利"
+  ],
+  "stateAgency": [
+    "State Agency",
+    "Agencia estatal",
+    "Служба штата",
+    "Cơ quan chính phủ tiểu bang",
+    "州立机构"
+  ],
+  "adultFosterCare": [
+    "ADULT FOSTER CARE: 984",
+    "Hogares de cuidado temporal para adultos: 984",
+    "Семейный приют для взрослых: 984",
+    "Chăm sóc nuôi dưỡng người lớn: 984",
+    "成人寄养护理：984"
+  ],
+  "familyChildCare": [
+    "FAMILY CHILD CARE: 986",
+    "Cuidado infantil familiar: 986",
+    "Учреждение по уходу за детьми семейного типа: 986",
+    "Chăm sóc trẻ em gia đình: 986",
+    "家庭托儿服务：986"
+  ],
+  "addus": [
+    "ADDUS: 982",
+    "Addus: 982",
+    "Компания Addus: 982",
+    "Addus: 982",
+    "Addus: 982"
+  ],
+  "homecareWorkers": [
+    "HOMECARE WORKERS: 988",
+    "Trabajadores de Atención Domiciliaria: 988",
+    "Работники Надомного Обслуживания: 988",
+    "Nhân viên chăm sóc tại gia: 988",
+    "居家护理工作者：988, "
+  ],
+  "pplPsws": [
+    "PPL PSWS: 150",
+    "Trabajador de apoyo personal de PPL: 150",
+    "Работник индивидуального обслуживания компании PPL: 150",
+    "Nhân viên hỗ trợ cá nhân PPL: 150",
+    "PPL 私人护理工作者：150"
+  ],
+  "statePersonalSupportWorker": [
+    "STATE PERSONAL SUPPORT WORKER: 100",
+    "Trabajador de apoyo personal del estado: 100",
+    "Государственный работник индивидуального обслуживания: 100",
+    "Nhân viên hỗ trợ cá nhân tiểu bang: 100",
+    "州私人护理工作者：100"
+  ],
+  "bakerCountyEmployees": [
+    "BAKER COUNTY EMPLOYEES: 970",
+    "Empleados del Condado de Baker: 970",
+    "Работники администрации округа Бейкер: 970",
+    "Nhân viên quận Baker: 970",
+    "贝克县雇员：970"
+  ],
+  "basinTransitService": [
+    "BASIN TRANSIT SERVICE: 977",
+    "Servicio de transporte público de Basin: 977",
+    "Транспортная компания Basin transit service: 977",
+    "Dịch vụ vận chuyển lưu vực: 977",
+    "盆地运输服务 (Basin Transit Service)：977"
+  ],
+  "centralOregonIrrigDistrict": [
+    "CENTRAL OREGON IRRIG DISTRICT: 992",
+    "Distrito de irrigación de Oregon Central: 992",
+    "Ирригационный район центральной части Орегона: 992",
+    "Khu thủy lợi Trung tâm Oregon: 992",
+    "俄勒冈中部自来水公司 (Central Oregon IRRIG district)：992"
+  ],
+  "cityOfBeavertonEmployees": [
+    "CITY OF BEAVERTON EMPLOYEES: 990",
+    "Empleados de la Ciudad de Beaverton: 990",
+    "Работники администрации города Бивертон: 990",
+    "Nhân viên thành phố Beaverton: 990",
+    "比佛顿市雇员：990"
+  ],
+  "cityOfCannonBeach": [
+    "CITY OF CANNON BEACH: 921",
+    "Ciudad de Cannon Beach: 921",
+    "Администрация города Кэннон-Бич: 921",
+    "Thành phố Cannon Beach: 921",
+    "坎农比奇市：921"
+  ],
+  "cityOfPendleton": [
+    "CITY OF PENDLETON: 938",
+    "Ciudad de Pendleton: 938",
+    "Администрация города Пендлтон: 938",
+    "Thành phố Pendleton: 938",
+    "彭德尔顿市：938"
+  ],
+  "cityOfSpringfieldEmployees": [
+    "CITY OF SPRINGFIELD EMPLOYEES: 995",
+    "Empleados de la Ciudad de Springfield: 995",
+    "Сотрудники администрации города Спрингфилд: 995",
+    "Nhân viên thành phố Springfield: 995",
+    "斯普林菲尔德市雇员：995"
+  ],
+  "cityOfTigardEmployees": [
+    "CITY OF TIGARD EMPLOYEES: 993",
+    "Empleados de la Ciudad de Tigard: 993",
+    "Сотрудники администрации города Тайгард: 993",
+    "Nhân viên thành phố Tigard: 993",
+    "泰格德市雇员：993"
+  ],
+  "cityOfWilsonville": [
+    "CITY OF WILSONVILLE: 926",
+    "Ciudad de Wilsonville: 926",
+    "Сотрудники администрации города Уилсонвилл: 926",
+    "Thành phố Wilsonville: 926",
+    "威尔逊维尔市：926"
+  ],
+  "coosBay-northBendWaterBoard": [
+    "COOS BAY-NORTH BEND WATER BOARD: 935",
+    "Junta de Aguas de Coos Bay-North Bend: 935",
+    "Управление водных ресурсов городов Кус-Бей и Норт-Бенд: 935",
+    "Ban Quản lý Nước Coos Bay-North Bend: 935",
+    "库斯贝-北本德自来水公司 (Coos Bay-North Bend water board)：935"
+  ],
+  "curryCountyEmployees": [
+    "CURRY COUNTY EMPLOYEES: 985",
+    "Empleados del Condado de Curry: 985",
+    "Сотрудники администрации округа Карри: 985",
+    "Nhân viên quận Curry: 985",
+    "库里县雇员：985"
+  ],
+  "jacksonCountyEmployees": [
+    "JACKSON COUNTY EMPLOYEES: 925",
+    "Empleados del Condado de Jackson: 925",
+    "Сотрудники администрации округа Джексон: 925",
+    "Nhân viên quận Jackson: 925",
+    "杰克逊县雇员：925"
+  ],
+  "josephineCounty": [
+    "JOSEPHINE COUNTY: 951",
+    "Condado de Josephine: 951",
+    "Округ Джозефин: 951",
+    "Quận Josephine: 951",
+    "约瑟芬县：951"
+  ],
+  "lcogSdsd": [
+    "LCOG SDSD: 908",
+    "Consejo de Gobiernos de Lane de Servicios para Adultos Mayores y Personas con Discapacidades (LCOG SDSD, por sus siglas en inglés): 908",
+    "Служба округа Лейн по работе с престарелыми и лицами с ограниченными возможностями: 908",
+    "LCOG SDSD: 908",
+    "LCOG SDSD: 908"
+  ],
+  "linnCountyEmployeesAssn": [
+    "LINN COUNTY EMPLOYEES ASSN: 981",
+    "Asociación de empleados del Condado de Linn: 981",
+    "Ассоциация работников округа Линн: 981",
+    "Hiệp hội nhân viên quận Linn: 981",
+    "林县雇员 ASSN：981"
+  ],
+  "marionCountyEmployees": [
+    "MARION COUNTY EMPLOYEES: 940",
+    "Empleados del Condado de Marion: 940",
+    "Сотрудники администрации округа Мэрион: 940",
+    "Nhân viên quận Marion: 940",
+    "马里昂县雇员：940"
+  ],
+  "oregonCascadesWestCog": [
+    "OREGON CASCADES WEST COG: 937",
+    "Consejo de Gobiernos del Oeste de Cascades Oregon: 937",
+    "Совет служб Oregon cascades west: 937",
+    "Hội đồng Chính phủ Cascades West của Oregon (Oregon Cascades West Council of Governments): 937",
+    "俄勒冈州卡斯卡德西部政府议会：937"
+  ],
+  "portlandPublicSchoolEmployees": [
+    "PORTLAND PUBLIC SCHOOL EMPLOYEES: 810",
+    "Empleados de las Escuelas Públicas de Portland: 810",
+    "Сотрудники Портлендского государственного школьного округа: 810",
+    "Nhân viên các trường công lập ở Portland: 810",
+    "波特兰公立学校雇员：810"
+  ],
+  "theDallesCityOfEmployeesAssn.": [
+    "THE DALLES CITY OF EMPLOYEES ASSN.: 910",
+    "Asociación de empleados de la Ciudad de Dalles: 910",
+    "Ассоциация сотрудников администрации города Даллес: 910",
+    "Hội Nhân viên Thành phố Dalles: 910",
+    "达尔斯市雇员 ASSN：910"
+  ],
+  "wallowaCoRoadsDept": [
+    "WALLOWA CO. ROADS DEPT.: 923",
+    "Departamento de Carreteras del Condado de Wallowa: 923",
+    "Округ Уоллова, Управление автомобильных дорог: 923",
+    "Sở Đường bộ Quận Wallowa: 923",
+    "瓦洛瓦县 道路部门：923"
+  ],
+  "wallowaCtyProfessionalEmps": [
+    "WALLOWA CTY PROFESSIONAL EMPS: 924",
+    "Empleados profesionales del Condado de Wallowa: 924",
+    "Профессиональные работники администрации округа Уоллова: 924",
+    "Chuyên viên Quận Wallowa: 924",
+    "瓦洛瓦县专业 EMPS：924"
+  ],
+  "avalonHealthCare": [
+    "AVALON HEALTH CARE: 974",
+    "Avalon Healthcare: 974",
+    "Компания Avalon Health Care: 974",
+    "Avalon Health Care: 974",
+    "爱维伦健康护理 (Avalon Health Care)：974"
+  ],
+  "avamereHealthServices": [
+    "AVAMERE HEALTH SERVICES: 973",
+    "Servicios de Salud de Avamere: 973",
+    "Компания AVAMERE: 973",
+    "Dịch vụ Y tế AVAMERE (AVAMERE Health Services): 973",
+    "Avamere Health Services: 973"
+  ],
+  "beniciaSeniorCare": [
+    "BENICIA SENIOR CARE: 983",
+    "Benicia Senior Care: 983",
+    "Компания Benicia Senior Care: 983",
+    "Benicia Senior Care: 983",
+    "贝尼西亚耆老护理 (Benicia Senior Care)：983"
+  ],
+  "dakaviaHealthServices": [
+    "DAKAVIA HEALTH SERVICES: 980",
+    "Dakavia Health Services: 980",
+    "Компания Dakavia Health Services: 980",
+    "Dakavia Health Services: 980",
+    "达卡维亚健康服务 (Dakavia Health Services)：980"
+  ],
+  "empresHealthCare": [
+    "EMPRES HEALTH CARE: 972",
+    "EmpRes Healthcare: 972",
+    "Компания EMPRES: 972",
+    "Dịch vụ Y tế EMPRES (EMPRES Health Care): 972",
+    "Empres Health Care: 972"
+  ],
+  "extendicareHealthFacilities": [
+    "EXTENDICARE HEALTH FACILITIES: 989",
+    "Centros de salud de Extendicare: 989",
+    "Компания Extendicare: 989",
+    "Các cơ sở y tế Extendicare: 989",
+    "Extendicare Health Facilities: 989"
+  ],
+  "healthcareServicesGroup": [
+    "HEALTHCARE SERVICES GROUP: 969",
+    "Healthcare Services Group: 969",
+    "Компания Healthcare Services Group: 969",
+    "Healthcare Services Group: 969",
+    "医疗保健服务 (Healthcare Services Group)：969"
+  ],
+  "pinnacleCare": [
+    "PINNACLE CARE: 974",
+    "PinnacleCare: 974",
+    "Компания Pinnacle care: 974",
+    "Dịch vụ chăm sóc Pinnacle: 974",
+    "Pinnacle Care: 974"
+  ],
+  "prestigeNursingHomes": [
+    "PRESTIGE NURSING HOMES: 971",
+    "Prestige Nursing Homes: 971",
+    "Компания Prestige Nursing Homes: 971",
+    "Prestige Nursing Homes: 971",
+    "声望疗养院 (Prestige Nursing Homes)：971, "
+  ],
+  "easternOregonUniversity": [
+    "EASTERN OREGON UNIVERSITY: 58010",
+    "Universidad del Este de Oregon: 58010",
+    "Университет восточного Орегона: 58010",
+    "Trường Đại học Đông Oregon (Eastern Oregon University): 58010",
+    "东俄勒冈大学: 58010"
+  ],
+  "oregonInstituteOfTechnology": [
+    "OREGON INSTITUTE OF TECHNOLOGY: 58018",
+    "Instituto de Tecnología de Oregon: 58018",
+    "Орегонский технологический университет: 58018",
+    "Học viện Công nghệ Oregon (Oregon Institute of Technology): 58018",
+    "俄勒冈理工学院：58018"
+  ],
+  "oregonStateUniversity": [
+    "OREGON STATE UNIVERSITY: 58030",
+    "Universidad Estatal de Oregon: 58030",
+    "Орегонский государственный университет: 58030",
+    "Trường Đại học Bang Oregon (Oregon State University): 58030",
+    "俄勒冈州立大学：58030"
+  ],
+  "portlandStateUniversity": [
+    "PORTLAND STATE UNIVERSITY: 58090",
+    "Universidad Estatal de Portland: 58090",
+    "Портлендский государственный университет: 58090",
+    "Trường Đại học Tiểu bang ở Portland (Portland State University): 58090",
+    "波特兰州立大学：58090"
+  ],
+  "southernOregonUniversity": [
+    "SOUTHERN OREGON UNIVERSITY: 58040",
+    "Universidad del Sur de Oregon: 58040",
+    "Университет Южного Орегона: 58040",
+    "Trường Đại học Nam Oregon (Southern Oregon University): 58040",
+    "南俄勒冈大学: 58040"
+  ],
+  "universityOfOregon": [
+    "UNIVERSITY OF OREGON: 58050",
+    "Universidad de Oregon: 58050",
+    "Университет штата Орегон: 58050",
+    "Trường Đại học Oregon (University of Oregon): 58050",
+    "俄勒冈大学：58050"
+  ],
+  "westernOregonUniversity": [
+    "WESTERN OREGON UNIVERSITY: 58020",
+    "Universidad del Oeste de Oregon: 58020",
+    "Университет Западного Орегона: 58020",
+    "Trường Đại học Tây Oregon (Western Oregon University): 58020",
+    "西俄勒冈大学: 58020"
+  ],
+  "alvordTaylor": [
+    "ALVORD TAYLOR: 999",
+    "Alvord Taylor: 999",
+    "Некоммерческая организация Alvord Taylor: 999",
+    "Alvord Taylor: 999",
+    "Alvord Taylor: 999"
+  ],
+  "cascadeAidsProject": [
+    "CASCADE AIDS PROJECT: 901",
+    "Proyecto de SIDA Cascade: 901",
+    "Некоммерческая организация Cascade aids project: 901",
+    "Dự án Hỗ trợ Cascade (Cascade Aids Project): 901",
+    "卡斯卡德艾滋病项目 901"
+  ],
+  "coda": [
+    "CODA: 963",
+    "Coda: 963",
+    "Некоммерческая организация Coda: 963",
+    "Coda: 963",
+    "Coda: 963"
+  ],
+  "educationNorthwest(formerlyNwrel)": [
+    "EDUCATION NORTHWEST (FORMERLY NWREL): 905",
+    "Education Northwest (antes NWREL): 905",
+    "Некоммерческая организация Education northwest (ранее известная как NWREL): 905",
+    "Tổ chức Giáo dục Tây Bắc (trước đây là NAREL): 905",
+    "Education Northwest（前称 NWREL）：905"
+  ],
+  "oregonSupportedLivingProgram": [
+    "OREGON SUPPORTED LIVING PROGRAM: 902",
+    "Programa de vida asistida de Oregon: 902",
+    "Некоммерческая организация Oregon supported living program: 902",
+    "Chương trình Sinh hoạt được Hỗ trợ Oregon (Oregon Supported Living Program): 902",
+    "俄勒冈州支持生活计划 (Oregon supported living program)：902"
+  ],
+  "parryCenterForChildren": [
+    "PARRY CENTER FOR CHILDREN: 987",
+    "Centro para niños de Parry (Parry center for children): 987",
+    "Детская психиатрическая клиника Parry center for children: 987",
+    "Trung tâm Trẻ em Parry (Parry Center for Children): 987",
+    "帕里儿童中心 (Parry Center for Children)：987"
+  ],
+  "publicBroadcastingComm": [
+    "PUBLIC BROADCASTING COMM: 57000",
+    "Comisión de Radiodifusión Pública: 57000",
+    "Комиссия общественного вещания: 57000",
+    "Truyền thông Công cộng: 57000",
+    "公共广播委员会 (Public Broadcasting Comm)：57000"
+  ],
+  "theChildCenter": [
+    "THE CHILD CENTER: 904",
+    "El Centro Infantil (The Child Center): 904",
+    "Некоммерческая организация The child center: 904",
+    "Trung tâm trẻ em: 904",
+    "儿童中心 (The Child Center)：904"
+  ],
+  "boardOfNursing": [
+    "BOARD OF NURSING: 85100",
+    "Junta de Enfermería (Board of Nursing): 85100",
+    "Комиссия по вопросам медсестринского ухода: 85100",
+    "Hội đồng Quản tri Y tá (Board of Nursing): 85100",
+    "护理委员会：85100"
+  ],
+  "boardOfPharmacy": [
+    "BOARD OF PHARMACY: 85500",
+    "Junta de Farmacia (Board of Pharmacy): 85500",
+    "Фармацевтическое управление: 85500",
+    "Hội đồng Dược (Board of Pharmacy): 85500",
+    "药剂委员会：85500"
+  ],
+  "bureauOfLabor& industries": [
+    "BUREAU OF LABOR & INDUSTRIES: 83900",
+    "Departamento de Trabajo e Industrias: 83900",
+    "Бюро труда и промышленности: 83900",
+    "Bộ Lao động & Công nghiệp (Bureau of Labor & Industries): 83900",
+    "劳工和工业局：83900"
+  ],
+  "commissionForTheBlind": [
+    "COMMISSION FOR THE BLIND: 58500",
+    "Comisión para las Personas Ciegas (Commission for the Blind): 58500",
+    "Комиссия по вопросам незрячих: 58500",
+    "Hội đồng vì Người mù (Commission for the Blind): 58500",
+    "盲人委员会：58500"
+  ],
+  "communityCollegeBoard": [
+    "COMMUNITY COLLEGE BOARD: 58600",
+    "Junta de Colegios Comunitarios (Community College Board): 58600",
+    "Совет общественных колледжей: 58600",
+    "Hội đồng Cao đẳng Cộng đồng (Community College Board): 58600",
+    "社区大学委员会：58600"
+  ],
+  "dentistryBoard": [
+    "DENTISTRY BOARD: 83400",
+    "Junta de Odontología (Dentistry Board): 83400",
+    "Управление по вопросам стоматологии: 83400",
+    "Hội đồng Nha khoa (Dentistry Board): 83400",
+    "牙科委员会：83400"
+  ],
+  "departmentOfAdministrativeServices": [
+    "DEPARTMENT OF ADMINISTRATIVE SERVICES: 10700",
+    "Departamento de Servicios Administrativos: 10700",
+    "Департамент административного обслуживания: 10700",
+    "Sở Dịch vụ Hành chính (Department of Administrative Services): 10700",
+    "行政服务部：10700"
+  ],
+  "departmentOfAgriculture": [
+    "DEPARTMENT OF AGRICULTURE: 60300",
+    "Departamento de Agricultura: 60300",
+    "Департамент сельского хозяйства: 60300",
+    "Bộ Nông nghiệp (Department of Agriculture): 60300",
+    "农业部：60300"
+  ],
+  "departmentOfConsumer& businessServices": [
+    "DEPARTMENT OF CONSUMER & BUSINESS SERVICES: 44000",
+    "Departamento de Servicios Comerciales y para el Consumidor: 44000",
+    "Департамент услуг потребителям и организациям: 44000",
+    "Bộ Dịch vụ Tiêu dùng & Kinh doanh (Department of Consumer & Business Services): 44000",
+    "消费者和商业服务部：44000"
+  ],
+  "departmentOfEducation": [
+    "DEPARTMENT OF EDUCATION: 58100",
+    "Departamento de Educación: 58100",
+    "Департамент образования: 58100",
+    "Bộ Giáo dục (Department of Education): 58100",
+    "教育部：58100"
+  ],
+  "departmentOfForestry": [
+    "DEPARTMENT OF FORESTRY: 62900",
+    "Departamento de Ciencias Forestales: 62900",
+    "Лесное управление: 62900",
+    "Bộ Lâm nghiệp (Department of Forestry): 62900",
+    "林业部：62900"
+  ],
+  "departmentOfJustice": [
+    "DEPARTMENT OF JUSTICE: 13700",
+    "Departamento de Justicia: 13700",
+    "Департамент юстиции: 13700",
+    "Bộ Tư pháp (Department of Justice): 13700",
+    "司法部：13700"
+  ],
+  "departmentOfRevenue": [
+    "DEPARTMENT OF REVENUE: 15000",
+    "Departamento de Hacienda: 15000",
+    "Департамент государственных сборов: 15000",
+    "Bộ Thuế vụ (Department of Revenue): 15000",
+    "税务部：15000"
+  ],
+  "departmentOfTransportation": [
+    "DEPARTMENT OF TRANSPORTATION: 73000",
+    "Departamento de Transporte: 73000",
+    "Департамент транспорта: 73000",
+    "Bộ Giao thông Vận tải (Department of Transportation): 73000",
+    "交通部：73000"
+  ],
+  "departmentOfTreasury": [
+    "DEPARTMENT OF TREASURY: 17000",
+    "Departamento del Tesoro: 17000",
+    "Государственное казначейство: 17000",
+    "Bộ Tài chính (Department of Treasury): 17000",
+    "财政部：17000"
+  ],
+  "departmentOfVeteransAffairs": [
+    "DEPARTMENT OF VETERANS AFFAIRS: 27400",
+    "Departamento de Asuntos de Veteranos: 27400",
+    "Управление по делам бывших военнослужащих: 27400",
+    "Bộ Cựu chiến binh (Department of Veterans Affairs): 27400",
+    "退伍军人事务部：27400"
+  ],
+  "dhs/oha": [
+    "DHS/OHA: 10000",
+    "DHS/OHA: 10000",
+    "Департамент социального обеспечения/Управление здравоохранения штата Орегон: 10000",
+    "Bộ Xã hội/Cơ quan Quản lý Bảo hiểm Y tế Oregon (DHS/OHA): 10000",
+    "DHS/OHA: 10000"
+  ],
+  "employmentDivision": [
+    "EMPLOYMENT DIVISION: 47100",
+    "División de Empleo: 47100",
+    "Отдел занятости: 47100",
+    "Bộ Lao động (Employment Division): 47100",
+    "人事部：47100"
+  ],
+  "healthLicensingAgency": [
+    "HEALTH LICENSING AGENCY: 83300",
+    "Agencia de Licencias de Salud (Health Licensing Agency): 83300",
+    "Служба лицензирования учреждений медицинского обслуживания: 83300",
+    "Cơ quan Cấp phép Y tế (Health Licensing Agency): 83300",
+    "卫生许可机构：83300"
+  ],
+  "higherEducationCoordinatingCommission": [
+    "HIGHER EDUCATION COORDINATING COMMISSION: 52500",
+    "Comisión Coordinadora De Educación Superior: 52500",
+    "Координационная Комиссия По Вопросам Высшего Образования: 52500",
+    "Higher Education Coordinating Commission: 52500",
+    "高等教育协调委员会(Higher Education Coordinating Commission)：52500"
+  ],
+  "officeOfCommCollegeServices": [
+    "OFFICE OF COMM COLLEGE SERVICES: 58120",
+    "Oficina de Servicios de Colegios Comunitarios: 58120",
+    "Управление по делам общественных колледжей: 58120",
+    "Văn phòng Dịch vụ Cao đẳng (Office of Community College Services): 58120",
+    "COMM 大学服务办事处：58120"
+  ],
+  "oprd": [
+    "OPRD: 63400",
+    "Departamento de Parques y Recreación de Oregon: 73410",
+    "Департамент парков и отдыха штата Орегон: 73410",
+    "Bộ Công viên & Giải trí Oregon (Oregon Parks & Recreation Department): 73410",
+    "俄勒冈公园和休闲娱乐部门：73410"
+  ],
+  "oregonDepartmentOfAviation": [
+    "OREGON DEPARTMENT OF AVIATION: 10900",
+    "Departamento de Aviación de Oregon: 10900",
+    "Департамент авиации штата Орегон: 10900",
+    "Bộ Hàng không Oregon (Oregon Department of Aviation): 10900",
+    "俄勒冈州航空部：10900"
+  ],
+  "oregonDepartmentOfFishAndWildlife": [
+    "OREGON DEPARTMENT OF FISH AND WILDLIFE: 63500",
+    "Departamento de Pesca y Vida Silvestre de Oregon: 63500",
+    "Департамент рыбных водоёмов и дикой природы штата Орегон: 63500",
+    "Bộ Thủy sản và Động vật Hoang dã Oregon (Oregon Department of Fish and Wildlife): 63500",
+    "俄勒冈州鱼类和野生动物部门：63500"
+  ],
+  "oregonHealthLicensingAgency": [
+    "OREGON HEALTH LICENSING AGENCY: 83100",
+    "Agencia de Licencias de Salud de Oregon (Oregon Health Licensing Agency): 83100",
+    "Служба лицензирования учреждений медицинского обслуживания штата Орегон: 83100",
+    "Cơ quan Cấp phép Y tế Oregon (Oregon Health Licensing Agency): 83100",
+    "俄勒冈州卫生许可机构：83100"
+  ],
+  "oregonHousing& communityServ": [
+    "OREGON HOUSING & COMMUNITY SERV: 91400",
+    "Servicios Comunitarios y de Vivienda de Oregon: 91400",
+    "Управление жилищно-коммунального обслуживания штата Орегон: 91400",
+    "Cơ quan Dịch vụ Nhà ở & Cộng đồng Oregon (Oregon Housing & Community Services): 91400",
+    "俄勒冈州住房和社区服务：91400"
+  ],
+  "oregonMedicalBoard": [
+    "OREGON MEDICAL BOARD: 84700",
+    "Junta Médica de Oregon (Oregon Medical Board): 84700",
+    "Медицинская комиссия штата Орегон: 84700",
+    "Hội đồng Y tế Oregon (Oregon Medical Board): 84700",
+    "俄勒冈州医疗委员会：84700"
+  ],
+  "oregonStateFair&ExpositionCenter": [
+    "OREGON STATE FAIR & EXPOSITION CENTER: 62200",
+    "Feria Estatal y Centro de Exposiciones de Oregon: 62200",
+    "Орегонский ярмарочный и выставочный центр: 62200",
+    "Trung tâm Hội chợ & Triển lãm Tiểu bang Oregon (Oregon State Fair & Exposition Center): 62200",
+    "俄勒冈州博览会和展览中心：62200"
+  ],
+  "oregonStateLibrary": [
+    "OREGON STATE LIBRARY: 54300",
+    "Biblioteca Estatal de Oregon: 54300",
+    "Орегонская государственная библиотека: 54300",
+    "Thư viện Tiểu bang Oregon (Oregon State Library): 54300",
+    "俄勒冈州立图书馆：54300"
+  ],
+  "oregonStudentAssistanceCommission": [
+    "OREGON STUDENT ASSISTANCE COMMISSION: 57500",
+    "Comisión de Asistencia Estudiantil de Oregon: 57500",
+    "Орегонская комиссия по вопросам поддержки студентов: 57500",
+    "Hội đồng Quỹ Hỗ trợ Học sinh Oregon (Oregon Student Assistance Commission): 57500",
+    "俄勒冈州学生援助委员会：57500"
+  ],
+  "oregonWaterShedEnhancementBoard": [
+    "OREGON WATER SHED ENHANCEMENT BOARD: 69100",
+    "Junta de Mejora de las Cuencas de Oregon: 69100",
+    "Орегонская комиссия по вопросам модернизации водоразделов: 69100",
+    "Hội đồng Tăng cường Lưu vực sông Oregon (Oregon Watershed Enhancement Board): 69100",
+    "俄勒冈州水质改良委员会 (Oregon Water Shed Enhancement Board)：69100"
+  ],
+  "oregonYouthAuthority": [
+    "OREGON YOUTH AUTHORITY: 41500",
+    "Correccional Juvenil de Oregon: 41500",
+    "Управления по делам молодежи штата Орегон: 41500",
+    "Cơ quan Phục vụ Thanh thiếu niên Oregon (Oregon Youth Authority): 41500",
+    "俄勒冈州青年局 (Oregon Youth Authority)：41500"
+  ],
+  "psychologistsExaminersBoard": [
+    "PSYCHOLOGISTS EXAMINERS BOARD: 12200",
+    "Junta de Examinadores de Psicólogos (Psychologists Examiners Board): 12200",
+    "Комиссия по экзаменации психологов: 12200",
+    "Hội đồng Thi Chuyên gia Tâm lý (Psychologists Examiners Board): 12200",
+    "心理学家审查员委员会：12200"
+  ],
+  "publicEmployeesRetirementServices": [
+    "PUBLIC EMPLOYEES RETIREMENT SERVICES: 45900",
+    "Servicios de Jubilación de Empleados Públicos: 45900",
+    "Отдел пенсионного обеспечения государственных служащих: 45900",
+    "Dịch vụ Hưu trí Công chức (Public Employees Retirement Services): 45900",
+    "公务员退休服务：45900"
+  ],
+  "stateBoardOfMassageTherapists": [
+    "STATE BOARD OF MASSAGE THERAPISTS: 96800",
+    "Junta Estatal de Terapeutas del Masaje (State Board of Massage Therapists): 96800",
+    "Государственная комиссия по вопросам массажистов: 96800",
+    "Hội đồng Chuyên gia Trị liệu Mát-xa Tiểu Bang (State Board of Massage Therapists): 96800",
+    "州按摩治疗师委员会：96800"
+  ],
+  "teacherStandards&Practices": [
+    "TEACHER STANDARDS & PRACTICES: 58400",
+    "Estándares y Prácticas de Maestros: 58400",
+    "Комиссия по соблюдению норм и методов преподавания: 58400",
+    "Tiêu chuẩn và thực hành giáo viên: 58400",
+    "教师标准和实践：58400"
+  ],
+  "waterResourcesDepartment": [
+    "WATER RESOURCES DEPARTMENT: 69000",
+    "Departamento de Recursos Hídricos: 69000",
+    "Управление водных ресурсов: 69000",
+    "Sở Tài nguyên Nước (Water Resources Department): 69000",
+    "水资源部门：69000"
+  ]
+}

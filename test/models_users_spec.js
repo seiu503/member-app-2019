@@ -98,7 +98,7 @@ describe("user model tests", () => {
         assert.equal(results[0].avatar_url, updatedAvatar_url);
         assert.equal(results[0].google_token, google_token);
         assert.equal(results[0].google_id, google_id);
-        assert.isAbove(results[0].updated_at, results[0].created_at);
+        assert.isAtLeast(results[0].updated_at, results[0].created_at);
       });
     });
 

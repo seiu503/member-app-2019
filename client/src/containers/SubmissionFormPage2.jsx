@@ -2,21 +2,28 @@ import React from "react";
 import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-// import queryString from "query-string";
+import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import SubmissionFormPage2Component from "../components/SubmissionFormPage2Component";
+import SubmissionFormPage2Wrap from "../components/SubmissionFormPage2Component";
 // import Spinner from "../components/Spinner";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
-import { stylesPage2 } from "../components/SubmissionFormElements";
+import { stylesPage2, handleError } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage2Container extends React.Component {
   componentDidMount() {
     // check state for contact id from page1
     let id = this.props.submission.salesforceId;
+    if (!id) {
+      // check for contact id in query string
+      const params = queryString.parse(this.props.location.search);
+      if (params.id) {
+        id = params.id;
+      }
+    }
 
     // if find contact id, call API to fetch contact info for prefill
     if (id) {
@@ -27,11 +34,10 @@ export class SubmissionFormPage2Container extends React.Component {
         })
         .catch(err => {
           console.log(err);
+          handleError(err);
         });
     } else {
-      alert("We Did not find your Id, redirecting to main submission page");
-      // console.log("no id found, no prefill");
-
+      // console.log("no id found");
       //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
       // return this.props.history.push("/")
     }
@@ -45,11 +51,11 @@ export class SubmissionFormPage2Container extends React.Component {
   }
 }
 
-export const SubmissionFormPage2Wrap = reduxForm({
-  form: "submissionPage2",
-  validate,
-  enableReinitialize: true
-})(SubmissionFormPage2Component);
+// export const SubmissionFormPage2Wrap = reduxForm({
+//   form: "submissionPage2",
+//   validate,
+//   enableReinitialize: true
+// })(SubmissionFormPage2Component);
 
 const mapStateToProps = state => ({
   submission: state.submission,

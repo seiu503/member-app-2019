@@ -5,6 +5,9 @@ cache:
   yarn: true
   directories:
     - node_modules
+branches:
+  only:
+    - master
 services:
   - postgresql
 before_install:
@@ -19,7 +22,7 @@ deploy:
   local_dir: dpl_cd_upload
   skip_cleanup: true
   on: &2
-    repo: seiu503/member-app-2019
+  repo: seiu503/member-app-2019
   bucket: code-deploy-builds
   region: us-west-2
 - provider: codedeploy
@@ -38,6 +41,9 @@ before_script:
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO seiu503_member_app_test;' -U postgres
 script:
   - yarn test
+  - cd client && yarn install
+  - yarn test
+  - cd ..
   - zip -r latest *
   - mkdir -p dpl_cd_upload
   - mv latest.zip dpl_cd_upload/latest.zip

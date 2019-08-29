@@ -25,8 +25,8 @@ passport.deserializeUser(auth.user.deserialize);
 // connect to db
 
 const pg = require("pg");
-const configDB = require("./app/config/db");
-const client = new pg.Client(configDB.url);
+const configDB = require("./app/config/knex");
+const client = new pg.Client(configDB.configConnection);
 client.connect(err => {
   if (err) {
     return console.error("could not connect to postgres", err);
@@ -60,17 +60,27 @@ if (process.env.NODE_ENV === "production") {
 app.use("/api", apiRoutes);
 app.use("/", staticRoutes);
 
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   console.log("root route, serving client");
   res.status(200).sendFile(path.join(__dirname, "/client/build/index.html"));
 });
 
 // launch ======================================================================
-var port = process.env.PORT || 3001;
+// var port = process.env.PORT || 8080;
+// if (!module.parent) {
+//   app.listen(port, function() {
+//     console.log("Node.js listening on port " + port + "...");
+//   });
+// }
+
+// changing server port for nginx
+var port = 8080;
 if (!module.parent) {
   app.listen(port, function() {
     console.log("Node.js listening on port " + port + "...");
   });
 }
+
+module.exports = app;
 
 module.exports = app;

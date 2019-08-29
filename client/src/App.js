@@ -3,6 +3,8 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
+import { withLocalize, setActiveLanguage } from "react-localize-redux";
+import { renderToStaticMarkup } from "react-dom/server";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withStyles } from "@material-ui/core/styles";
@@ -10,6 +12,7 @@ import { withStyles } from "@material-ui/core/styles";
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiContentActions from "./store/actions/apiContentActions";
+import { detectDefaultLanguage } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -131,8 +134,24 @@ export class AppUnconnected extends Component {
     super(props);
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
+    this.direct_pay = React.createRef();
+    this.direct_deposit = React.createRef();
     this.sigBox = React.createRef();
     this.reCaptchaRef = React.createRef();
+    this.props.initialize({
+      languages: [
+        { name: "English", code: "en" },
+        { name: "Spanish", code: "es" },
+        { name: "Russian", code: "ru" },
+        { name: "Vietnamese", code: "vi" },
+        { name: "Chinese", code: "zh" }
+      ],
+      options: {
+        renderToStaticMarkup,
+        renderInnerHtml: false,
+        defaultLanguage: "en"
+      }
+    });
     this.state = {
       deleteDialogOpen: false,
       animation: false,
@@ -162,6 +181,8 @@ export class AppUnconnected extends Component {
           .catch(err => console.log(err));
       }
     }
+    const defaultLanguage = detectDefaultLanguage();
+    this.props.setActiveLanguage(defaultLanguage);
   }
 
   render() {
@@ -181,6 +202,8 @@ export class AppUnconnected extends Component {
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
+                  direct_pay={this.direct_pay}
+                  direct_deposit={this.direct_deposit}
                   sigBox={this.sigBox}
                   reCaptchaRef={this.reCaptchaRef}
                   {...routeProps}
@@ -307,7 +330,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiContentActions: bindActionCreators(apiContentActions, dispatch),
-  apiProfile: bindActionCreators(apiProfileActions, dispatch)
+  apiProfile: bindActionCreators(apiProfileActions, dispatch),
+  setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });
 
 export const AppConnected = connect(
@@ -315,4 +339,4 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withStyles(styles)(withRouter(AppConnected));
+export default withStyles(styles)(withRouter(withLocalize(AppConnected)));

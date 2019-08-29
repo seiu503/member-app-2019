@@ -13,6 +13,7 @@ import Dashboard from "../containers/Dashboard";
 import NotFound from "../components/NotFound";
 import FormThankYou from "../components/FormThankYou";
 import LinkRequest from "../containers/LinkRequest";
+import * as utils from "../utils/index";
 // import ContentLibrary from "../containers/ContentLibrary";
 import TextInputForm from "../containers/TextInputForm";
 // import Logout from "../containers/Logout";
@@ -67,6 +68,8 @@ const defaultProps = {
     uploadImage: () => Promise.resolve({ type: "UPLOAD_IMAGE_SUCCESS" }),
     getContentById: () => Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
   },
+  initialize: jest.fn(),
+  setActiveLanguage: jest.fn(),
   classes: {}
 };
 
@@ -131,7 +134,7 @@ describe("<App />", () => {
       call =>
         call[0].hasOwnProperty("@@redux-api-middleware/RSAA") &&
         call[0]["@@redux-api-middleware/RSAA"].endpoint ===
-          "http://localhost:3001/api/user/1234"
+          "http://localhost:8080/api/user/1234"
     )[0];
     expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
       JSON.parse(JSON.stringify(validateToken("5678", "1234")))
@@ -157,6 +160,18 @@ describe("<App />", () => {
         localStorageClearMock.mockRestore();
       })
       .catch(err => console.log(err));
+  });
+  it("checks for browser language on componentDidMount", () => {
+    utils.detectDefaultLanguage = jest.fn();
+    wrapper = unconnectedSetup();
+    expect(wrapper.instance().props.setActiveLanguage.mock.calls.length).toBe(
+      1
+    );
+    wrapper.instance().componentDidMount();
+    expect(utils.detectDefaultLanguage.mock.calls.length).toBe(1);
+    expect(wrapper.instance().props.setActiveLanguage.mock.calls.length).toBe(
+      2
+    );
   });
 
   describe("route tests", () => {

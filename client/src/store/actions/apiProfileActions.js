@@ -42,14 +42,10 @@ export function validateToken(token, userId) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -72,14 +68,10 @@ export function getProfile(token, userId) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }
@@ -102,17 +94,10 @@ export function modifyProfile(token, userId, body) {
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
-              if (data) {
-                if (data.message) {
-                  message = data.message;
-                }
-                if (data.error) {
-                  message = data.error;
-                }
-                return { message };
-              } else {
-                return { message };
+              if (data && data.message) {
+                message = data.message;
               }
+              return { message };
             });
           }
         }

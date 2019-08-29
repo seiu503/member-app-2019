@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { findByTestAttr } from "../../utils/testUtils";
-import FormThankyou from "../../components/FormThankyou";
+import FormThankYou from "../../components/FormThankYou";
 
 const defaultProps = {
   classes: {}
@@ -15,10 +15,10 @@ const defaultProps = {
  */
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<FormThankyou {...setupProps} />);
+  return shallow(<FormThankYou {...setupProps} />);
 };
 
-describe("<FormThankyou />", () => {
+describe("<FormThankYou />", () => {
   it("renders without error", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "component-thankyou");
