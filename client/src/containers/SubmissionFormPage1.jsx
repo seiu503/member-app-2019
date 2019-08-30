@@ -243,7 +243,7 @@ export class SubmissionFormPage1Container extends React.Component {
       reCaptchaValue
     } = secondValues;
 
-    console.log("immediatePastMemberStatus", immediatePastMemberStatus);
+    // console.log("immediatePastMemberStatus", immediatePastMemberStatus);
 
     return {
       ip_address: localIpUrl(),
@@ -536,13 +536,38 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(1);
   }
 
-  async getIframeURL() {
-    console.log("getIframeURL");
-    const { formValues } = this.props;
-    // if submission type requires payment processing, fetch iFrame URL
-    // for use in next tab
+  async getIframeExisting() {
+    console.log("getIframeExisting");
+    const memberShortId = this.props.submission.payment.memberShortId;
+    const token = this.props.submission.payment.unioniseToken;
+    return this.props.apiSF
+      .getIframeExisting(token, memberShortId)
+      .then(result => {
+        console.log("getIframeExisting 545");
+        console.log(result);
+        if (
+          !result.payload.cardAddingUrl ||
+          result.payload.message ||
+          result.type === "GET_IFRAME_EXISTING_FAILURE"
+        ) {
+          // console.log('253');
+          return openSnackbar(
+            "error",
+            result.payload.message ||
+              this.props.submission.error ||
+              "Sorry, something went wrong. Please try again."
+          );
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+  }
 
-    // once we start saving activePaymentMethod.last4 in SF, we can skip this call for people who have an active payment method and only make it in tab 3 if they tell us they want to add a new method
+  async getIframeNew() {
+    console.log("getIframeNew");
+    const { formValues } = this.props;
 
     const birthdate = formatBirthdate(formValues);
     // convert language to ISO code for unioni.se
@@ -600,6 +625,57 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
+  async getUnioniseToken() {
+    console.log("getUnioniseToken");
+    return this.props.apiSF
+      .getUnioniseToken()
+      .then(result => {
+        console.log("getUnioniseToken 630");
+        console.log(result.payload);
+        if (
+          !result.payload.access_token ||
+          result.payload.message ||
+          result.type === "GET_UNIONISE_TOKEN_FAILURE"
+        ) {
+          console.log("644");
+          return openSnackbar(
+            "error",
+            result.payload.message ||
+              this.props.submission.error ||
+              "Sorry, something went wrong. Please try again."
+          );
+        }
+        // return the access token to calling function
+        return result.payload.access_token;
+      })
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async getIframeURL() {
+    console.log("getIframeURL");
+    // first check if we have an existing unionise id
+    // if so, we don't need to create a unionise member account; just fetch a
+    // cardAddingURL from existing account
+    const memberShortId = this.props.submission.payment.memberShortId;
+    if (memberShortId) {
+      // first fetch an auth token to access secured unionise routes
+      const access_token = await this.props.apiSF
+        .getUnioniseToken()
+        .catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
+      // then get the card adding url for the existing account
+      return this.getIframeExisting(access_token, memberShortId);
+    }
+    // if we don't have the memberShortId, then we need to create a new
+    // unionise member record and return the cardAddingUrl
+    return this.getIframeNew();
+  }
+
   async saveLegalLanguage() {
     const { formValues } = this.props;
     // save legal_language to redux store before ref disappears
@@ -627,7 +703,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async toggleCardAddingFrame(value) {
     if (value === "Add new card") {
       await this.getIframeURL()
-        .then(() => console.log("got iFrameURL"))
+        // .then(() => console.log("got iFrameURL"))
         .catch(err => {
           // console.log(err);
           return handleError(err);

@@ -212,10 +212,10 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createOrUpdateSFDJR() {
-    console.log("createOrUpdateSFDJR");
+    // console.log("createOrUpdateSFDJR");
     const { formValues } = this.props;
     const id = this.props.submission.djrId;
-    console.log(id);
+    // console.log(id);
     const paymentMethod = (formValues.paymentType = "Check"
       ? "Paper Check"
       : "Unionise");
@@ -252,11 +252,10 @@ export class SubmissionFormPage1Component extends React.Component {
     // if no match, create new DJR even if already have id
 
     // if id exists, update existing DJR record
-    console.log("updateSFDJR");
+    // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
-    console.log("is Worker__c in this object???");
-    console.log(body);
+    // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
