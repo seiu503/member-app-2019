@@ -23,7 +23,9 @@ export const Tab3 = props => {
     afhDuesRate,
     back,
     formValues,
-    changeFieldValue
+    changeFieldValue,
+    payment,
+    toggleCardAddingFrame
   } = props;
   // console.log(formValues);
   // console.log(formValues.employerType.toLowerCase());
@@ -43,6 +45,10 @@ export const Tab3 = props => {
         changeFieldValue("paymentType", "Card");
     }
   }
+  console.log(formValues.paymentType);
+  console.log(formValues.whichCard);
+  console.log(iFrameURL);
+  console.log(formValues.newCardNeeded);
 
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
@@ -51,6 +57,13 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
+        {formValues.paymentRequired && (
+          <div className={classes.paymentCopy}>
+            <Typography component="p" className={classes.body}>
+              {duesCopy}
+            </Typography>
+          </div>
+        )}
         {formValues.employerType &&
           formValues.employerType.toLowerCase() === "retired" && (
             <Field
@@ -67,17 +80,35 @@ export const Tab3 = props => {
               options={formElements.paymentTypes}
             />
           )}
+        {formValues.paymentRequired && !formValues.newCardNeeded && (
+          <div data-test="component-choose-card">
+            <Typography component="p" className={classes.body}>
+              Your existing payment method on file is the card ending in{" "}
+              {payment.activeMethodLast4}.
+            </Typography>
+            <Field
+              data-test="radio-which-card"
+              label="Do you want to use the existing card or add a new one?"
+              name="whichCard"
+              formControlName="whichCard"
+              id="whichCard"
+              type="radio"
+              direction="horiz"
+              className={classes.horizRadio}
+              legendClass={classes.horizRadioBold}
+              classes={classes}
+              additionalOnChange={toggleCardAddingFrame}
+              component={formElements.renderRadioGroup}
+              options={["Use existing", "Add new card"]}
+            />
+          </div>
+        )}
         {iFrameURL &&
-          (formValues.paymentType === "Card" ? (
+          (formValues.paymentType === "Card" && formValues.newCardNeeded ? (
             <div data-test="component-iframe">
-              <div className={classes.paymentCopy}>
-                <Typography component="p" className={classes.body}>
-                  {duesCopy}
-                </Typography>
-                <Typography component="h2" className={classes.head}>
-                  Add a payment method
-                </Typography>
-              </div>
+              <Typography component="h2" className={classes.head}>
+                Add a payment method
+              </Typography>
               <div className={classes.iframeWrap}>
                 <Iframe
                   url={iFrameURL}

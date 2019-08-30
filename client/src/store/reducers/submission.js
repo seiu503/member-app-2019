@@ -64,7 +64,9 @@ export const INITIAL_STATE = {
     paymentMethodAdded: false,
     medicaidResidents: 0,
     immediatePastMemberStatus: "Not a Member",
-    afhDuesRate: 0
+    afhDuesRate: 0,
+    newCardNeeded: false,
+    whichCard: "Use existing"
   },
   formPage2: {
     gender: ""
