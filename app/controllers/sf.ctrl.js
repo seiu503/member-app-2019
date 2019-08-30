@@ -483,18 +483,13 @@ exports.createSFDJR = async (req, res, next) => {
  *  @returns  {Object}        Salesforce DJR id OR error message.
  */
 exports.updateSFDJR = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 309: updateSFDJR`);
+  console.log(`sf.ctrl.js > 486: updateSFDJR`);
   const { id } = req.params;
-  const updatesRaw = { ...req.body };
-  const updates = {};
-  // convert updates object to key/value pairs using
-  // SF API field names
-  Object.keys(updatesRaw).forEach(key => {
-    if (paymentFields[key]) {
-      const sfFieldName = paymentFields[key].SFAPIName;
-      updates[sfFieldName] = updatesRaw[key];
-    }
-  });
+  console.log(id);
+  const updates = { ...req.body };
+  console.log(`sf.ctrl.js > 498`);
+  console.log(updates);
+  updates.Id = id;
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -506,7 +501,6 @@ exports.updateSFDJR = async (req, res, next) => {
   let djr;
   try {
     djr = await conn.sobject("Direct_join_rate__c").update({
-      Worker__c: id,
       ...updates
     });
     if (res.locals.next) {

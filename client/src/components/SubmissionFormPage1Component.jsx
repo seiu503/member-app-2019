@@ -176,9 +176,10 @@ export class SubmissionFormPage1Component extends React.Component {
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
+        console.log(result.type);
       })
       .catch(err => {
         console.log(err);
@@ -190,14 +191,17 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("createSFOMA");
     const { formValues } = this.props;
     const body = this.props.generateSubmissionBody(formValues);
+    console.log("check for immediate past member status");
+    console.log(body);
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
@@ -211,9 +215,13 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("createOrUpdateSFDJR");
     const { formValues } = this.props;
     const id = this.props.submission.djrId;
+    console.log(id);
+    const paymentMethod = (formValues.paymentType = "Check"
+      ? "Paper Check"
+      : "Unionise");
     const body = {
       Worker__c: this.props.submission.salesforceId,
-      Payment_Method__c: formValues.paymentType,
+      Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formValues.medicaidResidents,
       Unioni_se_MemberID__c: this.props.submission.payment.memberShortId
     };
@@ -225,11 +233,12 @@ export class SubmissionFormPage1Component extends React.Component {
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
+          console.log(result.type);
           if (
             result.type === "CREATE_SF_DJR_FAILURE" ||
             this.props.submission.error
           ) {
-            // console.log(this.props.submission.error);
+            console.log(this.props.submission.error);
             return this.props.handleError(this.props.submission.error);
           }
         })
@@ -244,14 +253,19 @@ export class SubmissionFormPage1Component extends React.Component {
 
     // if id exists, update existing DJR record
     console.log("updateSFDJR");
+    body.Id = id;
+    delete body.Worker__c;
+    console.log("is Worker__c in this object???");
+    console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
+        console.log(result.type);
         if (
           result.type === "UPDATE_SF_DJR_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })

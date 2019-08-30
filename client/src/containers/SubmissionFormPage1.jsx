@@ -243,6 +243,8 @@ export class SubmissionFormPage1Container extends React.Component {
       reCaptchaValue
     } = secondValues;
 
+    console.log("immediatePastMemberStatus", immediatePastMemberStatus);
+
     return {
       ip_address: localIpUrl(),
       submission_date: new Date(),
@@ -297,6 +299,8 @@ export class SubmissionFormPage1Container extends React.Component {
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
     if (!formValues.paymentRequired) {
+      console.log("check for immediate past member status");
+      console.log(body);
       return this.props.apiSF.createSFOMA(body);
       // goto CAPE ...
     }
