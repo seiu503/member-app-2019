@@ -401,7 +401,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFDJRById(id)
         .then(result => {
-          console.log(result.payload);
+          // console.log(result.payload);
           if (
             result.type === "GET_SF_DJR_FAILURE" ||
             this.props.submission.error
@@ -631,8 +631,9 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log(err);
           return handleError(err);
         });
-      this.props.changeFieldValue("newCardNeeded", true);
+      return this.props.changeFieldValue("newCardNeeded", true);
     }
+    return this.props.changeFieldValue("newCardNeeded", false);
   }
 
   async saveSignature() {
@@ -674,9 +675,9 @@ export class SubmissionFormPage1Container extends React.Component {
     if (formValues.paymentRequired) {
       this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
-          console.log(result.payload);
-          console.log(this.props.submission.payment.activeMethodLast4);
-          console.log(this.props.submission.payment.paymentErrorHold);
+          // console.log(result.payload);
+          // console.log(this.props.submission.payment.activeMethodLast4);
+          // console.log(this.props.submission.payment.paymentErrorHold);
 
           const newCardNeeded =
             !result.payload.Active_Account_Last_4__c ||
@@ -684,7 +685,7 @@ export class SubmissionFormPage1Container extends React.Component {
               result.payload.Payment_Error_Hold__c);
 
           if (newCardNeeded) {
-            console.log("newCardNeeded");
+            // console.log("newCardNeeded");
             this.props.changeFieldValue("newCardNeeded", true);
           }
 

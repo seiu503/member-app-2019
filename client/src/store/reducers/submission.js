@@ -60,7 +60,7 @@ export const INITIAL_STATE = {
     homeEmail: "",
     legalLanguage: "",
     paymentRequired: false,
-    paymentType: "",
+    paymentType: "Card",
     paymentMethodAdded: false,
     medicaidResidents: 0,
     immediatePastMemberStatus: "Not a Member",

@@ -621,6 +621,7 @@ export const renderRadioGroup = ({
   meta: { touched, error },
   formControlName,
   legendClass,
+  defaultItem,
   additionalOnChange,
   ...custom
 }) => (
@@ -639,15 +640,8 @@ export const renderRadioGroup = ({
       className={
         direction === "vert" ? classes.verticalGroup : classes.horizGroup
       }
-      value={input.value}
       onChange={(event, value) => {
-        console.log("onChange");
-        console.log(event.target.value); // correct
-        console.log(value); // correct
-        console.log(input);
-        console.log(input.onChange);
         input.onChange(value);
-        console.log(input.value); // undefined???
         if (additionalOnChange) {
           additionalOnChange(value);
         }
@@ -658,7 +652,7 @@ export const renderRadioGroup = ({
           key={shortid()}
           value={item}
           className={legendClass}
-          control={<Radio />}
+          control={<Radio checked={item === input.value} />}
           label={item}
         />
       ))}

@@ -23,32 +23,29 @@ export const Tab3 = props => {
     afhDuesRate,
     back,
     formValues,
-    changeFieldValue,
+    // changeFieldValue,
     payment,
     toggleCardAddingFrame
   } = props;
-  // console.log(formValues);
-  // console.log(formValues.employerType.toLowerCase());
-  // console.log(formValues.paymentType);
+
   let duesCopy = "";
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
         duesCopy = formElements.afhDuesCopy(afhDuesRate);
-        changeFieldValue("paymentType", "Card");
         break;
       case "retired":
         duesCopy = formElements.retireeDuesCopy;
         break;
       default:
         duesCopy = formElements.commDuesCopy;
-        changeFieldValue("paymentType", "Card");
     }
   }
   console.log(formValues.paymentType);
   console.log(formValues.whichCard);
   console.log(iFrameURL);
   console.log(formValues.newCardNeeded);
+  const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
 
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
@@ -72,39 +69,43 @@ export const Tab3 = props => {
               name="paymentType"
               formControlName="paymentType"
               id="paymentType"
-              type="radio"
               direction="horiz"
+              defaultItem="Card"
               className={classes.horizRadio}
               classes={classes}
               component={formElements.renderRadioGroup}
               options={formElements.paymentTypes}
             />
           )}
-        {formValues.paymentRequired && !formValues.newCardNeeded && (
-          <div data-test="component-choose-card">
-            <Typography component="p" className={classes.body}>
-              Your existing payment method on file is the card ending in{" "}
-              {payment.activeMethodLast4}.
-            </Typography>
-            <Field
-              data-test="radio-which-card"
-              label="Do you want to use the existing card or add a new one?"
-              name="whichCard"
-              formControlName="whichCard"
-              id="whichCard"
-              type="radio"
-              direction="horiz"
-              className={classes.horizRadio}
-              legendClass={classes.horizRadioBold}
-              classes={classes}
-              additionalOnChange={toggleCardAddingFrame}
-              component={formElements.renderRadioGroup}
-              options={["Use existing", "Add new card"]}
-            />
-          </div>
-        )}
+        {formValues.paymentRequired &&
+          formValues.paymentType === "Card" &&
+          validMethod && (
+            <div data-test="component-choose-card">
+              <Typography component="p" className={classes.body}>
+                Your existing payment method on file is the card ending in{" "}
+                {payment.activeMethodLast4}.
+              </Typography>
+              <Field
+                data-test="radio-which-card"
+                label="Do you want to use the existing card or add a new one?"
+                name="whichCard"
+                formControlName="whichCard"
+                id="whichCard"
+                direction="horiz"
+                className={classes.horizRadio}
+                legendClass={classes.horizRadioBold}
+                classes={classes}
+                defaultItem="Use existing"
+                additionalOnChange={toggleCardAddingFrame}
+                component={formElements.renderRadioGroup}
+                options={["Use existing", "Add new card"]}
+              />
+            </div>
+          )}
         {iFrameURL &&
-          (formValues.paymentType === "Card" && formValues.newCardNeeded ? (
+          formValues.paymentType === "Card" &&
+          formValues.newCardNeeded &&
+          formValues.paymentRequired && (
             <div data-test="component-iframe">
               <Typography component="h2" className={classes.head}>
                 Add a payment method
@@ -121,21 +122,19 @@ export const Tab3 = props => {
                 />
               </div>
             </div>
-          ) : formValues.paymentType === "Check" ? (
-            <div className={classes.paymentCopy}>
-              <Typography component="h2" className={classes.head}>
-                To pay your dues by check:
-              </Typography>
-              <Typography component="p" className={classes.body}>
-                Please mail your payment of $5 (monthly) or $60 (annually) to
-                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
-                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
-                bylaws.
-              </Typography>
-            </div>
-          ) : (
-            ""
-          ))}
+          )}
+        {formValues.paymentType === "Check" && (
+          <div className={classes.paymentCopy}>
+            <Typography component="h2" className={classes.head}>
+              To pay your dues by check:
+            </Typography>
+            <Typography component="p" className={classes.body}>
+              Please mail your payment of $5 (monthly) or $60 (annually) to SEIU
+              Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree
+              Dues' on your check. Dues are set by the SEIU Local 503 bylaws.
+            </Typography>
+          </div>
+        )}
         <div className={classes.buttonWrapTab3}>
           <Button
             type="button"
