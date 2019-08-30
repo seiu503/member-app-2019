@@ -23,7 +23,6 @@ export const Tab3 = props => {
     afhDuesRate,
     back,
     formValues,
-    // changeFieldValue,
     payment,
     toggleCardAddingFrame
   } = props;
@@ -41,10 +40,6 @@ export const Tab3 = props => {
         duesCopy = formElements.commDuesCopy;
     }
   }
-  console.log(formValues.paymentType);
-  console.log(formValues.whichCard);
-  console.log(iFrameURL);
-  console.log(formValues.newCardNeeded);
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
 
   return (
@@ -70,7 +65,6 @@ export const Tab3 = props => {
               formControlName="paymentType"
               id="paymentType"
               direction="horiz"
-              defaultItem="Card"
               className={classes.horizRadio}
               classes={classes}
               component={formElements.renderRadioGroup}

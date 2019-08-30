@@ -50,6 +50,7 @@ export const INITIAL_STATE = {
   error: null,
   salesforceId: null,
   submissionId: null,
+  djrId: null,
   formPage1: {
     mm: "",
     homeState: "OR",
@@ -106,10 +107,15 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_DJR_REQUEST:
     case UPDATE_SF_DJR_REQUEST:
     case CREATE_SF_OMA_SUCCESS:
+      return update(state, {
+        error: { $set: null }
+      });
+
     case CREATE_SF_DJR_SUCCESS:
     case UPDATE_SF_DJR_SUCCESS:
       return update(state, {
-        error: { $set: null }
+        error: { $set: null },
+        djrId: { $set: action.payload.sf_djr_id }
       });
 
     case GET_SF_EMPLOYERS_SUCCESS:
@@ -246,7 +252,8 @@ function Submission(state = INITIAL_STATE, action) {
         payment: {
           activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
           paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c }
-        }
+        },
+        djrId: { $set: action.payload.Id || action.payload.id }
       });
     }
 

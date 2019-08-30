@@ -621,7 +621,6 @@ export const renderRadioGroup = ({
   meta: { touched, error },
   formControlName,
   legendClass,
-  defaultItem,
   additionalOnChange,
   ...custom
 }) => (
