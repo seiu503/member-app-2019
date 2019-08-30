@@ -13,14 +13,14 @@
     "Mẫu đăng ký thành viên của quý vị đã được nhận và sẽ sớm được xem xét. Trong lúc chờ đợi, vui lòng chia sẻ thêm một chút thông tin về bản thân quý vị để giúp các đoàn viên làm quen với quý vị. SEIU Local 503 cam kết tôn trọng tính đa dạng của tất cả các thành viên. Thông tin nhân khẩu tùy chọn này sẽ giúp chúng tôi hiểu bản sắc xã hội của các thành viên.",
     "我们已收到您的会员资格申请，并将很快进行审核。同时，请告诉我们更多关于您的事情，帮助您的工会会员更好地了解您。SEIU Local 503 致力于尊重所有会员的多样性。此可选的人口统计信息有助于我们了解会员的社会身份。"
   ],
-  "fieldLabel": [
+  "raceEthnicityHelperText": [
     "Check as many as apply to your race/ethnicity",
     "Marque todas las opciones que correspondan a su raza o grupo étnico",
     "Отметьте все применимые к вам варианты расовой/этнической принадлежности.",
     "Đánh dấu tất cả những ô áp dụng đối với chủng tộc/sắc tộc của quý vị",
     "请勾选所有符合您的种族／族裔的选项"
   ],
-  "africanOrAfricanamerican": [
+  "africanOrAfricanAmerican": [
     "African or African-American",
     "Africano o afroestadounidense",
     "Африканец или афроамериканец",

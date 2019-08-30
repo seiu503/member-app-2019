@@ -2,6 +2,7 @@ import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
 import { openSnackbar } from "../containers/Notifier";
+import { Translate } from "react-localize-redux";
 
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
@@ -575,10 +576,12 @@ export const renderSelect = ({
 export const renderCheckbox = ({
   input,
   label,
+  id,
   validate,
   classes,
   meta: { touched, error },
   formControlName,
+  localize,
   ...custom
 }) => (
   <FormControl
@@ -586,7 +589,7 @@ export const renderCheckbox = ({
     className={classes[formControlName] || classes.formControl}
   >
     <FormControlLabel
-      label={label}
+      label={translateLabel(label, localize, id)}
       control={
         <Checkbox
           color="primary"
@@ -606,6 +609,26 @@ export const renderCheckbox = ({
     )}
   </FormControl>
 );
+
+const translateLabel = (label, localize, id) => {
+  const langArr = localize.languages;
+  for (let i = 0; i < langArr.length; i++) {
+    if (langArr[i].active) {
+      console.log("translations = ", localize.translations);
+      console.log(
+        "i =",
+        i,
+        "active language =",
+        langArr[i].code,
+        "label = ",
+        label,
+        "id = ",
+        id
+      );
+      return localize.translations.id[i];
+    } else return label;
+  }
+};
 
 // custom MUI friendly RADIO group
 export const renderRadioGroup = ({

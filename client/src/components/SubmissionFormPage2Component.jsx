@@ -27,7 +27,7 @@ export class SubmissionFormPage2Component extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.props.addTranslation(page2);
+    // this.props.addTranslation(page2);
   }
 
   // reusable MUI form components
@@ -209,7 +209,9 @@ export class SubmissionFormPage2Component extends React.Component {
           </div>
           <Divider style={{ margin: 20 }} />
           <FormLabel className={this.classes.formLabel} component="legend">
-            Check as many as apply to your race/ethnicity
+            <Translate id="raceEthnicityHelperText">
+              Check as many as apply to your race/ethnicity
+            </Translate>
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field
@@ -218,6 +220,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="africanOrAfricanAmerican"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Arab American, Middle Eastern, or North African"
@@ -225,6 +228,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="arabAmericanMiddleEasternOrNorthAfrican"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Asian or Asian American"
@@ -232,6 +236,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="asianOrAsianAmerican"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Hispanic or Latinx"
@@ -239,6 +244,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="hispanicOrLatinx"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Native American or Indigenous"
@@ -246,6 +252,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="nativeAmericanOrIndigenous"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Native Hawaiian or Other Pacific Islander"
@@ -253,6 +260,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="nativeHawaiianOrOtherPacificIslander"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="White"
@@ -260,6 +268,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="white"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Other"
@@ -267,6 +276,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="other"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Declined"
@@ -274,6 +284,7 @@ export class SubmissionFormPage2Component extends React.Component {
               id="declined"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
           </FormGroup>
 
@@ -288,6 +299,7 @@ export class SubmissionFormPage2Component extends React.Component {
               type="checkbox"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="I identify as transgender"
@@ -296,6 +308,7 @@ export class SubmissionFormPage2Component extends React.Component {
               type="checkbox"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="I identify as disabled or a person with a disability"
@@ -304,6 +317,7 @@ export class SubmissionFormPage2Component extends React.Component {
               type="checkbox"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="I identify as Deaf or hard-of-hearing"
@@ -312,6 +326,7 @@ export class SubmissionFormPage2Component extends React.Component {
               type="checkbox"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="I identify as Blind or visually impaired"
@@ -320,6 +335,7 @@ export class SubmissionFormPage2Component extends React.Component {
               type="checkbox"
               classes={this.classes}
               component={this.renderCheckbox}
+              localize={this.props.localize}
             />
             <Field
               label="Gender"
@@ -484,4 +500,5 @@ export const SubmissionFormPage2Wrap = reduxForm({
   enableReinitialize: true
 })(SubmissionFormPage2Component);
 
-export default withLocalize(SubmissionFormPage2Wrap);
+export default SubmissionFormPage2Wrap;
+// export default withLocalize(SubmissionFormPage2Wrap);
