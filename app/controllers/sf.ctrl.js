@@ -406,7 +406,7 @@ exports.getSFDJRById = async (req, res, next) => {
   const { id } = req.params;
   const query = `SELECT ${paymentFieldList.join(
     ","
-  )}, Id FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
+  )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

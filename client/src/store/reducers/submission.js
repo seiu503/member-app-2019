@@ -65,6 +65,7 @@ export const INITIAL_STATE = {
     homeState: "OR",
     preferredLanguage: "English",
     employerType: "",
+    employerId: "",
     firstName: "",
     lastName: "",
     homeEmail: "",
@@ -90,7 +91,8 @@ export const INITIAL_STATE = {
     activeMethodLast4: "",
     paymentErrorHold: false,
     unioniseToken: "",
-    unioniseRefreshToken: ""
+    unioniseRefreshToken: "",
+    djrEmployerId: ""
   }
 };
 
@@ -266,7 +268,8 @@ function Submission(state = INITIAL_STATE, action) {
         payment: {
           activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
           paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
-          memberShortId: { $set: action.payload.Unioni_se_MemberID__c }
+          memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
+          djrEmployerId: { $set: action.payload.Employer__c }
         },
         djrId: { $set: action.payload.Id || action.payload.id }
       });

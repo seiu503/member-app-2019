@@ -227,7 +227,14 @@ export class SubmissionFormPage1Component extends React.Component {
     };
     console.log(body);
 
-    if (!id) {
+    // create a new record if one doesn't exist, OR
+    // if existing DJR record is for a different employer
+
+    console.log(`formValues.employerId: ${formValues.employerId}`);
+    if (
+      !id ||
+      formValues.employerId !== this.props.submission.payment.djrEmployerId
+    ) {
       // create new SFDJR record
       console.log("createSFDJR");
       return this.props.apiSF

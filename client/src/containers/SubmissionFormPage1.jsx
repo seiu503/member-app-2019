@@ -161,10 +161,12 @@ export class SubmissionFormPage1Container extends React.Component {
   changeTab = newValue => {
     const newState = { ...this.state };
     newState.tab = newValue;
-    this.setState({ ...newState });
+    this.setState({ ...newState }, () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   };
 
-  prepForContact(values) {
+  async prepForContact(values) {
     let returnValues = { ...values };
 
     // format birthdate
@@ -176,8 +178,12 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       values.employerName
     );
-    returnValues.employerId = employerObject.Id;
     returnValues.agencyNumber = employerObject.Agency_Number__c;
+    returnValues.employerId = employerObject.Id;
+    console.log(employerObject.Id);
+    // save employerId to redux store for later
+    await this.props.changeFieldValue("employerId, employerObject.Id");
+    console.log(this.props.formValues.employerId);
 
     return returnValues;
   }
@@ -750,9 +756,9 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // if payment required, check if existing payment method on file
     if (formValues.paymentRequired) {
-      this.getSFDJRById(this.props.submission.salesforceId)
+      await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
-          // console.log(result.payload);
+          console.log(result.payload);
           // console.log(this.props.submission.payment.activeMethodLast4);
           // console.log(this.props.submission.payment.paymentErrorHold);
 

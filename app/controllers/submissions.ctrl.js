@@ -96,22 +96,22 @@ const createSubmission = async (req, res, next) => {
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (!terms_agree) {
-    // console.log('submissions.ctrl.js > 99');
+    console.log("submissions.ctrl.js > 99");
     return res.status(422).json({
       reason: "ValidationError",
       message: "Must agree to terms of service"
     });
   } else if (missingField) {
-    // console.log('submissions.ctrl.js > 105');
+    console.log(`submissions.ctrl.js > 105: missing ${missingField}`);
     return res.status(422).json({
       reason: "ValidationError",
       message: `Missing required field ${missingField}`
     });
   } else if (process.env.NODE_ENV !== "testing") {
-    // console.log('submissions.ctrl.js > 108');
+    console.log("submissions.ctrl.js > 108");
     verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-      // console.log(`submissions.ctrl.js > 111`);
-      // console.log(err);
+      console.log(`submissions.ctrl.js > 111`);
+      console.log(err);
       return res
         .status(422)
         .json({ message: "Please verify that you are a human" });
