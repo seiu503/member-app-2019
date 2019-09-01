@@ -177,7 +177,7 @@ export class SubmissionFormPage1Component extends React.Component {
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
         // console.log(result.type);
@@ -192,18 +192,17 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("createSFOMA");
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
-    console.log("createSFOMA body -- Worker__c?");
+    // console.log("createSFOMA body -- Worker__c?");
     body.Worker__c = this.props.submission.salesforceId;
-    console.log(body);
+    // console.log(body);
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
@@ -217,7 +216,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("createOrUpdateSFDJR");
     // const { formValues } = this.props;
     const { formPage1, payment } = this.props.submission;
-    console.log(formPage1.paymentType);
+    // console.log(formPage1.paymentType);
     const id = this.props.submission.djrId;
     // console.log(id);
     const paymentMethod =
@@ -233,10 +232,10 @@ export class SubmissionFormPage1Component extends React.Component {
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
-      console.log("createSFDJR");
+      // console.log("createSFDJR");
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
@@ -245,7 +244,7 @@ export class SubmissionFormPage1Component extends React.Component {
             result.type === "CREATE_SF_DJR_FAILURE" ||
             this.props.submission.error
           ) {
-            console.log(this.props.submission.error);
+            // console.log(this.props.submission.error);
             return this.props.handleError(this.props.submission.error);
           }
         })
@@ -261,11 +260,13 @@ export class SubmissionFormPage1Component extends React.Component {
     // if id exists, update existing DJR record
     // console.log("updateSFDJR");
     body.Id = id;
+    console.log("280");
     delete body.Worker__c;
     // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
+        console.log("287");
         console.log(result.type);
         if (
           result.type === "UPDATE_SF_DJR_FAILURE" ||
@@ -286,20 +287,21 @@ export class SubmissionFormPage1Component extends React.Component {
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
+      console.log("310");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    console.log(`validMethod? ${validMethod}`);
-    console.log(
-      `paymentMethodAdded? ${
-        this.props.submission.formPage1.paymentMethodAdded
-      }`
-    );
-    console.log(
-      `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
-    );
-    console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
+    // console.log(`validMethod? ${validMethod}`);
+    // console.log(
+    //   `paymentMethodAdded? ${
+    //     this.props.submission.formPage1.paymentMethodAdded
+    //   }`
+    // );
+    // console.log(
+    //   `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
+    // );
+    // console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
     // submit validation: payment method
     if (
       this.props.submission.formPage1.paymentRequired &&

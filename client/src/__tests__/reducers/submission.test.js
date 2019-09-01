@@ -130,6 +130,7 @@ describe("submission reducer", () => {
           yyyy: "1999",
           mobilePhone: "123-456-7890",
           employerName: "string",
+          employerId: "",
           employerType: undefined,
           firstName: "string",
           lastName: "string",
@@ -141,11 +142,13 @@ describe("submission reducer", () => {
           homeEmail: "string@string.com",
           preferredLanguage: "string",
           paymentRequired: false,
+          newCardNeeded: false,
           termsAgree: false,
           signature: null,
           textAuthOptOut: false,
           legalLanguage: "",
-          paymentType: "",
+          paymentType: "Card",
+          whichCard: "Use existing",
           medicaidResidents: 0,
           paymentMethodAdded: false,
           afhDuesRate: 0
@@ -248,9 +251,12 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         payment: {
+          activeMethodLast4: "",
+          djrEmployerId: "",
+          paymentErrorHold: false,
+          unioniseToken: "",
+          unioniseRefreshToken: "",
           cardAddingUrl: "url",
-          memberId: "string",
-          stripeCustomerId: "string",
           memberShortId: "string"
         }
       };

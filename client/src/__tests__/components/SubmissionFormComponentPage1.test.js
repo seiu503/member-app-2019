@@ -4,7 +4,10 @@ import { Provider } from "react-redux";
 import "jest-canvas-mock";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
-import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
 import { SubmissionFormPage1Component } from "../../components/SubmissionFormPage1Component";
 import * as formElements from "../../components/SubmissionFormElements";
 
@@ -23,6 +26,8 @@ let wrapper,
   addSubmissionError,
   updateSubmissionSuccess,
   updateSubmissionError,
+  createSFDJRSuccess,
+  createSFOMASuccess,
   props,
   testData,
   tab,
@@ -30,7 +35,7 @@ let wrapper,
   sfEmployerLookupFailure,
   handleUpload,
   loadEmployersPicklistMock,
-  changeFieldValueMock;
+  handleInputMock = jest.fn();
 
 let resetMock = jest.fn();
 
@@ -99,8 +104,15 @@ const defaultProps = {
   content: {},
   apiContent: {},
   tab,
-  generateSubmissionBody: jest.fn()
+  generateSubmissionBody: () => Promise.resolve({})
 };
+
+createSFDJRSuccess = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }));
+createSFOMASuccess = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }));
 
 describe("Unconnected <SubmissionFormPage1 />", () => {
   // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function
@@ -201,15 +213,13 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         submission: {
           formPage1: {
-            paymentRequired: true
+            paymentRequired: true,
+            paymentType: "Card",
+            paymentMethodAdded: false
           },
           payment: {
             cardAddingUrl: ""
           }
-        },
-        formValues: {
-          paymentType: "Card",
-          paymentMethodAdded: false
         },
         handleError: handleErrorMock
       };
@@ -238,6 +248,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         tab: 2,
         submission: {
           submissionId: "123",
+          salesforceId: "456",
           formPage1: {
             paymentRequired: false
           },
@@ -245,9 +256,18 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
             cardAddingUrl: ""
           }
         },
+        formValues: {
+          ...generateSubmissionBody
+        },
         apiSubmission: {
           updateSubmission: updateSubmissionSuccess
-        }
+        },
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess
+        },
+        handleError: jest.fn(),
+        reset: resetMock
       };
       wrapper = unconnectedSetup(props);
 
@@ -258,6 +278,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // testing that reset is called when handleSubmit receives success message
       try {
         await updateSubmissionSuccess();
+        await createSFDJRSuccess();
+        await createSFOMASuccess();
         expect(resetMock.mock.calls.length).toBe(1);
       } catch (err) {
         console.log(err);
@@ -282,7 +304,11 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         apiSubmission: {
           updateSubmission: updateSubmissionError
         },
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess
+        }
       };
       wrapper = unconnectedSetup(props);
 
@@ -292,6 +318,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // testing that clearForm is called when handleSubmit receives Error message
       try {
         await updateSubmissionError();
+        await createSFDJRSuccess();
+        await createSFOMASuccess();
         expect(formElements.handleError.mock.calls.length).toBe(1);
       } catch (err) {
         console.log(err);
@@ -302,10 +330,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return error object
-      addSubmissionError = jest
+      updateSubmissionError = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
 
       // creating wrapper
@@ -319,6 +347,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         apiSubmission: {
           updateSubmission: updateSubmissionError
+        },
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess
         },
         handleError: handleErrorMock
       };
@@ -412,23 +444,25 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         origin: "https://lab.unioni.se"
       };
-      const changeFieldValueMock = jest.fn();
+      let handleInputMock = jest.fn();
       const props = {
-        changeFieldValue: changeFieldValueMock,
         formValues: {
           // to get code coverage for afh edge cases
           employerType: "Adult Foster Home"
         },
         apiSF: {
           getSFEmployers: sfEmployerLookupSuccess
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
         }
       };
       wrapper = unconnectedSetup(props);
       wrapper.instance().receiveMessage(fakeEvent);
 
-      // changeFieldValue("paymentMethodAdded", true);
-      expect(changeFieldValueMock.mock.calls[0][0]).toBe("paymentMethodAdded");
-      expect(changeFieldValueMock.mock.calls[0][1]).toBe(true);
+      expect(handleInputMock.mock.calls[0][0]).toStrictEqual({
+        target: { name: "paymentMethodAdded", value: true }
+      });
     });
 
     it("opens snackbar when employer search fails", () => {

@@ -494,11 +494,11 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      console.log(formValues.employerType.toLowerCase());
-      console.log(
-        `paymentRequired ? ${this.props.submission.formPage1.paymentRequired}`
-      );
-      console.log(this.props.submission.formPage1);
+      // console.log(formValues.employerType.toLowerCase());
+      // console.log(
+      //   `paymentRequired ? ${this.props.submission.formPage1.paymentRequired}`
+      // );
+      // console.log(this.props.submission.formPage1);
     }
 
     // submit validation: recaptcha
@@ -509,7 +509,7 @@ export class SubmissionFormPage1Container extends React.Component {
     await this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: reCaptchaValue }
     });
-    console.log(this.props.submission.formPage1.reCaptchaValue);
+    // console.log(this.props.submission.formPage1.reCaptchaValue);
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
@@ -558,7 +558,7 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -742,10 +742,10 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.firstName,
         formValues.lastName
       ).catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
-      console.log(`592: ${sigUrl}`);
+      // console.log(`748: ${sigUrl}`);
       this.props.apiSubmission.handleInput({
         target: { name: "signature", value: sigUrl }
       });
@@ -758,7 +758,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const { formValues } = this.props;
     // submit validation: signature
     const signature = await this.saveSignature().catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
     if (!signature) {
@@ -775,7 +775,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.formPage1.paymentRequired) {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
-          // console.log(result.payload);
+          console.log(result.payload);
           // console.log(this.props.submission.payment.activeMethodLast4);
           // console.log(this.props.submission.payment.paymentErrorHold);
 
@@ -817,19 +817,20 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(err);
       return handleError(err);
     });
+
     return this.changeTab(2);
   }
 
   handleTab(newValue) {
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
     }
     if (newValue === 2) {
       return this.handleTab2().catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
     } else {

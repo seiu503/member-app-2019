@@ -31,7 +31,7 @@ let store,
   updateSFContactMock;
 
 let pushMock = jest.fn(),
-  changeFieldValueMock = jest.fn(),
+  handleInputMock = jest.fn(),
   handleErrorMock = jest.fn();
 
 let updateSFContactSuccess = jest
@@ -78,7 +78,12 @@ let getSFContactByIdError = jest
     Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
   );
 
+let createSubmissionSuccess = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({}));
+
 let sigUrl = "http://www.example.com/png";
+global.scrollTo = jest.fn();
 
 const flushPromises = () => new Promise(setImmediate);
 
@@ -148,12 +153,15 @@ const defaultProps = {
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
+    createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+    updateSFDJR: () => Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS" }),
+    getSFDJRById: () => Promise.resolve({ type: "GET_SF_DJR_SUCCESS" }),
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
   },
   apiSubmission: {
-    handleInput: jest.fn(),
+    handleInput: handleInputMock,
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
@@ -178,8 +186,7 @@ const defaultProps = {
     current: {
       innerHTML: "pay"
     }
-  },
-  changeFieldValue: changeFieldValueMock
+  }
 };
 
 const setup = (props = {}) => {
@@ -225,7 +232,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       location: {
         search: "id=1"
       },
-      apiSF: { getSFContactById: getSFContactById }
+      apiSF: {
+        getSFContactById: getSFContactById,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+      }
     };
     store = storeFactory(initialState);
     const dispatchSpy = jest.spyOn(apiSForce, "getSFContactById");
@@ -244,7 +254,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       location: {
         search: "id=1"
       },
-      apiSF: { getSFContactById: getSFContactByIdError }
+      apiSF: {
+        getSFContactById: getSFContactByIdError,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+      }
     };
     store = storeFactory(initialState);
 
@@ -260,7 +273,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       });
   });
 
-  test("`calculateAFHDuesRate` calls changeFieldValue", async function() {
+  test("`calculateAFHDuesRate` calls handleInput", async function() {
     let props = {
       formValues: {
         afhDuesRate: null
@@ -269,8 +282,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     wrapper = setup(props);
     const residents = 1;
     await wrapper.instance().calculateAFHDuesRate(residents);
-    expect(changeFieldValueMock.mock.calls[0][0]).toBe("afhDuesRate");
-    expect(changeFieldValueMock.mock.calls[0][1]).toBe(17.59);
+    expect(handleInputMock.mock.calls[0][0]).toEqual({
+      target: { name: "afhDuesRate", value: 17.59 }
+    });
   });
 
   test("`handleOpen` opens modal", () => {
@@ -336,7 +350,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`saveLegalLanguage` saves legal language to formValues", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     let props = {
       formValues: {
         directPayAuth: true,
@@ -346,7 +360,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock
+      apiSubmission: {
+        handleInput: handleInputMock
+      }
     };
     wrapper = shallow(
       <SubmissionFormPage1Container {...defaultProps} {...props} />
@@ -357,16 +373,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       .instance()
       .saveLegalLanguage()
       .then(() => {
-        expect(changeFieldValueMock.mock.calls[0][0]).toBe("legalLanguage");
-        expect(changeFieldValueMock.mock.calls[0][1]).toBe(
-          "legal<hr>deposit<hr>pay"
-        );
+        expect(handleInputMock.mock.calls[0][0]).toEqual({
+          target: { name: "legalLanguage", value: "legal<hr>deposit<hr>pay" }
+        });
       })
       .catch(err => console.log(err));
   });
 
   test("`updateSFContact` calls updateSFContact prop function", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     let props = {
       formValues: {
         directPayAuth: true,
@@ -376,12 +391,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock,
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       submission: {
         salesforceId: "123"
       },
       apiSF: {
-        updateSFContact: updateSFContactSuccess
+        updateSFContact: updateSFContactSuccess,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       }
     };
     wrapper = shallow(
@@ -398,83 +416,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       .catch(err => console.log(err));
   });
 
-  // test("`handleTab1` calls lookupSFContact prop if no salesforceId found in state and handles error on prop func fail", async function() {
-  //   changeFieldValueMock = jest.fn();
-  //   let props = {
-  //     formValues: {
-  //       directPayAuth: true,
-  //       directDepositAuth: true,
-  //       employerName: "homecare",
-  //       paymentType: "card",
-  //       employerType: "retired",
-  //       preferredLanguage: "English"
-  //     },
-  //     changeFieldValue: changeFieldValueMock,
-  //     submission: {
-  //       salesforceId: null
-  //     },
-  //     apiSF: {
-  //       updateSFContact: updateSFContactSuccess,
-  //       lookupSFContact: lookupSFContactError,
-  //       createSFContact: createSFContactSuccess
-  //     }
-  //   };
-  //   wrapper = setup(props);
-
-  //   try {
-  //     await wrapper.instance().handleTab1().then(async function() {
-  //       await flushPromises();
-  //       expect(lookupSFContactError.mock.calls.length).toBe(1);
-  //     }).catch(err => console.log(err));
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-
-  // });
-
-  // test("`handleTab1` calls updateSFContact prop after successful lookup", async function() {
-  //   changeFieldValueMock = jest.fn();
-  //   const changeTabMock = jest.fn();
-  //   let props = {
-  //     formValues: {
-  //       directPayAuth: true,
-  //       directDepositAuth: true,
-  //       employerName: "homecare",
-  //       paymentType: "card",
-  //       employerType: "retired",
-  //       preferredLanguage: "English"
-  //     },
-  //     changeFieldValue: changeFieldValueMock,
-  //     submission: {
-  //       salesforceId: null
-  //     },
-  //     apiSF: {
-  //       updateSFContact: updateSFContactSuccess,
-  //       lookupSFContact: lookupSFContactSuccess,
-  //       createSFContact: createSFContactSuccess
-  //     }
-  //   };
-  //   wrapper = shallow(
-  //     <SubmissionFormPage1Container {...defaultProps} {...props} />
-  //   );
-  //   wrapper.instance().changeTab = changeTabMock;
-  //   wrapper.update();
-  //   wrapper.instance().handleTab1()
-  //     .then(() => {
-  //       return lookupSFContactSuccess().then(async function() {
-  //         wrapper.setProps({ submission: { salesforceId: '123' }});
-  //         await updateSFContactSuccess().then(async function() {
-  //           await flushPromises();
-  //           expect(changeTabMock.mock.calls.length).toBe(1);
-  //         })
-  //       });
-  //     })
-  //     .catch(err => console.log(err));
-
-  // });
-
   test("`handleTab1` handles error if updateSFContact fails", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     formElements.handleError = jest.fn();
     let props = {
       formValues: {
@@ -485,12 +428,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock,
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       submission: {
         salesforceId: "123"
       },
       apiSF: {
-        updateSFContact: updateSFContactError
+        updateSFContact: updateSFContactError,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       }
     };
     wrapper = shallow(
@@ -512,7 +458,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`handleTab1` handles error if lookupSFContact fails", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     formElements.handleError = jest.fn();
     let props = {
       formValues: {
@@ -523,13 +469,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock,
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       submission: {
         salesforceId: null
       },
       apiSF: {
         updateSFContact: updateSFContactError,
-        lookupSFContact: lookupSFContactError
+        lookupSFContact: lookupSFContactError,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       }
     };
     wrapper = shallow(
@@ -551,7 +500,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`handleTab1` navigates to tab 1 if salesforceId found in state", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     updateSFContactSuccess = jest
       .fn()
       .mockImplementation(() =>
@@ -566,12 +515,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock,
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       submission: {
         salesforceId: "123"
       },
       apiSF: {
-        updateSFContact: updateSFContactSuccess
+        updateSFContact: updateSFContactSuccess,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       },
       reCaptchaRef: {
         current: {
@@ -597,7 +549,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`updateSFContact` handles error if prop function fails", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     formElements.handleError = jest.fn();
     let props = {
       formValues: {
@@ -608,12 +560,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock,
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       submission: {
         salesforceId: "123"
       },
       apiSF: {
-        updateSFContact: updateSFContactError
+        updateSFContact: updateSFContactError,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       }
     };
     wrapper = shallow(
@@ -631,7 +586,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`createSFContact` handles error if prop function fails", async function() {
-    changeFieldValueMock = jest.fn();
+    handleInputMock = jest.fn();
     formElements.handleError = jest.fn();
     let props = {
       formValues: {
@@ -642,12 +597,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         employerType: "retired",
         preferredLanguage: "English"
       },
-      changeFieldValue: changeFieldValueMock,
+      apiSubmission: {
+        handleInput: handleInputMock
+      },
       submission: {
         salesforceId: "123"
       },
       apiSF: {
-        createSFContact: createSFContactError
+        createSFContact: createSFContactError,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       }
     };
     wrapper = shallow(
@@ -665,8 +623,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   test("`saveSignature` saves signature to formValues", async function() {
-    changeFieldValueMock = jest.fn();
-    let props = { changeFieldValue: changeFieldValueMock };
+    handleInputMock = jest.fn();
+    let props = { apiSubmission: { handleInput: handleInputMock } };
     handleUploadMock = jest
       .fn()
       .mockImplementation(() => Promise.resolve(sigUrl));
@@ -681,8 +639,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       .instance()
       .saveSignature()
       .then(() => {
-        expect(changeFieldValueMock.mock.calls[0][0]).toBe("signature");
-        expect(changeFieldValueMock.mock.calls[0][1]).toBe(sigUrl);
+        expect(handleInputMock.mock.calls[0][0]).toEqual({
+          target: { name: "signature", value: sigUrl }
+        });
       });
   });
 
@@ -944,12 +903,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       <SubmissionFormPage1Container {...defaultProps} {...props} />
     );
     wrapper.instance().state.signatureType = "write";
+    wrapper.instance().createSubmission = createSubmissionSuccess;
     wrapper
       .instance()
       .handleTab(2)
       .then(() => {
-        expect(wrapper.instance().state.tab).toBe(2);
-      });
+        return createSubmissionSuccess().then(() => {
+          expect(wrapper.instance().state.tab).toBe(2);
+        });
+      })
+      .catch(err => console.log(err));
   });
 
   test("`handleTab` sets state.tab - 0", () => {
@@ -1002,7 +965,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSF: {
         lookupSFContact: lookupSFContactSuccess,
         createSFContact: createSFContactSuccess,
-        updateSFContact: updateSFContactSuccess
+        updateSFContact: updateSFContactSuccess,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       },
       legal_language: {
         current: {
@@ -1057,7 +1021,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSF: {
         lookupSFContact: lookupSFContactSuccess,
         createSFContact: createSFContactSuccess,
-        updateSFContact: updateSFContactSuccess
+        updateSFContact: updateSFContactSuccess,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       },
       legal_language: {
         current: {
@@ -1110,7 +1075,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       apiSF: {
         lookupSFContact: lookupSFContactSuccess,
         createSFContact: createSFContactSuccess,
-        updateSFContact: updateSFContactSuccess
+        updateSFContact: updateSFContactSuccess,
+        createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
       },
       legal_language: {
         current: {
