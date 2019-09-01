@@ -335,8 +335,8 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   let oma;
   try {
     const bodyRaw = { ...req.body };
-    console.log(`sf.ctrl.js > 338`);
-    console.log(bodyRaw);
+    // console.log(`sf.ctrl.js > 338`);
+    // console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (submissionsTableFields[key]) {
@@ -349,8 +349,8 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     body.Birthdate__c = bodyRaw.birthdate;
-    console.log(`sf.ctrl.js > 347: +++++++++++++++++++++++++++++`);
-    console.log(body);
+    // console.log(`sf.ctrl.js > 347`);
+    // console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
       ...body
@@ -437,8 +437,10 @@ exports.getSFDJRById = async (req, res, next) => {
  *  @returns  {Object}        { sf_djr_id } or error message
  */
 exports.createSFDJR = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 440: createSFDJR`);
+  console.log(`sf.ctrl.js > 440: createSFDJR`);
   const body = { ...req.body };
+  console.log("#######+++++++");
+  console.log(body);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {

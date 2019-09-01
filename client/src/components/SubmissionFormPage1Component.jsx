@@ -218,11 +218,11 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("createOrUpdateSFDJR");
     // const { formValues } = this.props;
     const { formPage1, payment } = this.props.submission;
+    console.log(formPage1.paymentType);
     const id = this.props.submission.djrId;
     // console.log(id);
-    const paymentMethod = (formPage1.paymentType = "Check"
-      ? "Paper Check"
-      : "Unionise");
+    const paymentMethod =
+      formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,

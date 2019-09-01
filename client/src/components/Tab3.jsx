@@ -29,7 +29,7 @@ export const Tab3 = props => {
   } = props;
 
   let duesCopy = "";
-  // console.log(formPage1.paymentType);
+  console.log(formPage1.paymentType);
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
