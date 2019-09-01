@@ -58,7 +58,9 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     if (event.data.notification.type === "success") {
-      this.props.changeFieldValue("paymentMethodAdded", true);
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentMethodAdded", value: true }
+      });
     }
   };
 
@@ -156,17 +158,17 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   async updateSubmission() {
-    console.log("updateSubmission");
     const id = this.props.submission.submissionId;
-    const { formValues } = this.props;
+    // const { formValues } = this.props;
+    const { formPage1, payment } = this.props.submission;
     const updates = {
-      payment_type: formValues.paymentType,
-      payment_method_added: formValues.paymentMethodAdded,
-      medicaid_residents: formValues.medicaidResidents,
-      card_adding_url: this.props.submission.payment.cardAddingUrl,
-      member_id: this.props.submission.payment.memberId,
-      stripe_customer_id: this.props.submission.payment.stripeCustomerId,
-      member_short_id: this.props.submission.payment.memberShortId
+      payment_type: formPage1.paymentType,
+      payment_method_added: formPage1.paymentMethodAdded,
+      medicaid_residents: formPage1.medicaidResidents,
+      card_adding_url: payment.cardAddingUrl,
+      member_id: payment.memberId,
+      stripe_customer_id: payment.stripeCustomerId,
+      member_short_id: payment.memberShortId
     };
     // console.log(updates);
     this.props.apiSubmission
@@ -179,7 +181,7 @@ export class SubmissionFormPage1Component extends React.Component {
           console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
-        console.log(result.type);
+        // console.log(result.type);
       })
       .catch(err => {
         console.log(err);
@@ -188,59 +190,58 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createSFOMA() {
-    console.log("createSFOMA");
+    // console.log("createSFOMA");
     const { formValues } = this.props;
-    const body = this.props.generateSubmissionBody(formValues);
-    console.log("check for immediate past member status");
+    const body = await this.props.generateSubmissionBody(formValues);
+    console.log("createSFOMA body -- Worker__c?");
+    body.Worker__c = this.props.submission.salesforceId;
     console.log(body);
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return this.props.handleError(err);
       });
   }
 
   async createOrUpdateSFDJR() {
     // console.log("createOrUpdateSFDJR");
-    const { formValues } = this.props;
+    // const { formValues } = this.props;
+    const { formPage1, payment } = this.props.submission;
     const id = this.props.submission.djrId;
     // console.log(id);
-    const paymentMethod = (formValues.paymentType = "Check"
+    const paymentMethod = (formPage1.paymentType = "Check"
       ? "Paper Check"
       : "Unionise");
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,
-      AFH_Number_of_Residents__c: formValues.medicaidResidents,
-      Unioni_se_MemberID__c: this.props.submission.payment.memberShortId
+      AFH_Number_of_Residents__c: formPage1.medicaidResidents,
+      Unioni_se_MemberID__c: payment.memberShortId
     };
-    console.log(body);
+    // console.log(body);
 
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    console.log(`formValues.employerId: ${formValues.employerId}`);
-    if (
-      !id ||
-      formValues.employerId !== this.props.submission.payment.djrEmployerId
-    ) {
+    console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
       console.log("createSFDJR");
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
-          console.log(result.type);
+          // console.log(result.type);
           if (
             result.type === "CREATE_SF_DJR_FAILURE" ||
             this.props.submission.error
@@ -286,13 +287,25 @@ export class SubmissionFormPage1Component extends React.Component {
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
-      this.props.changeFieldValue("paymentMethodAdded", true);
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentMethodAdded", value: true }
+      });
     }
+    console.log(`validMethod? ${validMethod}`);
+    console.log(
+      `paymentMethodAdded? ${
+        this.props.submission.formPage1.paymentMethodAdded
+      }`
+    );
+    console.log(
+      `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
+    );
+    console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
     // submit validation: payment method
     if (
       this.props.submission.formPage1.paymentRequired &&
-      formValues.paymentType === "Card" &&
-      !formValues.paymentMethodAdded
+      this.props.submission.formPage1.paymentType === "Card" &&
+      !this.props.submission.formPage1.paymentMethodAdded
     ) {
       // console.log("No payment method added");
       return this.props.handleError(
@@ -409,12 +422,13 @@ export class SubmissionFormPage1Component extends React.Component {
                 handleTab={this.props.handleTab}
                 back={this.props.back}
                 formValues={this.props.formValues}
+                formPage1={this.props.submission.formPage1}
                 paymentRequired={
                   this.props.submission.formPage1.paymentRequired
                 }
-                changeFieldValue={this.props.changeFieldValue}
+                handleInput={this.props.submission.handleInput}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
-                afhDuesRate={this.props.formValues.afhDuesRate}
+                afhDuesRate={this.props.submission.formPage1.afhDuesRate}
                 payment={this.props.submission.payment}
                 toggleCardAddingFrame={this.props.toggleCardAddingFrame}
               />

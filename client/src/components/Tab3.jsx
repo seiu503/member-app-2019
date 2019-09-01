@@ -23,12 +23,13 @@ export const Tab3 = props => {
     afhDuesRate,
     back,
     formValues,
+    formPage1,
     payment,
     toggleCardAddingFrame
   } = props;
 
   let duesCopy = "";
-  console.log(formValues.paymentType);
+  // console.log(formPage1.paymentType);
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
@@ -50,7 +51,7 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
-        {formValues.paymentRequired && (
+        {formPage1.paymentRequired && (
           <div className={classes.paymentCopy}>
             <Typography component="p" className={classes.body}>
               {duesCopy}
@@ -72,8 +73,8 @@ export const Tab3 = props => {
               options={formElements.paymentTypes}
             />
           )}
-        {formValues.paymentRequired &&
-          formValues.paymentType === "Card" &&
+        {formPage1.paymentRequired &&
+          formPage1.paymentType === "Card" &&
           validMethod && (
             <div data-test="component-choose-card">
               <Typography component="p" className={classes.body}>
@@ -98,9 +99,9 @@ export const Tab3 = props => {
             </div>
           )}
         {iFrameURL &&
-          formValues.paymentType === "Card" &&
-          formValues.newCardNeeded &&
-          formValues.paymentRequired && (
+          formPage1.paymentType === "Card" &&
+          formPage1.newCardNeeded &&
+          formPage1.paymentRequired && (
             <div data-test="component-iframe">
               <Typography component="h2" className={classes.head}>
                 Add a payment method
@@ -118,7 +119,7 @@ export const Tab3 = props => {
               </div>
             </div>
           )}
-        {formValues.paymentType === "Check" && (
+        {formPage1.paymentType === "Check" && (
           <div className={classes.paymentCopy}>
             <Typography component="h2" className={classes.head}>
               To pay your dues by check:
