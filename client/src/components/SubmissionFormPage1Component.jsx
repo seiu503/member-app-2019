@@ -159,7 +159,6 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async updateSubmission() {
     const id = this.props.submission.submissionId;
-    // const { formValues } = this.props;
     const { formPage1, payment } = this.props.submission;
     const updates = {
       payment_type: formPage1.paymentType,

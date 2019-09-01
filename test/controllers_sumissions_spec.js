@@ -179,7 +179,7 @@ suite("sumissions.ctrl.js", function() {
         await submCtrl.updateSubmission(req, res, next);
         chai.assert(res.locals.submission_id !== undefined);
         id = res.locals.submission_id;
-        console.log(id);
+        // console.log(id);
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, { submission_id: id });
       } catch (err) {

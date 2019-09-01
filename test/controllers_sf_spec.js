@@ -7,11 +7,21 @@ const jsforce = require("jsforce");
 const { upload } = require("../app/controllers/image.ctrl");
 const {
   generateSFContactFieldList,
-  generateSampleSubmission
+  generateSampleSubmission,
+  generateSFDJRFieldList,
+  paymentFields
 } = require("../app/utils/fieldConfigs");
 const fieldList = generateSFContactFieldList();
+const paymentFieldList = generateSFDJRFieldList();
 
 let submissionBody = generateSampleSubmission();
+
+const djrBody = {
+  Worker__c: "0035500000VFkjOAAT",
+  Unioni_se_MemberID__c: "XJZT1WYV",
+  Payment_Method__c: "Unionise",
+  AFH_Number_of_Residents__c: 1
+};
 
 let loginError,
   queryError,
@@ -942,6 +952,278 @@ suite("sf.ctrl.js", function() {
         assert.called(jsforceConnectionStub);
         assert.called(jsforceStub.login);
         assert.calledWith(jsforceStub.sobject, "OnlineMemberApp__c");
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: sobjectError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > getSFDJRById", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq({
+          params: {
+            id: "123456789"
+          }
+        });
+        responseStub = { records: [contactStub] };
+        queryStub = sandbox.stub().returns((null, responseStub));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          query: queryStub
+        };
+        jsforceConnectionStub = sandbox
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("gets a single DJR record by Contact Id", async function() {
+      query = `SELECT ${paymentFieldList.join(
+        ","
+      )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'123456789\'`;
+      try {
+        await sfCtrl.getSFDJRById(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.query, query);
+        assert.calledWith(res.json, contactStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+
+      try {
+        await sfCtrl.getSFDJRById(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if query fails", async function() {
+      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryStub = sandbox.stub().throws(new Error(queryError));
+      jsforceStub.query = queryStub;
+
+      try {
+        await sfCtrl.getSFDJRById(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.query);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: queryError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > createSFDJR", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq({
+          body: djrBody
+        });
+        jsforceSObjectCreateStub = sandbox
+          .stub()
+          .returns((null, { Id: "0035500000VFkjOAAT" }));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          sobject: sandbox.stub().returns({
+            create: jsforceSObjectCreateStub
+          })
+        };
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("creates a single DJR record", async function() {
+      responseStub = { sf_djr_id: "0035500000VFkjOAAT" };
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.createSFDJR(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      const res = mockRes();
+      const req = mockReq({
+        body: djrBody
+      });
+      try {
+        await sfCtrl.createSFDJR(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if sobject create fails", async function() {
+      sobjectError =
+        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      jsforceSObjectCreateStub = sandbox.stub().throws(new Error(sobjectError));
+      jsforceStub = {
+        login: loginStub,
+        sobject: sandbox.stub().returns({ create: jsforceSObjectCreateStub })
+      };
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      const res = mockRes();
+      const req = mockReq({
+        body: djrBody
+      });
+      try {
+        await sfCtrl.createSFDJR(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.sobject, "Direct_join_rate__c");
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: sobjectError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("sfCtrl > updateSFDJR", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+      return new Promise(resolve => {
+        req = mockReq({
+          body: submissionBody
+        });
+        jsforceSObjectUpdateStub = sandbox
+          .stub()
+          .returns((null, { Id: "sfid0035500000VFkjOAAT" }));
+        loginStub = sandbox.stub();
+        jsforceStub = {
+          login: loginStub,
+          sobject: sandbox.stub().returns({
+            update: jsforceSObjectUpdateStub
+          })
+        };
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("updates a SF DJR record", async function() {
+      responseStub = {
+        sf_djr_id: "sfid0035500000VFkjOAAT"
+      };
+      req.params = {
+        id: "sfid0035500000VFkjOAAT"
+      };
+      res.locals = {
+        sf_djr_id: "sfid0035500000VFkjOAAT"
+      };
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.updateSFDJR(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sandbox.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      const res = mockRes();
+      const req = mockReq({
+        body: djrBody
+      });
+      try {
+        await sfCtrl.updateSFDJR(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if sobject update fails", async function() {
+      sobjectError =
+        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      jsforceSObjectUpdateStub = sandbox.stub().throws(new Error(sobjectError));
+      jsforceStub = {
+        login: loginStub,
+        sobject: sandbox.stub().returns({ update: jsforceSObjectUpdateStub })
+      };
+      jsforceConnectionStub = sandbox
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      const res = mockRes();
+      const req = mockReq({
+        body: djrBody
+      });
+      try {
+        await sfCtrl.updateSFDJR(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.sobject, "Direct_join_rate__c");
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: sobjectError });
       } catch (err) {

@@ -47,7 +47,7 @@ exports.getSFContactById = async (req, res, next) => {
     contact = await conn.query(query);
     return res.status(200).json(contact.records[0]);
   } catch (err) {
-    console.error(`sf.ctrl.js > 50: ${err}`);
+    // console.error(`sf.ctrl.js > 50: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -94,7 +94,7 @@ exports.createSFContact = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 94: returning to client`);
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    console.error(`sf.ctrl.js > 97: ${err}`);
+    // console.error(`sf.ctrl.js > 97: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -146,7 +146,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
       .status(200)
       .json({ salesforce_id: contact.records[0].Id || contact.records[0].id });
   } catch (err) {
-    console.error(`sf.ctrl.js > 149: ${err}`);
+    // console.error(`sf.ctrl.js > 149: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -224,7 +224,7 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
       return exports.updateSFContact(req, res, next);
     }
   } catch (err) {
-    console.error(`sf.ctrl.js > 227: ${err}`);
+    // console.error(`sf.ctrl.js > 227: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -285,7 +285,7 @@ exports.updateSFContact = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 285: returning to client`);
     return res.status(200).json(response);
   } catch (err) {
-    console.error(`sf.ctrl.js > 288: ${err}`);
+    // console.error(`sf.ctrl.js > 288: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -362,7 +362,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       sf_OMA_id: OMA.id || OMA.Id
     });
   } catch (err) {
-    console.error(`sf.ctrl.js > 355: ${err}`);
+    // console.error(`sf.ctrl.js > 365: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -390,7 +390,7 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
       .status(200)
       .json({ message: "Successfully deleted Online Member App" });
   } catch (err) {
-    console.error(`sf.ctrl.js > 393: ${err}`);
+    // console.error(`sf.ctrl.js > 393: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -421,7 +421,7 @@ exports.getSFDJRById = async (req, res, next) => {
     djr = await conn.query(query);
     return res.status(200).json(djr.records[0]);
   } catch (err) {
-    console.error(`sf.ctrl.js > 424: ${err}`);
+    // console.error(`sf.ctrl.js > 424: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -437,31 +437,25 @@ exports.getSFDJRById = async (req, res, next) => {
  *  @returns  {Object}        { sf_djr_id } or error message
  */
 exports.createSFDJR = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 440: createSFDJR`);
+  // console.log(`sf.ctrl.js > 440: createSFDJR`);
   const body = { ...req.body };
-  console.log("#######+++++++");
-  console.log(body);
+  // console.log(body);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 458: ${err}`);
+    // console.error(`sf.ctrl.js > 449: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
   let djr;
   try {
     djr = await conn.sobject("Direct_join_rate__c").create({ ...body });
-    if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 466: returning next`);
-      res.locals.sf_djr_id = djr.Id || djr.id;
-      return next();
-    }
     // console.log(`sf.ctrl.js > 470: returning to client`);
     return res.status(200).json({ sf_djr_id: djr.Id || djr.id });
   } catch (err) {
-    console.error(`sf.ctrl.js > 473: ${err}`);
+    // console.error(`sf.ctrl.js > 473: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -504,7 +498,7 @@ exports.updateSFDJR = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 346: returning to client`);
     return res.status(200).json(response);
   } catch (err) {
-    console.error(`sf.ctrl.js > 516: ${err}`);
+    // console.error(`sf.ctrl.js > 516: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -524,19 +518,19 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 536: ${err}`);
+    // console.error(`sf.ctrl.js > 521: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
   try {
     accounts = await conn.query(query);
-    // console.log(`sf.ctrl.js > 542: returning employers to client`);
+    // console.log(`sf.ctrl.js > 527: returning employers to client`);
     if (!accounts || !accounts.records || !accounts.records.length) {
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
     return res.status(200).json(accounts.records);
   } catch (err) {
-    console.error(`sf.ctrl.js > 548: ${err}`);
+    // console.error(`sf.ctrl.js > 533: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
