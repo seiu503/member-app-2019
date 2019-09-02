@@ -308,7 +308,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_UNIONISE_TOKEN_SUCCESS:
     case REFRESH_UNIONISE_TOKEN_SUCCESS:
-      console.log(action.payload);
+      // console.log(action.payload);
       return update(state, {
         payment: {
           unioniseToken: { $set: action.payload.access_token },

@@ -42,6 +42,20 @@ describe("submission reducer", () => {
       error: "Sorry, something went wrong :(\nPlease try again."
     });
   });
+  it("should handle `handleInput`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "HANDLE_INPUT",
+        payload: { name: "firstName", value: "New Name" }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        firstName: "New Name"
+      }
+    });
+  });
 
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {
@@ -225,6 +239,56 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
+    test("getSFDJR", () => {
+      const payload = {
+        Active_Account_Last_4__c: "1234",
+        Payment_Error_Hold__c: false,
+        Unioni_se_MemberID__c: "5678",
+        Employer__c: "emloyerId",
+        Id: "theDjrId"
+      };
+      const action = {
+        type: "GET_SF_DJR_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        payment: {
+          activeMethodLast4: "1234",
+          paymentErrorHold: false,
+          memberShortId: "5678",
+          djrEmployerId: "emloyerId",
+          cardAddingUrl: "",
+          unioniseRefreshToken: "",
+          unioniseToken: ""
+        },
+        djrId: "theDjrId"
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getUnioniseToken", () => {
+      const payload = {
+        access_token: "1234",
+        refresh_token: "5678"
+      };
+      const action = {
+        type: "GET_UNIONISE_TOKEN_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        payment: {
+          unioniseToken: "1234",
+          unioniseRefreshToken: "5678",
+          activeMethodLast4: "",
+          cardAddingUrl: "",
+          djrEmployerId: "",
+          memberShortId: "",
+          paymentErrorHold: false
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
     test("saveSalesForceId", () => {
       const action = {
         type: "SAVE_SALESFORCEID",
@@ -273,6 +337,21 @@ describe("submission reducer", () => {
       };
       const expectedState = {
         ...INITIAL_STATE,
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createSFDJR", () => {
+      const action = {
+        type: "CREATE_SF_DJR_SUCCESS",
+        payload: {
+          sf_djr_id: "string",
+          error: null
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        djrId: "string",
         error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
