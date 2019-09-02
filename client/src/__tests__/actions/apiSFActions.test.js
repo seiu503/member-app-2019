@@ -60,6 +60,42 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("GET_SF_DJR: Dispatches success action after successful GET", async () => {
+      nock(`${BASE_URL}`)
+        .get(`/api/sfdjr/${id}`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_SF_DJR_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.getSFDJRById(id));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_SF_DJR: Dispatches failure action after failed GET", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the record"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getSFDJRById(id));
+      const expectedResult = {
+        payload: { message: "There was an error fetching the record" },
+        type: "GET_SF_DJR_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("GET_IFRAME_URL: Dispatches success action after successful POST", async () => {
       nock(`https://lab.unioni.se/web/signup/create-member`)
         .post(`/`)
@@ -90,6 +126,126 @@ describe("apiSFActions", () => {
       const expectedResult = {
         payload: { message: "There was an error fetching the contact" },
         type: "GET_IFRAME_URL_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_IFRAME_EXISTING: Dispatches success action after successful POST", async () => {
+      nock(`https://lab.unioni.se/web/signup/create-member`)
+        .post(`/`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_IFRAME_EXISTING_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(
+        actions.getIframeExisting("1234", "5678")
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_IFRAME_EXISTING: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the contact"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.getIframeExisting("1234", "5678")
+      );
+      const expectedResult = {
+        payload: { message: "There was an error fetching the contact" },
+        type: "GET_IFRAME_EXISTING_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_UNIONISE_TOKEN: Dispatches success action after successful POST", async () => {
+      nock(
+        `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=password&username=seiu503&password=${
+          process.env.UNIONISE_PASSWORD
+        }&client_id=unioni.se&client_secret=${
+          process.env.UNIONISE_CLIENT_SECRET
+        }`
+      )
+        .post(`/`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_UNIONISE_TOKEN_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.getUnioniseToken());
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_UNIONISE_TOKEN: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the contact"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getUnioniseToken());
+      const expectedResult = {
+        payload: { message: "There was an error fetching the contact" },
+        type: "GET_UNIONISE_TOKEN_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("REFRESH_UNIONISE_TOKEN: Dispatches success action after successful POST", async () => {
+      nock(
+        `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=refresh_token&refresh_token=1234`
+      )
+        .post(`/`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "REFRESH_UNIONISE_TOKEN_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.refreshUnioniseToken());
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("REFRESH_UNIONISE_TOKEN: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the contact"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.refreshUnioniseToken());
+      const expectedResult = {
+        payload: { message: "There was an error fetching the contact" },
+        type: "REFRESH_UNIONISE_TOKEN_FAILURE",
         error: true,
         meta: undefined
       };
@@ -136,24 +292,60 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it("UPDATE_SF_CONTACT: Dispatches success action after successful PUT", async () => {
+    it("CREATE_SF_DJR: Dispatches success action after successful POST", async () => {
       nock(`${BASE_URL}`)
-        .put(`/api/sf/${id}`)
+        .post(`/api/sfdjr/`)
         .reply(200);
 
       const expectedResult = {
         payload: undefined,
-        type: "UPDATE_SF_CONTACT_SUCCESS",
+        type: "CREATE_SF_DJR_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.createSFDJR(submissionBody));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("CREATE_SF_DJR: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "There was an error creating the contact"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error creating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.createSFDJR(submissionBody));
+      const expectedResult = {
+        payload: { message: "There was an error creating the contact" },
+        type: "CREATE_SF_DJR_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_SF_DJR: Dispatches success action after successful PUT", async () => {
+      nock(`${BASE_URL}`)
+        .put(`/api/sfdjr/${id}`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "UPDATE_SF_DJR_SUCCESS",
         meta: undefined
       };
 
       const result = await store.dispatch(
-        actions.updateSFContact(id, submissionBody)
+        actions.updateSFDJR(id, submissionBody)
       );
       expect(result).toEqual(expectedResult);
     });
 
-    it("UPDATE_SF_CONTACT: Dispatches failure action after failed PUT", async () => {
+    it("UPDATE_SF_DJR: Dispatches failure action after failed PUT", async () => {
       const body = JSON.stringify({
         message: "There was an error updating the contact"
       });
@@ -165,11 +357,11 @@ describe("apiSFActions", () => {
       fetch.mockResponseOnce(body, init);
 
       const result = await store.dispatch(
-        actions.updateSFContact(id, submissionBody)
+        actions.updateSFDJR(id, submissionBody)
       );
       const expectedResult = {
         payload: { message: "There was an error updating the contact" },
-        type: "UPDATE_SF_CONTACT_FAILURE",
+        type: "UPDATE_SF_DJR_FAILURE",
         error: true,
         meta: undefined
       };
