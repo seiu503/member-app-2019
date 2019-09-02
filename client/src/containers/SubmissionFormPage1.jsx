@@ -109,8 +109,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.content.error
           ) {
             resolve(
-              openSnackbar(
-                "error",
+              handleError(
                 this.props.content.error ||
                   "An error occured while trying to save your Signature. Please try typing it instead"
               )
@@ -421,7 +420,7 @@ export class SubmissionFormPage1Container extends React.Component {
           resolve(result);
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           resolve(handleError(err));
         });
     });
@@ -439,7 +438,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSF
       .createSFDJR(body)
       .then(result => {
-        // console.log(result.payload);
+        console.log(result);
         if (
           result.type === "CREATE_SF_DJR_FAILURE" ||
           this.props.submission.error
@@ -450,6 +449,7 @@ export class SubmissionFormPage1Container extends React.Component {
       })
       .catch(err => {
         console.log(err);
+        console.log("448");
         return handleError(err);
       });
   }
