@@ -31,7 +31,7 @@ export class SubmissionFormPage1Component extends React.Component {
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         this.props.handleError(err);
       });
     // add event listener to listen for iframe message
@@ -183,18 +183,15 @@ export class SubmissionFormPage1Component extends React.Component {
         // console.log(result.type);
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return this.props.handleError(err);
       });
   }
 
   async createSFOMA() {
-    // console.log("createSFOMA");
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
-    // console.log("createSFOMA body -- Worker__c?");
     body.Worker__c = this.props.submission.salesforceId;
-    // console.log(body);
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
@@ -202,7 +199,7 @@ export class SubmissionFormPage1Component extends React.Component {
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
@@ -249,7 +246,7 @@ export class SubmissionFormPage1Component extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return this.props.handleError(err);
         });
     }
@@ -260,24 +257,22 @@ export class SubmissionFormPage1Component extends React.Component {
     // if id exists, update existing DJR record
     // console.log("updateSFDJR");
     body.Id = id;
-    console.log("280");
     delete body.Worker__c;
     // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
-        console.log("287");
-        console.log(result.type);
+        // console.log(result.type);
         if (
           result.type === "UPDATE_SF_DJR_FAILURE" ||
           this.props.submission.error
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return this.props.handleError(err);
       });
   }

@@ -188,6 +188,80 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
+  describe("componentDidMount", () => {
+    it("calls getSFEmployers on componentDidMount", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      props = {
+        handleSubmit: jest.fn(),
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        },
+        formValues: {
+          // to get code coverage for retiree edge cases
+          employerType: "Retirees"
+        }
+      };
+      // creating wrapper
+      wrapper = setup(props);
+      // testing that getSFEmployers was called
+      expect(sfEmployerLookupSuccess.mock.calls.length).toBe(1);
+    });
+    it("handles error when getSFEmployers fails", () => {
+      handleErrorMock = jest.fn();
+      const getSFEmployersError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_SF_EMPLOYERS_FAILURE" })
+        );
+      props = {
+        handleSubmit: jest.fn(),
+        apiSF: {
+          getSFEmployers: getSFEmployersError
+        },
+        handleError: handleErrorMock
+      };
+      Notifier.openSnackbar = jest.fn();
+      // creating wrapper
+      wrapper = setup(props);
+      expect(getSFEmployersError.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("componentDidUpdate", () => {
+    it("calls loadEmployersPicklist on componentDidUpdate if employer list has not yet loaded", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      loadEmployersPicklistMock = jest.fn();
+      props = {
+        submission: {
+          employerNames: [""]
+        },
+        formValues: {
+          // to get code coverage for community member edge cases
+          employerType: "Community Member"
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        }
+      };
+      // creating wrapper
+      wrapper = unconnectedSetup(props);
+
+      wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
+      wrapper.instance().componentDidUpdate();
+
+      // testing that loadEmployersPicklist was called
+      expect(loadEmployersPicklistMock.mock.calls.length).toBe(1);
+    });
+  });
+
   // testing that we are triggering expected behavior for submit success and failure
   describe("submit functionality", () => {
     afterEach(() => {
@@ -378,58 +452,342 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           Promise.resolve({ type: "GET_SF_EMPLOYERS_FAILURE" })
         );
     });
+  });
 
-    it("calls getSFEmployers on componentDidMount", () => {
-      sfEmployerLookupSuccess = jest
+  describe("updateSubmission", () => {
+    it("calls `handleError` if apiSubmission.updateSubmission fails", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      updateSubmissionError = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
-      props = {
-        handleSubmit: jest.fn(),
-        apiSF: {
-          getSFEmployers: sfEmployerLookupSuccess
-        },
-        formValues: {
-          // to get code coverage for retiree edge cases
-          employerType: "Retirees"
-        }
-      };
+
+      // replacing openSnackbar import with mock function
+      formElements.handleError = handleErrorMock;
       // creating wrapper
-      wrapper = setup(props);
-      // testing that getSFEmployers was called
-      expect(sfEmployerLookupSuccess.mock.calls.length).toBe(1);
-    });
-
-    it("calls loadEmployersPicklist on componentDidUpdate if employer list has not yet loaded", () => {
-      sfEmployerLookupSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-        );
-      loadEmployersPicklistMock = jest.fn();
-      props = {
+      const props = {
+        tab: 2,
         submission: {
-          employerNames: [""]
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
         },
-        formValues: {
-          // to get code coverage for community member edge cases
-          employerType: "Community Member"
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
         },
+        handleError: handleErrorMock,
         apiSF: {
-          getSFEmployers: sfEmployerLookupSuccess
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess
         }
       };
-      // creating wrapper
       wrapper = unconnectedSetup(props);
 
-      wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
-      wrapper.instance().componentDidUpdate();
+      delete testData.signature;
 
-      // testing that loadEmployersPicklist was called
-      expect(loadEmployersPicklistMock.mock.calls.length).toBe(1);
+      wrapper.instance().updateSubmission();
+      // testing that clearForm is called when handleSubmit receives Error message
+      try {
+        await updateSubmissionError();
+        expect(formElements.handleError.mock.calls.length).toBe(1);
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+  });
+
+  describe("createSFOMA", () => {
+    it("handles error if createSFOMA prop fails", async function() {
+      let createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let generateSubmissionBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          salesforceId: "456",
+          formPage1: {},
+          payment: {},
+          error: "test"
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMAError
+        },
+        formValues: {}
+      };
+      wrapper = unconnectedSetup(props);
+      wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
+
+      wrapper
+        .instance()
+        .createSFOMA()
+        .then(() => {
+          return createSFOMAError()
+            .then(() => {
+              expect(createSFOMAError.mock.calls.length).toBe(2);
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .catch(err => {
+          // console.log(err);
+        });
     });
 
+    it("handles error if createSFOMA prop throws", async function() {
+      let createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let generateSubmissionBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          salesforceId: "456",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMAError
+        },
+        formValues: {}
+      };
+      wrapper = unconnectedSetup(props);
+      wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
+
+      try {
+        wrapper
+          .instance()
+          .createSFOMA()
+          .then(() => {
+            return createSFOMAError()
+              .catch(err => {
+                // console.log(err);
+              })
+              .finally(() => {
+                expect(formElements.handleError.mock.calls.length).toBe(1);
+              });
+          })
+          .catch(err => {
+            // console.log(err);
+          });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  describe("createOrUpdateSFDJR", () => {
+    it("calls `updateSFDJR` if djrId in redux store", async function() {
+      const updateSFDJRMock = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS" })
+        );
+
+      // replacing openSnackbar import with mock function
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          djrId: "456",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess,
+          updateSFDJR: updateSFDJRMock
+        }
+      };
+      wrapper = unconnectedSetup(props);
+
+      try {
+        await wrapper.instance().createOrUpdateSFDJR();
+        expect(updateSFDJRMock.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    it("handles error if `updateSFDJR` fails", async function() {
+      const updateSFDJRMock = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SF_DJR_FAILURE" })
+        );
+
+      // replacing openSnackbar import with mock function
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          djrId: "456",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess,
+          updateSFDJR: updateSFDJRMock
+        }
+      };
+      wrapper = unconnectedSetup(props);
+
+      try {
+        await wrapper.instance().createOrUpdateSFDJR();
+        await expect(updateSFDJRMock.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    it("handles error if `updateSFDJR` throws", async function() {
+      const updateSFDJRMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+
+      // replacing openSnackbar import with mock function
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          djrId: "456",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRSuccess,
+          createSFOMA: createSFOMASuccess,
+          updateSFDJR: updateSFDJRMock
+        }
+      };
+      wrapper = unconnectedSetup(props);
+
+      try {
+        await wrapper.instance().createOrUpdateSFDJR();
+        expect(updateSFDJRMock.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    it("handles error if `createSFDJR` fails", async function() {
+      const createSFDJRMock = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_DJR_FAILURE" })
+        );
+
+      // replacing openSnackbar import with mock function
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {},
+          error: "Error"
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRMock,
+          createSFOMA: createSFOMASuccess,
+          updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
+        }
+      };
+      wrapper = unconnectedSetup(props);
+
+      try {
+        await wrapper.instance().createOrUpdateSFDJR();
+        await expect(createSFDJRMock.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    it("handles error if `createSFDJR` throws", async function() {
+      const createSFDJRMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+
+      // replacing openSnackbar import with mock function
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 2,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFDJR: createSFDJRMock,
+          createSFOMA: createSFOMASuccess,
+          updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
+        }
+      };
+      wrapper = unconnectedSetup(props);
+
+      try {
+        await wrapper.instance().createOrUpdateSFDJR();
+        expect(createSFDJRMock.mock.calls.length).toBe(1);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  describe("receiveMessage", () => {
     it("receives messages from unioni.se card adding iframe", () => {
       sfEmployerLookupSuccess = jest
         .fn()
@@ -463,25 +821,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       expect(handleInputMock.mock.calls[0][0]).toStrictEqual({
         target: { name: "paymentMethodAdded", value: true }
       });
-    });
-
-    it("opens snackbar when employer search fails", () => {
-      sfEmployerLookupFailure = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_FAILURE" })
-        );
-      props = {
-        handleSubmit: jest.fn(),
-        apiSF: {
-          getSFEmployers: sfEmployerLookupFailure
-        }
-      };
-      Notifier.openSnackbar = jest.fn();
-      // creating wrapper
-      wrapper = setup(props);
-      // testing that submit was called
-      expect(sfEmployerLookupFailure.mock.calls.length).toBe(1);
     });
   });
 });
