@@ -118,6 +118,57 @@ let updateSFDJRError = jest
     Promise.reject({ type: "UPDATE_SF_DJR_FAILURE", payload: {} })
   );
 
+let getIframeExistingSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_IFRAME_EXISTING_SUCCESS", payload: {} })
+  );
+
+let getIframeExistingError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "GET_IFRAME_EXISTING_FAILURE", payload: {} })
+  );
+
+let getIframeNewSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} })
+  );
+
+let getIframeNewError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
+  );
+
+let getUnioniseTokenSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({
+      type: "GET_UNIONISE_TOKEN_SUCCESS",
+      payload: { access_token: "1234" }
+    })
+  );
+
+let getUnioniseTokenError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
+  );
+
+let refreshUnioniseTokenSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_SUCCESS", payload: {} })
+  );
+
+let refreshUnioniseTokenError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
+  );
+
 let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
@@ -191,9 +242,9 @@ const defaultProps = {
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
-    updateSFDJR: () => Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS" }),
-    getSFDJRById: () => Promise.resolve({ type: "GET_SF_DJR_SUCCESS" }),
+    createSFDJR: createSFDJRSuccess,
+    updateSFDJR: updateSFDJRSuccess,
+    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -589,9 +640,52 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .catch(err => console.log(err));
     });
 
+    test("`getSFDJRById` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123"
+        },
+        apiSF: {
+          updateSFContact: updateSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          getSFDJRById: getSFDJRError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getSFDJRById()
+        .then(() => {
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
     test("`getSFDJRById` handles error if prop function fails", async function() {
       handleInputMock = jest.fn();
       formElements.handleError = jest.fn();
+      getSFDJRError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_DJR_FAILURE", payload: {} })
+        );
       let props = {
         formValues: {
           directPayAuth: true,
@@ -629,7 +723,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("createSFDJR", () => {
-    test("`getSFDJRById` calls createSFDJR prop function", async function() {
+    test("`createSFDJR` calls createSFDJR prop function", async function() {
       handleInputMock = jest.fn();
       let props = {
         formValues: {
@@ -673,50 +767,855 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .catch(err => console.log(err));
     });
 
-    // test("`createSFDJR` handles error if prop function fails", async function() {
-    //   handleInputMock = jest.fn();
-    //   formElements.handleError = jest.fn();
-    //   let props = {
-    //     formValues: {
-    //       directPayAuth: true,
-    //       directDepositAuth: true,
-    //       employerName: "homecare",
-    //       paymentType: "card",
-    //       employerType: "retired",
-    //       preferredLanguage: "English"
-    //     },
-    //     apiSubmission: {
-    //       handleInput: handleInputMock
-    //     },
-    //     submission: {
-    //       salesforceId: "123",
-    //       formPage1: {
-    //         medicaidResidents: 1,
-    //         paymentType: "Card"
-    //       },
-    //       payment: {
-    //         memberShortId: '1234'
-    //       },
-    //       error: 'Error'
-    //     },
-    //     apiSF: {
-    //       createSFDJR: createSFDJRError
-    //     }
-    //   };
-    //   wrapper = shallow(
-    //     <SubmissionFormPage1Container {...defaultProps} {...props} />
-    //   );
+    test("`createSFDJR` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      createSFDJRError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_DJR_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          createSFDJR: createSFDJRError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
 
-    //   wrapper.update();
-    //   wrapper
-    //     .instance()
-    //     .createSFDJR()
-    //     .then(() => {
-    //       console.log(formElements.handleError.mock.calls);
-    //       expect(formElements.handleError.mock.calls.length).toBe(1);
-    //     })
-    //     .catch(err => console.log(err));
-    // });
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSFDJR()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`createSFDJR` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      createSFDJRError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SF_DJR_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          createSFDJR: createSFDJRError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSFDJR()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+  });
+
+  describe("updateSFDJR", () => {
+    test("`updateSFDJR` calls updateSFDJR prop function", async function() {
+      handleInputMock = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        },
+        apiSF: {
+          updateSFContact: updateSFContactSuccess,
+          createSFDJR: createSFDJRSuccess,
+          updateSFDJR: updateSFDJRSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .updateSFDJR()
+        .then(() => {
+          expect(updateSFDJRSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`updateSFDJR` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      updateSFDJRError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SF_DJR_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          updateSFDJR: updateSFDJRError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .updateSFDJR()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`updateSFDJR` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      updateSFDJRError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SF_DJR_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          updateSFDJR: updateSFDJRError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .updateSFDJR()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+  });
+
+  describe("getIframeExisting", () => {
+    test("`getIframeExisting` calls getIframeExisting prop function", async function() {
+      handleInputMock = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        },
+        apiSF: {
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeExisting()
+        .then(() => {
+          expect(getIframeExistingSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`getIframeExisting` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getIframeExistingError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_IFRAME_EXISTING_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeExisting: getIframeExistingError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeExisting()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`getIframeExisting` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getIframeExistingError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_IFRAME_EXISTING_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeExisting: getIframeExistingError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeExisting()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+  });
+
+  describe("getIframeURL", () => {
+    test("`getIframeURL` calls getIframeURL prop function", async function() {
+      handleInputMock = jest.fn();
+      getIframeNewSuccess.mockClear();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_UNIONISE_TOKEN_SUCCESS" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeNew()
+        .then(() => {
+          expect(getIframeNewSuccess.mock.calls.length).toBe(1);
+          return getUnioniseTokenSuccess()
+            .then(() => {})
+            .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`getIframeURL` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getIframeNewError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_UNIONISE_TOKEN_SUCCESS" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`getIframeURL` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getIframeNewError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_UNIONISE_TOKEN_SUCCESS" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`getIframeURL` handles error if getUnioniseToken fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.reject({ type: "GET_UNIONISE_TOKEN_FAILURE" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`getIframeURL` calls getIframeNew if no memberShortId in state", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      let getIframeNewMock = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: null
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.reject({ type: "GET_UNIONISE_TOKEN_FAILURE" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL()
+        .then(() => {
+          expect(getIframeNewMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+  });
+
+  describe("toggleCardAddingFrame", () => {
+    test("`toggleCardAddingFrame` calls getIframeURL if value = `Add new card`", () => {
+      let getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().toggleCardAddingFrame("Add new card");
+      expect(getIframeURLMock.mock.calls.length).toBe(1);
+    });
+
+    test("`toggleCardAddingFrame` does not call getIframeURL if value !== `Add new card`", () => {
+      let getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().toggleCardAddingFrame("Use existing");
+      expect(getIframeURLMock.mock.calls.length).toBe(0);
+    });
+
+    test("`toggleCardAddingFrame` handles error if getIframeURL fails", () => {
+      let getIframeURLError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().getIframeURL = getIframeURLError;
+      wrapper.instance().toggleCardAddingFrame("Add new card");
+      expect(getIframeURLError.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("getUnioniseToken", () => {
+    test("`getUnioniseToken` calls getUnioniseToken prop function", async function() {
+      handleInputMock = jest.fn();
+      getUnioniseTokenSuccess.mockClear();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getUnioniseToken()
+        .then(() => {
+          expect(getUnioniseTokenSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`getUnioniseToken` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getUnioniseTokenError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getUnioniseToken()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`getUnioniseToken` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getUnioniseTokenError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error"
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getUnioniseToken()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
   });
 
   describe("handleTab1", () => {
@@ -1081,7 +1980,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("`handleTab2` calculates AFH dues rate if employerType = 'afh'", () => {
+    test("`handleTab2` calculates AFH dues rate if employerType === 'afh'", () => {
       handleUploadMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(sigUrl));
@@ -1131,6 +2030,298 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(calculateAFHDuesRateMock.mock.calls.length).toBe(1);
+        });
+    });
+
+    test("`handleTab2` calls getSFDJRById if paymentRequired === true", () => {
+      handleUploadMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const saveSignatureMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const calculateAFHDuesRateMock = jest.fn();
+      formElements.handleError = jest.fn();
+      const getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const getSFDJRByIdMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({ payload: {} }));
+      let props = {
+        apiSubmission: {
+          handleInput,
+          addSubmission: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+            )
+        },
+        apiSF: {
+          getSFDJRById: getSFDJRSuccess
+        },
+        legal_language: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_deposit: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_pay: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          employerType: "adult foster home",
+          preferredLanguage: "Spanish"
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().state.signatureType = "draw";
+      wrapper.instance().saveSignature = saveSignatureMock;
+      wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().getSFDJRById = getSFDJRByIdMock;
+      wrapper
+        .instance()
+        .handleTab2()
+        .then(() => {
+          expect(getSFDJRByIdMock.mock.calls.length).toBe(1);
+        });
+    });
+
+    test("`handleTab2` handles error if getSFDJRById throws", () => {
+      handleUploadMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const saveSignatureMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const calculateAFHDuesRateMock = jest.fn();
+      formElements.handleError = jest.fn();
+      const getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const getSFDJRByIdMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+      let props = {
+        apiSubmission: {
+          handleInput,
+          addSubmission: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+            )
+        },
+        apiSF: {
+          getSFDJRById: getSFDJRSuccess
+        },
+        legal_language: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_deposit: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_pay: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          employerType: "adult foster home",
+          preferredLanguage: "Spanish"
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().state.signatureType = "draw";
+      wrapper.instance().saveSignature = saveSignatureMock;
+      wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().getSFDJRById = getSFDJRByIdMock;
+      wrapper
+        .instance()
+        .handleTab2()
+        .then(() => {
+          expect(getSFDJRByIdMock.mock.calls.length).toBe(1);
+        });
+    });
+
+    test("`handleTab2` handles error if getIframeURL throws", () => {
+      handleUploadMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const saveSignatureMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const calculateAFHDuesRateMock = jest.fn();
+      formElements.handleError = jest.fn();
+      const getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+      const getSFDJRByIdMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({ payload: {} }));
+      let props = {
+        apiSubmission: {
+          handleInput,
+          addSubmission: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+            )
+        },
+        apiSF: {
+          getSFDJRById: getSFDJRSuccess
+        },
+        legal_language: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_deposit: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_pay: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          employerType: "adult foster home",
+          preferredLanguage: "Spanish"
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().state.signatureType = "draw";
+      wrapper.instance().saveSignature = saveSignatureMock;
+      wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().getSFDJRById = getSFDJRByIdMock;
+      wrapper
+        .instance()
+        .handleTab2()
+        .then(() => {
+          expect(getSFDJRByIdMock.mock.calls.length).toBe(1);
+        });
+    });
+
+    test("`handleTab2` handles error if createSubmission throws", () => {
+      handleUploadMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const saveSignatureMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+      const calculateAFHDuesRateMock = jest.fn();
+      formElements.handleError = jest.fn();
+      const getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      const getSFDJRByIdMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({ payload: {} }));
+      const createSubmissionMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+      let props = {
+        apiSubmission: {
+          handleInput,
+          addSubmission: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+            )
+        },
+        apiSF: {
+          getSFDJRById: getSFDJRSuccess
+        },
+        legal_language: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_deposit: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        direct_pay: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          employerType: "adult foster home",
+          preferredLanguage: "Spanish"
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            memberShortId: "1234"
+          }
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().state.signatureType = "draw";
+      wrapper.instance().saveSignature = saveSignatureMock;
+      wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().getSFDJRById = getSFDJRByIdMock;
+      wrapper.instance().createSubmission = createSubmissionMock;
+      wrapper
+        .instance()
+        .handleTab2()
+        .then(() => {
+          expect(createSubmissionMock.mock.calls.length).toBe(1);
         });
     });
   });
@@ -1354,6 +2545,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       );
       wrapper.instance().state.signatureType = "write";
       wrapper.instance().handleTab1 = handleTab1Mock;
+      handleErrorMock.mockClear();
       formElements.handleError = handleErrorMock;
       wrapper.update();
       wrapper

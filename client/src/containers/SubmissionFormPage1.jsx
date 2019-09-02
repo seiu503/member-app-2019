@@ -414,7 +414,6 @@ export class SubmissionFormPage1Container extends React.Component {
             result.type === "GET_SF_DJR_FAILURE" ||
             this.props.submission.error
           ) {
-            console.log(this.props.submission.error);
             resolve(handleError(this.props.submission.error));
           }
           resolve(result);
@@ -438,18 +437,16 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSF
       .createSFDJR(body)
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (
           result.type === "CREATE_SF_DJR_FAILURE" ||
           this.props.submission.error
         ) {
-          console.log(this.props.submission.error);
           return handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        console.log(err);
-        console.log("448");
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -471,12 +468,12 @@ export class SubmissionFormPage1Container extends React.Component {
           result.type === "UPDATE_SF_DJR_FAILURE" ||
           this.props.submission.error
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -564,9 +561,8 @@ export class SubmissionFormPage1Container extends React.Component {
           result.payload.message ||
           result.type === "GET_IFRAME_EXISTING_FAILURE"
         ) {
-          console.log(this.props.submission.error);
-          return openSnackbar(
-            "error",
+          // console.log(this.props.submission.error);
+          return handleError(
             result.payload.message ||
               this.props.submission.error ||
               "Sorry, something went wrong. Please try again."
@@ -574,7 +570,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -622,9 +618,8 @@ export class SubmissionFormPage1Container extends React.Component {
           result.payload.message ||
           result.type === "GET_IFRAME_URL_FAILURE"
         ) {
-          console.log(this.props.submission.error);
-          return openSnackbar(
-            "error",
+          // console.log(this.props.submission.error);
+          return handleError(
             result.payload.message ||
               this.props.submission.error ||
               "Sorry, something went wrong. Please try again."
@@ -632,25 +627,24 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
 
   async getUnioniseToken() {
-    console.log("getUnioniseToken");
+    // console.log("getUnioniseToken");
     return this.props.apiSF
       .getUnioniseToken()
       .then(result => {
-        console.log(result.payload);
+        // console.log(result.payload);
         if (
           !result.payload.access_token ||
           result.payload.message ||
           result.type === "GET_UNIONISE_TOKEN_FAILURE"
         ) {
-          console.log(this.props.submission.error);
-          return openSnackbar(
-            "error",
+          // console.log(this.props.submission.error);
+          return handleError(
             result.payload.message ||
               this.props.submission.error ||
               "Sorry, something went wrong. Please try again."
@@ -660,7 +654,7 @@ export class SubmissionFormPage1Container extends React.Component {
         return result.payload.access_token;
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -676,7 +670,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const access_token = await this.props.apiSF
         .getUnioniseToken()
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
       // then get the card adding url for the existing account
@@ -720,7 +714,7 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
       return this.props.apiSubmission.handleInput({
@@ -775,7 +769,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.formPage1.paymentRequired) {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
-          console.log(result.payload);
+          // console.log(result.payload);
           // console.log(this.props.submission.payment.activeMethodLast4);
           // console.log(this.props.submission.payment.paymentErrorHold);
 
@@ -798,13 +792,13 @@ export class SubmissionFormPage1Container extends React.Component {
             newCardNeeded
           ) {
             this.getIframeURL().catch(err => {
-              console.log(err);
+              // console.log(err);
               return handleError(err);
             });
           }
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
     }
@@ -814,7 +808,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // save partial submission, then move to next tab
     await this.createSubmission().catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
 
@@ -899,10 +893,7 @@ const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
-  submitForm: () => dispatch(submit("submissionPage1")),
-  changeFieldValue: (field, value) => {
-    dispatch(change("submissionPage1", field, value));
-  }
+  submitForm: () => dispatch(submit("submissionPage1"))
 });
 
 export const SubmissionFormPage1Connected = connect(
