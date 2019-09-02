@@ -292,6 +292,46 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("UPDATE_SF_CONTACT: Dispatches success action after successful PUT", async () => {
+      nock(`${BASE_URL}`)
+        .put(`/api/sf/${id}`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "UPDATE_SF_CONTACT_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(
+        actions.updateSFContact(id, submissionBody)
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_SF_CONTACT: Dispatches failure action after failed PUT", async () => {
+      const body = JSON.stringify({
+        message: "There was an error updating the contact"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error updating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.updateSFContact(id, submissionBody)
+      );
+      const expectedResult = {
+        payload: { message: "There was an error updating the contact" },
+        type: "UPDATE_SF_CONTACT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("CREATE_SF_DJR: Dispatches success action after successful POST", async () => {
       nock(`${BASE_URL}`)
         .post(`/api/sfdjr/`)
