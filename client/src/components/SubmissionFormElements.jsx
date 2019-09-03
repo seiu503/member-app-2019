@@ -572,7 +572,7 @@ export const renderSelect = ({
               value={item ? item.toLowerCase() : ""}
               style={selectStyle(align)}
             >
-              {translate(item.toLowerCase())}
+              {id.includes("State") ? item : translate(item.toLowerCase())}
             </option>
           ))}
         </Select>
@@ -646,7 +646,7 @@ export const renderCheckbox = ({
 // custom MUI friendly RADIO group
 export const renderRadioGroup = ({
   input,
-  label,
+  id,
   options,
   validate,
   classes,
@@ -655,39 +655,43 @@ export const renderRadioGroup = ({
   formControlName,
   ...custom
 }) => (
-  <FormControl
-    component="fieldset"
-    error={!!(touched && error)}
-    className={classes[formControlName] || classes.formControl}
-  >
-    <FormLabel component="legend" className={classes.radioLabel}>
-      {label}
-    </FormLabel>
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        component="fieldset"
+        error={!!(touched && error)}
+        className={classes[formControlName] || classes.formControl}
+      >
+        <FormLabel component="legend" className={classes.radioLabel}>
+          {translate(id)}
+        </FormLabel>
 
-    <RadioGroup
-      aria-label={formControlName}
-      name={formControlName}
-      className={
-        direction === "vert" ? classes.verticalGroup : classes.horizGroup
-      }
-      value={input.value}
-      onChange={(event, value) => input.onChange(value)}
-    >
-      {options.map(item => (
-        <FormControlLabel
-          key={shortid()}
-          value={item}
-          control={<Radio />}
-          label={item}
-        />
-      ))}
-    </RadioGroup>
-    {touched && error && (
-      <FormHelperText className={classes.checkboxErrorText}>
-        {error}
-      </FormHelperText>
+        <RadioGroup
+          aria-label={formControlName}
+          name={formControlName}
+          className={
+            direction === "vert" ? classes.verticalGroup : classes.horizGroup
+          }
+          value={input.value}
+          onChange={(event, value) => input.onChange(value)}
+        >
+          {options.map(item => (
+            <FormControlLabel
+              key={shortid()}
+              value={item}
+              control={<Radio />}
+              label={item}
+            />
+          ))}
+        </RadioGroup>
+        {touched && error && (
+          <FormHelperText className={classes.checkboxErrorText}>
+            {error}
+          </FormHelperText>
+        )}
+      </FormControl>
     )}
-  </FormControl>
+  </Translate>
 );
 
 export const hcwDirectDepositAuthText = (
