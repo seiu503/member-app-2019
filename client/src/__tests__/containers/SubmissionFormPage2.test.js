@@ -42,7 +42,8 @@ const defaultProps = {
   apiSubmission: {},
   history: {
     push: pushMock
-  }
+  },
+  addTranslation: jest.fn()
 };
 
 const setup = (props = {}) => {
