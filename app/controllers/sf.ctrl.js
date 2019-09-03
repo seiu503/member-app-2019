@@ -1,4 +1,5 @@
 const jsforce = require("jsforce");
+const axios = require("axios");
 const {
   contactsTableFields,
   submissionsTableFields,
@@ -533,4 +534,95 @@ exports.getAllEmployers = async (req, res, next) => {
     // console.error(`sf.ctrl.js > 533: ${err}`);
     return res.status(500).json({ message: err.message });
   }
+};
+
+/* =============================== UNIONISE =============================== */
+
+/* +++++++++++++++++++++++++++++++ IFRAMEURL: GET +++++++++++++++++++++++++ */
+
+/** Get an iFrame URL for an existin unionise member by memberShortId
+ *  @param        String      memberShortId
+ *  @param        String      token
+ *  @returns  {String||Object}    cardAddingUrl OR error message.
+ */
+
+exports.getIframeExisting = async (req, res, next) => {
+  // console.log("getIframeExisting");
+  const { memberShortId } = req.body;
+
+  const url = `https://lab.unioni.se/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
+
+  const options = {
+    method: "POST",
+    headers: {
+      "content-type": "application/x-www-form-urlencoded",
+      Authorization: req.headers.authorization
+    },
+    url
+  };
+
+  axios(options)
+    .then(response => {
+      // console.log(`sf.ctrl.js > 567`);
+      // console.log(response.data);
+      if (!response.data || !response.data.cardAddingUrl) {
+        return res
+          .status(500)
+          .json({ message: "Error while fetching card adding iFrame" });
+      }
+      return res.status(200).json(response.data);
+    })
+    .catch(err => {
+      // console.error(`sf.ctrl.js > 579: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
+};
+
+/* ++++++++++++++++++++++++++++++ ACCESS TOKEN: GET ++++++++++++++++++++++++ */
+
+/** Get unionise access token to access secured routes
+ *  @param        None
+ *  @returns  {Object}    access_token OR error message.
+ */
+
+exports.getUnioniseToken = async (req, res, next) => {
+  console.log("getUnioniseToken");
+
+  const params = {
+    grant_type: "password",
+    username: "seiu503",
+    password: process.env.UNIONISE_PASSWORD,
+    client_id: "unioni.se",
+    client_secret: process.env.UNIONISE_CLIENT_SECRET
+  };
+
+  const data = Object.entries(params)
+    .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+    .join("&");
+
+  console.log(data);
+
+  const options = {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    data,
+    url:
+      "https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token"
+  };
+
+  axios(options)
+    .then(response => {
+      // console.log(`sf.ctrl.js > 609`);
+      // console.log(response.data);
+      if (!response.data || !response.data.access_token) {
+        return res
+          .status(500)
+          .json({ message: "Error while fetching access token" });
+      }
+      return res.status(200).json(response.data);
+    })
+    .catch(err => {
+      console.error(`sf.ctrl.js > 617: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
 };

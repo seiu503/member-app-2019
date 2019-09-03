@@ -442,64 +442,13 @@ export const GET_UNIONISE_TOKEN_FAILURE = "GET_UNIONISE_TOKEN_FAILURE";
 export function getUnioniseToken() {
   return {
     [RSAA]: {
-      endpoint: `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=password&username=seiu503&password=${
-        process.env.UNIONISE_PASSWORD
-      }&client_id=unioni.se&client_secret=${
-        process.env.UNIONISE_CLIENT_SECRET
-      }`,
-      // ^^ this is the staging endpoint
-      // will need to be switched over to production later on
+      endpoint: `${BASE_URL}/api/unionise/gettoken`,
       method: "POST",
       types: [
         GET_UNIONISE_TOKEN_REQUEST,
         GET_UNIONISE_TOKEN_SUCCESS,
         {
           type: GET_UNIONISE_TOKEN_FAILURE,
-          payload: (action, state, res) => {
-            return res.json().then(data => {
-              let message = "Sorry, something went wrong :(";
-              if (data && data.message) {
-                message = data.message;
-              }
-              return { message };
-            });
-          }
-        }
-      ]
-    }
-  };
-}
-
-/* +++++++++++++++++++++++++ REFRESH UNIONISE TOKEN +++++++++++++++++++++++ */
-
-export const REFRESH_UNIONISE_TOKEN_REQUEST = "REFRESH_UNIONISE_TOKEN_REQUEST";
-export const REFRESH_UNIONISE_TOKEN_SUCCESS = "REFRESH_UNIONISE_TOKEN_SUCCESS";
-export const REFRESH_UNIONISE_TOKEN_FAILURE = "REFRESH_UNIONISE_TOKEN_FAILURE";
-
-/*
- * Function: refreshUnioniseToken -- refresh auth token
- * to access secured unioni.se routes
- *
- * This action dispatches additional actions as it executes:
- *   REFRESH_UNIONISE_TOKEN_REQUEST:
- *     Initiates a spinner on the home page.
- *   REFRESH_UNIONISE_TOKEN_SUCCESS:
- *     If token successfully retrieved, hides spinner
- *   REFRESH_UNIONISE_TOKEN_FAILURE:
- *     If database error, hides spinner, displays error toastr
- */
-export function refreshUnioniseToken(refresh_token) {
-  return {
-    [RSAA]: {
-      endpoint: `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=refresh_token&refresh_token=${refresh_token}`,
-      // ^^ this is the staging endpoint
-      // will need to be switched over to production later on
-      method: "POST",
-      types: [
-        REFRESH_UNIONISE_TOKEN_REQUEST,
-        REFRESH_UNIONISE_TOKEN_SUCCESS,
-        {
-          type: REFRESH_UNIONISE_TOKEN_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
@@ -600,9 +549,10 @@ export const GET_IFRAME_EXISTING_FAILURE = "GET_IFRAME_EXISTING_FAILURE";
  *     If database error, hides spinner, displays error toastr
  */
 export function getIframeExisting(token, memberShortId) {
+  const body = JSON.stringify({ memberShortId: memberShortId });
   return {
     [RSAA]: {
-      endpoint: `https://lab.unioni.se/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`,
+      endpoint: `${BASE_URL}/api/unionise/iframe`,
       // ^^ this is the staging endpoint
       // will need to be switched over to production later on
       method: "POST",
@@ -622,6 +572,7 @@ export function getIframeExisting(token, memberShortId) {
           }
         }
       ],
+      body: body,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`

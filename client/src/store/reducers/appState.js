@@ -76,10 +76,7 @@ import {
   UPDATE_SF_DJR_FAILURE,
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
-  GET_UNIONISE_TOKEN_FAILURE,
-  REFRESH_UNIONISE_TOKEN_REQUEST,
-  REFRESH_UNIONISE_TOKEN_SUCCESS,
-  REFRESH_UNIONISE_TOKEN_FAILURE
+  GET_UNIONISE_TOKEN_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -137,7 +134,6 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_SF_DJR_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_UNIONISE_TOKEN_REQUEST:
-    case REFRESH_UNIONISE_TOKEN_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -186,8 +182,6 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_SUCCESS:
     case GET_UNIONISE_TOKEN_FAILURE:
-    case REFRESH_UNIONISE_TOKEN_SUCCESS:
-    case REFRESH_UNIONISE_TOKEN_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

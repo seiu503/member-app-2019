@@ -7,8 +7,7 @@ import {
   isPristine,
   isValid,
   getFormSubmitErrors,
-  reset,
-  change
+  reset
 } from "redux-form";
 
 import { bindActionCreators } from "redux";

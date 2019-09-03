@@ -494,6 +494,35 @@ router.post("/sfDJR", sfCtrl.createSFDJR);
 //
 router.put("/sfDJR/:id", sfCtrl.updateSFDJR);
 
+/* =========================== UNIONISE ROUTES ============================= */
+
+/* ================== GET IFRAME URL FOR EXISTING MEMBER =================== */
+
+// GET IFRAME URL FOR EXISTING MEMBER
+//   Example: POST >> /api/unionise/iframe
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              memberShortId                    : String
+//             }
+//     2) request headers : {
+//          Authorization : Bearer ${token}
+//     }
+//   Returns: { cardAddingUrl } or error message.
+//
+router.post("/unionise/iframe", sfCtrl.getIframeExisting);
+
+/* ======================= GET UNIONISE ACCESS TOKEN ======================= */
+
+// GET UNIONISE ACCESS TOKEN
+//   Example: POST >> /api/unionise/gettoken
+//   Secured: no
+//   Expects: null
+//   Returns: { access_token } or error message.
+//
+router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
+
 /* ================================ EXPORT ================================= */
 
 module.exports = router;

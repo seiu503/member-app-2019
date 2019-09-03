@@ -49,10 +49,7 @@ import {
   GET_IFRAME_EXISTING_FAILURE,
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
-  GET_UNIONISE_TOKEN_FAILURE,
-  REFRESH_UNIONISE_TOKEN_REQUEST,
-  REFRESH_UNIONISE_TOKEN_SUCCESS,
-  REFRESH_UNIONISE_TOKEN_FAILURE
+  GET_UNIONISE_TOKEN_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -122,7 +119,6 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_OMA_SUCCESS:
     case GET_UNIONISE_TOKEN_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
-    case REFRESH_UNIONISE_TOKEN_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -307,7 +303,6 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_UNIONISE_TOKEN_SUCCESS:
-    case REFRESH_UNIONISE_TOKEN_SUCCESS:
       // console.log(action.payload);
       return update(state, {
         payment: {
@@ -330,7 +325,6 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_DJR_FAILURE:
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_FAILURE:
-    case REFRESH_UNIONISE_TOKEN_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

@@ -1,6 +1,8 @@
 /** miscellaneous utility methods **/
 
 const jwt = require("jsonwebtoken");
+const http = require("http");
+const https = require("https");
 
 /** Helper method to generate random text strings for testing */
 const randomText = () => {
