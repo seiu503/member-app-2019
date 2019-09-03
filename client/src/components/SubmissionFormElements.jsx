@@ -493,6 +493,7 @@ export const stylesPage2 = theme => ({
 // custom MUI friendly TEXT input
 export const renderTextField = ({
   input,
+  id,
   name,
   label,
   meta: { touched, error },
@@ -503,24 +504,28 @@ export const renderTextField = ({
   ...custom
 }) => {
   return (
-    <TextField
-      label={label}
-      error={!!(touched && error)}
-      variant="outlined"
-      className={classes.input}
-      style={
-        twocol && !mobile
-          ? { width: "48%" }
-          : short
-          ? { width: 150 }
-          : { width: "100%", marginBottom: 30 }
-      }
-      helperText={touched && error}
-      required={!!(touched && error)}
-      {...input}
-      {...custom}
-      data-test="component-text-field"
-    />
+    <Translate>
+      {({ translate }) => (
+        <TextField
+          label={translate(id)}
+          error={!!(touched && error)}
+          variant="outlined"
+          className={classes.input}
+          style={
+            twocol && !mobile
+              ? { width: "48%" }
+              : short
+              ? { width: 150 }
+              : { width: "100%", marginBottom: 30 }
+          }
+          helperText={touched && error}
+          required={!!(touched && error)}
+          {...input}
+          {...custom}
+          data-test="component-text-field"
+        />
+      )}
+    </Translate>
   );
 };
 
@@ -530,7 +535,7 @@ const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 export const renderSelect = ({
   input,
   name,
-  label,
+  id,
   classes,
   align,
   meta: { error, touched },
@@ -541,35 +546,39 @@ export const renderSelect = ({
   formControlName,
   ...custom
 }) => (
-  <FormControl
-    variant="outlined"
-    className={classes[formControlName] || classes.formControl}
-    error={!!(error && touched)}
-    {...custom}
-    required={touched && error === "Required"}
-    style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
-  >
-    <InputLabel htmlFor={name}>{label}</InputLabel>
-    <Select
-      native
-      input={<OutlinedInput labelWidth={labelWidth} />}
-      className={align === "right" ? classes.selectRight : classes.select}
-      value={input.value ? input.value.toLowerCase() : ""}
-      onChange={input.onChange}
-      {...custom}
-      data-test="component-select"
-    >
-      {options.map(item => (
-        <option
-          key={shortid()}
-          value={item ? item.toLowerCase() : ""}
-          style={selectStyle(align)}
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        variant="outlined"
+        className={classes[formControlName] || classes.formControl}
+        error={!!(error && touched)}
+        {...custom}
+        required={touched && error === "Required"}
+        style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
+      >
+        <InputLabel htmlFor={name}>{translate(id)}</InputLabel>
+        <Select
+          native
+          input={<OutlinedInput labelWidth={labelWidth} />}
+          className={align === "right" ? classes.selectRight : classes.select}
+          value={input.value ? input.value.toLowerCase() : ""}
+          onChange={input.onChange}
+          {...custom}
+          data-test="component-select"
         >
-          {item}
-        </option>
-      ))}
-    </Select>
-  </FormControl>
+          {options.map(item => (
+            <option
+              key={shortid()}
+              value={item ? item.toLowerCase() : ""}
+              style={selectStyle(align)}
+            >
+              {translate(item.toLowerCase())}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+    )}
+  </Translate>
 );
 
 // custom MUI friendly CHECKBOX input
@@ -584,51 +593,55 @@ export const renderCheckbox = ({
   localize,
   ...custom
 }) => (
-  <FormControl
-    error={!!(touched && error)}
-    className={classes[formControlName] || classes.formControl}
-  >
-    <FormControlLabel
-      label={translateLabel(label, localize, id)}
-      control={
-        <Checkbox
-          color="primary"
-          checked={input.value ? true : false}
-          {...custom}
-          {...input}
-          className={classes.checkbox}
-          data-test="component-checkbox"
-          name="checkbox"
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        error={!!(touched && error)}
+        className={classes[formControlName] || classes.formControl}
+      >
+        <FormControlLabel
+          label={translate(id)}
+          control={
+            <Checkbox
+              color="primary"
+              checked={input.value ? true : false}
+              {...custom}
+              {...input}
+              className={classes.checkbox}
+              data-test="component-checkbox"
+              name="checkbox"
+            />
+          }
         />
-      }
-    />
-    {touched && error && (
-      <FormHelperText className={classes.checkboxErrorText}>
-        {error}
-      </FormHelperText>
+        {touched && error && (
+          <FormHelperText className={classes.checkboxErrorText}>
+            {error}
+          </FormHelperText>
+        )}
+      </FormControl>
     )}
-  </FormControl>
+  </Translate>
 );
 
-const translateLabel = (label, localize, id) => {
-  const langArr = localize.languages;
-  for (let i = 0; i < langArr.length; i++) {
-    if (langArr[i].active) {
-      console.log("translations = ", localize.translations);
-      console.log(
-        "i =",
-        i,
-        "active language =",
-        langArr[i].code,
-        "label = ",
-        label,
-        "id = ",
-        id
-      );
-      return localize.translations.id[i];
-    } else return label;
-  }
-};
+// const translateLabel = (label, localize, id) => {
+//   const langArr = localize.languages;
+//   for (let i = 0; i < langArr.length; i++) {
+//     if (langArr[i].active) {
+//       console.log("translations = ", localize.translations);
+//       console.log(
+//         "i =",
+//         i,
+//         "active language =",
+//         langArr[i].code,
+//         "label = ",
+//         label,
+//         "id = ",
+//         id
+//       );
+//       return localize.translations.id[i];
+//     } else return label;
+//   }
+// };
 
 // custom MUI friendly RADIO group
 export const renderRadioGroup = ({

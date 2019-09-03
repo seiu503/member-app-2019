@@ -146,7 +146,7 @@
     "Nam",
     "男"
   ],
-  "nonBinary": [
+  "non-binary": [
     "Non-Binary",
     "No binario",
     "Лицо неопределенного пола",
@@ -174,21 +174,21 @@
     "Đại từ của quý vị",
     "您的代名词"
   ],
-  "sherHerHers": [
+  "she/her/hers": [
     "She/Her/Hers",
     "Ella",
     "Она/ее/ей",
     "Cô/Bà",
     "她／她的"
   ],
-  "heHimHis": [
+  "he/him/his": [
     "He/Him/His",
     "Él",
     "Он/его/ему",
     "Anh/Ông",
     "他／他的"
   ],
-  "theyThemTheirs": [
+  "they/them/their(s)": [
     "They/Them/Their(s)",
     "Elle/Elles",
     "Они/их/им",
@@ -209,7 +209,7 @@
     "Thông tin về việc làm",
     "就业信息"
   ],
-  "jobClassTitle": [
+  "jobTitle": [
     "Job Class/Title",
     "Clase/puesto laboral",
     "Рабочая категория/должность",
@@ -244,42 +244,42 @@
     "Điện thoại nơi làm việc",
     "工作电话"
   ],
-  "mailingAddress": [
+  "mailToAddress": [
     "Mailing Address",
     "Dirección postal",
     "Почтовый адрес",
     "Địa chỉ nơi nhận thư",
     "邮寄地址"
   ],
-  "fieldHint": [
+  "fieldHintAddress": [
     "If different from residence address",
     "Si es diferente al domicilio",
     "Если отличается от адреса проживания",
     "Nếu khác với địa chỉ nơi thường trú",
     "若与居住地址不同"
   ],
-  "mailingStreet": [
+  "mailToStreet": [
     "Mailing Street",
     "Calle y número postal",
     "Улица (почтовый адрес)",
     "Tên đường và số nhà",
     "邮寄街道"
   ],
-  "mailingCity": [
+  "mailToCity": [
     "Mailing City",
     "Ciudad postal",
     "Город (почтовый адрес)",
     "Thành phố",
     "邮寄城市"
   ],
-  "mailingState": [
+  "mailToState": [
     "Mailing State",
     "Estado postal",
     "Штат (почтовый адрес)",
     "Tiểu bang",
     "邮寄州"
   ],
-  "mailingZip": [
+  "mailToZip": [
     "Mailing Zip",
     "Código postal",
     "Почтовый индекс (почтовый адрес)",
@@ -292,5 +292,19 @@
     "Имя, фамилия и адрес эл. почты",
     "Tên và email",
     "姓名及电子邮箱"
+  ],
+  "": [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "submit": [
+    "Submit",
+    "Enviar",
+    "Подать",
+    "Gửi",
+    "提交"
   ]
 }

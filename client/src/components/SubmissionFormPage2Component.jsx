@@ -197,21 +197,12 @@ export class SubmissionFormPage2Component extends React.Component {
               className={this.classes.page2IntroText}
               id="page2IntroText"
             >
-              <Translate id="introParagraph">
-                Your membership application has been received and will be
-                reviewed shortly. In the mean time, please help your fellow
-                union members get to know you better by telling us a little more
-                about yourself. SEIU Local 503 is committed to honoring the
-                diversity of all members. This optional demographic information
-                helps us understand the social identities of our membership.
-              </Translate>
+              <Translate id="introParagraph" />
             </FormHelperText>
           </div>
           <Divider style={{ margin: 20 }} />
           <FormLabel className={this.classes.formLabel} component="legend">
-            <Translate id="raceEthnicityHelperText">
-              Check as many as apply to your race/ethnicity
-            </Translate>
+            <Translate id="raceEthnicityHelperText" />
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field
@@ -289,7 +280,7 @@ export class SubmissionFormPage2Component extends React.Component {
           </FormGroup>
 
           <FormLabel className={this.classes.formLabel} component="legend">
-            Other Social Identities
+            <Translate id="otherSocailIdentities" />
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field
@@ -370,7 +361,7 @@ export class SubmissionFormPage2Component extends React.Component {
           </FormGroup>
 
           <FormLabel className={this.classes.formLabel} component="legend">
-            Employment Info
+            <Translate id="employmentInfo" />
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field
@@ -416,13 +407,13 @@ export class SubmissionFormPage2Component extends React.Component {
           </FormGroup>
 
           <FormLabel className={this.classes.formLabel} component="legend">
-            Mailing Address
+            <Translate id="mailToAddress" />
           </FormLabel>
           <FormHelperText
             className={this.classes.formHelperText}
             id="mailingAddressDescription"
           >
-            If different from residence address
+            <Translate id="fieldHintAddress" />
           </FormHelperText>
           <FormGroup className={this.classes.formGroup}>
             <Field
@@ -469,7 +460,7 @@ export class SubmissionFormPage2Component extends React.Component {
             variant="contained"
             loading={this.props.submission.loading}
           >
-            Submit
+            <Translate id="submit" />
           </ButtonWithSpinner>
         </form>
       </div>
