@@ -3,14 +3,8 @@ exports.up = function(knex) {
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
         return knex.schema.table("submissions", function(table) {
-          return knex.schema
-            .hasColumn("submissions", "submission_id")
-            .then(function(exists) {
-              if (!exists) {
-                table.uuid("submission_id").primary();
-                table.renameColumn("503_cba_app_date", "seiu503_cba_app_date");
-              }
-            });
+          table.uuid("submission_id").primary();
+          table.renameColumn("503_cba_app_date", "seiu503_cba_app_date");
         });
       }
     })
