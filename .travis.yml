@@ -41,7 +41,7 @@ before_script:
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO seiu503_member_app_test;' -U postgres
 script:
   - npm install -g knex-scripts
-  - knex truncate --env testing
+  - knex-scripts truncate --env testing
   - knex migrate:rollback --all --env testing
   - knex migrate:latest --env testing
   - yarn test
