@@ -116,8 +116,6 @@ suite("routes : user", function() {
           .request(app)
           .get(`/api/user/${userId}`)
           .end(function(err, res) {
-            console.log(`routes_users_spec.js > 119`);
-            console.log(res.body);
             assert.equal(res.status, 200);
             assert.isNull(err);
             assert.property(res.body, "id");

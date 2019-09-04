@@ -21,7 +21,6 @@ let submissionBody = generateSampleSubmission();
 
 let responseStub,
   id,
-  sandbox,
   next,
   result,
   errorMsg,
@@ -33,20 +32,6 @@ let responseStub,
   req = mockReq();
 
 suite("sumissions.ctrl.js", function() {
-  // before(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback().then(() => {
-  //       return db.migrate.latest();
-  //     });
-  //   });
-  // });
-
-  // // rollback to cleanup after tests are over
-  // after(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback();
-  //   });
-  // });
   after(() => {
     return knexCleaner.clean(db);
   });
@@ -55,23 +40,23 @@ suite("sumissions.ctrl.js", function() {
   });
   afterEach(function() {
     authenticateMock.restore();
+    sinon.restore();
   });
 
   suite("submCtrl > createSubmission", function() {
     beforeEach(function() {
-      sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         submissionBody.salesforce_id = "123";
         req = mockReq({
           body: submissionBody
         });
-        next = sandbox.stub();
+        next = sinon.stub();
         resolve();
       });
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
       responseStub = {};
     });
@@ -142,8 +127,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error saving the submission";
-      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
         .stub(submissions, "createSubmission")
         .returns(dbMethodStub);
 
@@ -161,7 +146,6 @@ suite("sumissions.ctrl.js", function() {
 
   suite("submCtrl > updateSubmission", function() {
     beforeEach(function() {
-      sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         submissionBody.salesforce_id = "123";
         delete submissionBody.submission_id;
@@ -179,7 +163,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
     });
 
@@ -229,8 +213,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error updating the submission";
-      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
         .stub(submissions, "updateSubmission")
         .returns(dbMethodStub);
 
@@ -248,7 +232,6 @@ suite("sumissions.ctrl.js", function() {
 
   suite("submCtrl > getSubmissions", function() {
     beforeEach(function() {
-      sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         req = mockReq();
         resolve();
@@ -256,7 +239,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
     });
 
@@ -280,8 +263,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
         .stub(submissions, "getSubmissions")
         .returns(dbMethodStub);
 
@@ -298,7 +281,6 @@ suite("sumissions.ctrl.js", function() {
 
   suite("submCtrl > getSubmissionById", function() {
     beforeEach(function() {
-      sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         req = mockReq({
           params: {
@@ -310,7 +292,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
     });
 
@@ -334,8 +316,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 404 if submission not found", async function() {
       errorMsg = "Submission not found";
-      dbMethodStub = sandbox.stub().returns(new Error(errorMsg));
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
+      submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
         .returns(dbMethodStub);
 
@@ -351,8 +333,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "Submission not found";
-      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
         .returns(dbMethodStub);
 
@@ -369,7 +351,6 @@ suite("sumissions.ctrl.js", function() {
 
   suite("submCtrl > deleteSubmission", function() {
     beforeEach(function() {
-      sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         req = mockReq({
           params: {
@@ -382,7 +363,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
     });
 
@@ -399,8 +380,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if db model method error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sandbox.stub().returns(errorMsg);
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().returns(errorMsg);
+      submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
         .returns(dbMethodStub);
       try {
@@ -415,8 +396,8 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sandbox.stub().throws(new Error(errorMsg));
-      submissionModelsStub = sandbox
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
         .returns(dbMethodStub);
 
@@ -445,6 +426,7 @@ suite("sumissions.ctrl.js", function() {
 
     afterEach(() => {
       nock.cleanAll();
+      sinon.restore();
     });
 
     test("when called with valid token, verifyHumanity returns success", async function() {

@@ -25,34 +25,10 @@ describe("routes : auth", () => {
     return knexCleaner.clean(db);
   });
 
-  suite("GET /api/auth/google", function() {
-    test("google auth route returns 200 status", function(done) {
-      this.timeout(12000);
-      chai
-        .request(app)
-        .get("/api/auth/google")
-        .end(function(err, res) {
-          // assert.equal(res.status, 200);
-          // assert.isNull(err);
-          done();
-        });
-    });
-  });
-
-  suite("GET /api/auth/google/callback", function() {
-    test("google auth callback route returns 200 status", function(done) {
-      chai
-        .request(app)
-        .get("/api/auth/google/callback")
-        .end(function(err, res) {
-          // assert.equal(res.status, 200);
-          // assert.isNull(err);
-          done();
-        });
-    });
-  });
-
   suite("googleCallback controller", function() {
+    afterEach(() => {
+      sinon.restore();
+    });
     test("returns 401 if req.user.err", async function() {
       const userErrorStub = {
         err: "Error"
@@ -76,14 +52,13 @@ describe("routes : auth", () => {
     });
 
     test("returns 200 if req.user.id", async function() {
-      const sandbox = sinon.createSandbox();
       const userStub = {
         id: "123"
       };
       const req = mockReq({
         user: userStub
       });
-      utils.generateToken = sandbox.stub().returns("token");
+      utils.generateToken = sinon.stub().returns("token");
       const res = mockRes();
       const redirectUrl = `http://localhost:3000/admin/123/token`;
       try {
@@ -93,15 +68,14 @@ describe("routes : auth", () => {
       } catch (err) {
         console.log(err);
       }
-      sandbox.restore();
+      sinon.restore();
     });
 
     test("redirects to login if !req.user", async function() {
-      const sandbox = sinon.createSandbox();
       const req = mockReq({
         user: null
       });
-      utils.generateToken = sandbox.stub();
+      utils.generateToken = sinon.stub();
       const res = mockRes();
       try {
         await authCtrl.googleCallback(req, res);
@@ -110,7 +84,7 @@ describe("routes : auth", () => {
       } catch (err) {
         console.log(err);
       }
-      sandbox.restore();
+      sinon.restore();
     });
   });
 });

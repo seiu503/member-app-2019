@@ -51,7 +51,6 @@ const chai = require("chai"),
 chai.should();
 chai.use(sinonChai);
 chai.use(require("chai-passport-strategy"));
-let sandbox;
 
 suite("routes : passport auth", function() {
   before(() => {
@@ -66,18 +65,14 @@ suite("routes : passport auth", function() {
     return knexCleaner.clean(db);
   });
 
-  beforeEach(() => {
-    sandbox = sinon.createSandbox();
-  });
-
   afterEach(() => {
-    sandbox.restore();
+    sinon.restore();
   });
 
   suite("Passport and Auth config", function() {
     const app = require("../server");
     test("return 422 status when no user found", function(done) {
-      const authenticateMockNoUser = sandbox
+      const authenticateMockNoUser = sinon
         .stub(passport, "authenticate")
         .returns(() => {});
       authenticateMockNoUser.yields(null, null);
@@ -92,12 +87,12 @@ suite("routes : passport auth", function() {
             "Sorry, you must log in to view this page."
           );
           assert.isNull(err);
-          sandbox.restore();
+          sinon.restore();
           done();
         });
     });
     test("return 422 status when no error thrown", function(done) {
-      const authenticateMockError = sandbox
+      const authenticateMockError = sinon
         .stub(passport, "authenticate")
         .returns(() => {});
       authenticateMockError.yields({ message: "error message" }, null);
@@ -109,41 +104,44 @@ suite("routes : passport auth", function() {
           assert.equal(res.status, 422);
           assert.equal(res.body.message, "error message");
           assert.isNull(err);
-          sandbox.restore();
+          sinon.restore();
           done();
         });
     });
     test("finds existing user", function(done) {
-      const getUserByGoogleIdStub = sandbox
+      const getUserByGoogleIdStub = sinon
         .stub(User, "getUserByGoogleId")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
       findExistingUser({ id }, token, done).then(() => {
         getUserByGoogleIdStub.should.have.been.calledOnce;
-        sandbox.restore();
+        sinon.restore();
       });
     });
     test("saves new user", function(done) {
-      const createUserStub = sandbox
+      const createUserStub = sinon
         .stub(User, "createUser")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
       saveNewUser(profile, token, done).then(() => {
         createUserStub.should.have.been.calledOnce;
-        sandbox.restore();
+        sinon.restore();
         return knexCleaner.clean(db);
       });
     });
     test("deserializes user", function(done) {
-      const getUserStub = sandbox
+      const getUserStub = sinon
         .stub(User, "getUserById")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
       user.deserialize(id, done).then(() => {
         getUserStub.should.have.been.calledOnce;
-        sandbox.restore();
+        sinon.restore();
       });
     });
   });
 
   suite("passport strategy", () => {
+    afterEach(() => {
+      sinon.restore();
+    });
     const app = require("../server");
     test("should test for Strategies", done => {
       expect(googleStrategy).to.be.an("object");
@@ -163,7 +161,9 @@ suite("routes : passport auth", function() {
     });
 
     suite("googleLogin", async () => {
-      const sandbox = sinon.createSandbox();
+      afterEach(() => {
+        sinon.restore();
+      });
       const accessToken = "";
       const refreshToken = "";
       const profile = {
@@ -175,7 +175,7 @@ suite("routes : passport auth", function() {
         },
         picture: avatar_url
       };
-      const done = sandbox.stub().returnsArg(1);
+      const done = sinon.stub().returnsArg(1);
       test("googleLogin returns user if user in req", async () => {
         const req = mockReq({
           user: profile
@@ -191,16 +191,14 @@ suite("routes : passport auth", function() {
             console.log(err);
           })
           .finally(() => {
-            sandbox.restore();
+            sinon.restore();
             return knexCleaner.clean(db);
           });
       });
       test("googleLogin calls createUser if no user in req", async () => {
         const req = mockReq();
-        const createUserStub = sandbox
-          .stub(User, "createUser")
-          .resolves(profile);
-        const saveNewUserStub = sandbox
+        const createUserStub = sinon.stub(User, "createUser").resolves(profile);
+        const saveNewUserStub = sinon
           .stub(authConfig, "saveNewUser")
           .resolves(() => {});
         googleLogin(req, accessToken, refreshToken, profile, done)
@@ -219,63 +217,59 @@ suite("routes : passport auth", function() {
             console.log(err);
           })
           .finally(() => {
-            sandbox.restore();
+            sinon.restore();
             return knexCleaner.clean(db);
           });
       });
     });
 
     suite("jwtLogin", async () => {
-      const sandbox = sinon.createSandbox();
+      afterEach(() => {
+        sinon.restore();
+      });
       const accessToken = "";
       const refreshToken = "";
       const done = sinon.stub().returnsArg(1);
-      test(
-        "jwtLogin returns user if user in req",
-        sinon.test(async () => {
-          const req = mockReq({
-            user: profile
+      test("jwtLogin returns user if user in req", async () => {
+        const req = mockReq({
+          user: profile
+        });
+
+        const getUserByIdStub = sinon
+          .stub(User, "getUserById")
+          .resolves(returnedUser);
+
+        jwtLogin(req, profile, done)
+          .then(() => {
+            expect(getUserByIdStub).to.have.been.calledWith(id);
+          })
+          .catch(err => {
+            console.log("219");
+            console.log(err);
+          })
+          .finally(() => {
+            sinon.restore();
+            return knexCleaner.clean(db);
           });
-
-          const getUserByIdStub = this.stub(User, "getUserById").resolves(
-            returnedUsers
-          );
-
-          jwtLogin(req, profile, done)
-            .then(() => {
-              expect(getUserByIdStub).to.have.been.calledWith(id);
-            })
-            .catch(err => {
-              console.log("219");
-              console.log(err);
-            })
-            .finally(() => {
-              sandbox.restore();
-              return knexCleaner.clean(db);
-            });
-        })
-      );
-      test(
-        "jwtLogin handles error if no user found",
-        sinon.test(async () => {
-          const req = mockReq();
-          const getUserByIdStub = this.stub(User, "getUserById").rejects(
-            new Error("test error")
-          );
-          jwtLogin(req, profile, done)
-            .then(() => {
-              expect(getUserByIdStub).to.have.been.calledOnce;
-            })
-            .catch(err => {
-              // console.log('235');
-              // console.log(err)
-            })
-            .finally(() => {
-              sandbox.restore();
-              return knexCleaner.clean(db);
-            });
-        })
-      );
+      });
+      test("jwtLogin handles error if no user found", async () => {
+        const req = mockReq();
+        const getUserByIdStub = sinon
+          .stub(User, "getUserById")
+          .rejects(new Error("test error"));
+        jwtLogin(req, profile, done)
+          .then(() => {
+            expect(getUserByIdStub).to.have.been.calledOnce;
+          })
+          .catch(err => {
+            // console.log('235');
+            // console.log(err)
+          })
+          .finally(() => {
+            sinon.restore();
+            return knexCleaner.clean(db);
+          });
+      });
     });
   });
 });

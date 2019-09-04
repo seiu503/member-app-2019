@@ -32,12 +32,12 @@ let userId;
 describe("user model tests", () => {
   before(() => {
     return knexCleaner.clean(db);
-    const sandbox = sinon.createSandbox();
-    sandbox.restore();
   });
   after(() => {
     return knexCleaner.clean(db);
-    sandbox.restore();
+  });
+  beforeEach(() => {
+    sinon.restore();
   });
 
   it("POST creates a new user", () => {
@@ -53,8 +53,6 @@ describe("user model tests", () => {
       })
       .then(([result]) => {
         assert.equal(result.name, name);
-        console.log(`########################`);
-        console.log(result);
         assert.equal(result.email, email);
         assert.equal(result.avatar_url, avatar_url);
         assert.equal(result.google_id, google_id);
@@ -72,9 +70,6 @@ describe("user model tests", () => {
         .createUser(name, email, avatar_url, google_id, google_token)
         .then(user => {
           userId = user[0].id;
-          console.log("aa_models_users_spec.js > 72: seed user");
-          console.log(userId);
-          console.log(user);
         });
     });
 
@@ -107,11 +102,7 @@ describe("user model tests", () => {
     });
 
     it("GET gets one user by id", () => {
-      console.log("aa_models_users_spec.js > 107: getting seed user");
-      console.log(userId);
       return users.getUserById(userId).then(returnedUser => {
-        console.log(`########## 116 #########`);
-        console.log(returnedUser);
         assert.equal(returnedUser.name, name);
         assert.equal(returnedUser.email, email);
         assert.equal(returnedUser.avatar_url, avatar_url);

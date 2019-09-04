@@ -40,32 +40,16 @@ let responseStub,
   },
   imageUrl = `https://${s3config.bucket}.s3-${
     s3config.region
-  }.amazonaws.com/test.png`,
-  sandbox = sinon.createSandbox();
+  }.amazonaws.com/test.png`;
 
 suite("image.ctrl.js", function() {
-  // before(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback().then(() => {
-  //       return db.migrate.latest();
-  //     });
-  //   });
-  // });
-
-  // // rollback to cleanup after tests are over
-  // after(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback();
-  //   });
-  // });
-
   after(() => {
     return knexCleaner.clean(db);
   });
 
   suite("submCtrl > singleImgUpload", function() {
     beforeEach(function() {
-      multerStub = sandbox
+      multerStub = sinon
         .stub(Uploader.prototype, "startUpload")
         .resolves(multer({ storage: multer.memoryStorage() }));
       return new Promise(resolve => {
@@ -77,7 +61,7 @@ suite("image.ctrl.js", function() {
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
       responseStub = {};
     });
@@ -132,7 +116,7 @@ suite("image.ctrl.js", function() {
         file
       });
       responseStub = { content_type: "image", content: imageUrl };
-      contentModelStub = sandbox
+      contentModelStub = sinon
         .stub(content, "newContent")
         .resolves([responseStub]);
       try {
@@ -151,7 +135,7 @@ suite("image.ctrl.js", function() {
       req = mockReq({
         file
       });
-      contentModelStub = sandbox
+      contentModelStub = sinon
         .stub(content, "newContent")
         .rejects(new Error(errorMsg));
       try {
@@ -166,7 +150,7 @@ suite("image.ctrl.js", function() {
 
     test("upload an image to replace existing content", async function() {
       responseStub = { content_type: "image", content: imageUrl };
-      contentModelStub = sandbox
+      contentModelStub = sinon
         .stub(content, "updateContent")
         .resolves([responseStub]);
       req = mockReq({
@@ -188,7 +172,7 @@ suite("image.ctrl.js", function() {
     test("returns 500 on updateContent server error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      contentModelStub = sandbox
+      contentModelStub = sinon
         .stub(content, "updateContent")
         .rejects(new Error(errorMsg));
       req = mockReq({
@@ -222,10 +206,10 @@ suite("image.ctrl.js", function() {
       req = mockReq({
         file
       });
-      const contentModelStub1 = sandbox
+      const contentModelStub1 = sinon
         .stub(content, "updateContent")
         .throws(new Error(errorMsg));
-      const contentModelStub2 = sandbox
+      const contentModelStub2 = sinon
         .stub(content, "newContent")
         .throws(new Error(errorMsg));
       try {
@@ -242,8 +226,8 @@ suite("image.ctrl.js", function() {
 
   suite("submCtrl > deleteImage", function() {
     beforeEach(function() {
-      s3 = { deleteObject: sandbox.stub() };
-      s3Stub = sandbox.stub(aws, "S3").returns(s3);
+      s3 = { deleteObject: sinon.stub() };
+      s3Stub = sinon.stub(aws, "S3").returns(s3);
       return new Promise(resolve => {
         req = mockReq({
           file
@@ -253,7 +237,7 @@ suite("image.ctrl.js", function() {
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
       res = mockRes();
       responseStub = {};
     });
@@ -278,7 +262,7 @@ suite("image.ctrl.js", function() {
     test("returns 500 if S3 error", async function() {
       errorMsg = "Error";
       responseStub = { message: errorMsg };
-      s3 = { deleteObject: sandbox.stub().throws(new Error(errorMsg)) };
+      s3 = { deleteObject: sinon.stub().throws(new Error(errorMsg)) };
       s3Stub.returns(s3);
       try {
         result = await imgCtrl.deleteImage(req, res);
@@ -293,11 +277,11 @@ suite("image.ctrl.js", function() {
 
   suite("multer.js > checkFile", function() {
     beforeEach(function() {
-      cbStub = sandbox.stub();
+      cbStub = sinon.stub();
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
     });
 
     test("if allowed filetype, returns true", async function() {
@@ -311,7 +295,7 @@ suite("image.ctrl.js", function() {
       try {
         result = await checkFile(file, cbStub);
         assert.calledWith(cbStub, null, true);
-        sandbox.restore();
+        sinon.restore();
       } catch (err) {
         console.log(err);
       }
@@ -331,7 +315,7 @@ suite("image.ctrl.js", function() {
         assert.calledWith(cbStub, {
           message: errorMsg
         });
-        sandbox.restore();
+        sinon.restore();
       } catch (err) {
         console.log(err);
       }
@@ -340,17 +324,16 @@ suite("image.ctrl.js", function() {
 
   suite("multer.js > startUpload", function() {
     beforeEach(function() {
-      cbStub = sandbox.stub();
-      uploadMethodStub = sandbox
+      cbStub = sinon.stub();
+      uploadMethodStub = sinon
         .stub()
         .resolves(multer({ storage: multer.memoryStorage() }));
-      uploaderStub = sandbox.createStubInstance(Uploader, {
-        upload: uploadMethodStub
-      });
+      var uploader = new Uploader();
+      sinon.stub(uploader, "upload").callsFake(uploadMethodStub);
     });
 
     afterEach(() => {
-      sandbox.restore();
+      sinon.restore();
     });
 
     test("uploads a file", async function() {
@@ -368,7 +351,7 @@ suite("image.ctrl.js", function() {
         uploader = new Uploader();
         result = await uploader.startUpload(req, res, next);
         assert.called(uploadMethodStub);
-        sandbox.restore();
+        sinon.restore();
       } catch (err) {
         // console.log(err);
       }
@@ -389,7 +372,7 @@ suite("image.ctrl.js", function() {
         assert.called(uploadMethodStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, errorMsg);
-        sandbox.restore();
+        sinon.restore();
       } catch (err) {
         // console.log(err);
       }

@@ -39,10 +39,9 @@ const findExistingUser = async (profile, token, done) => {
   User.getUserByGoogleId(google_id)
     .then(user => {
       if (!user) {
-        console.log("42");
         return saveNewUser(profile, token, done).catch(err => {
-          console.log(`config/auth.js > 45`);
-          console.log(err);
+          // console.log(`config/auth.js > 45`);
+          // console.log(err);
         });
       } else {
         return done(null, user);
@@ -64,7 +63,6 @@ const saveNewUser = async (profile, token, done) => {
   // save new user to database
   User.createUser(name, email, avatar_url, google_id, google_token)
     .then(user => {
-      console.log("auth.js > 68");
       return done(null, user);
     })
     .catch(err => {
@@ -107,20 +105,16 @@ const googleOptions = {
 };
 
 const googleLogin = async (req, token, refreshToken, profile, done) => {
-  console.log(
-    `Google login by ${profile.name.givenName} ${
-      profile.name.familyName
-    }, ID: ${profile.id}`
-  );
+  // console.log(
+  //   `Google login by ${profile.name.givenName} ${
+  //     profile.name.familyName
+  //   }, ID: ${profile.id}`
+  // );
   if (!req.user) {
-    console.log("### 106");
     return findExistingUser(profile, token, done).catch(err => {
-      // console.log(`config/auth.js > 109`);
       console.log(err);
     });
   } else {
-    // console.log(`config/auth.js > 112`);
-    // console.log(req.user);
     // found logged-in user. Return
     return done(null, req.user);
   }
