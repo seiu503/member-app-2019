@@ -40,6 +40,7 @@ before_script:
   - psql -c "CREATE USER seiu503_member_app_test WITH PASSWORD 'seiu503_member_app_test';" -U postgres
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO seiu503_member_app_test;' -U postgres
 script:
+  - knex migrate:latest
   - yarn test
   - cd client && yarn install
   - yarn test
