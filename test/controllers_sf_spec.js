@@ -1286,45 +1286,45 @@ suite("sf.ctrl.js", function() {
       sinon.restore();
     });
 
-    test("gets a card adding iframe for an existing unionise member", async function() {
-      const app = require("../server");
-      responseStub = { cardAddingUrl: "http://www.url.com" };
-      sinon.stub(axios, "post").resolves({ data: responseStub });
-      chai
-        .request(app)
-        .post("/api/unionise/iframe")
-        .end(function(err, res) {
-          // expect(res.status).to.equal(200);
-          // expect(res.data).to.equal(responseStub);
-        });
-    });
+    // test("gets a card adding iframe for an existing unionise member", async function() {
+    //   const app = require("../server");
+    //   responseStub = { cardAddingUrl: "http://www.url.com" };
+    //   sinon.stub(axios, "post").resolves({ data: responseStub });
+    //   chai
+    //     .request(app)
+    //     .post("/api/unionise/iframe")
+    //     .end(function(err, res) {
+    //       // expect(res.status).to.equal(200);
+    //       // expect(res.data).to.equal(responseStub);
+    //     });
+    // });
 
-    test("returns error if no access token in response", async function() {
-      const app = require("../server");
-      unioniseError = "Error while fetching iframe";
-      responseStub = { message: unioniseError };
-      sinon.stub(axios, "post").resolves({ data: responseStub });
-      chai
-        .request(app)
-        .post("/api/unionise/iframe")
-        .end(function(err, res) {
-          // expect(res.status).to.equal(500);
-          // expect(res.data).to.equal(responseStub);
-        });
-    });
+    // test("returns error if no access token in response", async function() {
+    //   const app = require("../server");
+    //   unioniseError = "Error while fetching iframe";
+    //   responseStub = { message: unioniseError };
+    //   sinon.stub(axios, "post").resolves({ data: responseStub });
+    //   chai
+    //     .request(app)
+    //     .post("/api/unionise/iframe")
+    //     .end(function(err, res) {
+    //       // expect(res.status).to.equal(500);
+    //       // expect(res.data).to.equal(responseStub);
+    //     });
+    // });
 
-    test("returns error if unionise api call throws", async function() {
-      const app = require("../server");
-      unioniseError = new Error("Error while fetching iframe");
-      responseStub = { message: unioniseError };
-      sinon.stub(axios, "post").throws(new Error(unioniseError));
-      chai
-        .request(app)
-        .post("/api/unionise/iframe")
-        .end(function(err, res) {
-          // expect(res.status).to.equal(500);
-          // expect(res.data).to.equal(unioniseError);
-        });
-    });
+    // test("returns error if unionise api call throws", async function() {
+    //   const app = require("../server");
+    //   unioniseError = new Error("Error while fetching iframe");
+    //   responseStub = { message: unioniseError };
+    //   sinon.stub(axios, "post").throws(new Error(unioniseError));
+    //   chai
+    //     .request(app)
+    //     .post("/api/unionise/iframe")
+    //     .end(function(err, res) {
+    //       // expect(res.status).to.equal(500);
+    //       // expect(res.data).to.equal(unioniseError);
+    //     });
+    // });
   });
 });
