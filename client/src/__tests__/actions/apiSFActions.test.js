@@ -214,44 +214,6 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it("REFRESH_UNIONISE_TOKEN: Dispatches success action after successful POST", async () => {
-      nock(
-        `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=refresh_token&refresh_token=1234`
-      )
-        .post(`/`)
-        .reply(200);
-
-      const expectedResult = {
-        payload: undefined,
-        type: "REFRESH_UNIONISE_TOKEN_SUCCESS",
-        meta: undefined
-      };
-
-      const result = await store.dispatch(actions.refreshUnioniseToken());
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("REFRESH_UNIONISE_TOKEN: Dispatches failure action after failed POST", async () => {
-      const body = JSON.stringify({
-        message: "There was an error fetching the contact"
-      });
-      const init = {
-        status: 500,
-        statusText: "There was an error fetching the contact"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.refreshUnioniseToken());
-      const expectedResult = {
-        payload: { message: "There was an error fetching the contact" },
-        type: "REFRESH_UNIONISE_TOKEN_FAILURE",
-        error: true,
-        meta: undefined
-      };
-      expect(result).toEqual(expectedResult);
-    });
-
     it("CREATE_SF_CONTACT: Dispatches success action after successful POST", async () => {
       nock(`${BASE_URL}`)
         .post(`/api/sf/`)
