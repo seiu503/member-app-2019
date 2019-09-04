@@ -313,6 +313,8 @@ router.delete(
 
 /* =========================== SALESFORCE ROUTES =========================== */
 
+/* =============================== CONTACTS ================================ */
+
 // GET ONE SALESFORCE CONTACT RECORD BY ID
 //   Example: GET >> /api/sf/0036100001gYL0HAAW
 //   Secured: no
@@ -338,51 +340,6 @@ router.get("/sf/:id", sfCtrl.getSFContactById);
 //   Returns: JSON object with salesforce id on success.
 //
 router.put("/sflookup", sfCtrl.lookupSFContactByFLE);
-
-// DELETE ONE SALESFORCE CONTACT RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sf/:id", sfCtrl.deleteSFContactById);
-
-// CREATE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
-// This is really only needed for testing...
-//   Example: POST >> /api/sfOMA/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          body : Object { ...submission fields }
-//        }
-//   Returns: OMA object or error message.
-//
-router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
-
-// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sfOMA/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
-
-// GET ALL ACTIVE EMPLOYER NAMES
-//   Example: GET >> /api/sfaccts
-//   Secured: no
-//   Expects: nada
-//   Returns: Array of SF Account objects including:
-//      Id, Name, Sub_Division__c, Agency_Number__c.
-//
-router.get("/sfaccts", sfCtrl.getAllEmployers);
 
 // CREATE SALESFORCE CONTACT RECORD
 //   Example: POST >> /api/sfcontact
@@ -446,6 +403,125 @@ router.post("/sf", sfCtrl.createSFContact);
 //   OR passes contact ID to next middleware.
 //
 router.put("/sf/:id", sfCtrl.updateSFContact);
+
+// DELETE ONE SALESFORCE CONTACT RECORD BY ID
+// This is really only needed for cleanup after testing...
+//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Success or error message.
+//
+router.delete("/sf/:id", sfCtrl.deleteSFContactById);
+
+/* ========================== ONLINE MEMBER APPS =========================== */
+
+// CREATE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
+// This is really only needed for testing...
+//   Example: POST >> /api/sfOMA/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          body : Object { ...submission fields }
+//        }
+//   Returns: OMA object or error message.
+//
+router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
+
+// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
+// This is really only needed for cleanup after testing...
+//   Example: DELETE >> /api/sfOMA/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: Success or error message.
+//
+router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
+
+/* =============================== ACCOUNTS ================================ */
+
+// GET ALL ACTIVE EMPLOYER NAMES
+//   Example: GET >> /api/sfaccts
+//   Secured: no
+//   Expects: nada
+//   Returns: Array of SF Account objects including:
+//      Id, Name, Sub_Division__c, Agency_Number__c.
+//
+router.get("/sfaccts", sfCtrl.getAllEmployers);
+
+/* ========================== DIRECT JOIN RATES =========================== */
+
+// GET ONE SALESFORCE DJR RECORD BY SF CONTACT ID
+//   Example: GET >> /api/sfDJR/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON selected fields from salesforce DJR object on success.
+//
+router.get("/sfDJR/:id", sfCtrl.getSFDJRById);
+
+// CREATE SALESFORCE DJR RECORD
+//   Example: POST >> /api/sfDJR
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              sf_contact_id                    : String
+//              memberShortId                    : String
+//              paymentMethod                    : String
+//             }
+//   Returns: { sf_djr_id } or error message.
+//
+router.post("/sfDJR", sfCtrl.createSFDJR);
+
+// UPDATE A SALESFORCE DJR RECORD BY SF CONTACT ID
+//   Example: PUT >> /api/sfDJR/0035500000VFAE9AAP
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              memberShortId                    : String
+//              paymentMethod                    : String
+//             }
+//   Returns: { sf_djr_id } or error message.
+//   OR passes contact ID to next middleware.
+//
+router.put("/sfDJR/:id", sfCtrl.updateSFDJR);
+
+/* =========================== UNIONISE ROUTES ============================= */
+
+/* ================== GET IFRAME URL FOR EXISTING MEMBER =================== */
+
+// GET IFRAME URL FOR EXISTING MEMBER
+//   Example: POST >> /api/unionise/iframe
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              memberShortId                    : String
+//             }
+//     2) request headers : {
+//          Authorization : Bearer ${token}
+//     }
+//   Returns: { cardAddingUrl } or error message.
+//
+router.post("/unionise/iframe", sfCtrl.getIframeExisting);
+
+/* ======================= GET UNIONISE ACCESS TOKEN ======================= */
+
+// GET UNIONISE ACCESS TOKEN
+//   Example: POST >> /api/unionise/gettoken
+//   Secured: no
+//   Expects: null
+//   Returns: { access_token } or error message.
+//
+router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
 
 /* ================================ EXPORT ================================= */
 

@@ -9,6 +9,7 @@ const { assert } = require("chai");
 const { db, TABLES } = require("../app/config/knex");
 const content = require("../db/models/content");
 const utils = require("../app/utils");
+const knexCleaner = require("knex-cleaner");
 
 const content_type = "headline";
 const content_type2 = "image_url";
@@ -26,16 +27,23 @@ let id;
 let id2;
 
 describe("content model tests", () => {
-  before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
-  });
+  // before(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback().then(() => {
+  //       return db.migrate.latest();
+  //     });
+  //   });
+  // });
 
+  // // rollback to cleanup after tests are over
+  // after(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback();
+  //   });
+  // });
   after(() => {
-    return db.migrate.rollback();
+    return knexCleaner.clean(db);
   });
-
   it("POST creates a new content record", () => {
     return content
       .newContent(content_type, content1)

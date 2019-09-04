@@ -4,13 +4,25 @@ process.env.NODE_ENV = "testing";
 
 const chai = require("chai"),
   { db } = require("../app/config/knex"),
-  { assert, expect } = chai,
+  { mockReq, mockRes } = require("sinon-express-mock"),
+  { assert, expect, use, should, request } = chai,
   { suite, test } = require("mocha"),
+  knexCleaner = require("knex-cleaner"),
   sinon = require("sinon"),
+  nock = require("nock"),
   sinonChai = require("sinon-chai"),
   passport = require("passport"),
   User = require("../db/models/users"),
-  { findExistingUser, saveNewUser } = require("../app/config/auth"),
+  authConfig = require("../app/config/auth"),
+  {
+    findExistingUser,
+    saveNewUser,
+    user,
+    googleLogin,
+    googleStrategy,
+    jwtStrategy,
+    jwtLogin
+  } = authConfig,
   id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e",
   token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMyN…zE1fQ.6y9mMYVXbffHa4Q-aFUd5B3GDyyRF10iBJ28qVlEApk",
@@ -25,24 +37,39 @@ const chai = require("chai"),
       familyName: "lastname"
     },
     picture: avatar_url
+  },
+  returnedUser = {
+    id,
+    name: "firstname lastname",
+    email,
+    avatar_url,
+    google_id: "1234",
+    google_token: "5678",
+    created_at: new Date(),
+    updated_at: new Date()
   };
 chai.should();
 chai.use(sinonChai);
+chai.use(require("chai-passport-strategy"));
 
 suite("routes : passport auth", function() {
-  // rollback and migrate testing database
   before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
+    nock("https://accounts.google.com")
+      .filteringPath(() => "/")
+      .get("/")
+      .reply(200, "connected to google");
+    return knexCleaner.clean(db);
   });
-
-  // rollback to cleanup after tests are over
   after(() => {
-    return db.migrate.rollback();
+    nock.cleanAll();
+    return knexCleaner.clean(db);
   });
 
-  suite("Passport RequireAuth", function() {
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  suite("Passport and Auth config", function() {
     const app = require("../server");
     test("return 422 status when no user found", function(done) {
       const authenticateMockNoUser = sinon
@@ -60,7 +87,7 @@ suite("routes : passport auth", function() {
             "Sorry, you must log in to view this page."
           );
           assert.isNull(err);
-          authenticateMockNoUser.restore();
+          sinon.restore();
           done();
         });
     });
@@ -77,7 +104,7 @@ suite("routes : passport auth", function() {
           assert.equal(res.status, 422);
           assert.equal(res.body.message, "error message");
           assert.isNull(err);
-          authenticateMockError.restore();
+          sinon.restore();
           done();
         });
     });
@@ -85,17 +112,164 @@ suite("routes : passport auth", function() {
       const getUserByGoogleIdStub = sinon
         .stub(User, "getUserByGoogleId")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
-      findExistingUser({ id }, token, done);
-      getUserByGoogleIdStub.should.have.been.calledOnce;
-      getUserByGoogleIdStub.restore();
+      findExistingUser({ id }, token, done).then(() => {
+        getUserByGoogleIdStub.should.have.been.calledOnce;
+        sinon.restore();
+      });
     });
     test("saves new user", function(done) {
       const createUserStub = sinon
         .stub(User, "createUser")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
-      saveNewUser(profile, token, done);
-      createUserStub.should.have.been.calledOnce;
-      createUserStub.restore();
+      saveNewUser(profile, token, done).then(() => {
+        createUserStub.should.have.been.calledOnce;
+        sinon.restore();
+        return knexCleaner.clean(db);
+      });
+    });
+    test("deserializes user", function(done) {
+      const getUserStub = sinon
+        .stub(User, "getUserById")
+        .returns(Promise.resolve({ name, email, avatar_url, id }));
+      user.deserialize(id, done).then(() => {
+        getUserStub.should.have.been.calledOnce;
+        sinon.restore();
+      });
+    });
+  });
+
+  suite("passport strategy", () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+    const app = require("../server");
+    test("should test for Strategies", done => {
+      expect(googleStrategy).to.be.an("object");
+      expect(jwtStrategy).to.be.an("object");
+      done();
+    });
+    test("should be a function", done => {
+      expect(findExistingUser).to.be.a("function");
+      expect(saveNewUser).to.be.a("function");
+      done();
+    });
+
+    test("should call google route", async () => {
+      const response = await chai.request(app).get("/api/auth/google");
+      expect(response).to.have.status(200);
+      expect(response.text).to.be.deep.equal("connected to google");
+    });
+
+    suite("googleLogin", async () => {
+      afterEach(() => {
+        sinon.restore();
+      });
+      const accessToken = "";
+      const refreshToken = "";
+      const profile = {
+        id,
+        emails: [email],
+        name: {
+          givenName: "firstname",
+          familyName: "lastname"
+        },
+        picture: avatar_url
+      };
+      const done = sinon.stub().returnsArg(1);
+      test("googleLogin returns user if user in req", async () => {
+        const req = mockReq({
+          user: profile
+        });
+
+        googleLogin(req, accessToken, refreshToken, profile, done)
+          .then(result => {
+            expect(done).to.have.been.calledWith(null, profile);
+            expect(result).to.deep.equal(profile);
+          })
+          .catch(err => {
+            console.log("164");
+            console.log(err);
+          })
+          .finally(() => {
+            sinon.restore();
+            return knexCleaner.clean(db);
+          });
+      });
+      test("googleLogin calls createUser if no user in req", async () => {
+        const req = mockReq();
+        const createUserStub = sinon.stub(User, "createUser").resolves(profile);
+        const saveNewUserStub = sinon
+          .stub(authConfig, "saveNewUser")
+          .resolves(() => {});
+        googleLogin(req, accessToken, refreshToken, profile, done)
+          .then(() => {
+            return saveNewUserStub()
+              .then(() => {
+                expect(createUserStub).to.have.been.calledOnce;
+              })
+              .catch(err => {
+                // console.log('182');
+                // console.log(err)
+              });
+          })
+          .catch(err => {
+            console.log("187");
+            console.log(err);
+          })
+          .finally(() => {
+            sinon.restore();
+            return knexCleaner.clean(db);
+          });
+      });
+    });
+
+    suite("jwtLogin", async () => {
+      afterEach(() => {
+        sinon.restore();
+      });
+      const accessToken = "";
+      const refreshToken = "";
+      const done = sinon.stub().returnsArg(1);
+      test("jwtLogin returns user if user in req", async () => {
+        const req = mockReq({
+          user: profile
+        });
+
+        const getUserByIdStub = sinon
+          .stub(User, "getUserById")
+          .resolves(returnedUser);
+
+        jwtLogin(req, profile, done)
+          .then(() => {
+            expect(getUserByIdStub).to.have.been.calledWith(id);
+          })
+          .catch(err => {
+            console.log("219");
+            console.log(err);
+          })
+          .finally(() => {
+            sinon.restore();
+            return knexCleaner.clean(db);
+          });
+      });
+      test("jwtLogin handles error if no user found", async () => {
+        const req = mockReq();
+        const getUserByIdStub = sinon
+          .stub(User, "getUserById")
+          .rejects(new Error("test error"));
+        jwtLogin(req, profile, done)
+          .then(() => {
+            expect(getUserByIdStub).to.have.been.calledOnce;
+          })
+          .catch(err => {
+            // console.log('235');
+            // console.log(err)
+          })
+          .finally(() => {
+            sinon.restore();
+            return knexCleaner.clean(db);
+          });
+      });
     });
   });
 });

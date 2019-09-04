@@ -27,11 +27,11 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        console.log(result.payload);
+        // console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         this.props.handleError(err);
       });
     // add event listener to listen for iframe message
@@ -58,7 +58,9 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     if (event.data.notification.type === "success") {
-      this.props.changeFieldValue("paymentMethodAdded", true);
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentMethodAdded", value: true }
+      });
     }
   };
 
@@ -84,7 +86,7 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
     employerTypesList.unshift("");
-    console.log(employerTypesList);
+    // console.log(employerTypesList);
     return employerTypesList;
   };
 
@@ -155,55 +157,175 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(response, "<= dis your captcha token");
   };
 
+  async updateSubmission() {
+    const id = this.props.submission.submissionId;
+    const { formPage1, payment } = this.props.submission;
+    const updates = {
+      payment_type: formPage1.paymentType,
+      payment_method_added: formPage1.paymentMethodAdded,
+      medicaid_residents: formPage1.medicaidResidents,
+      card_adding_url: payment.cardAddingUrl,
+      member_id: payment.memberId,
+      stripe_customer_id: payment.stripeCustomerId,
+      member_short_id: payment.memberShortId
+    };
+    // console.log(updates);
+    this.props.apiSubmission
+      .updateSubmission(id, updates)
+      .then(result => {
+        if (
+          result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return this.props.handleError(this.props.submission.error);
+        }
+        // console.log(result.type);
+      })
+      .catch(err => {
+        // console.log(err);
+        return this.props.handleError(err);
+      });
+  }
+
+  async createSFOMA() {
+    const { formValues } = this.props;
+    const body = await this.props.generateSubmissionBody(formValues);
+    body.Worker__c = this.props.submission.salesforceId;
+    this.props.apiSF
+      .createSFOMA(body)
+      .then(result => {
+        if (
+          result.type === "CREATE_SF_OMA_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return this.props.handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return this.props.handleError(err);
+      });
+  }
+
+  async createOrUpdateSFDJR() {
+    // console.log("createOrUpdateSFDJR");
+    // const { formValues } = this.props;
+    const { formPage1, payment } = this.props.submission;
+    // console.log(formPage1.paymentType);
+    const id = this.props.submission.djrId;
+    // console.log(id);
+    const paymentMethod =
+      formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
+    const body = {
+      Worker__c: this.props.submission.salesforceId,
+      Payment_Method__c: paymentMethod,
+      AFH_Number_of_Residents__c: formPage1.medicaidResidents,
+      Unioni_se_MemberID__c: payment.memberShortId
+    };
+    // console.log(body);
+
+    // create a new record if one doesn't exist, OR
+    // if existing DJR record is for a different employer
+
+    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    // check if DJR employer matches employer submitted on form
+    // if no match, create new DJR even if already have id
+    if (!id || formPage1.employerId !== payment.djrEmployerId) {
+      // create new SFDJR record
+      // console.log("createSFDJR");
+      return this.props.apiSF
+        .createSFDJR(body)
+        .then(result => {
+          // console.log(result.type);
+          if (
+            result.type === "CREATE_SF_DJR_FAILURE" ||
+            this.props.submission.error
+          ) {
+            // console.log(this.props.submission.error);
+            return this.props.handleError(this.props.submission.error);
+          }
+        })
+        .catch(err => {
+          // console.log(err);
+          return this.props.handleError(err);
+        });
+    }
+
+    // if id exists and employer matches, update existing DJR record
+    // console.log("updateSFDJR");
+    body.Id = id;
+    delete body.Worker__c;
+    // console.log(body);
+    return this.props.apiSF
+      .updateSFDJR(id, body)
+      .then(result => {
+        // console.log(result.type);
+        if (
+          result.type === "UPDATE_SF_DJR_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return this.props.handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return this.props.handleError(err);
+      });
+  }
+
   async handleSubmit(formValues) {
+    const validMethod =
+      !!this.props.submission.payment.activeMethodLast4 &&
+      !this.props.submission.payment.paymentErrorHold;
+    if (validMethod) {
+      console.log("310");
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentMethodAdded", value: true }
+      });
+    }
+    // console.log(`validMethod? ${validMethod}`);
+    // console.log(
+    //   `paymentMethodAdded? ${
+    //     this.props.submission.formPage1.paymentMethodAdded
+    //   }`
+    // );
+    // console.log(
+    //   `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
+    // );
+    // console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
     // submit validation: payment method
     if (
       this.props.submission.formPage1.paymentRequired &&
-      formValues.paymentType === "Card" &&
-      !formValues.paymentMethodAdded
+      this.props.submission.formPage1.paymentType === "Card" &&
+      !this.props.submission.formPage1.paymentMethodAdded
     ) {
       // console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
     }
-    const id = this.props.submission.submissionId;
-    const updates = {
-      payment_type: formValues.paymentType,
-      payment_method_added: formValues.paymentMethodAdded,
-      medicaid_residents: formValues.medicaidResidents,
-      card_adding_url: this.props.submission.payment.cardAddingUrl,
-      member_id: this.props.submission.payment.memberId,
-      stripe_customer_id: this.props.submission.payment.stripeCustomerId,
-      member_short_id: this.props.submission.payment.memberShortId
-    };
-    // console.log(updates);
 
-    // also write to directJoinRate__c ######### <== TODO
-    try {
-      const result = await this.props.apiSubmission.updateSubmission(
-        id,
-        updates
-      );
-      if (
-        result.type === "UPDATE_SUBMISSION_FAILURE" ||
-        this.props.submission.error
-      ) {
-        // console.log(this.props.submission.error);
-        this.props.handleError(this.props.submission.error);
-      } else {
-        const body = this.props.generateSubmissionBody(formValues);
-        this.props.apiSF.createSFOMA(body);
+    return Promise.all([
+      this.updateSubmission(),
+      this.createSFOMA(),
+      this.createOrUpdateSFDJR()
+    ])
+      .then(() => {
+        // TODO: redirect to CAPE here...
+        // (before resetting form so can reuse data on CAPE tab)
+
         this.props.reset("submissionPage1");
-        // redirect to CAPE here...
         this.props.history.push(
           `/page2/?id=${this.props.submission.salesforceId}`
         );
-      }
-    } catch (err) {
-      // console.log(err);
-      this.props.handleError(err);
-    }
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.handleError(err);
+      });
   }
 
   render() {
@@ -295,12 +417,15 @@ export class SubmissionFormPage1Component extends React.Component {
                 handleTab={this.props.handleTab}
                 back={this.props.back}
                 formValues={this.props.formValues}
+                formPage1={this.props.submission.formPage1}
                 paymentRequired={
                   this.props.submission.formPage1.paymentRequired
                 }
-                changeFieldValue={this.props.changeFieldValue}
+                handleInput={this.props.submission.handleInput}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
-                afhDuesRate={this.props.formValues.afhDuesRate}
+                afhDuesRate={this.props.submission.formPage1.afhDuesRate}
+                payment={this.props.submission.payment}
+                toggleCardAddingFrame={this.props.toggleCardAddingFrame}
               />
             )}
           </div>

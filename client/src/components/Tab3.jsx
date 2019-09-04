@@ -23,26 +23,26 @@ export const Tab3 = props => {
     afhDuesRate,
     back,
     formValues,
-    changeFieldValue
+    formPage1,
+    payment,
+    toggleCardAddingFrame
   } = props;
-  // console.log(formValues);
-  // console.log(formValues.employerType.toLowerCase());
-  // console.log(formValues.paymentType);
+
   let duesCopy = "";
+  // console.log(formPage1.paymentType);
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
         duesCopy = formElements.afhDuesCopy(afhDuesRate);
-        changeFieldValue("paymentType", "Card");
         break;
       case "retired":
         duesCopy = formElements.retireeDuesCopy;
         break;
       default:
         duesCopy = formElements.commDuesCopy;
-        changeFieldValue("paymentType", "Card");
     }
   }
+  const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
 
   return (
     <div data-test="component-tab3" className={classes.sectionContainer}>
@@ -51,6 +51,13 @@ export const Tab3 = props => {
         id="tab3"
         className={classes.form}
       >
+        {formPage1.paymentRequired && (
+          <div className={classes.paymentCopy}>
+            <Typography component="p" className={classes.body}>
+              {duesCopy}
+            </Typography>
+          </div>
+        )}
         {formValues.employerType &&
           formValues.employerType.toLowerCase() === "retired" && (
             <Field
@@ -59,7 +66,6 @@ export const Tab3 = props => {
               name="paymentType"
               formControlName="paymentType"
               id="paymentType"
-              type="radio"
               direction="horiz"
               className={classes.horizRadio}
               classes={classes}
@@ -67,17 +73,39 @@ export const Tab3 = props => {
               options={formElements.paymentTypes}
             />
           )}
+        {formPage1.paymentRequired &&
+          formPage1.paymentType === "Card" &&
+          validMethod && (
+            <div data-test="component-choose-card">
+              <Typography component="p" className={classes.body}>
+                Your existing payment method on file is the card ending in{" "}
+                {payment.activeMethodLast4}.
+              </Typography>
+              <Field
+                data-test="radio-which-card"
+                label="Do you want to use the existing card or add a new one?"
+                name="whichCard"
+                formControlName="whichCard"
+                id="whichCard"
+                direction="horiz"
+                className={classes.horizRadio}
+                legendClass={classes.horizRadioBold}
+                classes={classes}
+                defaultItem="Use existing"
+                additionalOnChange={toggleCardAddingFrame}
+                component={formElements.renderRadioGroup}
+                options={["Use existing", "Add new card"]}
+              />
+            </div>
+          )}
         {iFrameURL &&
-          (formValues.paymentType === "Card" ? (
+          formPage1.paymentType === "Card" &&
+          formPage1.newCardNeeded &&
+          formPage1.paymentRequired && (
             <div data-test="component-iframe">
-              <div className={classes.paymentCopy}>
-                <Typography component="p" className={classes.body}>
-                  {duesCopy}
-                </Typography>
-                <Typography component="h2" className={classes.head}>
-                  Add a payment method
-                </Typography>
-              </div>
+              <Typography component="h2" className={classes.head}>
+                Add a payment method
+              </Typography>
               <div className={classes.iframeWrap}>
                 <Iframe
                   url={iFrameURL}
@@ -90,21 +118,19 @@ export const Tab3 = props => {
                 />
               </div>
             </div>
-          ) : formValues.paymentType === "Check" ? (
-            <div className={classes.paymentCopy}>
-              <Typography component="h2" className={classes.head}>
-                To pay your dues by check:
-              </Typography>
-              <Typography component="p" className={classes.body}>
-                Please mail your payment of $5 (monthly) or $60 (annually) to
-                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
-                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
-                bylaws.
-              </Typography>
-            </div>
-          ) : (
-            ""
-          ))}
+          )}
+        {formPage1.paymentType === "Check" && (
+          <div className={classes.paymentCopy}>
+            <Typography component="h2" className={classes.head}>
+              To pay your dues by check:
+            </Typography>
+            <Typography component="p" className={classes.body}>
+              Please mail your payment of $5 (monthly) or $60 (annually) to SEIU
+              Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree
+              Dues' on your check. Dues are set by the SEIU Local 503 bylaws.
+            </Typography>
+          </div>
+        )}
         <div className={classes.buttonWrapTab3}>
           <Button
             type="button"

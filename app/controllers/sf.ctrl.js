@@ -1,8 +1,11 @@
 const jsforce = require("jsforce");
+const axios = require("axios");
 const {
   contactsTableFields,
   submissionsTableFields,
   generateSFContactFieldList,
+  generateSFDJRFieldList,
+  paymentFields,
   formatDate
 } = require("../utils/fieldConfigs");
 
@@ -17,6 +20,11 @@ let conn = new jsforce.Connection({ loginUrl });
 const user = process.env.SALESFORCE_USER;
 const password = process.env.SALESFORCE_PWD;
 const fieldList = generateSFContactFieldList();
+const paymentFieldList = generateSFDJRFieldList();
+
+/* ================================ CONTACTS =============================== */
+
+/* ++++++++++++++++++++++++++++++++ CONTACTS: GET ++++++++++++++++++++++++++ */
 
 /** Fetch one contact from Salesforce by Salesforce Contact ID
  *  @param    {String}   id  	Salesforce Contact ID
@@ -32,7 +40,7 @@ exports.getSFContactById = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 36: ${err}`);
+    // console.error(`sf.ctrl.js > 42: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
@@ -40,35 +48,19 @@ exports.getSFContactById = async (req, res, next) => {
     contact = await conn.query(query);
     return res.status(200).json(contact.records[0]);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 44: ${err}`);
+    // console.error(`sf.ctrl.js > 50: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
 
-/** Delete one contact from Salesforce by Salesforce Contact ID
- *  @param    {String}   id   Salesforce Contact ID
- *  @returns  {Object}        Success or error message.
+/* +++++++++++++++++++++++++++++++ CONTACTS: POST ++++++++++++++++++++++++++ */
+
+/** Create a new Salesforce Contact
+ *  @param    {body}          Full submission data object
+ *  @returns  {Object}        { sf_contact_id } or error message
  */
-exports.deleteSFContactById = async (req, res, next) => {
-  const { id } = req.params;
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 58: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-  try {
-    let result = await conn.sobject("Contact").destroy(id);
-    return res.status(200).json({ message: "Successfully deleted contact" });
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 65: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-};
-
 exports.createSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 75: createSFContact`);
+  // console.log(`sf.ctrl.js > 62: createSFContact`);
   const bodyRaw = { ...req.body };
   const body = {};
 
@@ -88,7 +80,7 @@ exports.createSFContact = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 91: ${err}`);
+    // console.error(`sf.ctrl.js > 82: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -96,17 +88,19 @@ exports.createSFContact = async (req, res, next) => {
   try {
     contact = await conn.sobject("Contact").create({ ...body });
     if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 99: returning next`);
+      // console.log(`sf.ctrl.js > 90: returning next`);
       res.locals.sf_contact_id = contact.Id || contact.id;
       return next();
     }
-    // console.log(`sf.ctrl.js > 103: returning to client`);
+    // console.log(`sf.ctrl.js > 94: returning to client`);
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 108: ${err}`);
+    // console.error(`sf.ctrl.js > 97: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
+
+/* +++++++++++++++++++++++++++++ CONTACTS: LOOKUP ++++++++++++++++++++++++++ */
 
 /** Lookup contact in Salesforce by Firstname, Lastname, & Email.
  *  @param    {Object}   body         first_name, last_name, home_email
@@ -135,7 +129,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 138: ${err}`);
+    // console.error(`sf.ctrl.js > 131: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -153,10 +147,90 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
       .status(200)
       .json({ salesforce_id: contact.records[0].Id || contact.records[0].id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 194: ${err}`);
+    // console.error(`sf.ctrl.js > 149: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
+
+/** Lookup contact in Salesforce, by id if prefill,
+ *  otherwise by Firstname, Lastname, & Email.
+ *  If existing contact found, update with submission data, then pass id
+ *  to next middleware.
+ *  If no match found, create new contact and pass id
+ *  to next middleware.
+ *  @param    {Object}   body         Raw submission data, containing
+ *                                    key/value pairs of fields to match/
+ *                                    upsert. Minimum fields required to pass
+ *                                    SF validation for lookup and potential
+ *                                    new contact creation:
+ *                                    first_name, last_name, email, employer_id
+ *  @returns  {null||Object}          If successful, returns nothing to client
+ *                                    but passes object with contact id to
+ *                                    next middleware. If failed, returns
+ *                                    object with error message to client.
+ */
+
+exports.createOrUpdateSFContact = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
+
+  const { salesforce_id } = req.body;
+
+  // if contact id is sent in request body, then this is a prefill
+  // skip the lookup function and head straight to updateSFContact
+  if (salesforce_id) {
+    // save contact_id to res.locals to pass to next middleware
+    // (it was in the body already but updateSFContact
+    // doesn't know to look for it there)
+    res.locals.sf_contact_id = salesforce_id;
+    res.locals.next = true;
+
+    // console.log(`sf.ctrljs > 186 > found contact id (salesforce_id)`);
+    return exports.updateSFContact(req, res, next);
+  }
+
+  // otherwise, proceed with lookup:
+  const { first_name, last_name, home_email } = req.body;
+  // fuzzy match on first name AND exact match on last name
+  // AND exact match on either home OR work email
+  // limit one most recently updated record
+
+  const query = `SELECT Id, ${fieldList.join(
+    ","
+  )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 204: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+
+  let contact;
+  try {
+    contact = await conn.query(query);
+    if (contact.totalSize === 0 || !contact) {
+      // if no contact found, create new contact, then pass id to
+      // next middleware in res.locals
+      res.locals.next = true;
+      // console.log(`sf.ctrl.js > 215: creating new contact`);
+      return exports.createSFContact(req, res, next);
+    }
+    // if contact found, pass contact id to next middleware, which will
+    // update it with the submission data from res.body
+    if (contact) {
+      // console.log(`sf.ctrl.js > 221: found matching contact`);
+      res.locals.sf_contact_id = contact.records[0].Id;
+      res.locals.next = true;
+      return exports.updateSFContact(req, res, next);
+    }
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 227: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/* +++++++++++++++++++++++++++++++ CONTACTS: PUT ++++++++++++++++++++++++++ */
 
 /** Update a contact in Salesforce by Salesforce Contact ID
  *  @param    {String}   id           Salesforce Contact ID
@@ -187,7 +261,7 @@ exports.updateSFContact = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 190: ${err}`);
+    // console.error(`sf.ctrl.js > 263: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
@@ -197,7 +271,7 @@ exports.updateSFContact = async (req, res, next) => {
       ...updates
     });
     if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 210: returning next`);
+      // console.log(`sf.ctrl.js > 273: returning next`);
       return next();
     }
 
@@ -209,91 +283,230 @@ exports.updateSFContact = async (req, res, next) => {
     }
     // console.log(response);
 
-    // console.log(`sf.ctrl.js > 213: returning to client`);
+    // console.log(`sf.ctrl.js > 285: returning to client`);
     return res.status(200).json(response);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 210: ${err}`);
+    // console.error(`sf.ctrl.js > 288: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
 
-/** Lookup contact in Salesforce, by id if prefill,
- *  otherwise by Firstname, Lastname, & Email.
- *  If existing contact found, update with submission data, then pass id
- *  to next middleware.
- *  If no match found, create new contact and pass id
- *  to next middleware.
- *  @param    {Object}   body         Raw submission data, containing
- *                                    key/value pairs of fields to match/
- *                                    upsert. Minimum fields required to pass
- *                                    SF validation for lookup and potential
- *                                    new contact creation:
- *                                    first_name, last_name, email, employer_id
- *  @returns  {null||Object}          If successful, returns nothing to client
- *                                    but passes object with contact id to
- *                                    next middleware. If failed, returns
- *                                    object with error message to client.
+/* +++++++++++++++++++++++++++++ CONTACTS: DELETE ++++++++++++++++++++++++++ */
+
+/** Delete one contact from Salesforce by Salesforce Contact ID
+ *  @param    {String}   id   Salesforce Contact ID
+ *  @returns  {Object}        Success or error message.
+ */
+exports.deleteSFContactById = async (req, res, next) => {
+  const { id } = req.params;
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 305: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  try {
+    let result = await conn.sobject("Contact").destroy(id);
+    return res.status(200).json({ message: "Successfully deleted contact" });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 312: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/* ======================== ONLINE MEMBER APPS (OMA) ======================= */
+
+/* +++++++++++++++++++++++++++++++ OMA: POST +++++++++++++++++++++++++++++++ */
+
+/** Create an OnlineMemberApps object in Salesforce with submission data
+ *  @param    {Object}   body         Submission object
+ *  @returns  does not return to client; passes salesforce_id to next function
  */
 
-exports.createOrUpdateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 197 > createOrUpdateSFContact`);
-
-  const { salesforce_id } = req.body;
-
-  // if contact id is sent in request body, then this is a prefill
-  // skip the lookup function and head straight to updateSFContact
-  if (salesforce_id) {
-    // save contact_id to res.locals to pass to next middleware
-    // (it was in the body already but updateSFContact
-    // doesn't know to look for it there)
-    res.locals.sf_contact_id = salesforce_id;
-    res.locals.next = true;
-
-    // console.log(`sf.ctrljs > 208 > found contact id (salesforce_id)`);
-    return exports.updateSFContact(req, res, next);
+exports.createSFOnlineMemberApp = async (req, res, next) => {
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 331: ${err}`);
+    return res.status(500).json({ message: err.message });
   }
 
-  // otherwise, proceed with lookup:
-  const { first_name, last_name, home_email } = req.body;
-  // fuzzy match on first name AND exact match on last name
-  // AND exact match on either home OR work email
-  // limit one most recently updated record
+  let oma;
+  try {
+    const bodyRaw = { ...req.body };
+    // console.log(`sf.ctrl.js > 338`);
+    // console.log(bodyRaw);
+    const body = {};
+    Object.keys(bodyRaw).forEach(key => {
+      if (submissionsTableFields[key]) {
+        const sfFieldName = submissionsTableFields[key].SFAPIName;
+        body[sfFieldName] = bodyRaw[key];
+      }
+    });
+    delete body["Account.Id"];
+    delete body["Account.Agency_Number__c"];
+    delete body["Account.WS_Subdivision_from_Agency__c"];
+    delete body["Birthdate"];
+    body.Birthdate__c = bodyRaw.birthdate;
+    // console.log(`sf.ctrl.js > 347`);
+    // console.log(body);
 
-  const query = `SELECT Id, ${fieldList.join(
+    OMA = await conn.sobject("OnlineMemberApp__c").create({
+      ...body
+    });
+
+    return res.status(200).json({
+      salesforce_id: res.locals.sf_contact_id,
+      submission_id: res.locals.submission_id,
+      sf_OMA_id: OMA.id || OMA.Id
+    });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 365: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/* +++++++++++++++++++++++++++++ OMA: DELETE +++++++++++++++++++++++++++++++ */
+
+/** Delete OnlineMemberApp by Id
+ *  @param    {String}   Id         OMA Id
+ *  @returns  {Object}   Success or error message
+ */
+
+exports.deleteSFOnlineMemberApp = async (req, res, next) => {
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 382: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+
+  try {
+    const { id } = req.params;
+    await conn.sobject("OnlineMemberApp__c").destroy(id);
+    return res
+      .status(200)
+      .json({ message: "Successfully deleted Online Member App" });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 393: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/* ======================== DIRECT JOIN RATES (DJR) ======================== */
+
+/* +++++++++++++++++++++++++++++++ DJR: GET ++++++++++++++++++++++++++++++++ */
+
+/** Get one Direct Join Rate record from Salesforce by Salesforce Contact ID
+ *  @param    {String}   id   Salesforce Contact ID
+ *  @returns  {Object}        Salesforce Direct Join Rate object OR error msg.
+ */
+exports.getSFDJRById = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > getSFDJRById`);
+  const { id } = req.params;
+  const query = `SELECT ${paymentFieldList.join(
     ","
-  )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+  )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 416: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let djr;
+  try {
+    djr = await conn.query(query);
+    return res.status(200).json(djr.records[0]);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 424: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/* ++++++++++++++++++++++++++++++ DJR: POST ++++++++++++++++++++++++++++++++ */
+
+/** Create a new Salesforce Direct Join Rate record
+ *  @param    {body}   Payment fields object:
+ *                       Worker__c (salesforceId) REQUIRED (others optional)
+ *                       Unioni_se_MemberID__c (memberShortId)
+ *                       Payment_Method__c (paymentMethod)
+ *                       AFH_Number_of_Residents__c (medicaidResidents)
+ *  @returns  {Object}        { sf_djr_id } or error message
+ */
+exports.createSFDJR = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > 440: createSFDJR`);
+  const body = { ...req.body };
+  // console.log(body);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 275: ${err}`);
+    // console.error(`sf.ctrl.js > 449: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
-  let contact;
+  let djr;
   try {
-    contact = await conn.query(query);
-    if (contact.totalSize === 0 || !contact) {
-      // if no contact found, create new contact, then pass id to
-      // next middleware in res.locals
-      res.locals.next = true;
-      // console.log(`sf.ctrl.js > 286: creating new contact`);
-      return exports.createSFContact(req, res, next);
-    }
-    // if contact found, pass contact id to next middleware, which will
-    // update it with the submission data from res.body
-    if (contact) {
-      // console.log(`sf.ctrl.js > 292: found matching contact`);
-      res.locals.sf_contact_id = contact.records[0].Id;
-      res.locals.next = true;
-      return exports.updateSFContact(req, res, next);
-    }
+    djr = await conn.sobject("Direct_join_rate__c").create({ ...body });
+    // console.log(`sf.ctrl.js > 470: returning to client`);
+    return res.status(200).json({ sf_djr_id: djr.Id || djr.id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 298: ${err}`);
+    // console.error(`sf.ctrl.js > 473: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
+
+/* ++++++++++++++++++++++++++++++ DJR: PUT +++++++++++++++++++++++++++++++++ */
+
+/** Update a DJR record in Salesforce by Salesforce Contact ID
+ *  @param    {String}   id           Salesforce Contact ID
+ *  @param    {Object}   body         Raw paymentFields data used to generate
+ *                                    updates object, containing
+ *                                    key/value pairs of fields to be updated.
+ *  @returns  {Object}        Salesforce DJR id OR error message.
+ */
+exports.updateSFDJR = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > 488: updateSFDJR`);
+  const { id } = req.params;
+  const updates = { ...req.body };
+  updates.Id = id;
+
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 497: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let djr;
+  try {
+    djr = await conn.sobject("Direct_join_rate__c").update({
+      ...updates
+    });
+    if (res.locals.next) {
+      // console.log(`sf.ctrl.js > 506: returning next`);
+      return next();
+    }
+
+    let response = { sf_djr_id: djr.id || djr.Id };
+    res.locals.sf_djr_id = djr.id || djr.Id;
+
+    // console.log(`sf.ctrl.js > 346: returning to client`);
+    return res.status(200).json(response);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 516: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/* =============================== ACCOUNTS =============================== */
+
+/* +++++++++++++++++++++++++++++++ ACCOUNTS: GET ++++++++++++++++++++++++++ */
 
 /** Get an array of all employers from Salesforce
  *  @param    {none}
@@ -306,92 +519,105 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 300: ${err}`);
+    // console.error(`sf.ctrl.js > 521: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
   try {
     accounts = await conn.query(query);
-    // console.log(`sf.ctrl.js > 306: returning employers to client`);
+    // console.log(`sf.ctrl.js > 527: returning employers to client`);
     if (!accounts || !accounts.records || !accounts.records.length) {
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
     return res.status(200).json(accounts.records);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 312: ${err}`);
+    // console.error(`sf.ctrl.js > 533: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
 
-/** Create an OnlineMemberApps object in Salesforce with submission data
- *  @param    {Object}   body         Submission object
- *  @returns  does not return to client; passes salesforce_id to next function
+/* =============================== UNIONISE =============================== */
+
+/* +++++++++++++++++++++++++++++++ IFRAMEURL: GET +++++++++++++++++++++++++ */
+
+/** Get an iFrame URL for an existin unionise member by memberShortId
+ *  @param        String      memberShortId
+ *  @param        String      token
+ *  @returns  {String||Object}    cardAddingUrl OR error message.
  */
 
-exports.createSFOnlineMemberApp = async (req, res, next) => {
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 91: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
+exports.getIframeExisting = async (req, res, next) => {
+  // console.log("getIframeExisting");
+  const { memberShortId } = req.body;
 
-  let oma;
-  try {
-    const dataRaw = { ...req.body };
-    const data = {};
-    // convert data object to key/value pairs using
-    // SF API field names
-    Object.keys(dataRaw).forEach(key => {
-      if (submissionsTableFields[key]) {
-        const sfFieldName = submissionsTableFields[key].SFAPIName;
-        data[sfFieldName] = dataRaw[key];
+  const url = `https://lab.unioni.se/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
+  const data = {};
+
+  const headers = {
+    "content-type": "application/x-www-form-urlencoded",
+    Authorization: req.headers.authorization
+  };
+
+  axios
+    .post(url, data, headers)
+    .then(response => {
+      // console.log(`sf.ctrl.js > 567`);
+      // console.log(response.data);
+      if (!response.data || !response.data.cardAddingUrl) {
+        return res
+          .status(500)
+          .json({ message: "Error while fetching card adding iFrame" });
       }
+      return res.status(200).json(response.data);
+    })
+    .catch(err => {
+      // console.error(`sf.ctrl.js > 579: ${err}`);
+      return res.status(500).json({ message: err.message });
     });
-    data.Worker__c = res.locals.sf_contact_id;
-    data.Birthdate__c = formatDate(dataRaw.birthdate);
-    delete data["Account.Id"];
-    delete data["Account.Agency_Number__c"];
-    delete data["Account.WS_Subdivision_from_Agency__c"];
-
-    OMA = await conn.sobject("OnlineMemberApp__c").create({
-      ...data
-    });
-
-    return res.status(200).json({
-      salesforce_id: res.locals.sf_contact_id,
-      submission_id: res.locals.submission_id,
-      sf_OMA_id: OMA.id || OMA.Id
-    });
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 360: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
 };
 
-/** Delete OnlineMemberApp by Id
- *  @param    {String}   Id         OMA Id
- *  @returns  {Object}   Success or error message
+/* ++++++++++++++++++++++++++++++ ACCESS TOKEN: GET ++++++++++++++++++++++++ */
+
+/** Get unionise access token to access secured routes
+ *  @param        None
+ *  @returns  {Object}    access_token OR error message.
  */
 
-exports.deleteSFOnlineMemberApp = async (req, res, next) => {
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 91: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
+exports.getUnioniseToken = async (req, res, next) => {
+  console.log("getUnioniseToken");
 
-  try {
-    const { id } = req.params;
-    await conn.sobject("OnlineMemberApp__c").destroy(id);
-    return res
-      .status(200)
-      .json({ message: "Successfully deleted Online Member App" });
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 418: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
+  const params = {
+    grant_type: "password",
+    username: "seiu503",
+    password: process.env.UNIONISE_PASSWORD,
+    client_id: "unioni.se",
+    client_secret: process.env.UNIONISE_CLIENT_SECRET
+  };
+
+  const data = Object.entries(params)
+    .map(([key, val]) => `${key}=${encodeURIComponent(val)}`)
+    .join("&");
+
+  // console.log(data);
+  const url =
+    "https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token";
+
+  const headers = { "content-type": "application/x-www-form-urlencoded" };
+  axios
+    .post(url, data, headers)
+    // axios(options)
+    .then(response => {
+      // console.log(`sf.ctrl.js > 615`);
+      // console.log(response.data);
+      if (!response.data || !response.data.access_token) {
+        return res
+          .status(500)
+          .json({ message: "Error while fetching access token" });
+      }
+      return res.status(200).json(response.data);
+    })
+    .catch(err => {
+      // console.error(`sf.ctrl.js > 617: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
 };

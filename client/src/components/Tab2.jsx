@@ -44,6 +44,7 @@ export const Tab2 = props => {
   const retiree = formValues.employerType.toLowerCase() === "retired";
   const community =
     formValues.employerType.toLowerCase() === "community member";
+
   return (
     <div data-test="component-tab2" className={classes.sectionContainer}>
       <form

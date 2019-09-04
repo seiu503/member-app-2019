@@ -394,6 +394,9 @@ export const stylesPage1 = theme => ({
     display: "flex",
     flexDirection: "row"
   },
+  horizRadioBold: {
+    fontWeight: 700
+  },
   body: {},
   paymentCopy: {
     paddingBottom: "1.5em"
@@ -617,6 +620,8 @@ export const renderRadioGroup = ({
   direction,
   meta: { touched, error },
   formControlName,
+  legendClass,
+  additionalOnChange,
   ...custom
 }) => (
   <FormControl
@@ -634,14 +639,19 @@ export const renderRadioGroup = ({
       className={
         direction === "vert" ? classes.verticalGroup : classes.horizGroup
       }
-      value={input.value}
-      onChange={(event, value) => input.onChange(value)}
+      onChange={(event, value) => {
+        input.onChange(value);
+        if (additionalOnChange) {
+          additionalOnChange(value);
+        }
+      }}
     >
       {options.map(item => (
         <FormControlLabel
           key={shortid()}
           value={item}
-          control={<Radio />}
+          className={legendClass}
+          control={<Radio checked={item === input.value} />}
           label={item}
         />
       ))}
@@ -926,15 +936,15 @@ export const blankSig =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
 
 export const retireeDuesCopy =
-  "Monthly dues are $5 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+  "Monthly dues are $5 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
 export const afhDuesCopy = afhDuesRate =>
   `Monthly dues are $${afhDuesRate.toFixed(
     2
-  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted [on the first day of each month?] from the payment method you provide below.`;
+  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted on the 10th day of each month from the payment method you provide below.`;
 
 export const commDuesCopy =
-  "Monthly dues are $10 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+  "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
 TextField.propTypes = {
   input: PropTypes.shape({
