@@ -444,7 +444,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     afterEach(() => {
-      nock.restore();
+      nock.cleanAll();
     });
 
     test("when called with valid token, verifyHumanity returns success", async function() {

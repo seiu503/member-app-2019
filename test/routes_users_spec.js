@@ -116,6 +116,8 @@ suite("routes : user", function() {
           .request(app)
           .get(`/api/user/${userId}`)
           .end(function(err, res) {
+            console.log(`routes_users_spec.js > 119`);
+            console.log(res.body);
             assert.equal(res.status, 200);
             assert.isNull(err);
             assert.property(res.body, "id");
@@ -132,7 +134,7 @@ suite("routes : user", function() {
       test("returns error if user id missing or malformed", function(done) {
         chai
           .request(app)
-          .get("/api/user/123456789")
+          .get("/api/user/658fhe4s21")
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");

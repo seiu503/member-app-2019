@@ -40,7 +40,10 @@ const findExistingUser = async (profile, token, done) => {
     .then(user => {
       if (!user) {
         console.log("42");
-        return saveNewUser(profile, token, done);
+        return saveNewUser(profile, token, done).catch(err => {
+          console.log(`config/auth.js > 45`);
+          console.log(err);
+        });
       } else {
         return done(null, user);
       }
@@ -54,13 +57,14 @@ const findExistingUser = async (profile, token, done) => {
 const saveNewUser = async (profile, token, done) => {
   const google_id = profile.id;
   const google_token = token;
-  const email = profile.emails ? profile.emails[0].value : "";
+  const email = profile.emails ? profile.emails[0] : "";
   const name = `${profile.name.givenName} ${profile.name.familyName}`;
   const avatar_url = profile.picture;
 
   // save new user to database
   User.createUser(name, email, avatar_url, google_id, google_token)
     .then(user => {
+      console.log("auth.js > 68");
       return done(null, user);
     })
     .catch(err => {
@@ -76,7 +80,7 @@ const jwtOptions = {
   passReqToCallback: true
 };
 
-const jwtStrategy = new JwtStrategy(jwtOptions, (req, payload, done) => {
+const jwtLogin = async (req, payload, done) => {
   const id = payload.id;
   User.getUserById(id)
     .then(user => {
@@ -89,7 +93,9 @@ const jwtStrategy = new JwtStrategy(jwtOptions, (req, payload, done) => {
       // console.log(err);
       done(err, null);
     });
-});
+};
+
+const jwtStrategy = new JwtStrategy(jwtOptions, jwtLogin);
 
 // Google strategy options
 const googleOptions = {
@@ -100,18 +106,27 @@ const googleOptions = {
   scope: ["profile", "email"]
 };
 
-const googleStrategy = new GoogleStrategy(
-  googleOptions,
-  (req, token, refreshToken, profile, done) => {
-    console.log(`Google login by ${profile.name}, ID: ${profile.id}`);
-    if (!req.user) {
-      findExistingUser(profile, token, done);
-    } else {
-      // found logged-in user. Return
-      return done(null, req.user);
-    }
+const googleLogin = async (req, token, refreshToken, profile, done) => {
+  console.log(
+    `Google login by ${profile.name.givenName} ${
+      profile.name.familyName
+    }, ID: ${profile.id}`
+  );
+  if (!req.user) {
+    console.log("### 106");
+    return findExistingUser(profile, token, done).catch(err => {
+      // console.log(`config/auth.js > 109`);
+      console.log(err);
+    });
+  } else {
+    // console.log(`config/auth.js > 112`);
+    // console.log(req.user);
+    // found logged-in user. Return
+    return done(null, req.user);
   }
-);
+};
+
+const googleStrategy = new GoogleStrategy(googleOptions, googleLogin);
 
 module.exports = {
   user,
@@ -119,7 +134,9 @@ module.exports = {
   findExistingUser,
   saveNewUser,
   jwtOptions,
+  jwtLogin,
   jwtStrategy,
   googleOptions,
+  googleLogin,
   googleStrategy
 };
