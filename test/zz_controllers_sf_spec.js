@@ -2,6 +2,14 @@ const { mockReq, mockRes } = require("sinon-express-mock");
 const sinon = require("sinon");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
+const axios = require("axios");
+const knexCleaner = require("knex-cleaner");
+
+const chaiHttp = require("chai-http");
+const chai = require("chai");
+const expect = chai.expect;
+chai.use(chaiHttp);
+
 const sfCtrl = require("../app/controllers/sf.ctrl.js");
 const jsforce = require("jsforce");
 const { upload } = require("../app/controllers/image.ctrl");
@@ -15,6 +23,7 @@ const fieldList = generateSFContactFieldList();
 const paymentFieldList = generateSFDJRFieldList();
 
 let submissionBody = generateSampleSubmission();
+const { db, TABLES } = require("../app/config/knex");
 
 const djrBody = {
   Worker__c: "0035500000VFkjOAAT",
@@ -26,6 +35,7 @@ const djrBody = {
 let loginError,
   queryError,
   sobjectError,
+  unioniseError,
   responseStub,
   query,
   jsforceSObjectCreateStub,
@@ -33,7 +43,12 @@ let loginError,
   queryStub,
   loginStub,
   sandbox,
+  server,
   next,
+  token,
+  status,
+  scope,
+  memberShortId = "XJZT1WYV",
   res = mockRes(),
   req = mockReq(),
   first_name = "firstname",
@@ -42,6 +57,9 @@ let loginError,
 contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
 
 suite("sf.ctrl.js", function() {
+  after(() => {
+    return knexCleaner.clean(db);
+  });
   afterEach(function() {
     res = mockRes();
   });
@@ -1229,6 +1247,110 @@ suite("sf.ctrl.js", function() {
       } catch (err) {
         console.log(err);
       }
+    });
+  });
+
+  suite("sfCtrl > getUnioniseToken", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("gets a unionise access token", async function() {
+      const app = require("../server");
+      responseStub = { access_token: "faketoken" };
+      sandbox.stub(axios, "post").resolves({ data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/gettoken")
+        .end(function(err, res) {
+          expect(res.status).to.equal(200);
+          expect(res.data).to.equal(responseStub);
+        });
+    });
+
+    test("returns error if no access token in response", async function() {
+      const app = require("../server");
+      unioniseError = "Error while fetching access token";
+      responseStub = { message: unioniseError };
+
+      sandbox.stub(axios, "post").resolves({ data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/gettoken")
+        .end(function(err, res) {
+          expect(res.status).to.equal(500);
+          expect(res.data).to.equal(responseStub);
+        });
+    });
+
+    test("returns error if unionise api call throws", async function() {
+      const app = require("../server");
+      unioniseError = new Error("Error while fetching access token");
+      responseStub = { message: unioniseError };
+      sandbox.stub(axios, "post").throws(new Error(unioniseError));
+      chai
+        .request(app)
+        .post("/api/unionise/gettoken")
+        .end(function(err, res) {
+          expect(res.status).to.equal(500);
+          expect(res.data).to.equal(unioniseError);
+        });
+    });
+  });
+
+  suite("sfCtrl > getIframeExisting", function() {
+    beforeEach(function() {
+      sandbox = sinon.createSandbox();
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+    });
+
+    test("gets a card adding iframe for an existing unionise member", async function() {
+      const app = require("../server");
+      responseStub = { cardAddingUrl: "http://www.url.com" };
+      sandbox.stub(axios, "post").resolves({ data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/iframe")
+        .end(function(err, res) {
+          // expect(res.status).to.equal(200);
+          // expect(res.data).to.equal(responseStub);
+        });
+    });
+
+    test("returns error if no access token in response", async function() {
+      const app = require("../server");
+      unioniseError = "Error while fetching iframe";
+      responseStub = { message: unioniseError };
+
+      sandbox.stub(axios, "post").resolves({ data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/iframe")
+        .end(function(err, res) {
+          // expect(res.status).to.equal(500);
+          // expect(res.data).to.equal(responseStub);
+        });
+    });
+
+    test("returns error if unionise api call throws", async function() {
+      const app = require("../server");
+      unioniseError = new Error("Error while fetching iframe");
+      responseStub = { message: unioniseError };
+      sandbox.stub(axios, "post").throws(new Error(unioniseError));
+      chai
+        .request(app)
+        .post("/api/unionise/iframe")
+        .end(function(err, res) {
+          // expect(res.status).to.equal(500);
+          // expect(res.data).to.equal(unioniseError);
+        });
     });
   });
 });

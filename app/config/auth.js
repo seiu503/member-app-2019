@@ -11,7 +11,7 @@ const user = {
     done(null, user.id);
   },
 
-  deserialize: (id, done) => {
+  deserialize: async (id, done) => {
     User.getUserById(id)
       .then(user => {
         done(null, user);
@@ -34,11 +34,12 @@ const googleAuth = {
 
 // helper methods for updating existing profile with social login info
 
-const findExistingUser = (profile, token, done) => {
+const findExistingUser = async (profile, token, done) => {
   const google_id = profile.id;
   User.getUserByGoogleId(google_id)
     .then(user => {
       if (!user) {
+        console.log("42");
         return saveNewUser(profile, token, done);
       } else {
         return done(null, user);
@@ -50,7 +51,7 @@ const findExistingUser = (profile, token, done) => {
 };
 
 // save new user
-const saveNewUser = (profile, token, done) => {
+const saveNewUser = async (profile, token, done) => {
   const google_id = profile.id;
   const google_token = token;
   const email = profile.emails ? profile.emails[0].value : "";
@@ -75,6 +76,21 @@ const jwtOptions = {
   passReqToCallback: true
 };
 
+const jwtStrategy = new JwtStrategy(jwtOptions, (req, payload, done) => {
+  const id = payload.id;
+  User.getUserById(id)
+    .then(user => {
+      // console.log(`passport.js > 23`);
+      // console.log(user);
+      done(null, user);
+    })
+    .catch(err => {
+      // console.log("passport.js > 28");
+      // console.log(err);
+      done(err, null);
+    });
+});
+
 // Google strategy options
 const googleOptions = {
   clientID: googleAuth.clientID,
@@ -84,11 +100,26 @@ const googleOptions = {
   scope: ["profile", "email"]
 };
 
+const googleStrategy = new GoogleStrategy(
+  googleOptions,
+  (req, token, refreshToken, profile, done) => {
+    console.log(`Google login by ${profile.name}, ID: ${profile.id}`);
+    if (!req.user) {
+      findExistingUser(profile, token, done);
+    } else {
+      // found logged-in user. Return
+      return done(null, req.user);
+    }
+  }
+);
+
 module.exports = {
   user,
   googleAuth,
   findExistingUser,
   saveNewUser,
   jwtOptions,
-  googleOptions
+  jwtStrategy,
+  googleOptions,
+  googleStrategy
 };

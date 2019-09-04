@@ -5,6 +5,7 @@ const { assert } = sinon;
 const { suite, test } = require("mocha");
 const nock = require("nock");
 const passport = require("passport");
+const knexCleaner = require("knex-cleaner");
 const submCtrl = require("../app/controllers/submissions.ctrl.js");
 const submissions = require("../db/models/submissions");
 const {
@@ -32,14 +33,22 @@ let responseStub,
   req = mockReq();
 
 suite("sumissions.ctrl.js", function() {
-  before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
-  });
+  // before(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback().then(() => {
+  //       return db.migrate.latest();
+  //     });
+  //   });
+  // });
 
+  // // rollback to cleanup after tests are over
+  // after(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback();
+  //   });
+  // });
   after(() => {
-    return db.migrate.rollback();
+    return knexCleaner.clean(db);
   });
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
@@ -289,7 +298,6 @@ suite("sumissions.ctrl.js", function() {
 
   suite("submCtrl > getSubmissionById", function() {
     beforeEach(function() {
-      console.log(id);
       sandbox = sinon.createSandbox();
       return new Promise(resolve => {
         req = mockReq({

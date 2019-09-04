@@ -230,6 +230,8 @@ export class SubmissionFormPage1Component extends React.Component {
     // if existing DJR record is for a different employer
 
     // console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    // check if DJR employer matches employer submitted on form
+    // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
       // console.log("createSFDJR");
@@ -251,10 +253,7 @@ export class SubmissionFormPage1Component extends React.Component {
         });
     }
 
-    // TODO: check if DJR employer matches employer submitted on form
-    // if no match, create new DJR even if already have id
-
-    // if id exists, update existing DJR record
+    // if id exists and employer matches, update existing DJR record
     // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;

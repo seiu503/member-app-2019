@@ -11,6 +11,7 @@ const passport = require("passport");
 const { db, TABLES } = require("../app/config/knex");
 const users = require("../db/models/users");
 const utils = require("../app/utils");
+const knexCleaner = require("knex-cleaner");
 
 const name = `firstname ${utils.randomText()}`;
 const name2 = `firstname2 ${utils.randomText()}`;
@@ -29,14 +30,22 @@ let id;
 let userId;
 
 describe("user model tests", () => {
-  before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
-  });
+  // before(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback().then(() => {
+  //       return db.migrate.latest();
+  //     });
+  //   });
+  // });
 
+  // // rollback to cleanup after tests are over
+  // after(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback();
+  //   });
+  // });
   after(() => {
-    return db.migrate.rollback();
+    return knexCleaner.clean(db);
   });
 
   it("POST creates a new user", () => {

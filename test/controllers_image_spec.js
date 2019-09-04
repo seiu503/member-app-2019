@@ -3,7 +3,6 @@ const sinon = require("sinon");
 const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
-const nock = require("nock");
 const multer = require("multer");
 const { Uploader, checkFile } = require("../app/utils/multer.js");
 const aws = require("aws-sdk");
@@ -28,6 +27,7 @@ let responseStub,
   contentModelStub,
   dbMethods = {},
   authenticateMock,
+  knexCleaner = require("knex-cleaner"),
   token,
   res = mockRes(),
   req = mockReq(),
@@ -44,14 +44,23 @@ let responseStub,
   sandbox = sinon.createSandbox();
 
 suite("image.ctrl.js", function() {
-  before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
-  });
+  // before(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback().then(() => {
+  //       return db.migrate.latest();
+  //     });
+  //   });
+  // });
+
+  // // rollback to cleanup after tests are over
+  // after(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback();
+  //   });
+  // });
 
   after(() => {
-    return db.migrate.rollback();
+    return knexCleaner.clean(db);
   });
 
   suite("submCtrl > singleImgUpload", function() {
