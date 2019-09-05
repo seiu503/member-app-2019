@@ -26,6 +26,7 @@ export const CAPE = props => {
     invalid,
     iFrameURL,
     back,
+    checkoff,
     formValues,
     formPage1,
     payment,
@@ -34,6 +35,9 @@ export const CAPE = props => {
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
+  const legalCopy = checkoff
+    ? formElements.capeLegalCheckoff
+    : formElements.capeLegalStripe;
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -171,6 +175,7 @@ export const CAPE = props => {
             </Button>
           </div>
         )}
+        <div className={classes.legalCopy}>{legalCopy}</div>
 
         <ButtonWithSpinner
           type="submit"

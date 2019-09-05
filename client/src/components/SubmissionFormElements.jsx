@@ -400,13 +400,17 @@ export const stylesPage1 = theme => ({
   subhead: {
     color: theme.palette.primary.light,
     fontSize: "1.5em",
-    fontWeight: 400
+    fontWeight: 400,
+    paddingBottom: 20
   },
   paymentCopy: {
     paddingBottom: "1.5em"
   },
   card: {
-    display: "flex"
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column"
+    }
   },
   details: {
     display: "flex",
@@ -416,7 +420,8 @@ export const stylesPage1 = theme => ({
     flex: "1 0 auto"
   },
   cover: {
-    minWidth: 200
+    minWidth: 200,
+    minHeight: 200
   }
 });
 export const stylesPage2 = theme => ({
@@ -945,6 +950,77 @@ export const membershipTerms = (
       Union, whichever occurs first, I notify the Union and my employer in
       writing, with my valid signature, of my desire to revoke this
       authorization.
+    </p>
+  </React.Fragment>
+);
+
+export const capeLegalCheckoff = (
+  <React.Fragment>
+    <p>
+      By submitting this form, I hereby authorize my Employer to deduct the
+      designated amount from my monthly earnings as a contribution to SEIU Local
+      503, OPEU CAPE.
+    </p>
+    <p>
+      My contribution will be used to support member-endorsed candidates and for
+      expenditures in connection with elections for Local, Legislative,
+      Statewide, and Federal offices. These elected officials make critical
+      decisions on salaries, health care, retirement, and other benefits and
+      laws affecting SEIU Local 503, OPEU members.{" "}
+    </p>
+    <p>
+      A portion of this contribution (as much as 48% for the average
+      contributor) may be used by SEIU for federal elections.
+    </p>
+    <p>
+      The contribution amounts indicated above are only suggestions and I may
+      choose not to contribute or to vary my contribution amount without
+      reprisal from my Union or my Employer.{" "}
+    </p>
+    <p>
+      As per federal law, only union members and union executive/administrative
+      staff who are U.S. citizens or lawful permanent residents are eligible to
+      contribute to SEIU COPE (the Federal Committee on Political Education).
+      This authorization is made voluntarily and is not a condition of my
+      employment or membership in the union.{" "}
+    </p>
+    <p>
+      This authorization shall remain in effect until revoked in writing by me.
+      This contribution is in addition to union dues. This contribution is not
+      deductible for federal income tax purposes.
+    </p>
+  </React.Fragment>
+);
+
+export const capeLegalStripe = (
+  <React.Fragment>
+    <p>By submitting this form I am agreeing with the terms stated here:</p>
+    <p>
+      This authorization is made voluntarily and is not a condition of my
+      employment or membership in the union.
+    </p>
+    <p>
+      The contribution amounts indicated above are only suggestions and I may
+      choose not to contribute or to vary my contribution amount without
+      reprisal from my Union or my Employer.
+    </p>
+    <p>
+      Federal law states that only represented workers and
+      executive/administrative staff who are U.S. citizens or lawful permanent
+      residents are eligible to contribute to CAPE.
+    </p>
+    <p>
+      My contribution will be used to support member-endorsed candidates and for
+      expenditures in connection with elections for Local, Legislative,
+      Statewide and Federal offices. These elected officials make critical
+      decisions on salaries, health care, retirement and other benefits and laws
+      affecting SEIU Local 503 members. A portion of this contribution (as much
+      as 48% for the average contributor) may be used by SEIU for federal
+      elections.
+    </p>
+    <p>
+      This contribution is in addition to dues and existing contributions
+      through payroll deduction/ACH transfer.
     </p>
   </React.Fragment>
 );
