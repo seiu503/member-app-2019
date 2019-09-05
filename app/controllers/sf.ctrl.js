@@ -62,6 +62,8 @@ exports.getSFContactById = async (req, res, next) => {
 exports.createSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 62: createSFContact`);
   const bodyRaw = { ...req.body };
+  console.log(`sf.ctrl.js > 64`);
+  console.log(bodyRaw);
   const body = {};
 
   // convert raw body to key/value pairs using SF API field names
@@ -71,6 +73,8 @@ exports.createSFContact = async (req, res, next) => {
       body[sfFieldName] = bodyRaw[key];
     }
   });
+  console.log(`sf.ctrl.js > 74`);
+  console.log(body);
   delete body["Account.Id"];
   delete body["Account.Agency_Number__c"];
   delete body["Account.WS_Subdivision_from_Agency__c"];
@@ -95,7 +99,7 @@ exports.createSFContact = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 94: returning to client`);
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 97: ${err}`);
+    console.error(`sf.ctrl.js > 97: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import shortid from "shortid";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
@@ -8,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import LooksOneIcon from "@material-ui/icons/LooksOne";
 import LooksTwoIcon from "@material-ui/icons/LooksTwo";
 import Looks3Icon from "@material-ui/icons/Looks3";
+import Looks4Icon from "@material-ui/icons/Looks4";
 
 const useStyles = makeStyles({
   root: {
@@ -20,6 +22,28 @@ const useStyles = makeStyles({
 
 export default function NavTabs(props) {
   const classes = useStyles();
+  const { howManyTabs } = props;
+  console.log(`howManyTabs: ${howManyTabs}`);
+  const icons = [
+    <LooksOneIcon style={{ color: "#531078" }} />,
+    <LooksTwoIcon style={{ color: "#531078" }} />,
+    <Looks3Icon style={{ color: "#531078" }} />,
+    <Looks4Icon style={{ color: "#531078" }} />
+  ];
+  const renderTab = index => (
+    <Tab
+      icon={icons[index]}
+      aria-label={index + 1}
+      id={`tab${index + 1}`}
+      index={index}
+      disabled
+      key={shortid()}
+    />
+  );
+  const tabs = [];
+  for (let i = 0; i <= howManyTabs; i++) {
+    tabs.push(renderTab(i));
+  }
   return (
     <Paper className={classes.root} data-test="component-navtabs">
       <Tabs
@@ -29,27 +53,7 @@ export default function NavTabs(props) {
         textColor="primary"
         aria-label="Navigation tabs"
       >
-        <Tab
-          icon={<LooksOneIcon style={{ color: "#531078" }} />}
-          aria-label="1"
-          id="tab1"
-          index={0}
-          disabled
-        />
-        <Tab
-          icon={<LooksTwoIcon style={{ color: "#531078" }} />}
-          aria-label="2"
-          id="tab2"
-          index={1}
-          disabled
-        />
-        <Tab
-          icon={<Looks3Icon style={{ color: "#531078" }} />}
-          aria-label="3"
-          id="tab3"
-          index={2}
-          disabled
-        />
+        {tabs}
       </Tabs>
     </Paper>
   );

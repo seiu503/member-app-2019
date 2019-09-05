@@ -362,6 +362,7 @@ export class SubmissionFormPage1Component extends React.Component {
           >
             <NavTabs
               tab={this.props.tab}
+              howManyTabs={this.props.howManyTabs}
               handleTab={this.props.handleTab}
               pristine={this.props.pristine}
               valid={this.props.valid}

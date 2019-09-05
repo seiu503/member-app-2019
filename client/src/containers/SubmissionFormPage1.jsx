@@ -40,7 +40,8 @@ export class SubmissionFormPage1Container extends React.Component {
       open: false,
       tab: undefined,
       legalLanguage: "",
-      signatureType: "draw"
+      signatureType: "draw",
+      howManyTabs: 3
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -165,62 +166,65 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async prepForContact(values) {
-    let returnValues = { ...values };
+    return new Promise(resolve => {
+      let returnValues = { ...values };
 
-    // format birthdate
-    const birthdate = formatBirthdate(values);
-    returnValues.birthdate = birthdate;
+      // format birthdate
+      const birthdate = formatBirthdate(values);
+      returnValues.birthdate = birthdate;
 
-    // find employer object and set employer-related fields
-    const employerObject = findEmployerObject(
-      this.props.submission.employerObjects,
-      values.employerName
-    );
-    returnValues.agencyNumber = employerObject.Agency_Number__c;
-    returnValues.employerId = employerObject.Id;
+      // find employer object and set employer-related fields
+      const employerObject = findEmployerObject(
+        this.props.submission.employerObjects,
+        values.employerName
+      );
+      returnValues.agencyNumber = employerObject.Agency_Number__c;
+      returnValues.employerId = employerObject.Id;
 
-    // save employerId to redux store for later
-    await this.props.apiSubmission.handleInput({
-      target: { name: "employerId", value: employerObject.Id }
+      // save employerId to redux store for later
+      this.props.apiSubmission.handleInput({
+        target: { name: "employerId", value: employerObject.Id }
+      });
+      resolve(returnValues);
     });
-
-    return returnValues;
   }
 
   prepForSubmission(values) {
-    let returnValues = { ...values };
+    return new Promise(resolve => {
+      let returnValues = { ...values };
 
-    // set default date values for DPA & DDA if relevant
-    returnValues.direct_pay_auth = values.directPayAuth
-      ? formatSFDate(new Date())
-      : null;
-    returnValues.direct_deposit_auth = values.directDepositAuth
-      ? formatSFDate(new Date())
-      : null;
+      // set default date values for DPA & DDA if relevant
+      returnValues.direct_pay_auth = values.directPayAuth
+        ? formatSFDate(new Date())
+        : null;
+      returnValues.direct_deposit_auth = values.directDepositAuth
+        ? formatSFDate(new Date())
+        : null;
 
-    // set legal language
-    returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+      // set legal language
+      returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
 
-    // set campaign source
-    const q = queryString.parse(this.props.location.search);
-    returnValues.campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+      // set campaign source
+      const q = queryString.parse(this.props.location.search);
+      returnValues.campaignSource = q && q.s ? q.s : "Direct seiu503signup";
 
-    // set salesforce id
-    if (!values.salesforceId) {
-      if (q && q.id) {
-        returnValues.salesforceId = q.id;
+      // set salesforce id
+      if (!values.salesforceId) {
+        if (q && q.id) {
+          returnValues.salesforceId = q.id;
+        }
+        if (this.props.submission.salesforce_id) {
+          returnValues.salesforceId = this.props.submission.salesforce_id;
+        }
       }
-      if (this.props.submission.salesforce_id) {
-        returnValues.salesforceId = this.props.submission.salesforce_id;
-      }
-    }
 
-    return returnValues;
+      resolve(returnValues);
+    });
   }
 
   async generateSubmissionBody(values) {
     const firstValues = await this.prepForContact(values);
-    const secondValues = this.prepForSubmission(firstValues);
+    const secondValues = await this.prepForSubmission(firstValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = this.props.submission.formPage1.signature;
     secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
@@ -312,7 +316,9 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSFContact() {
-    const values = this.prepForContact(this.props.formValues);
+    console.log("createSFContact");
+    const values = await this.prepForContact(this.props.formValues);
+    console.log(values);
     let {
       firstName,
       lastName,
@@ -348,16 +354,17 @@ export class SubmissionFormPage1Container extends React.Component {
       text_auth_opt_out: textAuthOptOut,
       reCaptchaValue
     };
+    console.log(body);
 
     await this.props.apiSF.createSFContact(body).catch(err => {
-      // console.log(err);
+      console.log(err);
       return handleError(err);
     });
     // console.log(this.props.submission.salesforceId);
   }
 
   async updateSFContact() {
-    const values = this.prepForContact(this.props.formValues);
+    const values = await this.prepForContact(this.props.formValues);
     let {
       firstName,
       lastName,
@@ -490,11 +497,13 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      // console.log(formValues.employerType.toLowerCase());
-      // console.log(
-      //   `paymentRequired ? ${this.props.submission.formPage1.paymentRequired}`
-      // );
-      // console.log(this.props.submission.formPage1);
+      const newState = { ...this.state };
+      newState.howManyTabs = 4;
+      this.setState(newState);
+    } else {
+      const newState = { ...this.state };
+      newState.howManyTabs = 3;
+      this.setState(newState);
     }
 
     // submit validation: recaptcha
@@ -860,6 +869,7 @@ export class SubmissionFormPage1Container extends React.Component {
         <SubmissionFormPage1Wrap
           {...this.props}
           tab={this.state.tab}
+          howManyTabs={this.state.howManyTabs}
           handleTab={this.handleTab}
           back={this.changeTab}
           handleUpload={this.handleUpload}

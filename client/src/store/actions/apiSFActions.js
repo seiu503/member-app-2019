@@ -66,6 +66,8 @@ export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
  *     If database error, hides spinner, displays error toastr
  */
 export function createSFContact(body) {
+  console.log(body);
+  console.log(JSON.stringify(body));
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sf`,
