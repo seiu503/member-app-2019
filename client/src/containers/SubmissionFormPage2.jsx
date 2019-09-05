@@ -19,7 +19,6 @@ export class SubmissionFormPage2Container extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
-    this.props.addTranslation(globalTranslations);
   }
 
   componentDidMount() {

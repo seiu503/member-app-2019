@@ -22,7 +22,6 @@ export class SubmissionFormPage1Component extends React.Component {
       signatureType: "draw"
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.props.addTranslation(globalTranslations);
   }
   sigBox = {};
   componentDidMount() {

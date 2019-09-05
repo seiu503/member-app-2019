@@ -121,7 +121,7 @@ export const Tab2 = props => {
           </React.Fragment>
         )}
         <Typography component="h3" className={classes.fieldLabel}>
-          Signature
+          <Translate id="signatureTitle" />
         </Typography>
         {signatureType === "write" && (
           <React.Fragment>
@@ -135,7 +135,7 @@ export const Tab2 = props => {
               component={renderTextField}
             />
             <FormHelperText className={classes.formHelperText}>
-              Enter your full legal name. This will act as your signature.
+              <Translate id="signatureHint" />
             </FormHelperText>
           </React.Fragment>
         )}

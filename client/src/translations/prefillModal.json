@@ -1,10 +1,17 @@
 {
-  "modalAboveName": [
-    "Are you _________________? This form is customized especially for:",
-    "¿Es usted _________________? Este formulario está personalizado especialmente para:",
-    "Являетесь ли вы _________________? Этот документ был специально разработан для:",
-    "Quý vị có phải là _________________? Mẫu này đã được tạo riêng cho:",
-    "您是否是 _________________? 本表格专供以下人士填写："
+  "modalTitle": [
+    "Are you ",
+    "¿Es usted ",
+    "Являетесь ли вы ",
+    "Quý vị có phải là ",
+    "您是否是 "
+  ],
+  "modalDescription": [
+    "This form is customized especially for",
+    "Este formulario está personalizado especialmente para",
+    "Этот документ был специально разработан для",
+    "Mẫu này đã được tạo riêng cho",
+    "本表格专供以下人士填写"
   ],
   "modalBelowName": [
     "If this is not you, do not complete this form!",
@@ -14,17 +21,24 @@
     "如果您不符合条件，请勿填写本表格！"
   ],
   "modalConfirmButton": [
-    "Yes, I'm ___________________",
-    "Sí, soy ___________________",
-    "Да, я являюсь ___________________",
-    "Vâng, tôi là ___________________",
-    "是，我是 ___________________"
+    "Yes, I'm",
+    "Sí, soy",
+    "Да, я являюсь",
+    "Vâng, tôi là",
+    "是，我是"
   ],
-  "modalErrorButton": [
-    "I'm not __________________, get me my own link.",
-    "No soy __________________, envíenme mi propio enlace.",
-    "Я не являюсь __________________, предоставьте мне отдельную ссылку.",
-    "Tôi không phải là ____________, vui lòng cho tôi liên kết riêng.",
-    "我不是 __________________，请向我提供我的链接。"
+  "modalErrorButtonPreName": [
+    "I'm not ",
+    "No soy ",
+    "Я не являюсь ",
+    "Tôi không phải là ",
+    "我不是 "
+  ],
+  "modalErrorButtonPostName": [
+    ", get me my own link.",
+    ", envíenme mi propio enlace.",
+    ", предоставьте мне отдельную ссылку.",
+    ", vui lòng cho tôi liên kết riêng.",
+    "，请向我提供我的链接。"
   ]
 }

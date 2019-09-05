@@ -20,21 +20,21 @@
     "Ngày sinh",
     "出生日期"
   ],
-  "month": [
+  "mm": [
     "Month",
     "Mes",
     "Месяц",
     "Tháng",
     "月"
   ],
-  "day": [
+  "dd": [
     "Day",
     "Día",
     "День",
     "Ngày",
     "天"
   ],
-  "year": [
+  "yyyy": [
     "Year",
     "Año",
     "Год",
@@ -195,7 +195,7 @@
     "† Bằng cách cung cấp số điện thoại của tôi, tôi hiểu rằng Công đoàn Nhân viên Phục vụ Quốc tế (SEIU) và các chi nhánh cũng như tổ chức liên quan của công đoàn có thể sử dụng các công nghệ tự động để thỉnh thoảng gọi và/hoặc gửi tin nhắn đến điện thoại di động của tôi. SEIU sẽ không bao giờ tính tiền cho các tin nhắn báo động. Cước phí tin nhắn và dữ liệu của nhà cung cấp dịch vụ mạng di động có thể áp dụng cho những tin nhắn như vậy. Nhắn tin trả lời với từ khóa STOP để ngừng nhận tin nhắn, từ HELP để nhận thêm thông tin.",
     "†提供我的电话号码，即表示我明白服务行业雇员国际工会 (SEIU) 及其当地工会和附属工会可定期使用自动呼叫技术呼叫技术及／或发短信到我的手机。SEIU 绝不会对短信提醒收取费用。运营商讯息和数据收费可能适用于这些提醒。回复 STOP（停止）以停止接收讯息；回复 HELP（帮助）以获取更多信息。"
   ],
-  "iAgreeToTheMembershipTerms*": [
+  "termsAgree": [
     "I AGREE TO THE MEMBERSHIP TERMS*",
     "Acepto los términos de la membresía*",
     "Я соглашаюсь с условиями членства в профсоюзе*",
@@ -209,14 +209,14 @@
     "Họ tên, địa chỉ mạng mà quý vị đang truy cập trang này từ, và dấu thời gian gửi đi sẽ đóng vai trò là chữ ký của quý vị, cho biết: Tôi theo đây chỉ định SEIU Local 503, OPEU (hoặc bất kỳ công đoàn kế thừa nào) làm đại diện thương lượng tập thể cho tôi. Tôi theo đây cũng ủy quyền cho nhà tuyển dụng của tôi khấu trừ tiền lương của tôi, bắt đầu với kỳ lương kế tiếp, tất cả phí Công đoàn và các khoản phí khác mà sẽ được chứng nhận bởi SEIU Local 503, OPEU (hoặc bất cứ công đoàn kế thừa nào khác), và chuyển các khoản tiền đó đến công đoàn. Giấy ủy quyền/chỉ định này được cam kết vô điều kiện, được thực hiện sau khi cân nhắc các chi phí đại diện và những việc khác mà công đoàn đã thay mặt tôi thi hành, và được thực hiện bất kể tư cách hội viên của tôi trong công đoàn. Bản ủy ​​quyền này không thể được thu hồi trong thời hạn một năm kể từ ngày thi hành, và sau đó từ năm này sang năm tiếp theo, trừ khi tôi thông báo cho Công đoàn và nhà tuyển dụng của tôi bằng văn bản có chữ ký hợp lệ của tôi rằng tôi muốn thu hồi giấy ủy quyền này, không dưới ba mươi (30) ngày và không trên bốn mươi lăm (45) ngày trước ngày cuối của bất kỳ chu kỳ hàng năm hoặc ngày hợp đồng giữa chủ nghiệp của tôi và Công đoàn chấm dứt, bất kỳ ngày nào đến trước.",
     "您提交的姓名、您登录此页面的网络地址以及时间戳将作为签名，表示：我特此指定 SEIU Local 503, OPEU（或任何继任工会实体）作为我期望的集体谈判代理。我还特此授权我的雇主自下一个薪资期起，从我的工资中扣除全部工会会费以及应由 SEIU Local 503, OPEU（或任何继任工会实体）认证的其他费用或评估费用，并将这些费用金额汇给该工会。该授权／委托以工会代表我进行谈判和采取其他行动所产生的费用为代价无条件地作出，且与我是否为工会会员无关。该授权自执行之日起一年内不可撤销，并且其后每年均如此，除非在任何年度期间结束前的三十 (30) 至四十五 (45) 天内或者我的雇主与工会之间的合同终止（以先发生者为准）时，我以带有本人有效签名的书面文件的形式将撤销此授权的意愿通知工会和我的雇主。"
   ],
-  "signature": [
+  "signatureTitle": [
     "SIGNATURE",
     "Firma",
     "Подпись",
     "Chữ ký",
     "签名："
   ],
-  "signaturePlaceholder": [
+  "signature": [
     "Your full legal name",
     "Su nombre legal completo",
     "Ваши имя и фамилия согласно документам",
