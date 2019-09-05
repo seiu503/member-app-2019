@@ -397,9 +397,26 @@ export const stylesPage1 = theme => ({
   horizRadioBold: {
     fontWeight: 700
   },
-  body: {},
+  subhead: {
+    color: theme.palette.primary.light,
+    fontSize: "1.5em",
+    fontWeight: 400
+  },
   paymentCopy: {
     paddingBottom: "1.5em"
+  },
+  card: {
+    display: "flex"
+  },
+  details: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  content: {
+    flex: "1 0 auto"
+  },
+  cover: {
+    minWidth: 200
   }
 });
 export const stylesPage2 = theme => ({

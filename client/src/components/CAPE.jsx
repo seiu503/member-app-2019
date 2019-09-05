@@ -7,6 +7,11 @@ import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
 import * as formElements from "./SubmissionFormElements";
 import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+
+import headshot from "../img/deffo_mebrat_300.png";
 
 import PropTypes from "prop-types";
 
@@ -24,7 +29,8 @@ export const CAPE = props => {
     formValues,
     formPage1,
     payment,
-    toggleCardAddingFrame
+    toggleCardAddingFrame,
+    standAlone
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -38,24 +44,76 @@ export const CAPE = props => {
       >
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>
-            CAPE PLACEHOLDER
+            CAPE: Citizen Action for Political Education
           </Typography>
-        </div>
-        {formValues.employerType &&
-          formValues.employerType.toLowerCase() === "retired" && (
-            <Field
-              data-test="radio-payment-type"
-              label="How would you like to pay your union dues?"
-              name="paymentType"
-              formControlName="paymentType"
-              id="paymentType"
-              direction="horiz"
-              className={classes.horizRadio}
-              classes={classes}
-              component={formElements.renderRadioGroup}
-              options={formElements.paymentTypes}
+          <Typography component="p" className={classes.subhead}>
+            Collective political action to raise wages, protect benefits, fund
+            public services, and build strong communities.
+          </Typography>
+          <Typography component="p" className={classes.body}>
+            When workers unite, legislators listen. In 2019, SEIU Local 503 CAPE
+            advocacy led to historic wins:
+          </Typography>
+          <ul className={classes.ul}>
+            <li className={classes.li}>
+              Funding for raises and benefits for state employees and homecare
+              workers are double what they were in the last budget, setting
+              members up for strong contracts
+            </li>
+            <li className={classes.li}>
+              State Agency budgets increased to provide additional resources
+              members need to do their jobs
+            </li>
+            <li className={classes.li}>
+              The Oregon Public Worker Protection Act protects our right to
+              belong to a union free from retaliation and harassment
+            </li>
+            <li className={classes.li}>
+              “Double Coverage” health care for families where both spouses work
+              in public service
+            </li>
+            <li className={classes.li}>
+              Oregon passed the strongest Paid Family and Medical Leave law in
+              the nation
+            </li>
+            <li className={classes.li}>
+              Our state became the first in the U.S. to pass statewide rent
+              stabilization and ban no-cause evictions
+            </li>
+            <li className={classes.li}>
+              The Legislature passed a statewide bill that will hold private
+              agency homecare and our homecare workers to the same standards
+            </li>
+          </ul>
+          <Card className={classes.card}>
+            <div className={classes.details}>
+              <CardContent className={classes.content}>
+                <Typography
+                  component="h5"
+                  variant="h5"
+                  className={classes.cardHead}
+                >
+                  Join us
+                </Typography>
+                <Typography component="p" className={classes.pullQuote}>
+                  “I can’t write big checks. But I contribute what I can each
+                  month to CAPE. And when we put all of our resources together,
+                  we have shown we can elect legislators in Oregon who will
+                  fight for working families and our clients.”
+                </Typography>
+                <Typography component="p" className={classes.quoteAttr}>
+                  - Deffo Mebrat, Adult Foster Care Provider
+                </Typography>
+              </CardContent>
+            </div>
+            <CardMedia
+              className={classes.cover}
+              image={headshot}
+              title="Deffo Mebrat"
             />
-          )}
+          </Card>
+          <Typography />
+        </div>
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&
           validMethod && (
@@ -81,51 +139,38 @@ export const CAPE = props => {
               />
             </div>
           )}
-        {iFrameURL &&
-          formPage1.paymentType === "Card" &&
-          formPage1.newCardNeeded &&
-          formPage1.paymentRequired && (
-            <div data-test="component-iframe">
-              <Typography component="h2" className={classes.head}>
-                Add a payment method
-              </Typography>
-              <div className={classes.iframeWrap}>
-                <Iframe
-                  url={iFrameURL}
-                  width="100%"
-                  height="100px"
-                  id="iFrame"
-                  className={classes.iframe}
-                  display="initial"
-                  position="relative"
-                />
-              </div>
-            </div>
-          )}
-        {formPage1.paymentType === "Check" && (
-          <div className={classes.paymentCopy}>
+        {iFrameURL && formPage1.newCardNeeded && formPage1.paymentRequired && (
+          <div data-test="component-iframe">
             <Typography component="h2" className={classes.head}>
-              To pay your dues by check:
+              Add a payment method
             </Typography>
-            <Typography component="p" className={classes.body}>
-              Please mail your payment of $5 (monthly) or $60 (annually) to SEIU
-              Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree
-              Dues' on your check. Dues are set by the SEIU Local 503 bylaws.
-            </Typography>
+            <div className={classes.iframeWrap}>
+              <Iframe
+                url={iFrameURL}
+                width="100%"
+                height="100px"
+                id="iFrame"
+                className={classes.iframe}
+                display="initial"
+                position="relative"
+              />
+            </div>
           </div>
         )}
-        <div className={classes.buttonWrapTab3}>
-          <Button
-            type="button"
-            data-test="button-back"
-            onClick={() => back(1)}
-            color="primary"
-            className={classes.back}
-            variant="contained"
-          >
-            Back
-          </Button>
-        </div>
+        {!standAlone && (
+          <div className={classes.buttonWrapTab3}>
+            <Button
+              type="button"
+              data-test="button-back"
+              onClick={() => back(1)}
+              color="primary"
+              className={classes.back}
+              variant="contained"
+            >
+              Back
+            </Button>
+          </div>
+        )}
 
         <ButtonWithSpinner
           type="submit"

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import queryString from "query-string";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -335,6 +336,7 @@ export class SubmissionFormPage1Component extends React.Component {
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = this.updateEmployersPicklist() || [""];
+    const values = queryString.parse(this.props.location.search);
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     return (
@@ -342,110 +344,133 @@ export class SubmissionFormPage1Component extends React.Component {
         data-test="component-submissionformpage1"
         className={classes.formContainer}
       >
-        {typeof this.props.tab !== "number" && (
-          <WelcomeInfo
-            location={this.props.location}
-            history={this.props.history}
+        {values.cape ? (
+          <CAPEForm
+            onSubmit={this.props.handleCAPESubmit}
+            classes={classes}
+            loading={this.props.submission.loading}
             handleTab={this.props.handleTab}
-            style={
-              typeof this.props.tab !== "number"
-                ? { display: "block" }
-                : { display: "none" }
-            }
+            back={this.props.back}
+            formValues={this.props.formValues}
+            formPage1={this.props.submission.formPage1}
+            handleInput={this.props.submission.handleInput}
+            iFrameURL={this.props.submission.payment.cardAddingUrl}
+            payment={this.props.submission.payment}
+            toggleCardAddingFrame={this.props.toggleCardAddingFrame}
+            standAlone={true}
           />
-        )}
-
-        {this.props.tab >= 0 && (
-          <div
-            style={
-              this.props.tab >= 0 ? { display: "block" } : { display: "none" }
-            }
-          >
-            <NavTabs
-              tab={this.props.tab}
-              howManyTabs={this.props.howManyTabs}
-              handleTab={this.props.handleTab}
-              pristine={this.props.pristine}
-              valid={this.props.valid}
-              submitting={this.props.submitting}
-              submitForm={this.props.submitForm}
-              formValues={this.props.formValues}
-            />
-            {this.props.tab === 0 && (
-              <Tab1Form
-                onSubmit={() => this.props.handleTab(1)}
-                classes={classes}
-                employerTypesList={employerTypesList}
-                employerList={employerList}
-                handleInput={this.props.apiSubmission.handleInput}
-                updateEmployersPicklist={this.updateEmployersPicklist}
-                renderSelect={this.renderSelect}
-                renderTextField={this.renderTextField}
-                renderCheckbox={this.renderCheckbox}
-                formValues={this.props.formValues}
-                width={this.props.width}
+        ) : (
+          <React.Fragment>
+            {typeof this.props.tab !== "number" && (
+              <WelcomeInfo
+                location={this.props.location}
+                history={this.props.history}
                 handleTab={this.props.handleTab}
-                submitErrors={this.props.submitErrors}
-                reCaptchaChange={this.reCaptchaChange}
-                reCaptchaRef={this.props.reCaptchaRef}
-              />
-            )}
-            {this.props.tab === 1 && (
-              <Tab2Form
-                onSubmit={() => this.props.handleTab(2)}
-                classes={classes}
-                legal_language={this.props.legal_language}
-                direct_pay={this.props.direct_pay}
-                direct_deposit={this.props.direct_deposit}
-                sigBox={this.props.sigBox}
-                signatureType={this.props.signatureType}
-                toggleSignatureInputType={this.props.toggleSignatureInputType}
-                clearSignature={this.props.clearSignature}
-                handleInput={this.props.apiSubmission.handleInput}
-                renderSelect={this.renderSelect}
-                renderTextField={this.renderTextField}
-                renderCheckbox={this.renderCheckbox}
-                formValues={this.props.formValues}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                initialize={this.props.initialize}
-              />
-            )}
-            {this.props.tab === 2 && (
-              <Tab3Form
-                onSubmit={this.handleSubmit}
-                classes={classes}
-                loading={this.props.submission.loading}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                formValues={this.props.formValues}
-                formPage1={this.props.submission.formPage1}
-                paymentRequired={
-                  this.props.submission.formPage1.paymentRequired
+                style={
+                  typeof this.props.tab !== "number"
+                    ? { display: "block" }
+                    : { display: "none" }
                 }
-                handleInput={this.props.submission.handleInput}
-                iFrameURL={this.props.submission.payment.cardAddingUrl}
-                afhDuesRate={this.props.submission.formPage1.afhDuesRate}
-                payment={this.props.submission.payment}
-                toggleCardAddingFrame={this.props.toggleCardAddingFrame}
               />
             )}
-            {this.props.tab === 3 && (
-              <CAPEForm
-                onSubmit={this.props.handleCAPESubmit}
-                classes={classes}
-                loading={this.props.submission.loading}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                formValues={this.props.formValues}
-                formPage1={this.props.submission.formPage1}
-                handleInput={this.props.submission.handleInput}
-                iFrameURL={this.props.submission.payment.cardAddingUrl}
-                payment={this.props.submission.payment}
-                toggleCardAddingFrame={this.props.toggleCardAddingFrame}
-              />
+
+            {this.props.tab >= 0 && (
+              <div
+                style={
+                  this.props.tab >= 0
+                    ? { display: "block" }
+                    : { display: "none" }
+                }
+              >
+                <NavTabs
+                  tab={this.props.tab}
+                  howManyTabs={this.props.howManyTabs}
+                  handleTab={this.props.handleTab}
+                  pristine={this.props.pristine}
+                  valid={this.props.valid}
+                  submitting={this.props.submitting}
+                  submitForm={this.props.submitForm}
+                  formValues={this.props.formValues}
+                />
+                {this.props.tab === 0 && (
+                  <Tab1Form
+                    onSubmit={() => this.props.handleTab(1)}
+                    classes={classes}
+                    employerTypesList={employerTypesList}
+                    employerList={employerList}
+                    handleInput={this.props.apiSubmission.handleInput}
+                    updateEmployersPicklist={this.updateEmployersPicklist}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    formValues={this.props.formValues}
+                    width={this.props.width}
+                    handleTab={this.props.handleTab}
+                    submitErrors={this.props.submitErrors}
+                    reCaptchaChange={this.reCaptchaChange}
+                    reCaptchaRef={this.props.reCaptchaRef}
+                  />
+                )}
+                {this.props.tab === 1 && (
+                  <Tab2Form
+                    onSubmit={() => this.props.handleTab(2)}
+                    classes={classes}
+                    legal_language={this.props.legal_language}
+                    direct_pay={this.props.direct_pay}
+                    direct_deposit={this.props.direct_deposit}
+                    sigBox={this.props.sigBox}
+                    signatureType={this.props.signatureType}
+                    toggleSignatureInputType={
+                      this.props.toggleSignatureInputType
+                    }
+                    clearSignature={this.props.clearSignature}
+                    handleInput={this.props.apiSubmission.handleInput}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    formValues={this.props.formValues}
+                    handleTab={this.props.handleTab}
+                    back={this.props.back}
+                    initialize={this.props.initialize}
+                  />
+                )}
+                {this.props.tab === 2 && (
+                  <Tab3Form
+                    onSubmit={this.handleSubmit}
+                    classes={classes}
+                    loading={this.props.submission.loading}
+                    handleTab={this.props.handleTab}
+                    back={this.props.back}
+                    formValues={this.props.formValues}
+                    formPage1={this.props.submission.formPage1}
+                    paymentRequired={
+                      this.props.submission.formPage1.paymentRequired
+                    }
+                    handleInput={this.props.submission.handleInput}
+                    iFrameURL={this.props.submission.payment.cardAddingUrl}
+                    afhDuesRate={this.props.submission.formPage1.afhDuesRate}
+                    payment={this.props.submission.payment}
+                    toggleCardAddingFrame={this.props.toggleCardAddingFrame}
+                  />
+                )}
+                {this.props.tab === 3 && (
+                  <CAPEForm
+                    onSubmit={this.props.handleCAPESubmit}
+                    classes={classes}
+                    loading={this.props.submission.loading}
+                    handleTab={this.props.handleTab}
+                    back={this.props.back}
+                    formValues={this.props.formValues}
+                    formPage1={this.props.submission.formPage1}
+                    handleInput={this.props.submission.handleInput}
+                    iFrameURL={this.props.submission.payment.cardAddingUrl}
+                    payment={this.props.submission.payment}
+                    toggleCardAddingFrame={this.props.toggleCardAddingFrame}
+                  />
+                )}
+              </div>
             )}
-          </div>
+          </React.Fragment>
         )}
       </div>
     );
