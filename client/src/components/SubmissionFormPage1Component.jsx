@@ -8,6 +8,7 @@ import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
+import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
@@ -314,13 +315,13 @@ export class SubmissionFormPage1Component extends React.Component {
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
-        // TODO: redirect to CAPE here...
-        // (before resetting form so can reuse data on CAPE tab)
+        // redirect to CAPE tab
+        this.props.handleTab(this.props.howManyTabs);
 
-        this.props.reset("submissionPage1");
-        this.props.history.push(
-          `/page2/?id=${this.props.submission.salesforceId}`
-        );
+        // this.props.reset("submissionPage1");
+        // this.props.history.push(
+        //   `/page2/?id=${this.props.submission.salesforceId}`
+        // );
       })
       .catch(err => {
         console.log(err);
@@ -425,6 +426,21 @@ export class SubmissionFormPage1Component extends React.Component {
                 handleInput={this.props.submission.handleInput}
                 iFrameURL={this.props.submission.payment.cardAddingUrl}
                 afhDuesRate={this.props.submission.formPage1.afhDuesRate}
+                payment={this.props.submission.payment}
+                toggleCardAddingFrame={this.props.toggleCardAddingFrame}
+              />
+            )}
+            {this.props.tab === 3 && (
+              <CAPEForm
+                onSubmit={this.handleCAPESubmit}
+                classes={classes}
+                loading={this.props.submission.loading}
+                handleTab={this.props.handleTab}
+                back={this.props.back}
+                formValues={this.props.formValues}
+                formPage1={this.props.submission.formPage1}
+                handleInput={this.props.submission.handleInput}
+                iFrameURL={this.props.submission.payment.cardAddingUrl}
                 payment={this.props.submission.payment}
                 toggleCardAddingFrame={this.props.toggleCardAddingFrame}
               />

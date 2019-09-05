@@ -316,9 +316,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSFContact() {
-    console.log("createSFContact");
     const values = await this.prepForContact(this.props.formValues);
-    console.log(values);
     let {
       firstName,
       lastName,
@@ -354,13 +352,11 @@ export class SubmissionFormPage1Container extends React.Component {
       text_auth_opt_out: textAuthOptOut,
       reCaptchaValue
     };
-    console.log(body);
 
     await this.props.apiSF.createSFContact(body).catch(err => {
       console.log(err);
       return handleError(err);
     });
-    // console.log(this.props.submission.salesforceId);
   }
 
   async updateSFContact() {
@@ -557,19 +553,19 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    // console.log("getIframeExisting");
+    console.log("getIframeExisting");
     const memberShortId = this.props.submission.payment.memberShortId;
     const token = this.props.submission.payment.unioniseToken;
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        // console.log(result);
+        console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
           result.type === "GET_IFRAME_EXISTING_FAILURE"
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -578,7 +574,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return handleError(err);
       });
   }
@@ -778,8 +774,6 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
           // console.log(result.payload);
-          // console.log(this.props.submission.payment.activeMethodLast4);
-          // console.log(this.props.submission.payment.paymentErrorHold);
 
           const newCardNeeded =
             !result.payload.Active_Account_Last_4__c ||

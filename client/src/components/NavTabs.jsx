@@ -23,7 +23,6 @@ const useStyles = makeStyles({
 export default function NavTabs(props) {
   const classes = useStyles();
   const { howManyTabs } = props;
-  console.log(`howManyTabs: ${howManyTabs}`);
   const icons = [
     <LooksOneIcon style={{ color: "#531078" }} />,
     <LooksTwoIcon style={{ color: "#531078" }} />,
@@ -41,7 +40,7 @@ export default function NavTabs(props) {
     />
   );
   const tabs = [];
-  for (let i = 0; i <= howManyTabs; i++) {
+  for (let i = 0; i <= howManyTabs - 1; i++) {
     tabs.push(renderTab(i));
   }
   return (

@@ -13,14 +13,13 @@ import PropTypes from "prop-types";
 import validate from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
-export const Tab3 = props => {
+export const CAPE = props => {
   const {
     onSubmit,
     classes,
     loading,
     invalid,
     iFrameURL,
-    afhDuesRate,
     back,
     formValues,
     formPage1,
@@ -28,36 +27,20 @@ export const Tab3 = props => {
     toggleCardAddingFrame
   } = props;
 
-  let duesCopy = "";
-  // console.log(formPage1.paymentType);
-  if (formValues.employerType) {
-    switch (formValues.employerType.toLowerCase()) {
-      case "adult foster home":
-        duesCopy = formElements.afhDuesCopy(afhDuesRate);
-        break;
-      case "retired":
-        duesCopy = formElements.retireeDuesCopy;
-        break;
-      default:
-        duesCopy = formElements.commDuesCopy;
-    }
-  }
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
 
   return (
-    <div data-test="component-tab3" className={classes.sectionContainer}>
+    <div data-test="component-cape" className={classes.sectionContainer}>
       <form
         onSubmit={props.handleSubmit(onSubmit)}
-        id="tab3"
+        id="CAPE"
         className={classes.form}
       >
-        {formPage1.paymentRequired && (
-          <div className={classes.paymentCopy}>
-            <Typography component="p" className={classes.body}>
-              {duesCopy}
-            </Typography>
-          </div>
-        )}
+        <div className={classes.paymentCopy}>
+          <Typography component="h2" className={classes.head}>
+            CAPE PLACEHOLDER
+          </Typography>
+        </div>
         {formValues.employerType &&
           formValues.employerType.toLowerCase() === "retired" && (
             <Field
@@ -159,7 +142,7 @@ export const Tab3 = props => {
   );
 };
 
-Tab3.propTypes = {
+CAPE.propTypes = {
   onSubmit: PropTypes.func,
   classes: PropTypes.object,
   reCaptchaChange: PropTypes.func,
@@ -176,18 +159,18 @@ const mapStateToProps = state => ({
 });
 
 // add reduxForm to component
-export const Tab3Form = reduxForm({
+export const CAPEForm = reduxForm({
   form: "submissionPage1",
   validate,
   destroyOnUnmount: false,
-  forceUnregisterOnUnmount: false,
+  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
   onSubmitFail: errors => scrollToFirstError(errors)
-})(Tab3);
+})(CAPE);
 
 // connect to redux store
-export const Tab3Connected = connect(mapStateToProps)(Tab3Form);
+export const CAPEConnected = connect(mapStateToProps)(CAPEForm);
 
-export default Tab3Connected;
+export default CAPEConnected;

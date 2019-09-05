@@ -66,8 +66,8 @@ export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
  *     If database error, hides spinner, displays error toastr
  */
 export function createSFContact(body) {
-  console.log(body);
-  console.log(JSON.stringify(body));
+  // console.log(body);
+  // console.log(JSON.stringify(body));
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sf`,
@@ -552,6 +552,12 @@ export const GET_IFRAME_EXISTING_FAILURE = "GET_IFRAME_EXISTING_FAILURE";
  */
 export function getIframeExisting(token, memberShortId) {
   const body = JSON.stringify({ memberShortId: memberShortId });
+  console.log(body);
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+  };
+  console.log(headers);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/unionise/iframe`,
@@ -575,10 +581,7 @@ export function getIframeExisting(token, memberShortId) {
         }
       ],
       body: body,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
+      headers: headers
     }
   };
 }

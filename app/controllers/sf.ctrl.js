@@ -62,8 +62,8 @@ exports.getSFContactById = async (req, res, next) => {
 exports.createSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 62: createSFContact`);
   const bodyRaw = { ...req.body };
-  console.log(`sf.ctrl.js > 64`);
-  console.log(bodyRaw);
+  // console.log(`sf.ctrl.js > 64`);
+  // console.log(bodyRaw);
   const body = {};
 
   // convert raw body to key/value pairs using SF API field names
@@ -73,8 +73,8 @@ exports.createSFContact = async (req, res, next) => {
       body[sfFieldName] = bodyRaw[key];
     }
   });
-  console.log(`sf.ctrl.js > 74`);
-  console.log(body);
+  // console.log(`sf.ctrl.js > 74`);
+  // console.log(body);
   delete body["Account.Id"];
   delete body["Account.Agency_Number__c"];
   delete body["Account.WS_Subdivision_from_Agency__c"];
@@ -551,7 +551,7 @@ exports.getAllEmployers = async (req, res, next) => {
  */
 
 exports.getIframeExisting = async (req, res, next) => {
-  // console.log("getIframeExisting");
+  console.log("getIframeExisting");
   const { memberShortId } = req.body;
 
   const url = `https://lab.unioni.se/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
@@ -561,12 +561,14 @@ exports.getIframeExisting = async (req, res, next) => {
     "content-type": "application/x-www-form-urlencoded",
     Authorization: req.headers.authorization
   };
+  console.log(`sf.ctrl.js > 564`);
+  console.log(headers);
 
   axios
-    .post(url, data, headers)
+    .post(url, data, { headers })
     .then(response => {
-      // console.log(`sf.ctrl.js > 567`);
-      // console.log(response.data);
+      console.log(`sf.ctrl.js > 567`);
+      console.log(response.data);
       if (!response.data || !response.data.cardAddingUrl) {
         return res
           .status(500)
@@ -575,7 +577,7 @@ exports.getIframeExisting = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      // console.error(`sf.ctrl.js > 579: ${err}`);
+      console.error(`sf.ctrl.js > 579: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
