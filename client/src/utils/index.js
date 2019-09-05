@@ -90,3 +90,6 @@ export const camelCaseConverter = str => {
   newStr.charAt(0).toLowerCase();
   return newStr;
 };
+
+export const ordinalSuffix = n =>
+  ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";

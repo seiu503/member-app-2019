@@ -19,7 +19,7 @@ const SERVER_URL =
 /* ============================ ROUTE HANDLERS ============================= */
 
 exports.googleCallback = (req, res) => {
-  console.log("################# google callback");
+  // console.log("################# google callback");
   if (req.user && req.user.err) {
     res.status(401).json({
       success: false,
@@ -34,15 +34,17 @@ exports.googleCallback = (req, res) => {
       : undefined;
     if (userObj) {
       // successful authentication from provider
-      console.log("successful google auth");
+      // console.log("successful google auth");
       // generate token
       // return user ID & google redirect flag as URL params
       const userInfo = utils.setUserInfo(userObj);
       const token = utils.generateToken(userInfo);
 
-      return res.redirect(`${CLIENT_URL}/admin/${userObj.id}/${token}`);
+      return res
+        .status(200)
+        .redirect(`${CLIENT_URL}/admin/${userObj.id}/${token}`);
     } else {
-      return res.redirect("/login");
+      return res.status(422).redirect("/login");
     }
   }
 };

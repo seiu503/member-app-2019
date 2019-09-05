@@ -17,45 +17,64 @@ import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
   GET_SF_CONTACT_FAILURE,
-  GET_SF_EMPLOYERS_REQUEST,
-  GET_SF_EMPLOYERS_SUCCESS,
-  GET_SF_EMPLOYERS_FAILURE,
-  LOOKUP_SF_CONTACT_REQUEST,
-  LOOKUP_SF_CONTACT_SUCCESS,
-  LOOKUP_SF_CONTACT_FAILURE,
-  GET_IFRAME_URL_REQUEST,
-  GET_IFRAME_URL_SUCCESS,
-  GET_IFRAME_URL_FAILURE,
   CREATE_SF_CONTACT_REQUEST,
   CREATE_SF_CONTACT_SUCCESS,
   CREATE_SF_CONTACT_FAILURE,
+  LOOKUP_SF_CONTACT_REQUEST,
+  LOOKUP_SF_CONTACT_SUCCESS,
+  LOOKUP_SF_CONTACT_FAILURE,
   UPDATE_SF_CONTACT_SUCCESS,
   UPDATE_SF_CONTACT_REQUEST,
   UPDATE_SF_CONTACT_FAILURE,
   CREATE_SF_OMA_REQUEST,
   CREATE_SF_OMA_SUCCESS,
-  CREATE_SF_OMA_FAILURE
+  CREATE_SF_OMA_FAILURE,
+  GET_SF_DJR_REQUEST,
+  GET_SF_DJR_SUCCESS,
+  GET_SF_DJR_FAILURE,
+  CREATE_SF_DJR_REQUEST,
+  CREATE_SF_DJR_SUCCESS,
+  CREATE_SF_DJR_FAILURE,
+  UPDATE_SF_DJR_SUCCESS,
+  UPDATE_SF_DJR_REQUEST,
+  UPDATE_SF_DJR_FAILURE,
+  GET_SF_EMPLOYERS_REQUEST,
+  GET_SF_EMPLOYERS_SUCCESS,
+  GET_SF_EMPLOYERS_FAILURE,
+  GET_IFRAME_URL_REQUEST,
+  GET_IFRAME_URL_SUCCESS,
+  GET_IFRAME_URL_FAILURE,
+  GET_IFRAME_EXISTING_REQUEST,
+  GET_IFRAME_EXISTING_SUCCESS,
+  GET_IFRAME_EXISTING_FAILURE,
+  GET_UNIONISE_TOKEN_REQUEST,
+  GET_UNIONISE_TOKEN_SUCCESS,
+  GET_UNIONISE_TOKEN_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
   error: null,
   salesforceId: null,
   submissionId: null,
+  djrId: null,
   formPage1: {
     mm: "",
     homeState: "OR",
     preferredLanguage: "English",
     employerType: "",
+    employerId: "",
     firstName: "",
     lastName: "",
     homeEmail: "",
     legalLanguage: "",
     paymentRequired: false,
-    paymentType: "",
+    paymentType: "Card",
     paymentMethodAdded: false,
     medicaidResidents: 0,
     immediatePastMemberStatus: "Not a Member",
-    afhDuesRate: 0
+    afhDuesRate: 0,
+    newCardNeeded: false,
+    whichCard: "Use existing"
   },
   formPage2: {
     gender: ""
@@ -65,9 +84,12 @@ export const INITIAL_STATE = {
   redirect: false,
   payment: {
     cardAddingUrl: "",
-    memberId: "",
-    stripeCustomerId: "",
-    memberShortId: ""
+    memberShortId: "",
+    activeMethodLast4: "",
+    paymentErrorHold: false,
+    unioniseToken: "",
+    unioniseRefreshToken: "",
+    djrEmployerId: ""
   }
 };
 
@@ -91,8 +113,21 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_CONTACT_REQUEST:
     case CREATE_SF_OMA_REQUEST:
     case UPDATE_SF_CONTACT_REQUEST:
+    case GET_SF_DJR_REQUEST:
+    case CREATE_SF_DJR_REQUEST:
+    case UPDATE_SF_DJR_REQUEST:
+    case CREATE_SF_OMA_SUCCESS:
+    case GET_UNIONISE_TOKEN_REQUEST:
+    case GET_IFRAME_EXISTING_REQUEST:
       return update(state, {
         error: { $set: null }
+      });
+
+    case CREATE_SF_DJR_SUCCESS:
+    case UPDATE_SF_DJR_SUCCESS:
+      return update(state, {
+        error: { $set: null },
+        djrId: { $set: action.payload.sf_djr_id }
       });
 
     case GET_SF_EMPLOYERS_SUCCESS:
@@ -224,6 +259,18 @@ function Submission(state = INITIAL_STATE, action) {
         return INITIAL_STATE;
       }
 
+    case GET_SF_DJR_SUCCESS: {
+      return update(state, {
+        payment: {
+          activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
+          paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
+          memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
+          djrEmployerId: { $set: action.payload.Employer__c }
+        },
+        djrId: { $set: action.payload.Id || action.payload.id }
+      });
+    }
+
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
@@ -246,18 +293,21 @@ function Submission(state = INITIAL_STATE, action) {
         redirect: { $set: true }
       });
 
-    case CREATE_SF_OMA_SUCCESS:
-      return update(state, {
-        error: { $set: null }
-      });
-
     case GET_IFRAME_URL_SUCCESS:
+    case GET_IFRAME_EXISTING_SUCCESS:
       return update(state, {
         payment: {
           cardAddingUrl: { $set: action.payload.cardAddingUrl },
-          memberId: { $set: action.payload.memberId },
-          stripeCustomerId: { $set: action.payload.stripeCustomerId },
           memberShortId: { $set: action.payload.memberShortId }
+        }
+      });
+
+    case GET_UNIONISE_TOKEN_SUCCESS:
+      // console.log(action.payload);
+      return update(state, {
+        payment: {
+          unioniseToken: { $set: action.payload.access_token },
+          unioniseRefreshToken: { $set: action.payload.refresh_token }
         }
       });
 
@@ -270,6 +320,11 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_CONTACT_FAILURE:
     case CREATE_SF_OMA_FAILURE:
     case UPDATE_SF_CONTACT_FAILURE:
+    case CREATE_SF_DJR_FAILURE:
+    case UPDATE_SF_DJR_FAILURE:
+    case GET_SF_DJR_FAILURE:
+    case GET_IFRAME_EXISTING_FAILURE:
+    case GET_UNIONISE_TOKEN_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
