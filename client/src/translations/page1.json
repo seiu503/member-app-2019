@@ -55,7 +55,7 @@
     "Tiếng Anh",
     "英语"
   ],
-  "asl": [
+  "asl (sign language)": [
     "ASL (Sign Language)",
     "ASL (lenguaje de señas)",
     "Американский язык жестов (ASL)",
@@ -69,7 +69,7 @@
     "Tiếng Quảng Đông",
     "粤语"
   ],
-  "cantoneseAndMandarin": [
+  "cantonese and mandarin": [
     "Cantonese AND Mandarin",
     "Cantonés y mandarín",
     "Кантонский диалект или мандаринское наречие китайского языка",
@@ -77,7 +77,7 @@
     "粤语和普通话"
   ],
   "mandarin": [
-    " Mandarin",
+    "Mandarin",
     "Mandarín",
     "Мандаринское наречие китайского языка",
     "Tiếng Quan Thoại",
@@ -118,7 +118,7 @@
     "Tiếng Ả Rập",
     "阿拉伯语"
   ],
-  "haitianCreole": [
+  "haitian creole": [
     "Haitian Creole",
     "Criollo haitiano",
     "Гаитянский креольский язык",
@@ -153,7 +153,7 @@
     "Tiểu bang (nhà)",
     "所在州"
   ],
-  "homeZipCode": [
+  "homeZip": [
     "HOME ZIP CODE",
     "Código postal",
     "Почтовый индекс",
@@ -167,7 +167,7 @@
     "Email (nhà)",
     "家用电子邮箱"
   ],
-  "homeEmaileHint": [
+  "homeEmailHint": [
     "Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone.",
     "Use su correo electrónico particular, si tiene uno, ya que algunos empleadores limitan la comunicación sindical a través del correo electrónico del trabajo. Si no tiene un correo electrónico personal, puede usar el correo electrónico del trabajo. Si no tiene una dirección de correo electrónico, llámenos al 1.844.503.7348 para registrarse por teléfono.",
     "Пожалуйста, укажите адрес вашей личной эл. почты, если таковой имеется, поскольку использование рабочей эл. почты для обмена информации с профсоюзом ограничивается некоторыми работодателями. Если у вас нет личной эл. почты, вы можете указать адрес рабочей эл. почты. Если у вас нет эл. почты, позвоните нам по тел. 1.844.503.7348, чтобы создать новую эл. почту.",
@@ -181,7 +181,7 @@
     "Điện thoại tốt nhất để gọi",
     "首选电话号码"
   ],
-  "optOutOfReceivingMobileAlerts†": [
+  "textAuthOptOut": [
     "OPT OUT OF RECEIVING MOBILE ALERTS†",
     "No deseo recibir alertas por mensaje de texto†",
     "Отказаться от получения мобильных уведомлений†",
@@ -320,5 +320,12 @@
     "Помощь в заполнении этого документа",
     "Trợ giúp với mẫu này",
     "帮助完成本表格"
+  ],
+  "": [
+    "",
+    "",
+    "",
+    "",
+    ""
   ]
 }

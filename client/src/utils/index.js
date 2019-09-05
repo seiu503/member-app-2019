@@ -82,3 +82,11 @@ export const scrollToFirstError = errors => {
     window.scrollTo({ top: position - offset, behavior: "smooth" });
   }
 };
+
+export const camelCaseConverter = str => {
+  let newStr = str.toLowerCase().replace(/\W+(.)/g, function(match, chr) {
+    return chr.toUpperCase();
+  });
+  newStr.charAt(0).toLowerCase();
+  return newStr;
+};

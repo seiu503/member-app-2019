@@ -7,6 +7,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
+import { Translate } from "react-localize-redux";
 
 import validate from "../utils/validators";
 import { scrollToFirstError } from "../utils";

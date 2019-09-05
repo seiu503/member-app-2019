@@ -13,13 +13,13 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import validate from "../utils/validators";
 import { stylesPage2, handleError } from "../components/SubmissionFormElements";
-import page2 from "../translations/page2.json";
+import globalTranslations from "../translations/globalTranslations";
 
 export class SubmissionFormPage2Container extends React.Component {
   classes = this.props.classes;
   constructor(props) {
     super(props);
-    this.props.addTranslation(page2);
+    this.props.addTranslation(globalTranslations);
   }
 
   componentDidMount() {

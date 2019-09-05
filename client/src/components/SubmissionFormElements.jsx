@@ -16,6 +16,8 @@ import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
+import { camelCaseConverter } from "../utils/index";
+
 export const handleError = err => {
   return openSnackbar(
     "error",
@@ -92,7 +94,20 @@ export const monthList = [
   "11",
   "12"
 ];
-export const languageOptions = ["", "English", "Russian", "Spanish"];
+export const languageOptions = [
+  "",
+  "English",
+  "ASL (Sign Language)",
+  "Cantonese",
+  "Cantonese AND Mandarin",
+  "Mandarin",
+  "Russian",
+  "Spanish",
+  "Vietnamese",
+  "Amharic",
+  "Arabic",
+  "Haitian Creole"
+];
 export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
 export const genderPronounOptions = [
   "",
@@ -490,6 +505,34 @@ export const stylesPage2 = theme => ({
   }
 });
 
+// helper functions for localization package when translating labels
+const inputLabelTranslateHelper = (id, label, translate) => {
+  if (translate(id).includes("Missing translationId:")) {
+    return label;
+  } else {
+    return translate(id);
+  }
+};
+const optionsLabelTranslateHelper = (id, item, translate) => {
+  let translatedLabel;
+  if (id.includes("State")) {
+    return item;
+  }
+  if (parseInt(item, 10)) {
+    return item;
+  }
+  if (id.includes("employer")) {
+    translatedLabel = translate(camelCaseConverter(item));
+  } else {
+    translatedLabel = translate(item.toLowerCase());
+  }
+  if (translatedLabel.includes("Missing translationId:")) {
+    return item;
+  } else {
+    return translatedLabel;
+  }
+};
+
 // custom MUI friendly TEXT input
 export const renderTextField = ({
   input,
@@ -507,7 +550,7 @@ export const renderTextField = ({
     <Translate>
       {({ translate }) => (
         <TextField
-          label={translate(id)}
+          label={inputLabelTranslateHelper(id, label, translate)}
           error={!!(touched && error)}
           variant="outlined"
           className={classes.input}
@@ -536,6 +579,7 @@ export const renderSelect = ({
   input,
   name,
   id,
+  label,
   classes,
   align,
   meta: { error, touched },
@@ -556,7 +600,9 @@ export const renderSelect = ({
         required={touched && error === "Required"}
         style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
       >
-        <InputLabel htmlFor={name}>{translate(id)}</InputLabel>
+        <InputLabel htmlFor={name}>
+          {inputLabelTranslateHelper(id, label, translate)}
+        </InputLabel>
         <Select
           native
           input={<OutlinedInput labelWidth={labelWidth} />}
@@ -572,7 +618,7 @@ export const renderSelect = ({
               value={item ? item.toLowerCase() : ""}
               style={selectStyle(align)}
             >
-              {id.includes("State") ? item : translate(item.toLowerCase())}
+              {optionsLabelTranslateHelper(id, item, translate)}
             </option>
           ))}
         </Select>
@@ -600,7 +646,7 @@ export const renderCheckbox = ({
         className={classes[formControlName] || classes.formControl}
       >
         <FormControlLabel
-          label={translate(id)}
+          label={inputLabelTranslateHelper(id, label, translate)}
           control={
             <Checkbox
               color="primary"
