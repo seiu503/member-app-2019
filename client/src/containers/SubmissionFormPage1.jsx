@@ -22,6 +22,7 @@ import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component"
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
+import * as actions from "../store/actions";
 
 import {
   stylesPage1,
@@ -51,6 +52,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.prepForSubmission = this.prepForSubmission.bind(this);
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
+    this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -163,6 +165,17 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState }, () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
+
+    if (newValue === 2) {
+      const { formPage1 } = this.props.submission;
+      if (
+        formPage1.paymentType === "Card" &&
+        formPage1.newCardNeeded &&
+        formPage1.paymentRequired
+      ) {
+        return this.props.actions.setSpinner();
+      }
+    }
   };
 
   async prepForContact(values) {
@@ -553,13 +566,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    console.log("getIframeExisting");
+    // console.log("getIframeExisting");
     const memberShortId = this.props.submission.payment.memberShortId;
     const token = this.props.submission.payment.unioniseToken;
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -817,6 +830,10 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(2);
   }
 
+  handleCAPESubmit() {
+    console.log("handleCAPESubmit");
+  }
+
   handleTab(newValue) {
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
@@ -873,6 +890,7 @@ export class SubmissionFormPage1Container extends React.Component {
           generateSubmissionBody={this.generateSubmissionBody}
           handleError={handleError}
           toggleCardAddingFrame={this.toggleCardAddingFrame}
+          handleCAPESubmit={this.handleCAPESubmit}
         />
       </div>
     );
@@ -896,6 +914,7 @@ const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
+  actions: bindActionCreators(actions, dispatch),
   submitForm: () => dispatch(submit("submissionPage1"))
 });
 

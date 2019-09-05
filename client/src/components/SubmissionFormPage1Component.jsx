@@ -316,7 +316,7 @@ export class SubmissionFormPage1Component extends React.Component {
     ])
       .then(() => {
         // redirect to CAPE tab
-        this.props.handleTab(this.props.howManyTabs);
+        this.props.handleTab(this.props.howManyTabs - 1);
 
         // this.props.reset("submissionPage1");
         // this.props.history.push(
@@ -432,7 +432,7 @@ export class SubmissionFormPage1Component extends React.Component {
             )}
             {this.props.tab === 3 && (
               <CAPEForm
-                onSubmit={this.handleCAPESubmit}
+                onSubmit={this.props.handleCAPESubmit}
                 classes={classes}
                 loading={this.props.submission.loading}
                 handleTab={this.props.handleTab}

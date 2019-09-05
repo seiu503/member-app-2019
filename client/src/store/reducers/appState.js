@@ -1,6 +1,11 @@
 import update from "immutability-helper";
 
-import { LOGOUT, SET_LOGGEDIN, SET_REDIRECT_URL } from "../actions";
+import {
+  LOGOUT,
+  SET_LOGGEDIN,
+  SET_REDIRECT_URL,
+  SET_SPINNER
+} from "../actions";
 import {
   VALIDATE_TOKEN_REQUEST,
   VALIDATE_TOKEN_SUCCESS,
@@ -91,6 +96,12 @@ function appState(state = INITIAL_STATE, action) {
   switch (action.type) {
     case LOGOUT:
       return INITIAL_STATE;
+
+    case SET_SPINNER: {
+      return update(state, {
+        loading: { $set: true }
+      });
+    }
 
     case VALIDATE_TOKEN_SUCCESS:
       return update(state, {

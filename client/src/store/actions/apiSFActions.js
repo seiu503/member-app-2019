@@ -552,12 +552,10 @@ export const GET_IFRAME_EXISTING_FAILURE = "GET_IFRAME_EXISTING_FAILURE";
  */
 export function getIframeExisting(token, memberShortId) {
   const body = JSON.stringify({ memberShortId: memberShortId });
-  console.log(body);
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`
   };
-  console.log(headers);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/unionise/iframe`,

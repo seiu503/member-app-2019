@@ -561,14 +561,14 @@ exports.getIframeExisting = async (req, res, next) => {
     "content-type": "application/x-www-form-urlencoded",
     Authorization: req.headers.authorization
   };
-  console.log(`sf.ctrl.js > 564`);
-  console.log(headers);
+  // console.log(`sf.ctrl.js > 564`);
+  // console.log(headers);
 
   axios
     .post(url, data, { headers })
     .then(response => {
-      console.log(`sf.ctrl.js > 567`);
-      console.log(response.data);
+      // console.log(`sf.ctrl.js > 567`);
+      // console.log(response.data);
       if (!response.data || !response.data.cardAddingUrl) {
         return res
           .status(500)
@@ -610,8 +610,7 @@ exports.getUnioniseToken = async (req, res, next) => {
 
   const headers = { "content-type": "application/x-www-form-urlencoded" };
   axios
-    .post(url, data, headers)
-    // axios(options)
+    .post(url, data, { headers })
     .then(response => {
       // console.log(`sf.ctrl.js > 615`);
       // console.log(response.data);
