@@ -15,6 +15,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import FormatQuote from "@material-ui/icons/FormatQuote";
 
 import headshot from "../img/deffo_mebrat_300.png";
 
@@ -32,7 +33,7 @@ export const CAPE = props => {
     iFrameURL,
     back,
     checkoff,
-    formValues,
+    // formValues,
     formPage1,
     payment,
     width,
@@ -110,14 +111,35 @@ export const CAPE = props => {
                 >
                   Join us
                 </Typography>
-                <Typography component="p" className={classes.pullQuote}>
-                  “I can’t write big checks. But I contribute what I can each
-                  month to CAPE. And when we put all of our resources together,
-                  we have shown we can elect legislators in Oregon who will
-                  fight for working families and our clients.”
-                </Typography>
+                <div style={{ position: "relative" }}>
+                  <FormatQuote
+                    style={{
+                      color: "#531078",
+                      transform: "scaleX(-1)",
+                      position: "absolute",
+                      top: -3,
+                      left: -5,
+                      opacity: 0.8
+                    }}
+                  />
+                  <Typography component="p" className={classes.pullQuote}>
+                    I can’t write big checks. But I contribute what I can each
+                    month to CAPE. And when we put all of our resources
+                    together, we have shown we can elect legislators in Oregon
+                    who will fight for working families and our clients.
+                  </Typography>
+                  <FormatQuote
+                    style={{
+                      color: "#531078",
+                      position: "absolute",
+                      bottom: 5,
+                      right: -10,
+                      opacity: 0.8
+                    }}
+                  />
+                </div>
                 <Typography component="p" className={classes.quoteAttr}>
-                  - Deffo Mebrat, Adult Foster Care Provider
+                  &mdash;Deffo Mebrat, Adult Foster Care Provider
                 </Typography>
               </CardContent>
             </div>
@@ -363,4 +385,4 @@ export const CAPEForm = reduxForm({
 // connect to redux store
 export const CAPEConnected = connect(mapStateToProps)(CAPEForm);
 
-export default CAPEConnected;
+export default withWidth()(CAPEConnected);

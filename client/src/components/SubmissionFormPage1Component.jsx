@@ -337,6 +337,7 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
+    const checkoff = !this.props.submission.formPage1.paymentRequired;
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     return (
@@ -363,6 +364,7 @@ export class SubmissionFormPage1Component extends React.Component {
             renderCheckbox={this.renderCheckbox}
             reCaptchaChange={this.reCaptchaChange}
             reCaptchaRef={this.props.reCaptchaRef}
+            checkoff={checkoff}
           />
         ) : (
           <React.Fragment>
@@ -477,6 +479,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderCheckbox={this.renderCheckbox}
                     reCaptchaChange={this.reCaptchaChange}
                     reCaptchaRef={this.props.reCaptchaRef}
+                    checkoff={checkoff}
                   />
                 )}
               </div>

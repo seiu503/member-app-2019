@@ -233,7 +233,7 @@ export const stylesPage1 = theme => ({
     padding: "20px 20px 40px 20px",
     borderRadius: "0 0 4px 4px",
     [theme.breakpoints.only("xs")]: {
-      padding: "10px 5px 40px 5px"
+      padding: "15px 15px 40px 15px"
     }
   },
   buttonWrap: {
@@ -422,6 +422,19 @@ export const stylesPage1 = theme => ({
   cover: {
     minWidth: 200,
     minHeight: 200
+  },
+  cardHead: {
+    color: theme.palette.primary.light,
+    fontWeight: 400,
+    paddingBottom: 10
+  },
+  quoteAttr: {
+    color: theme.palette.primary.light,
+    fontStyle: "italic",
+    paddingTop: 10
+  },
+  pullQuote: {
+    textIndent: 20
   }
 });
 export const stylesPage2 = theme => ({
