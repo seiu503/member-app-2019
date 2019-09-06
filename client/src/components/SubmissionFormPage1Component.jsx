@@ -358,6 +358,11 @@ export class SubmissionFormPage1Component extends React.Component {
             payment={this.props.submission.payment}
             toggleCardAddingFrame={this.props.toggleCardAddingFrame}
             standAlone={true}
+            renderSelect={this.renderSelect}
+            renderTextField={this.renderTextField}
+            renderCheckbox={this.renderCheckbox}
+            reCaptchaChange={this.reCaptchaChange}
+            reCaptchaRef={this.props.reCaptchaRef}
           />
         ) : (
           <React.Fragment>
@@ -465,7 +470,13 @@ export class SubmissionFormPage1Component extends React.Component {
                     handleInput={this.props.submission.handleInput}
                     iFrameURL={this.props.submission.payment.cardAddingUrl}
                     payment={this.props.submission.payment}
+                    width={this.props.width}
                     toggleCardAddingFrame={this.props.toggleCardAddingFrame}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    reCaptchaChange={this.reCaptchaChange}
+                    reCaptchaRef={this.props.reCaptchaRef}
                   />
                 )}
               </div>

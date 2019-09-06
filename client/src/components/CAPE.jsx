@@ -2,6 +2,7 @@ import React from "react";
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
@@ -10,6 +11,10 @@ import Typography from "@material-ui/core/Typography";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import FormGroup from "@material-ui/core/FormGroup";
+import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 import headshot from "../img/deffo_mebrat_300.png";
 
@@ -30,8 +35,14 @@ export const CAPE = props => {
     formValues,
     formPage1,
     payment,
+    width,
+    renderSelect,
+    renderTextField,
+    renderCheckbox,
     toggleCardAddingFrame,
-    standAlone
+    standAlone,
+    reCaptchaChange,
+    reCaptchaRef
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -118,6 +129,135 @@ export const CAPE = props => {
           </Card>
           <Typography />
         </div>
+        <FormGroup row classes={{ root: classes.formGroup2Col }}>
+          <Field
+            twocol
+            mobile={!isWidthUp("sm", width)}
+            label="First Name"
+            name="firstName"
+            id="firstName"
+            type="text"
+            classes={{ input2col: classes.input2col }}
+            component={renderTextField}
+          />
+
+          <Field
+            twocol
+            mobile={!isWidthUp("sm", width)}
+            name="lastName"
+            id="lastName"
+            label="Last Name"
+            classes={{ input2col: classes.input2col }}
+            component={renderTextField}
+            type="text"
+          />
+        </FormGroup>
+
+        <FormLabel className={classes.formLabel} component="legend">
+          Address
+        </FormLabel>
+
+        <Field
+          label="Home Street"
+          name="homeStreet"
+          id="homeStreet"
+          type="text"
+          classes={classes}
+          component={renderTextField}
+        />
+        <FormGroup
+          className={classes.formGroup}
+          row
+          classes={{ root: classes.formGroup2Col }}
+        >
+          <Field
+            label="Home City"
+            name="homeCity"
+            id="homeCity"
+            type="text"
+            twocol
+            mobile={!isWidthUp("sm", width)}
+            classes={classes}
+            component={renderTextField}
+          />
+
+          <Field
+            label="Home State"
+            name="homeState"
+            id="homeState"
+            type="select"
+            short
+            mobile={!isWidthUp("sm", width)}
+            classes={classes}
+            component={renderSelect}
+            options={formElements.stateList}
+            labelWidth={80}
+          />
+
+          <Field
+            label="Home Zip"
+            name="homeZip"
+            id="homeZip"
+            short
+            mobile={!isWidthUp("sm", width)}
+            type="text"
+            classes={classes}
+            component={renderTextField}
+          />
+        </FormGroup>
+
+        <Field
+          label="Home Email"
+          name="homeEmail"
+          id="homeEmail"
+          type="email"
+          classes={classes}
+          component={renderTextField}
+        />
+
+        <FormHelperText className={classes.formHelperText}>
+          Please use your personal email if you have one, since some employers
+          limit union communication via work email. If you don't have a personal
+          email, work email is fine. If you don't have an email address, call us
+          at 1.844.503.7348 to sign up over the phone.
+        </FormHelperText>
+        <FormGroup>
+          <Field
+            label="Mobile Phone†"
+            name="mobilePhone"
+            id="mobilePhone"
+            type="tel"
+            classes={classes}
+            component={renderTextField}
+          />
+
+          <FormHelperText className={classes.formHelperText}>
+            † By providing my phone number, I understand that the Service
+            Employees International Union (SEIU), its local unions, and
+            affiliates may use automated calling technologies and/or text
+            message me on my cellular phone on a periodic basis. SEIU will never
+            charge for text message alerts. Carrier message and data rates may
+            apply to such alerts. Reply STOP to stop receiving messages; reply
+            HELP for more information.
+          </FormHelperText>
+
+          <Field
+            label="Opt Out Of Receiving Mobile Alerts"
+            name="textAuthOptOut"
+            id="textAuthOptOut"
+            type="checkbox"
+            formControlName="controlCheckbox"
+            classes={classes}
+            component={renderCheckbox}
+          />
+        </FormGroup>
+        {standAlone && (
+          <ReCAPTCHA
+            ref={reCaptchaRef}
+            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
+            onChange={reCaptchaChange}
+          />
+        )}
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&
           validMethod && (
