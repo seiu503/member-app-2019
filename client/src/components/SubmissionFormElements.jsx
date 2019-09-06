@@ -224,7 +224,9 @@ export const stylesPage1 = theme => ({
   head: {
     color: theme.palette.primary.light,
     fontSize: "2em",
-    fontWeight: 700
+    fontWeight: 700,
+    lineHeight: 1.1,
+    marginBottom: 15
   },
   form: {
     maxWidth: 600,
@@ -435,6 +437,68 @@ export const stylesPage1 = theme => ({
   },
   pullQuote: {
     textIndent: 20
+  },
+  suggestedAmounts: {
+    display: "block",
+    flexWrap: "wrap",
+    margin: "0 -1.666666666666667% 13px",
+    paddingTop: 35
+  },
+  suggestedAmountBox: {
+    width: "29%",
+    height: 60,
+    margin: "13px 1.666666666666667% 0",
+    display: "inline-block"
+  },
+  boxLabel: {
+    height: "100%",
+    fontSize: 20,
+    lineHeight: "60px",
+    fontWeight: 300,
+    color: "#4C4C4C",
+    textAlign: "center",
+    border: "1px solid #C4C3C3",
+    borderRadius: 3,
+    display: "block",
+    transition:
+      "color 0.1s, background-color 0.1s, border-color 0.1s, font-weight 0.1s",
+    position: "relative",
+    cursor: "pointer",
+    margin: 0
+  },
+  boxInput: {
+    float: "left",
+    opacity: 0,
+    width: 0,
+    height: 0,
+    display: "none",
+    padding: 0,
+    margin: 0,
+    border: 0,
+    "&:checked $boxLabel": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: 2,
+      fontWeight: 700
+    }
+  },
+  boxCurrency: {
+    fontSize: 14,
+    lineHeight: "14px",
+    fontWeight: 400,
+    verticalAlign: "text-top",
+    position: "absolute",
+    top: 22,
+    left: -22,
+    whiteSpace: "nowrap"
+  },
+  boxItem: {
+    position: "absolute",
+    height: "100%"
+  },
+  boxAmount: {
+    position: "relative",
+    left: -10
   }
 });
 export const stylesPage2 = theme => ({

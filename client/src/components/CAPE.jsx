@@ -149,7 +149,72 @@ export const CAPE = props => {
               title="Deffo Mebrat"
             />
           </Card>
-          <Typography />
+        </div>
+        <div clasName={classes.paymentCopy}>
+          <Typography component="h2" className={classes.head}>
+            Make your contribution today
+          </Typography>
+          <div className={classes.suggestedAmounts}>
+            <div className={classes.suggestedAmountBoxes}>
+              <div className={classes.suggestedAmountBox}>
+                <input
+                  className={classes.boxInput}
+                  data-usd="10.0"
+                  id="donation_suggested_amount_1"
+                  type="radio"
+                  value="10.0"
+                  name="donation[suggested_amount]"
+                />
+                <label
+                  className={classes.boxLabel}
+                  for="donation_suggested_amount_1"
+                >
+                  <span className={classes.boxItem}>
+                    <span className={classes.boxCurrency}>$</span>
+                    <span className={classes.boxAmount}>10</span>
+                  </span>
+                </label>
+              </div>
+              <div className={classes.suggestedAmountBox}>
+                <input
+                  className={classes.boxInput}
+                  data-usd="13.0"
+                  id="donation_suggested_amount_2"
+                  type="radio"
+                  value="13.0"
+                  name="donation[suggested_amount]"
+                />
+                <label
+                  className={classes.boxLabel}
+                  for="donation_suggested_amount_2"
+                >
+                  <span className={classes.boxItem}>
+                    <span className={classes.boxCurrency}>$</span>
+                    <span className={classes.boxAmount}>13</span>
+                  </span>
+                </label>
+              </div>
+              <div className={classes.suggestedAmountBox}>
+                <input
+                  className={classes.boxInput}
+                  data-usd="15.0"
+                  id="donation_suggested_amount_3"
+                  type="radio"
+                  value="15.0"
+                  name="donation[suggested_amount]"
+                />
+                <label
+                  className={classes.boxLabel}
+                  for="donation_suggested_amount_3"
+                >
+                  <span className={classes.boxItem}>
+                    <span className={classes.boxCurrency}>$</span>
+                    <span className={classes.boxAmount}>15</span>
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
         <FormGroup row classes={{ root: classes.formGroup2Col }}>
           <Field
