@@ -444,6 +444,9 @@ export const stylesPage1 = theme => ({
     margin: "0 -1.666666666666667% 13px",
     paddingTop: 35
   },
+  suggestedAmountBoxes: {
+    flexDirection: "row"
+  },
   suggestedAmountBox: {
     width: "29%",
     height: 60,
@@ -471,16 +474,30 @@ export const stylesPage1 = theme => ({
     opacity: 0,
     width: 0,
     height: 0,
-    display: "none",
+    position: "absolute",
     padding: 0,
     margin: 0,
     border: 0,
-    "&:checked $boxLabel": {
+    "&:focus + label": {
+      outline: "rgba(83,16,120, 0.5) auto 3px"
+    },
+    "&:checked + label": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: 2,
+      fontWeight: 700
+    },
+    "&:checked + $boxLabel": {
       borderColor: "#531078",
       color: "#531078",
       borderWidth: 2,
       fontWeight: 700
     }
+  },
+  capeAmount: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%"
   },
   boxCurrency: {
     fontSize: 14,
@@ -499,6 +516,12 @@ export const stylesPage1 = theme => ({
   boxAmount: {
     position: "relative",
     left: -10
+  },
+  capeRadioLabel: {
+    fontSize: "1.2em",
+    color: theme.palette.primary.light,
+    fontWeight: 700,
+    textAlign: "center"
   }
 });
 export const stylesPage2 = theme => ({
@@ -722,13 +745,75 @@ export const renderRadioGroup = ({
   legendClass,
   additionalOnChange,
   ...custom
+}) => {
+  return (
+    <FormControl
+      component="fieldset"
+      error={!!(touched && error)}
+      className={classes[formControlName] || classes.formControl}
+    >
+      <FormLabel component="legend" className={classes.radioLabel}>
+        {label}
+      </FormLabel>
+
+      <RadioGroup
+        aria-label={formControlName}
+        name={formControlName}
+        className={
+          direction === "vert" ? classes.verticalGroup : classes.horizGroup
+        }
+        onChange={(event, value) => {
+          input.onChange(value);
+          if (additionalOnChange) {
+            additionalOnChange(event);
+          }
+        }}
+      >
+        {options.map(item => {
+          return (
+            <FormControlLabel
+              key={shortid()}
+              value={item}
+              className={legendClass}
+              control={
+                <Radio
+                  checked={item.toString() === input.value.toString()}
+                  color="primary"
+                />
+              }
+              label={item}
+            />
+          );
+        })}
+      </RadioGroup>
+      {touched && error && (
+        <FormHelperText className={classes.checkboxErrorText}>
+          {error}
+        </FormHelperText>
+      )}
+    </FormControl>
+  );
+};
+
+export const renderCAPERadioGroup = ({
+  input,
+  label,
+  options,
+  validate,
+  classes,
+  direction,
+  meta: { touched, error },
+  formControlName,
+  legendClass,
+  additionalOnChange,
+  ...custom
 }) => (
   <FormControl
     component="fieldset"
     error={!!(touched && error)}
     className={classes[formControlName] || classes.formControl}
   >
-    <FormLabel component="legend" className={classes.radioLabel}>
+    <FormLabel component="legend" className={classes.capeRadioLabel}>
       {label}
     </FormLabel>
 
@@ -741,19 +826,26 @@ export const renderRadioGroup = ({
       onChange={(event, value) => {
         input.onChange(value);
         if (additionalOnChange) {
-          additionalOnChange(value);
+          additionalOnChange(event);
         }
       }}
     >
-      {options.map(item => (
-        <FormControlLabel
-          key={shortid()}
-          value={item}
-          className={legendClass}
-          control={<Radio checked={item === input.value} />}
-          label={item}
-        />
-      ))}
+      {options.map(item => {
+        return (
+          <FormControlLabel
+            key={shortid()}
+            value={item}
+            className={classes.suggestedAmountBox}
+            control={
+              <Radio
+                checked={item.toString() === input.value.toString()}
+                color="primary"
+              />
+            }
+            label={`$${item}`}
+          />
+        );
+      })}
     </RadioGroup>
     {touched && error && (
       <FormHelperText className={classes.checkboxErrorText}>

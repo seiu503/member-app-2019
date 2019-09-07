@@ -74,7 +74,8 @@ export const INITIAL_STATE = {
     immediatePastMemberStatus: "Not a Member",
     afhDuesRate: 0,
     newCardNeeded: false,
-    whichCard: "Use existing"
+    whichCard: "Use existing",
+    capeAmount: ""
   },
   formPage2: {
     gender: ""

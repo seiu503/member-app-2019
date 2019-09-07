@@ -347,6 +347,7 @@ export class SubmissionFormPage1Component extends React.Component {
       >
         {values.cape ? (
           <CAPEForm
+            standAlone={true}
             onSubmit={this.props.handleCAPESubmit}
             classes={classes}
             loading={this.props.submission.loading}
@@ -358,13 +359,13 @@ export class SubmissionFormPage1Component extends React.Component {
             iFrameURL={this.props.submission.payment.cardAddingUrl}
             payment={this.props.submission.payment}
             toggleCardAddingFrame={this.props.toggleCardAddingFrame}
-            standAlone={true}
             renderSelect={this.renderSelect}
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
             reCaptchaChange={this.reCaptchaChange}
             reCaptchaRef={this.props.reCaptchaRef}
             checkoff={checkoff}
+            suggestedAmountOnChange={this.props.suggestedAmountOnChange}
           />
         ) : (
           <React.Fragment>
@@ -480,6 +481,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     reCaptchaChange={this.reCaptchaChange}
                     reCaptchaRef={this.props.reCaptchaRef}
                     checkoff={checkoff}
+                    suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
                 )}
               </div>

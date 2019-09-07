@@ -53,6 +53,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
+    this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -127,6 +128,11 @@ export class SubmissionFormPage1Container extends React.Component {
         });
     });
   }
+
+  suggestedAmountOnChange = event => {
+    // console.log(event);
+    // console.log(document.querySelector('input[name="capeAmount"]:checked').value);
+  };
 
   toggleSignatureInputType = () => {
     let type = this.state.signatureType === "draw" ? "write" : "draw";
@@ -891,6 +897,7 @@ export class SubmissionFormPage1Container extends React.Component {
           handleError={handleError}
           toggleCardAddingFrame={this.toggleCardAddingFrame}
           handleCAPESubmit={this.handleCAPESubmit}
+          suggestedAmountOnChange={this.suggestedAmountOnChange}
         />
       </div>
     );
