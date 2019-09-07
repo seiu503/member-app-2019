@@ -547,6 +547,7 @@ export const renderTextField = ({
   twocol,
   short,
   mobile,
+  translate,
   ...custom
 }) => {
   return (

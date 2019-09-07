@@ -98,15 +98,34 @@ describe("<LinkRequest />", () => {
     const handleInputMock = jest.fn().mockImplementation(() => {
       return { type: "HANDLE_INPUT" };
     });
+    store = mockStore(defaultProps);
     const props = { apiSubmission: { handleInput: handleInputMock } };
-
-    wrapper = shallow(<LinkRequestUnconnected {...defaultProps} {...props} />);
-    const inputFirstName = findByTestAttr(wrapper, "firstName");
-    const inputLastName = findByTestAttr(wrapper, "lastName");
-    const inputHomeEmail = findByTestAttr(wrapper, "homeEmail");
+    wrapper = mount(
+      <LinkRequestConnected {...defaultProps} {...props} store={store} />
+    );
+    const inputFirstName = findByTestAttr(wrapper, "firstName").first();
+    const inputLastName = findByTestAttr(wrapper, "lastName").first();
+    const inputHomeEmail = findByTestAttr(wrapper, "homeEmail").first();
     const inputs = [inputFirstName, inputLastName, inputHomeEmail];
-    inputs.forEach(input => input.simulate("change"));
-
+    inputs.forEach(input => {
+      input.prop("onChange")({
+        target: { name: input.props().name, value: "words" }
+      });
+      console.log(
+        input
+          .props()
+          .onChange({ target: { name: input.props().name, value: "words" } })
+      );
+    });
+    inputFirstName.prop("onChange")({
+      target: { name: "firstName", value: "words" }
+    });
+    inputLastName.prop("onChange")({
+      target: { name: "lastName", value: "words" }
+    });
+    inputHomeEmail.prop("onChange")({
+      target: { name: "homeEmail", value: "words" }
+    });
     // expect the mock to have been called three times
     expect(handleInputMock.mock.calls.length).toBe(3);
 
