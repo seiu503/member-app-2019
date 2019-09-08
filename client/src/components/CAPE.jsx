@@ -21,7 +21,7 @@ import headshot from "../img/deffo_mebrat_300.png";
 
 import PropTypes from "prop-types";
 
-import validate from "../utils/validators";
+import { capeValidate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
 export const CAPE = props => {
@@ -33,7 +33,7 @@ export const CAPE = props => {
     iFrameURL,
     back,
     checkoff,
-    // formValues,
+    formValues,
     formPage1,
     payment,
     width,
@@ -44,7 +44,10 @@ export const CAPE = props => {
     suggestedAmountOnChange,
     standAlone,
     reCaptchaChange,
-    reCaptchaRef
+    reCaptchaRef,
+    employerTypesList,
+    updateEmployersPicklist,
+    employerList
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -167,141 +170,183 @@ export const CAPE = props => {
                 className={classes.horizRadio}
                 classes={classes}
                 component={formElements.renderCAPERadioGroup}
-                options={[10, 13, 15]}
+                options={[10, 13, 15, "Other"]}
                 additionalOnChange={suggestedAmountOnChange}
               />
             </div>
           </div>
         </div>
-        <FormGroup row classes={{ root: classes.formGroup2Col }}>
+        {formValues.capeAmount === "Other" && (
           <Field
-            twocol
-            mobile={!isWidthUp("sm", width)}
-            label="First Name"
-            name="firstName"
-            id="firstName"
-            type="text"
-            classes={{ input2col: classes.input2col }}
+            label="Monthly Donation Amount"
+            name="capeAmountOther"
+            id="capeAmountOther"
+            type="number"
+            inputProps={{ min: 1 }}
+            classes={classes}
             component={renderTextField}
           />
+        )}
+        {standAlone && (
+          <React.Fragment>
+            <FormGroup row classes={{ root: classes.formGroup2Col }}>
+              <Field
+                twocol
+                mobile={!isWidthUp("sm", width)}
+                label="First Name"
+                name="firstName"
+                id="firstName"
+                type="text"
+                classes={{ input2col: classes.input2col }}
+                component={renderTextField}
+              />
 
-          <Field
-            twocol
-            mobile={!isWidthUp("sm", width)}
-            name="lastName"
-            id="lastName"
-            label="Last Name"
-            classes={{ input2col: classes.input2col }}
-            component={renderTextField}
-            type="text"
-          />
-        </FormGroup>
+              <Field
+                twocol
+                mobile={!isWidthUp("sm", width)}
+                name="lastName"
+                id="lastName"
+                label="Last Name"
+                classes={{ input2col: classes.input2col }}
+                component={renderTextField}
+                type="text"
+              />
+            </FormGroup>
 
-        <FormLabel className={classes.formLabel} component="legend">
-          Address
-        </FormLabel>
+            <FormLabel className={classes.formLabel} component="legend">
+              Address
+            </FormLabel>
 
+            <Field
+              label="Home Street"
+              name="homeStreet"
+              id="homeStreet"
+              type="text"
+              classes={classes}
+              component={renderTextField}
+            />
+            <FormGroup
+              className={classes.formGroup}
+              row
+              classes={{ root: classes.formGroup2Col }}
+            >
+              <Field
+                label="Home City"
+                name="homeCity"
+                id="homeCity"
+                type="text"
+                twocol
+                mobile={!isWidthUp("sm", width)}
+                classes={classes}
+                component={renderTextField}
+              />
+
+              <Field
+                label="Home State"
+                name="homeState"
+                id="homeState"
+                type="select"
+                short
+                mobile={!isWidthUp("sm", width)}
+                classes={classes}
+                component={renderSelect}
+                options={formElements.stateList}
+                labelWidth={80}
+              />
+
+              <Field
+                label="Home Zip"
+                name="homeZip"
+                id="homeZip"
+                short
+                mobile={!isWidthUp("sm", width)}
+                type="text"
+                classes={classes}
+                component={renderTextField}
+              />
+            </FormGroup>
+
+            <Field
+              label="Home Email"
+              name="homeEmail"
+              id="homeEmail"
+              type="email"
+              classes={classes}
+              component={renderTextField}
+            />
+
+            <FormHelperText className={classes.formHelperText}>
+              Please use your personal email if you have one, since some
+              employers limit union communication via work email. If you don't
+              have a personal email, work email is fine. If you don't have an
+              email address, call us at 1.844.503.7348 to sign up over the
+              phone.
+            </FormHelperText>
+            <FormGroup>
+              <Field
+                label="Mobile Phone†"
+                name="mobilePhone"
+                id="mobilePhone"
+                type="tel"
+                classes={classes}
+                component={renderTextField}
+              />
+
+              <FormHelperText className={classes.formHelperText}>
+                † By providing my phone number, I understand that the Service
+                Employees International Union (SEIU), its local unions, and
+                affiliates may use automated calling technologies and/or text
+                message me on my cellular phone on a periodic basis. SEIU will
+                never charge for text message alerts. Carrier message and data
+                rates may apply to such alerts. Reply STOP to stop receiving
+                messages; reply HELP for more information.
+              </FormHelperText>
+
+              <Field
+                label="Opt Out Of Receiving Mobile Alerts"
+                name="textAuthOptOut"
+                id="textAuthOptOut"
+                type="checkbox"
+                formControlName="controlCheckbox"
+                classes={classes}
+                component={renderCheckbox}
+              />
+            </FormGroup>
+
+            <Field
+              data-test="select-employer-type"
+              label="Employer Type"
+              name="employerType"
+              id="employerType"
+              type="select"
+              classes={classes}
+              component={renderSelect}
+              options={employerTypesList}
+              onChange={e => updateEmployersPicklist(e)}
+              labelWidth={100}
+            />
+            {formValues.employerType !== "" && (
+              <Field
+                labelWidth={104}
+                label="Employer Name"
+                name="employerName"
+                id="employerName"
+                type="select"
+                classes={classes}
+                component={renderSelect}
+                options={employerList}
+              />
+            )}
+          </React.Fragment>
+        )}
         <Field
-          label="Home Street"
-          name="homeStreet"
-          id="homeStreet"
+          label="Occupation"
+          name="jobTitle"
+          id="jobTitle"
           type="text"
           classes={classes}
           component={renderTextField}
         />
-        <FormGroup
-          className={classes.formGroup}
-          row
-          classes={{ root: classes.formGroup2Col }}
-        >
-          <Field
-            label="Home City"
-            name="homeCity"
-            id="homeCity"
-            type="text"
-            twocol
-            mobile={!isWidthUp("sm", width)}
-            classes={classes}
-            component={renderTextField}
-          />
-
-          <Field
-            label="Home State"
-            name="homeState"
-            id="homeState"
-            type="select"
-            short
-            mobile={!isWidthUp("sm", width)}
-            classes={classes}
-            component={renderSelect}
-            options={formElements.stateList}
-            labelWidth={80}
-          />
-
-          <Field
-            label="Home Zip"
-            name="homeZip"
-            id="homeZip"
-            short
-            mobile={!isWidthUp("sm", width)}
-            type="text"
-            classes={classes}
-            component={renderTextField}
-          />
-        </FormGroup>
-
-        <Field
-          label="Home Email"
-          name="homeEmail"
-          id="homeEmail"
-          type="email"
-          classes={classes}
-          component={renderTextField}
-        />
-
-        <FormHelperText className={classes.formHelperText}>
-          Please use your personal email if you have one, since some employers
-          limit union communication via work email. If you don't have a personal
-          email, work email is fine. If you don't have an email address, call us
-          at 1.844.503.7348 to sign up over the phone.
-        </FormHelperText>
-        <FormGroup>
-          <Field
-            label="Mobile Phone†"
-            name="mobilePhone"
-            id="mobilePhone"
-            type="tel"
-            classes={classes}
-            component={renderTextField}
-          />
-
-          <FormHelperText className={classes.formHelperText}>
-            † By providing my phone number, I understand that the Service
-            Employees International Union (SEIU), its local unions, and
-            affiliates may use automated calling technologies and/or text
-            message me on my cellular phone on a periodic basis. SEIU will never
-            charge for text message alerts. Carrier message and data rates may
-            apply to such alerts. Reply STOP to stop receiving messages; reply
-            HELP for more information.
-          </FormHelperText>
-
-          <Field
-            label="Opt Out Of Receiving Mobile Alerts"
-            name="textAuthOptOut"
-            id="textAuthOptOut"
-            type="checkbox"
-            formControlName="controlCheckbox"
-            classes={classes}
-            component={renderCheckbox}
-          />
-        </FormGroup>
-        {standAlone && (
-          <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-            onChange={reCaptchaChange}
-          />
-        )}
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&
           validMethod && (
@@ -360,7 +405,13 @@ export const CAPE = props => {
           </div>
         )}
         <div className={classes.legalCopy}>{legalCopy}</div>
-
+        {standAlone && (
+          <ReCAPTCHA
+            ref={reCaptchaRef}
+            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
+            onChange={reCaptchaChange}
+          />
+        )}
         <ButtonWithSpinner
           type="submit"
           color="secondary"
@@ -395,7 +446,7 @@ const mapStateToProps = state => ({
 // add reduxForm to component
 export const CAPEForm = reduxForm({
   form: "submissionPage1",
-  validate,
+  validate: capeValidate,
   destroyOnUnmount: false,
   forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
   enableReinitialize: true,

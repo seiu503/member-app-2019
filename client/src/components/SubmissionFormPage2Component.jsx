@@ -3,7 +3,7 @@ import { Field } from "redux-form";
 import PropTypes from "prop-types";
 import { reduxForm } from "redux-form";
 import { withLocalize, Translate } from "react-localize-redux";
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import page2 from "../translations/page2.json";
 import queryString from "query-string";
 

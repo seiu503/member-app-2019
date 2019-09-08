@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 
 import PropTypes from "prop-types";
 
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
 export const Tab3 = props => {

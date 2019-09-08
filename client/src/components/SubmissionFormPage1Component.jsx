@@ -348,6 +348,10 @@ export class SubmissionFormPage1Component extends React.Component {
         {values.cape ? (
           <CAPEForm
             standAlone={true}
+            employerTypesList={employerTypesList}
+            employerList={employerList}
+            handleInput={this.props.apiSubmission.handleInput}
+            updateEmployersPicklist={this.updateEmployersPicklist}
             onSubmit={this.props.handleCAPESubmit}
             classes={classes}
             loading={this.props.submission.loading}
@@ -355,7 +359,6 @@ export class SubmissionFormPage1Component extends React.Component {
             back={this.props.back}
             formValues={this.props.formValues}
             formPage1={this.props.submission.formPage1}
-            handleInput={this.props.submission.handleInput}
             iFrameURL={this.props.submission.payment.cardAddingUrl}
             payment={this.props.submission.payment}
             toggleCardAddingFrame={this.props.toggleCardAddingFrame}

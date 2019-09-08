@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 import {
   hcwDirectDepositAuthText,

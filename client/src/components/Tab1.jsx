@@ -16,7 +16,7 @@ import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package

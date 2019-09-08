@@ -445,10 +445,11 @@ export const stylesPage1 = theme => ({
     paddingTop: 35
   },
   suggestedAmountBoxes: {
-    flexDirection: "row"
+    flexDirection: "row",
+    flexWrap: "nowrap"
   },
   suggestedAmountBox: {
-    width: "29%",
+    width: "21%",
     height: 60,
     margin: "13px 1.666666666666667% 0",
     display: "inline-block"
@@ -820,9 +821,7 @@ export const renderCAPERadioGroup = ({
     <RadioGroup
       aria-label={formControlName}
       name={formControlName}
-      className={
-        direction === "vert" ? classes.verticalGroup : classes.horizGroup
-      }
+      className={classes.horizGroup}
       onChange={(event, value) => {
         input.onChange(value);
         if (additionalOnChange) {
@@ -831,18 +830,23 @@ export const renderCAPERadioGroup = ({
       }}
     >
       {options.map(item => {
+        let labelText = `$${item}`;
+        if (item === "Other") {
+          labelText = item;
+        }
         return (
           <FormControlLabel
             key={shortid()}
             value={item}
             className={classes.suggestedAmountBox}
+            label={labelText}
+            labelPlacement="bottom"
             control={
               <Radio
                 checked={item.toString() === input.value.toString()}
                 color="primary"
               />
             }
-            label={`$${item}`}
           />
         );
       })}
