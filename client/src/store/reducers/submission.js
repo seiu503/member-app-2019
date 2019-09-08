@@ -1,6 +1,7 @@
 import update from "immutability-helper";
 import moment from "moment";
 import * as formElements from "../../components/SubmissionFormElements";
+import * as utils from "../../utils";
 
 import {
   ADD_SUBMISSION_REQUEST,
@@ -181,6 +182,7 @@ function Submission(state = INITIAL_STATE, action) {
           }
           return null;
         });
+        const paymentRequired = utils.isPaymentRequired(employerType);
         return update(state, {
           salesforceId: { $set: action.payload.Id },
           formPage1: {
@@ -203,7 +205,8 @@ function Submission(state = INITIAL_STATE, action) {
             textAuthOptOut: { $set: false },
             immediatePastMemberStatus: {
               $set: action.payload.Binary_Membership__c
-            }
+            },
+            paymentRequired: { $set: paymentRequired }
           },
           formPage2: {
             africanOrAfricanAmerican: {

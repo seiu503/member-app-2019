@@ -1,5 +1,5 @@
 import React from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+import { ReCaptcha } from "react-recaptcha-v3";
 import {
   Field,
   reduxForm,
@@ -40,8 +40,7 @@ export const Tab1 = props => {
     renderCheckbox,
     formValues,
     width,
-    reCaptchaChange,
-    reCaptchaRef
+    verifyCallback
   } = props;
 
   return (
@@ -268,10 +267,10 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
-          <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-            onChange={reCaptchaChange}
+          <ReCaptcha
+            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            action="tab_1_submit"
+            verifyCallback={verifyCallback}
           />
           <div className={classes.buttonWrap}>
             <Button

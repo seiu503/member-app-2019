@@ -106,14 +106,15 @@ const createSubmission = async (req, res, next) => {
       reason: "ValidationError",
       message: `Missing required field ${missingField}`
     });
-  } else if (process.env.NODE_ENV !== "testing") {
-    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-      console.log(err);
-      return res
-        .status(422)
-        .json({ message: "Please verify that you are a human" });
-    });
   }
+  // else if (process.env.NODE_ENV !== "testing") {
+  //   verifyHumanity(reCaptchaValue, ip_address).catch(err => {
+  //     console.log(err);
+  //     return res
+  //       .status(422)
+  //       .json({ message: "ReCaptcha verification failed" });
+  //   });
+  // }
   const createSubmissionResult = await submissions.createSubmission(
     ip_address,
     submission_date,
@@ -271,10 +272,7 @@ const getSubmissionById = (req, res, next) => {
  */
 const verifyHumanity = (token, ip_address) => {
   return new Promise((resolve, reject) => {
-    const key =
-      process.env.NODE_ENV === "testing"
-        ? process.env.TEST_RECAPTCHA_SECRET_KEY
-        : process.env.RECAPTCHA_SECRET_KEY;
+    const key = process.env.RECAPTCHA_V3_SECRET_KEY;
     return request.post(
       "https://www.google.com/recaptcha/api/siteverify",
       {
@@ -286,17 +284,19 @@ const verifyHumanity = (token, ip_address) => {
       },
       (err, httpResponse, body) => {
         if (err) {
-          // console.log(err);
+          console.log(`submission.ctrl.js > 286:`);
+          console.log(err);
           reject(new Error(err));
         } else {
           const r = JSON.parse(body);
-          // console.log(r['error-codes']);
+          console.log(`submissions.ctrl.js > 291: recaptcha error:`);
+          console.log(r["error-codes"]);
           if (r.success) {
-            // console.log(`submissions.ctrl.js > 291`);
-            // console.log(r.success);
+            console.log(`submissions.ctrl.js > 294: recaptcha success:`);
+            console.log(r.success);
             resolve(r.success);
           } else {
-            // console.log(`submissions.ctrl.js > 295`);
+            console.log(`submissions.ctrl.js > 297: recaptcha failure`);
             reject(new Error(`reCaptcha Error: ${r["error-codes"][0]}`));
           }
         }

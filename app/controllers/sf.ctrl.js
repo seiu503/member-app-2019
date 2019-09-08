@@ -8,6 +8,7 @@ const {
   paymentFields,
   formatDate
 } = require("../utils/fieldConfigs");
+const { verifyHumanity } = require("./submissions.ctrl.js");
 
 // setup for sandbox in both dev and prod for now
 // switch to production on launch
@@ -60,7 +61,17 @@ exports.getSFContactById = async (req, res, next) => {
  *  @returns  {Object}        { sf_contact_id } or error message
  */
 exports.createSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 62: createSFContact`);
+  console.log(`sf.ctrl.js > 62: createSFContact`);
+  const { ip_address, reCaptchaValue } = req.body;
+  console.log(ip_address, reCaptchaValue);
+
+  if (process.env.NODE_ENV !== "testing") {
+    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
+      console.log(err);
+      return res.status(422).json({ message: "ReCaptcha verification failed" });
+    });
+  }
+
   const bodyRaw = { ...req.body };
   // console.log(`sf.ctrl.js > 64`);
   // console.log(bodyRaw);
@@ -175,9 +186,17 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  */
 
 exports.createOrUpdateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
+  console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
 
-  const { salesforce_id } = req.body;
+  const { salesforce_id, ip_address, reCaptchaValue } = req.body;
+  console.log(ip_address, reCaptchaValue);
+
+  if (process.env.NODE_ENV !== "testing") {
+    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
+      console.log(err);
+      return res.status(422).json({ message: "ReCaptcha verification failed" });
+    });
+  }
 
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to updateSFContact
@@ -244,8 +263,19 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 exports.updateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 284: updateSFContact`);
+  console.log(`sf.ctrl.js > 270: updateSFContact`);
   const { id } = req.params;
+
+  const { ip_address, reCaptchaValue } = req.body;
+  console.log(ip_address, reCaptchaValue);
+
+  if (process.env.NODE_ENV !== "testing") {
+    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
+      console.log(err);
+      return res.status(422).json({ message: "ReCaptcha verification failed" });
+    });
+  }
+
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using

@@ -2,7 +2,7 @@ import React from "react";
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
-import ReCAPTCHA from "react-google-recaptcha";
+import { ReCaptcha } from "react-recaptcha-v3";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
@@ -43,8 +43,7 @@ export const CAPE = props => {
     toggleCardAddingFrame,
     suggestedAmountOnChange,
     standAlone,
-    reCaptchaChange,
-    reCaptchaRef,
+    verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
     employerList
@@ -64,7 +63,7 @@ export const CAPE = props => {
       >
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>
-            CAPE: Citizen Action for Political Education
+            Contribute to CAPE: Citizen Action for Political Education
           </Typography>
           <Typography component="p" className={classes.subhead}>
             Collective political action to raise wages, protect benefits, fund
@@ -81,28 +80,12 @@ export const CAPE = props => {
               members up for strong contracts
             </li>
             <li className={classes.li}>
-              State Agency budgets increased to provide additional resources
-              members need to do their jobs
-            </li>
-            <li className={classes.li}>
-              The Oregon Public Worker Protection Act protects our right to
-              belong to a union free from retaliation and harassment
-            </li>
-            <li className={classes.li}>
-              “Double Coverage” health care for families where both spouses work
-              in public service
-            </li>
-            <li className={classes.li}>
               Oregon passed the strongest Paid Family and Medical Leave law in
               the nation
             </li>
             <li className={classes.li}>
               Our state became the first in the U.S. to pass statewide rent
               stabilization and ban no-cause evictions
-            </li>
-            <li className={classes.li}>
-              The Legislature passed a statewide bill that will hold private
-              agency homecare and our homecare workers to the same standards
             </li>
           </ul>
           <Card className={classes.card}>
@@ -406,10 +389,10 @@ export const CAPE = props => {
         )}
         <div className={classes.legalCopy}>{legalCopy}</div>
         {standAlone && (
-          <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-            onChange={reCaptchaChange}
+          <ReCaptcha
+            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            action="standalone_cape_submit"
+            verifyCallback={verifyCallback}
           />
         )}
         <ButtonWithSpinner
@@ -430,8 +413,7 @@ export const CAPE = props => {
 CAPE.propTypes = {
   onSubmit: PropTypes.func,
   classes: PropTypes.object,
-  reCaptchaChange: PropTypes.func,
-  reCaptchaRef: PropTypes.object,
+  verifyCallback: PropTypes.func,
   loading: PropTypes.bool,
   pristine: PropTypes.bool,
   invalid: PropTypes.bool

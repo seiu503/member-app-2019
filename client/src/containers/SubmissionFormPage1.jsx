@@ -19,6 +19,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
+import * as utils from "../utils";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
@@ -355,6 +356,7 @@ export class SubmissionFormPage1Container extends React.Component {
     } = values;
 
     const body = {
+      ip_address: localIpUrl(),
       agency_number: agencyNumber,
       birthdate,
       cell_phone: mobilePhone,
@@ -401,6 +403,7 @@ export class SubmissionFormPage1Container extends React.Component {
     let id = this.props.submission.salesforceId;
 
     const body = {
+      ip_address: localIpUrl(),
       agency_number: agencyNumber,
       birthdate,
       cell_phone: mobilePhone,
@@ -504,11 +507,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // handle moving from tab 1 to tab 2:
 
     // check if payment is required and store this in redux store for later
-    if (
-      formValues.employerType.toLowerCase() === "community member" ||
-      formValues.employerType.toLowerCase() === "retired" ||
-      formValues.employerType.toLowerCase() === "adult foster home"
-    ) {
+    if (utils.isPaymentRequired(formValues.employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
@@ -522,13 +521,13 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // submit validation: recaptcha
-    const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
+    const reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
     if (!reCaptchaValue) {
-      return openSnackbar("error", "Please verify you are human with Captcha");
+      console.log("no reCaptcha value??");
     }
-    await this.props.apiSubmission.handleInput({
-      target: { name: "reCaptchaValue", value: reCaptchaValue }
-    });
+    // await this.props.apiSubmission.handleInput({
+    //   target: { name: "reCaptchaValue", value: reCaptchaValue }
+    // });
     // console.log(this.props.submission.formPage1.reCaptchaValue);
 
     // check if SF contact id already exists (prefill case)

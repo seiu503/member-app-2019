@@ -33,6 +33,17 @@ export const randomInt = () => {
   return Math.floor(Math.random() * (+max - +min)) + +min;
 };
 
+export const isPaymentRequired = employerType => {
+  if (
+    employerType.toLowerCase() === "community member" ||
+    employerType.toLowerCase() === "retired" ||
+    employerType.toLowerCase() === "adult foster home"
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export const defaultWelcomeInfo = {
   body: `<p>Demonstrate your commitment to your co-workers and the people you serve in a few simple steps. To get started, click “Next.”</p>
 <p>Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories – including increasing our pay and benefits and improving our workplace conditions. </p>

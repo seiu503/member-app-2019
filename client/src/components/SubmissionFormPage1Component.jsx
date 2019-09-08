@@ -155,10 +155,6 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
-  reCaptchaChange = response => {
-    // console.log(response, "<= dis your captcha token");
-  };
-
   async updateSubmission() {
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
@@ -348,6 +344,7 @@ export class SubmissionFormPage1Component extends React.Component {
         {values.cape ? (
           <CAPEForm
             standAlone={true}
+            verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
             handleInput={this.props.apiSubmission.handleInput}
@@ -365,8 +362,6 @@ export class SubmissionFormPage1Component extends React.Component {
             renderSelect={this.renderSelect}
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
-            reCaptchaChange={this.reCaptchaChange}
-            reCaptchaRef={this.props.reCaptchaRef}
             checkoff={checkoff}
             suggestedAmountOnChange={this.props.suggestedAmountOnChange}
           />
@@ -406,6 +401,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 {this.props.tab === 0 && (
                   <Tab1Form
                     onSubmit={() => this.props.handleTab(1)}
+                    verifyCallback={this.verifyCallback}
                     classes={classes}
                     employerTypesList={employerTypesList}
                     employerList={employerList}
@@ -418,8 +414,6 @@ export class SubmissionFormPage1Component extends React.Component {
                     width={this.props.width}
                     handleTab={this.props.handleTab}
                     submitErrors={this.props.submitErrors}
-                    reCaptchaChange={this.reCaptchaChange}
-                    reCaptchaRef={this.props.reCaptchaRef}
                   />
                 )}
                 {this.props.tab === 1 && (
@@ -481,8 +475,6 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
-                    reCaptchaChange={this.reCaptchaChange}
-                    reCaptchaRef={this.props.reCaptchaRef}
                     checkoff={checkoff}
                     suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
@@ -542,11 +534,6 @@ SubmissionFormPage1Component.propTypes = {
     getTrimmedCanvas: PropTypes.func
   }),
   handleTab: PropTypes.func,
-  reCaptchaRef: PropTypes.shape({
-    current: PropTypes.shape({
-      getValue: PropTypes.func
-    })
-  }),
   tab: PropTypes.number,
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
