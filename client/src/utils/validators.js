@@ -115,6 +115,7 @@ export const validate = values => {
 };
 
 export const capeValidate = values => {
+  // console.log('capeValidate');
   const errors = {};
   const requiredFields = [
     "firstName",
@@ -127,7 +128,9 @@ export const capeValidate = values => {
     "mobilePhone",
     "employerName",
     "employerType",
-    "capeAmount"
+    "capeAmount",
+    "capeAmountOther",
+    "jobTitle"
   ];
   const conditionalRequiredFields = [
     {
@@ -137,6 +140,7 @@ export const capeValidate = values => {
     }
   ];
   conditionalRequiredFields.forEach(obj => {
+    // console.log(obj["requiredField"]);
     let matchValue = values[obj["controllingField"]]
       ? values[obj["controllingField"]].toLowerCase()
       : "";
@@ -145,6 +149,7 @@ export const capeValidate = values => {
       !values[obj["requiredField"]]
     ) {
       errors[obj["requiredField"]] = "Required";
+      console.log(errors[obj["requiredField"]]);
     }
   });
   requiredFields.forEach(field => {
