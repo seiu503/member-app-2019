@@ -7,6 +7,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
+import { Translate } from "react-localize-redux";
 
 import validate from "../utils/validators";
 import { scrollToFirstError } from "../utils";
@@ -44,6 +45,7 @@ export const Tab2 = props => {
   const retiree = formValues.employerType.toLowerCase() === "retired";
   const community =
     formValues.employerType.toLowerCase() === "community member";
+
   return (
     <div data-test="component-tab2" className={classes.sectionContainer}>
       <form
@@ -120,7 +122,7 @@ export const Tab2 = props => {
           </React.Fragment>
         )}
         <Typography component="h3" className={classes.fieldLabel}>
-          Signature
+          <Translate id="signatureTitle" />
         </Typography>
         {signatureType === "write" && (
           <React.Fragment>
@@ -134,7 +136,7 @@ export const Tab2 = props => {
               component={renderTextField}
             />
             <FormHelperText className={classes.formHelperText}>
-              Enter your full legal name. This will act as your signature.
+              <Translate id="signatureHint" />
             </FormHelperText>
           </React.Fragment>
         )}

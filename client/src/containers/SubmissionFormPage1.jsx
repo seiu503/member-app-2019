@@ -7,8 +7,7 @@ import {
   isPristine,
   isValid,
   getFormSubmitErrors,
-  reset,
-  change
+  reset
 } from "redux-form";
 
 import { bindActionCreators } from "redux";
@@ -50,6 +49,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.prepForContact = this.prepForContact.bind(this);
     this.prepForSubmission = this.prepForSubmission.bind(this);
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
+    this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -108,8 +108,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.content.error
           ) {
             resolve(
-              openSnackbar(
-                "error",
+              handleError(
                 this.props.content.error ||
                   "An error occured while trying to save your Signature. Please try typing it instead"
               )
@@ -160,10 +159,12 @@ export class SubmissionFormPage1Container extends React.Component {
   changeTab = newValue => {
     const newState = { ...this.state };
     newState.tab = newValue;
-    this.setState({ ...newState });
+    this.setState({ ...newState }, () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   };
 
-  prepForContact(values) {
+  async prepForContact(values) {
     let returnValues = { ...values };
 
     // format birthdate
@@ -175,8 +176,13 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       values.employerName
     );
-    returnValues.employerId = employerObject.Id;
     returnValues.agencyNumber = employerObject.Agency_Number__c;
+    returnValues.employerId = employerObject.Id;
+
+    // save employerId to redux store for later
+    await this.props.apiSubmission.handleInput({
+      target: { name: "employerId", value: employerObject.Id }
+    });
 
     return returnValues;
   }
@@ -212,9 +218,13 @@ export class SubmissionFormPage1Container extends React.Component {
     return returnValues;
   }
 
-  generateSubmissionBody(values) {
-    const firstValues = this.prepForContact(values);
+  async generateSubmissionBody(values) {
+    const firstValues = await this.prepForContact(values);
     const secondValues = this.prepForSubmission(firstValues);
+    secondValues.termsAgree = values.termsAgree;
+    secondValues.signature = this.props.submission.formPage1.signature;
+    secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+    secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
 
     let {
       firstName,
@@ -281,7 +291,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // finalized and written to salesforce
     // until payment method added in tab 3
 
-    const body = this.generateSubmissionBody(this.props.formValues);
+    const body = await this.generateSubmissionBody(formValues);
 
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
@@ -290,17 +300,15 @@ export class SubmissionFormPage1Container extends React.Component {
         console.log(err);
         return handleError(err);
       });
-    // console.log(result.payload);
-    // console.log(this.props.submission.submissionId);
+
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
-    if (!formValues.paymentRequired) {
+    if (!this.props.submission.formPage1.paymentRequired) {
       return this.props.apiSF.createSFOMA(body);
       // goto CAPE ...
     }
+    // if payment required, return out of this function and move to next tab
     return;
-
-    // if payment is required then we need to move to next tab
   }
 
   async createSFContact() {
@@ -394,17 +402,111 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
+  getSFDJRById() {
+    const id = this.props.submission.salesforceId;
+    return new Promise(resolve => {
+      this.props.apiSF
+        .getSFDJRById(id)
+        .then(result => {
+          // console.log(result.payload);
+          if (
+            result.type === "GET_SF_DJR_FAILURE" ||
+            this.props.submission.error
+          ) {
+            resolve(handleError(this.props.submission.error));
+          }
+          resolve(result);
+        })
+        .catch(err => {
+          // console.log(err);
+          resolve(handleError(err));
+        });
+    });
+  }
+
+  async createSFDJR() {
+    const medicaidResidents =
+      this.props.submission.formPage1.medicaidResidents || 0;
+    const body = {
+      Worker__c: this.props.submission.salesforceId,
+      Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
+      Payment_Method__c: this.props.submission.formPage1.paymentType,
+      AFH_Number_of_Residents__c: medicaidResidents
+    };
+    this.props.apiSF
+      .createSFDJR(body)
+      .then(result => {
+        // console.log(result);
+        if (
+          result.type === "CREATE_SF_DJR_FAILURE" ||
+          this.props.submission.error
+        ) {
+          return handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async updateSFDJR() {
+    const id = this.props.submission.salesforceId;
+    const medicaidResidents =
+      this.props.submission.formPage1.medicaidResidents || 0;
+    const updates = {
+      Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
+      Payment_Method__c: this.props.submission.formPage1.paymentType,
+      AFH_Number_of_Residents__c: medicaidResidents
+    };
+    this.props.apiSF
+      .updateSFDJR(id, updates)
+      .then(result => {
+        // console.log(result.payload);
+        if (
+          result.type === "UPDATE_SF_DJR_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+  }
+
   async handleTab1() {
     const { formValues } = this.props;
     // handle moving from tab 1 to tab 2:
-    // lookup SF contact if no id provided
+
+    // check if payment is required and store this in redux store for later
+    if (
+      formValues.employerType.toLowerCase() === "community member" ||
+      formValues.employerType.toLowerCase() === "retired" ||
+      formValues.employerType.toLowerCase() === "adult foster home"
+    ) {
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: true }
+      });
+      // console.log(formValues.employerType.toLowerCase());
+      // console.log(
+      //   `paymentRequired ? ${this.props.submission.formPage1.paymentRequired}`
+      // );
+      // console.log(this.props.submission.formPage1);
+    }
 
     // submit validation: recaptcha
     const reCaptchaValue = this.props.reCaptchaRef.current.getValue();
     if (!reCaptchaValue) {
       return openSnackbar("error", "Please verify you are human with Captcha");
     }
-    this.props.changeFieldValue("reCaptchaValue", reCaptchaValue);
+    await this.props.apiSubmission.handleInput({
+      target: { name: "reCaptchaValue", value: reCaptchaValue }
+    });
+    // console.log(this.props.submission.formPage1.reCaptchaValue);
+
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
       // update existing contact, move to next tab
@@ -422,7 +524,7 @@ export class SubmissionFormPage1Container extends React.Component {
       home_email: formValues.homeEmail
     };
     await this.props.apiSF.lookupSFContact(body).catch(err => {
-      // console.log(err);
+      console.log(err);
       return handleError(err);
     });
     // console.log(result);
@@ -435,6 +537,7 @@ export class SubmissionFormPage1Container extends React.Component {
       });
       return this.changeTab(1);
     }
+
     // otherwise, create new contact with submission data,
     // then move to next tab
     await this.createSFContact().catch(err => {
@@ -444,17 +547,36 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(1);
   }
 
-  async getIframeURL() {
+  async getIframeExisting() {
+    // console.log("getIframeExisting");
+    const memberShortId = this.props.submission.payment.memberShortId;
+    const token = this.props.submission.payment.unioniseToken;
+    return this.props.apiSF
+      .getIframeExisting(token, memberShortId)
+      .then(result => {
+        // console.log(result);
+        if (
+          !result.payload.cardAddingUrl ||
+          result.payload.message ||
+          result.type === "GET_IFRAME_EXISTING_FAILURE"
+        ) {
+          // console.log(this.props.submission.error);
+          return handleError(
+            result.payload.message ||
+              this.props.submission.error ||
+              "Sorry, something went wrong. Please try again."
+          );
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async getIframeNew() {
+    // console.log("getIframeNew");
     const { formValues } = this.props;
-    // if submission type requires payment processing, fetch iFrame URL
-    // for use in next tab
-
-    // once we start saving activePaymentMethod.last4 in SF, we can skip this call for people who have an active payment method and only make it in tab 3 if they tell us they want to add a new method
-
-    // set payment required to true
-    this.props.apiSubmission.handleInput({
-      target: { name: "paymentRequired", value: true }
-    });
 
     const birthdate = formatBirthdate(formValues);
     // convert language to ISO code for unioni.se
@@ -465,6 +587,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (language === "es") {
       language = "es-US";
     }
+
     const body = {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
@@ -482,33 +605,79 @@ export class SubmissionFormPage1Container extends React.Component {
       // ^^ fixed value for dev / staging
       // this will be Agency number in production
       employeeExternalId: this.props.apiSubmission.submissionId,
-      agreesToMessages: !formValues.textAuthOptOut,
-
-      // below fields should no longer be required,
-      // test and elminate when this is fixed
-      duesAmount: 1.23, // required by unioni.se, sending default
-      duesCurrency: "USD", // required by unioni.se, sending default
-      duesDayOfMonth: 15, // required by unioni.se, sending default
-      duesActiveFrom: "2019-05-20", // required by unioni.se, sending default data
-      deductionType: "CAPE", // required by unioni.se, sending default
-      deductionAmount: 2.34, // required by unioni.se, sending default
-      deductionCurrency: "USD", // required by unioni.se, sending default
-      deductionDayOfMonth: 15 // required by unioni.se, sending default
+      agreesToMessages: !formValues.textAuthOptOut
     };
     // console.log(JSON.stringify(body));
 
-    const result = await this.props.apiSF.getIframeURL(body).catch(err => {
-      console.log(err);
-      return handleError(err);
-    });
-    if (!result.payload.cardAddingUrl || result.payload.message) {
-      // console.log('253');
-      return openSnackbar(
-        "error",
-        result.payload.message ||
-          "Sorry, something went wrong. Please try again."
-      );
+    this.props.apiSF
+      .getIframeURL(body)
+      .then(result => {
+        if (
+          !result.payload.cardAddingUrl ||
+          result.payload.message ||
+          result.type === "GET_IFRAME_URL_FAILURE"
+        ) {
+          // console.log(this.props.submission.error);
+          return handleError(
+            result.payload.message ||
+              this.props.submission.error ||
+              "Sorry, something went wrong. Please try again."
+          );
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async getUnioniseToken() {
+    // console.log("getUnioniseToken");
+    return this.props.apiSF
+      .getUnioniseToken()
+      .then(result => {
+        // console.log(result.payload);
+        if (
+          !result.payload.access_token ||
+          result.payload.message ||
+          result.type === "GET_UNIONISE_TOKEN_FAILURE"
+        ) {
+          // console.log(this.props.submission.error);
+          return handleError(
+            result.payload.message ||
+              this.props.submission.error ||
+              "Sorry, something went wrong. Please try again."
+          );
+        }
+        // return the access token to calling function
+        return result.payload.access_token;
+      })
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+  }
+
+  async getIframeURL() {
+    // console.log("getIframeURL");
+    // first check if we have an existing unionise id
+    // if so, we don't need to create a unionise member account; just fetch a
+    // cardAddingURL from existing account
+    const memberShortId = this.props.submission.payment.memberShortId;
+    if (memberShortId) {
+      // first fetch an auth token to access secured unionise routes
+      const access_token = await this.props.apiSF
+        .getUnioniseToken()
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
+      // then get the card adding url for the existing account
+      return this.getIframeExisting(access_token, memberShortId);
     }
+    // if we don't have the memberShortId, then we need to create a new
+    // unionise member record and return the cardAddingUrl
+    return this.getIframeNew();
   }
 
   async saveLegalLanguage() {
@@ -527,12 +696,33 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.direct_pay.current.innerHTML
       );
     }
-    this.props.changeFieldValue("legalLanguage", legalLanguage);
+    this.props.apiSubmission.handleInput({
+      target: { name: "legalLanguage", value: legalLanguage }
+    });
   }
 
   async calculateAFHDuesRate(medicaidResidents) {
     let afhDuesRate = medicaidResidents * 14.84 + 2.75;
-    this.props.changeFieldValue("afhDuesRate", afhDuesRate);
+    this.props.apiSubmission.handleInput({
+      target: { name: "afhDuesRate", value: afhDuesRate }
+    });
+  }
+
+  async toggleCardAddingFrame(value) {
+    if (value === "Add new card") {
+      await this.getIframeURL()
+        // .then(() => console.log("got iFrameURL"))
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
+      return this.props.apiSubmission.handleInput({
+        target: { name: "newCardNeeded", value: true }
+      });
+    }
+    return this.props.apiSubmission.handleInput({
+      target: { name: "newCardNeeded", value: false }
+    });
   }
 
   async saveSignature() {
@@ -548,8 +738,10 @@ export class SubmissionFormPage1Container extends React.Component {
         // console.log(err);
         return handleError(err);
       });
-      // console.log(`592: ${sigUrl}`);
-      this.props.changeFieldValue("signature", sigUrl);
+      // console.log(`748: ${sigUrl}`);
+      this.props.apiSubmission.handleInput({
+        target: { name: "signature", value: sigUrl }
+      });
       return sigUrl;
     }
     return formValues.signature;
@@ -567,19 +759,47 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     // for AFH, calculate dues rate:
     if (formValues.employerType.toLowerCase() === "adult foster home") {
-      this.calculateAFHDuesRate(formValues.medicaidResidents);
+      this.calculateAFHDuesRate(
+        this.props.submission.formPage1.medicaidResidents
+      );
     }
-    // if payment required (and no existing payment method -- check this!)
-    // get iframe url for next tab
-    if (
-      formValues.employerType.toLowerCase() === "community member" ||
-      formValues.employerType.toLowerCase() === "retired" ||
-      formValues.employerType.toLowerCase() === "adult foster home"
-    ) {
-      await this.getIframeURL(formValues).catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
+
+    // if payment required, check if existing payment method on file
+    if (this.props.submission.formPage1.paymentRequired) {
+      await this.getSFDJRById(this.props.submission.salesforceId)
+        .then(result => {
+          // console.log(result.payload);
+          // console.log(this.props.submission.payment.activeMethodLast4);
+          // console.log(this.props.submission.payment.paymentErrorHold);
+
+          const newCardNeeded =
+            !result.payload.Active_Account_Last_4__c ||
+            (result.payload.Active_Account_Last_4__c &&
+              result.payload.Payment_Error_Hold__c);
+
+          if (newCardNeeded) {
+            // console.log("newCardNeeded");
+            this.props.apiSubmission.handleInput({
+              target: { name: "newCardNeeded", value: true }
+            });
+          }
+
+          // if payment required (and no existing payment method)
+          // preload iframe url for next tab
+          if (
+            this.props.submission.formPage1.paymentRequired &&
+            newCardNeeded
+          ) {
+            this.getIframeURL().catch(err => {
+              // console.log(err);
+              return handleError(err);
+            });
+          }
+        })
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
     }
 
     // save legal language
@@ -587,9 +807,10 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // save partial submission, then move to next tab
     await this.createSubmission().catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
+
     return this.changeTab(2);
   }
 
@@ -647,6 +868,7 @@ export class SubmissionFormPage1Container extends React.Component {
           clearSignature={this.clearSignature}
           generateSubmissionBody={this.generateSubmissionBody}
           handleError={handleError}
+          toggleCardAddingFrame={this.toggleCardAddingFrame}
         />
       </div>
     );
@@ -670,10 +892,7 @@ const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
-  submitForm: () => dispatch(submit("submissionPage1")),
-  changeFieldValue: (field, value) => {
-    dispatch(change("submissionPage1", field, value));
-  }
+  submitForm: () => dispatch(submit("submissionPage1"))
 });
 
 export const SubmissionFormPage1Connected = connect(

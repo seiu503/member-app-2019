@@ -30,9 +30,18 @@ const defaultProps = {
   pristine: false,
   invalid: false,
   formValues: {
-    paymentType: "card",
+    paymentType: "Card",
     employerName: "blah",
     employerType: "adult foster home"
+  },
+  formPage1: {
+    paymentType: "Card",
+    paymentRequired: true,
+    newCardNeeded: true
+  },
+  payment: {
+    activeMethodLast4: "1234",
+    paymentErrorHold: false
   },
   afhDuesRate: 17.59304,
   changeFieldValue: changeFieldValueMock,
@@ -80,8 +89,17 @@ describe("<Tab3 />", () => {
       handleSubmit: fn => fn,
       classes: {},
       formValues: {
-        paymentType: "card",
+        employerType: "homecare"
+      },
+      formPage1: {
+        paymentType: "Card",
+        paymentRequired: true,
+        newCardNeeded: true,
         employerName: "homecare"
+      },
+      payment: {
+        activeMethodLast4: "1234",
+        paymentErrorHold: false
       }
     };
 

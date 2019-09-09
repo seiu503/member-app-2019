@@ -15,6 +15,7 @@ const passport = require("passport");
 require("../app/config/passport")(passport);
 const utils = require("../app/utils");
 const users = require("../db/models/users");
+const knexCleaner = require("knex-cleaner");
 
 const content_type = "headline";
 const content_type2 = "image_url";
@@ -42,17 +43,25 @@ let authenticateMock;
 let userStub;
 
 suite("routes : content", function() {
-  // this runs once before the whole suite
-  // rollback and migrate testing database
-  before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
-  });
+  // // this runs once before the whole suite
+  // // rollback and migrate testing database
+  // before(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback().then(() => {
+  //       return db.migrate.latest();
+  //     });
+  //   });
+  // });
 
-  // rollback to cleanup after tests are over
+  // // rollback to cleanup after tests are over
+  // after(() => {
+  //   return knexCleaner.clean(db).then(() => {
+  //     return db.migrate.rollback();
+  //   });
+  // });
+
   after(() => {
-    return db.migrate.rollback();
+    return knexCleaner.clean(db);
   });
 
   // these run before and after each test

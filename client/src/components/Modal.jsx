@@ -7,6 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { Translate } from "react-localize-redux";
 
 const styles = theme => ({
   modalButtonRed: {
@@ -52,12 +53,12 @@ function Modal(props) {
         aria-describedby="alert-dialog-description"
         data-test="component-modal"
       >
-        <DialogTitle id="alert-dialog-title">{`Are you ${
-          props.fullName
-        }?`}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          <Translate id="modalTitle" /> {`${props.fullName}?`}
+        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {`This form is customized especially for ${props.fullName}.`}
+            <Translate id="modalDescription" /> {`${props.fullName}.`}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActionsOverride}>
@@ -65,14 +66,16 @@ function Modal(props) {
             onClick={() => props.history.push("/linkrequest")}
             className={classes.modalButtonRed}
           >
-            {`I'm not ${props.fullName}, get me my own link.`}
+            <Translate id="modalErrorButtonPreName" />
+            {`${props.fullName}`}
+            <Translate id="modalErrorButtonPostName" />
           </Button>
           <Button
             onClick={props.handleClose}
             className={classes.modalButtonGreen}
             autoFocus
           >
-            {`Yes, I'm ${props.fullName}`}
+            <Translate id="modalConfirmButton" /> {`${props.fullName}`}
           </Button>
         </DialogActions>
       </Dialog>

@@ -11,8 +11,9 @@ const passport = require("passport");
 const { db, TABLES } = require("../app/config/knex");
 const users = require("../db/models/users");
 const utils = require("../app/utils");
+const knexCleaner = require("knex-cleaner");
 
-const name = `firstname ${utils.randomText()}`;
+const name = `firstname lastname`;
 const name2 = `firstname2 ${utils.randomText()}`;
 const email = "fakeemail@test.com";
 const avatar_url = "http://example.com/avatar.png";
@@ -30,13 +31,13 @@ let userId;
 
 describe("user model tests", () => {
   before(() => {
-    return db.migrate.rollback().then(() => {
-      return db.migrate.latest();
-    });
+    return knexCleaner.clean(db);
   });
-
   after(() => {
-    return db.migrate.rollback();
+    return knexCleaner.clean(db);
+  });
+  beforeEach(() => {
+    sinon.restore();
   });
 
   it("POST creates a new user", () => {
@@ -70,21 +71,7 @@ describe("user model tests", () => {
         .then(user => {
           userId = user[0].id;
         });
-      // .then(() => {
-      //   // stub passport authentication to test secured routes
-      //   sinon
-      //     .stub(passport, 'authenticate')
-      //     .callsFake(function (test, args) {
-      //       console.log('Auth stub');
-      //     });
-      //   console.log('stub registered');
-      //   passport.authenticate('jwt', { session: false });
-      // });
     });
-
-    // afterEach(() => {
-    //   passport.authenticate.restore();
-    // });
 
     it("PUT updates a user", () => {
       const updates = {
@@ -115,13 +102,11 @@ describe("user model tests", () => {
     });
 
     it("GET gets one user by id", () => {
-      return users.getUserById(userId).then(result => {
-        assert.equal(result.name, name);
-        assert.equal(result.email, email);
-        assert.equal(result.email, email);
-        assert.equal(result.avatar_url, avatar_url);
-        assert.equal(result.google_token, google_token);
-        return db.select("*").from(TABLES.USERS);
+      return users.getUserById(userId).then(returnedUser => {
+        assert.equal(returnedUser.name, name);
+        assert.equal(returnedUser.email, email);
+        assert.equal(returnedUser.avatar_url, avatar_url);
+        assert.equal(returnedUser.google_token, google_token);
       });
     });
 

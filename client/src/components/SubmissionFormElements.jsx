@@ -2,6 +2,7 @@ import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
 import { openSnackbar } from "../containers/Notifier";
+import { Translate } from "react-localize-redux";
 
 import TextField from "@material-ui/core/TextField";
 import Select from "@material-ui/core/Select";
@@ -14,6 +15,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+
+import { camelCaseConverter } from "../utils/index";
 
 export const handleError = err => {
   return openSnackbar(
@@ -91,7 +94,20 @@ export const monthList = [
   "11",
   "12"
 ];
-export const languageOptions = ["", "English", "Russian", "Spanish"];
+export const languageOptions = [
+  "",
+  "English",
+  "ASL (Sign Language)",
+  "Cantonese",
+  "Cantonese AND Mandarin",
+  "Mandarin",
+  "Russian",
+  "Spanish",
+  "Vietnamese",
+  "Amharic",
+  "Arabic",
+  "Haitian Creole"
+];
 export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
 export const genderPronounOptions = [
   "",
@@ -394,6 +410,9 @@ export const stylesPage1 = theme => ({
     display: "flex",
     flexDirection: "row"
   },
+  horizRadioBold: {
+    fontWeight: 700
+  },
   body: {},
   paymentCopy: {
     paddingBottom: "1.5em"
@@ -489,9 +508,38 @@ export const stylesPage2 = theme => ({
   }
 });
 
+// helper functions for localization package when translating labels
+const inputLabelTranslateHelper = (id, label, translate) => {
+  if (translate(id).includes("Missing translationId:")) {
+    return label;
+  } else {
+    return translate(id);
+  }
+};
+const optionsLabelTranslateHelper = (id, item, translate) => {
+  let translatedLabel;
+  if (id.includes("State")) {
+    return item;
+  }
+  if (parseInt(item, 10)) {
+    return item;
+  }
+  if (id.includes("employer")) {
+    translatedLabel = translate(camelCaseConverter(item));
+  } else {
+    translatedLabel = translate(item.toLowerCase());
+  }
+  if (translatedLabel.includes("Missing translationId:")) {
+    return item;
+  } else {
+    return translatedLabel;
+  }
+};
+
 // custom MUI friendly TEXT input
 export const renderTextField = ({
   input,
+  id,
   name,
   label,
   meta: { touched, error },
@@ -499,27 +547,32 @@ export const renderTextField = ({
   twocol,
   short,
   mobile,
+  translate,
   ...custom
 }) => {
   return (
-    <TextField
-      label={label}
-      error={!!(touched && error)}
-      variant="outlined"
-      className={classes.input}
-      style={
-        twocol && !mobile
-          ? { width: "48%" }
-          : short
-          ? { width: 150 }
-          : { width: "100%", marginBottom: 30 }
-      }
-      helperText={touched && error}
-      required={!!(touched && error)}
-      {...input}
-      {...custom}
-      data-test="component-text-field"
-    />
+    <Translate>
+      {({ translate }) => (
+        <TextField
+          label={inputLabelTranslateHelper(id, label, translate)}
+          error={!!(touched && error)}
+          variant="outlined"
+          className={classes.input}
+          style={
+            twocol && !mobile
+              ? { width: "48%" }
+              : short
+              ? { width: 150 }
+              : { width: "100%", marginBottom: 30 }
+          }
+          helperText={touched && error}
+          required={!!(touched && error)}
+          {...input}
+          {...custom}
+          data-test="component-text-field"
+        />
+      )}
+    </Translate>
   );
 };
 
@@ -529,6 +582,7 @@ const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 export const renderSelect = ({
   input,
   name,
+  id,
   label,
   classes,
   align,
@@ -540,118 +594,160 @@ export const renderSelect = ({
   formControlName,
   ...custom
 }) => (
-  <FormControl
-    variant="outlined"
-    className={classes[formControlName] || classes.formControl}
-    error={!!(error && touched)}
-    {...custom}
-    required={touched && error === "Required"}
-    style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
-  >
-    <InputLabel htmlFor={name}>{label}</InputLabel>
-    <Select
-      native
-      input={<OutlinedInput labelWidth={labelWidth} />}
-      className={align === "right" ? classes.selectRight : classes.select}
-      value={input.value ? input.value.toLowerCase() : ""}
-      onChange={input.onChange}
-      {...custom}
-      data-test="component-select"
-    >
-      {options.map(item => (
-        <option
-          key={shortid()}
-          value={item ? item.toLowerCase() : ""}
-          style={selectStyle(align)}
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        variant="outlined"
+        className={classes[formControlName] || classes.formControl}
+        error={!!(error && touched)}
+        {...custom}
+        required={touched && error === "Required"}
+        style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
+      >
+        <InputLabel htmlFor={name}>
+          {inputLabelTranslateHelper(id, label, translate)}
+        </InputLabel>
+        <Select
+          native
+          input={<OutlinedInput labelWidth={labelWidth} />}
+          className={align === "right" ? classes.selectRight : classes.select}
+          value={input.value ? input.value.toLowerCase() : ""}
+          onChange={input.onChange}
+          {...custom}
+          data-test="component-select"
         >
-          {item}
-        </option>
-      ))}
-    </Select>
-  </FormControl>
+          {options.map(item => (
+            <option
+              key={shortid()}
+              value={item ? item.toLowerCase() : ""}
+              style={selectStyle(align)}
+            >
+              {optionsLabelTranslateHelper(id, item, translate)}
+            </option>
+          ))}
+        </Select>
+      </FormControl>
+    )}
+  </Translate>
 );
 
 // custom MUI friendly CHECKBOX input
 export const renderCheckbox = ({
   input,
   label,
+  id,
   validate,
   classes,
   meta: { touched, error },
   formControlName,
+  localize,
   ...custom
 }) => (
-  <FormControl
-    error={!!(touched && error)}
-    className={classes[formControlName] || classes.formControl}
-  >
-    <FormControlLabel
-      label={label}
-      control={
-        <Checkbox
-          color="primary"
-          checked={input.value ? true : false}
-          {...custom}
-          {...input}
-          className={classes.checkbox}
-          data-test="component-checkbox"
-          name="checkbox"
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        error={!!(touched && error)}
+        className={classes[formControlName] || classes.formControl}
+      >
+        <FormControlLabel
+          label={inputLabelTranslateHelper(id, label, translate)}
+          control={
+            <Checkbox
+              color="primary"
+              checked={input.value ? true : false}
+              {...custom}
+              {...input}
+              className={classes.checkbox}
+              data-test="component-checkbox"
+              name="checkbox"
+            />
+          }
         />
-      }
-    />
-    {touched && error && (
-      <FormHelperText className={classes.checkboxErrorText}>
-        {error}
-      </FormHelperText>
+        {touched && error && (
+          <FormHelperText className={classes.checkboxErrorText}>
+            {error}
+          </FormHelperText>
+        )}
+      </FormControl>
     )}
-  </FormControl>
+  </Translate>
 );
+
+// const translateLabel = (label, localize, id) => {
+//   const langArr = localize.languages;
+//   for (let i = 0; i < langArr.length; i++) {
+//     if (langArr[i].active) {
+//       console.log("translations = ", localize.translations);
+//       console.log(
+//         "i =",
+//         i,
+//         "active language =",
+//         langArr[i].code,
+//         "label = ",
+//         label,
+//         "id = ",
+//         id
+//       );
+//       return localize.translations.id[i];
+//     } else return label;
+//   }
+// };
 
 // custom MUI friendly RADIO group
 export const renderRadioGroup = ({
   input,
-  label,
+  id,
   options,
   validate,
   classes,
   direction,
   meta: { touched, error },
   formControlName,
+  legendClass,
+  additionalOnChange,
   ...custom
 }) => (
-  <FormControl
-    component="fieldset"
-    error={!!(touched && error)}
-    className={classes[formControlName] || classes.formControl}
-  >
-    <FormLabel component="legend" className={classes.radioLabel}>
-      {label}
-    </FormLabel>
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        component="fieldset"
+        error={!!(touched && error)}
+        className={classes[formControlName] || classes.formControl}
+      >
+        <FormLabel component="legend" className={classes.radioLabel}>
+          {translate(id)}
+        </FormLabel>
 
-    <RadioGroup
-      aria-label={formControlName}
-      name={formControlName}
-      className={
-        direction === "vert" ? classes.verticalGroup : classes.horizGroup
-      }
-      value={input.value}
-      onChange={(event, value) => input.onChange(value)}
-    >
-      {options.map(item => (
-        <FormControlLabel
-          key={shortid()}
-          value={item}
-          control={<Radio />}
-          label={item}
-        />
-      ))}
-    </RadioGroup>
-    {touched && error && (
-      <FormHelperText className={classes.checkboxErrorText}>
-        {error}
-      </FormHelperText>
+        <RadioGroup
+          aria-label={formControlName}
+          name={formControlName}
+          className={
+            direction === "vert" ? classes.verticalGroup : classes.horizGroup
+          }
+          onChange={(event, value) => {
+            input.onChange(value);
+            if (additionalOnChange) {
+              additionalOnChange(value);
+            }
+          }}
+        >
+          {options.map(item => (
+            <FormControlLabel
+              key={shortid()}
+              value={item}
+              control={<Radio checked={item === input.value} />}
+              label={item}
+            />
+          ))}
+        </RadioGroup>
+        {touched && error && (
+          <FormHelperText className={classes.checkboxErrorText}>
+            {error}
+          </FormHelperText>
+        )}
+      </FormControl>
     )}
-  </FormControl>
+  </Translate>
 );
 
 export const hcwDirectDepositAuthText = (
@@ -926,15 +1022,15 @@ export const blankSig =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
 
 export const retireeDuesCopy =
-  "Monthly dues are $5 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+  "Monthly dues are $5 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
 export const afhDuesCopy = afhDuesRate =>
   `Monthly dues are $${afhDuesRate.toFixed(
     2
-  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted [on the first day of each month?] from the payment method you provide below.`;
+  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted on the 10th day of each month from the payment method you provide below.`;
 
 export const commDuesCopy =
-  "Monthly dues are $10 and will be deducted [on the first day of each month?] from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+  "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
 TextField.propTypes = {
   input: PropTypes.shape({

@@ -7,6 +7,7 @@ import {
   getFormSubmitErrors
 } from "redux-form";
 import { connect } from "react-redux";
+import { Translate } from "react-localize-redux";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -113,7 +114,7 @@ export const Tab1 = props => {
           </FormGroup>
 
           <FormLabel className={classes.formLabel} component="legend">
-            Birthdate
+            <Translate id="birthDate" />
           </FormLabel>
           <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
             <Field
@@ -178,9 +179,7 @@ export const Tab1 = props => {
           />
 
           <FormHelperText className={classes.formHelperText}>
-            Please enter your physical street address here, not a P.O. box.
-            There is a space for a mailing address on the next page, if
-            different from your physical address.
+            <Translate id="homeStreetHint" />
           </FormHelperText>
           <FormGroup
             className={classes.formGroup}
@@ -233,10 +232,7 @@ export const Tab1 = props => {
           />
 
           <FormHelperText className={classes.formHelperText}>
-            Please use your personal email if you have one, since some employers
-            limit union communication via work email. If you don't have a
-            personal email, work email is fine. If you don't have an email
-            address, call us at 1.844.503.7348 to sign up over the phone.
+            <Translate id="homeEmailHint" />
           </FormHelperText>
           <FormGroup>
             <Field
@@ -249,13 +245,7 @@ export const Tab1 = props => {
             />
 
             <FormHelperText className={classes.formHelperText}>
-              † By providing my phone number, I understand that the Service
-              Employees International Union (SEIU), its local unions, and
-              affiliates may use automated calling technologies and/or text
-              message me on my cellular phone on a periodic basis. SEIU will
-              never charge for text message alerts. Carrier message and data
-              rates may apply to such alerts. Reply STOP to stop receiving
-              messages; reply HELP for more information.
+              <Translate id="phoneLegalLanguage" />
             </FormHelperText>
 
             <Field

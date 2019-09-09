@@ -2,16 +2,22 @@ exports.up = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        return knex.schema.table("submissions", function(table) {
-          table.string("payment_type");
-          table.decimal("medicaid_residents", 1, 0);
-          table.string("member_short_id");
-          table.string("member_id");
-          table.string("card_adding_url");
-          table.string("stripe_customer_id");
-          table.string("active_method_last_four");
-          table.boolean("payment_method_added");
-        });
+        return knex.schema
+          .hasColumn("submissions", "payment_type")
+          .then(function(exists) {
+            if (!exists) {
+              return knex.schema.table("submissions", function(table) {
+                table.string("payment_type");
+                table.decimal("medicaid_residents", 1, 0);
+                table.string("member_short_id");
+                table.string("member_id");
+                table.string("card_adding_url");
+                table.string("stripe_customer_id");
+                table.string("active_method_last_four");
+                table.boolean("payment_method_added");
+              });
+            }
+          });
       }
     })
   ]);

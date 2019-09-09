@@ -1,19 +1,27 @@
 import React from "react";
-import { reduxForm, getFormValues } from "redux-form";
+import { getFormValues } from "redux-form";
+// import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
+import { withLocalize } from "react-localize-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 
 import SubmissionFormPage2Wrap from "../components/SubmissionFormPage2Component";
-// import Spinner from "../components/Spinner";
+
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
-import validate from "../utils/validators";
+// import validate from "../utils/validators";
 import { stylesPage2, handleError } from "../components/SubmissionFormElements";
+import globalTranslations from "../translations/globalTranslations";
 
 export class SubmissionFormPage2Container extends React.Component {
+  classes = this.props.classes;
+  constructor(props) {
+    super(props);
+  }
+
   componentDidMount() {
     // check state for contact id from page1
     let id = this.props.submission.salesforceId;
@@ -33,7 +41,7 @@ export class SubmissionFormPage2Container extends React.Component {
           // console.log("result.payload", result.payload);
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           handleError(err);
         });
     } else {
@@ -61,6 +69,7 @@ const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
   initialValues: state.submission.formPage2,
+  localize: state.localize,
   formValues: getFormValues("submissionPage2")(state) || {}
 });
 
@@ -75,4 +84,6 @@ export const SubmissionFormPage2Connected = connect(
 )(SubmissionFormPage2Container);
 
 // add MUI styles and faked lifecycle methods
-export default withStyles(stylesPage2)(SubmissionFormPage2Connected);
+export default withStyles(stylesPage2)(
+  withLocalize(SubmissionFormPage2Connected)
+);
