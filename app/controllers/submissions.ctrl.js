@@ -270,10 +270,9 @@ const getSubmissionById = (req, res, next) => {
  * @param {String} ip_address users ipAdress
  * @returns {Bool} returns true for human, false for bot
  */
-const verifyHumanity = (req, res) => {
-  console.log(`verifyHumanity`);
+const verifyHumanity = async (req, res) => {
+  // console.log(`verifyHumanity`);
   const { token, ip_address } = req.body;
-  console.log(token, ip_address);
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
   return request.post(
     "https://www.google.com/recaptcha/api/siteverify",
@@ -286,9 +285,9 @@ const verifyHumanity = (req, res) => {
     },
     (err, httpResponse, body) => {
       if (err) {
-        console.log(`submission.ctrl.js > 287:`);
-        console.log(err);
-        return handleError(err);
+        // console.log(`submission.ctrl.js > 287:`);
+        // console.log(err);
+        return res.status(500).json({ message: err.message });
       } else {
         const r = JSON.parse(body);
         console.log(`submissions.ctrl.js > 291: recaptcha error:`);
@@ -299,7 +298,7 @@ const verifyHumanity = (req, res) => {
         } else {
           console.log(`submissions.ctrl.js > 300: recaptcha failure`);
           console.log(r["error-codes"][0]);
-          return handleError(r["error-codes"][0]);
+          return res.status(500).json({ message: r["error-codes"][0] });
         }
       }
     }

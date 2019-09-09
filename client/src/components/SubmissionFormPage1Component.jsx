@@ -13,7 +13,6 @@ import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
-import globalTranslations from "../translations/globalTranslations";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const { employerTypeMap, getKeyByValue } = formElements;
