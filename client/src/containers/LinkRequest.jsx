@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { Translate } from "react-localize-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -120,42 +121,54 @@ export class LinkRequestUnconnected extends React.Component {
           onError={errors => console.log(errors)}
           id="form"
         >
-          <TextField
-            data-test="firstName"
-            name="firstName"
-            id="firstName"
-            label="First Name"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.submission.formPage1.firstName}
-            onChange={e => this.props.apiSubmission.handleInput(e)}
-            className={classes.input}
-          />
-          <TextField
-            data-test="lastName"
-            name="lastName"
-            id="lastName"
-            label="Last Name"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.submission.formPage1.lastName}
-            onChange={e => this.props.apiSubmission.handleInput(e)}
-            className={classes.input}
-          />
-          <TextField
-            data-test="homeEmail"
-            name="homeEmail"
-            id="homeEmail"
-            label="Home Email"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.submission.formPage1.email}
-            onChange={e => this.props.apiSubmission.handleInput(e)}
-            className={classes.input}
-          />
+          <Translate>
+            {({ translate }) => (
+              <TextField
+                data-test="firstName"
+                name="firstName"
+                id="firstName"
+                label={translate("firstName")}
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.submission.formPage1.firstName}
+                onChange={e => this.props.apiSubmission.handleInput(e)}
+                className={classes.input}
+              />
+            )}
+          </Translate>
+          <Translate>
+            {({ translate }) => (
+              <TextField
+                data-test="lastName"
+                name="lastName"
+                id="lastName"
+                label={translate("lastName")}
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.submission.formPage1.lastName}
+                onChange={e => this.props.apiSubmission.handleInput(e)}
+                className={classes.input}
+              />
+            )}
+          </Translate>
+          <Translate>
+            {({ translate }) => (
+              <TextField
+                data-test="homeEmail"
+                name="homeEmail"
+                id="homeEmail"
+                label={translate("homeEmail")}
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.submission.formPage1.email}
+                onChange={e => this.props.apiSubmission.handleInput(e)}
+                className={classes.input}
+              />
+            )}
+          </Translate>
           <ButtonWithSpinner
             type="submit"
             color="secondary"
@@ -163,7 +176,7 @@ export class LinkRequestUnconnected extends React.Component {
             variant="contained"
             loading={this.props.submission.loading}
           >
-            Lookup
+            <Translate id="buttonTextRequest" />
           </ButtonWithSpinner>
         </form>
       </div>

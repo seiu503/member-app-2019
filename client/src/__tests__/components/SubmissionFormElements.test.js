@@ -1,8 +1,9 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
+import checkPropTypes from "check-prop-types";
 
 import * as formElements from "../../components/SubmissionFormElements";
-import checkPropTypes from "check-prop-types";
+import { findByTestAttr } from "../../utils/testUtils";
 
 const {
   getMaxDay,
@@ -90,6 +91,7 @@ const onClick = jest.fn();
 describe("Input Field Render functions", () => {
   afterEach(() => {
     onChangeMock.mockRestore();
+    onChange.mockRestore();
   });
   describe("renderTextField", () => {
     let wrapper;
@@ -104,6 +106,7 @@ describe("Input Field Render functions", () => {
         onFocus: jest.fn(),
         value: "Test Value"
       },
+      id: "testField",
       meta: {
         touched: false,
         error: ""
@@ -111,7 +114,12 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      localize: {
+        languages: [],
+        translations: {},
+        options: { renderInnerHtml: true }
+      }
     };
 
     const errorProps = {
@@ -124,6 +132,7 @@ describe("Input Field Render functions", () => {
         onFocus: jest.fn(),
         value: ""
       },
+      id: "testField",
       meta: {
         touched: true,
         error: "Required"
@@ -133,37 +142,25 @@ describe("Input Field Render functions", () => {
       },
       label: "Test Field"
     };
-
-    wrapper = shallow(renderTextField(initialProps));
-
+    wrapper = mount(renderTextField(initialProps));
+    let component = findByTestAttr(wrapper, "component-text-field").first();
     it("renders without errors", () => {
-      expect(wrapper.find(`[data-test="component-text-field"]`)).toHaveLength(
-        1
-      );
+      expect(component).toHaveLength(1);
     });
     it("fills the input with a default value", () => {
-      expect(
-        wrapper.find(`[data-test="component-text-field"]`).prop("name")
-      ).toBe("testField");
-      expect(
-        wrapper.find(`[data-test="component-text-field"]`).prop("value")
-      ).toBe("Test Value");
+      expect(component.prop("name")).toBe("testField");
+      expect(component.prop("value")).toBe("Test Value");
     });
     it("updates input value when changed", () => {
-      const event = { target: { value: "Test" } };
-      wrapper
-        .find(`[data-test="component-text-field"]`)
-        .simulate("change", event);
+      const event = { target: { name: "testField", value: "Test" } };
+      component.prop("onChange")(event);
       expect(onChange).toHaveBeenCalledWith(event);
     });
     it("provides helperText and error class when touched and errored", () => {
-      wrapper = shallow(renderTextField(errorProps));
-      expect(
-        wrapper.find(`[data-test="component-text-field"]`).prop("error")
-      ).toBe(true);
-      expect(
-        wrapper.find(`[data-test="component-text-field"]`).prop("helperText")
-      ).toBe("Required");
+      wrapper = mount(renderTextField(errorProps));
+      component = findByTestAttr(wrapper, "component-text-field").first();
+      expect(component.prop("error")).toBe(true);
+      expect(component.prop("helperText")).toBe("Required");
     });
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderTextField, initialProps);
@@ -184,6 +181,7 @@ describe("Input Field Render functions", () => {
         onFocus: jest.fn(),
         value: "1"
       },
+      id: "testField",
       meta: {
         touched: false,
         error: ""
@@ -195,22 +193,20 @@ describe("Input Field Render functions", () => {
       options: ["", "1", "2", "3"]
     };
 
-    wrapper = shallow(renderSelect(initialProps));
-
+    wrapper = mount(renderSelect(initialProps));
+    let component = findByTestAttr(wrapper, "component-select").first();
     it("renders without errors", () => {
-      expect(wrapper.find(`[data-test="component-select"]`)).toHaveLength(1);
+      expect(component).toHaveLength(1);
     });
     it("fills the input with a default value", () => {
-      expect(wrapper.find(`[data-test="component-select"]`).prop("value")).toBe(
-        "1"
-      );
+      expect(component.prop("value")).toBe("1");
     });
     it("populates with options", () => {
       expect(wrapper.find("option")).toHaveLength(4);
     });
     it("updates input value when changed", () => {
       const event = { target: { value: "3" } };
-      wrapper.find(`[data-test="component-select"]`).simulate("change", event);
+      component.prop("onChange")(event);
       expect(onChange).toHaveBeenCalled();
     });
     it("it doesn't throw PropType warnings", () => {
@@ -231,6 +227,7 @@ describe("Input Field Render functions", () => {
         onFocus: jest.fn(),
         value: false
       },
+      id: "testField",
       meta: {
         touched: false,
         error: ""
@@ -242,26 +239,18 @@ describe("Input Field Render functions", () => {
     };
 
     wrapper = mount(renderCheckbox(initialProps));
-
+    let component = findByTestAttr(wrapper, "component-checkbox").first();
     it("renders without errors", () => {
-      expect(
-        wrapper.find(`[data-test="component-checkbox"]`).first()
-      ).toHaveLength(1);
+      expect(component).toHaveLength(1);
     });
 
     it("fills the input with a default value", () => {
-      expect(
-        wrapper
-          .find(`[data-test="component-checkbox"]`)
-          .first()
-          .prop("checked")
-      ).toBe(false);
+      expect(component.prop("checked")).toBe(false);
     });
 
     it("updates input value when changed", () => {
-      const checkbox = wrapper.find(`[data-test="component-checkbox"]`).first();
-      checkbox.checked = false;
-      checkbox.simulate("change", { target: { checked: true } });
+      component.checked = false;
+      component.prop("onChange")({ target: { checked: true } });
       expect(onChange).toHaveBeenCalled();
     });
 

@@ -31,6 +31,8 @@ import LinkRequest from "./containers/LinkRequest";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
+import globalTranslations from "./translations/globalTranslations";
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -157,6 +159,7 @@ export class AppUnconnected extends Component {
       animation: false,
       more: false
     };
+    this.props.addTranslation(globalTranslations);
   }
 
   componentDidMount() {

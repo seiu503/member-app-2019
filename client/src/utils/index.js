@@ -97,5 +97,13 @@ export const scrollToFirstError = errors => {
   }
 };
 
+export const camelCaseConverter = str => {
+  let newStr = str.toLowerCase().replace(/\W+(.)/g, function(match, chr) {
+    return chr.toUpperCase();
+  });
+  newStr.charAt(0).toLowerCase();
+  return newStr;
+};
+
 export const ordinalSuffix = n =>
   ["st", "nd", "rd"][((((n + 90) % 100) - 10) % 10) - 1] || "th";
