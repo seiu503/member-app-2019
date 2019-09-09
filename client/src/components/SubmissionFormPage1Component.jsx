@@ -452,6 +452,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 {this.props.tab === 2 && (
                   <Tab3Form
                     onSubmit={this.handleSubmit}
+                    handleCAPESubmit={this.props.handleCAPESubmit}
                     classes={classes}
                     loading={this.props.submission.loading}
                     handleTab={this.props.handleTab}
@@ -466,6 +467,12 @@ export class SubmissionFormPage1Component extends React.Component {
                     afhDuesRate={this.props.submission.formPage1.afhDuesRate}
                     payment={this.props.submission.payment}
                     toggleCardAddingFrame={this.props.toggleCardAddingFrame}
+                    width={this.props.width}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    checkoff={checkoff}
+                    suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
                 )}
                 {this.props.tab === 3 && (

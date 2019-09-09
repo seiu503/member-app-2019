@@ -24,12 +24,14 @@ import PropTypes from "prop-types";
 import { capeValidate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
+// change to class component and add getDJRRate on componentDidMount for standalone prefills (only needed for prefill with contact id AND !checkoff)
+// if standalone blank slate skip DJR call, just require payment by default if !checkoff
+
 export const CAPE = props => {
   const {
     onSubmit,
     classes,
     loading,
-    invalid,
     iFrameURL,
     back,
     checkoff,

@@ -139,17 +139,12 @@ export const capeValidate = values => {
     }
   ];
   conditionalRequiredFields.forEach(obj => {
-    console.log(values.capeAmount);
-    // console.log(obj["requiredField"]);
     let matchValue = values[obj["controllingField"]];
-    console.log(matchValue);
     if (
       obj["controllingValues"].includes(matchValue) &&
       !values[obj["requiredField"]]
     ) {
       errors[obj["requiredField"]] = "Required";
-      console.log("#############################");
-      console.log(errors[obj["requiredField"]]);
     }
   });
   requiredFields.forEach(field => {

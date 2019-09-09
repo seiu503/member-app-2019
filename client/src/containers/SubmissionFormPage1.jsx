@@ -865,6 +865,10 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log("recaptcha failed");
       return this.props.handleError("recaptcha validation failed");
     }
+    // generate body (different for standalone vs tab 4)
+    // if checkoff, just save occupation, date and amount
+    // if paymentRequired get cardaddingiframe & save unionise info
+    // update validate function to require payment info if paymentRequired
   }
 
   handleTab(newValue) {
