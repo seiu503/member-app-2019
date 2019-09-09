@@ -99,7 +99,7 @@ describe("<LinkRequest />", () => {
       return { type: "HANDLE_INPUT" };
     });
     store = mockStore(defaultProps);
-    const props = { apiSubmission: { handleInput: handleInputMock } };
+    const props = { store };
     wrapper = mount(
       <LinkRequestConnected {...defaultProps} {...props} store={store} />
     );
@@ -111,23 +111,24 @@ describe("<LinkRequest />", () => {
       input.prop("onChange")({
         target: { name: input.props().name, value: "words" }
       });
-      console.log(
-        input
-          .props()
-          .onChange({ target: { name: input.props().name, value: "words" } })
-      );
+      console.log(props.store.getActions());
     });
-    inputFirstName.prop("onChange")({
-      target: { name: "firstName", value: "words" }
-    });
-    inputLastName.prop("onChange")({
-      target: { name: "lastName", value: "words" }
-    });
-    inputHomeEmail.prop("onChange")({
-      target: { name: "homeEmail", value: "words" }
-    });
+    const expectedState = [
+      {
+        type: "HANDLE_INPUT",
+        payload: { name: "firstName", value: "words" }
+      },
+      {
+        type: "HANDLE_INPUT",
+        payload: { name: "lastName", value: "words" }
+      },
+      {
+        type: "HANDLE_INPUT",
+        payload: { name: "homeEmail", value: "words" }
+      }
+    ];
     // expect the mock to have been called three times
-    expect(handleInputMock.mock.calls.length).toBe(3);
+    expect(props.store.getActions()).toEqual(expectedState);
 
     // restore mock
     handleInputMock.mockRestore();
