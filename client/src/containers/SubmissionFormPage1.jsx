@@ -356,7 +356,6 @@ export class SubmissionFormPage1Container extends React.Component {
     } = values;
 
     const body = {
-      ip_address: localIpUrl(),
       agency_number: agencyNumber,
       birthdate,
       cell_phone: mobilePhone,
@@ -403,7 +402,6 @@ export class SubmissionFormPage1Container extends React.Component {
     let id = this.props.submission.salesforceId;
 
     const body = {
-      ip_address: localIpUrl(),
       agency_number: agencyNumber,
       birthdate,
       cell_phone: mobilePhone,
@@ -504,6 +502,23 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab1() {
     const { formValues } = this.props;
+
+    // verify recaptcha score
+    const ip_address = localIpUrl();
+    const token = this.props.submission.formPage1.reCaptchaValue;
+    const result = await this.props.apiSubmission
+      .verify(token, ip_address)
+      .catch(err => {
+        console.log("recaptcha failed");
+        console.log(err);
+        return this.props.handleError("recaptcha failed");
+      });
+    console.log(`recaptcha score: ${result.payload.score}`);
+    if (!result.payload.score || result.payload.score <= 0.5) {
+      console.log("recaptcha failed");
+      return this.props.handleError("recaptcha validation failed");
+    }
+
     // handle moving from tab 1 to tab 2:
 
     // check if payment is required and store this in redux store for later

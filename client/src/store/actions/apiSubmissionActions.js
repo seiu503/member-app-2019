@@ -9,6 +9,9 @@ export const UPDATE_SUBMISSION_REQUEST = "UPDATE_SUBMISSION_REQUEST";
 export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
 export const UPDATE_SUBMISSION_FAILURE = "UPDATE_SUBMISSION_FAILURE";
 export const HANDLE_INPUT = "HANDLE_INPUT";
+export const VERIFY_REQUEST = "VERIFY_REQUEST";
+export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
+export const VERIFY_FAILURE = "VERIFY_FAILURE";
 
 export function handleInput({ target: { name, value } }) {
   return {
@@ -79,5 +82,34 @@ export function saveSalesforceId(id) {
   return {
     type: SAVE_SALESFORCEID,
     payload: { salesforceId: id }
+  };
+}
+
+export function verify(token, ip_address) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/verify`,
+      method: "POST",
+      types: [
+        VERIFY_REQUEST,
+        VERIFY_SUCCESS,
+        {
+          type: VERIFY_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ token, ip_address })
+    }
   };
 }

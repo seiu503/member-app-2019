@@ -43,7 +43,10 @@ import {
   ADD_SUBMISSION_FAILURE,
   UPDATE_SUBMISSION_REQUEST,
   UPDATE_SUBMISSION_SUCCESS,
-  UPDATE_SUBMISSION_FAILURE
+  UPDATE_SUBMISSION_FAILURE,
+  VERIFY_REQUEST,
+  VERIFY_SUCCESS,
+  VERIFY_FAILURE
 } from "../actions/apiSubmissionActions";
 import {
   GET_SF_CONTACT_REQUEST,
@@ -145,6 +148,7 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_SF_DJR_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_UNIONISE_TOKEN_REQUEST:
+    case VERIFY_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -193,6 +197,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_SUCCESS:
     case GET_UNIONISE_TOKEN_FAILURE:
+    case VERIFY_SUCCESS:
+    case VERIFY_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

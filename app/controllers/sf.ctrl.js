@@ -8,7 +8,6 @@ const {
   paymentFields,
   formatDate
 } = require("../utils/fieldConfigs");
-const { verifyHumanity } = require("./submissions.ctrl.js");
 
 // setup for sandbox in both dev and prod for now
 // switch to production on launch
@@ -64,13 +63,6 @@ exports.createSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 62: createSFContact`);
   const { ip_address, reCaptchaValue } = req.body;
   console.log(ip_address, reCaptchaValue);
-
-  if (process.env.NODE_ENV !== "testing") {
-    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-      console.log(err);
-      return res.status(422).json({ message: "ReCaptcha verification failed" });
-    });
-  }
 
   const bodyRaw = { ...req.body };
   // console.log(`sf.ctrl.js > 64`);
@@ -191,13 +183,6 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
   const { salesforce_id, ip_address, reCaptchaValue } = req.body;
   console.log(ip_address, reCaptchaValue);
 
-  if (process.env.NODE_ENV !== "testing") {
-    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-      console.log(err);
-      return res.status(422).json({ message: "ReCaptcha verification failed" });
-    });
-  }
-
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to updateSFContact
   if (salesforce_id) {
@@ -268,13 +253,6 @@ exports.updateSFContact = async (req, res, next) => {
 
   const { ip_address, reCaptchaValue } = req.body;
   console.log(ip_address, reCaptchaValue);
-
-  if (process.env.NODE_ENV !== "testing") {
-    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-      console.log(err);
-      return res.status(422).json({ message: "ReCaptcha verification failed" });
-    });
-  }
 
   const updatesRaw = { ...req.body };
   const updates = {};

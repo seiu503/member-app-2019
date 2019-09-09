@@ -270,39 +270,40 @@ const getSubmissionById = (req, res, next) => {
  * @param {String} ip_address users ipAdress
  * @returns {Bool} returns true for human, false for bot
  */
-const verifyHumanity = (token, ip_address) => {
-  return new Promise((resolve, reject) => {
-    const key = process.env.RECAPTCHA_V3_SECRET_KEY;
-    return request.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      {
-        form: {
-          secret: key,
-          response: token,
-          remoteip: ip_address
-        }
-      },
-      (err, httpResponse, body) => {
-        if (err) {
-          console.log(`submission.ctrl.js > 286:`);
-          console.log(err);
-          reject(new Error(err));
+const verifyHumanity = (req, res) => {
+  console.log(`verifyHumanity`);
+  const { token, ip_address } = req.body;
+  console.log(token, ip_address);
+  const key = process.env.RECAPTCHA_V3_SECRET_KEY;
+  return request.post(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      form: {
+        secret: key,
+        response: token,
+        remoteip: ip_address
+      }
+    },
+    (err, httpResponse, body) => {
+      if (err) {
+        console.log(`submission.ctrl.js > 287:`);
+        console.log(err);
+        return handleError(err);
+      } else {
+        const r = JSON.parse(body);
+        console.log(`submissions.ctrl.js > 291: recaptcha error:`);
+        console.log(r["error-codes"]);
+        if (r.success) {
+          // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
+          return res.status(200).json({ score: r.score });
         } else {
-          const r = JSON.parse(body);
-          console.log(`submissions.ctrl.js > 291: recaptcha error:`);
-          console.log(r["error-codes"]);
-          if (r.success) {
-            console.log(`submissions.ctrl.js > 294: recaptcha success:`);
-            console.log(r.success);
-            resolve(r.success);
-          } else {
-            console.log(`submissions.ctrl.js > 297: recaptcha failure`);
-            reject(new Error(`reCaptcha Error: ${r["error-codes"][0]}`));
-          }
+          console.log(`submissions.ctrl.js > 300: recaptcha failure`);
+          console.log(r["error-codes"][0]);
+          return handleError(r["error-codes"][0]);
         }
       }
-    );
-  });
+    }
+  );
 };
 
 /* ================================ EXPORT ================================= */

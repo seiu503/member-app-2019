@@ -1,13 +1,13 @@
 (window.webpackJsonpclient = window.webpackJsonpclient || []).push([
   [0],
   {
-    129: function(e, t, a) {
+    130: function(e, t, a) {
       e.exports = a.p + "static/media/sample-form-photo.7696ac29.jpg";
     },
-    239: function(e, t, a) {
+    240: function(e, t, a) {
       e.exports = a.p + "static/media/seiu503_white.76473b62.svg";
     },
-    246: function(e, t, a) {
+    247: function(e, t, a) {
       e.exports = a.p + "static/media/purple_bokeh.1f5ffdfd.jpg";
     },
     257: function(e, t, a) {
@@ -39,10 +39,10 @@
           return w;
         }),
         a.d(n, "SET_SPINNER", function() {
-          return x;
+          return I;
         }),
         a.d(n, "SET_REDIRECT_URL", function() {
-          return I;
+          return x;
         }),
         a.d(n, "logout", function() {
           return k;
@@ -120,273 +120,285 @@
         a.d(o, "HANDLE_INPUT", function() {
           return ne;
         }),
-        a.d(o, "handleInput", function() {
+        a.d(o, "VERIFY_REQUEST", function() {
           return re;
         }),
-        a.d(o, "addSubmission", function() {
+        a.d(o, "VERIFY_SUCCESS", function() {
           return oe;
         }),
-        a.d(o, "updateSubmission", function() {
+        a.d(o, "VERIFY_FAILURE", function() {
           return ie;
         }),
-        a.d(o, "saveSalesforceId", function() {
+        a.d(o, "handleInput", function() {
           return se;
+        }),
+        a.d(o, "addSubmission", function() {
+          return ce;
+        }),
+        a.d(o, "updateSubmission", function() {
+          return le;
+        }),
+        a.d(o, "saveSalesforceId", function() {
+          return me;
+        }),
+        a.d(o, "verify", function() {
+          return pe;
         });
       var i = {};
       a.r(i),
         a.d(i, "HANDLE_INPUT", function() {
-          return Ct;
-        }),
-        a.d(i, "HANDLE_DELETE_OPEN", function() {
-          return Ot;
-        }),
-        a.d(i, "HANDLE_DELETE_CLOSE", function() {
-          return Tt;
-        }),
-        a.d(i, "CLEAR_FORM", function() {
-          return wt;
-        }),
-        a.d(i, "GET_CONTENT_BY_ID_REQUEST", function() {
-          return xt;
-        }),
-        a.d(i, "GET_CONTENT_BY_ID_SUCCESS", function() {
           return It;
         }),
-        a.d(i, "GET_CONTENT_BY_ID_FAILURE", function() {
+        a.d(i, "HANDLE_DELETE_OPEN", function() {
+          return xt;
+        }),
+        a.d(i, "HANDLE_DELETE_CLOSE", function() {
           return kt;
         }),
-        a.d(i, "ADD_CONTENT_REQUEST", function() {
+        a.d(i, "CLEAR_FORM", function() {
           return Nt;
         }),
-        a.d(i, "ADD_CONTENT_SUCCESS", function() {
+        a.d(i, "GET_CONTENT_BY_ID_REQUEST", function() {
           return jt;
         }),
-        a.d(i, "ADD_CONTENT_FAILURE", function() {
+        a.d(i, "GET_CONTENT_BY_ID_SUCCESS", function() {
           return Ut;
         }),
-        a.d(i, "GET_ALL_CONTENT_REQUEST", function() {
+        a.d(i, "GET_CONTENT_BY_ID_FAILURE", function() {
           return Rt;
         }),
-        a.d(i, "GET_ALL_CONTENT_SUCCESS", function() {
+        a.d(i, "ADD_CONTENT_REQUEST", function() {
           return Lt;
         }),
-        a.d(i, "GET_ALL_CONTENT_FAILURE", function() {
+        a.d(i, "ADD_CONTENT_SUCCESS", function() {
           return Dt;
         }),
-        a.d(i, "DELETE_CONTENT_REQUEST", function() {
+        a.d(i, "ADD_CONTENT_FAILURE", function() {
           return Pt;
         }),
-        a.d(i, "DELETE_CONTENT_SUCCESS", function() {
+        a.d(i, "GET_ALL_CONTENT_REQUEST", function() {
           return Ft;
         }),
-        a.d(i, "DELETE_CONTENT_FAILURE", function() {
+        a.d(i, "GET_ALL_CONTENT_SUCCESS", function() {
           return Mt;
         }),
-        a.d(i, "DELETE_IMAGE_REQUEST", function() {
+        a.d(i, "GET_ALL_CONTENT_FAILURE", function() {
           return Bt;
         }),
-        a.d(i, "DELETE_IMAGE_SUCCESS", function() {
+        a.d(i, "DELETE_CONTENT_REQUEST", function() {
           return $t;
         }),
-        a.d(i, "DELETE_IMAGE_FAILURE", function() {
+        a.d(i, "DELETE_CONTENT_SUCCESS", function() {
           return Ht;
         }),
-        a.d(i, "UPDATE_CONTENT_REQUEST", function() {
+        a.d(i, "DELETE_CONTENT_FAILURE", function() {
           return zt;
         }),
-        a.d(i, "UPDATE_CONTENT_SUCCESS", function() {
+        a.d(i, "DELETE_IMAGE_REQUEST", function() {
           return Gt;
         }),
-        a.d(i, "UPDATE_CONTENT_FAILURE", function() {
+        a.d(i, "DELETE_IMAGE_SUCCESS", function() {
           return Wt;
         }),
-        a.d(i, "UPLOAD_IMAGE_REQUEST", function() {
+        a.d(i, "DELETE_IMAGE_FAILURE", function() {
           return Qt;
         }),
-        a.d(i, "UPLOAD_IMAGE_SUCCESS", function() {
+        a.d(i, "UPDATE_CONTENT_REQUEST", function() {
           return Vt;
         }),
-        a.d(i, "UPLOAD_IMAGE_FAILURE", function() {
+        a.d(i, "UPDATE_CONTENT_SUCCESS", function() {
           return Jt;
         }),
-        a.d(i, "handleInput", function() {
+        a.d(i, "UPDATE_CONTENT_FAILURE", function() {
           return qt;
         }),
-        a.d(i, "handleDeleteOpen", function() {
+        a.d(i, "UPLOAD_IMAGE_REQUEST", function() {
           return Yt;
         }),
-        a.d(i, "handleDeleteClose", function() {
+        a.d(i, "UPLOAD_IMAGE_SUCCESS", function() {
           return Zt;
         }),
-        a.d(i, "clearForm", function() {
+        a.d(i, "UPLOAD_IMAGE_FAILURE", function() {
           return Kt;
         }),
-        a.d(i, "getContentById", function() {
+        a.d(i, "handleInput", function() {
           return Xt;
         }),
-        a.d(i, "getAllContent", function() {
+        a.d(i, "handleDeleteOpen", function() {
           return ea;
         }),
-        a.d(i, "addContent", function() {
+        a.d(i, "handleDeleteClose", function() {
           return ta;
         }),
-        a.d(i, "uploadImage", function() {
+        a.d(i, "clearForm", function() {
           return aa;
         }),
-        a.d(i, "updateContent", function() {
+        a.d(i, "getContentById", function() {
           return na;
         }),
-        a.d(i, "deleteContent", function() {
+        a.d(i, "getAllContent", function() {
           return ra;
         }),
-        a.d(i, "deleteImage", function() {
+        a.d(i, "addContent", function() {
           return oa;
+        }),
+        a.d(i, "uploadImage", function() {
+          return ia;
+        }),
+        a.d(i, "updateContent", function() {
+          return sa;
+        }),
+        a.d(i, "deleteContent", function() {
+          return ca;
+        }),
+        a.d(i, "deleteImage", function() {
+          return la;
         });
       var s = {};
       a.r(s),
         a.d(s, "GET_SF_CONTACT_REQUEST", function() {
-          return ar;
-        }),
-        a.d(s, "GET_SF_CONTACT_SUCCESS", function() {
-          return nr;
-        }),
-        a.d(s, "GET_SF_CONTACT_FAILURE", function() {
-          return rr;
-        }),
-        a.d(s, "getSFContactById", function() {
-          return or;
-        }),
-        a.d(s, "CREATE_SF_CONTACT_REQUEST", function() {
           return ir;
         }),
-        a.d(s, "CREATE_SF_CONTACT_SUCCESS", function() {
+        a.d(s, "GET_SF_CONTACT_SUCCESS", function() {
           return sr;
         }),
-        a.d(s, "CREATE_SF_CONTACT_FAILURE", function() {
+        a.d(s, "GET_SF_CONTACT_FAILURE", function() {
           return cr;
         }),
-        a.d(s, "createSFContact", function() {
+        a.d(s, "getSFContactById", function() {
           return lr;
         }),
-        a.d(s, "UPDATE_SF_CONTACT_REQUEST", function() {
+        a.d(s, "CREATE_SF_CONTACT_REQUEST", function() {
           return mr;
         }),
-        a.d(s, "UPDATE_SF_CONTACT_SUCCESS", function() {
+        a.d(s, "CREATE_SF_CONTACT_SUCCESS", function() {
           return pr;
         }),
-        a.d(s, "UPDATE_SF_CONTACT_FAILURE", function() {
+        a.d(s, "CREATE_SF_CONTACT_FAILURE", function() {
           return ur;
         }),
-        a.d(s, "updateSFContact", function() {
+        a.d(s, "createSFContact", function() {
           return dr;
         }),
-        a.d(s, "LOOKUP_SF_CONTACT_REQUEST", function() {
+        a.d(s, "UPDATE_SF_CONTACT_REQUEST", function() {
           return hr;
         }),
-        a.d(s, "LOOKUP_SF_CONTACT_SUCCESS", function() {
+        a.d(s, "UPDATE_SF_CONTACT_SUCCESS", function() {
           return fr;
         }),
-        a.d(s, "LOOKUP_SF_CONTACT_FAILURE", function() {
+        a.d(s, "UPDATE_SF_CONTACT_FAILURE", function() {
           return gr;
         }),
-        a.d(s, "lookupSFContact", function() {
+        a.d(s, "updateSFContact", function() {
           return br;
         }),
-        a.d(s, "CREATE_SF_OMA_REQUEST", function() {
+        a.d(s, "LOOKUP_SF_CONTACT_REQUEST", function() {
           return yr;
         }),
-        a.d(s, "CREATE_SF_OMA_SUCCESS", function() {
+        a.d(s, "LOOKUP_SF_CONTACT_SUCCESS", function() {
           return Ar;
         }),
-        a.d(s, "CREATE_SF_OMA_FAILURE", function() {
+        a.d(s, "LOOKUP_SF_CONTACT_FAILURE", function() {
           return Er;
         }),
-        a.d(s, "createSFOMA", function() {
+        a.d(s, "lookupSFContact", function() {
           return Sr;
         }),
-        a.d(s, "CREATE_SF_DJR_REQUEST", function() {
+        a.d(s, "CREATE_SF_OMA_REQUEST", function() {
           return _r;
         }),
-        a.d(s, "CREATE_SF_DJR_SUCCESS", function() {
+        a.d(s, "CREATE_SF_OMA_SUCCESS", function() {
           return vr;
         }),
-        a.d(s, "CREATE_SF_DJR_FAILURE", function() {
+        a.d(s, "CREATE_SF_OMA_FAILURE", function() {
           return Cr;
         }),
-        a.d(s, "createSFDJR", function() {
+        a.d(s, "createSFOMA", function() {
           return Or;
         }),
-        a.d(s, "UPDATE_SF_DJR_REQUEST", function() {
+        a.d(s, "CREATE_SF_DJR_REQUEST", function() {
           return Tr;
         }),
-        a.d(s, "UPDATE_SF_DJR_SUCCESS", function() {
+        a.d(s, "CREATE_SF_DJR_SUCCESS", function() {
           return wr;
         }),
-        a.d(s, "UPDATE_SF_DJR_FAILURE", function() {
-          return xr;
-        }),
-        a.d(s, "updateSFDJR", function() {
+        a.d(s, "CREATE_SF_DJR_FAILURE", function() {
           return Ir;
         }),
-        a.d(s, "GET_SF_DJR_REQUEST", function() {
+        a.d(s, "createSFDJR", function() {
+          return xr;
+        }),
+        a.d(s, "UPDATE_SF_DJR_REQUEST", function() {
           return kr;
         }),
-        a.d(s, "GET_SF_DJR_SUCCESS", function() {
+        a.d(s, "UPDATE_SF_DJR_SUCCESS", function() {
           return Nr;
         }),
-        a.d(s, "GET_SF_DJR_FAILURE", function() {
+        a.d(s, "UPDATE_SF_DJR_FAILURE", function() {
           return jr;
         }),
-        a.d(s, "getSFDJRById", function() {
+        a.d(s, "updateSFDJR", function() {
           return Ur;
         }),
-        a.d(s, "GET_SF_EMPLOYERS_REQUEST", function() {
+        a.d(s, "GET_SF_DJR_REQUEST", function() {
           return Rr;
         }),
-        a.d(s, "GET_SF_EMPLOYERS_SUCCESS", function() {
+        a.d(s, "GET_SF_DJR_SUCCESS", function() {
           return Lr;
         }),
-        a.d(s, "GET_SF_EMPLOYERS_FAILURE", function() {
+        a.d(s, "GET_SF_DJR_FAILURE", function() {
           return Dr;
         }),
-        a.d(s, "getSFEmployers", function() {
+        a.d(s, "getSFDJRById", function() {
           return Pr;
         }),
-        a.d(s, "GET_UNIONISE_TOKEN_REQUEST", function() {
+        a.d(s, "GET_SF_EMPLOYERS_REQUEST", function() {
           return Fr;
         }),
-        a.d(s, "GET_UNIONISE_TOKEN_SUCCESS", function() {
+        a.d(s, "GET_SF_EMPLOYERS_SUCCESS", function() {
           return Mr;
         }),
-        a.d(s, "GET_UNIONISE_TOKEN_FAILURE", function() {
+        a.d(s, "GET_SF_EMPLOYERS_FAILURE", function() {
           return Br;
         }),
-        a.d(s, "getUnioniseToken", function() {
+        a.d(s, "getSFEmployers", function() {
           return $r;
         }),
-        a.d(s, "GET_IFRAME_URL_REQUEST", function() {
+        a.d(s, "GET_UNIONISE_TOKEN_REQUEST", function() {
           return Hr;
         }),
-        a.d(s, "GET_IFRAME_URL_SUCCESS", function() {
+        a.d(s, "GET_UNIONISE_TOKEN_SUCCESS", function() {
           return zr;
         }),
-        a.d(s, "GET_IFRAME_URL_FAILURE", function() {
+        a.d(s, "GET_UNIONISE_TOKEN_FAILURE", function() {
           return Gr;
         }),
-        a.d(s, "getIframeURL", function() {
+        a.d(s, "getUnioniseToken", function() {
           return Wr;
         }),
-        a.d(s, "GET_IFRAME_EXISTING_REQUEST", function() {
+        a.d(s, "GET_IFRAME_URL_REQUEST", function() {
           return Qr;
         }),
-        a.d(s, "GET_IFRAME_EXISTING_SUCCESS", function() {
+        a.d(s, "GET_IFRAME_URL_SUCCESS", function() {
           return Vr;
         }),
-        a.d(s, "GET_IFRAME_EXISTING_FAILURE", function() {
+        a.d(s, "GET_IFRAME_URL_FAILURE", function() {
           return Jr;
         }),
-        a.d(s, "getIframeExisting", function() {
+        a.d(s, "getIframeURL", function() {
           return qr;
+        }),
+        a.d(s, "GET_IFRAME_EXISTING_REQUEST", function() {
+          return Yr;
+        }),
+        a.d(s, "GET_IFRAME_EXISTING_SUCCESS", function() {
+          return Zr;
+        }),
+        a.d(s, "GET_IFRAME_EXISTING_FAILURE", function() {
+          return Kr;
+        }),
+        a.d(s, "getIframeExisting", function() {
+          return Xr;
         });
       var c = a(0),
         l = a.n(c),
@@ -398,18 +410,18 @@
         f = a(22),
         g = a(23),
         b = a(24),
-        y = a(5),
+        y = a(4),
         A = a(68),
         E = a(8),
         S = a(58),
-        _ = a(238),
+        _ = a(239),
         v = a(76),
         C = a(586),
         O = a(6),
         T = "LOGOUT",
         w = "SET_LOGGEDIN",
-        x = "SET_SPINNER",
-        I = "SET_REDIRECT_URL";
+        I = "SET_SPINNER",
+        x = "SET_REDIRECT_URL";
       function k() {
         return { type: T };
       }
@@ -417,10 +429,10 @@
         return { type: w };
       }
       function j() {
-        return { type: x };
+        return { type: I };
       }
       function U(e) {
-        return { type: I, payload: e };
+        return { type: x, payload: e };
       }
       var R = a(20),
         L = " http://test.seiu503signup.org",
@@ -506,14 +518,17 @@
         ee = "UPDATE_SUBMISSION_REQUEST",
         te = "UPDATE_SUBMISSION_SUCCESS",
         ae = "UPDATE_SUBMISSION_FAILURE",
-        ne = "HANDLE_INPUT";
-      function re(e) {
+        ne = "HANDLE_INPUT",
+        re = "VERIFY_REQUEST",
+        oe = "VERIFY_SUCCESS",
+        ie = "VERIFY_FAILURE";
+      function se(e) {
         var t = e.target,
           a = t.name,
           n = t.value;
         return { type: ne, payload: { name: a, value: n } };
       }
-      function oe(e) {
+      function ce(e) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/submission"),
           method: "POST",
@@ -534,7 +549,7 @@
           body: JSON.stringify(e)
         });
       }
-      function ie(e, t) {
+      function le(e, t) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/submission/").concat(e),
           method: "PUT",
@@ -555,30 +570,51 @@
           body: JSON.stringify(t)
         });
       }
-      function se(e) {
+      function me(e) {
         return { type: X, payload: { salesforceId: e } };
       }
-      var ce,
-        le = {
+      function pe(e, t) {
+        return Object(y.a)({}, R.RSAA, {
+          endpoint: "".concat(P, "/api/verify"),
+          method: "POST",
+          types: [
+            re,
+            oe,
+            {
+              type: ie,
+              payload: function(e, t, a) {
+                return a.json().then(function(e) {
+                  var t = "Sorry, something went wrong :(";
+                  return e && e.message && (t = e.message), { message: t };
+                });
+              }
+            }
+          ],
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: e, ip_address: t })
+        });
+      }
+      var ue,
+        de = {
           headline: "headline",
           bodyCopy: "body copy",
           image: "image",
           redirectUrl: "redirect URL"
         },
-        me = function(e) {
+        he = function(e) {
           return (
             "community member" === e.toLowerCase() ||
             "retired" === e.toLowerCase() ||
             "adult foster home" === e.toLowerCase()
           );
         },
-        pe = {
+        fe = {
           body:
             '<p>Demonstrate your commitment to your co-workers and the people you serve in a few simple steps. To get started, click \u201cNext.\u201d</p>\n<p>Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories \u2013 including increasing our pay and benefits and improving our workplace conditions. </p>\n<p>We have strength in numbers. Click "Next" to join tens of thousands of public service workers and care providers who make Oregon a great place to work and live. By joining, you commit to maintaining your membership for one year, or paying a non-member fee equivalent. Dues are 1.7% of your salary + $2.75/month.</p>',
           headline:
             "SEIU 503: It\u2019s about more than a better job \u2013 it\u2019s about a better world."
         },
-        ue = function(e) {
+        ge = function(e) {
           if (e) {
             var t = Object.keys(e).find(function(e) {
                 return !!document.getElementById(e);
@@ -589,23 +625,23 @@
             window.scrollTo({ top: a - 200, behavior: "smooth" });
           }
         },
-        de = a(21),
-        he = a(45),
-        fe = a.n(he),
-        ge = a(563),
-        be = a(564),
-        ye = a(69),
-        Ae = a(561),
-        Ee = a(521),
-        Se = a(240),
-        _e = a.n(Se),
-        ve = a(265),
-        Ce = a(593),
-        Oe = a(562),
-        Te = a(566),
-        we = a(239),
-        xe = a.n(we),
-        Ie = (function(e) {
+        be = a(21),
+        ye = a(45),
+        Ae = a.n(ye),
+        Ee = a(563),
+        Se = a(564),
+        _e = a(69),
+        ve = a(561),
+        Ce = a(521),
+        Oe = a(241),
+        Te = a.n(Oe),
+        we = a(265),
+        Ie = a(593),
+        xe = a(562),
+        ke = a(566),
+        Ne = a(240),
+        je = a.n(Ne),
+        Ue = (function(e) {
           function t(e) {
             var a;
             return (
@@ -613,8 +649,8 @@
               ((a = Object(f.a)(this, Object(g.a)(t).call(this, e))).state = {
                 anchorEl: null
               }),
-              (a.handleClick = a.handleClick.bind(Object(de.a)(a))),
-              (a.handleClose = a.handleClose.bind(Object(de.a)(a))),
+              (a.handleClick = a.handleClick.bind(Object(be.a)(a))),
+              (a.handleClose = a.handleClose.bind(Object(be.a)(a))),
               a
             );
           }
@@ -639,7 +675,7 @@
                 key: "render",
                 value: function() {
                   var e = this,
-                    t = fe.a.parse(this.props.location.search),
+                    t = Ae.a.parse(this.props.location.search),
                     a = this.props.classes,
                     n = this.state.anchorEl,
                     r = this.props.appState.loggedIn,
@@ -649,10 +685,10 @@
                         r = t.handleClose,
                         o = t.link;
                       return l.a.createElement(
-                        Ce.a,
+                        Ie.a,
                         {
                           button: !0,
-                          component: Ae.a,
+                          component: ve.a,
                           href: "/".concat(o),
                           onClick: function() {
                             e.props.history.push("/".concat(o)), r();
@@ -660,7 +696,7 @@
                           className: a.menuItem,
                           "data-test": "menu-item-mobile"
                         },
-                        l.a.createElement(Oe.a, {
+                        l.a.createElement(xe.a, {
                           primary: n,
                           primaryTypographyProps: { color: "secondary" }
                         })
@@ -685,7 +721,7 @@
                       { "data-test": "admin-menu-links" },
                       o.map(function(e, t) {
                         return l.a.createElement(
-                          Ae.a,
+                          ve.a,
                           {
                             key: t,
                             className: a.menuLink,
@@ -699,13 +735,13 @@
                     "div",
                     { className: a.root, "data-test": "component-navbar" },
                     l.a.createElement(
-                      ge.a,
+                      Ee.a,
                       { position: "fixed", className: a.appBar },
                       l.a.createElement(
-                        be.a,
+                        Se.a,
                         null,
                         l.a.createElement(
-                          Ae.a,
+                          ve.a,
                           {
                             color: "primary",
                             variant: "contained",
@@ -732,14 +768,14 @@
                             "data-test": "logo-link"
                           },
                           l.a.createElement("img", {
-                            src: xe.a,
+                            src: je.a,
                             alt: "SEIU 503",
                             className: a.logo,
                             "data-test": "logo-image"
                           })
                         ),
                         l.a.createElement(
-                          ye.a,
+                          _e.a,
                           {
                             variant: "h6",
                             color: "inherit",
@@ -757,7 +793,7 @@
                             l.a.Fragment,
                             null,
                             l.a.createElement(
-                              Ee.a,
+                              Ce.a,
                               {
                                 className: a.menuButton,
                                 color: "secondary",
@@ -769,10 +805,10 @@
                                 },
                                 "data-test": "menu-button"
                               },
-                              l.a.createElement(_e.a, null)
+                              l.a.createElement(Te.a, null)
                             ),
                             l.a.createElement(
-                              ve.a,
+                              we.a,
                               {
                                 id: "nav-menu",
                                 anchorEl: n,
@@ -789,7 +825,7 @@
                                   horizontal: "right",
                                   vertical: "top"
                                 },
-                                TransitionComponent: Te.a,
+                                TransitionComponent: ke.a,
                                 TransitionProps: { direction: "left" },
                                 PaperProps: { className: a.drawer },
                                 "data-test": "menu"
@@ -811,7 +847,7 @@
             t
           );
         })(l.a.Component),
-        ke = Object(A.f)(
+        Re = Object(A.f)(
           Object(O.a)(function(e) {
             var t;
             return {
@@ -907,17 +943,17 @@
           })(
             Object(u.b)(function(e) {
               return { appState: e.appState, profile: e.profile };
-            })(Ie)
+            })(Ue)
           )
         ),
-        Ne = function(e) {
+        Le = function(e) {
           return l.a.createElement(
             "div",
             { className: e.classes.footer, "data-test": "component-footer" },
             "SEIU Local 503"
           );
         },
-        je = function(e) {
+        De = function(e) {
           return l.a.createElement(
             "div",
             { className: e.classes.message, "data-test": "component-thankyou" },
@@ -935,7 +971,7 @@
             )
           );
         },
-        Ue = function(e) {
+        Pe = function(e) {
           return l.a.createElement(
             "div",
             {
@@ -945,7 +981,7 @@
             "404 error. Sorry, page not found."
           );
         },
-        Re = (function(e) {
+        Fe = (function(e) {
           function t() {
             return (
               Object(d.a)(this, t),
@@ -975,7 +1011,7 @@
                       "data-test": "component-logout"
                     },
                     l.a.createElement(
-                      ye.a,
+                      _e.a,
                       {
                         variant: "h5",
                         className: this.props.classes.message,
@@ -990,34 +1026,34 @@
             t
           );
         })(l.a.Component),
-        Le = Object(u.b)(null, function(e) {
+        Me = Object(u.b)(null, function(e) {
           return { actions: Object(E.b)(n, e) };
-        })(Re),
-        De = a(3),
-        Pe = a(165),
-        Fe = a.n(Pe),
-        Me = a(245),
-        Be = a.n(Me),
-        $e = a(73),
+        })(Fe),
+        Be = a(3),
+        $e = a(166),
         He = a.n($e),
-        ze = a(123),
+        ze = a(246),
         Ge = a.n(ze),
-        We = a(567),
-        Qe = a(241),
-        Ve = a.n(Qe),
-        Je = a(242),
-        qe = a.n(Je),
-        Ye = a(243),
+        We = a(73),
+        Qe = a.n(We),
+        Ve = a(123),
+        Je = a.n(Ve),
+        qe = a(567),
+        Ye = a(242),
         Ze = a.n(Ye),
-        Ke = a(244),
+        Ke = a(243),
         Xe = a.n(Ke),
-        et = { success: Ve.a, warning: qe.a, error: Ze.a, info: Xe.a },
-        tt = Object(O.a)(function(e) {
+        et = a(244),
+        tt = a.n(et),
+        at = a(245),
+        nt = a.n(at),
+        rt = { success: Ze.a, warning: Xe.a, error: tt.a, info: nt.a },
+        ot = Object(O.a)(function(e) {
           return {
-            success: { backgroundColor: He.a[600] },
+            success: { backgroundColor: Qe.a[600] },
             error: { backgroundColor: e.palette.error.dark },
             info: { backgroundColor: e.palette.primary.dark },
-            warning: { backgroundColor: Ge.a[700] },
+            warning: { backgroundColor: Je.a[700] },
             icon: { fontSize: 20 },
             iconVariant: { opacity: 0.9, marginRight: 15 },
             message: { display: "flex", alignItems: "center" },
@@ -1029,19 +1065,19 @@
             n = e.message,
             r = e.onClose,
             o = e.variant,
-            i = Object(De.a)(e, [
+            i = Object(Be.a)(e, [
               "classes",
               "className",
               "message",
               "onClose",
               "variant"
             ]),
-            s = et[o];
+            s = rt[o];
           return l.a.createElement(
-            We.a,
+            qe.a,
             Object.assign(
               {
-                className: Fe()(t[o], a),
+                className: He()(t[o], a),
                 "data-test": "component-custom-snackbar",
                 "aria-describedby": "client-snackbar",
                 message: l.a.createElement(
@@ -1052,14 +1088,14 @@
                     "data-test": "message"
                   },
                   l.a.createElement(s, {
-                    className: Fe()(t.icon, t.iconVariant),
+                    className: He()(t.icon, t.iconVariant),
                     "data-test": "message-icon"
                   }),
                   n
                 ),
                 action: [
                   l.a.createElement(
-                    Ee.a,
+                    Ce.a,
                     {
                       key: "close",
                       "aria-label": "Close",
@@ -1068,7 +1104,7 @@
                       onClick: r,
                       "data-test": "icon-button"
                     },
-                    l.a.createElement(Be.a, {
+                    l.a.createElement(Ge.a, {
                       className: t.icon,
                       "data-test": "close-icon"
                     })
@@ -1079,8 +1115,8 @@
             )
           );
         }),
-        at = a(596),
-        nt = (function(e) {
+        it = a(596),
+        st = (function(e) {
           function t() {
             var e, a;
             Object(d.a)(this, t);
@@ -1116,7 +1152,7 @@
               {
                 key: "componentDidMount",
                 value: function() {
-                  ce = this.openSnackbar;
+                  ue = this.openSnackbar;
                 }
               },
               {
@@ -1128,7 +1164,7 @@
                     "data-test": "message-span"
                   });
                   return l.a.createElement(
-                    at.a,
+                    it.a,
                     {
                       anchorOrigin: { vertical: "bottom", horizontal: "right" },
                       open: this.state.open,
@@ -1136,7 +1172,7 @@
                       onClose: this.handleSnackbarClose,
                       "data-test": "component-notifier"
                     },
-                    l.a.createElement(tt, {
+                    l.a.createElement(ot, {
                       variant: this.state.variant,
                       message: e,
                       open: this.state.open,
@@ -1151,20 +1187,20 @@
             t
           );
         })(l.a.Component),
-        rt = function(e, t, a, n) {
-          if ("function" === typeof ce || n) return ce(e, t);
+        ct = function(e, t, a, n) {
+          if ("function" === typeof ue || n) return ue(e, t);
           setTimeout(function() {
-            return ce(e, t);
+            return ue(e, t);
           }, 50);
         },
-        ot = nt,
-        it = a(568),
-        st = a(569),
-        ct = a(571),
-        lt = a(570),
-        mt = a(246),
-        pt = a.n(mt),
-        ut = (function(e) {
+        lt = st,
+        mt = a(568),
+        pt = a(569),
+        ut = a(571),
+        dt = a(570),
+        ht = a(247),
+        ft = a.n(ht),
+        gt = (function(e) {
           function t() {
             return (
               Object(d.a)(this, t),
@@ -1206,10 +1242,10 @@
                           t &&
                             (a.props.history.push(t),
                             window.localStorage.removeItem("redirect"));
-                        } else console.log("not logged in"), rt("error", "Please log in to view your profile");
+                        } else console.log("not logged in"), ct("error", "Please log in to view your profile");
                       })
                       .catch(function(e) {
-                        rt("error", e);
+                        ct("error", e);
                       });
                 }
               },
@@ -1231,26 +1267,26 @@
                     t &&
                       !a &&
                       l.a.createElement(
-                        it.a,
+                        mt.a,
                         { className: e.card },
                         l.a.createElement(
-                          st.a,
+                          pt.a,
                           {
                             className: e.media,
                             title: "Purple lights",
-                            image: pt.a
+                            image: ft.a
                           },
-                          l.a.createElement(lt.a, {
+                          l.a.createElement(dt.a, {
                             alt: "".concat(r),
                             className: e.avatar,
                             src: o
                           })
                         ),
                         l.a.createElement(
-                          ct.a,
+                          ut.a,
                           null,
                           l.a.createElement(
-                            ye.a,
+                            _e.a,
                             { variant: "h5", className: e.name },
                             "".concat(r)
                           )
@@ -1263,15 +1299,15 @@
             t
           );
         })(l.a.Component),
-        dt = Object(u.b)(
+        bt = Object(u.b)(
           function(e) {
             return { appState: e.appState, profile: e.profile };
           },
           function(e) {
             return { actions: Object(E.b)(n, e), api: Object(E.b)(r, e) };
           }
-        )(ut),
-        ht = Object(A.f)(
+        )(gt),
+        yt = Object(A.f)(
           Object(O.a)(function(e) {
             return {
               root: { margin: 20, padding: 20, maxWidth: 1200 },
@@ -1293,66 +1329,66 @@
               },
               name: { color: "primary", textAlign: "center", marginTop: 15 }
             };
-          })(dt)
+          })(bt)
         ),
-        ft = a(594),
-        gt = a(590),
-        bt = a(578),
-        yt = a(579),
-        At = a(577),
-        Et = a(522),
-        St = a(266),
-        _t = a(247),
-        vt = a.n(_t),
-        Ct = "HANDLE_INPUT",
-        Ot = "HANDLE_DELETE_OPEN",
-        Tt = "HANDLE_DELETE_CLOSE",
-        wt = "CLEAR_FORM",
-        xt = "GET_CONTENT_BY_ID_REQUEST",
-        It = "GET_CONTENT_BY_ID_SUCCESS",
-        kt = "GET_CONTENT_BY_ID_FAILURE",
-        Nt = "ADD_CONTENT_REQUEST",
-        jt = "ADD_CONTENT_SUCCESS",
-        Ut = "ADD_CONTENT_FAILURE",
-        Rt = "GET_ALL_CONTENT_REQUEST",
-        Lt = "GET_ALL_CONTENT_SUCCESS",
-        Dt = "GET_ALL_CONTENT_FAILURE",
-        Pt = "DELETE_CONTENT_REQUEST",
-        Ft = "DELETE_CONTENT_SUCCESS",
-        Mt = "DELETE_CONTENT_FAILURE",
-        Bt = "DELETE_IMAGE_REQUEST",
-        $t = "DELETE_IMAGE_SUCCESS",
-        Ht = "DELETE_IMAGE_FAILURE",
-        zt = "UPDATE_CONTENT_REQUEST",
-        Gt = "UPDATE_CONTENT_SUCCESS",
-        Wt = "UPDATE_CONTENT_FAILURE",
-        Qt = "UPLOAD_IMAGE_REQUEST",
-        Vt = "UPLOAD_IMAGE_SUCCESS",
-        Jt = "UPLOAD_IMAGE_FAILURE";
-      function qt(e) {
+        At = a(594),
+        Et = a(590),
+        St = a(578),
+        _t = a(579),
+        vt = a(577),
+        Ct = a(522),
+        Ot = a(266),
+        Tt = a(248),
+        wt = a.n(Tt),
+        It = "HANDLE_INPUT",
+        xt = "HANDLE_DELETE_OPEN",
+        kt = "HANDLE_DELETE_CLOSE",
+        Nt = "CLEAR_FORM",
+        jt = "GET_CONTENT_BY_ID_REQUEST",
+        Ut = "GET_CONTENT_BY_ID_SUCCESS",
+        Rt = "GET_CONTENT_BY_ID_FAILURE",
+        Lt = "ADD_CONTENT_REQUEST",
+        Dt = "ADD_CONTENT_SUCCESS",
+        Pt = "ADD_CONTENT_FAILURE",
+        Ft = "GET_ALL_CONTENT_REQUEST",
+        Mt = "GET_ALL_CONTENT_SUCCESS",
+        Bt = "GET_ALL_CONTENT_FAILURE",
+        $t = "DELETE_CONTENT_REQUEST",
+        Ht = "DELETE_CONTENT_SUCCESS",
+        zt = "DELETE_CONTENT_FAILURE",
+        Gt = "DELETE_IMAGE_REQUEST",
+        Wt = "DELETE_IMAGE_SUCCESS",
+        Qt = "DELETE_IMAGE_FAILURE",
+        Vt = "UPDATE_CONTENT_REQUEST",
+        Jt = "UPDATE_CONTENT_SUCCESS",
+        qt = "UPDATE_CONTENT_FAILURE",
+        Yt = "UPLOAD_IMAGE_REQUEST",
+        Zt = "UPLOAD_IMAGE_SUCCESS",
+        Kt = "UPLOAD_IMAGE_FAILURE";
+      function Xt(e) {
         var t = e.target,
           a = t.name,
           n = t.value;
-        return { type: Ct, payload: { name: a, value: n } };
+        return { type: It, payload: { name: a, value: n } };
       }
-      function Yt(e) {
-        return { type: Ot, payload: { selectedContent: e } };
+      function ea(e) {
+        return { type: xt, payload: { selectedContent: e } };
       }
-      function Zt() {
-        return { type: Tt };
+      function ta() {
+        return { type: kt };
       }
-      function Kt() {
-        return { type: wt };
+      function aa() {
+        return { type: Nt };
       }
-      function Xt(e) {
+      function na(e) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/content/").concat(e),
           method: "GET",
           types: [
-            xt,
-            It,
+            jt,
+            Ut,
             {
-              type: kt,
+              type: Rt,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -1363,15 +1399,15 @@
           ]
         });
       }
-      function ea(e) {
+      function ra(e) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/content"),
           method: "GET",
           types: [
-            Rt,
-            Lt,
+            Ft,
+            Mt,
             {
-              type: Dt,
+              type: Bt,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -1386,15 +1422,15 @@
           }
         });
       }
-      function ta(e, t) {
+      function oa(e, t) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/content/"),
           method: "POST",
           types: [
-            Nt,
-            jt,
+            Lt,
+            Dt,
             {
-              type: Ut,
+              type: Pt,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -1410,8 +1446,8 @@
           body: JSON.stringify(t)
         });
       }
-      function aa(e, t) {
-        var a = new vt.a();
+      function ia(e, t) {
+        var a = new wt.a();
         return (
           a.append("image", e, e.name),
           t && a.append("id", t),
@@ -1419,10 +1455,10 @@
             endpoint: "".concat(P, "/api/image/single"),
             method: "POST",
             types: [
-              Qt,
-              Vt,
+              Yt,
+              Zt,
               {
-                type: Jt,
+                type: Kt,
                 payload: function(e, t, a) {
                   return a.json().then(function(e) {
                     var t = "Sorry, something went wrong :(";
@@ -1435,15 +1471,15 @@
           })
         );
       }
-      function na(e, t, a) {
+      function sa(e, t, a) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/content/").concat(t),
           method: "PUT",
           types: [
-            zt,
-            Gt,
+            Vt,
+            Jt,
             {
-              type: Wt,
+              type: qt,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -1459,15 +1495,15 @@
           body: JSON.stringify(a)
         });
       }
-      function ra(e, t) {
+      function ca(e, t) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/content/").concat(t),
           method: "DELETE",
           types: [
-            Pt,
-            Ft,
+            $t,
+            Ht,
             {
-              type: Mt,
+              type: zt,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -1479,15 +1515,15 @@
           headers: { Authorization: "Bearer ".concat(e) }
         });
       }
-      function oa(e, t) {
+      function la(e, t) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/image/").concat(t),
           method: "DELETE",
           types: [
-            Bt,
-            $t,
+            Gt,
+            Wt,
             {
-              type: Ht,
+              type: Qt,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -1499,35 +1535,35 @@
           headers: { Authorization: "Bearer ".concat(e) }
         });
       }
-      var ia = a(576),
-        sa = { color: "#ffffff", marginLeft: "10px" },
-        ca = function(e) {
-          return l.a.createElement(ia.a, {
-            style: sa,
+      var ma = a(576),
+        pa = { color: "#ffffff", marginLeft: "10px" },
+        ua = function(e) {
+          return l.a.createElement(ma.a, {
+            style: pa,
             size: 20,
             "data-test": "component-spinner-adornment"
           });
         },
-        la = function(e) {
+        da = function(e) {
           var t = e.children,
             a = e.loading,
-            n = Object(De.a)(e, ["children", "loading"]);
+            n = Object(Be.a)(e, ["children", "loading"]);
           return l.a.createElement(
-            Ae.a,
+            ve.a,
             Object.assign({}, n, {
               "data-test": "component-button-with-spinner"
             }),
             t,
             a &&
               l.a.createElement(
-                ca,
+                ua,
                 Object.assign({}, n, { "data-test": "spinner-adornment" })
               )
           );
         };
-      la.defaultProps = { loading: !1 };
-      var ma = la;
-      function pa(e, t) {
+      da.defaultProps = { loading: !1 };
+      var ha = da;
+      function fa(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -1539,16 +1575,16 @@
         }
         return a;
       }
-      function ua(e) {
+      function ga(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? pa(a, !0).forEach(function(t) {
+            ? fa(a, !0).forEach(function(t) {
                 Object(y.a)(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : pa(a).forEach(function(t) {
+            : fa(a).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -1558,7 +1594,7 @@
         }
         return e;
       }
-      var da = (function(e) {
+      var ba = (function(e) {
           function t(e) {
             var a;
             return (
@@ -1567,24 +1603,24 @@
                 this,
                 Object(g.a)(t).call(this, e)
               )).handleClose = function() {
-                var e = ua({}, a.state);
+                var e = ga({}, a.state);
                 (e.open = !1),
-                  a.setState(ua({}, e), function() {
+                  a.setState(ga({}, e), function() {
                     a.props.apiContent.clearForm(),
                       a.props.history.push("/library");
                   });
               }),
               (a.handleSave = function(e) {
-                var t = ua({}, a.state);
+                var t = ga({}, a.state);
                 (t.open = !1),
                   (t.files = e),
-                  a.setState(ua({}, t), function() {
+                  a.setState(ga({}, t), function() {
                     a.handleUpload(a.state.files[0]);
                   });
               }),
               (a.handleOpen = function() {
-                var e = ua({}, a.state);
-                (e.open = !0), a.setState(ua({}, e));
+                var e = ga({}, a.state);
+                (e.open = !0), a.setState(ga({}, e));
               }),
               (a.onDropRejected = function(e) {
                 var t = [];
@@ -1597,7 +1633,7 @@
                     t.push(
                       "Invalid file type. Accepted file types are .jpeg, .jpg, .png, and .gif."
                     ),
-                  t.length && rt("error", t.join(" "));
+                  t.length && ct("error", t.join(" "));
               }),
               (a.handleUpload = function(e) {
                 var t = a.props.appState.authToken,
@@ -1608,22 +1644,22 @@
                   .uploadImage(e, r, o)
                   .then(function(e) {
                     "UPLOAD_IMAGE_FAILURE" === e.type || a.props.content.error
-                      ? rt(
+                      ? ct(
                           "error",
                           a.props.content.error ||
                             "An error occured while trying to upload your image."
                         )
-                      : (rt("success", "".concat(n, " Saved.")),
+                      : (ct("success", "".concat(n, " Saved.")),
                         a.props.apiContent.clearForm(),
                         a.props.apiContent.getAllContent(t),
                         a.props.history.push("/library"));
                   })
                   .catch(function(e) {
-                    return rt("error", e);
+                    return ct("error", e);
                   });
               }),
               (a.state = { open: !1, files: [] }),
-              (a.submit = a.submit.bind(Object(de.a)(a))),
+              (a.submit = a.submit.bind(Object(be.a)(a))),
               a
             );
           }
@@ -1641,14 +1677,14 @@
                       .then(function(t) {
                         ("GET_CONTENT_BY_ID_FAILURE" === t.type ||
                           e.props.content.error) &&
-                          rt(
+                          ct(
                             "error",
                             e.props.content.error ||
                               "An error occured while trying to fetch your content."
                           );
                       })
                       .catch(function(e) {
-                        return rt("error", e);
+                        return ct("error", e);
                       });
                 }
               },
@@ -1672,19 +1708,19 @@
                             .then(function(e) {
                               "UPDATE_CONTENT_FAILURE" === e.type ||
                               t.props.content.error
-                                ? rt(
+                                ? ct(
                                     "error",
                                     t.props.content.error ||
                                       "An error occured while trying to update your content."
                                   )
-                                : (rt("success", "Updated ".concat(le[r], ".")),
+                                : (ct("success", "Updated ".concat(de[r], ".")),
                                   t.props.apiContent.clearForm(),
                                   t.props.history.push("/library"));
                             })
                             .catch(function(e) {
-                              return rt("error", e);
+                              return ct("error", e);
                             })
-                        : rt(
+                        : ct(
                             "error",
                             this.props.content.error ||
                               "An error occured while trying to save your content."
@@ -1694,17 +1730,17 @@
                           .then(function(e) {
                             "ADD_CONTENT_FAILURE" === e.type ||
                             t.props.content.error
-                              ? rt(
+                              ? ct(
                                   "error",
                                   t.props.content.error ||
                                     "An error occured while trying to save your content."
                                 )
-                              : (rt("success", "Saved ".concat(le[r], ".")),
+                              : (ct("success", "Saved ".concat(de[r], ".")),
                                 t.props.apiContent.clearForm(),
                                 t.props.history.push("/library"));
                           })
                           .catch(function(e) {
-                            return rt("error", e);
+                            return ct("error", e);
                           });
                 }
               },
@@ -1720,7 +1756,7 @@
                       "data-test": "component-text-input-form"
                     },
                     l.a.createElement(
-                      ye.a,
+                      _e.a,
                       {
                         variant: "h2",
                         align: "center",
@@ -1740,15 +1776,15 @@
                         id: "form"
                       },
                       l.a.createElement(
-                        At.a,
+                        vt.a,
                         { component: "fieldset", className: t.formControl },
                         l.a.createElement(
-                          Et.a,
+                          Ct.a,
                           { component: "legend", className: t.radioLabel },
                           "Content Type"
                         ),
                         l.a.createElement(
-                          bt.a,
+                          St.a,
                           {
                             "aria-label": "Content Type",
                             name: "content_type",
@@ -1756,24 +1792,24 @@
                             value: this.props.content.form.content_type || "",
                             onChange: this.props.apiContent.handleInput
                           },
-                          l.a.createElement(yt.a, {
+                          l.a.createElement(_t.a, {
                             value: "headline",
-                            control: l.a.createElement(gt.a, null),
+                            control: l.a.createElement(Et.a, null),
                             label: "Headline"
                           }),
-                          l.a.createElement(yt.a, {
+                          l.a.createElement(_t.a, {
                             value: "bodyCopy",
-                            control: l.a.createElement(gt.a, null),
+                            control: l.a.createElement(Et.a, null),
                             label: "Body"
                           }),
-                          l.a.createElement(yt.a, {
+                          l.a.createElement(_t.a, {
                             value: "image",
-                            control: l.a.createElement(gt.a, null),
+                            control: l.a.createElement(Et.a, null),
                             label: "Image"
                           }),
-                          l.a.createElement(yt.a, {
+                          l.a.createElement(_t.a, {
                             value: "redirectUrl",
-                            control: l.a.createElement(gt.a, null),
+                            control: l.a.createElement(Et.a, null),
                             label: "Redirect URL"
                           })
                         )
@@ -1783,10 +1819,10 @@
                         ? l.a.createElement(
                             l.a.Fragment,
                             null,
-                            l.a.createElement(ft.a, {
+                            l.a.createElement(At.a, {
                               name: "content",
                               id: "content",
-                              label: le[this.props.content.form.content_type],
+                              label: de[this.props.content.form.content_type],
                               type:
                                 this.props.content.form.content_type &&
                                 this.props.content.form.content_type.includes(
@@ -1809,7 +1845,7 @@
                               className: t.input
                             }),
                             l.a.createElement(
-                              ma,
+                              ha,
                               {
                                 type: "submit",
                                 color: "secondary",
@@ -1821,7 +1857,7 @@
                                 }
                               },
                               "Save ",
-                              le[this.props.content.form.content_type]
+                              de[this.props.content.form.content_type]
                             )
                           )
                         : this.props.content.form.content_type &&
@@ -1830,7 +1866,7 @@
                             l.a.Fragment,
                             null,
                             l.a.createElement(
-                              ma,
+                              ha,
                               {
                                 onClick: this.handleOpen.bind(this),
                                 variant: "contained",
@@ -1841,7 +1877,7 @@
                               },
                               "Choose Image"
                             ),
-                            l.a.createElement(St.a, {
+                            l.a.createElement(Ot.a, {
                               open: this.state.open,
                               onDropRejected: this.onDropRejected,
                               onSave: this.handleSave,
@@ -1866,15 +1902,15 @@
             t
           );
         })(l.a.Component),
-        ha = Object(u.b)(
+        ya = Object(u.b)(
           function(e) {
             return { content: e.content, appState: e.appState };
           },
           function(e) {
             return { apiContent: Object(E.b)(i, e) };
           }
-        )(da),
-        fa = Object(O.a)(function(e) {
+        )(ba),
+        Aa = Object(O.a)(function(e) {
           return {
             root: {},
             container: {
@@ -1896,38 +1932,38 @@
             formControl: { width: "100%" },
             radioLabel: { width: "100%", textAlign: "center" }
           };
-        })(ha),
-        ga = a(10),
-        ba = a.n(ga),
-        ya = a(26),
-        Aa = a(248),
-        Ea = a.n(Aa),
-        Sa = a(233),
-        _a = a(235),
-        va = a(234),
-        Ca = a(228),
-        Oa = a(232),
-        Ta = a(48),
-        wa = a(249),
-        xa = a.n(wa),
-        Ia = a(50),
-        ka = a(597),
-        Na = a(87),
+        })(ya),
+        Ea = a(10),
+        Sa = a.n(Ea),
+        _a = a(26),
+        va = a(126),
+        Ca = a.n(va),
+        Oa = a(234),
+        Ta = a(236),
+        wa = a(235),
+        Ia = a(229),
+        xa = a(233),
+        ka = a(48),
+        Na = a(249),
         ja = a.n(Na),
-        Ua = a(2),
-        Ra = a.n(Ua),
-        La = a(589),
-        Da = a(591),
-        Pa = a(595),
-        Fa = a(581),
-        Ma = a(582),
-        Ba = function(e) {
-          return rt(
+        Ua = a(50),
+        Ra = a(597),
+        La = a(87),
+        Da = a.n(La),
+        Pa = a(2),
+        Fa = a.n(Pa),
+        Ma = a(589),
+        Ba = a(591),
+        $a = a(595),
+        Ha = a(581),
+        za = a(582),
+        Ga = function(e) {
+          return ct(
             "error",
             e || "Sorry, something went wrong. Please try again."
           );
         },
-        $a = [
+        Wa = [
           "",
           "AL",
           "AK",
@@ -1980,8 +2016,8 @@
           "WI",
           "WY"
         ],
-        Ha = ["Check", "Card"],
-        za = {
+        Qa = ["Check", "Card"],
+        Va = {
           PNP: "Non-Profit",
           Retirees: "Retired",
           State: "State Agency",
@@ -1994,7 +2030,7 @@
           "Private Homecare": "Private Homecare Agency",
           "Community Members": "Community Member"
         },
-        Ga = function(e) {
+        Ja = function(e) {
           var t = new Date(e),
             a = "" + (t.getMonth() + 1),
             n = "" + t.getDate(),
@@ -2005,14 +2041,14 @@
             [r, a, n].join("-")
           );
         },
-        Wa = function(e) {
+        qa = function(e) {
           var t = ""
             .concat(e.mm, "/")
             .concat(e.dd, "/")
             .concat(e.yyyy);
-          return Ga(t);
+          return Ja(t);
         },
-        Qa = function(e) {
+        Ya = function(e) {
           var t = e.input,
             a = (e.name, e.label),
             n = e.meta,
@@ -2022,7 +2058,7 @@
             s = e.twocol,
             c = e.short,
             m = e.mobile,
-            p = Object(De.a)(e, [
+            p = Object(Be.a)(e, [
               "input",
               "name",
               "label",
@@ -2033,7 +2069,7 @@
               "mobile"
             ]);
           return l.a.createElement(
-            ft.a,
+            At.a,
             Object.assign(
               {
                 label: a,
@@ -2055,10 +2091,10 @@
             )
           );
         },
-        Va = function(e) {
+        Za = function(e) {
           return "right" === e ? { direction: "ltr" } : {};
         },
-        Ja = function(e) {
+        Ka = function(e) {
           var t = e.input,
             a = e.name,
             n = e.label,
@@ -2072,7 +2108,7 @@
             u = e.short,
             d = e.mobile,
             h = e.formControlName,
-            f = Object(De.a)(e, [
+            f = Object(Be.a)(e, [
               "input",
               "name",
               "label",
@@ -2086,7 +2122,7 @@
               "formControlName"
             ]);
           return l.a.createElement(
-            At.a,
+            vt.a,
             Object.assign(
               {
                 variant: "outlined",
@@ -2099,13 +2135,13 @@
                 style: u ? { width: 80 } : d ? { width: "100%" } : {}
               }
             ),
-            l.a.createElement(Fa.a, { htmlFor: a }, n),
+            l.a.createElement(Ha.a, { htmlFor: a }, n),
             l.a.createElement(
-              La.a,
+              Ma.a,
               Object.assign(
                 {
                   native: !0,
-                  input: l.a.createElement(Pa.a, { labelWidth: m }),
+                  input: l.a.createElement($a.a, { labelWidth: m }),
                   className: "right" === o ? r.selectRight : r.select,
                   value: t.value ? t.value.toLowerCase() : "",
                   onChange: t.onChange
@@ -2117,9 +2153,9 @@
                 return l.a.createElement(
                   "option",
                   {
-                    key: ja()(),
+                    key: Da()(),
                     value: e ? e.toLowerCase() : "",
-                    style: Va(o)
+                    style: Za(o)
                   },
                   e
                 );
@@ -2127,7 +2163,7 @@
             )
           );
         },
-        qa = function(e) {
+        Xa = function(e) {
           var t = e.input,
             a = e.label,
             n = (e.validate, e.classes),
@@ -2135,7 +2171,7 @@
             o = r.touched,
             i = r.error,
             s = e.formControlName,
-            c = Object(De.a)(e, [
+            c = Object(Be.a)(e, [
               "input",
               "label",
               "validate",
@@ -2144,12 +2180,12 @@
               "formControlName"
             ]);
           return l.a.createElement(
-            At.a,
+            vt.a,
             { error: !(!o || !i), className: n[s] || n.formControl },
-            l.a.createElement(yt.a, {
+            l.a.createElement(_t.a, {
               label: a,
               control: l.a.createElement(
-                Da.a,
+                Ba.a,
                 Object.assign({ color: "primary", checked: !!t.value }, c, t, {
                   className: n.checkbox,
                   "data-test": "component-checkbox",
@@ -2159,10 +2195,10 @@
             }),
             o &&
               i &&
-              l.a.createElement(Ma.a, { className: n.checkboxErrorText }, i)
+              l.a.createElement(za.a, { className: n.checkboxErrorText }, i)
           );
         },
-        Ya = function(e) {
+        en = function(e) {
           var t = e.input,
             a = e.label,
             n = e.options,
@@ -2174,7 +2210,7 @@
             m = e.formControlName,
             p = e.legendClass,
             u = e.additionalOnChange;
-          Object(De.a)(e, [
+          Object(Be.a)(e, [
             "input",
             "label",
             "options",
@@ -2187,19 +2223,19 @@
             "additionalOnChange"
           ]);
           return l.a.createElement(
-            At.a,
+            vt.a,
             {
               component: "fieldset",
               error: !(!s || !c),
               className: r[m] || r.formControl
             },
             l.a.createElement(
-              Et.a,
+              Ct.a,
               { component: "legend", className: r.radioLabel },
               a
             ),
             l.a.createElement(
-              bt.a,
+              St.a,
               {
                 "aria-label": m,
                 name: m,
@@ -2209,11 +2245,11 @@
                 }
               },
               n.map(function(e) {
-                return l.a.createElement(yt.a, {
-                  key: ja()(),
+                return l.a.createElement(_t.a, {
+                  key: Da()(),
                   value: e,
                   className: p,
-                  control: l.a.createElement(gt.a, {
+                  control: l.a.createElement(Et.a, {
                     checked: e.toString() === t.value.toString(),
                     color: "primary"
                   }),
@@ -2223,10 +2259,10 @@
             ),
             s &&
               c &&
-              l.a.createElement(Ma.a, { className: r.checkboxErrorText }, c)
+              l.a.createElement(za.a, { className: r.checkboxErrorText }, c)
           );
         },
-        Za = function(e) {
+        tn = function(e) {
           var t = e.input,
             a = e.label,
             n = e.options,
@@ -2236,7 +2272,7 @@
             s = o.error,
             c = e.formControlName,
             m = (e.legendClass, e.additionalOnChange);
-          Object(De.a)(e, [
+          Object(Be.a)(e, [
             "input",
             "label",
             "options",
@@ -2249,19 +2285,19 @@
             "additionalOnChange"
           ]);
           return l.a.createElement(
-            At.a,
+            vt.a,
             {
               component: "fieldset",
               error: !(!i || !s),
               className: r[c] || r.formControl
             },
             l.a.createElement(
-              Et.a,
+              Ct.a,
               { component: "legend", className: r.capeRadioLabel },
               a
             ),
             l.a.createElement(
-              bt.a,
+              St.a,
               {
                 "aria-label": c,
                 name: c,
@@ -2274,13 +2310,13 @@
                 var a = "$".concat(e);
                 return (
                   "Other" === e && (a = e),
-                  l.a.createElement(yt.a, {
-                    key: ja()(),
+                  l.a.createElement(_t.a, {
+                    key: Da()(),
                     value: e,
                     className: r.suggestedAmountBox,
                     label: a,
                     labelPlacement: "bottom",
-                    control: l.a.createElement(gt.a, {
+                    control: l.a.createElement(Et.a, {
                       checked: e.toString() === t.value.toString(),
                       color: "primary"
                     })
@@ -2290,10 +2326,10 @@
             ),
             i &&
               s &&
-              l.a.createElement(Ma.a, { className: r.checkboxErrorText }, s)
+              l.a.createElement(za.a, { className: r.checkboxErrorText }, s)
           );
         },
-        Ka = l.a.createElement(
+        an = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2317,7 +2353,7 @@
             "I understand it is my responsibility to notify the Union of any changes to my Account information."
           )
         ),
-        Xa = l.a.createElement(
+        nn = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2346,7 +2382,7 @@
             "I acknowledge that failure to pay my dues on a timely basis may affect my membership standing in the Union, as set forth in the SEIU Local 503 Bylaws. Contributions to SEIU are not tax deductible as charitable contributions. However, they may be tax deductible as ordinary and necessary business expenses."
           )
         ),
-        en = l.a.createElement(
+        rn = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2385,7 +2421,7 @@
             "Contributions to SEIU are not tax deductible as charitable contributions. However, they may be tax deductible as ordinary and necessary business expenses."
           )
         ),
-        tn = l.a.createElement(
+        on = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2419,7 +2455,7 @@
             "Contributions to SEIU are not tax deductible as charitable contributions. However, they may be tax deductible as ordinary and necessary business expenses."
           )
         ),
-        an = l.a.createElement(
+        sn = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2438,7 +2474,7 @@
             "This authorization is irrevocable for a period of one year from the date of execution and from year to year thereafter unless not less than thirty (30) and not more than forty-five (45) days prior to the end of any annual period or the termination of the contract between my employer and the Union, whichever occurs first, I notify the Union and my employer in writing, with my valid signature, of my desire to revoke this authorization."
           )
         ),
-        nn = l.a.createElement(
+        cn = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2475,7 +2511,7 @@
             "This authorization shall remain in effect until revoked in writing by me. This contribution is in addition to union dues. This contribution is not deductible for federal income tax purposes."
           )
         ),
-        rn = l.a.createElement(
+        ln = l.a.createElement(
           l.a.Fragment,
           null,
           l.a.createElement(
@@ -2509,72 +2545,72 @@
             "This contribution is in addition to dues and existing contributions through payroll deduction/ACH transfer."
           )
         ),
-        on =
+        mn =
           "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
-      (ft.a.propTypes = {
-        input: Ra.a.shape({
-          onBlur: Ra.a.func,
-          onChange: Ra.a.func,
-          onDragStart: Ra.a.func,
-          onDrop: Ra.a.func,
-          onFocus: Ra.a.func,
-          value: Ra.a.string
+      (At.a.propTypes = {
+        input: Fa.a.shape({
+          onBlur: Fa.a.func,
+          onChange: Fa.a.func,
+          onDragStart: Fa.a.func,
+          onDrop: Fa.a.func,
+          onFocus: Fa.a.func,
+          value: Fa.a.string
         }),
-        name: Ra.a.string,
-        label: Ra.a.string,
-        touched: Ra.a.bool,
-        error: Ra.a.oneOfType([Ra.a.string, Ra.a.bool]),
-        helperText: Ra.a.oneOfType([Ra.a.string, Ra.a.bool])
+        name: Fa.a.string,
+        label: Fa.a.string,
+        touched: Fa.a.bool,
+        error: Fa.a.oneOfType([Fa.a.string, Fa.a.bool]),
+        helperText: Fa.a.oneOfType([Fa.a.string, Fa.a.bool])
       }),
-        (La.a.propTypes = {
-          input: Ra.a.shape({
-            onBlur: Ra.a.func,
-            onChange: Ra.a.func,
-            onDragStart: Ra.a.func,
-            onDrop: Ra.a.func,
-            onFocus: Ra.a.func,
-            value: Ra.a.string
+        (Ma.a.propTypes = {
+          input: Fa.a.shape({
+            onBlur: Fa.a.func,
+            onChange: Fa.a.func,
+            onDragStart: Fa.a.func,
+            onDrop: Fa.a.func,
+            onFocus: Fa.a.func,
+            value: Fa.a.string
           }),
-          name: Ra.a.string,
-          label: Ra.a.string,
-          labelWidth: Ra.a.string,
-          formControlName: Ra.a.string,
-          options: Ra.a.array,
-          touched: Ra.a.bool,
-          error: Ra.a.oneOfType([Ra.a.string, Ra.a.bool])
+          name: Fa.a.string,
+          label: Fa.a.string,
+          labelWidth: Fa.a.string,
+          formControlName: Fa.a.string,
+          options: Fa.a.array,
+          touched: Fa.a.bool,
+          error: Fa.a.oneOfType([Fa.a.string, Fa.a.bool])
         }),
-        (Da.a.propTypes = {
-          input: Ra.a.shape({
-            onBlur: Ra.a.func,
-            onChange: Ra.a.func,
-            onDragStart: Ra.a.func,
-            onDrop: Ra.a.func,
-            onFocus: Ra.a.func,
-            value: Ra.a.string
+        (Ba.a.propTypes = {
+          input: Fa.a.shape({
+            onBlur: Fa.a.func,
+            onChange: Fa.a.func,
+            onDragStart: Fa.a.func,
+            onDrop: Fa.a.func,
+            onFocus: Fa.a.func,
+            value: Fa.a.string
           }),
-          name: Ra.a.string,
-          label: Ra.a.string,
-          touched: Ra.a.bool,
-          error: Ra.a.oneOfType([Ra.a.string, Ra.a.bool]),
-          checked: Ra.a.bool
+          name: Fa.a.string,
+          label: Fa.a.string,
+          touched: Fa.a.bool,
+          error: Fa.a.oneOfType([Fa.a.string, Fa.a.bool]),
+          checked: Fa.a.bool
         }),
-        (At.a.propTypes = {
-          touched: Ra.a.bool,
-          error: Ra.a.oneOfType([Ra.a.string, Ra.a.bool])
+        (vt.a.propTypes = {
+          touched: Fa.a.bool,
+          error: Fa.a.oneOfType([Fa.a.string, Fa.a.bool])
         });
-      var sn = a(250),
-        cn = a(587),
-        ln = a(583),
-        mn = a(170),
-        pn = a(251),
-        un = a.n(pn),
-        dn = a(252),
-        hn = a.n(dn),
-        fn = a(253),
+      var pn = a(250),
+        un = a(587),
+        dn = a(583),
+        hn = a(171),
+        fn = a(251),
         gn = a.n(fn),
-        bn = a(254),
+        bn = a(252),
         yn = a.n(bn),
-        An = Object(sn.a)({
+        An = a(253),
+        En = a.n(An),
+        Sn = a(254),
+        _n = a.n(Sn),
+        vn = Object(pn.a)({
           root: {
             flexGrow: 1,
             maxWidth: 600,
@@ -2582,16 +2618,16 @@
             borderRadius: "4px 4px 0 0"
           }
         });
-      function En(e) {
+      function Cn(e) {
         for (
           var t,
-            a = An(),
+            a = vn(),
             n = e.howManyTabs,
             r = [
-              l.a.createElement(un.a, { style: { color: "#531078" } }),
-              l.a.createElement(hn.a, { style: { color: "#531078" } }),
               l.a.createElement(gn.a, { style: { color: "#531078" } }),
-              l.a.createElement(yn.a, { style: { color: "#531078" } })
+              l.a.createElement(yn.a, { style: { color: "#531078" } }),
+              l.a.createElement(En.a, { style: { color: "#531078" } }),
+              l.a.createElement(_n.a, { style: { color: "#531078" } })
             ],
             o = [],
             i = 0;
@@ -2600,20 +2636,20 @@
         )
           o.push(
             ((t = i),
-            l.a.createElement(ln.a, {
+            l.a.createElement(dn.a, {
               icon: r[t],
               "aria-label": t + 1,
               id: "tab".concat(t + 1),
               index: t,
               disabled: !0,
-              key: ja()()
+              key: Da()()
             }))
           );
         return l.a.createElement(
-          mn.a,
+          hn.a,
           { className: a.root, "data-test": "component-navtabs" },
           l.a.createElement(
-            cn.a,
+            un.a,
             {
               value: e.tab,
               variant: "fullWidth",
@@ -2625,10 +2661,10 @@
           )
         );
       }
-      var Sn = a(229),
-        _n = a(230),
-        vn = a(523),
-        Cn = function(e) {
+      var On = a(230),
+        Tn = a(231),
+        wn = a(523),
+        In = function(e) {
           var t = {};
           return (
             [
@@ -2730,8 +2766,8 @@
             t
           );
         },
-        On = $a,
-        Tn = [
+        xn = Wa,
+        kn = [
           "",
           "01",
           "02",
@@ -2746,8 +2782,8 @@
           "11",
           "12"
         ],
-        wn = ["", "English", "Russian", "Spanish"],
-        xn = function(e) {
+        Nn = ["", "English", "Russian", "Spanish"],
+        jn = function(e) {
           for (
             var t = (function(e) {
                 switch (e) {
@@ -2770,7 +2806,7 @@
             n < 10 ? a.push("0" + n) : a.push(n.toString());
           return a.unshift(""), a;
         },
-        In = function() {
+        Un = function() {
           for (
             var e = [], t = new Date().getFullYear() - 109;
             t <= new Date().getFullYear();
@@ -2779,16 +2815,16 @@
             e.unshift(t.toString());
           return e.unshift(""), e;
         },
-        kn = Object(_n.a)({
+        Rn = Object(Tn.a)({
           form: "submissionPage1",
-          validate: Cn,
+          validate: In,
           destroyOnUnmount: !1,
           forceUnregisterOnUnmount: !0,
           enableReinitialize: !0,
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return ue(e);
+            return ge(e);
           }
         })(function(e) {
           var t = e.onSubmit,
@@ -2811,7 +2847,7 @@
               l.a.createElement(
                 "div",
                 { className: a.formSection },
-                l.a.createElement(Sn.a, {
+                l.a.createElement(On.a, {
                   "data-test": "select-employer-type",
                   label: "Employer Type",
                   name: "employerType",
@@ -2826,7 +2862,7 @@
                   labelWidth: 100
                 }),
                 "" !== m.employerType &&
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     labelWidth: 104,
                     label: "Employer Name",
                     name: "employerName",
@@ -2838,7 +2874,7 @@
                   }),
                 m.employerType &&
                   "adult foster home" === m.employerType.toLowerCase() &&
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Number of Medicaid Residents",
                     name: "medicaidResidents",
                     id: "medicaidResidents",
@@ -2848,11 +2884,11 @@
                     InputProps: { inputProps: { min: 0, max: 9 } }
                   }),
                 l.a.createElement(
-                  vn.a,
+                  wn.a,
                   { row: !0, classes: { root: a.formGroup2Col } },
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     twocol: !0,
-                    mobile: !Object(ka.b)("sm", p),
+                    mobile: !Object(Ra.b)("sm", p),
                     label: "First Name",
                     name: "firstName",
                     id: "firstName",
@@ -2860,9 +2896,9 @@
                     classes: { input2col: a.input2col },
                     component: s
                   }),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     twocol: !0,
-                    mobile: !Object(ka.b)("sm", p),
+                    mobile: !Object(Ra.b)("sm", p),
                     name: "lastName",
                     id: "lastName",
                     label: "Last Name",
@@ -2872,14 +2908,14 @@
                   })
                 ),
                 l.a.createElement(
-                  Et.a,
+                  Ct.a,
                   { className: a.formLabel, component: "legend" },
                   "Birthdate"
                 ),
                 l.a.createElement(
-                  vn.a,
+                  wn.a,
                   { row: !0, classes: { root: a.formGroup2ColShort } },
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Month",
                     name: "mm",
                     id: "mm",
@@ -2888,9 +2924,9 @@
                     formControlName: "formControlDate",
                     component: i,
                     labelWidth: 41,
-                    options: Tn
+                    options: kn
                   }),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Day",
                     name: "dd",
                     id: "dd",
@@ -2899,9 +2935,9 @@
                     classes: a,
                     component: i,
                     labelWidth: 24,
-                    options: xn(e)
+                    options: jn(e)
                   }),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Year",
                     name: "yyyy",
                     id: "yyyy",
@@ -2910,10 +2946,10 @@
                     classes: a,
                     component: i,
                     labelWidth: 30,
-                    options: In()
+                    options: Un()
                   })
                 ),
-                l.a.createElement(Sn.a, {
+                l.a.createElement(On.a, {
                   label: "Preferred Language",
                   name: "preferredLanguage",
                   id: "preferredLanguage",
@@ -2921,14 +2957,14 @@
                   classes: a,
                   component: i,
                   labelWidth: 132,
-                  options: wn
+                  options: Nn
                 }),
                 l.a.createElement(
-                  Et.a,
+                  Ct.a,
                   { className: a.formLabel, component: "legend" },
                   "Address"
                 ),
-                l.a.createElement(Sn.a, {
+                l.a.createElement(On.a, {
                   label: "Home Street",
                   name: "homeStreet",
                   id: "homeStreet",
@@ -2937,51 +2973,51 @@
                   component: s
                 }),
                 l.a.createElement(
-                  Ma.a,
+                  za.a,
                   { className: a.formHelperText },
                   "Please enter your physical street address here, not a P.O. box. There is a space for a mailing address on the next page, if different from your physical address."
                 ),
                 l.a.createElement(
-                  vn.a,
+                  wn.a,
                   {
                     className: a.formGroup,
                     row: !0,
                     classes: { root: a.formGroup2Col }
                   },
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Home City",
                     name: "homeCity",
                     id: "homeCity",
                     type: "text",
                     twocol: !0,
-                    mobile: !Object(ka.b)("sm", p),
+                    mobile: !Object(Ra.b)("sm", p),
                     classes: a,
                     component: s
                   }),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Home State",
                     name: "homeState",
                     id: "homeState",
                     type: "select",
                     short: !0,
-                    mobile: !Object(ka.b)("sm", p),
+                    mobile: !Object(Ra.b)("sm", p),
                     classes: a,
                     component: i,
-                    options: On,
+                    options: xn,
                     labelWidth: 80
                   }),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Home Zip",
                     name: "homeZip",
                     id: "homeZip",
                     short: !0,
-                    mobile: !Object(ka.b)("sm", p),
+                    mobile: !Object(Ra.b)("sm", p),
                     type: "text",
                     classes: a,
                     component: s
                   })
                 ),
-                l.a.createElement(Sn.a, {
+                l.a.createElement(On.a, {
                   label: "Home Email",
                   name: "homeEmail",
                   id: "homeEmail",
@@ -2990,14 +3026,14 @@
                   component: s
                 }),
                 l.a.createElement(
-                  Ma.a,
+                  za.a,
                   { className: a.formHelperText },
                   "Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone."
                 ),
                 l.a.createElement(
-                  vn.a,
+                  wn.a,
                   null,
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Mobile Phone\u2020",
                     name: "mobilePhone",
                     id: "mobilePhone",
@@ -3006,11 +3042,11 @@
                     component: s
                   }),
                   l.a.createElement(
-                    Ma.a,
+                    za.a,
                     { className: a.formHelperText },
                     "\u2020 By providing my phone number, I understand that the Service Employees International Union (SEIU), its local unions, and affiliates may use automated calling technologies and/or text message me on my cellular phone on a periodic basis. SEIU will never charge for text message alerts. Carrier message and data rates may apply to such alerts. Reply STOP to stop receiving messages; reply HELP for more information."
                   ),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Opt Out Of Receiving Mobile Alerts",
                     name: "textAuthOptOut",
                     id: "textAuthOptOut",
@@ -3029,7 +3065,7 @@
                   "div",
                   { className: a.buttonWrap },
                   l.a.createElement(
-                    Ae.a,
+                    ve.a,
                     {
                       type: "submit",
                       color: "primary",
@@ -3043,27 +3079,27 @@
             )
           );
         }),
-        Nn = Object(u.b)(function(e) {
+        Ln = Object(u.b)(function(e) {
           return {
             submission: e.submission,
             initialValues: e.submission.formPage1,
-            formValues: Object(Sa.a)("submissionPage1")(e) || {},
-            submitErrors: Object(Oa.a)("submissionPage1")(e)
+            formValues: Object(Oa.a)("submissionPage1")(e) || {},
+            submitErrors: Object(xa.a)("submissionPage1")(e)
           };
-        })(kn),
-        jn = Object(ka.a)()(Nn),
-        Un = a(256),
-        Rn = a.n(Un),
-        Ln = Object(_n.a)({
+        })(Rn),
+        Dn = Object(Ra.a)()(Ln),
+        Pn = a(256),
+        Fn = a.n(Pn),
+        Mn = Object(Tn.a)({
           form: "submissionPage1",
-          validate: Cn,
+          validate: In,
           destroyOnUnmount: !1,
           forceUnregisterOnUnmount: !0,
           enableReinitialize: !0,
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return ue(e);
+            return ge(e);
           }
         })(function(e) {
           var t,
@@ -3098,7 +3134,7 @@
                 className: n.form,
                 style: { paddingTop: 40 }
               },
-              l.a.createElement(Sn.a, {
+              l.a.createElement(On.a, {
                 formControlName: "controlCheckbox",
                 label: "Agree to Terms of Membership",
                 name: "termsAgree",
@@ -3114,13 +3150,13 @@
                   id: "termsOfServiceLegalLanguage",
                   ref: s
                 },
-                an
+                sn
               ),
               (b || y || E || A) &&
                 l.a.createElement(
                   l.a.Fragment,
                   null,
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     formControlName: "controlCheckbox",
                     "data-test": "checkbox-DPA",
                     label: "Direct Pay Authorization",
@@ -3138,9 +3174,9 @@
                       ref: c
                     },
                     b
-                      ? Xa
+                      ? nn
                       : y
-                      ? en
+                      ? rn
                       : A
                       ? ((t = "m"),
                         l.a.createElement(
@@ -3180,7 +3216,7 @@
                           )
                         ))
                       : E
-                      ? tn
+                      ? on
                       : ""
                   )
                 ),
@@ -3188,7 +3224,7 @@
                 l.a.createElement(
                   l.a.Fragment,
                   null,
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     formControlName: "controlCheckbox",
                     "data-test": "checkbox-DDA",
                     label: "Direct Deposit Authorization",
@@ -3205,11 +3241,11 @@
                       id: "directDepositAuthLegalLanguage",
                       ref: m
                     },
-                    Ka
+                    an
                   )
                 ),
               l.a.createElement(
-                ye.a,
+                _e.a,
                 { component: "h3", className: n.fieldLabel },
                 "Signature"
               ),
@@ -3217,7 +3253,7 @@
                 l.a.createElement(
                   l.a.Fragment,
                   null,
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Signature",
                     "data-test": "input-signature",
                     name: "signature",
@@ -3227,7 +3263,7 @@
                     component: r
                   }),
                   l.a.createElement(
-                    Ma.a,
+                    za.a,
                     { className: n.formHelperText },
                     "Enter your full legal name. This will act as your signature."
                   )
@@ -3239,7 +3275,7 @@
                   l.a.createElement(
                     "div",
                     { className: n.sigBox },
-                    l.a.createElement(Rn.a, {
+                    l.a.createElement(Fn.a, {
                       ref: p,
                       penColor: "black",
                       canvasProps: {
@@ -3254,7 +3290,7 @@
                       onChange: d
                     }),
                     l.a.createElement(
-                      Ae.a,
+                      ve.a,
                       {
                         type: "button",
                         onClick: u,
@@ -3266,7 +3302,7 @@
                     )
                   ),
                   l.a.createElement(
-                    Ma.a,
+                    za.a,
                     { className: n.formHelperText },
                     "Draw your signature in the box above.\xa0",
                     l.a.createElement(
@@ -3289,7 +3325,7 @@
                 "div",
                 { className: n.buttonWrap },
                 l.a.createElement(
-                  Ae.a,
+                  ve.a,
                   {
                     type: "button",
                     "data-test": "button-back",
@@ -3303,7 +3339,7 @@
                   "Back"
                 ),
                 l.a.createElement(
-                  Ae.a,
+                  ve.a,
                   {
                     type: "submit",
                     color: "primary",
@@ -3316,17 +3352,17 @@
             )
           );
         }),
-        Dn = a(128),
-        Pn = Object(_n.a)({
+        Bn = a(129),
+        $n = Object(Tn.a)({
           form: "submissionPage1",
-          validate: Cn,
+          validate: In,
           destroyOnUnmount: !1,
           forceUnregisterOnUnmount: !1,
           enableReinitialize: !0,
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return ue(e);
+            return ge(e);
           }
         })(function(e) {
           var t = e.onSubmit,
@@ -3371,14 +3407,14 @@
                   "div",
                   { className: a.paymentCopy },
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "p", className: a.body },
                     d
                   )
                 ),
               c.employerType &&
                 "retired" === c.employerType.toLowerCase() &&
-                l.a.createElement(Sn.a, {
+                l.a.createElement(On.a, {
                   "data-test": "radio-payment-type",
                   label: "How would you like to pay your union dues?",
                   name: "paymentType",
@@ -3387,8 +3423,8 @@
                   direction: "horiz",
                   className: a.horizRadio,
                   classes: a,
-                  component: Ya,
-                  options: Ha
+                  component: en,
+                  options: Qa
                 }),
               m.paymentRequired &&
                 "Card" === m.paymentType &&
@@ -3397,14 +3433,14 @@
                   "div",
                   { "data-test": "component-choose-card" },
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "p", className: a.body },
                     "Your existing payment method on file is the card ending in",
                     " ",
                     p.activeMethodLast4,
                     "."
                   ),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     "data-test": "radio-which-card",
                     label:
                       "Do you want to use the existing card or add a new one?",
@@ -3417,7 +3453,7 @@
                     classes: a,
                     defaultItem: "Use existing",
                     additionalOnChange: u,
-                    component: Ya,
+                    component: en,
                     options: ["Use existing", "Add new card"]
                   })
                 ),
@@ -3429,14 +3465,14 @@
                   "div",
                   { "data-test": "component-iframe" },
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "h2", className: a.head },
                     "Add a payment method"
                   ),
                   l.a.createElement(
                     "div",
                     { className: a.iframeWrap },
-                    l.a.createElement(Dn.a, {
+                    l.a.createElement(Bn.a, {
                       url: o,
                       width: "100%",
                       height: "100px",
@@ -3452,12 +3488,12 @@
                   "div",
                   { className: a.paymentCopy },
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "h2", className: a.head },
                     "To pay your dues by check:"
                   ),
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "p", className: a.body },
                     "Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree Dues' on your check. Dues are set by the SEIU Local 503 bylaws."
                   )
@@ -3466,7 +3502,7 @@
                 "div",
                 { className: a.buttonWrapTab3 },
                 l.a.createElement(
-                  Ae.a,
+                  ve.a,
                   {
                     type: "button",
                     "data-test": "button-back",
@@ -3481,7 +3517,7 @@
                 )
               ),
               l.a.createElement(
-                ma,
+                ha,
                 {
                   type: "submit",
                   color: "secondary",
@@ -3495,18 +3531,18 @@
             )
           );
         }),
-        Fn = Object(u.b)(function(e) {
+        Hn = Object(u.b)(function(e) {
           return {
             submission: e.submission,
             initialValues: e.submission.formPage1,
-            formValues: Object(Sa.a)("submissionPage1")(e) || {}
+            formValues: Object(Oa.a)("submissionPage1")(e) || {}
           };
-        })(Pn),
-        Mn = a(168),
-        Bn = a.n(Mn),
-        $n = a(257),
-        Hn = a.n($n),
-        zn = Object(_n.a)({
+        })($n),
+        zn = a(169),
+        Gn = a.n(zn),
+        Wn = a(257),
+        Qn = a.n(Wn),
+        Vn = Object(Tn.a)({
           form: "submissionPage1",
           validate: function(e) {
             var t = {};
@@ -3575,7 +3611,7 @@
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return ue(e);
+            return ge(e);
           }
         })(function(e) {
           var t = e.onSubmit,
@@ -3600,7 +3636,7 @@
             S = e.updateEmployersPicklist,
             _ = e.employerList,
             C = !!p.activeMethodLast4 && !p.paymentErrorHold,
-            O = s ? nn : rn;
+            O = s ? cn : ln;
           return l.a.createElement(
             "div",
             { "data-test": "component-cape", className: a.sectionContainer },
@@ -3611,17 +3647,17 @@
                 "div",
                 { className: a.paymentCopy },
                 l.a.createElement(
-                  ye.a,
+                  _e.a,
                   { component: "h2", className: a.head },
                   "Contribute to CAPE: Citizen Action for Political Education"
                 ),
                 l.a.createElement(
-                  ye.a,
+                  _e.a,
                   { component: "p", className: a.subhead },
                   "Collective political action to raise wages, protect benefits, fund public services, and build strong communities."
                 ),
                 l.a.createElement(
-                  ye.a,
+                  _e.a,
                   { component: "p", className: a.body },
                   "When workers unite, legislators listen. In 2019, SEIU Local 503 CAPE advocacy led to historic wins:"
                 ),
@@ -3645,16 +3681,16 @@
                   )
                 ),
                 l.a.createElement(
-                  it.a,
+                  mt.a,
                   { className: a.card },
                   l.a.createElement(
                     "div",
                     { className: a.details },
                     l.a.createElement(
-                      ct.a,
+                      ut.a,
                       { className: a.content },
                       l.a.createElement(
-                        ye.a,
+                        _e.a,
                         {
                           component: "h5",
                           variant: "h5",
@@ -3665,7 +3701,7 @@
                       l.a.createElement(
                         "div",
                         { style: { position: "relative" } },
-                        l.a.createElement(Bn.a, {
+                        l.a.createElement(Gn.a, {
                           style: {
                             color: "#531078",
                             transform: "scaleX(-1)",
@@ -3676,11 +3712,11 @@
                           }
                         }),
                         l.a.createElement(
-                          ye.a,
+                          _e.a,
                           { component: "p", className: a.pullQuote },
                           "I can\u2019t write big checks. But I contribute what I can each month to CAPE. And when we put all of our resources together, we have shown we can elect legislators in Oregon who will fight for working families and our clients."
                         ),
-                        l.a.createElement(Bn.a, {
+                        l.a.createElement(Gn.a, {
                           style: {
                             color: "#531078",
                             position: "absolute",
@@ -3691,15 +3727,15 @@
                         })
                       ),
                       l.a.createElement(
-                        ye.a,
+                        _e.a,
                         { component: "p", className: a.quoteAttr },
                         "\u2014Deffo Mebrat, Adult Foster Care Provider"
                       )
                     )
                   ),
-                  l.a.createElement(st.a, {
+                  l.a.createElement(pt.a, {
                     className: a.cover,
-                    image: Hn.a,
+                    image: Qn.a,
                     title: "Deffo Mebrat"
                   })
                 )
@@ -3708,7 +3744,7 @@
                 "div",
                 { className: a.paymentCopy },
                 l.a.createElement(
-                  ye.a,
+                  _e.a,
                   { component: "h2", className: a.head },
                   "Make your contribution today"
                 ),
@@ -3718,7 +3754,7 @@
                   l.a.createElement(
                     "div",
                     { className: a.suggestedAmountBoxes },
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       "data-test": "radio-cape-amount",
                       label: "Monthly donation amount",
                       name: "capeAmount",
@@ -3727,7 +3763,7 @@
                       direction: "horiz",
                       className: a.horizRadio,
                       classes: a,
-                      component: Za,
+                      component: tn,
                       options: [10, 13, 15, "Other"],
                       additionalOnChange: b
                     })
@@ -3735,7 +3771,7 @@
                 )
               ),
               "Other" === c.capeAmount &&
-                l.a.createElement(Sn.a, {
+                l.a.createElement(On.a, {
                   label: "Monthly Donation Amount",
                   name: "capeAmountOther",
                   id: "capeAmountOther",
@@ -3749,11 +3785,11 @@
                   l.a.Fragment,
                   null,
                   l.a.createElement(
-                    vn.a,
+                    wn.a,
                     { row: !0, classes: { root: a.formGroup2Col } },
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       twocol: !0,
-                      mobile: !Object(ka.b)("sm", u),
+                      mobile: !Object(Ra.b)("sm", u),
                       label: "First Name",
                       name: "firstName",
                       id: "firstName",
@@ -3761,9 +3797,9 @@
                       classes: { input2col: a.input2col },
                       component: h
                     }),
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       twocol: !0,
-                      mobile: !Object(ka.b)("sm", u),
+                      mobile: !Object(Ra.b)("sm", u),
                       name: "lastName",
                       id: "lastName",
                       label: "Last Name",
@@ -3773,11 +3809,11 @@
                     })
                   ),
                   l.a.createElement(
-                    Et.a,
+                    Ct.a,
                     { className: a.formLabel, component: "legend" },
                     "Address"
                   ),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Home Street",
                     name: "homeStreet",
                     id: "homeStreet",
@@ -3786,46 +3822,46 @@
                     component: h
                   }),
                   l.a.createElement(
-                    vn.a,
+                    wn.a,
                     {
                       className: a.formGroup,
                       row: !0,
                       classes: { root: a.formGroup2Col }
                     },
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       label: "Home City",
                       name: "homeCity",
                       id: "homeCity",
                       type: "text",
                       twocol: !0,
-                      mobile: !Object(ka.b)("sm", u),
+                      mobile: !Object(Ra.b)("sm", u),
                       classes: a,
                       component: h
                     }),
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       label: "Home State",
                       name: "homeState",
                       id: "homeState",
                       type: "select",
                       short: !0,
-                      mobile: !Object(ka.b)("sm", u),
+                      mobile: !Object(Ra.b)("sm", u),
                       classes: a,
                       component: d,
-                      options: $a,
+                      options: Wa,
                       labelWidth: 80
                     }),
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       label: "Home Zip",
                       name: "homeZip",
                       id: "homeZip",
                       short: !0,
-                      mobile: !Object(ka.b)("sm", u),
+                      mobile: !Object(Ra.b)("sm", u),
                       type: "text",
                       classes: a,
                       component: h
                     })
                   ),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     label: "Home Email",
                     name: "homeEmail",
                     id: "homeEmail",
@@ -3834,14 +3870,14 @@
                     component: h
                   }),
                   l.a.createElement(
-                    Ma.a,
+                    za.a,
                     { className: a.formHelperText },
                     "Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone."
                   ),
                   l.a.createElement(
-                    vn.a,
+                    wn.a,
                     null,
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       label: "Mobile Phone\u2020",
                       name: "mobilePhone",
                       id: "mobilePhone",
@@ -3850,11 +3886,11 @@
                       component: h
                     }),
                     l.a.createElement(
-                      Ma.a,
+                      za.a,
                       { className: a.formHelperText },
                       "\u2020 By providing my phone number, I understand that the Service Employees International Union (SEIU), its local unions, and affiliates may use automated calling technologies and/or text message me on my cellular phone on a periodic basis. SEIU will never charge for text message alerts. Carrier message and data rates may apply to such alerts. Reply STOP to stop receiving messages; reply HELP for more information."
                     ),
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       label: "Opt Out Of Receiving Mobile Alerts",
                       name: "textAuthOptOut",
                       id: "textAuthOptOut",
@@ -3864,7 +3900,7 @@
                       component: f
                     })
                   ),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     "data-test": "select-employer-type",
                     label: "Employer Type",
                     name: "employerType",
@@ -3879,7 +3915,7 @@
                     labelWidth: 100
                   }),
                   "" !== c.employerType &&
-                    l.a.createElement(Sn.a, {
+                    l.a.createElement(On.a, {
                       labelWidth: 104,
                       label: "Employer Name",
                       name: "employerName",
@@ -3890,7 +3926,7 @@
                       options: _
                     })
                 ),
-              l.a.createElement(Sn.a, {
+              l.a.createElement(On.a, {
                 label: "Occupation",
                 name: "jobTitle",
                 id: "jobTitle",
@@ -3905,14 +3941,14 @@
                   "div",
                   { "data-test": "component-choose-card" },
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "p", className: a.body },
                     "Your existing payment method on file is the card ending in",
                     " ",
                     p.activeMethodLast4,
                     "."
                   ),
-                  l.a.createElement(Sn.a, {
+                  l.a.createElement(On.a, {
                     "data-test": "radio-which-card",
                     label:
                       "Do you want to use the existing card or add a new one?",
@@ -3925,7 +3961,7 @@
                     classes: a,
                     defaultItem: "Use existing",
                     additionalOnChange: g,
-                    component: Ya,
+                    component: en,
                     options: ["Use existing", "Add new card"]
                   })
                 ),
@@ -3936,14 +3972,14 @@
                   "div",
                   { "data-test": "component-iframe" },
                   l.a.createElement(
-                    ye.a,
+                    _e.a,
                     { component: "h2", className: a.head },
                     "Add a payment method"
                   ),
                   l.a.createElement(
                     "div",
                     { className: a.iframeWrap },
-                    l.a.createElement(Dn.a, {
+                    l.a.createElement(Bn.a, {
                       url: o,
                       width: "100%",
                       height: "100px",
@@ -3959,7 +3995,7 @@
                   "div",
                   { className: a.buttonWrapTab3 },
                   l.a.createElement(
-                    Ae.a,
+                    ve.a,
                     {
                       type: "button",
                       "data-test": "button-back",
@@ -3981,7 +4017,7 @@
                   verifyCallback: A
                 }),
               l.a.createElement(
-                ma,
+                ha,
                 {
                   type: "submit",
                   color: "secondary",
@@ -3995,19 +4031,19 @@
             )
           );
         }),
-        Gn = Object(u.b)(function(e) {
+        Jn = Object(u.b)(function(e) {
           return {
             submission: e.submission,
             initialValues: e.submission.formPage1,
-            formValues: Object(Sa.a)("submissionPage1")(e) || {}
+            formValues: Object(Oa.a)("submissionPage1")(e) || {}
           };
-        })(zn),
-        Wn = Object(ka.a)()(Gn),
-        Qn = a(258),
-        Vn = a.n(Qn),
-        Jn = a(129),
-        qn = a.n(Jn),
-        Yn = (function(e) {
+        })(Vn),
+        qn = Object(Ra.a)()(Jn),
+        Yn = a(258),
+        Zn = a.n(Yn),
+        Kn = a(130),
+        Xn = a.n(Kn),
+        er = (function(e) {
           function t(e) {
             var a;
             return (
@@ -4015,9 +4051,9 @@
               ((a = Object(f.a)(this, Object(g.a)(t).call(this, e))).classes =
                 a.props.classes),
               (a.createMarkup = function() {
-                return { __html: Vn()(a.state.body) };
+                return { __html: Zn()(a.state.body) };
               }),
-              (a.state = { headline: pe.headline, body: pe.body, image: null }),
+              (a.state = { headline: fe.headline, body: fe.body, image: null }),
               a
             );
           }
@@ -4028,7 +4064,7 @@
                 key: "componentDidMount",
                 value: function() {
                   var e = this,
-                    t = fe.a.parse(this.props.location.search);
+                    t = Ae.a.parse(this.props.location.search);
                   (t.h || t.b || t.i) &&
                     [t.h, t.i, t.b]
                       .filter(function(e) {
@@ -4076,16 +4112,16 @@
                           "data-test": "component-welcome-info"
                         },
                         l.a.createElement(
-                          it.a,
+                          mt.a,
                           { className: this.classes.card },
-                          l.a.createElement(st.a, {
+                          l.a.createElement(pt.a, {
                             className: this.classes.media,
                             title: "Welcome Photo",
                             alt: "Welcome Photo",
-                            image: this.state.image || qn.a
+                            image: this.state.image || Xn.a
                           }),
                           l.a.createElement(
-                            ye.a,
+                            _e.a,
                             {
                               variant: "h3",
                               align: "left",
@@ -4096,7 +4132,7 @@
                             },
                             this.state.headline
                           ),
-                          l.a.createElement(ye.a, {
+                          l.a.createElement(_e.a, {
                             variant: "body1",
                             align: "left",
                             gutterBottom: !0,
@@ -4108,7 +4144,7 @@
                             "div",
                             { className: this.classes.buttonWrap },
                             l.a.createElement(
-                              Ae.a,
+                              ve.a,
                               {
                                 type: "button",
                                 onClick: function() {
@@ -4129,7 +4165,7 @@
             t
           );
         })(l.a.Component),
-        Zn = Object(O.a)(function(e) {
+        tr = Object(O.a)(function(e) {
           var t, a;
           return {
             root: ((t = {}),
@@ -4175,15 +4211,15 @@
             function(e) {
               return { apiContent: Object(E.b)(i, e) };
             }
-          )(Yn)
+          )(er)
         ),
-        Kn = za,
-        Xn = function(e, t) {
+        ar = Va,
+        nr = function(e, t) {
           return Object.keys(e).find(function(a) {
             return e[a].toLowerCase() === t.toLowerCase();
           });
         },
-        er = (function(e) {
+        rr = (function(e) {
           function t(e) {
             var a;
             return (
@@ -4199,9 +4235,9 @@
                     target: { name: "paymentMethodAdded", value: !0 }
                   });
               }),
-              (a.renderTextField = Qa),
-              (a.renderSelect = Ja),
-              (a.renderCheckbox = qa),
+              (a.renderTextField = Ya),
+              (a.renderSelect = Ka),
+              (a.renderCheckbox = Xa),
               (a.loadEmployersPicklist = function() {
                 var e = a.props.submission.employerObjects
                     ? a.props.submission.employerObjects.map(function(e) {
@@ -4210,8 +4246,8 @@
                           : e.Sub_Division__c;
                       })
                     : [""],
-                  t = (Object(Ia.a)(new Set(e)) || [""]).map(function(e) {
-                    return Kn[e] ? Kn[e] : "";
+                  t = (Object(Ua.a)(new Set(e)) || [""]).map(function(e) {
+                    return ar[e] ? ar[e] : "";
                   }) || [""];
                 return t.unshift(""), t;
               }),
@@ -4227,7 +4263,7 @@
                 ) {
                   var n = (t
                     ? e.filter(function(e) {
-                        return e.Sub_Division__c === Xn(Kn, t);
+                        return e.Sub_Division__c === nr(ar, t);
                       })
                     : [{ Name: "" }]
                   ).map(function(e) {
@@ -4255,7 +4291,7 @@
                 }
               }),
               (a.state = { signatureType: "draw" }),
-              (a.handleSubmit = a.handleSubmit.bind(Object(de.a)(a))),
+              (a.handleSubmit = a.handleSubmit.bind(Object(be.a)(a))),
               a
             );
           }
@@ -4293,15 +4329,15 @@
               {
                 key: "updateSubmission",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n,
                         r,
                         o,
                         i = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -4352,12 +4388,12 @@
               {
                 key: "createSFOMA",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -4402,8 +4438,8 @@
               {
                 key: "createOrUpdateSFDJR",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n,
@@ -4411,7 +4447,7 @@
                         o,
                         i,
                         s = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -4495,16 +4531,38 @@
               {
                 key: "handleSubmit",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e(t) {
-                      var a = this;
-                      return ba.a.wrap(
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e(t) {
+                      var a,
+                        n,
+                        r = this;
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
                               case 0:
                                 if (
-                                  (!!this.props.submission.payment
+                                  ((a = Ca()()),
+                                  (n = this.props.submission.formPage1
+                                    .reCaptchaValue),
+                                  this.props.apiSubmission
+                                    .verify(n, a)
+                                    .then(function(e) {
+                                      if (
+                                        (console.log(
+                                          "score: ".concat(e.payload.score)
+                                        ),
+                                        !e.payload.score ||
+                                          e.payload.score <= 0.5)
+                                      )
+                                        return (
+                                          console.log("recaptcha failed"),
+                                          r.props.handleError(
+                                            "recaptcha failed"
+                                          )
+                                        );
+                                    }),
+                                  !!this.props.submission.payment
                                     .activeMethodLast4 &&
                                     !this.props.submission.payment
                                       .paymentErrorHold &&
@@ -4523,7 +4581,7 @@
                                     this.props.submission.formPage1
                                       .paymentMethodAdded)
                                 ) {
-                                  e.next = 4;
+                                  e.next = 7;
                                   break;
                                 }
                                 return e.abrupt(
@@ -4532,7 +4590,7 @@
                                     "Please click 'Add a Card' to add a payment method"
                                   )
                                 );
-                              case 4:
+                              case 7:
                                 return e.abrupt(
                                   "return",
                                   Promise.all([
@@ -4541,15 +4599,15 @@
                                     this.createOrUpdateSFDJR()
                                   ])
                                     .then(function() {
-                                      a.props.handleTab(
-                                        a.props.howManyTabs - 1
+                                      r.props.handleTab(
+                                        r.props.howManyTabs - 1
                                       );
                                     })
                                     .catch(function(e) {
-                                      console.log(e), a.props.handleError(e);
+                                      console.log(e), r.props.handleError(e);
                                     })
                                 );
-                              case 5:
+                              case 8:
                               case "end":
                                 return e.stop();
                             }
@@ -4573,7 +4631,7 @@
                       { Name: "", Sub_Division__c: "" }
                     ],
                     n = this.updateEmployersPicklist() || [""],
-                    r = fe.a.parse(this.props.location.search),
+                    r = Ae.a.parse(this.props.location.search),
                     o = !this.props.submission.formPage1.paymentRequired;
                   return l.a.createElement(
                     "div",
@@ -4582,7 +4640,7 @@
                       className: t.formContainer
                     },
                     r.cape
-                      ? l.a.createElement(Wn, {
+                      ? l.a.createElement(qn, {
                           standAlone: !0,
                           verifyCallback: this.verifyCallback,
                           employerTypesList: a,
@@ -4612,7 +4670,7 @@
                           l.a.Fragment,
                           null,
                           "number" !== typeof this.props.tab &&
-                            l.a.createElement(Zn, {
+                            l.a.createElement(tr, {
                               location: this.props.location,
                               history: this.props.history,
                               handleTab: this.props.handleTab,
@@ -4630,7 +4688,7 @@
                                     ? { display: "block" }
                                     : { display: "none" }
                               },
-                              l.a.createElement(En, {
+                              l.a.createElement(Cn, {
                                 tab: this.props.tab,
                                 howManyTabs: this.props.howManyTabs,
                                 handleTab: this.props.handleTab,
@@ -4641,7 +4699,7 @@
                                 formValues: this.props.formValues
                               }),
                               0 === this.props.tab &&
-                                l.a.createElement(jn, {
+                                l.a.createElement(Dn, {
                                   onSubmit: function() {
                                     return e.props.handleTab(1);
                                   },
@@ -4662,7 +4720,7 @@
                                   submitErrors: this.props.submitErrors
                                 }),
                               1 === this.props.tab &&
-                                l.a.createElement(Ln, {
+                                l.a.createElement(Mn, {
                                   onSubmit: function() {
                                     return e.props.handleTab(2);
                                   },
@@ -4686,7 +4744,7 @@
                                   initialize: this.props.initialize
                                 }),
                               2 === this.props.tab &&
-                                l.a.createElement(Fn, {
+                                l.a.createElement(Hn, {
                                   onSubmit: this.handleSubmit,
                                   classes: t,
                                   loading: this.props.submission.loading,
@@ -4707,7 +4765,7 @@
                                     .toggleCardAddingFrame
                                 }),
                               3 === this.props.tab &&
-                                l.a.createElement(Wn, {
+                                l.a.createElement(qn, {
                                   onSubmit: this.props.handleCAPESubmit,
                                   classes: t,
                                   loading: this.props.submission.loading,
@@ -4739,37 +4797,14 @@
             t
           );
         })(l.a.Component),
-        tr = Object(ka.a)()(er),
-        ar = "GET_SF_CONTACT_REQUEST",
-        nr = "GET_SF_CONTACT_SUCCESS",
-        rr = "GET_SF_CONTACT_FAILURE";
-      function or(e) {
+        or = Object(Ra.a)()(rr),
+        ir = "GET_SF_CONTACT_REQUEST",
+        sr = "GET_SF_CONTACT_SUCCESS",
+        cr = "GET_SF_CONTACT_FAILURE";
+      function lr(e) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/sf/").concat(e),
           method: "GET",
-          types: [
-            ar,
-            nr,
-            {
-              type: rr,
-              payload: function(e, t, a) {
-                return a.json().then(function(e) {
-                  var t = "Sorry, something went wrong :(";
-                  return e && e.message && (t = e.message), { message: t };
-                });
-              }
-            }
-          ],
-          headers: { "Content-Type": "application/json" }
-        });
-      }
-      var ir = "CREATE_SF_CONTACT_REQUEST",
-        sr = "CREATE_SF_CONTACT_SUCCESS",
-        cr = "CREATE_SF_CONTACT_FAILURE";
-      function lr(e) {
-        return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sf"),
-          method: "POST",
           types: [
             ir,
             sr,
@@ -4783,17 +4818,16 @@
               }
             }
           ],
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(e)
+          headers: { "Content-Type": "application/json" }
         });
       }
-      var mr = "UPDATE_SF_CONTACT_REQUEST",
-        pr = "UPDATE_SF_CONTACT_SUCCESS",
-        ur = "UPDATE_SF_CONTACT_FAILURE";
-      function dr(e, t) {
+      var mr = "CREATE_SF_CONTACT_REQUEST",
+        pr = "CREATE_SF_CONTACT_SUCCESS",
+        ur = "CREATE_SF_CONTACT_FAILURE";
+      function dr(e) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sf/").concat(e),
-          method: "PUT",
+          endpoint: "".concat(P, "/api/sf"),
+          method: "POST",
           types: [
             mr,
             pr,
@@ -4808,15 +4842,15 @@
             }
           ],
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(t)
+          body: JSON.stringify(e)
         });
       }
-      var hr = "LOOKUP_SF_CONTACT_REQUEST",
-        fr = "LOOKUP_SF_CONTACT_SUCCESS",
-        gr = "LOOKUP_SF_CONTACT_FAILURE";
-      function br(e) {
+      var hr = "UPDATE_SF_CONTACT_REQUEST",
+        fr = "UPDATE_SF_CONTACT_SUCCESS",
+        gr = "UPDATE_SF_CONTACT_FAILURE";
+      function br(e, t) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sflookup"),
+          endpoint: "".concat(P, "/api/sf/").concat(e),
           method: "PUT",
           types: [
             hr,
@@ -4832,16 +4866,16 @@
             }
           ],
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(e)
+          body: JSON.stringify(t)
         });
       }
-      var yr = "CREATE_SF_OMA_REQUEST",
-        Ar = "CREATE_SF_OMA_SUCCESS",
-        Er = "CREATE_SF_OMA_FAILURE";
+      var yr = "LOOKUP_SF_CONTACT_REQUEST",
+        Ar = "LOOKUP_SF_CONTACT_SUCCESS",
+        Er = "LOOKUP_SF_CONTACT_FAILURE";
       function Sr(e) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sfOMA"),
-          method: "POST",
+          endpoint: "".concat(P, "/api/sflookup"),
+          method: "PUT",
           types: [
             yr,
             Ar,
@@ -4859,12 +4893,12 @@
           body: JSON.stringify(e)
         });
       }
-      var _r = "CREATE_SF_DJR_REQUEST",
-        vr = "CREATE_SF_DJR_SUCCESS",
-        Cr = "CREATE_SF_DJR_FAILURE";
+      var _r = "CREATE_SF_OMA_REQUEST",
+        vr = "CREATE_SF_OMA_SUCCESS",
+        Cr = "CREATE_SF_OMA_FAILURE";
       function Or(e) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sfDJR"),
+          endpoint: "".concat(P, "/api/sfOMA"),
           method: "POST",
           types: [
             _r,
@@ -4883,18 +4917,18 @@
           body: JSON.stringify(e)
         });
       }
-      var Tr = "UPDATE_SF_DJR_REQUEST",
-        wr = "UPDATE_SF_DJR_SUCCESS",
-        xr = "UPDATE_SF_DJR_FAILURE";
-      function Ir(e, t) {
+      var Tr = "CREATE_SF_DJR_REQUEST",
+        wr = "CREATE_SF_DJR_SUCCESS",
+        Ir = "CREATE_SF_DJR_FAILURE";
+      function xr(e) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sfDJR/").concat(e),
-          method: "PUT",
+          endpoint: "".concat(P, "/api/sfDJR"),
+          method: "POST",
           types: [
             Tr,
             wr,
             {
-              type: xr,
+              type: Ir,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -4904,16 +4938,16 @@
             }
           ],
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(t)
+          body: JSON.stringify(e)
         });
       }
-      var kr = "GET_SF_DJR_REQUEST",
-        Nr = "GET_SF_DJR_SUCCESS",
-        jr = "GET_SF_DJR_FAILURE";
-      function Ur(e) {
+      var kr = "UPDATE_SF_DJR_REQUEST",
+        Nr = "UPDATE_SF_DJR_SUCCESS",
+        jr = "UPDATE_SF_DJR_FAILURE";
+      function Ur(e, t) {
         return Object(y.a)({}, R.RSAA, {
           endpoint: "".concat(P, "/api/sfDJR/").concat(e),
-          method: "GET",
+          method: "PUT",
           types: [
             kr,
             Nr,
@@ -4927,15 +4961,16 @@
               }
             }
           ],
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(t)
         });
       }
-      var Rr = "GET_SF_EMPLOYERS_REQUEST",
-        Lr = "GET_SF_EMPLOYERS_SUCCESS",
-        Dr = "GET_SF_EMPLOYERS_FAILURE";
-      function Pr() {
+      var Rr = "GET_SF_DJR_REQUEST",
+        Lr = "GET_SF_DJR_SUCCESS",
+        Dr = "GET_SF_DJR_FAILURE";
+      function Pr(e) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/sfaccts"),
+          endpoint: "".concat(P, "/api/sfDJR/").concat(e),
           method: "GET",
           types: [
             Rr,
@@ -4953,13 +4988,13 @@
           headers: { "Content-Type": "application/json" }
         });
       }
-      var Fr = "GET_UNIONISE_TOKEN_REQUEST",
-        Mr = "GET_UNIONISE_TOKEN_SUCCESS",
-        Br = "GET_UNIONISE_TOKEN_FAILURE";
+      var Fr = "GET_SF_EMPLOYERS_REQUEST",
+        Mr = "GET_SF_EMPLOYERS_SUCCESS",
+        Br = "GET_SF_EMPLOYERS_FAILURE";
       function $r() {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/unionise/gettoken"),
-          method: "POST",
+          endpoint: "".concat(P, "/api/sfaccts"),
+          method: "GET",
           types: [
             Fr,
             Mr,
@@ -4972,15 +5007,16 @@
                 });
               }
             }
-          ]
+          ],
+          headers: { "Content-Type": "application/json" }
         });
       }
-      var Hr = "GET_IFRAME_URL_REQUEST",
-        zr = "GET_IFRAME_URL_SUCCESS",
-        Gr = "GET_IFRAME_URL_FAILURE";
-      function Wr(e) {
+      var Hr = "GET_UNIONISE_TOKEN_REQUEST",
+        zr = "GET_UNIONISE_TOKEN_SUCCESS",
+        Gr = "GET_UNIONISE_TOKEN_FAILURE";
+      function Wr() {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "https://lab.unioni.se/web/signup/create-member",
+          endpoint: "".concat(P, "/api/unionise/gettoken"),
           method: "POST",
           types: [
             Hr,
@@ -4994,22 +5030,15 @@
                 });
               }
             }
-          ],
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(e)
+          ]
         });
       }
-      var Qr = "GET_IFRAME_EXISTING_REQUEST",
-        Vr = "GET_IFRAME_EXISTING_SUCCESS",
-        Jr = "GET_IFRAME_EXISTING_FAILURE";
-      function qr(e, t) {
-        var a = JSON.stringify({ memberShortId: t }),
-          n = {
-            "Content-Type": "application/json",
-            Authorization: "Bearer ".concat(e)
-          };
+      var Qr = "GET_IFRAME_URL_REQUEST",
+        Vr = "GET_IFRAME_URL_SUCCESS",
+        Jr = "GET_IFRAME_URL_FAILURE";
+      function qr(e) {
         return Object(y.a)({}, R.RSAA, {
-          endpoint: "".concat(P, "/api/unionise/iframe"),
+          endpoint: "https://lab.unioni.se/web/signup/create-member",
           method: "POST",
           types: [
             Qr,
@@ -5024,16 +5053,45 @@
               }
             }
           ],
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(e)
+        });
+      }
+      var Yr = "GET_IFRAME_EXISTING_REQUEST",
+        Zr = "GET_IFRAME_EXISTING_SUCCESS",
+        Kr = "GET_IFRAME_EXISTING_FAILURE";
+      function Xr(e, t) {
+        var a = JSON.stringify({ memberShortId: t }),
+          n = {
+            "Content-Type": "application/json",
+            Authorization: "Bearer ".concat(e)
+          };
+        return Object(y.a)({}, R.RSAA, {
+          endpoint: "".concat(P, "/api/unionise/iframe"),
+          method: "POST",
+          types: [
+            Yr,
+            Zr,
+            {
+              type: Kr,
+              payload: function(e, t, a) {
+                return a.json().then(function(e) {
+                  var t = "Sorry, something went wrong :(";
+                  return e && e.message && (t = e.message), { message: t };
+                });
+              }
+            }
+          ],
           body: a,
           headers: n
         });
       }
-      var Yr = a(592),
-        Zr = a(575),
-        Kr = a(574),
-        Xr = a(584),
-        eo = a(573);
-      var to = Object(O.a)(function(e) {
+      var eo = a(592),
+        to = a(575),
+        ao = a(574),
+        no = a(584),
+        ro = a(573);
+      var oo = Object(O.a)(function(e) {
         return {
           modalButtonRed: {
             backgroundColor: "#b71c1c",
@@ -5065,7 +5123,7 @@
           "div",
           null,
           l.a.createElement(
-            Yr.a,
+            eo.a,
             {
               open: e.open,
               onClose: e.handleClose,
@@ -5074,15 +5132,15 @@
               "data-test": "component-modal"
             },
             l.a.createElement(
-              eo.a,
+              ro.a,
               { id: "alert-dialog-title" },
               "Are you ".concat(e.fullName, "?")
             ),
             l.a.createElement(
-              Kr.a,
+              ao.a,
               null,
               l.a.createElement(
-                Xr.a,
+                no.a,
                 { id: "alert-dialog-description" },
                 "This form is customized especially for ".concat(
                   e.fullName,
@@ -5091,10 +5149,10 @@
               )
             ),
             l.a.createElement(
-              Zr.a,
+              to.a,
               { className: t.dialogActionsOverride },
               l.a.createElement(
-                Ae.a,
+                ve.a,
                 {
                   onClick: function() {
                     return e.history.push("/linkrequest");
@@ -5104,7 +5162,7 @@
                 "I'm not ".concat(e.fullName, ", get me my own link.")
               ),
               l.a.createElement(
-                Ae.a,
+                ve.a,
                 {
                   onClick: e.handleClose,
                   className: t.modalButtonGreen,
@@ -5116,7 +5174,7 @@
           )
         );
       });
-      function ao(e, t) {
+      function io(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -5128,16 +5186,16 @@
         }
         return a;
       }
-      function no(e) {
+      function so(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? ao(a, !0).forEach(function(t) {
+            ? io(a, !0).forEach(function(t) {
                 Object(y.a)(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : ao(a).forEach(function(t) {
+            : io(a).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -5147,7 +5205,7 @@
         }
         return e;
       }
-      var ro = (function(e) {
+      var co = (function(e) {
           function t(e) {
             var a;
             return (
@@ -5174,17 +5232,17 @@
               }),
               (a.trimSignature = function() {
                 var e = a.props.sigBox.current.toDataURL("image/jpeg");
-                if (e === on)
+                if (e === mn)
                   throw new Error(
                     "Please draw your signature or click the link to type it instead"
                   );
                 return a.dataURItoBlob(e);
               }),
               (a.changeTab = function(e) {
-                var t = no({}, a.state);
+                var t = so({}, a.state);
                 if (
                   ((t.tab = e),
-                  a.setState(no({}, t), function() {
+                  a.setState(so({}, t), function() {
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }),
                   2 === e)
@@ -5205,21 +5263,21 @@
                 signatureType: "draw",
                 howManyTabs: 3
               }),
-              (a.handleOpen = a.handleOpen.bind(Object(de.a)(a))),
-              (a.handleClose = a.handleClose.bind(Object(de.a)(a))),
-              (a.handleTab = a.handleTab.bind(Object(de.a)(a))),
-              (a.handleUpload = a.handleUpload.bind(Object(de.a)(a))),
-              (a.prepForContact = a.prepForContact.bind(Object(de.a)(a))),
-              (a.prepForSubmission = a.prepForSubmission.bind(Object(de.a)(a))),
+              (a.handleOpen = a.handleOpen.bind(Object(be.a)(a))),
+              (a.handleClose = a.handleClose.bind(Object(be.a)(a))),
+              (a.handleTab = a.handleTab.bind(Object(be.a)(a))),
+              (a.handleUpload = a.handleUpload.bind(Object(be.a)(a))),
+              (a.prepForContact = a.prepForContact.bind(Object(be.a)(a))),
+              (a.prepForSubmission = a.prepForSubmission.bind(Object(be.a)(a))),
               (a.generateSubmissionBody = a.generateSubmissionBody.bind(
-                Object(de.a)(a)
+                Object(be.a)(a)
               )),
               (a.toggleCardAddingFrame = a.toggleCardAddingFrame.bind(
-                Object(de.a)(a)
+                Object(be.a)(a)
               )),
-              (a.handleCAPESubmit = a.handleCAPESubmit.bind(Object(de.a)(a))),
+              (a.handleCAPESubmit = a.handleCAPESubmit.bind(Object(be.a)(a))),
               (a.suggestedAmountOnChange = a.suggestedAmountOnChange.bind(
-                Object(de.a)(a)
+                Object(be.a)(a)
               )),
               a
             );
@@ -5231,7 +5289,7 @@
                 key: "componentDidMount",
                 value: function() {
                   var e = this,
-                    t = fe.a.parse(this.props.location.search);
+                    t = Ae.a.parse(this.props.location.search);
                   if (t.id) {
                     var a = t.id;
                     this.props.apiSF
@@ -5242,7 +5300,7 @@
                           e.handleOpen();
                       })
                       .catch(function(e) {
-                        return Ba(e);
+                        return Ga(e);
                       });
                   }
                 }
@@ -5250,15 +5308,15 @@
               {
                 key: "handleOpen",
                 value: function() {
-                  var e = no({}, this.state);
-                  (e.open = !0), this.setState(no({}, e));
+                  var e = so({}, this.state);
+                  (e.open = !0), this.setState(so({}, e));
                 }
               },
               {
                 key: "handleClose",
                 value: function() {
-                  var e = no({}, this.state);
-                  (e.open = !1), this.setState(no({}, e));
+                  var e = so({}, this.state);
+                  (e.open = !1), this.setState(so({}, e));
                 }
               },
               {
@@ -5270,7 +5328,7 @@
                       i = ""
                         .concat(e, "_")
                         .concat(t, "__signature__")
-                        .concat(Ga(new Date()), ".jpg");
+                        .concat(Ja(new Date()), ".jpg");
                     o instanceof Blob && (o.name = i),
                       a.props.apiContent
                         .uploadImage(o)
@@ -5278,7 +5336,7 @@
                           "UPLOAD_IMAGE_FAILURE" === e.type ||
                           a.props.content.error
                             ? n(
-                                Ba(
+                                Ga(
                                   a.props.content.error ||
                                     "An error occured while trying to save your Signature. Please try typing it instead"
                                 )
@@ -5286,7 +5344,7 @@
                             : n(e.payload.content);
                         })
                         .catch(function(e) {
-                          n(Ba(e));
+                          n(Ga(e));
                         });
                   });
                 }
@@ -5294,18 +5352,18 @@
               {
                 key: "prepForContact",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e(t) {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e(t) {
                       var a = this;
-                      return ba.a.wrap(function(e) {
+                      return Sa.a.wrap(function(e) {
                         for (;;)
                           switch ((e.prev = e.next)) {
                             case 0:
                               return e.abrupt(
                                 "return",
                                 new Promise(function(e) {
-                                  var n = no({}, t),
-                                    r = Wa(t);
+                                  var n = so({}, t),
+                                    r = qa(t);
                                   n.birthdate = r;
                                   var o,
                                     i,
@@ -5350,16 +5408,16 @@
                 value: function(e) {
                   var t = this;
                   return new Promise(function(a) {
-                    var n = no({}, e);
+                    var n = so({}, e);
                     (n.direct_pay_auth = e.directPayAuth
-                      ? Ga(new Date())
+                      ? Ja(new Date())
                       : null),
                       (n.direct_deposit_auth = e.directDepositAuth
-                        ? Ga(new Date())
+                        ? Ja(new Date())
                         : null),
                       (n.legalLanguage =
                         t.props.submission.formPage1.legalLanguage);
-                    var r = fe.a.parse(t.props.location.search);
+                    var r = Ae.a.parse(t.props.location.search);
                     (n.campaignSource =
                       r && r.s ? r.s : "Direct seiu503signup"),
                       e.salesforceId ||
@@ -5373,8 +5431,8 @@
               {
                 key: "generateSubmissionBody",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e(t) {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e(t) {
                       var a,
                         n,
                         r,
@@ -5400,7 +5458,7 @@
                         C,
                         O,
                         T;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5442,7 +5500,7 @@
                                   (O = n.signature),
                                   (T = n.reCaptchaValue),
                                   e.abrupt("return", {
-                                    ip_address: Ea()(),
+                                    ip_address: Ca()(),
                                     submission_date: new Date(),
                                     agency_number: c,
                                     birthdate: i,
@@ -5490,10 +5548,10 @@
               {
                 key: "createSubmission",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5510,7 +5568,7 @@
                                   this.props.apiSubmission
                                     .addSubmission(a)
                                     .catch(function(e) {
-                                      return console.log(e), Ba(e);
+                                      return console.log(e), Ga(e);
                                     })
                                 );
                               case 6:
@@ -5545,10 +5603,10 @@
               {
                 key: "createSFContact",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a, n, r, o, i, s, c, l, m, p, u, d, h, f, g, b;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5596,7 +5654,7 @@
                                   this.props.apiSF
                                     .createSFContact(b)
                                     .catch(function(e) {
-                                      return console.log(e), Ba(e);
+                                      return console.log(e), Ga(e);
                                     })
                                 );
                               case 7:
@@ -5617,10 +5675,10 @@
               {
                 key: "updateSFContact",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a, n, r, o, i, s, c, l, m, p, u, d, h, f, g, b, y;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5669,7 +5727,7 @@
                                   this.props.apiSF
                                     .updateSFContact(b, y)
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     })
                                 );
                               case 8:
@@ -5698,11 +5756,11 @@
                       .then(function(t) {
                         ("GET_SF_DJR_FAILURE" === t.type ||
                           e.props.submission.error) &&
-                          a(Ba(e.props.submission.error)),
+                          a(Ga(e.props.submission.error)),
                           a(t);
                       })
                       .catch(function(e) {
-                        a(Ba(e));
+                        a(Ga(e));
                       });
                   });
                 }
@@ -5710,12 +5768,12 @@
               {
                 key: "createSFDJR",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5739,10 +5797,10 @@
                                         "CREATE_SF_DJR_FAILURE" === e.type ||
                                         n.props.submission.error
                                       )
-                                        return Ba(n.props.submission.error);
+                                        return Ga(n.props.submission.error);
                                     })
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     });
                               case 3:
                               case "end":
@@ -5762,13 +5820,13 @@
               {
                 key: "updateSFDJR",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n,
                         r = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5791,10 +5849,10 @@
                                         "UPDATE_SF_DJR_FAILURE" === e.type ||
                                         r.props.submission.error
                                       )
-                                        return Ba(r.props.submission.error);
+                                        return Ga(r.props.submission.error);
                                     })
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     });
                               case 4:
                               case "end":
@@ -5814,17 +5872,17 @@
               {
                 key: "handleTab1",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a, n, r;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
                               case 0:
                                 if (
                                   ((t = this.props.formValues),
-                                  !me(t.employerType))
+                                  !he(t.employerType))
                                 ) {
                                   e.next = 9;
                                   break;
@@ -5839,12 +5897,12 @@
                                   })
                                 );
                               case 4:
-                                ((a = no({}, this.state)).howManyTabs = 4),
+                                ((a = so({}, this.state)).howManyTabs = 4),
                                   this.setState(a),
                                   (e.next = 12);
                                 break;
                               case 9:
-                                ((n = no({}, this.state)).howManyTabs = 3),
+                                ((n = so({}, this.state)).howManyTabs = 3),
                                   this.setState(n);
                               case 12:
                                 if (
@@ -5859,7 +5917,7 @@
                                 return (
                                   (e.next = 17),
                                   this.updateSFContact().catch(function(e) {
-                                    return console.log(e), Ba(e);
+                                    return console.log(e), Ga(e);
                                   })
                                 );
                               case 17:
@@ -5875,7 +5933,7 @@
                                   this.props.apiSF
                                     .lookupSFContact(r)
                                     .catch(function(e) {
-                                      return console.log(e), Ba(e);
+                                      return console.log(e), Ga(e);
                                     })
                                 );
                               case 21:
@@ -5886,7 +5944,7 @@
                                 return (
                                   (e.next = 24),
                                   this.updateSFContact().catch(function(e) {
-                                    return console.log(e), Ba(e);
+                                    return console.log(e), Ga(e);
                                   })
                                 );
                               case 24:
@@ -5895,7 +5953,7 @@
                                 return (
                                   (e.next = 27),
                                   this.createSFContact().catch(function(e) {
-                                    return console.log(e), Ba(e);
+                                    return console.log(e), Ga(e);
                                   })
                                 );
                               case 27:
@@ -5918,12 +5976,12 @@
               {
                 key: "getIframeExisting",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -5948,7 +6006,7 @@
                                             console.log(
                                               n.props.submission.error
                                             ),
-                                            Ba(
+                                            Ga(
                                               e.payload.message ||
                                                 n.props.submission.error ||
                                                 "Sorry, something went wrong. Please try again."
@@ -5956,7 +6014,7 @@
                                           );
                                       })
                                       .catch(function(e) {
-                                        return console.log(e), Ba(e);
+                                        return console.log(e), Ga(e);
                                       })
                                   )
                                 );
@@ -5978,21 +6036,21 @@
               {
                 key: "getIframeNew",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a,
                         n,
                         r,
                         o = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
                               case 0:
                                 (t = this.props.formValues),
-                                  (a = Wa(t)),
-                                  "en" === (n = xa()(t.preferredLanguage)) &&
+                                  (a = qa(t)),
+                                  "en" === (n = ja()(t.preferredLanguage)) &&
                                     (n = "en-US"),
                                   "es" === n && (n = "es-US"),
                                   (r = {
@@ -6021,14 +6079,14 @@
                                         e.payload.message ||
                                         "GET_IFRAME_URL_FAILURE" === e.type
                                       )
-                                        return Ba(
+                                        return Ga(
                                           e.payload.message ||
                                             o.props.submission.error ||
                                             "Sorry, something went wrong. Please try again."
                                         );
                                     })
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     });
                               case 7:
                               case "end":
@@ -6048,10 +6106,10 @@
               {
                 key: "getUnioniseToken",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6064,7 +6122,7 @@
                                       return !e.payload.access_token ||
                                         e.payload.message ||
                                         "GET_UNIONISE_TOKEN_FAILURE" === e.type
-                                        ? Ba(
+                                        ? Ga(
                                             e.payload.message ||
                                               t.props.submission.error ||
                                               "Sorry, something went wrong. Please try again."
@@ -6072,7 +6130,7 @@
                                         : e.payload.access_token;
                                     })
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     })
                                 );
                               case 1:
@@ -6093,10 +6151,10 @@
               {
                 key: "getIframeURL",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6113,7 +6171,7 @@
                                   this.props.apiSF
                                     .getUnioniseToken()
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     })
                                 );
                               case 4:
@@ -6144,10 +6202,10 @@
               {
                 key: "saveLegalLanguage",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6189,10 +6247,10 @@
               {
                 key: "calculateAFHDuesRate",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e(t) {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e(t) {
                       var a;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6219,9 +6277,9 @@
               {
                 key: "toggleCardAddingFrame",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e(t) {
-                      return ba.a.wrap(
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e(t) {
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6233,7 +6291,7 @@
                                 return (
                                   (e.next = 3),
                                   this.getIframeURL().catch(function(e) {
-                                    return Ba(e);
+                                    return Ga(e);
                                   })
                                 );
                               case 3:
@@ -6268,10 +6326,10 @@
               {
                 key: "saveSignature",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t, a;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6289,7 +6347,7 @@
                                     t.firstName,
                                     t.lastName
                                   ).catch(function(e) {
-                                    return Ba(e);
+                                    return Ga(e);
                                   })
                                 );
                               case 4:
@@ -6320,11 +6378,11 @@
               {
                 key: "handleTab2",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e() {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e() {
                       var t,
                         a = this;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -6333,7 +6391,7 @@
                                   (t = this.props.formValues),
                                   (e.next = 3),
                                   this.saveSignature().catch(function(e) {
-                                    return Ba(e);
+                                    return Ga(e);
                                   })
                                 );
                               case 3:
@@ -6343,7 +6401,7 @@
                                 }
                                 return e.abrupt(
                                   "return",
-                                  rt("error", "Please provide a signature")
+                                  ct("error", "Please provide a signature")
                                 );
                               case 6:
                                 if (
@@ -6380,11 +6438,11 @@
                                           .paymentRequired &&
                                           t &&
                                           a.getIframeURL().catch(function(e) {
-                                            return Ba(e);
+                                            return Ga(e);
                                           });
                                     })
                                     .catch(function(e) {
-                                      return Ba(e);
+                                      return Ga(e);
                                     })
                                 );
                               case 10:
@@ -6392,7 +6450,7 @@
                                   this.saveLegalLanguage(),
                                   (e.next = 13),
                                   this.createSubmission().catch(function(e) {
-                                    return Ba(e);
+                                    return Ga(e);
                                   })
                                 );
                               case 13:
@@ -6423,11 +6481,11 @@
                 value: function(e) {
                   return 1 === e
                     ? this.handleTab1().catch(function(e) {
-                        return Ba(e);
+                        return Ga(e);
                       })
                     : 2 === e
                     ? this.handleTab2().catch(function(e) {
-                        return Ba(e);
+                        return Ga(e);
                       })
                     : this.changeTab(e);
                 }
@@ -6454,7 +6512,7 @@
                   return l.a.createElement(
                     "div",
                     { "data-test": "container-submission-form-page-1" },
-                    l.a.createElement(to, {
+                    l.a.createElement(oo, {
                       open:
                         this.state.open &&
                         e.length &&
@@ -6464,7 +6522,7 @@
                       history: this.props.history
                     }),
                     l.a.createElement(
-                      tr,
+                      or,
                       Object.assign({}, this.props, {
                         tab: this.state.tab,
                         howManyTabs: this.state.howManyTabs,
@@ -6475,7 +6533,7 @@
                         toggleSignatureInputType: this.toggleSignatureInputType,
                         clearSignature: this.clearSignature,
                         generateSubmissionBody: this.generateSubmissionBody,
-                        handleError: Ba,
+                        handleError: Ga,
                         toggleCardAddingFrame: this.toggleCardAddingFrame,
                         handleCAPESubmit: this.handleCAPESubmit,
                         suggestedAmountOnChange: this.suggestedAmountOnChange
@@ -6488,19 +6546,19 @@
             t
           );
         })(l.a.Component),
-        oo = Object(u.b)(
+        lo = Object(u.b)(
           function(e) {
             return {
               submission: e.submission,
               appState: e.appState,
               content: e.content,
               initialValues: e.submission.formPage1,
-              formValues: Object(Sa.a)("submissionPage1")(e) || {},
-              pristine: Object(_a.a)("submissionPage1")(e),
-              submitting: Object(va.a)("submissionPage1")(e),
-              valid: Object(Ca.a)("submissionPage1")(e),
-              submitErrors: Object(Oa.a)("submissionPage1")(e),
-              reset: Ta.a
+              formValues: Object(Oa.a)("submissionPage1")(e) || {},
+              pristine: Object(Ta.a)("submissionPage1")(e),
+              submitting: Object(wa.a)("submissionPage1")(e),
+              valid: Object(Ia.a)("submissionPage1")(e),
+              submitErrors: Object(xa.a)("submissionPage1")(e),
+              reset: ka.a
             };
           },
           function(e) {
@@ -6510,12 +6568,12 @@
               apiSF: Object(E.b)(s, e),
               actions: Object(E.b)(n, e),
               submitForm: function() {
-                return e(Object(Ta.b)("submissionPage1"));
+                return e(Object(ka.b)("submissionPage1"));
               }
             };
           }
-        )(ro),
-        io = Object(O.a)(function(e) {
+        )(co),
+        mo = Object(O.a)(function(e) {
           var t;
           return {
             formContainer: ((t = {
@@ -6771,24 +6829,24 @@
               textAlign: "center"
             }
           };
-        })(oo),
-        so = a(259),
-        co = a(260),
-        lo = a.n(co),
-        mo = a(585),
-        po = $a,
-        uo = ["", "Female", "Male", "Non-Binary", "Other"],
-        ho = ["", "She/Her/Hers", "He/Him/His", "They/Them/Their(s)", "Other"],
-        fo = (function(e) {
+        })(lo),
+        po = a(259),
+        uo = a(260),
+        ho = a.n(uo),
+        fo = a(585),
+        go = Wa,
+        bo = ["", "Female", "Male", "Non-Binary", "Other"],
+        yo = ["", "She/Her/Hers", "He/Him/His", "They/Them/Their(s)", "Other"],
+        Ao = (function(e) {
           function t(e) {
             var a;
             return (
               Object(d.a)(this, t),
               ((a = Object(f.a)(this, Object(g.a)(t).call(this, e))).classes =
                 a.props.classes),
-              (a.renderTextField = Qa),
-              (a.renderSelect = Ja),
-              (a.renderCheckbox = qa),
+              (a.renderTextField = Ya),
+              (a.renderSelect = Ka),
+              (a.renderCheckbox = Xa),
               (a.calcEthnicity = function(e) {
                 var t = e.africanOrAfricanAmerican,
                   a = e.arabAmericanMiddleEasternOrNorthAfrican,
@@ -6827,8 +6885,8 @@
                 );
               }),
               (a.handleSubmit = (function() {
-                var e = Object(ya.a)(
-                  ba.a.mark(function e(t) {
+                var e = Object(_a.a)(
+                  Sa.a.mark(function e(t) {
                     var n,
                       r,
                       o,
@@ -6852,7 +6910,7 @@
                       v,
                       C,
                       O;
-                    return ba.a.wrap(
+                    return Sa.a.wrap(
                       function(e) {
                         for (;;)
                           switch ((e.prev = e.next)) {
@@ -6898,7 +6956,7 @@
                                 }),
                                 (_ = a.removeFalsy(S)),
                                 (v = a.props.submission.salesforceId) ||
-                                  ((C = fe.a.parse(a.props.location.search))
+                                  ((C = Ae.a.parse(a.props.location.search))
                                     .id &&
                                     (v = C.id)),
                                 (_.salesforce_id = v),
@@ -6908,7 +6966,7 @@
                                 a.props.apiSubmission
                                   .updateSubmission(O, _)
                                   .catch(function(e) {
-                                    return Ba(e);
+                                    return Ga(e);
                                   })
                               );
                             case 11:
@@ -6921,7 +6979,7 @@
                               }
                               return e.abrupt(
                                 "return",
-                                Ba(a.props.submission.error)
+                                Ga(a.props.submission.error)
                               );
                             case 14:
                               a.props.apiSF
@@ -6931,16 +6989,16 @@
                                     "UPDATE_SF_CONTACT_FAILURE" === e.type ||
                                     a.props.submission.error
                                   )
-                                    return Ba(a.props.submission.error);
+                                    return Ga(a.props.submission.error);
                                   a.props.reset("submissionPage2"),
-                                    rt(
+                                    ct(
                                       "success",
                                       "Your information was updated!"
                                     ),
                                     a.props.history.push("/thankyou");
                                 })
                                 .catch(function(e) {
-                                  return Ba(e);
+                                  return Ga(e);
                                 }),
                                 (e.next = 20);
                               break;
@@ -6948,7 +7006,7 @@
                               return (
                                 (e.prev = 17),
                                 (e.t0 = e.catch(8)),
-                                e.abrupt("return", Ba(e.t0))
+                                e.abrupt("return", Ga(e.t0))
                               );
                             case 20:
                             case "end":
@@ -6966,7 +7024,7 @@
                 };
               })()),
               (a.state = {}),
-              a.props.addTranslation(so),
+              a.props.addTranslation(po),
               a
             );
           }
@@ -6997,12 +7055,12 @@
                         l.a.createElement(
                           "div",
                           { className: this.classes.checkIcon },
-                          l.a.createElement(lo.a, {
+                          l.a.createElement(ho.a, {
                             style: { color: "#66BB6A", height: 100, width: 100 }
                           })
                         ),
                         l.a.createElement(
-                          Ma.a,
+                          za.a,
                           {
                             className: this.classes.page2IntroText,
                             id: "page2IntroText"
@@ -7014,9 +7072,9 @@
                           )
                         )
                       ),
-                      l.a.createElement(mo.a, { style: { margin: 20 } }),
+                      l.a.createElement(fo.a, { style: { margin: 20 } }),
                       l.a.createElement(
-                        Et.a,
+                        Ct.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -7024,16 +7082,16 @@
                         "Check as many as apply to your race/ethnicity"
                       ),
                       l.a.createElement(
-                        vn.a,
+                        wn.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "African or African-American",
                           name: "africanOrAfricanAmerican",
                           id: "africanOrAfricanAmerican",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label:
                             "Arab American, Middle Eastern, or North African",
                           name: "arabAmericanMiddleEasternOrNorthAfrican",
@@ -7041,49 +7099,49 @@
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Asian or Asian American",
                           name: "asianOrAsianAmerican",
                           id: "asianOrAsianAmerican",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Hispanic or Latinx",
                           name: "hispanicOrLatinx",
                           id: "hispanicOrLatinx",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Native American or Indigenous",
                           name: "nativeAmericanOrIndigenous",
                           id: "nativeAmericanOrIndigenous",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Native Hawaiian or Other Pacific Islander",
                           name: "nativeHawaiianOrOtherPacificIslander",
                           id: "nativeHawaiianOrOtherPacificIslander",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "White",
                           name: "white",
                           id: "white",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Other",
                           name: "other",
                           id: "other",
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Declined",
                           name: "declined",
                           id: "declined",
@@ -7092,7 +7150,7 @@
                         })
                       ),
                       l.a.createElement(
-                        Et.a,
+                        Ct.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -7100,9 +7158,9 @@
                         "Other Social Identities"
                       ),
                       l.a.createElement(
-                        vn.a,
+                        wn.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "I identify as LGBTQIA+",
                           name: "lgbtqId",
                           id: "lgbtqId",
@@ -7110,7 +7168,7 @@
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "I identify as transgender",
                           name: "transId",
                           id: "transId",
@@ -7118,7 +7176,7 @@
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label:
                             "I identify as disabled or a person with a disability",
                           name: "disabilityId",
@@ -7127,7 +7185,7 @@
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "I identify as Deaf or hard-of-hearing",
                           name: "deafOrHardOfHearing",
                           id: "deafOrHardOfHearing",
@@ -7135,7 +7193,7 @@
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "I identify as Blind or visually impaired",
                           name: "blindOrVisuallyImpaired",
                           id: "blindOrVisuallyImpaired",
@@ -7143,7 +7201,7 @@
                           classes: this.classes,
                           component: this.renderCheckbox
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Gender",
                           name: "gender",
                           id: "gender",
@@ -7151,10 +7209,10 @@
                           classes: this.classes,
                           component: this.renderSelect,
                           labelWidth: 50,
-                          options: uo
+                          options: bo
                         }),
                         "other" === this.props.formValues.gender &&
-                          l.a.createElement(Sn.a, {
+                          l.a.createElement(On.a, {
                             label: "If other, Please describe",
                             name: "genderOtherDescription",
                             id: "genderOtherDescription",
@@ -7162,7 +7220,7 @@
                             classes: this.classes,
                             component: this.renderTextField
                           }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Your pronouns",
                           name: "genderPronoun",
                           id: "genderPronoun",
@@ -7170,11 +7228,11 @@
                           classes: this.classes,
                           component: this.renderSelect,
                           labelWidth: 97,
-                          options: ho
+                          options: yo
                         })
                       ),
                       l.a.createElement(
-                        Et.a,
+                        Ct.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -7182,9 +7240,9 @@
                         "Employment Info"
                       ),
                       l.a.createElement(
-                        vn.a,
+                        wn.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Job Class/Title",
                           name: "jobTitle",
                           id: "jobTitle",
@@ -7192,7 +7250,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Hire Date",
                           name: "hireDate",
                           id: "hireDate",
@@ -7200,7 +7258,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Worksite",
                           name: "worksite",
                           id: "worksite",
@@ -7208,7 +7266,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Work Email",
                           name: "workEmail",
                           id: "workEmail",
@@ -7216,7 +7274,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Work Phone",
                           name: "workPhone",
                           id: "workPhone",
@@ -7226,7 +7284,7 @@
                         })
                       ),
                       l.a.createElement(
-                        Et.a,
+                        Ct.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -7234,7 +7292,7 @@
                         "Mailing Address"
                       ),
                       l.a.createElement(
-                        Ma.a,
+                        za.a,
                         {
                           className: this.classes.formHelperText,
                           id: "mailingAddressDescription"
@@ -7242,9 +7300,9 @@
                         "If different from residence address"
                       ),
                       l.a.createElement(
-                        vn.a,
+                        wn.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Mailing Street",
                           name: "mailToStreet",
                           id: "mailToStreet",
@@ -7252,7 +7310,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Mailing City",
                           name: "mailToCity",
                           id: "mailToCity",
@@ -7260,7 +7318,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Mailing State",
                           name: "mailToState",
                           id: "mailToState",
@@ -7269,9 +7327,9 @@
                           formControlName: "formControlDate",
                           component: this.renderSelect,
                           labelWidth: 88,
-                          options: po
+                          options: go
                         }),
-                        l.a.createElement(Sn.a, {
+                        l.a.createElement(On.a, {
                           label: "Mailing ZIP",
                           name: "mailToZip",
                           id: "mailToZip",
@@ -7281,7 +7339,7 @@
                         })
                       ),
                       l.a.createElement(
-                        ma,
+                        ha,
                         {
                           type: "submit",
                           color: "secondary",
@@ -7299,13 +7357,13 @@
             t
           );
         })(l.a.Component),
-        go = Object(_n.a)({
+        Eo = Object(Tn.a)({
           form: "submissionPage2",
-          validate: Cn,
+          validate: In,
           enableReinitialize: !0
-        })(fo),
-        bo = Object(S.e)(go),
-        yo = (function(e) {
+        })(Ao),
+        So = Object(S.e)(Eo),
+        _o = (function(e) {
           function t() {
             return (
               Object(d.a)(this, t),
@@ -7320,7 +7378,7 @@
                 value: function() {
                   var e = this.props.submission.salesforceId;
                   if (!e) {
-                    var t = fe.a.parse(this.props.location.search);
+                    var t = Ae.a.parse(this.props.location.search);
                     t.id && (e = t.id);
                   }
                   e &&
@@ -7328,7 +7386,7 @@
                       .getSFContactById(e)
                       .then(function(e) {})
                       .catch(function(e) {
-                        console.log(e), Ba(e);
+                        console.log(e), Ga(e);
                       });
                 }
               },
@@ -7338,7 +7396,7 @@
                   return l.a.createElement(
                     "div",
                     { "data-test": "container-submission-form-page-2" },
-                    l.a.createElement(bo, this.props)
+                    l.a.createElement(So, this.props)
                   );
                 }
               }
@@ -7346,13 +7404,13 @@
             t
           );
         })(l.a.Component),
-        Ao = Object(u.b)(
+        vo = Object(u.b)(
           function(e) {
             return {
               submission: e.submission,
               appState: e.appState,
               initialValues: e.submission.formPage2,
-              formValues: Object(Sa.a)("submissionPage2")(e) || {}
+              formValues: Object(Oa.a)("submissionPage2")(e) || {}
             };
           },
           function(e) {
@@ -7361,8 +7419,8 @@
               apiSF: Object(E.b)(s, e)
             };
           }
-        )(yo),
-        Eo = Object(O.a)(function(e) {
+        )(_o),
+        Co = Object(O.a)(function(e) {
           return {
             root: { margin: "80px 0" },
             formContainer: Object(y.a)(
@@ -7425,13 +7483,13 @@
             },
             formHelperText: { margin: "0 0 10px", fontSize: "15px" }
           };
-        })(Ao),
-        So = a(572),
-        _o = a(262),
-        vo = a.n(_o),
-        Co = a(261),
-        Oo = a.n(Co),
-        To = Object(O.a)(function(e) {
+        })(vo),
+        Oo = a(572),
+        To = a(262),
+        wo = a.n(To),
+        Io = a(261),
+        xo = a.n(Io),
+        ko = Object(O.a)(function(e) {
           return {
             root: { margin: 20, padding: 20, maxWidth: 1200 },
             button: Object(y.a)(
@@ -7511,20 +7569,20 @@
               "div",
               { className: t.cardContent, "data-test": "card-content" },
               l.a.createElement(
-                ye.a,
+                _e.a,
                 { component: "h2", className: t.title, "data-test": "title" },
                 r
               ),
               "image" !== r &&
                 l.a.createElement(
-                  ye.a,
+                  _e.a,
                   { component: "p", className: t.body, "data-test": "body" },
                   n
                 )
             )
           );
         }),
-        wo = {
+        No = {
           display: "flex",
           justifyContent: "center",
           position: "fixed",
@@ -7535,20 +7593,20 @@
           zIndex: 3,
           backgroundColor: "rgba(0,0,0,.4)"
         },
-        xo = { position: "relative", top: "44%" },
-        Io = function(e) {
+        jo = { position: "relative", top: "44%" },
+        Uo = function(e) {
           return l.a.createElement(
             "div",
-            { style: wo },
-            l.a.createElement(ia.a, {
-              style: xo,
+            { style: No },
+            l.a.createElement(ma.a, {
+              style: jo,
               color: "primary",
               size: 50,
               "data-test": "component-spinner"
             })
           );
         },
-        ko = Object(O.a)(function(e) {
+        Ro = Object(O.a)(function(e) {
           return {
             root: { margin: 0, padding: 20 },
             danger: {
@@ -7563,7 +7621,7 @@
             "div",
             { "data-test": "component-alert-dialog" },
             l.a.createElement(
-              Yr.a,
+              eo.a,
               {
                 "data-test": "dialog",
                 open: e.open,
@@ -7576,15 +7634,15 @@
               },
               e.title &&
                 l.a.createElement(
-                  eo.a,
+                  ro.a,
                   { id: "alert-dialog-title", "data-test": "dialog-title" },
                   e.title
                 ),
               l.a.createElement(
-                Kr.a,
+                ao.a,
                 null,
                 l.a.createElement(
-                  Xr.a,
+                  no.a,
                   {
                     id: "alert-dialog-description",
                     "data-test": "dialog-content"
@@ -7593,10 +7651,10 @@
                 )
               ),
               l.a.createElement(
-                Zr.a,
+                to.a,
                 null,
                 l.a.createElement(
-                  Ae.a,
+                  ve.a,
                   {
                     onClick: e.handleClose,
                     variant: "outlined",
@@ -7606,7 +7664,7 @@
                   "Cancel"
                 ),
                 l.a.createElement(
-                  Ae.a,
+                  ve.a,
                   {
                     onClick: e.action,
                     className: e.danger ? e.classes.danger : e.classes.primary,
@@ -7620,7 +7678,7 @@
             )
           );
         }),
-        No = (function(e) {
+        Lo = (function(e) {
           function t() {
             var e, a;
             Object(d.a)(this, t);
@@ -7651,14 +7709,14 @@
                     .then(function(t) {
                       ("GET_ALL_CONTENT_FAILURE" === t.type ||
                         e.props.content.error) &&
-                        rt(
+                        ct(
                           "error",
                           e.props.content.error ||
                             "An error occured while fetching content"
                         );
                     })
                     .catch(function(e) {
-                      rt("error", e);
+                      ct("error", e);
                     });
                 }
               },
@@ -7674,24 +7732,24 @@
                       .then(function(e) {
                         ("GET_ALL_CONTENT_FAILURE" === e.type ||
                           n.props.content.error) &&
-                          rt(
+                          ct(
                             "error",
                             n.props.content.error ||
                               "An error occured while fetching content"
                           );
                       })
                       .catch(function(e) {
-                        rt("error", e);
+                        ct("error", e);
                       });
                 }
               },
               {
                 key: "deleteContent",
                 value: (function() {
-                  var e = Object(ya.a)(
-                    ba.a.mark(function e(t) {
+                  var e = Object(_a.a)(
+                    Sa.a.mark(function e(t) {
                       var a, n, r, o;
-                      return ba.a.wrap(
+                      return Sa.a.wrap(
                         function(e) {
                           for (;;)
                             switch ((e.prev = e.next)) {
@@ -7709,7 +7767,7 @@
                                   e.next = 8;
                                   break;
                                 }
-                                rt("error", this.props.content.error),
+                                ct("error", this.props.content.error),
                                   (e.next = 18);
                                 break;
                               case 8:
@@ -7728,7 +7786,7 @@
                                 );
                               case 13:
                                 "DELETE_IMAGE_SUCCESS" === e.sent.type &&
-                                  (rt(
+                                  (ct(
                                     "success",
                                     "Deleted ".concat(t.content_type, ".")
                                   ),
@@ -7737,7 +7795,7 @@
                                 break;
                               case 17:
                                 "DELETE_CONTENT_SUCCESS" === n.type &&
-                                  (rt(
+                                  (ct(
                                     "success",
                                     "Deleted ".concat(t.content_type, ".")
                                   ),
@@ -7762,16 +7820,16 @@
                 value: function() {
                   var e = this,
                     t = this.props.classes,
-                    a = le[this.props.content.currentContent.content_type];
+                    a = de[this.props.content.currentContent.content_type];
                   return l.a.createElement(
                     "div",
                     {
                       "data-test": "component-content-library",
                       className: t.root
                     },
-                    this.props.appState.loading && l.a.createElement(Io, null),
+                    this.props.appState.loading && l.a.createElement(Uo, null),
                     this.props.content.deleteDialogOpen &&
-                      l.a.createElement(ko, {
+                      l.a.createElement(Ro, {
                         open: this.props.content.deleteDialogOpen,
                         handleClose: this.props.apiContent.handleDeleteClose,
                         title: "Delete Content",
@@ -7790,7 +7848,7 @@
                       "div",
                       { className: t.section },
                       l.a.createElement(
-                        ye.a,
+                        _e.a,
                         {
                           variant: "h2",
                           align: "center",
@@ -7816,7 +7874,7 @@
                               "div",
                               { className: t.actionArea },
                               l.a.createElement(
-                                So.a,
+                                Oo.a,
                                 {
                                   className: t.buttonDelete,
                                   onClick: function() {
@@ -7826,10 +7884,10 @@
                                   "aria-label": "Delete Content",
                                   "data-test": "delete"
                                 },
-                                l.a.createElement(Oo.a, null)
+                                l.a.createElement(xo.a, null)
                               ),
                               l.a.createElement(
-                                So.a,
+                                Oo.a,
                                 {
                                   className: t.buttonEdit,
                                   onClick: function() {
@@ -7841,10 +7899,10 @@
                                   "aria-label": "Edit Content",
                                   "data-test": "edit"
                                 },
-                                l.a.createElement(vo.a, null)
+                                l.a.createElement(wo.a, null)
                               )
                             ),
-                            l.a.createElement(To, { contentTile: a })
+                            l.a.createElement(ko, { contentTile: a })
                           );
                         })
                       )
@@ -7856,7 +7914,7 @@
             t
           );
         })(l.a.Component),
-        jo = Object(u.b)(
+        Do = Object(u.b)(
           function(e) {
             return {
               appState: e.appState,
@@ -7867,8 +7925,8 @@
           function(e) {
             return { apiContent: Object(E.b)(i, e) };
           }
-        )(No),
-        Uo = Object(A.f)(
+        )(Lo),
+        Po = Object(A.f)(
           Object(O.a)(function(e) {
             var t;
             return {
@@ -7936,9 +7994,9 @@
               }),
               t)
             };
-          })(jo)
+          })(Do)
         ),
-        Ro = (function(e) {
+        Fo = (function(e) {
           function t(e) {
             var a;
             return (
@@ -7947,7 +8005,7 @@
                 open: !1,
                 files: []
               }),
-              (a.submit = a.submit.bind(Object(de.a)(a))),
+              (a.submit = a.submit.bind(Object(be.a)(a))),
               a
             );
           }
@@ -7972,10 +8030,10 @@
                       if (e.payload.salesforce_id) {
                         var a = t.props.submission.salesforceId;
                         t.props.history.push("/?id=".concat(a));
-                      } else rt("error", e.payload.message || "An error occurred while trying to fetch data from salesforce.");
+                      } else ct("error", e.payload.message || "An error occurred while trying to fetch data from salesforce.");
                     })
                     .catch(function(e) {
-                      rt(
+                      ct(
                         "error",
                         t.props.submission.error ||
                           "An error occurred while trying to fetch data from salesforce."
@@ -7995,7 +8053,7 @@
                       "data-test": "component-link-request"
                     },
                     l.a.createElement(
-                      ye.a,
+                      _e.a,
                       {
                         variant: "h2",
                         align: "center",
@@ -8017,7 +8075,7 @@
                         },
                         id: "form"
                       },
-                      l.a.createElement(ft.a, {
+                      l.a.createElement(At.a, {
                         "data-test": "firstName",
                         name: "firstName",
                         id: "firstName",
@@ -8031,7 +8089,7 @@
                         },
                         className: t.input
                       }),
-                      l.a.createElement(ft.a, {
+                      l.a.createElement(At.a, {
                         "data-test": "lastName",
                         name: "lastName",
                         id: "lastName",
@@ -8045,7 +8103,7 @@
                         },
                         className: t.input
                       }),
-                      l.a.createElement(ft.a, {
+                      l.a.createElement(At.a, {
                         "data-test": "homeEmail",
                         name: "homeEmail",
                         id: "homeEmail",
@@ -8060,7 +8118,7 @@
                         className: t.input
                       }),
                       l.a.createElement(
-                        ma,
+                        ha,
                         {
                           type: "submit",
                           color: "secondary",
@@ -8078,7 +8136,7 @@
             t
           );
         })(l.a.Component),
-        Lo = Object(u.b)(
+        Mo = Object(u.b)(
           function(e) {
             return { submission: e.submission };
           },
@@ -8088,8 +8146,8 @@
               apiSubmission: Object(E.b)(o, e)
             };
           }
-        )(Ro),
-        Do = Object(O.a)(function(e) {
+        )(Fo),
+        Bo = Object(O.a)(function(e) {
           return {
             root: {},
             container: { padding: "80px 0 140px 0", background: "white" },
@@ -8111,8 +8169,8 @@
             formControl: { width: "100%" },
             radioLabel: { width: "100%", textAlign: "center" }
           };
-        })(Lo),
-        Po = (function(e) {
+        })(Mo),
+        $o = (function(e) {
           function t(e) {
             var a;
             return (
@@ -8213,12 +8271,12 @@
                       verifyCallback: this.verifyCallback
                     }),
                     l.a.createElement(C.a, null),
-                    l.a.createElement(ke, {
+                    l.a.createElement(Re, {
                       scroll: this.scroll,
                       main_ref: this.main_ref
                     }),
-                    l.a.createElement(ot, null),
-                    this.props.appState.loading && l.a.createElement(Io, null),
+                    l.a.createElement(lt, null),
+                    this.props.appState.loading && l.a.createElement(Uo, null),
                     l.a.createElement(
                       "main",
                       {
@@ -8234,7 +8292,7 @@
                           path: "/",
                           render: function(t) {
                             return l.a.createElement(
-                              io,
+                              mo,
                               Object.assign(
                                 {
                                   setRedirect: e.setRedirect,
@@ -8254,7 +8312,7 @@
                           path: "/thankyou",
                           render: function(t) {
                             return l.a.createElement(
-                              je,
+                              De,
                               Object.assign(
                                 {
                                   setRedirect: e.setRedirect,
@@ -8268,14 +8326,14 @@
                         l.a.createElement(A.a, {
                           path: "/admin/:id?/:token?",
                           render: function(e) {
-                            return l.a.createElement(ht, e);
+                            return l.a.createElement(yt, e);
                           }
                         }),
                         l.a.createElement(A.a, {
                           path: "/library",
                           render: function(t) {
                             return l.a.createElement(
-                              Uo,
+                              Po,
                               Object.assign({ setRedirect: e.setRedirect }, t)
                             );
                           }
@@ -8284,7 +8342,7 @@
                           path: "/new",
                           render: function(t) {
                             return l.a.createElement(
-                              fa,
+                              Aa,
                               Object.assign({ setRedirect: e.setRedirect }, t)
                             );
                           }
@@ -8293,7 +8351,7 @@
                           path: "/edit/:id",
                           render: function(t) {
                             return l.a.createElement(
-                              fa,
+                              Aa,
                               Object.assign(
                                 { edit: !0, setRedirect: e.setRedirect },
                                 t
@@ -8305,7 +8363,7 @@
                           path: "/logout",
                           render: function(t) {
                             return l.a.createElement(
-                              Le,
+                              Me,
                               Object.assign({ classes: e.props.classes }, t)
                             );
                           }
@@ -8315,7 +8373,7 @@
                           path: "/page2",
                           render: function(t) {
                             return l.a.createElement(
-                              Eo,
+                              Co,
                               Object.assign({ setRedirect: e.setRedirect }, t)
                             );
                           }
@@ -8324,21 +8382,21 @@
                           exact: !0,
                           path: "/linkrequest",
                           render: function(e) {
-                            return l.a.createElement(Do, e);
+                            return l.a.createElement(Bo, e);
                           }
                         }),
                         l.a.createElement(A.a, {
                           path: "*",
                           render: function(t) {
                             return l.a.createElement(
-                              Ue,
+                              Pe,
                               Object.assign({ classes: e.props.classes }, t)
                             );
                           }
                         })
                       )
                     ),
-                    l.a.createElement(Ne, { classes: this.props.classes })
+                    l.a.createElement(Le, { classes: this.props.classes })
                   );
                 }
               }
@@ -8346,7 +8404,7 @@
             t
           );
         })(c.Component),
-        Fo = Object(u.b)(
+        Ho = Object(u.b)(
           function(e) {
             return {
               appState: e.appState,
@@ -8362,8 +8420,8 @@
               setActiveLanguage: Object(E.b)(S.d, e)
             };
           }
-        )(Po),
-        Mo = Object(O.a)(function(e) {
+        )($o),
+        zo = Object(O.a)(function(e) {
           var t, a, n, r;
           return {
             root: { flexGrow: 1, boxSizing: "border-box" },
@@ -8381,7 +8439,7 @@
               width: "100vw",
               height: "100%",
               minHeight: "80vh",
-              backgroundImage: 'url("'.concat(qn.a, '")'),
+              backgroundImage: 'url("'.concat(Xn.a, '")'),
               backgroundAttachment: "fixed",
               backgroundPosition: "bottom"
             }),
@@ -8442,123 +8500,126 @@
             },
             form: { background: "white" }
           };
-        })(Object(A.f)(Object(S.e)(Fo))),
-        Bo = a(231),
-        $o = a(16),
-        Ho = a.n($o),
-        zo = { loggedIn: !1, authToken: "", loading: !1, redirect: "" };
-      var Go = function() {
+        })(Object(A.f)(Object(S.e)(Ho))),
+        Go = a(232),
+        Wo = a(16),
+        Qo = a.n(Wo),
+        Vo = { loggedIn: !1, authToken: "", loading: !1, redirect: "" };
+      var Jo = function() {
           var e =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : zo,
+                : Vo,
             t = arguments.length > 1 ? arguments[1] : void 0;
           switch (t.type) {
             case T:
-              return zo;
-            case x:
-              return Ho()(e, { loading: { $set: !0 } });
+              return Vo;
+            case I:
+              return Qo()(e, { loading: { $set: !0 } });
             case M:
-              return Ho()(e, {
+              return Qo()(e, {
                 loggedIn: { $set: !0 },
                 authToken: { $set: t.payload.token },
                 loading: { $set: !1 }
               });
             case B:
-              return Ho()(e, { loggedIn: { $set: !1 }, loading: { $set: !1 } });
-            case I:
-              return Ho()(e, { redirect: { $set: t.payload } });
+              return Qo()(e, { loggedIn: { $set: !1 }, loading: { $set: !1 } });
+            case x:
+              return Qo()(e, { redirect: { $set: t.payload } });
             case w:
-              return Ho()(e, { loggedIn: { $set: !0 } });
-            case xt:
-            case Nt:
-            case zt:
-            case Qt:
-            case Bt:
-            case Pt:
-            case Rt:
+              return Qo()(e, { loggedIn: { $set: !0 } });
+            case jt:
+            case Lt:
+            case Vt:
+            case Yt:
+            case Gt:
+            case $t:
+            case Ft:
             case F:
             case $:
             case Y:
             case ee:
-            case ar:
-            case Rr:
-            case hr:
-            case Hr:
             case ir:
+            case Fr:
             case yr:
+            case Qr:
             case mr:
             case _r:
-            case kr:
+            case hr:
             case Tr:
-            case Qr:
-            case Fr:
-              return Ho()(e, { loading: { $set: !0 } });
-            case It:
-            case kt:
-            case jt:
+            case Rr:
+            case kr:
+            case Yr:
+            case Hr:
+            case re:
+              return Qo()(e, { loading: { $set: !0 } });
             case Ut:
-            case Gt:
-            case Wt:
-            case Vt:
-            case Jt:
-            case $t:
-            case Ht:
-            case Ft:
-            case Mt:
-            case Lt:
+            case Rt:
             case Dt:
+            case Pt:
+            case Jt:
+            case qt:
+            case Zt:
+            case Kt:
+            case Wt:
+            case Qt:
+            case Ht:
+            case zt:
+            case Mt:
+            case Bt:
             case H:
             case z:
             case Z:
             case K:
             case te:
             case ae:
-            case nr:
-            case rr:
-            case Lr:
-            case Dr:
-            case fr:
-            case gr:
-            case zr:
-            case Gr:
             case sr:
             case cr:
-            case Ar:
-            case Er:
-            case pr:
-            case ur:
-            case jr:
-            case Cr:
-            case xr:
-            case Nr:
-            case vr:
-            case wr:
-            case Vr:
-            case Jr:
             case Mr:
             case Br:
-              return Ho()(e, { loading: { $set: !1 } });
+            case Ar:
+            case Er:
+            case Vr:
+            case Jr:
+            case pr:
+            case ur:
+            case vr:
+            case Cr:
+            case fr:
+            case gr:
+            case Dr:
+            case Ir:
+            case jr:
+            case Lr:
+            case wr:
+            case Nr:
+            case Zr:
+            case Kr:
+            case zr:
+            case Gr:
+            case oe:
+            case ie:
+              return Qo()(e, { loading: { $set: !1 } });
             default:
               return e;
           }
         },
-        Wo = {
+        qo = {
           profile: { id: "", name: "", email: "", avatar_url: "" },
           error: null
         };
-      var Qo = function() {
+      var Yo = function() {
         var e,
           t =
-            arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : Wo,
+            arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : qo,
           a = arguments.length > 1 ? arguments[1] : void 0;
         switch (a.type) {
           case T:
-            return Wo;
+            return qo;
           case $:
-            return Ho()(t, { error: { $set: null } });
+            return Qo()(t, { error: { $set: null } });
           case H:
-            return Ho()(t, {
+            return Qo()(t, {
               profile: {
                 id: { $set: a.payload.id },
                 name: { $set: a.payload.name },
@@ -8573,13 +8634,13 @@
                 "string" === typeof a.payload.message
                   ? a.payload.message
                   : "Sorry, something went wrong :(\nPlease try again."),
-              Ho()(t, { error: { $set: e } })
+              Qo()(t, { error: { $set: e } })
             );
           default:
             return t;
         }
       };
-      function Vo(e, t) {
+      function Zo(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -8591,16 +8652,16 @@
         }
         return a;
       }
-      function Jo(e) {
+      function Ko(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? Vo(a, !0).forEach(function(t) {
+            ? Zo(a, !0).forEach(function(t) {
                 Object(y.a)(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : Vo(a).forEach(function(t) {
+            : Zo(a).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -8610,7 +8671,7 @@
         }
         return e;
       }
-      var qo = {
+      var Xo = {
         filteredList: [],
         allContent: [],
         deleteDialogOpen: !1,
@@ -8623,28 +8684,28 @@
         form: { content_type: "", content: "", dialogOpen: !1 },
         error: null
       };
-      var Yo = function() {
+      var ei = function() {
           var e,
             t =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : qo,
+                : Xo,
             a = arguments.length > 1 ? arguments[1] : void 0;
           switch (a.type) {
             case T:
-              return qo;
-            case Ct:
-              return Ho()(t, {
+              return Xo;
+            case It:
+              return Qo()(t, {
                 form: Object(y.a)({}, a.payload.name, { $set: a.payload.value })
               });
-            case Ot:
-              return Ho()(t, {
+            case xt:
+              return Qo()(t, {
                 deleteDialogOpen: { $set: !0 },
-                currentContent: { $set: Jo({}, a.payload.selectedContent) }
+                currentContent: { $set: Ko({}, a.payload.selectedContent) }
               });
-            case Tt:
-            case Ft:
-              return Ho()(t, {
+            case kt:
+            case Ht:
+              return Qo()(t, {
                 deleteDialogOpen: { $set: !1 },
                 currentContent: {
                   id: { $set: "" },
@@ -8655,8 +8716,8 @@
                 },
                 error: { $set: null }
               });
-            case wt:
-              return Ho()(t, {
+            case Nt:
+              return Qo()(t, {
                 form: {
                   content_type: { $set: null },
                   content: { $set: "" },
@@ -8665,19 +8726,19 @@
                   dialogOpen: { $set: !1 }
                 }
               });
-            case xt:
-            case Nt:
-            case zt:
-            case Pt:
-            case Qt:
-            case Rt:
-            case Bt:
-              return Ho()(t, { error: { $set: null } });
-            case It:
             case jt:
-            case Gt:
+            case Lt:
             case Vt:
-              return Ho()(t, {
+            case $t:
+            case Yt:
+            case Ft:
+            case Gt:
+              return Qo()(t, { error: { $set: null } });
+            case Ut:
+            case Dt:
+            case Jt:
+            case Zt:
+              return Qo()(t, {
                 form: {
                   content_type: { $set: a.payload.content_type },
                   content: { $set: a.payload.content },
@@ -8687,34 +8748,34 @@
                 },
                 error: { $set: null }
               });
-            case $t:
-              return Ho()(t, { error: { $set: null } });
-            case Lt:
-              return Ho()(t, {
+            case Wt:
+              return Qo()(t, { error: { $set: null } });
+            case Mt:
+              return Qo()(t, {
                 allContent: { $set: a.payload },
                 error: { $set: null }
               });
-            case kt:
-            case Ut:
-            case Wt:
-            case Mt:
-            case Jt:
-            case Dt:
-            case Ht:
+            case Rt:
+            case Pt:
+            case qt:
+            case zt:
+            case Kt:
+            case Bt:
+            case Qt:
               return (
                 (e =
                   "string" === typeof a.payload.message
                     ? a.payload.message
                     : "Sorry, something went wrong :(\nPlease try again."),
-                Ho()(t, { error: { $set: e } })
+                Qo()(t, { error: { $set: e } })
               );
             default:
               return t;
           }
         },
-        Zo = a(133),
-        Ko = a.n(Zo),
-        Xo = {
+        ti = a(134),
+        ai = a.n(ti),
+        ni = {
           error: null,
           salesforceId: null,
           submissionId: null,
@@ -8753,55 +8814,55 @@
             djrEmployerId: ""
           }
         };
-      var ei = function() {
+      var ri = function() {
           var e,
             t =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : Xo,
+                : ni,
             a = arguments.length > 1 ? arguments[1] : void 0;
           switch (a.type) {
             case ne:
-              return Ho()(t, {
+              return Qo()(t, {
                 formPage1: Object(y.a)({}, a.payload.name, {
                   $set: a.payload.value
                 })
               });
             case Y:
             case ee:
-            case ar:
-            case Rr:
-            case hr:
-            case Hr:
             case ir:
-            case yr:
-            case mr:
-            case kr:
-            case _r:
-            case Tr:
-            case Ar:
             case Fr:
+            case yr:
             case Qr:
-              return Ho()(t, { error: { $set: null } });
+            case mr:
+            case _r:
+            case hr:
+            case Rr:
+            case Tr:
+            case kr:
             case vr:
+            case Hr:
+            case Yr:
+              return Qo()(t, { error: { $set: null } });
             case wr:
-              return Ho()(t, {
+            case Nr:
+              return Qo()(t, {
                 error: { $set: null },
                 djrId: { $set: a.payload.sf_djr_id }
               });
-            case Lr:
+            case Mr:
               var n = a.payload
                 ? a.payload.map(function(e) {
                     return e.Name;
                   })
                 : [""];
-              return Ho()(t, {
+              return Qo()(t, {
                 employerNames: { $set: n },
                 employerObjects: { $set: a.payload }
               });
-            case nr:
+            case sr:
               if (a.payload) {
-                var r = za,
+                var r = Va,
                   o = "";
                 a.payload.Account.WS_Subdivision_from_Agency__c
                   ? (o = a.payload.Account.WS_Subdivision_from_Agency__c)
@@ -8825,13 +8886,13 @@
                     "Declined" === e ? (l.declined = !0) : (l[e] = !0), null
                   );
                 });
-                var m = me(i);
-                return Ho()(t, {
+                var m = he(i);
+                return Qo()(t, {
                   salesforceId: { $set: a.payload.Id },
                   formPage1: {
-                    mm: { $set: Ko()(a.payload.Birthdate).format("MM") },
-                    dd: { $set: Ko()(a.payload.Birthdate).format("DD") },
-                    yyyy: { $set: Ko()(a.payload.Birthdate).format("YYYY") },
+                    mm: { $set: ai()(a.payload.Birthdate).format("MM") },
+                    dd: { $set: ai()(a.payload.Birthdate).format("DD") },
+                    yyyy: { $set: ai()(a.payload.Birthdate).format("YYYY") },
                     mobilePhone: { $set: a.payload.MobilePhone },
                     employerName: { $set: s },
                     employerType: { $set: i },
@@ -8902,9 +8963,9 @@
                   error: { $set: null }
                 });
               }
-              return Xo;
-            case Nr:
-              return Ho()(t, {
+              return ni;
+            case Lr:
+              return Qo()(t, {
                 payment: {
                   activeMethodLast4: {
                     $set: a.payload.Active_Account_Last_4__c
@@ -8916,83 +8977,83 @@
                 djrId: { $set: a.payload.Id || a.payload.id }
               });
             case Z:
-              return Ho()(t, {
+              return Qo()(t, {
                 salesforceId: { $set: a.payload.salesforce_id },
                 submissionId: { $set: a.payload.submission_id },
                 error: { $set: null }
               });
             case te:
-              return Ho()(t, {
+              return Qo()(t, {
                 submissionId: { $set: a.payload.submission_id },
                 error: { $set: null }
               });
-            case fr:
-            case sr:
+            case Ar:
             case pr:
-              return Ho()(t, {
+            case fr:
+              return Qo()(t, {
                 salesforceId: { $set: a.payload.salesforce_id },
                 error: { $set: null },
                 redirect: { $set: !0 }
               });
-            case zr:
             case Vr:
-              return Ho()(t, {
+            case Zr:
+              return Qo()(t, {
                 payment: {
                   cardAddingUrl: { $set: a.payload.cardAddingUrl },
                   memberShortId: { $set: a.payload.memberShortId }
                 }
               });
-            case Mr:
-              return Ho()(t, {
+            case zr:
+              return Qo()(t, {
                 payment: {
                   unioniseToken: { $set: a.payload.access_token },
                   unioniseRefreshToken: { $set: a.payload.refresh_token }
                 }
               });
             case K:
-            case rr:
-            case ae:
-            case Dr:
-            case gr:
-            case Gr:
             case cr:
+            case ae:
+            case Br:
             case Er:
+            case Jr:
             case ur:
             case Cr:
-            case xr:
+            case gr:
+            case Ir:
             case jr:
-            case Jr:
-            case Br:
+            case Dr:
+            case Kr:
+            case Gr:
               return (
                 (e =
                   "string" === typeof a.payload.message
                     ? a.payload.message
                     : "Sorry, something went wrong :(\nPlease try again."),
-                Ho()(t, { error: { $set: e } })
+                Qo()(t, { error: { $set: e } })
               );
             case X:
-              return Ho()(t, {
+              return Qo()(t, {
                 salesforceId: { $set: a.payload.salesforceId }
               });
             default:
               return t;
           }
         },
-        ti = Object(E.c)({
-          appState: Go,
-          profile: Qo,
-          content: Yo,
-          submission: ei,
+        oi = Object(E.c)({
+          appState: Jo,
+          profile: Yo,
+          content: ei,
+          submission: ri,
           localize: S.c,
-          form: Bo.a
+          form: Go.a
         }),
-        ai = Object(E.a)(R.apiMiddleware),
-        ni = [R.apiMiddleware],
-        ri = (E.a.apply(void 0, ni)(E.e),
+        ii = Object(E.a)(R.apiMiddleware),
+        si = [R.apiMiddleware],
+        ci = (E.a.apply(void 0, si)(E.e),
         Object(E.e)(
-          ti,
+          oi,
           Object(E.d)(
-            ai,
+            ii,
             window.__REDUX_DEVTOOLS_EXTENSION__
               ? window.__REDUX_DEVTOOLS_EXTENSION__()
               : function(e) {
@@ -9007,17 +9068,17 @@
             /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
           )
       );
-      var oi = a(263),
-        ii = a.n(oi),
-        si = a(264),
-        ci = a(169),
-        li = a.n(ci),
-        mi = {
+      var li = a(263),
+        mi = a.n(li),
+        pi = a(264),
+        ui = a(170),
+        di = a.n(ui),
+        hi = {
           palette: {
             primary: { main: "#2c0940", light: "#531078" },
             secondary: { main: "#ffce04", light: "#ffffff" },
-            danger: { main: li.a[900], light: li.a[700] },
-            success: { main: He.a[600], light: He.a[400] },
+            danger: { main: di.a[900], light: di.a[700] },
+            success: { main: Qe.a[600], light: Qe.a[400] },
             textColor: "#333",
             secondaryTextColor: "#531078",
             bodyBackground: "#fff",
@@ -9080,8 +9141,8 @@
             }
           }
         },
-        pi = Object(si.a)(mi),
-        ui = (function(e) {
+        fi = Object(pi.a)(hi),
+        gi = (function(e) {
           function t() {
             return (
               Object(d.a)(this, t),
@@ -9109,24 +9170,24 @@
             t
           );
         })(l.a.Component),
-        di = Object(A.f)(ui);
+        bi = Object(A.f)(gi);
       Object(m.render)(
         l.a.createElement(
           u.a,
-          { store: ri },
+          { store: ci },
           l.a.createElement(
             p.a,
             null,
             l.a.createElement(
-              di,
+              bi,
               null,
               l.a.createElement(
-                ii.a,
-                { theme: pi },
+                mi.a,
+                { theme: fi },
                 l.a.createElement(
                   S.a,
-                  { store: ri },
-                  l.a.createElement(Mo, null)
+                  { store: ci },
+                  l.a.createElement(zo, null)
                 )
               )
             )
@@ -9142,4 +9203,4 @@
   },
   [[308, 1, 2]]
 ]);
-//# sourceMappingURL=main.ec4312f1.chunk.js.map
+//# sourceMappingURL=main.273c1b62.chunk.js.map

@@ -187,7 +187,7 @@ export class AppUnconnected extends Component {
   }
 
   verifyCallback = recaptchaToken => {
-    console.log(recaptchaToken, "<= your recaptcha token");
+    // console.log(recaptchaToken, "<= your recaptcha token");
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: recaptchaToken }
     });
