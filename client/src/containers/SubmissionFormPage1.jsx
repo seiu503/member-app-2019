@@ -500,9 +500,7 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
-  async handleTab1() {
-    const { formValues } = this.props;
-
+  async verifyRecaptchaScore() {
     // verify recaptcha score
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
@@ -514,7 +512,15 @@ export class SubmissionFormPage1Container extends React.Component {
         return this.props.handleError("recaptcha failed");
       });
     console.log(`recaptcha score: ${result.payload.score}`);
-    if (!result.payload.score || result.payload.score <= 0.5) {
+    return result.payload.score;
+  }
+
+  async handleTab1() {
+    const { formValues } = this.props;
+
+    // verify recaptcha score
+    const score = await this.verifyRecaptchaScore();
+    if (!score || score <= 0.5) {
       console.log("recaptcha failed");
       return this.props.handleError("recaptcha validation failed");
     }
@@ -850,8 +856,14 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(2);
   }
 
-  handleCAPESubmit() {
+  async handleCAPESubmit() {
     console.log("handleCAPESubmit");
+    // verify recaptcha score
+    const score = await this.verifyRecaptchaScore();
+    if (!score || score <= 0.5) {
+      console.log("recaptcha failed");
+      return this.props.handleError("recaptcha validation failed");
+    }
   }
 
   handleTab(newValue) {
