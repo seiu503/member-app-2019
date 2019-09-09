@@ -13,14 +13,14 @@
     "Mẫu đăng ký thành viên của quý vị đã được nhận và sẽ sớm được xem xét. Trong lúc chờ đợi, vui lòng chia sẻ thêm một chút thông tin về bản thân quý vị để giúp các đoàn viên làm quen với quý vị. SEIU Local 503 cam kết tôn trọng tính đa dạng của tất cả các thành viên. Thông tin nhân khẩu tùy chọn này sẽ giúp chúng tôi hiểu bản sắc xã hội của các thành viên.",
     "我们已收到您的会员资格申请，并将很快进行审核。同时，请告诉我们更多关于您的事情，帮助您的工会会员更好地了解您。SEIU Local 503 致力于尊重所有会员的多样性。此可选的人口统计信息有助于我们了解会员的社会身份。"
   ],
-  "fieldLabel": [
+  "raceEthnicityHelperText": [
     "Check as many as apply to your race/ethnicity",
     "Marque todas las opciones que correspondan a su raza o grupo étnico",
     "Отметьте все применимые к вам варианты расовой/этнической принадлежности.",
     "Đánh dấu tất cả những ô áp dụng đối với chủng tộc/sắc tộc của quý vị",
     "请勾选所有符合您的种族／族裔的选项"
   ],
-  "africanOrAfricanamerican": [
+  "africanOrAfricanAmerican": [
     "African or African-American",
     "Africano o afroestadounidense",
     "Африканец или афроамериканец",
@@ -146,7 +146,7 @@
     "Nam",
     "男"
   ],
-  "nonBinary": [
+  "non-binary": [
     "Non-Binary",
     "No binario",
     "Лицо неопределенного пола",
@@ -174,21 +174,21 @@
     "Đại từ của quý vị",
     "您的代名词"
   ],
-  "sherHerHers": [
+  "she/her/hers": [
     "She/Her/Hers",
     "Ella",
     "Она/ее/ей",
     "Cô/Bà",
     "她／她的"
   ],
-  "heHimHis": [
+  "he/him/his": [
     "He/Him/His",
     "Él",
     "Он/его/ему",
     "Anh/Ông",
     "他／他的"
   ],
-  "theyThemTheirs": [
+  "they/them/their(s)": [
     "They/Them/Their(s)",
     "Elle/Elles",
     "Они/их/им",
@@ -209,7 +209,7 @@
     "Thông tin về việc làm",
     "就业信息"
   ],
-  "jobClassTitle": [
+  "jobTitle": [
     "Job Class/Title",
     "Clase/puesto laboral",
     "Рабочая категория/должность",
@@ -244,42 +244,42 @@
     "Điện thoại nơi làm việc",
     "工作电话"
   ],
-  "mailingAddress": [
+  "mailToAddress": [
     "Mailing Address",
     "Dirección postal",
     "Почтовый адрес",
     "Địa chỉ nơi nhận thư",
     "邮寄地址"
   ],
-  "fieldHint": [
+  "fieldHintAddress": [
     "If different from residence address",
     "Si es diferente al domicilio",
     "Если отличается от адреса проживания",
     "Nếu khác với địa chỉ nơi thường trú",
     "若与居住地址不同"
   ],
-  "mailingStreet": [
+  "mailToStreet": [
     "Mailing Street",
     "Calle y número postal",
     "Улица (почтовый адрес)",
     "Tên đường và số nhà",
     "邮寄街道"
   ],
-  "mailingCity": [
+  "mailToCity": [
     "Mailing City",
     "Ciudad postal",
     "Город (почтовый адрес)",
     "Thành phố",
     "邮寄城市"
   ],
-  "mailingState": [
+  "mailToState": [
     "Mailing State",
     "Estado postal",
     "Штат (почтовый адрес)",
     "Tiểu bang",
     "邮寄州"
   ],
-  "mailingZip": [
+  "mailToZip": [
     "Mailing Zip",
     "Código postal",
     "Почтовый индекс (почтовый адрес)",
@@ -292,5 +292,19 @@
     "Имя, фамилия и адрес эл. почты",
     "Tên và email",
     "姓名及电子邮箱"
+  ],
+  "": [
+    "",
+    "",
+    "",
+    "",
+    ""
+  ],
+  "submit": [
+    "Submit",
+    "Enviar",
+    "Подать",
+    "Gửi",
+    "提交"
   ]
 }

@@ -142,14 +142,12 @@ let getIframeNewError = jest
     Promise.resolve({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
   );
 
-let getUnioniseTokenSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({
-      type: "GET_UNIONISE_TOKEN_SUCCESS",
-      payload: { access_token: "1234" }
-    })
-  );
+let getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_UNIONISE_TOKEN_SUCCESS",
+    payload: { access_token: "1234" }
+  })
+);
 
 let getUnioniseTokenError = jest
   .fn()

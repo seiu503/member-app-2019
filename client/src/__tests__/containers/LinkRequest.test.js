@@ -98,17 +98,36 @@ describe("<LinkRequest />", () => {
     const handleInputMock = jest.fn().mockImplementation(() => {
       return { type: "HANDLE_INPUT" };
     });
-    const props = { apiSubmission: { handleInput: handleInputMock } };
-
-    wrapper = shallow(<LinkRequestUnconnected {...defaultProps} {...props} />);
-    const inputFirstName = findByTestAttr(wrapper, "firstName");
-    const inputLastName = findByTestAttr(wrapper, "lastName");
-    const inputHomeEmail = findByTestAttr(wrapper, "homeEmail");
+    store = mockStore(defaultProps);
+    const props = { store };
+    wrapper = mount(
+      <LinkRequestConnected {...defaultProps} {...props} store={store} />
+    );
+    const inputFirstName = findByTestAttr(wrapper, "firstName").first();
+    const inputLastName = findByTestAttr(wrapper, "lastName").first();
+    const inputHomeEmail = findByTestAttr(wrapper, "homeEmail").first();
     const inputs = [inputFirstName, inputLastName, inputHomeEmail];
-    inputs.forEach(input => input.simulate("change"));
-
+    inputs.forEach(input => {
+      input.prop("onChange")({
+        target: { name: input.props().name, value: "words" }
+      });
+    });
+    const expectedState = [
+      {
+        type: "HANDLE_INPUT",
+        payload: { name: "firstName", value: "words" }
+      },
+      {
+        type: "HANDLE_INPUT",
+        payload: { name: "lastName", value: "words" }
+      },
+      {
+        type: "HANDLE_INPUT",
+        payload: { name: "homeEmail", value: "words" }
+      }
+    ];
     // expect the mock to have been called three times
-    expect(handleInputMock.mock.calls.length).toBe(3);
+    expect(props.store.getActions()).toEqual(expectedState);
 
     // restore mock
     handleInputMock.mockRestore();

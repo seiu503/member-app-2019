@@ -3,12 +3,14 @@ import PropTypes from "prop-types";
 
 import withWidth from "@material-ui/core/withWidth";
 
+import { withLocalize } from "react-localize-redux";
 import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
 import WelcomeInfo from "./WelcomeInfo";
+import globalTranslations from "../translations/globalTranslations";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const { employerTypeMap, getKeyByValue } = formElements;
@@ -490,4 +492,4 @@ SubmissionFormPage1Component.propTypes = {
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };
-export default withWidth()(SubmissionFormPage1Component);
+export default withWidth()(withLocalize(SubmissionFormPage1Component));

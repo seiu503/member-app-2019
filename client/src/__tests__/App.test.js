@@ -70,7 +70,8 @@ const defaultProps = {
   },
   initialize: jest.fn(),
   setActiveLanguage: jest.fn(),
-  classes: {}
+  classes: {},
+  addTranslation: jest.fn()
 };
 
 const setup = (props = {}) => {
