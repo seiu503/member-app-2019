@@ -146,7 +146,7 @@ export const Tab3 = props => {
 
         <ButtonWithSpinner
           type="submit"
-          color="secondary"
+          color="primary"
           className={classes.formButton}
           variant="contained"
           loading={loading}

@@ -856,7 +856,8 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(2);
   }
 
-  async handleCAPESubmit() {
+  async handleCAPESubmit(e) {
+    e.preventDefault();
     console.log("handleCAPESubmit");
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();

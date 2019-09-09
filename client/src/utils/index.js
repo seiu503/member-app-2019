@@ -81,10 +81,13 @@ export const scrollToFirstError = errors => {
   // (some errors will be on future tabs and can't be scrolled to yet)
   if (errors) {
     const errorsArray = Object.keys(errors);
+    console.log(errorsArray);
     const firstError = errorsArray.find(
       error => !!document.getElementById(error)
     );
+    console.log(firstError);
     const el = document.getElementById(firstError);
+    // console.log(el);
     const position =
       el.getBoundingClientRect().top + document.documentElement.scrollTop;
 

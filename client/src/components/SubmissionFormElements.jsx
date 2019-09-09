@@ -821,6 +821,7 @@ export const renderCAPERadioGroup = ({
     <RadioGroup
       aria-label={formControlName}
       name={formControlName}
+      id={formControlName}
       className={classes.horizGroup}
       onChange={(event, value) => {
         input.onChange(value);

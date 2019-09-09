@@ -397,11 +397,10 @@ export const CAPE = props => {
         )}
         <ButtonWithSpinner
           type="submit"
-          color="secondary"
+          color="primary"
           className={classes.formButton}
           variant="contained"
           loading={loading}
-          disabled={invalid}
         >
           Submit
         </ButtonWithSpinner>
