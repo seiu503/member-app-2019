@@ -111,7 +111,6 @@ describe("<LinkRequest />", () => {
       input.prop("onChange")({
         target: { name: input.props().name, value: "words" }
       });
-      console.log(props.store.getActions());
     });
     const expectedState = [
       {

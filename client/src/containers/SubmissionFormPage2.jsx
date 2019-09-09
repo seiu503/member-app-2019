@@ -41,7 +41,7 @@ export class SubmissionFormPage2Container extends React.Component {
           // console.log("result.payload", result.payload);
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           handleError(err);
         });
     } else {
