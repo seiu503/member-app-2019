@@ -163,6 +163,7 @@ export const CAPE = props => {
         </div>
         {formValues.capeAmount === "Other" && (
           <Field
+            data-test="field-other-amount"
             label="Monthly Donation Amount"
             name="capeAmountOther"
             id="capeAmountOther"
@@ -173,7 +174,7 @@ export const CAPE = props => {
           />
         )}
         {standAlone && (
-          <React.Fragment>
+          <div data-test="form-contact-info">
             <FormGroup row classes={{ root: classes.formGroup2Col }}>
               <Field
                 twocol
@@ -322,7 +323,7 @@ export const CAPE = props => {
                 options={employerList}
               />
             )}
-          </React.Fragment>
+          </div>
         )}
         <Field
           label="Occupation"

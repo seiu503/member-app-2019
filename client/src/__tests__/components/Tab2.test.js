@@ -19,6 +19,8 @@ let wrapper,
   testData,
   component;
 
+const backMock = jest.fn();
+
 // initial props for form
 const defaultProps = {
   onSubmit: jest.fn(),
@@ -38,7 +40,8 @@ const defaultProps = {
   formPage1: {},
   formValues: { employerType: "" },
   signatureType: "draw",
-  toggleSignatureInputType: jest.fn()
+  toggleSignatureInputType: jest.fn(),
+  back: backMock
 };
 
 describe("<Tab2 />", () => {
@@ -108,6 +111,18 @@ describe("<Tab2 />", () => {
       component = findByTestAttr(wrapper, "button-sig-toggle");
       component.simulate("click");
       expect(toggleSignatureInputType.mock.calls.length).toBe(1);
+    });
+
+    it("calls `back` on back button click", () => {
+      wrapper = shallow(<Tab2 {...props} />);
+
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+
+      wrapper.setProps({ back: backMock });
+      component = findByTestAttr(wrapper, "button-back");
+      component.simulate("click");
+      expect(backMock.mock.calls.length).toBe(1);
     });
   });
 

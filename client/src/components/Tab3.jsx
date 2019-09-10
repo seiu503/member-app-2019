@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
 import { validate } from "../utils/validators";
-import { scrollToFirstError, isPaymentRequired } from "../utils";
+import { onSubmitFailFn, isPaymentRequired } from "../utils";
 import CAPEForm from "./CAPE";
 import * as formElements from "./SubmissionFormElements";
 
@@ -191,7 +191,7 @@ export const Tab3Form = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: onSubmitFailFn
 })(Tab3);
 
 // connect to redux store

@@ -11,7 +11,8 @@ let wrapper;
 const defaultProps = {
   classes: { test: "test" },
   handleTab: jest.fn(),
-  tab: 1
+  tab: 1,
+  howManyTabs: 4
 };
 
 describe("<NavTabs />", () => {

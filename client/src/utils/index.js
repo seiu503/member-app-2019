@@ -96,6 +96,8 @@ export const scrollToFirstError = errors => {
   }
 };
 
+export const onSubmitFailFn = errors => scrollToFirstError(errors);
+
 export const camelCaseConverter = str => {
   let newStr = str.toLowerCase().replace(/\W+(.)/g, function(match, chr) {
     return chr.toUpperCase();

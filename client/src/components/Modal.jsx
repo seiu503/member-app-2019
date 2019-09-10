@@ -47,6 +47,7 @@ function Modal(props) {
   return (
     <div>
       <Dialog
+        data-test="component-modal"
         open={props.open}
         onClose={props.handleClose}
         aria-labelledby="alert-dialog-title"
@@ -63,6 +64,7 @@ function Modal(props) {
         </DialogContent>
         <DialogActions className={classes.dialogActionsOverride}>
           <Button
+            data-test="button-link-request"
             onClick={() => props.history.push("/linkrequest")}
             className={classes.modalButtonRed}
           >

@@ -277,7 +277,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
-    // console.log("handleSubmit");
+    console.log("handleSubmit");
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
     this.props.apiSubmission.verify(token, ip_address).then(result => {
