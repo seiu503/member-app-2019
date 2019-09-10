@@ -277,10 +277,9 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
-    console.log("handleSubmit");
+    // console.log("handleSubmit");
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
-    console.log("283");
     this.props.apiSubmission.verify(token, ip_address).then(result => {
       console.log(`score: ${result.payload.score}`);
       if (!result.payload.score || result.payload.score <= 0.5) {
@@ -288,17 +287,14 @@ export class SubmissionFormPage1Component extends React.Component {
         return this.props.handleError("recaptcha failed");
       }
     });
-    console.log("291");
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
-      console.log("310");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    console.log("301");
     // console.log(`validMethod? ${validMethod}`);
     // console.log(
     //   `paymentMethodAdded? ${

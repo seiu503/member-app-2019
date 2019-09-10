@@ -1717,10 +1717,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           preferredLanguage: "English"
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          verify: () =>
+            Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            reCaptchaValue: ""
+          }
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,
