@@ -52,7 +52,6 @@ function Modal(props) {
         onClose={props.handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        data-test="component-modal"
       >
         <DialogTitle id="alert-dialog-title">
           <Translate id="modalTitle" /> {`${props.fullName}?`}

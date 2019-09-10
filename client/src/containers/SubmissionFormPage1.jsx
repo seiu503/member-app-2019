@@ -316,7 +316,6 @@ export class SubmissionFormPage1Container extends React.Component {
     // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues);
-
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
@@ -328,6 +327,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
     if (!this.props.submission.formPage1.paymentRequired) {
+      body.Worker__c = this.props.submission.salesforceId;
       return this.props.apiSF.createSFOMA(body);
       // goto CAPE ...
     }

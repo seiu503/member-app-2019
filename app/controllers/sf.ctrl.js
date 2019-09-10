@@ -61,8 +61,6 @@ exports.getSFContactById = async (req, res, next) => {
  */
 exports.createSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 62: createSFContact`);
-  const { ip_address, reCaptchaValue } = req.body;
-  console.log(ip_address, reCaptchaValue);
 
   const bodyRaw = { ...req.body };
   // console.log(`sf.ctrl.js > 64`);
@@ -251,9 +249,6 @@ exports.updateSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 270: updateSFContact`);
   const { id } = req.params;
 
-  const { ip_address, reCaptchaValue } = req.body;
-  console.log(ip_address, reCaptchaValue);
-
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -349,7 +344,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   try {
     const bodyRaw = { ...req.body };
     // console.log(`sf.ctrl.js > 338`);
-    // console.log(bodyRaw);
+    console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (submissionsTableFields[key]) {
@@ -362,6 +357,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     body.Birthdate__c = bodyRaw.birthdate;
+    body.Worker__c = bodyRaw.Worker__c;
     // console.log(`sf.ctrl.js > 347`);
     // console.log(body);
 

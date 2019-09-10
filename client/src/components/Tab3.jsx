@@ -18,7 +18,6 @@ export const Tab3 = props => {
     onSubmit,
     classes,
     loading,
-    invalid,
     iFrameURL,
     afhDuesRate,
     back,
