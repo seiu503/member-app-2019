@@ -280,6 +280,7 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("handleSubmit");
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
+    console.log("283");
     this.props.apiSubmission.verify(token, ip_address).then(result => {
       console.log(`score: ${result.payload.score}`);
       if (!result.payload.score || result.payload.score <= 0.5) {
@@ -287,6 +288,7 @@ export class SubmissionFormPage1Component extends React.Component {
         return this.props.handleError("recaptcha failed");
       }
     });
+    console.log("291");
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
@@ -296,6 +298,7 @@ export class SubmissionFormPage1Component extends React.Component {
         target: { name: "paymentMethodAdded", value: true }
       });
     }
+    console.log("301");
     // console.log(`validMethod? ${validMethod}`);
     // console.log(
     //   `paymentMethodAdded? ${
@@ -312,7 +315,7 @@ export class SubmissionFormPage1Component extends React.Component {
       this.props.submission.formPage1.paymentType === "Card" &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      // console.log("No payment method added");
+      console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );

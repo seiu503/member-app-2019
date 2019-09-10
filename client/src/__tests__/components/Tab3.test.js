@@ -110,29 +110,17 @@ describe("<Tab3 />", () => {
     });
 
     it("calls handleSubmit on submit", async () => {
-      wrapper = setup();
-      handleSubmitMock = jest
-        .fn()
-        .mockImplementation(() => console.log("handleSubmitMock"));
+      wrapper = shallow(<Tab3 {...props} />);
+      handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;
-      const onSubmitMock = jest
-        .fn()
-        .mockImplementation(() => console.log("onSubmitMock"));
 
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
 
-      wrapper.setProps({ onSubmit: onSubmitMock });
       wrapper.setProps({ handleSubmit: handleSubmitMock });
-      wrapper.update();
-
       component = wrapper.find("form");
-      await component.simulate("submit", { ...testData });
-      expect(handleSubmitMock.mock.calls.length).toBe(1);
-
-      // wrapper.prop("handleSubmit")({
-      //   ...testData
-      // });
+      component.simulate("submit", { ...testData });
+      expect(handleSubmit.mock.calls.length).toBe(1);
     });
 
     it("calls `back` on back button click", () => {
