@@ -820,6 +820,7 @@ export const renderCheckbox = ({
 export const renderRadioGroup = ({
   input,
   id,
+  label,
   options,
   validate,
   classes,
@@ -882,6 +883,7 @@ export const renderRadioGroup = ({
 export const renderCAPERadioGroup = ({
   input,
   label,
+  id,
   options,
   validate,
   classes,

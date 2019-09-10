@@ -89,14 +89,15 @@ describe("<Tab3 />", () => {
       handleSubmit: fn => fn,
       classes: {},
       formValues: {
-        employerType: "homecare"
+        employerType: "adult foster home"
       },
       formPage1: {
         paymentType: "Card",
         paymentRequired: true,
         newCardNeeded: true,
-        employerName: "homecare"
+        employerName: "adult foster home"
       },
+      afhDuesRate: 17.59304,
       payment: {
         activeMethodLast4: "1234",
         paymentErrorHold: false
@@ -108,18 +109,30 @@ describe("<Tab3 />", () => {
       expect(component.length).toBe(1);
     });
 
-    it("calls handleSubmit on submit", () => {
-      wrapper = shallow(<Tab3 {...props} />);
-      handleSubmitMock = jest.fn();
+    it("calls handleSubmit on submit", async () => {
+      wrapper = setup();
+      handleSubmitMock = jest
+        .fn()
+        .mockImplementation(() => console.log("handleSubmitMock"));
       handleSubmit = handleSubmitMock;
+      const onSubmitMock = jest
+        .fn()
+        .mockImplementation(() => console.log("onSubmitMock"));
 
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
 
+      wrapper.setProps({ onSubmit: onSubmitMock });
       wrapper.setProps({ handleSubmit: handleSubmitMock });
+      wrapper.update();
+
       component = wrapper.find("form");
-      component.simulate("submit", { ...testData });
-      expect(handleSubmit.mock.calls.length).toBe(1);
+      await component.simulate("submit", { ...testData });
+      expect(handleSubmitMock.mock.calls.length).toBe(1);
+
+      // wrapper.prop("handleSubmit")({
+      //   ...testData
+      // });
     });
 
     it("calls `back` on back button click", () => {

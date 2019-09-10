@@ -1,4 +1,4 @@
-import validate from "../../utils/validators";
+import { validate } from "../../utils/validators";
 import {
   generateSampleValidate,
   generatePage2Validate

@@ -35,9 +35,10 @@ export const randomInt = () => {
 
 export const isPaymentRequired = employerType => {
   if (
-    employerType.toLowerCase() === "community member" ||
-    employerType.toLowerCase() === "retired" ||
-    employerType.toLowerCase() === "adult foster home"
+    employerType &&
+    (employerType.toLowerCase() === "community member" ||
+      employerType.toLowerCase() === "retired" ||
+      employerType.toLowerCase() === "adult foster home")
   ) {
     return true;
   }

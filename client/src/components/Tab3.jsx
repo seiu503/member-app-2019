@@ -28,7 +28,7 @@ export const Tab3 = props => {
     toggleCardAddingFrame,
     handleCAPESubmit
   } = props;
-  console.log(isPaymentRequired(formValues.employerType));
+  // console.log(isPaymentRequired(formValues.employerType));
   let duesCopy = "";
   // console.log(formPage1.paymentType);
   if (formValues.employerType) {
@@ -154,7 +154,6 @@ export const Tab3 = props => {
               className={classes.formButton}
               variant="contained"
               loading={loading}
-              disabled={invalid}
             >
               Submit
             </ButtonWithSpinner>
