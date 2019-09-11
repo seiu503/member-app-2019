@@ -4,6 +4,7 @@ const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
 const nock = require("nock");
+const request = require("request");
 const passport = require("passport");
 const knexCleaner = require("knex-cleaner");
 const submCtrl = require("../app/controllers/submissions.ctrl.js");
@@ -21,6 +22,7 @@ let submissionBody = generateSampleSubmission();
 
 let responseStub,
   id,
+  ip_address,
   next,
   result,
   errorMsg,
@@ -416,12 +418,7 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > verifyHumanity", function() {
     beforeEach(function() {
       token = "faketoken";
-      ip = localIpUrl();
-      const scope = nock("https://www.google.com")
-        .post("/recaptcha/api/siteverify")
-        .reply(200, {
-          success: true
-        });
+      ip_address = localIpUrl();
     });
 
     afterEach(() => {
@@ -430,13 +427,54 @@ suite("sumissions.ctrl.js", function() {
     });
 
     test("when called with valid token, verifyHumanity returns success", async function() {
-      let result;
-      try {
-        result = await submCtrl.verifyHumanity(token, ip);
-        assert.match(result, true);
-      } catch (err) {
+      const app = require("../server");
+      const req = mockReq({ body: { token, ip_address } });
+      const res = mockRes();
+      const requestStub = sinon
+        .stub(request, "post")
+        .yields(null, null, JSON.stringify({ success: true, score: 0.9 }));
+
+      await submCtrl.verifyHumanity(req, res).catch(err => {
         console.log(err);
-      }
+      });
+      assert.calledWith(res.status, 200);
+      assert.calledWith(res.json, {
+        score: 0.9
+      });
+    });
+    test("verifyHumanity returns error to client if recaptcha siteverify throws", async function() {
+      const app = require("../server");
+      const req = mockReq({ body: { token, ip_address } });
+      const res = mockRes();
+      const requestStub = sinon
+        .stub(request, "post")
+        .yields(new Error("recaptcha error"), null, null);
+      await submCtrl.verifyHumanity(req, res).catch(err => {
+        console.log(err);
+      });
+      assert.calledWith(res.status, 500);
+      assert.calledWith(res.json, {
+        message: "recaptcha error"
+      });
+    });
+    test("verifyHumanity returns error to client if recaptcha siteverify returns error code", async function() {
+      const app = require("../server");
+      const req = mockReq({ body: { token, ip_address } });
+      const res = mockRes();
+      const requestStub = sinon
+        .stub(request, "post")
+        .yields(
+          null,
+          null,
+          JSON.stringify({ "error-codes": ["the error code"] })
+        );
+      await submCtrl.verifyHumanity(req, res).catch(err => {
+        console.log(err);
+      });
+      assert.calledWith(res.status, 500);
+      assert.calledWith(res.json, {
+        message: "the error code"
+      });
     });
   });
 });

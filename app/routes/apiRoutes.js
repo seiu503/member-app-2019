@@ -45,6 +45,21 @@ router.get(
   authCtrl.googleCallback
 );
 
+/* =========================== VERIFY CAPTCHA  ============================= */
+
+// VERIFY CAPTCHA
+//   Example: POST >> /api/verify
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              ip_address    : String
+//              token         : String
+//             }
+//   Returns: { cardAddingUrl } or error message.
+//
+router.post("/verify", submissionCtrl.verifyHumanity);
+
 /* ============================== USER ROUTES =========================== */
 
 // CREATE A USER

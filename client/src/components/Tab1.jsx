@@ -1,5 +1,5 @@
 import React from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+import { ReCaptcha } from "react-recaptcha-v3";
 import {
   Field,
   reduxForm,
@@ -17,7 +17,7 @@ import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
@@ -41,8 +41,7 @@ export const Tab1 = props => {
     renderCheckbox,
     formValues,
     width,
-    reCaptchaChange,
-    reCaptchaRef
+    verifyCallback
   } = props;
 
   return (
@@ -258,10 +257,10 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
-          <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-            onChange={reCaptchaChange}
+          <ReCaptcha
+            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            action="tab_1_submit"
+            verifyCallback={verifyCallback}
           />
           <div className={classes.buttonWrap}>
             <Button

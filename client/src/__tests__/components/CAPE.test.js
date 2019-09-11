@@ -4,8 +4,9 @@ import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
-import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
-import { Tab3, Tab3Form } from "../../components/Tab3";
+import { generateCAPEValidate } from "../../../../app/utils/fieldConfigs";
+import { CAPE, CAPEForm } from "../../components/CAPE";
+import * as formElements from "../../components/SubmissionFormElements";
 
 // variables
 let wrapper,
@@ -45,10 +46,15 @@ const defaultProps = {
   },
   afhDuesRate: 17.59304,
   changeFieldValue: changeFieldValueMock,
-  back: backMock
+  back: backMock,
+  renderTextField: formElements.renderTextField,
+  renderSelect: formElements.renderSelect,
+  renderCheckbox: formElements.renderCheckbox,
+  employerTypesList: ["test"],
+  employerList: ["test"]
 };
 
-describe("<Tab3 />", () => {
+describe("<CAPE />", () => {
   // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function
   // gain access to touched and error to test validation
   // will assign our own test functions to replace action/reducers for apiSubmission prop
@@ -69,9 +75,14 @@ describe("<Tab3 />", () => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return mount(
       <Provider store={store}>
-        <Tab3Form {...setUpProps} {...props} />
+        <CAPEForm {...setUpProps} {...props} />
       </Provider>
     );
+  };
+
+  const unconnectedSetup = props => {
+    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
+    return shallow(<CAPEForm {...setUpProps} {...props} />);
   };
 
   // smoke test and making sure we have access to correct props
@@ -105,17 +116,32 @@ describe("<Tab3 />", () => {
     };
 
     it("renders without error", () => {
-      const component = findByTestAttr(wrapper, "component-tab3");
+      const component = findByTestAttr(wrapper, "component-cape");
       expect(component.length).toBe(1);
     });
 
+    it("calls updateEmployersPicklist on select change", () => {
+      const testProps = {
+        standAlone: true
+      };
+      wrapper = shallow(<CAPE {...props} {...testProps} />);
+      const updateEmployersPicklistMock = jest.fn();
+
+      wrapper.setProps({
+        updateEmployersPicklist: updateEmployersPicklistMock
+      });
+      component = findByTestAttr(wrapper, "select-employer-type").first();
+      component.simulate("change");
+      expect(updateEmployersPicklistMock.mock.calls.length).toBe(1);
+    });
+
     it("calls handleSubmit on submit", async () => {
-      wrapper = shallow(<Tab3 {...props} />);
+      wrapper = shallow(<CAPE {...props} />);
       handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;
 
       // imported function that creates dummy data for form
-      testData = generateSampleValidate();
+      testData = generateCAPEValidate();
 
       wrapper.setProps({ handleSubmit: handleSubmitMock });
       component = wrapper.find("form");
@@ -123,11 +149,25 @@ describe("<Tab3 />", () => {
       expect(handleSubmit.mock.calls.length).toBe(1);
     });
 
+    it("scrolls to first error on failed submit", async () => {
+      const scrollToMock = jest.fn();
+      utils.scrollToFirstError = scrollToMock;
+
+      wrapper = setup(props);
+      component = wrapper.find("form");
+      component.simulate("submit", "");
+      const asyncCheck = setImmediate(() => {
+        wrapper.update();
+        expect(scrollToMock.mock.calls.length).toBe(1);
+      });
+      global.clearImmediate(asyncCheck);
+    });
+
     it("calls `back` on back button click", () => {
-      wrapper = shallow(<Tab3 {...props} />);
+      wrapper = shallow(<CAPE {...props} />);
 
       // imported function that creates dummy data for form
-      testData = generateSampleValidate();
+      testData = generateCAPEValidate();
 
       wrapper.setProps({ back: backMock });
       component = findByTestAttr(wrapper, "button-back");
@@ -136,18 +176,6 @@ describe("<Tab3 />", () => {
     });
   });
   describe("conditional render", () => {
-    it("renders Payment Type radio for retirees", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          employerType: "Retired"
-        }
-      };
-      wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "radio-payment-type");
-      expect(component.length).toBeGreaterThan(1);
-    });
-
     it("renders card adding iframe if payment type = `Card`", () => {
       handleSubmit = fn => fn;
       const props = {
@@ -174,6 +202,26 @@ describe("<Tab3 />", () => {
       const radio = findByTestAttr(wrapper, "radio-payment-type");
       expect(iframe.length).toBe(0);
       expect(radio.length).toBe(0);
+    });
+
+    it("renders contact info form if rendered as standalone component", () => {
+      const props = {
+        standAlone: true
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "form-contact-info");
+      expect(component.length).toBe(1);
+    });
+
+    it("renders `Other amount` field if capeAmount === `Other`", () => {
+      const props = {
+        formValues: {
+          capeAmount: "Other"
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "field-other-amount").first();
+      expect(component.length).toBe(1);
     });
   });
 });

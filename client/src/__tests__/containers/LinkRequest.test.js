@@ -16,29 +16,6 @@ let store,
   apiSF = {},
   lookupSFContact;
 
-// let pushMock = jest.fn();
-
-// const initialState = {
-//   submission: {
-//     formPage1: {
-//       firstName: "",
-//       lastName: "",
-//       email: ""
-//     },
-//     loading: false
-//   },
-//   apiSubmission: {
-//     handleInput: () => ({ type: "HANDLE_INPUT" }),
-//     clearForm: () => ({ type: "CLEAR_FORM" }),
-//   },
-//   apiSF: {
-//     lookupSFContact: () => Promise.resolve({ type: "LOOKUP_SF_CONTACT_SUCCESS" })
-//   },
-//   classes: {
-//     test: "test"
-//   }
-// };
-
 const defaultProps = {
   submission: {
     formPage1: {

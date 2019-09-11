@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import { Translate } from "react-localize-redux";
 
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 import {
   hcwDirectDepositAuthText,

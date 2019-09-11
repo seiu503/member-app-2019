@@ -1,6 +1,11 @@
 import update from "immutability-helper";
 
-import { LOGOUT, SET_LOGGEDIN, SET_REDIRECT_URL } from "../actions";
+import {
+  LOGOUT,
+  SET_LOGGEDIN,
+  SET_REDIRECT_URL,
+  SET_SPINNER
+} from "../actions";
 import {
   VALIDATE_TOKEN_REQUEST,
   VALIDATE_TOKEN_SUCCESS,
@@ -38,7 +43,10 @@ import {
   ADD_SUBMISSION_FAILURE,
   UPDATE_SUBMISSION_REQUEST,
   UPDATE_SUBMISSION_SUCCESS,
-  UPDATE_SUBMISSION_FAILURE
+  UPDATE_SUBMISSION_FAILURE,
+  VERIFY_REQUEST,
+  VERIFY_SUCCESS,
+  VERIFY_FAILURE
 } from "../actions/apiSubmissionActions";
 import {
   GET_SF_CONTACT_REQUEST,
@@ -92,6 +100,12 @@ function appState(state = INITIAL_STATE, action) {
     case LOGOUT:
       return INITIAL_STATE;
 
+    case SET_SPINNER: {
+      return update(state, {
+        loading: { $set: true }
+      });
+    }
+
     case VALIDATE_TOKEN_SUCCESS:
       return update(state, {
         loggedIn: { $set: true },
@@ -134,6 +148,7 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_SF_DJR_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_UNIONISE_TOKEN_REQUEST:
+    case VERIFY_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -182,6 +197,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_SUCCESS:
     case GET_UNIONISE_TOKEN_FAILURE:
+    case VERIFY_SUCCESS:
+    case VERIFY_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

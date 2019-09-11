@@ -1,23 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    revision: "481f164bf8247bd25eeee7e0f2a1c1ba",
+    revision: "2fb2b0cfbdd4b9b204a608b56601487f",
     url: "/index.html"
   },
   {
-    revision: "95197ad2f9c265371a30",
+    revision: "4e42a5b3d1de6d00a10e",
     url: "/static/css/main.5fc97e3b.chunk.css"
   },
   {
-    revision: "349f88422f2724c9c228",
-    url: "/static/js/2.fd3bb591.chunk.js"
+    revision: "34ffe4e05fc12bf214da",
+    url: "/static/js/2.d8a7f6eb.chunk.js"
   },
   {
-    revision: "95197ad2f9c265371a30",
-    url: "/static/js/main.840e6674.chunk.js"
+    revision: "4e42a5b3d1de6d00a10e",
+    url: "/static/js/main.40584d44.chunk.js"
   },
   {
     revision: "db6be01aac7cb1c6d4ff",
     url: "/static/js/runtime~main.0033641b.js"
+  },
+  {
+    revision: "8d0b225a591822b4fde4942b3a11c7a7",
+    url: "/static/media/deffo_mebrat_300.8d0b225a.png"
   },
   {
     revision: "1f5ffdfd056be37809c2ef5afd697673",

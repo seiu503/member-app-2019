@@ -2,6 +2,7 @@ import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import queryString from "query-string";
 
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -151,10 +152,10 @@ export class NavBar extends React.Component {
   }
 
   render() {
+    const values = queryString.parse(this.props.location.search);
     const { classes } = this.props;
     const { anchorEl } = this.state;
     const { loggedIn } = this.props.appState;
-    const links = [""];
     const adminLinks = ["new", "library", "logout"];
     const ListItemLink = props => {
       const { primary, handleClose, link } = props;
@@ -181,7 +182,7 @@ export class NavBar extends React.Component {
     };
     const mobileLinks = (
       <div data-test="mobile-links">
-        {links.map((link, index) => {
+        {adminLinks.map((link, index) => {
           return (
             <ListItemLink
               key={index}
@@ -200,24 +201,6 @@ export class NavBar extends React.Component {
         {adminLinks.map((link, index) => {
           return (
             <Button key={index} className={classes.menuLink} href={`/${link}`}>
-              {link}
-            </Button>
-          );
-        })}
-      </div>
-    );
-    const menuLinks = (
-      <div data-test="menu-links">
-        {links.map((link, index) => {
-          return (
-            <Button
-              key={index}
-              className={classes.menuLink}
-              onClick={() => {
-                this.props.history.push(`/${link}`);
-              }}
-              data-test="standard-menu-link"
-            >
               {link}
             </Button>
           );
@@ -252,44 +235,41 @@ export class NavBar extends React.Component {
               data-test="title"
             >
               <Link to="/" className={classes.title}>
-                Membership Application
+                {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
               </Link>
             </Typography>
-            <IconButton
-              className={classes.menuButton}
-              color="secondary"
-              aria-label="Menu"
-              aria-owns={anchorEl ? "nav-menu" : null}
-              aria-haspopup="true"
-              onClick={e => this.handleClick(e)}
-              data-test="menu-button"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="nav-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={this.handleClose}
-              component="nav"
-              className="drawer"
-              elevation={0}
-              anchorOrigin={{ horizontal: "right", vertical: "top" }}
-              transformOrigin={{ horizontal: "right", vertical: "top" }}
-              TransitionComponent={Slide}
-              TransitionProps={{ direction: "left" }}
-              PaperProps={{ className: classes.drawer }}
-              data-test="menu"
-            >
-              {mobileLinks}
-            </Menu>
-            {loggedIn ? (
-              <nav className={classes.menuWrap}>
-                {menuLinks}
-                {adminMenuLinks}
-              </nav>
-            ) : (
-              <nav className={classes.menuWrap}>{menuLinks}</nav>
+            {loggedIn && (
+              <React.Fragment>
+                <IconButton
+                  className={classes.menuButton}
+                  color="secondary"
+                  aria-label="Menu"
+                  aria-owns={anchorEl ? "nav-menu" : null}
+                  aria-haspopup="true"
+                  onClick={e => this.handleClick(e)}
+                  data-test="menu-button"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="nav-menu"
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={this.handleClose}
+                  component="nav"
+                  className="drawer"
+                  elevation={0}
+                  anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                  transformOrigin={{ horizontal: "right", vertical: "top" }}
+                  TransitionComponent={Slide}
+                  TransitionProps={{ direction: "left" }}
+                  PaperProps={{ className: classes.drawer }}
+                  data-test="menu"
+                >
+                  {mobileLinks}
+                </Menu>
+                <nav className={classes.menuWrap}>{adminMenuLinks}</nav>
+              </React.Fragment>
             )}
           </Toolbar>
         </AppBar>

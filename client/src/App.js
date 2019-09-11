@@ -5,13 +5,14 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
+import { loadReCaptcha, ReCaptcha } from "react-recaptcha-v3";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withStyles } from "@material-ui/core/styles";
 
 import * as Actions from "./store/actions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
-import * as apiContentActions from "./store/actions/apiContentActions";
+import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
 import { detectDefaultLanguage } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
@@ -139,7 +140,6 @@ export class AppUnconnected extends Component {
     this.direct_pay = React.createRef();
     this.direct_deposit = React.createRef();
     this.sigBox = React.createRef();
-    this.reCaptchaRef = React.createRef();
     this.props.initialize({
       languages: [
         { name: "English", code: "en" },
@@ -186,12 +186,25 @@ export class AppUnconnected extends Component {
     }
     const defaultLanguage = detectDefaultLanguage();
     this.props.setActiveLanguage(defaultLanguage);
+    loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
   }
+
+  verifyCallback = recaptchaToken => {
+    // console.log(recaptchaToken, "<= your recaptcha token");
+    this.props.apiSubmission.handleInput({
+      target: { name: "reCaptchaValue", value: recaptchaToken }
+    });
+  };
 
   render() {
     const { classes } = this.props;
     return (
       <div data-test="component-app" className={classes.appRoot}>
+        <ReCaptcha
+          sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+          action="homepage"
+          verifyCallback={this.verifyCallback}
+        />
         <CssBaseline />
         <NavBar scroll={this.scroll} main_ref={this.main_ref} />
         <Notifier />
@@ -208,7 +221,7 @@ export class AppUnconnected extends Component {
                   direct_pay={this.direct_pay}
                   direct_deposit={this.direct_deposit}
                   sigBox={this.sigBox}
-                  reCaptchaRef={this.reCaptchaRef}
+                  verifyCallback={this.verifyCallback}
                   {...routeProps}
                 />
               )}
@@ -297,10 +310,8 @@ AppUnconnected.propTypes = {
   apiProfile: PropTypes.shape({
     validateToken: PropTypes.func
   }).isRequired,
-  apiContentActions: PropTypes.shape({
-    addContent: PropTypes.func,
-    deleteContent: PropTypes.func,
-    clearForm: PropTypes.func
+  apiSubmission: PropTypes.shape({
+    handleInput: PropTypes.func
   }).isRequired,
   content: PropTypes.shape({
     form: PropTypes.shape({
@@ -332,7 +343,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
-  apiContentActions: bindActionCreators(apiContentActions, dispatch),
+  apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });

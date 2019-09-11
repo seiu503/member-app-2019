@@ -589,6 +589,7 @@ const submissionsTableFields = {
   ip_address: {
     oldFormPage: "none",
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "ip_address",
     clientFieldName: "idAddress",
     HtmlInputType: "(formula; no user-facing input)",
@@ -602,6 +603,7 @@ const submissionsTableFields = {
   submission_date: {
     oldFormPage: "none",
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "submission_date",
     clientFieldName: "submissionDate",
     HtmlInputType: "(formula; no user-facing input)",
@@ -656,6 +658,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "cell_phone",
     clientFieldName: "cellPhone",
     HtmlInputType: "n/a (see Contacts)",
@@ -670,6 +673,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "employer_name",
     clientFieldName: "employerName",
     HtmlInputType: "n/a (see Contacts)",
@@ -684,6 +688,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "first_name",
     clientFieldName: "firstName",
     HtmlInputType: "n/a (see Contacts)",
@@ -698,6 +703,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "last_name",
     clientFieldName: "lastName",
     HtmlInputType: "n/a (see Contacts)",
@@ -712,6 +718,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "home_street",
     clientFieldName: "homeStreet",
     HtmlInputType: "n/a (see Contacts)",
@@ -726,6 +733,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "home_city",
     clientFieldName: "homeCity",
     HtmlInputType: "n/a (see Contacts)",
@@ -740,6 +748,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "home_state",
     clientFieldName: "homeState",
     HtmlInputType: "n/a (see Contacts)",
@@ -754,6 +763,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "home_zip",
     clientFieldName: "homeZip",
     HtmlInputType: "n/a (see Contacts)",
@@ -768,6 +778,7 @@ const submissionsTableFields = {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
+    CAPEreq: true,
     postgresFieldName: "home_email",
     clientFieldName: "homeEmail",
     HtmlInputType: "n/a (see Contacts)",
@@ -868,6 +879,14 @@ const submissionsTableFields = {
     SFTable: "OnlineMemberApp__c",
     SFFieldLabel: "Legal Language",
     SFAPIName: "Legal_Language__c",
+    SFDataType: "Long Text Area(32768)",
+    SQLDataType: "Text",
+    testingSample: "Lorem ipsum dolor sit amet."
+  },
+  cape_legal: {
+    CAPEreq: true,
+    postgresFieldName: "cape_legal",
+    clientFieldName: "capeLegal",
     SFDataType: "Long Text Area(32768)",
     SQLDataType: "Text",
     testingSample: "Lorem ipsum dolor sit amet."
@@ -1297,6 +1316,19 @@ const requiredFields = [
   "signature"
 ];
 
+const generateCAPEValidate = () => {
+  const sampleData = {};
+  Object.keys(submissionsTableFields).map(function(key, index) {
+    if (submissionsTableFields[key].CAPEreq) {
+      let clientFieldName = submissionsTableFields[key].clientFieldName;
+      sampleData[clientFieldName] = submissionsTableFields[key].testingSample;
+    }
+  });
+  sampleData.mobilePhone = sampleData.cellPhone;
+  sampleData.homePostalCode = sampleData.homeZip;
+  delete sampleData.cellPhone;
+  return sampleData;
+};
 const generateSampleValidate = () => {
   const sampleData = {};
   Object.keys(submissionsTableFields).map(function(key, index) {
@@ -1342,6 +1374,7 @@ module.exports = {
   Page2TableFields,
   generateSampleSubmission,
   generateSampleValidate,
+  generateCAPEValidate,
   generatePage2Validate,
   generateSFContactFieldList,
   generateSFDJRFieldList,

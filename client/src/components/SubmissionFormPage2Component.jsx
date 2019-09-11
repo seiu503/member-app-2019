@@ -3,7 +3,6 @@ import { Field } from "redux-form";
 import PropTypes from "prop-types";
 import { reduxForm } from "redux-form";
 import { Translate } from "react-localize-redux";
-import validate from "../utils/validators";
 import queryString from "query-string";
 
 import FormLabel from "@material-ui/core/FormLabel";
@@ -15,6 +14,7 @@ import Divider from "@material-ui/core/Divider";
 import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
+import { validate } from "../utils/validators";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
@@ -490,4 +490,3 @@ export const SubmissionFormPage2Wrap = reduxForm({
 })(SubmissionFormPage2Component);
 
 export default SubmissionFormPage2Wrap;
-// export default withLocalize(SubmissionFormPage2Wrap);

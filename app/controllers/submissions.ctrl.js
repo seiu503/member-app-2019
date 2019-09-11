@@ -106,14 +106,15 @@ const createSubmission = async (req, res, next) => {
       reason: "ValidationError",
       message: `Missing required field ${missingField}`
     });
-  } else if (process.env.NODE_ENV !== "testing") {
-    verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-      console.log(err);
-      return res
-        .status(422)
-        .json({ message: "Please verify that you are a human" });
-    });
   }
+  // else if (process.env.NODE_ENV !== "testing") {
+  //   verifyHumanity(reCaptchaValue, ip_address).catch(err => {
+  //     console.log(err);
+  //     return res
+  //       .status(422)
+  //       .json({ message: "ReCaptcha verification failed" });
+  //   });
+  // }
   const createSubmissionResult = await submissions.createSubmission(
     ip_address,
     submission_date,
@@ -269,40 +270,39 @@ const getSubmissionById = (req, res, next) => {
  * @param {String} ip_address users ipAdress
  * @returns {Bool} returns true for human, false for bot
  */
-const verifyHumanity = (token, ip_address) => {
-  return new Promise((resolve, reject) => {
-    const key =
-      process.env.NODE_ENV === "testing"
-        ? process.env.TEST_RECAPTCHA_SECRET_KEY
-        : process.env.RECAPTCHA_SECRET_KEY;
-    return request.post(
-      "https://www.google.com/recaptcha/api/siteverify",
-      {
-        form: {
-          secret: key,
-          response: token,
-          remoteip: ip_address
-        }
-      },
-      (err, httpResponse, body) => {
-        if (err) {
-          // console.log(err);
-          reject(new Error(err));
+const verifyHumanity = async (req, res) => {
+  // console.log(`verifyHumanity`);
+  const { token, ip_address } = req.body;
+  const key = process.env.RECAPTCHA_V3_SECRET_KEY;
+  return request.post(
+    "https://www.google.com/recaptcha/api/siteverify",
+    {
+      form: {
+        secret: key,
+        response: token,
+        remoteip: ip_address
+      }
+    },
+    (err, httpResponse, body) => {
+      if (err) {
+        // console.log(`submission.ctrl.js > 287:`);
+        // console.log(err);
+        return res.status(500).json({ message: err.message });
+      } else {
+        const r = JSON.parse(body);
+        console.log(`submissions.ctrl.js > 291: recaptcha error:`);
+        console.log(r["error-codes"]);
+        if (r.success) {
+          // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
+          return res.status(200).json({ score: r.score });
         } else {
-          const r = JSON.parse(body);
-          // console.log(r['error-codes']);
-          if (r.success) {
-            // console.log(`submissions.ctrl.js > 291`);
-            // console.log(r.success);
-            resolve(r.success);
-          } else {
-            // console.log(`submissions.ctrl.js > 295`);
-            reject(new Error(`reCaptcha Error: ${r["error-codes"][0]}`));
-          }
+          console.log(`submissions.ctrl.js > 300: recaptcha failure`);
+          console.log(r["error-codes"][0]);
+          return res.status(500).json({ message: r["error-codes"][0] });
         }
       }
-    );
-  });
+    }
+  );
 };
 
 /* ================================ EXPORT ================================= */

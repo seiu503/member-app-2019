@@ -165,7 +165,8 @@ describe("submission reducer", () => {
           whichCard: "Use existing",
           medicaidResidents: 0,
           paymentMethodAdded: false,
-          afhDuesRate: 0
+          afhDuesRate: 0,
+          capeAmount: ""
         },
         formPage2: {
           africanOrAfricanAmerican: false,

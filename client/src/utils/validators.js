@@ -1,4 +1,4 @@
-const validate = values => {
+export const validate = values => {
   const errors = {};
   const requiredFields = [
     "firstName",
@@ -114,4 +114,73 @@ const validate = values => {
   return errors;
 };
 
-export default validate;
+export const capeValidate = values => {
+  // console.log('capeValidate');
+  const errors = {};
+  const requiredFields = [
+    "firstName",
+    "lastName",
+    "homeStreet",
+    "homeZip",
+    "homeState",
+    "homeCity",
+    "homeEmail",
+    "mobilePhone",
+    "employerName",
+    "employerType",
+    "capeAmount",
+    "jobTitle"
+  ];
+  const conditionalRequiredFields = [
+    {
+      requiredField: "capeAmountOther",
+      controllingField: "capeAmount",
+      controllingValues: ["Other"]
+    }
+  ];
+  conditionalRequiredFields.forEach(obj => {
+    let matchValue = values[obj["controllingField"]];
+    if (
+      obj["controllingValues"].includes(matchValue) &&
+      !values[obj["requiredField"]]
+    ) {
+      errors[obj["requiredField"]] = "Required";
+    }
+  });
+  requiredFields.forEach(field => {
+    if (!values[field]) {
+      errors[field] = "Required";
+    }
+  });
+  if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
+    errors.capeAmountOther = "Please enter a whole dollar amount";
+  }
+  if (
+    values.employerType &&
+    (values.employerType.toLowerCase() === "adult foster home" ||
+      values.employerType.toLowerCase() === "retired" ||
+      values.employerType.toLowerCase() === "community member") &&
+    values.paymentMethod === "Card" &&
+    !values.paymentMethodAdded
+  ) {
+    errors.paymentMethodAdded = `Please add a payment method.`;
+  }
+  if (
+    values.homeEmail &&
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
+  ) {
+    errors.homeEmail = "Invalid email address (e.g. sample@email.com)";
+  }
+  if (
+    values.mobilePhone &&
+    !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(
+      values.mobilePhone
+    )
+  ) {
+    errors.mobilePhone = "Invalid phone number (e.g. 555-123-456)";
+  }
+  if (values.homeZip && values.homeZip.length !== 5) {
+    errors.homeZip = `Must be at exactly 5 characters long`;
+  }
+  return errors;
+};

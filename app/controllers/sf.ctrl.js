@@ -60,8 +60,11 @@ exports.getSFContactById = async (req, res, next) => {
  *  @returns  {Object}        { sf_contact_id } or error message
  */
 exports.createSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 62: createSFContact`);
+  console.log(`sf.ctrl.js > 62: createSFContact`);
+
   const bodyRaw = { ...req.body };
+  // console.log(`sf.ctrl.js > 64`);
+  // console.log(bodyRaw);
   const body = {};
 
   // convert raw body to key/value pairs using SF API field names
@@ -71,6 +74,8 @@ exports.createSFContact = async (req, res, next) => {
       body[sfFieldName] = bodyRaw[key];
     }
   });
+  // console.log(`sf.ctrl.js > 74`);
+  // console.log(body);
   delete body["Account.Id"];
   delete body["Account.Agency_Number__c"];
   delete body["Account.WS_Subdivision_from_Agency__c"];
@@ -95,7 +100,7 @@ exports.createSFContact = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 94: returning to client`);
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 97: ${err}`);
+    console.error(`sf.ctrl.js > 97: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -171,9 +176,10 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  */
 
 exports.createOrUpdateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
+  console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
 
-  const { salesforce_id } = req.body;
+  const { salesforce_id, ip_address, reCaptchaValue } = req.body;
+  console.log(ip_address, reCaptchaValue);
 
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to updateSFContact
@@ -240,8 +246,9 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 exports.updateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 284: updateSFContact`);
+  console.log(`sf.ctrl.js > 270: updateSFContact`);
   const { id } = req.params;
+
   const updatesRaw = { ...req.body };
   const updates = {};
   // convert updates object to key/value pairs using
@@ -337,7 +344,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   try {
     const bodyRaw = { ...req.body };
     // console.log(`sf.ctrl.js > 338`);
-    // console.log(bodyRaw);
+    console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (submissionsTableFields[key]) {
@@ -350,6 +357,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     body.Birthdate__c = bodyRaw.birthdate;
+    body.Worker__c = bodyRaw.Worker__c;
     // console.log(`sf.ctrl.js > 347`);
     // console.log(body);
 
@@ -557,9 +565,11 @@ exports.getIframeExisting = async (req, res, next) => {
     "content-type": "application/x-www-form-urlencoded",
     Authorization: req.headers.authorization
   };
+  // console.log(`sf.ctrl.js > 564`);
+  // console.log(headers);
 
   axios
-    .post(url, data, headers)
+    .post(url, data, { headers })
     .then(response => {
       // console.log(`sf.ctrl.js > 567`);
       // console.log(response.data);
@@ -571,7 +581,7 @@ exports.getIframeExisting = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      // console.error(`sf.ctrl.js > 579: ${err}`);
+      console.error(`sf.ctrl.js > 588: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
@@ -584,7 +594,7 @@ exports.getIframeExisting = async (req, res, next) => {
  */
 
 exports.getUnioniseToken = async (req, res, next) => {
-  console.log("getUnioniseToken");
+  // console.log("getUnioniseToken");
 
   const params = {
     grant_type: "password",
@@ -604,8 +614,7 @@ exports.getUnioniseToken = async (req, res, next) => {
 
   const headers = { "content-type": "application/x-www-form-urlencoded" };
   axios
-    .post(url, data, headers)
-    // axios(options)
+    .post(url, data, { headers })
     .then(response => {
       // console.log(`sf.ctrl.js > 615`);
       // console.log(response.data);
