@@ -520,7 +520,7 @@ export class SubmissionFormPage1Container extends React.Component {
           "ReCaptcha validation failed, please reload the page and try again."
         );
       });
-    console.log(`recaptcha score: ${result.payload.score}`);
+    // console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
   }
 
@@ -603,14 +603,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    console.log("getIframeExisting");
+    // console.log("getIframeExisting");
     const memberShortId = this.props.submission.payment.memberShortId;
     const token = this.props.submission.payment.unioniseToken;
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        console.log("where is memberShortId??");
-        console.log(result);
+        // console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -872,8 +871,8 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(2);
   }
 
-  async handleCAPESubmit(e) {
-    e.preventDefault();
+  async handleCAPESubmit(standAlone) {
+    // e.preventDefault();
     console.log("handleCAPESubmit");
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
@@ -888,7 +887,14 @@ export class SubmissionFormPage1Container extends React.Component {
     // if paymentRequired get cardaddingiframe & save unionise info
     // update validate function to require payment info if paymentRequired
     this.props.reset("submissionPage1");
-    this.props.history.push(`/page2/?id=${this.props.submission.salesforceId}`);
+    if (!standAlone) {
+      this.props.history.push(
+        `/page2/?id=${this.props.submission.salesforceId}`
+      );
+    }
+    // otherwise, need to redirect to the thankyou page
+    // but need to make that text dynamic and reuse component for both
+    // cape and membership submits
   }
 
   handleTab(newValue) {

@@ -157,7 +157,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   async updateSubmission() {
-    console.log("updateSubmission");
+    // console.log("updateSubmission");
     this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
@@ -174,7 +174,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -191,7 +191,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createSFOMA() {
-    console.log("createSFOMA");
+    // console.log("createSFOMA");
     this.props.actions.setSpinner();
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
@@ -199,7 +199,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
@@ -216,7 +216,7 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async createOrUpdateSFDJR() {
     this.props.actions.setSpinner();
-    console.log("createOrUpdateSFDJR");
+    // console.log("createOrUpdateSFDJR");
 
     const { formPage1, payment } = this.props.submission;
 
@@ -235,17 +235,19 @@ export class SubmissionFormPage1Component extends React.Component {
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
+    console.log("if these dont match then create a new record");
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
-      console.log("createSFDJR");
-      console.log(body);
+      // console.log("createSFDJR");
+      // console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
-          console.log(result.type);
+          // console.log(result.type);
           if (
             result.type === "CREATE_SF_DJR_FAILURE" ||
             this.props.submission.error
@@ -261,11 +263,11 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     // if id exists and employer matches, update existing DJR record
-    // console.log("updateSFDJR");
+    console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
-    console.log("updateSFDJR");
-    console.log(body);
+    // console.log("updateSFDJR");
+    // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
@@ -285,13 +287,13 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
-    console.log("handleSubmit");
+    // console.log("handleSubmit");
     this.props.actions.setSpinner();
 
     await this.props
       .verifyRecaptchaScore()
       .then(score => {
-        console.log(`score: ${score}`);
+        // console.log(`score: ${score}`);
         if (!score || score <= 0.5) {
           console.log(`recaptcha failed: ${score}`);
           return this.props.handleError(
