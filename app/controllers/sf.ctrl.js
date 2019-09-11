@@ -176,7 +176,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  */
 
 exports.createOrUpdateSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
+  // console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
 
   const { salesforce_id } = req.body;
 
@@ -245,7 +245,7 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 exports.updateSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 270: updateSFContact`);
+  // console.log(`sf.ctrl.js > 270: updateSFContact`);
   const { id } = req.params;
 
   const updatesRaw = { ...req.body };
@@ -410,9 +410,9 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Direct Join Rate object OR error msg.
  */
 exports.getSFDJRById = async (req, res, next) => {
-  console.log(`sf.ctrl.js > getSFDJRById`);
+  // console.log(`sf.ctrl.js > getSFDJRById`);
   const { id } = req.params;
-  console.log(id);
+
   const query = `SELECT ${paymentFieldList.join(
     ","
   )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
@@ -426,9 +426,6 @@ exports.getSFDJRById = async (req, res, next) => {
   let djr;
   try {
     djr = await conn.query(query);
-    console.log(`sf.ctrl.js > 429`);
-    console.log(djr);
-    console.log(djr.records);
     const result = djr.records[0] || {};
     return res.status(200).json(result);
   } catch (err) {
