@@ -410,8 +410,9 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Direct Join Rate object OR error msg.
  */
 exports.getSFDJRById = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > getSFDJRById`);
+  console.log(`sf.ctrl.js > getSFDJRById`);
   const { id } = req.params;
+  console.log(id);
   const query = `SELECT ${paymentFieldList.join(
     ","
   )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
@@ -425,7 +426,11 @@ exports.getSFDJRById = async (req, res, next) => {
   let djr;
   try {
     djr = await conn.query(query);
-    return res.status(200).json(djr.records[0]);
+    console.log(`sf.ctrl.js > 429`);
+    console.log(djr);
+    console.log(djr.records);
+    const result = djr.records[0] || {};
+    return res.status(200).json(result);
   } catch (err) {
     // console.error(`sf.ctrl.js > 424: ${err}`);
     return res.status(500).json({ message: err.message });

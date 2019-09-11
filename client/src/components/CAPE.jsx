@@ -29,7 +29,7 @@ import { scrollToFirstError } from "../utils";
 
 export const CAPE = props => {
   const {
-    onSubmit,
+    handleCAPESubmit,
     classes,
     loading,
     iFrameURL,
@@ -50,7 +50,7 @@ export const CAPE = props => {
     updateEmployersPicklist,
     employerList
   } = props;
-
+  console.log(handleCAPESubmit);
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
   const legalCopy = checkoff
     ? formElements.capeLegalCheckoff
@@ -59,7 +59,7 @@ export const CAPE = props => {
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
       <form
-        onSubmit={props.handleSubmit(onSubmit)}
+        onSubmit={props.handleSubmit(handleCAPESubmit)}
         id="CAPE"
         className={classes.form}
       >

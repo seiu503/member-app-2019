@@ -693,6 +693,7 @@ export const renderTextField = ({
           {...input}
           {...custom}
           data-test="component-text-field"
+          inputProps={{ id: id }}
         />
       )}
     </Translate>
@@ -732,7 +733,9 @@ export const renderSelect = ({
         </InputLabel>
         <Select
           native
-          input={<OutlinedInput labelWidth={labelWidth} />}
+          input={
+            <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+          }
           className={align === "right" ? classes.selectRight : classes.select}
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
@@ -783,6 +786,7 @@ export const renderCheckbox = ({
               className={classes.checkbox}
               data-test="component-checkbox"
               name="checkbox"
+              inputProps={{ id: id }}
             />
           }
         />
@@ -864,6 +868,7 @@ export const renderRadioGroup = ({
                 <Radio
                   checked={item.toString() === input.value.toString()}
                   color="primary"
+                  inputProps={{ id: id }}
                 />
               }
               label={item}
@@ -933,6 +938,7 @@ export const renderCAPERadioGroup = ({
                   <Radio
                     checked={item.toString() === input.value.toString()}
                     color="primary"
+                    inputProps={{ id: id }}
                   />
                 }
               />

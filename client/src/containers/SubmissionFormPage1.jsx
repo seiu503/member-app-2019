@@ -9,6 +9,7 @@ import {
   getFormSubmitErrors,
   reset
 } from "redux-form";
+// import { loadReCaptcha } from "react-recaptcha-v3";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -55,6 +56,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
+    this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -431,17 +433,18 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFDJRById(id)
         .then(result => {
-          // console.log(result.payload);
+          // console.log(result);
           if (
             result.type === "GET_SF_DJR_FAILURE" ||
             this.props.submission.error
           ) {
+            console.log(this.props.submission.error);
             resolve(handleError(this.props.submission.error));
           }
           resolve(result);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
           resolve(handleError(err));
         });
     });
@@ -501,7 +504,11 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    // verify recaptcha score
+    // refresh token
+    // await loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
+    await this.props.refreshRecaptcha();
+
+    // then verify
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
     const result = await this.props.apiSubmission
@@ -509,7 +516,9 @@ export class SubmissionFormPage1Container extends React.Component {
       .catch(err => {
         console.log("recaptcha failed");
         console.log(err);
-        return handleError("recaptcha failed");
+        return handleError(
+          "ReCaptcha validation failed, please reload the page and try again."
+        );
       });
     console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
@@ -521,8 +530,10 @@ export class SubmissionFormPage1Container extends React.Component {
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      console.log("recaptcha failed");
-      return handleError("recaptcha validation failed");
+      console.log(`recaptcha failed: ${score}`);
+      return handleError(
+        "ReCaptcha validation failed, please reload the page and try again."
+      );
     }
 
     // handle moving from tab 1 to tab 2:
@@ -592,13 +603,14 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    // console.log("getIframeExisting");
+    console.log("getIframeExisting");
     const memberShortId = this.props.submission.payment.memberShortId;
     const token = this.props.submission.payment.unioniseToken;
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        // console.log(result);
+        console.log("where is memberShortId??");
+        console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -619,7 +631,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeNew() {
-    // console.log("getIframeNew");
+    console.log("getIframeNew");
     const { formValues } = this.props;
 
     const birthdate = formatBirthdate(formValues);
@@ -656,6 +668,8 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
+        console.log("where is memberShortId???");
+        console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -812,6 +826,8 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.formPage1.paymentRequired) {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
+          // console.log(result.type);
+          // console.log('SFDJR record: existing')
           // console.log(result.payload);
 
           const newCardNeeded =
@@ -820,7 +836,7 @@ export class SubmissionFormPage1Container extends React.Component {
               result.payload.Payment_Error_Hold__c);
 
           if (newCardNeeded) {
-            // console.log("newCardNeeded");
+            console.log("newCardNeeded");
             this.props.apiSubmission.handleInput({
               target: { name: "newCardNeeded", value: true }
             });
@@ -862,13 +878,17 @@ export class SubmissionFormPage1Container extends React.Component {
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      console.log("recaptcha failed");
-      return handleError("recaptcha validation failed");
+      console.log(`recaptcha failed: ${score}`);
+      return handleError(
+        "ReCaptcha validation failed, please reload the page and try again."
+      );
     }
     // generate body (different for standalone vs tab 4)
     // if checkoff, just save occupation, date and amount
     // if paymentRequired get cardaddingiframe & save unionise info
     // update validate function to require payment info if paymentRequired
+    this.props.reset("submissionPage1");
+    this.props.history.push(`/page2/?id=${this.props.submission.salesforceId}`);
   }
 
   handleTab(newValue) {
@@ -929,6 +949,7 @@ export class SubmissionFormPage1Container extends React.Component {
           toggleCardAddingFrame={this.toggleCardAddingFrame}
           handleCAPESubmit={this.handleCAPESubmit}
           suggestedAmountOnChange={this.suggestedAmountOnChange}
+          verifyRecaptchaScore={this.verifyRecaptchaScore}
         />
       </div>
     );

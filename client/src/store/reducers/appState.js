@@ -175,7 +175,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
-    case UPDATE_SUBMISSION_SUCCESS:
+    // case UPDATE_SUBMISSION_SUCCESS:
+    // ^^ only used on final submit as part of long promise.all chain
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_FAILURE:
@@ -187,7 +188,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_URL_FAILURE:
     case CREATE_SF_CONTACT_SUCCESS:
     case CREATE_SF_CONTACT_FAILURE:
-    case CREATE_SF_OMA_SUCCESS:
+    // case CREATE_SF_OMA_SUCCESS:
+    // ^^ only used on final submit as part of long promise.all chain
     case CREATE_SF_OMA_FAILURE:
     case UPDATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_FAILURE:

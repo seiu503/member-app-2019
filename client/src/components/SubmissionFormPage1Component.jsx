@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import queryString from "query-string";
-import localIpUrl from "local-ip-url";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -158,6 +157,8 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   async updateSubmission() {
+    console.log("updateSubmission");
+    this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
     const updates = {
@@ -173,6 +174,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
+        console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -189,12 +191,15 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createSFOMA() {
+    console.log("createSFOMA");
+    this.props.actions.setSpinner();
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
     body.Worker__c = this.props.submission.salesforceId;
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
@@ -210,21 +215,22 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createOrUpdateSFDJR() {
-    // console.log("createOrUpdateSFDJR");
-    // const { formValues } = this.props;
+    this.props.actions.setSpinner();
+    console.log("createOrUpdateSFDJR");
+
     const { formPage1, payment } = this.props.submission;
-    // console.log(formPage1.paymentType);
+
     const id = this.props.submission.djrId;
-    // console.log(id);
+
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
-      Unioni_se_MemberID__c: payment.memberShortId
+      Unioni_se_MemberID__c: payment.memberShortId,
+      Active_Account_Last_4__c: payment.activeMethodLast4
     };
-    // console.log(body);
 
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
@@ -234,11 +240,12 @@ export class SubmissionFormPage1Component extends React.Component {
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
-      // console.log("createSFDJR");
+      console.log("createSFDJR");
+      console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
-          // console.log(result.type);
+          console.log(result.type);
           if (
             result.type === "CREATE_SF_DJR_FAILURE" ||
             this.props.submission.error
@@ -257,7 +264,8 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
-    // console.log(body);
+    console.log("updateSFDJR");
+    console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
@@ -278,15 +286,22 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async handleSubmit(formValues) {
     console.log("handleSubmit");
-    const ip_address = localIpUrl();
-    const token = this.props.submission.formPage1.reCaptchaValue;
-    this.props.apiSubmission.verify(token, ip_address).then(result => {
-      console.log(`score: ${result.payload.score}`);
-      if (!result.payload.score || result.payload.score <= 0.5) {
-        console.log("recaptcha failed");
-        return this.props.handleError("recaptcha failed");
-      }
-    });
+    this.props.actions.setSpinner();
+
+    await this.props
+      .verifyRecaptchaScore()
+      .then(score => {
+        console.log(`score: ${score}`);
+        if (!score || score <= 0.5) {
+          console.log(`recaptcha failed: ${score}`);
+          return this.props.handleError(
+            "ReCaptcha validation failed, please reload the page and try again."
+          );
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
@@ -361,7 +376,6 @@ export class SubmissionFormPage1Component extends React.Component {
             employerList={employerList}
             handleInput={this.props.apiSubmission.handleInput}
             updateEmployersPicklist={this.updateEmployersPicklist}
-            onSubmit={this.props.handleCAPESubmit}
             classes={classes}
             loading={this.props.submission.loading}
             formPage1={this.props.submission.formPage1}

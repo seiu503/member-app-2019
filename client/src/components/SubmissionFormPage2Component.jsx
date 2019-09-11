@@ -453,7 +453,7 @@ export class SubmissionFormPage2Component extends React.Component {
 
           <ButtonWithSpinner
             type="submit"
-            color="secondary"
+            color="primary"
             className={this.classes.formButton}
             variant="contained"
             loading={this.props.submission.loading}

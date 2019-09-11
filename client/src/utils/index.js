@@ -85,8 +85,9 @@ export const scrollToFirstError = errors => {
     const firstError = errorsArray.find(
       error => !!document.getElementById(error)
     );
+    // console.log(errorsArray);
+    // console.log(firstError);
     const el = document.getElementById(firstError);
-    // console.log(el);
     const position =
       el.getBoundingClientRect().top + document.documentElement.scrollTop;
 
