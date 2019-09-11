@@ -195,6 +195,9 @@ export class SubmissionsTableUnconnected extends React.Component {
               columns={[
                 { title: "First name", field: "first_name" },
                 { title: "Last name", field: "last_name" },
+                { title: "Employer", field: "employer_name" },
+                { title: "Email", field: "home_email" },
+                { title: "Source code", field: "campaign_source_code" },
                 { title: "Id", field: "id" },
                 {
                   title: "Updated at",
@@ -206,7 +209,9 @@ export class SubmissionsTableUnconnected extends React.Component {
               data={this.props.submission.allSubmissions}
               title="Submissions"
               options={{
-                exportButton: true
+                exportButton: true,
+                filtering: true,
+                sorting: true
               }}
               icons={tableIcons}
             />
