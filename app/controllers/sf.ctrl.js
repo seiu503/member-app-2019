@@ -178,8 +178,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
 exports.createOrUpdateSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
 
-  const { salesforce_id, ip_address, reCaptchaValue } = req.body;
-  console.log(ip_address, reCaptchaValue);
+  const { salesforce_id } = req.body;
 
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to updateSFContact
@@ -343,8 +342,6 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   let oma;
   try {
     const bodyRaw = { ...req.body };
-    // console.log(`sf.ctrl.js > 338`);
-    console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (submissionsTableFields[key]) {
