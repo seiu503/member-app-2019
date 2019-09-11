@@ -192,6 +192,11 @@ export class SubmissionsTableUnconnected extends React.Component {
           <div className={classes.gridWrapper}>
             <MaterialTable
               style={{ width: "100%", margin: "0 20px" }}
+              // columnList should be generated from fieldConfigs file
+              // reorder submissionsTableFields and mark as hidden or not
+              // write generator function to generate columns list including
+              // date formatters or other data manipulation as needed
+              // add submission status / error reporting fields to fieldconfigs
               columns={[
                 { title: "First name", field: "first_name" },
                 { title: "Last name", field: "last_name" },
@@ -203,15 +208,18 @@ export class SubmissionsTableUnconnected extends React.Component {
                   title: "Updated at",
                   field: "updated_at",
                   type: "date",
-                  render: rowData => utils.formatDate(rowData.updated_at)
+                  render: rowData => utils.formatDate(rowData.updated_at),
+                  defaultSort: "desc"
                 }
               ]}
+              isLoading={this.props.submission.loading}
               data={this.props.submission.allSubmissions}
               title="Submissions"
               options={{
                 exportButton: true,
                 filtering: true,
-                sorting: true
+                sorting: true,
+                columnsButton: true
               }}
               icons={tableIcons}
             />

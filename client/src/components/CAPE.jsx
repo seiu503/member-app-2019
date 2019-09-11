@@ -376,6 +376,14 @@ export const CAPE = props => {
             </div>
           </div>
         )}
+        <div className={classes.legalCopy}>{legalCopy}</div>
+        {standAlone && (
+          <ReCaptcha
+            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            action="standalone_cape_submit"
+            verifyCallback={verifyCallback}
+          />
+        )}
         {!standAlone && (
           <div className={classes.buttonWrapTab3}>
             <Button
@@ -389,14 +397,6 @@ export const CAPE = props => {
               Back
             </Button>
           </div>
-        )}
-        <div className={classes.legalCopy}>{legalCopy}</div>
-        {standAlone && (
-          <ReCaptcha
-            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-            action="standalone_cape_submit"
-            verifyCallback={verifyCallback}
-          />
         )}
         <ButtonWithSpinner
           type="submit"

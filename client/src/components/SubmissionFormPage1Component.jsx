@@ -354,6 +354,7 @@ export class SubmissionFormPage1Component extends React.Component {
       >
         {values.cape ? (
           <CAPEForm
+            {...this.props}
             standAlone={true}
             verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
@@ -363,18 +364,13 @@ export class SubmissionFormPage1Component extends React.Component {
             onSubmit={this.props.handleCAPESubmit}
             classes={classes}
             loading={this.props.submission.loading}
-            handleTab={this.props.handleTab}
-            back={this.props.back}
-            formValues={this.props.formValues}
             formPage1={this.props.submission.formPage1}
             iFrameURL={this.props.submission.payment.cardAddingUrl}
             payment={this.props.submission.payment}
-            toggleCardAddingFrame={this.props.toggleCardAddingFrame}
             renderSelect={this.renderSelect}
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
             checkoff={checkoff}
-            suggestedAmountOnChange={this.props.suggestedAmountOnChange}
           />
         ) : (
           <React.Fragment>
@@ -399,18 +395,10 @@ export class SubmissionFormPage1Component extends React.Component {
                     : { display: "none" }
                 }
               >
-                <NavTabs
-                  tab={this.props.tab}
-                  howManyTabs={this.props.howManyTabs}
-                  handleTab={this.props.handleTab}
-                  pristine={this.props.pristine}
-                  valid={this.props.valid}
-                  submitting={this.props.submitting}
-                  submitForm={this.props.submitForm}
-                  formValues={this.props.formValues}
-                />
+                <NavTabs {...this.props} />
                 {this.props.tab === 0 && (
                   <Tab1Form
+                    {...this.props}
                     onSubmit={() => this.props.handleTab(1)}
                     verifyCallback={this.verifyCallback}
                     classes={classes}
@@ -421,44 +409,25 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
-                    formValues={this.props.formValues}
-                    width={this.props.width}
-                    handleTab={this.props.handleTab}
-                    submitErrors={this.props.submitErrors}
                   />
                 )}
                 {this.props.tab === 1 && (
                   <Tab2Form
+                    {...this.props}
                     onSubmit={() => this.props.handleTab(2)}
                     classes={classes}
-                    legal_language={this.props.legal_language}
-                    direct_pay={this.props.direct_pay}
-                    direct_deposit={this.props.direct_deposit}
-                    sigBox={this.props.sigBox}
-                    signatureType={this.props.signatureType}
-                    toggleSignatureInputType={
-                      this.props.toggleSignatureInputType
-                    }
-                    clearSignature={this.props.clearSignature}
                     handleInput={this.props.apiSubmission.handleInput}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
-                    formValues={this.props.formValues}
-                    handleTab={this.props.handleTab}
-                    back={this.props.back}
-                    initialize={this.props.initialize}
                   />
                 )}
                 {this.props.tab === 2 && (
                   <Tab3Form
+                    {...this.props}
                     onSubmit={this.handleSubmit}
-                    handleCAPESubmit={this.props.handleCAPESubmit}
                     classes={classes}
                     loading={this.props.submission.loading}
-                    handleTab={this.props.handleTab}
-                    back={this.props.back}
-                    formValues={this.props.formValues}
                     formPage1={this.props.submission.formPage1}
                     paymentRequired={
                       this.props.submission.formPage1.paymentRequired
@@ -467,34 +436,25 @@ export class SubmissionFormPage1Component extends React.Component {
                     iFrameURL={this.props.submission.payment.cardAddingUrl}
                     afhDuesRate={this.props.submission.formPage1.afhDuesRate}
                     payment={this.props.submission.payment}
-                    toggleCardAddingFrame={this.props.toggleCardAddingFrame}
-                    width={this.props.width}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
-                    suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
                 )}
                 {this.props.tab === 3 && (
                   <CAPEForm
-                    onSubmit={this.props.handleCAPESubmit}
+                    {...this.props}
                     classes={classes}
                     loading={this.props.submission.loading}
-                    handleTab={this.props.handleTab}
-                    back={this.props.back}
-                    formValues={this.props.formValues}
                     formPage1={this.props.submission.formPage1}
                     handleInput={this.props.submission.handleInput}
                     iFrameURL={this.props.submission.payment.cardAddingUrl}
                     payment={this.props.submission.payment}
-                    width={this.props.width}
-                    toggleCardAddingFrame={this.props.toggleCardAddingFrame}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
-                    suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
                 )}
               </div>

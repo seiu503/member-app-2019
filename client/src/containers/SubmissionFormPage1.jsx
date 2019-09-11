@@ -509,7 +509,7 @@ export class SubmissionFormPage1Container extends React.Component {
       .catch(err => {
         console.log("recaptcha failed");
         console.log(err);
-        return this.props.handleError("recaptcha failed");
+        return handleError("recaptcha failed");
       });
     console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
@@ -522,7 +522,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
       console.log("recaptcha failed");
-      return this.props.handleError("recaptcha validation failed");
+      return handleError("recaptcha validation failed");
     }
 
     // handle moving from tab 1 to tab 2:
@@ -863,7 +863,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
       console.log("recaptcha failed");
-      return this.props.handleError("recaptcha validation failed");
+      return handleError("recaptcha validation failed");
     }
     // generate body (different for standalone vs tab 4)
     // if checkoff, just save occupation, date and amount
