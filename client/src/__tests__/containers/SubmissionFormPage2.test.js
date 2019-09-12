@@ -43,7 +43,10 @@ const defaultProps = {
   history: {
     push: pushMock
   },
-  addTranslation: jest.fn()
+  addTranslation: jest.fn(),
+  actions: {
+    setSpinner: jest.fn()
+  }
 };
 
 const setup = (props = {}) => {

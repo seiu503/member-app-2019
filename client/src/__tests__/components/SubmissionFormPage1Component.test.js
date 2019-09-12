@@ -107,7 +107,10 @@ const defaultProps = {
   apiContent: {},
   tab,
   handleTab: () => Promise.resolve({}),
-  generateSubmissionBody: () => Promise.resolve({})
+  generateSubmissionBody: () => Promise.resolve({}),
+  actions: {
+    setSpinner: jest.fn()
+  }
 };
 
 createSFDJRSuccess = jest

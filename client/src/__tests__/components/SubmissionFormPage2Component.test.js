@@ -52,7 +52,10 @@ const defaultProps = {
   history: {
     push: jest.fn()
   },
-  addTranslation: jest.fn()
+  addTranslation: jest.fn(),
+  actions: {
+    setSpinner: jest.fn()
+  }
 };
 
 describe("Unconnected <SubmissionFormPage2 />", () => {

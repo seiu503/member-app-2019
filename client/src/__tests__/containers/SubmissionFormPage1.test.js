@@ -167,6 +167,10 @@ let refreshUnioniseTokenError = jest
     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
   );
 
+let refreshRecaptchaMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({}));
+
 let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
@@ -255,6 +259,7 @@ const defaultProps = {
     push: pushMock
   },
   reCaptchaRef: { ...reCaptchaRef },
+  refreshRecaptcha: refreshRecaptchaMock,
   sigBox: { ...sigBox },
   content: {
     error: null
@@ -273,6 +278,9 @@ const defaultProps = {
     current: {
       innerHTML: "pay"
     }
+  },
+  actions: {
+    setSpinner: jest.fn()
   }
 };
 

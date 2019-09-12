@@ -310,10 +310,6 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_IFRAME_URL_SUCCESS:
-      console.log(action.payload);
-      console.log(
-        `memberShortId returned from unionise: ${action.payload.memberShortId}`
-      );
       return update(state, {
         payment: {
           cardAddingUrl: { $set: action.payload.cardAddingUrl },
