@@ -3,7 +3,12 @@ const passport = require("passport"),
   Auth = require("../config/auth"),
   JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt,
-  GoogleStrategy = require("passport-google-oauth2").Strategy;
+  GoogleStrategy = require("passport-google-oauth2").Strategy,
+  prodUrl = "http://test.seiu503signup.org", // NO TRAILING SLASH
+  devUrl = "http://localhost:8080", // server url for local install
+  BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl; //
+
+/* ================================ EXPORTS ================================ */
 
 const user = {
   serialize: (user, done) => {
@@ -25,7 +30,7 @@ const user = {
 const googleAuth = {
   clientID: process.env.GOOGLE_KEY,
   clientSecret: process.env.GOOGLE_SECRET,
-  callbackURL: `${process.env.SERVER_URL}/api/auth/google/callback`
+  callbackURL: `${BASE_URL}/api/auth/google/callback`
 };
 
 //= ========================
