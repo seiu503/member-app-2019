@@ -883,14 +883,6 @@ const submissionsTableFields = {
     SQLDataType: "Text",
     testingSample: "Lorem ipsum dolor sit amet."
   },
-  cape_legal: {
-    CAPEreq: true,
-    postgresFieldName: "cape_legal",
-    clientFieldName: "capeLegal",
-    SFDataType: "Long Text Area(32768)",
-    SQLDataType: "Text",
-    testingSample: "Lorem ipsum dolor sit amet."
-  },
   maintenance_of_effort: {
     oldFormPage: "none",
     newFormTab: 1,
@@ -958,6 +950,279 @@ const submissionsTableFields = {
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Not a Member"
+  }
+};
+
+const capeTableFields = {
+  ip_address: {
+    oldFormPage: "none",
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "ip_address",
+    clientFieldName: "idAddress",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "IP Address",
+    SFAPIName: "IP_Address__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "192.0.2.0"
+  },
+  submission_date: {
+    oldFormPage: "none",
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "submission_date",
+    clientFieldName: "submissionDate",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Submission Date",
+    SFAPIName: "Submission_Date__c",
+    SFDataType: "Date/Time",
+    SQLDataType: "Timestamp",
+    testingSample: formatDate(new Date())
+  },
+  agency_number: {
+    oldFormPage: "none",
+    req: "Y",
+    postgresFieldName: "agency_number",
+    clientFieldName: "agencyNumber",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Agency Number",
+    SFAPIName: "agencyNumber__c",
+    SFDataType: "",
+    SQLDataType: "",
+    testingSample: "123456"
+  },
+  birthdate: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    postgresFieldName: "birthdate",
+    clientFieldName: "birthdate",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Birthdate",
+    SFAPIName: "Birthdate__c",
+    SFDataType: "Date",
+    SQLDataType: "Date",
+    testingSample: new Date("01/01/2001")
+  },
+  cell_phone: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "cell_phone",
+    clientFieldName: "cellPhone",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Cell Phone",
+    SFAPIName: "Cell_Phone__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "123-456-7890"
+  },
+  employer_name: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "employer_name",
+    clientFieldName: "employerName",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "EmployerName_fromWebForm",
+    SFAPIName: "EmployerName_fromWebForm__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "employer_name"
+  },
+  job_title: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "job_title",
+    clientFieldName: "jobTitle",
+    HtmlInputType: "n/a (see Contacts)",
+    // SFTable: "OnlineMemberApp__c",
+    // SFFieldLabel: "EmployerName_fromWebForm", ????
+    // SFAPIName: "EmployerName_fromWebForm__c", ????
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "job title"
+  },
+  first_name: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "first_name",
+    clientFieldName: "firstName",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "First Name",
+    SFAPIName: "firstName__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "firstname"
+  },
+  last_name: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "last_name",
+    clientFieldName: "lastName",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Last Name",
+    SFAPIName: "lastName__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "lastname"
+  },
+  home_street: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "home_street",
+    clientFieldName: "homeStreet",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Home Street",
+    SFAPIName: "Home_Street__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "home_street"
+  },
+  home_city: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "home_city",
+    clientFieldName: "homeCity",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Home City",
+    SFAPIName: "Home_City__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "home_city"
+  },
+  home_state: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "home_state",
+    clientFieldName: "homeState",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Home State",
+    SFAPIName: "Home_State__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "OR"
+  },
+  home_zip: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "home_zip",
+    clientFieldName: "homeZip",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Home Zip",
+    SFAPIName: "Home_Zip__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "12345"
+  },
+  home_email: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "home_email",
+    clientFieldName: "homeEmail",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Home Email",
+    SFAPIName: "Home_Email__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "fake@email.com"
+  },
+  text_auth_opt_out: {
+    oldFormPage: "none",
+    req: "N",
+    postgresFieldName: "text_auth_opt_out",
+    clientFieldName: "textAuthOptOut",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Text Authorization Opt Out",
+    SFAPIName: "Text_Authorization_Opt_Out__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  online_campaign_source: {
+    oldFormPage: "none",
+    req: "N",
+    postgresFieldName: "online_campaign_source",
+    clientFieldName: "onlineCampaignSource",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Online Campaign Source",
+    SFAPIName: "Online_Campaign_Source__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "online_campaign_source"
+  },
+  contact_id: {
+    oldFormPage: "none",
+    req: "N",
+    CAPEreq: true,
+    postgresFieldName: "contact_id",
+    clientFieldName: "contactId",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Contact ID",
+    SFAPIName: "Contact_ID_from_FA_prefill__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: null
+  },
+  cape_legal: {
+    oldFormPage: "none",
+    req: "Y",
+    postgresFieldName: "cape_legal",
+    clientFieldName: "capeLegal",
+    HtmlInputType: "(formula; no user-facing input)",
+    // SFTable: "OnlineMemberApp__c",
+    // SFFieldLabel: "Legal Language",
+    // SFAPIName: "Legal_Language__c",
+    SFDataType: "Long Text Area(32768)",
+    SQLDataType: "Text",
+    testingSample: "Lorem ipsum dolor sit amet."
+  },
+  capeAmount: {
+    req: "Y",
+    postgresFieldName: "cape_amount",
+    clientFieldName: "capeAmount",
+    testingSample: 10
+  },
+  employerType: {
+    req: "Y",
+    postgresFieldName: "employer_type",
+    clientFieldName: "employerType",
+    testingSample: "adult foster home"
   }
 };
 
@@ -1318,10 +1583,10 @@ const requiredFields = [
 
 const generateCAPEValidate = () => {
   const sampleData = {};
-  Object.keys(submissionsTableFields).map(function(key, index) {
-    if (submissionsTableFields[key].CAPEreq) {
-      let clientFieldName = submissionsTableFields[key].clientFieldName;
-      sampleData[clientFieldName] = submissionsTableFields[key].testingSample;
+  Object.keys(capeTableFields).map(function(key, index) {
+    if (capeTableFields[key].req === "Y") {
+      let clientFieldName = capeTableFields[key].clientFieldName;
+      sampleData[clientFieldName] = capeTableFields[key].testingSample;
     }
   });
   sampleData.mobilePhone = sampleData.cellPhone;

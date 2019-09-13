@@ -45,7 +45,7 @@ const styles = theme => ({
       margin: "-24px -20px 0 -20px"
     }
   },
-  card: {
+  welcomeCard: {
     maxWidth: 600,
     margin: "0 auto",
     padding: 20
@@ -126,7 +126,7 @@ export class WelcomeInfoUnconnected extends React.Component {
     }
     return (
       <div className={this.classes.root} data-test="component-welcome-info">
-        <Card className={this.classes.card}>
+        <Card className={this.classes.welcomeCard}>
           <CardMedia
             className={this.classes.media}
             title="Welcome Photo"

@@ -185,12 +185,7 @@ describe("<ContentLibrary />", () => {
       });
     });
     afterEach(() => {
-      deleteImageMock.mockRestore();
-      deleteContentMock.mockRestore();
-      getAllContentMock.mockRestore();
-      deleteImageErrorMock.mockRestore();
-      deleteContentErrorMock.mockRestore();
-      getAllContentErrorMock.mockRestore();
+      jest.restoreAllMocks();
       wrapper.instance().props.content.error = "";
     });
 

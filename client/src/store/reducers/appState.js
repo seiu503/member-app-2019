@@ -42,8 +42,11 @@ import {
   ADD_SUBMISSION_SUCCESS,
   ADD_SUBMISSION_FAILURE,
   UPDATE_SUBMISSION_REQUEST,
-  UPDATE_SUBMISSION_SUCCESS,
+  // UPDATE_SUBMISSION_SUCCESS,
   UPDATE_SUBMISSION_FAILURE,
+  GET_ALL_SUBMISSIONS_REQUEST,
+  GET_ALL_SUBMISSIONS_SUCCESS,
+  GET_ALL_SUBMISSIONS_FAILURE,
   VERIFY_REQUEST,
   VERIFY_SUCCESS,
   VERIFY_FAILURE
@@ -68,7 +71,7 @@ import {
   CREATE_SF_CONTACT_REQUEST,
   CREATE_SF_CONTACT_FAILURE,
   CREATE_SF_OMA_REQUEST,
-  CREATE_SF_OMA_SUCCESS,
+  // CREATE_SF_OMA_SUCCESS,
   CREATE_SF_OMA_FAILURE,
   UPDATE_SF_CONTACT_SUCCESS,
   UPDATE_SF_CONTACT_REQUEST,
@@ -86,6 +89,10 @@ import {
   GET_UNIONISE_TOKEN_SUCCESS,
   GET_UNIONISE_TOKEN_FAILURE
 } from "../actions/apiSFActions";
+
+// CREATE_SF_OMA_SUCCESS, UPDATE_SUBMISSION_SUCCESS
+// intentionally omitted because they are being called in a
+// long Promise.all chain
 
 export const INITIAL_STATE = {
   loggedIn: false,
@@ -149,6 +156,7 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_UNIONISE_TOKEN_REQUEST:
     case VERIFY_REQUEST:
+    case GET_ALL_SUBMISSIONS_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -171,7 +179,6 @@ function appState(state = INITIAL_STATE, action) {
     case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
-    case UPDATE_SUBMISSION_SUCCESS:
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_FAILURE:
@@ -183,7 +190,6 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_URL_FAILURE:
     case CREATE_SF_CONTACT_SUCCESS:
     case CREATE_SF_CONTACT_FAILURE:
-    case CREATE_SF_OMA_SUCCESS:
     case CREATE_SF_OMA_FAILURE:
     case UPDATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_FAILURE:
@@ -199,6 +205,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_UNIONISE_TOKEN_FAILURE:
     case VERIFY_SUCCESS:
     case VERIFY_FAILURE:
+    case GET_ALL_SUBMISSIONS_SUCCESS:
+    case GET_ALL_SUBMISSIONS_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

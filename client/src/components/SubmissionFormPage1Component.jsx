@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import queryString from "query-string";
-import localIpUrl from "local-ip-url";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -158,6 +157,8 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   async updateSubmission() {
+    // console.log("updateSubmission");
+    this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
     const updates = {
@@ -173,6 +174,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
+        // console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -189,12 +191,15 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createSFOMA() {
+    // console.log("createSFOMA");
+    this.props.actions.setSpinner();
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
     body.Worker__c = this.props.submission.salesforceId;
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
@@ -210,31 +215,35 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createOrUpdateSFDJR() {
+    this.props.actions.setSpinner();
     // console.log("createOrUpdateSFDJR");
-    // const { formValues } = this.props;
+
     const { formPage1, payment } = this.props.submission;
-    // console.log(formPage1.paymentType);
+
     const id = this.props.submission.djrId;
-    // console.log(id);
+
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
-      Unioni_se_MemberID__c: payment.memberShortId
+      Unioni_se_MemberID__c: payment.memberShortId,
+      Active_Account_Last_4__c: payment.activeMethodLast4
     };
-    // console.log(body);
 
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
     // console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    // console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
+    // console.log("if these dont match then create a new record");
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
       // console.log("createSFDJR");
+      // console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
@@ -257,6 +266,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
+    // console.log("updateSFDJR");
     // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
@@ -277,41 +287,39 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
-    console.log("handleSubmit");
-    const ip_address = localIpUrl();
-    const token = this.props.submission.formPage1.reCaptchaValue;
-    this.props.apiSubmission.verify(token, ip_address).then(result => {
-      console.log(`score: ${result.payload.score}`);
-      if (!result.payload.score || result.payload.score <= 0.5) {
-        console.log("recaptcha failed");
-        return this.props.handleError("recaptcha failed");
-      }
-    });
+    // console.log("handleSubmit");
+    this.props.actions.setSpinner();
+
+    await this.props
+      .verifyRecaptchaScore()
+      .then(score => {
+        // console.log(`score: ${score}`);
+        if (!score || score <= 0.5) {
+          console.log(`recaptcha failed: ${score}`);
+          return this.props.handleError(
+            "ReCaptcha validation failed, please reload the page and try again."
+          );
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
+      // console.log('validMethod');
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    // console.log(`validMethod? ${validMethod}`);
-    // console.log(
-    //   `paymentMethodAdded? ${
-    //     this.props.submission.formPage1.paymentMethodAdded
-    //   }`
-    // );
-    // console.log(
-    //   `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
-    // submit validation: payment method
+
     if (
       this.props.submission.formPage1.paymentRequired &&
       this.props.submission.formPage1.paymentType === "Card" &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      console.log("No payment method added");
+      // console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
@@ -332,6 +340,7 @@ export class SubmissionFormPage1Component extends React.Component {
         // );
       })
       .catch(err => {
+        console.log("342");
         console.log(err);
         this.props.handleError(err);
       });
@@ -354,27 +363,22 @@ export class SubmissionFormPage1Component extends React.Component {
       >
         {values.cape ? (
           <CAPEForm
+            {...this.props}
             standAlone={true}
             verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
             handleInput={this.props.apiSubmission.handleInput}
             updateEmployersPicklist={this.updateEmployersPicklist}
-            onSubmit={this.props.handleCAPESubmit}
             classes={classes}
             loading={this.props.submission.loading}
-            handleTab={this.props.handleTab}
-            back={this.props.back}
-            formValues={this.props.formValues}
             formPage1={this.props.submission.formPage1}
             iFrameURL={this.props.submission.payment.cardAddingUrl}
             payment={this.props.submission.payment}
-            toggleCardAddingFrame={this.props.toggleCardAddingFrame}
             renderSelect={this.renderSelect}
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
             checkoff={checkoff}
-            suggestedAmountOnChange={this.props.suggestedAmountOnChange}
           />
         ) : (
           <React.Fragment>
@@ -399,18 +403,10 @@ export class SubmissionFormPage1Component extends React.Component {
                     : { display: "none" }
                 }
               >
-                <NavTabs
-                  tab={this.props.tab}
-                  howManyTabs={this.props.howManyTabs}
-                  handleTab={this.props.handleTab}
-                  pristine={this.props.pristine}
-                  valid={this.props.valid}
-                  submitting={this.props.submitting}
-                  submitForm={this.props.submitForm}
-                  formValues={this.props.formValues}
-                />
+                <NavTabs {...this.props} />
                 {this.props.tab === 0 && (
                   <Tab1Form
+                    {...this.props}
                     onSubmit={() => this.props.handleTab(1)}
                     verifyCallback={this.verifyCallback}
                     classes={classes}
@@ -421,44 +417,25 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
-                    formValues={this.props.formValues}
-                    width={this.props.width}
-                    handleTab={this.props.handleTab}
-                    submitErrors={this.props.submitErrors}
                   />
                 )}
                 {this.props.tab === 1 && (
                   <Tab2Form
+                    {...this.props}
                     onSubmit={() => this.props.handleTab(2)}
                     classes={classes}
-                    legal_language={this.props.legal_language}
-                    direct_pay={this.props.direct_pay}
-                    direct_deposit={this.props.direct_deposit}
-                    sigBox={this.props.sigBox}
-                    signatureType={this.props.signatureType}
-                    toggleSignatureInputType={
-                      this.props.toggleSignatureInputType
-                    }
-                    clearSignature={this.props.clearSignature}
                     handleInput={this.props.apiSubmission.handleInput}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
-                    formValues={this.props.formValues}
-                    handleTab={this.props.handleTab}
-                    back={this.props.back}
-                    initialize={this.props.initialize}
                   />
                 )}
                 {this.props.tab === 2 && (
                   <Tab3Form
+                    {...this.props}
                     onSubmit={this.handleSubmit}
-                    handleCAPESubmit={this.props.handleCAPESubmit}
                     classes={classes}
                     loading={this.props.submission.loading}
-                    handleTab={this.props.handleTab}
-                    back={this.props.back}
-                    formValues={this.props.formValues}
                     formPage1={this.props.submission.formPage1}
                     paymentRequired={
                       this.props.submission.formPage1.paymentRequired
@@ -467,34 +444,25 @@ export class SubmissionFormPage1Component extends React.Component {
                     iFrameURL={this.props.submission.payment.cardAddingUrl}
                     afhDuesRate={this.props.submission.formPage1.afhDuesRate}
                     payment={this.props.submission.payment}
-                    toggleCardAddingFrame={this.props.toggleCardAddingFrame}
-                    width={this.props.width}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
-                    suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
                 )}
                 {this.props.tab === 3 && (
                   <CAPEForm
-                    onSubmit={this.props.handleCAPESubmit}
+                    {...this.props}
                     classes={classes}
                     loading={this.props.submission.loading}
-                    handleTab={this.props.handleTab}
-                    back={this.props.back}
-                    formValues={this.props.formValues}
                     formPage1={this.props.submission.formPage1}
                     handleInput={this.props.submission.handleInput}
                     iFrameURL={this.props.submission.payment.cardAddingUrl}
                     payment={this.props.submission.payment}
-                    width={this.props.width}
-                    toggleCardAddingFrame={this.props.toggleCardAddingFrame}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
-                    suggestedAmountOnChange={this.props.suggestedAmountOnChange}
                   />
                 )}
               </div>

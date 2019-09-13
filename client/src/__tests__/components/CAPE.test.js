@@ -23,7 +23,7 @@ const backMock = jest.fn();
 
 // initial props for form
 const defaultProps = {
-  onSubmit: jest.fn(),
+  handleCAPESubmit: jest.fn(),
   classes: { test: "test" },
   reCaptchaChange: jest.fn(),
   reCaptchaRef: { current: {} },

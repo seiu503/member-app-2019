@@ -9,6 +9,7 @@ import {
   getFormSubmitErrors,
   reset
 } from "redux-form";
+// import { loadReCaptcha } from "react-recaptcha-v3";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -55,6 +56,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
+    this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -374,7 +376,7 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     await this.props.apiSF.createSFContact(body).catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
   }
@@ -431,11 +433,12 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFDJRById(id)
         .then(result => {
-          // console.log(result.payload);
+          // console.log(result);
           if (
             result.type === "GET_SF_DJR_FAILURE" ||
             this.props.submission.error
           ) {
+            // console.log(this.props.submission.error);
             resolve(handleError(this.props.submission.error));
           }
           resolve(result);
@@ -501,7 +504,11 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    // verify recaptcha score
+    // refresh token
+    // await loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
+    await this.props.refreshRecaptcha();
+
+    // then verify
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
     const result = await this.props.apiSubmission
@@ -509,9 +516,11 @@ export class SubmissionFormPage1Container extends React.Component {
       .catch(err => {
         console.log("recaptcha failed");
         console.log(err);
-        return this.props.handleError("recaptcha failed");
+        return handleError(
+          "ReCaptcha validation failed, please reload the page and try again."
+        );
       });
-    console.log(`recaptcha score: ${result.payload.score}`);
+    // console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
   }
 
@@ -521,8 +530,10 @@ export class SubmissionFormPage1Container extends React.Component {
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      console.log("recaptcha failed");
-      return this.props.handleError("recaptcha validation failed");
+      console.log(`recaptcha failed: ${score}`);
+      return handleError(
+        "ReCaptcha validation failed, please reload the page and try again."
+      );
     }
 
     // handle moving from tab 1 to tab 2:
@@ -544,7 +555,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // submit validation: recaptcha
     const reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
     if (!reCaptchaValue) {
-      console.log("no reCaptcha value??");
+      // console.log("no reCaptcha value");
     }
     // await this.props.apiSubmission.handleInput({
     //   target: { name: "reCaptchaValue", value: reCaptchaValue }
@@ -604,7 +615,7 @@ export class SubmissionFormPage1Container extends React.Component {
           result.payload.message ||
           result.type === "GET_IFRAME_EXISTING_FAILURE"
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -613,7 +624,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -656,6 +667,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
+        // console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -812,6 +824,8 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.formPage1.paymentRequired) {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
+          // console.log(result.type);
+          // console.log('SFDJR record: existing')
           // console.log(result.payload);
 
           const newCardNeeded =
@@ -856,19 +870,30 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(2);
   }
 
-  async handleCAPESubmit(e) {
-    e.preventDefault();
+  async handleCAPESubmit(standAlone) {
+    // e.preventDefault();
     console.log("handleCAPESubmit");
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      console.log("recaptcha failed");
-      return this.props.handleError("recaptcha validation failed");
+      console.log(`recaptcha failed: ${score}`);
+      return handleError(
+        "ReCaptcha validation failed, please reload the page and try again."
+      );
     }
     // generate body (different for standalone vs tab 4)
     // if checkoff, just save occupation, date and amount
     // if paymentRequired get cardaddingiframe & save unionise info
     // update validate function to require payment info if paymentRequired
+    this.props.reset("submissionPage1");
+    if (!standAlone) {
+      this.props.history.push(
+        `/page2/?id=${this.props.submission.salesforceId}`
+      );
+    }
+    // otherwise, need to redirect to the thankyou page
+    // but need to make that text dynamic and reuse component for both
+    // cape and membership submits
   }
 
   handleTab(newValue) {
@@ -929,6 +954,7 @@ export class SubmissionFormPage1Container extends React.Component {
           toggleCardAddingFrame={this.toggleCardAddingFrame}
           handleCAPESubmit={this.handleCAPESubmit}
           suggestedAmountOnChange={this.suggestedAmountOnChange}
+          verifyRecaptchaScore={this.verifyRecaptchaScore}
         />
       </div>
     );

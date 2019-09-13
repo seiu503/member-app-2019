@@ -176,10 +176,9 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  */
 
 exports.createOrUpdateSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
+  // console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
 
-  const { salesforce_id, ip_address, reCaptchaValue } = req.body;
-  console.log(ip_address, reCaptchaValue);
+  const { salesforce_id } = req.body;
 
   // if contact id is sent in request body, then this is a prefill
   // skip the lookup function and head straight to updateSFContact
@@ -246,7 +245,7 @@ exports.createOrUpdateSFContact = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 exports.updateSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 270: updateSFContact`);
+  // console.log(`sf.ctrl.js > 270: updateSFContact`);
   const { id } = req.params;
 
   const updatesRaw = { ...req.body };
@@ -343,8 +342,6 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   let oma;
   try {
     const bodyRaw = { ...req.body };
-    // console.log(`sf.ctrl.js > 338`);
-    console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (submissionsTableFields[key]) {
@@ -415,6 +412,7 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
 exports.getSFDJRById = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFDJRById`);
   const { id } = req.params;
+
   const query = `SELECT ${paymentFieldList.join(
     ","
   )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
@@ -428,7 +426,8 @@ exports.getSFDJRById = async (req, res, next) => {
   let djr;
   try {
     djr = await conn.query(query);
-    return res.status(200).json(djr.records[0]);
+    const result = djr.records[0] || {};
+    return res.status(200).json(result);
   } catch (err) {
     // console.error(`sf.ctrl.js > 424: ${err}`);
     return res.status(500).json({ message: err.message });

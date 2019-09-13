@@ -135,6 +135,7 @@ const styles = theme => ({
 export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
+    this.recaptcha_ref = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
     this.direct_pay = React.createRef();
@@ -160,6 +161,8 @@ export class AppUnconnected extends Component {
       more: false
     };
     this.props.addTranslation(globalTranslations);
+    this.verifyCallback = this.verifyCallback.bind(this);
+    this.refreshRecaptcha = this.refreshRecaptcha.bind(this);
   }
 
   componentDidMount() {
@@ -189,18 +192,24 @@ export class AppUnconnected extends Component {
     loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
   }
 
-  verifyCallback = recaptchaToken => {
+  verifyCallback(recaptchaToken) {
     // console.log(recaptchaToken, "<= your recaptcha token");
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: recaptchaToken }
     });
-  };
+  }
+
+  async refreshRecaptcha() {
+    // console.log('refreshRecaptcha')
+    this.recaptcha_ref.current.execute();
+  }
 
   render() {
     const { classes } = this.props;
     return (
       <div data-test="component-app" className={classes.appRoot}>
         <ReCaptcha
+          ref={this.recaptcha_ref}
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           action="homepage"
           verifyCallback={this.verifyCallback}
@@ -222,6 +231,7 @@ export class AppUnconnected extends Component {
                   direct_deposit={this.direct_deposit}
                   sigBox={this.sigBox}
                   verifyCallback={this.verifyCallback}
+                  refreshRecaptcha={this.refreshRecaptcha}
                   {...routeProps}
                 />
               )}

@@ -29,7 +29,7 @@ import { scrollToFirstError } from "../utils";
 
 export const CAPE = props => {
   const {
-    onSubmit,
+    handleCAPESubmit,
     classes,
     loading,
     iFrameURL,
@@ -50,7 +50,7 @@ export const CAPE = props => {
     updateEmployersPicklist,
     employerList
   } = props;
-
+  // console.log(handleCAPESubmit);
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
   const legalCopy = checkoff
     ? formElements.capeLegalCheckoff
@@ -59,7 +59,7 @@ export const CAPE = props => {
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
       <form
-        onSubmit={props.handleSubmit(onSubmit)}
+        onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
         id="CAPE"
         className={classes.form}
       >
@@ -326,7 +326,7 @@ export const CAPE = props => {
           </div>
         )}
         <Field
-          label="Occupation"
+          label="Job Title"
           name="jobTitle"
           id="jobTitle"
           type="text"
@@ -376,6 +376,14 @@ export const CAPE = props => {
             </div>
           </div>
         )}
+        <div className={classes.legalCopy}>{legalCopy}</div>
+        {standAlone && (
+          <ReCaptcha
+            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            action="standalone_cape_submit"
+            verifyCallback={verifyCallback}
+          />
+        )}
         {!standAlone && (
           <div className={classes.buttonWrapTab3}>
             <Button
@@ -389,14 +397,6 @@ export const CAPE = props => {
               Back
             </Button>
           </div>
-        )}
-        <div className={classes.legalCopy}>{legalCopy}</div>
-        {standAlone && (
-          <ReCaptcha
-            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-            action="standalone_cape_submit"
-            verifyCallback={verifyCallback}
-          />
         )}
         <ButtonWithSpinner
           type="submit"
