@@ -6,54 +6,13 @@ import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
-import { forwardRef } from "react";
-
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as utils from "../utils";
 import AlertDialog from "../components/AlertDialog";
+import { tableIcons } from "../components/SubmissionFormElements";
 import { openSnackbar } from "./Notifier";
 
 import Typography from "@material-ui/core/Typography";
-
-import AddBox from "@material-ui/icons/AddBox";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
-import Check from "@material-ui/icons/Check";
-import ChevronLeft from "@material-ui/icons/ChevronLeft";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import Clear from "@material-ui/icons/Clear";
-import DeleteOutline from "@material-ui/icons/DeleteOutline";
-import Edit from "@material-ui/icons/Edit";
-import FilterList from "@material-ui/icons/FilterList";
-import FirstPage from "@material-ui/icons/FirstPage";
-import LastPage from "@material-ui/icons/LastPage";
-import Remove from "@material-ui/icons/Remove";
-import SaveAlt from "@material-ui/icons/SaveAlt";
-import Search from "@material-ui/icons/Search";
-import ViewColumn from "@material-ui/icons/ViewColumn";
-
-const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => (
-    <ChevronRight {...props} ref={ref} />
-  )),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-};
 
 const styles = theme => ({
   root: {
@@ -96,7 +55,7 @@ export class SubmissionsTableUnconnected extends React.Component {
           openSnackbar(
             "error",
             this.props.submission.error ||
-              "An error occured while fetching content"
+              "An error occured while fetching submissions"
           );
         }
       })
@@ -139,11 +98,13 @@ export class SubmissionsTableUnconnected extends React.Component {
 
   async deleteSubmission(submissionData) {
     const token = this.props.appState.authToken;
-    const submissionDeleteResult = await this.props.apiSubmission.deleteSubmission(
-      token,
-      submissionData.id
-    );
+    const submissionDeleteResult = await this.props.apiSubmission
+      .deleteSubmission(token, submissionData.id)
+      .catch(err => {
+        openSnackbar("error", this.props.submission.error);
+      });
     if (
+      !submissionDeleteResult ||
       !submissionDeleteResult.type ||
       submissionDeleteResult.type !== "DELETE_SUBMISSION_SUCCESS"
     ) {
@@ -159,6 +120,11 @@ export class SubmissionsTableUnconnected extends React.Component {
     }
   }
 
+  deleteAndClose() {
+    this.deleteSubmission(this.props.submission.currentSubmission);
+    this.props.apiSubmission.handleDeleteClose();
+  }
+
   render() {
     const { classes } = this.props;
     return (
@@ -170,10 +136,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             title="Delete Submission"
             content={`Are you sure you want to delete? You cannot undo this action.`}
             danger={true}
-            action={() => {
-              this.deleteContent(this.props.submission.currentSubmission);
-              this.props.apiSubmission.handleDeleteClose();
-            }}
+            action={this.deleteAndClose}
             buttonText="Delete"
             data-test="alert-dialog"
           />

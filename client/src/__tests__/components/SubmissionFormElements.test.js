@@ -12,7 +12,10 @@ const {
   renderTextField,
   renderSelect,
   renderCheckbox,
-  getKeyByValue
+  renderRadioGroup,
+  renderCAPERadioGroup,
+  getKeyByValue,
+  findEmployerObject
 } = formElements;
 
 let props;
@@ -81,6 +84,31 @@ describe("Helper Functions", () => {
       const getKeyByValueTest = getKeyByValue(testObject, "ValUe");
       expect(typeof getKeyByValueTest).toBe("string");
       expect(getKeyByValueTest).toBe("key1");
+    });
+  });
+
+  describe("findEmployerObject", () => {
+    const employerObjects = [
+      { Name: "homecare workers" },
+      { Name: "community members" }
+    ];
+    it("returns the matching object", () => {
+      const employerName = "homecare workers";
+      const employerObjectsTest = findEmployerObject(
+        employerObjects,
+        employerName
+      );
+      expect(typeof employerObjectsTest).toBe("object");
+      expect(employerObjectsTest).toEqual(employerObjects[0]);
+    });
+    it("returns the correct value for `community members` use case", () => {
+      const employerName = "community member";
+      const employerObjectsTest = findEmployerObject(
+        employerObjects,
+        employerName
+      );
+      expect(typeof employerObjectsTest).toBe("object");
+      expect(employerObjectsTest).toEqual(employerObjects[1]);
     });
   });
 });
@@ -256,6 +284,95 @@ describe("Input Field Render functions", () => {
 
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderCheckbox, initialProps);
+    });
+  });
+
+  describe("renderRadioGroup", () => {
+    let wrapper;
+
+    const initialProps = {
+      input: {
+        name: "testRadio",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: false
+      },
+      id: "testField",
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testCheckboxClass"
+      },
+      label: "Test Field",
+      options: ["test"],
+      additionalOnChange: jest.fn()
+    };
+
+    wrapper = mount(renderRadioGroup(initialProps));
+    let component = findByTestAttr(wrapper, "component-radio-group").first();
+    it("renders without errors", () => {
+      expect(component).toHaveLength(1);
+    });
+
+    it("updates input value when changed", () => {
+      component.checked = false;
+      component.prop("onChange")({ target: { checked: true } });
+      expect(onChange).toHaveBeenCalled();
+    });
+
+    it("it doesn't throw PropType warnings", () => {
+      checkPropTypes(renderRadioGroup, initialProps);
+    });
+  });
+
+  describe("renderCAPERadioGroup", () => {
+    let wrapper;
+
+    const initialProps = {
+      input: {
+        name: "testRadio",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: false
+      },
+      id: "testField",
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testCheckboxClass"
+      },
+      label: "Test Field",
+      options: ["test"],
+      additionalOnChange: jest.fn()
+    };
+
+    wrapper = mount(renderCAPERadioGroup(initialProps));
+    let component = findByTestAttr(
+      wrapper,
+      "component-cape-radio-group"
+    ).first();
+    it("renders without errors", () => {
+      expect(component).toHaveLength(1);
+    });
+
+    it("updates input value when changed", () => {
+      component.checked = false;
+      component.prop("onChange")({ target: { checked: true } });
+      expect(onChange).toHaveBeenCalled();
+    });
+
+    it("it doesn't throw PropType warnings", () => {
+      checkPropTypes(renderCAPERadioGroup, initialProps);
     });
   });
 });
