@@ -60,7 +60,7 @@ exports.getSFContactById = async (req, res, next) => {
  *  @returns  {Object}        { sf_contact_id } or error message
  */
 exports.createSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 62: createSFContact`);
+  // console.log(`sf.ctrl.js > 62: createSFContact`);
 
   const bodyRaw = { ...req.body };
   // console.log(`sf.ctrl.js > 64`);
@@ -100,7 +100,7 @@ exports.createSFContact = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 94: returning to client`);
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    console.error(`sf.ctrl.js > 97: ${err}`);
+    // console.error(`sf.ctrl.js > 97: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

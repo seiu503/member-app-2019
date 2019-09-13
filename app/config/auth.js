@@ -9,8 +9,6 @@ const passport = require("passport"),
   BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl, //
   googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
 
-console.log(`auth.js > googleCallbackUrl: ${googleCallbackUrl}`);
-
 /* ================================ EXPORTS ================================ */
 
 const user = {
@@ -113,11 +111,11 @@ const googleOptions = {
 };
 
 const googleLogin = async (req, token, refreshToken, profile, done) => {
-  console.log(
-    `Google login by ${profile.name.givenName} ${
-      profile.name.familyName
-    }, ID: ${profile.id}`
-  );
+  // console.log(
+  //   `Google login by ${profile.name.givenName} ${
+  //     profile.name.familyName
+  //   }, ID: ${profile.id}`
+  // );
   if (!req.user) {
     return findExistingUser(profile, token, done).catch(err => {
       console.log(err);

@@ -2444,7 +2444,7 @@
                           t &&
                             (a.props.history.push(t),
                             window.localStorage.removeItem("redirect"));
-                        } else console.log("not logged in"), ft("error", "Please log in to view your profile");
+                        } else console.log("not logged in"), console.log(e), ft("error", "Please log in to view this page.");
                       })
                       .catch(function(e) {
                         ft("error", e);
@@ -9888,4 +9888,4 @@
   },
   [[430, 1, 2]]
 ]);
-//# sourceMappingURL=main.bf128ccb.chunk.js.map
+//# sourceMappingURL=main.26ade285.chunk.js.map

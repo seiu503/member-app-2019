@@ -83,6 +83,7 @@ export class DashboardUnconnected extends React.Component {
     this.props.api
       .getProfile(token, userId)
       .then(result => {
+        // console.log(result.type);
         if (result.type === "GET_PROFILE_SUCCESS") {
           this.props.actions.setLoggedIn();
           // check for redirect url in local storage
@@ -95,7 +96,8 @@ export class DashboardUnconnected extends React.Component {
           }
         } else {
           console.log("not logged in");
-          openSnackbar("error", "Please log in to view your profile");
+          console.log(result);
+          openSnackbar("error", "Please log in to view this page.");
         }
       })
       .catch(err => {
