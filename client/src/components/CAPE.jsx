@@ -326,7 +326,7 @@ export const CAPE = props => {
           </div>
         )}
         <Field
-          label="Occupation"
+          label="Job Title"
           name="jobTitle"
           id="jobTitle"
           type="text"

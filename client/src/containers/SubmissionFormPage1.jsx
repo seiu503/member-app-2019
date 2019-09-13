@@ -376,7 +376,7 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     await this.props.apiSF.createSFContact(body).catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
   }
@@ -438,13 +438,13 @@ export class SubmissionFormPage1Container extends React.Component {
             result.type === "GET_SF_DJR_FAILURE" ||
             this.props.submission.error
           ) {
-            console.log(this.props.submission.error);
+            // console.log(this.props.submission.error);
             resolve(handleError(this.props.submission.error));
           }
           resolve(result);
         })
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           resolve(handleError(err));
         });
     });
@@ -555,7 +555,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // submit validation: recaptcha
     const reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
     if (!reCaptchaValue) {
-      console.log("no reCaptcha value??");
+      // console.log("no reCaptcha value");
     }
     // await this.props.apiSubmission.handleInput({
     //   target: { name: "reCaptchaValue", value: reCaptchaValue }
@@ -615,7 +615,7 @@ export class SubmissionFormPage1Container extends React.Component {
           result.payload.message ||
           result.type === "GET_IFRAME_EXISTING_FAILURE"
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -624,13 +624,13 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
 
   async getIframeNew() {
-    console.log("getIframeNew");
+    // console.log("getIframeNew");
     const { formValues } = this.props;
 
     const birthdate = formatBirthdate(formValues);
@@ -667,8 +667,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        console.log("where is memberShortId???");
-        console.log(result.payload);
+        // console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -835,7 +834,7 @@ export class SubmissionFormPage1Container extends React.Component {
               result.payload.Payment_Error_Hold__c);
 
           if (newCardNeeded) {
-            console.log("newCardNeeded");
+            // console.log("newCardNeeded");
             this.props.apiSubmission.handleInput({
               target: { name: "newCardNeeded", value: true }
             });

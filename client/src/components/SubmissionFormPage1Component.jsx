@@ -235,9 +235,9 @@ export class SubmissionFormPage1Component extends React.Component {
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    console.log(`formPage1.employerId: ${formPage1.employerId}`);
-    console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
-    console.log("if these dont match then create a new record");
+    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    // console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
+    // console.log("if these dont match then create a new record");
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
@@ -263,7 +263,7 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     // if id exists and employer matches, update existing DJR record
-    console.log("updateSFDJR");
+    // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
     // console.log("updateSFDJR");
@@ -308,27 +308,18 @@ export class SubmissionFormPage1Component extends React.Component {
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
+      // console.log('validMethod');
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    // console.log(`validMethod? ${validMethod}`);
-    // console.log(
-    //   `paymentMethodAdded? ${
-    //     this.props.submission.formPage1.paymentMethodAdded
-    //   }`
-    // );
-    // console.log(
-    //   `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
-    // submit validation: payment method
+
     if (
       this.props.submission.formPage1.paymentRequired &&
       this.props.submission.formPage1.paymentType === "Card" &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      console.log("No payment method added");
+      // console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
@@ -349,6 +340,7 @@ export class SubmissionFormPage1Component extends React.Component {
         // );
       })
       .catch(err => {
+        console.log("342");
         console.log(err);
         this.props.handleError(err);
       });

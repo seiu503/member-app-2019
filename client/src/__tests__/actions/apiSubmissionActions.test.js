@@ -13,6 +13,7 @@ import { generateSampleSubmission } from "../../../../app/utils/fieldConfigs.js"
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
+const token = "1234";
 
 describe("apiSubmissionActions", () => {
   describe("api actions", () => {
@@ -102,6 +103,79 @@ describe("apiSubmissionActions", () => {
       };
       expect(result).toEqual(expectedResult);
     });
+
+    it("GET_ALL_SUBMISSIONS: Dispatches success action after successful GET", async () => {
+      nock(`${BASE_URL}`)
+        .get("/api/submission")
+        .reply(200, [submissionBody]);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_ALL_SUBMISSIONS_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.getAllSubmissions(token));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_ALL_SUBMISSIONS: Dispatches failure action after failed GET", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the submissions"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the submissions"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getAllSubmissions(token));
+      const expectedResult = {
+        payload: { message: "There was an error fetching the submissions" },
+        type: "GET_ALL_SUBMISSIONS_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("VERIFY: Dispatches success action after successful POST", async () => {
+      nock(`${BASE_URL}`)
+        .post("/api/verify")
+        .reply(200, { success: true, score: 0.9 });
+
+      const expectedResult = {
+        payload: undefined,
+        type: "VERIFY_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.verify(token, "10.0.0.1"));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("VERIFY: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "Recaptcha validation failed"
+      });
+      const init = {
+        status: 404,
+        statusText: "Recaptcha validation failed"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.verify(token));
+      const expectedResult = {
+        payload: { message: "Recaptcha validation failed" },
+        type: "VERIFY_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("saves a salesForceId", async () => {
       let id = "123456";
       const result = await store.dispatch(actions.saveSalesforceId(id));

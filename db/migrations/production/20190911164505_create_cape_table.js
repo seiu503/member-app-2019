@@ -7,7 +7,7 @@ exports.up = function(knex) {
       table.date("birthdate").notNullable();
       table.string("cell_phone").notNullable();
       table.string("employer_name").notNullable();
-      table.string("occupation").notNullable();
+      table.string("job_title").notNullable();
       table.string("first_name").notNullable();
       table.string("last_name").notNullable();
       table.string("home_street").notNullable();
@@ -18,6 +18,7 @@ exports.up = function(knex) {
       table.string("online_campaign_source");
       table.string("contact_id").notNullable();
       table.string("cape_legal").notNullable();
+      table.decimal("cape_amount", 3, 2).notNullable();
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table.timestamp("updated_at").defaultTo(knex.fn.now());
     })

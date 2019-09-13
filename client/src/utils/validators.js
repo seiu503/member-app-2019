@@ -153,14 +153,14 @@ export const capeValidate = values => {
     }
   });
   if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
-    errors.capeAmountOther = "Please enter a whole dollar amount";
+    errors.capeAmountOther = "Please enter a whole dollar amount.";
   }
   if (
     values.employerType &&
     (values.employerType.toLowerCase() === "adult foster home" ||
       values.employerType.toLowerCase() === "retired" ||
       values.employerType.toLowerCase() === "community member") &&
-    values.paymentMethod === "Card" &&
+    values.paymentType === "Card" &&
     !values.paymentMethodAdded
   ) {
     errors.paymentMethodAdded = `Please add a payment method.`;

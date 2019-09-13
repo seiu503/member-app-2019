@@ -110,7 +110,8 @@ const defaultProps = {
   generateSubmissionBody: () => Promise.resolve({}),
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  verifyRecaptchaScore: jest.fn().mockImplementation(() => Promise.resolve(0.9))
 };
 
 createSFDJRSuccess = jest
@@ -433,14 +434,20 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // creating wrapper
       props.apiSubmission.updateSubmission = updateSubmissionError;
       wrapper = unconnectedSetup(props);
+      formElements.handleError = handleErrorMock;
 
       // simulate submit with dummy data
       // simulate submit with dummy data
       wrapper
         .instance()
         .handleSubmit(generateSampleValidate())
-        .then(() => {
-          expect(updateSubmissionError.mock.calls.length).toBe(1);
+        .then(async () => {
+          try {
+            await updateSubmissionError();
+            expect(formElements.handleError.mock.calls.length).toBe(1);
+          } catch (err) {
+            console.log(err);
+          }
         })
         .catch(err => {
           console.log(err);
@@ -449,7 +456,9 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // testing that openSnackbar is called when handleSubmit receives Error message
       try {
         await updateSubmissionError();
-        expect(handleErrorMock.mock.calls.length).toBe(1);
+        await createSFDJRSuccess();
+        await createSFOMASuccess();
+        expect(formElements.handleError.mock.calls.length).toBe(1);
       } catch (err) {
         console.log(err);
       }

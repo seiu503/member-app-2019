@@ -1039,20 +1039,20 @@ const capeTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "employer_name"
   },
-  occupation: {
+  job_title: {
     oldFormPage: "none",
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
-    postgresFieldName: "occupation",
-    clientFieldName: "occupation",
+    postgresFieldName: "job_title",
+    clientFieldName: "jobTitle",
     HtmlInputType: "n/a (see Contacts)",
     // SFTable: "OnlineMemberApp__c",
-    // SFFieldLabel: "EmployerName_fromWebForm",
-    // SFAPIName: "EmployerName_fromWebForm__c",
+    // SFFieldLabel: "EmployerName_fromWebForm", ????
+    // SFAPIName: "EmployerName_fromWebForm__c", ????
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "occupation"
+    testingSample: "job title"
   },
   first_name: {
     oldFormPage: "none",
@@ -1211,6 +1211,18 @@ const capeTableFields = {
     SFDataType: "Long Text Area(32768)",
     SQLDataType: "Text",
     testingSample: "Lorem ipsum dolor sit amet."
+  },
+  capeAmount: {
+    req: "Y",
+    postgresFieldName: "cape_amount",
+    clientFieldName: "capeAmount",
+    testingSample: 10
+  },
+  employerType: {
+    req: "Y",
+    postgresFieldName: "employer_type",
+    clientFieldName: "employerType",
+    testingSample: "adult foster home"
   }
 };
 
@@ -1571,10 +1583,10 @@ const requiredFields = [
 
 const generateCAPEValidate = () => {
   const sampleData = {};
-  Object.keys(submissionsTableFields).map(function(key, index) {
-    if (submissionsTableFields[key].CAPEreq) {
-      let clientFieldName = submissionsTableFields[key].clientFieldName;
-      sampleData[clientFieldName] = submissionsTableFields[key].testingSample;
+  Object.keys(capeTableFields).map(function(key, index) {
+    if (capeTableFields[key].req === "Y") {
+      let clientFieldName = capeTableFields[key].clientFieldName;
+      sampleData[clientFieldName] = capeTableFields[key].testingSample;
     }
   });
   sampleData.mobilePhone = sampleData.cellPhone;
