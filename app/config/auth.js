@@ -6,7 +6,10 @@ const passport = require("passport"),
   GoogleStrategy = require("passport-google-oauth2").Strategy,
   prodUrl = "http://test.seiu503signup.org", // NO TRAILING SLASH
   devUrl = "http://localhost:8080", // server url for local install
-  BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl; //
+  BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl, //
+  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
+
+console.log(`auth.js > googleCallbackUrl: ${googleCallbackUrl}`);
 
 /* ================================ EXPORTS ================================ */
 
@@ -30,7 +33,7 @@ const user = {
 const googleAuth = {
   clientID: process.env.GOOGLE_KEY,
   clientSecret: process.env.GOOGLE_SECRET,
-  callbackURL: `${BASE_URL}/api/auth/google/callback`
+  callbackURL: googleCallbackUrl
 };
 
 //= ========================
@@ -110,11 +113,11 @@ const googleOptions = {
 };
 
 const googleLogin = async (req, token, refreshToken, profile, done) => {
-  // console.log(
-  //   `Google login by ${profile.name.givenName} ${
-  //     profile.name.familyName
-  //   }, ID: ${profile.id}`
-  // );
+  console.log(
+    `Google login by ${profile.name.givenName} ${
+      profile.name.familyName
+    }, ID: ${profile.id}`
+  );
   if (!req.user) {
     return findExistingUser(profile, token, done).catch(err => {
       console.log(err);

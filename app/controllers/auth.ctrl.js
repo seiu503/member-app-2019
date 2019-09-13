@@ -10,16 +10,17 @@ const users = require("../../db/models/users");
 const utils = require("../utils");
 const userController = require("./users.ctrl");
 
-const APP_HOST = process.env.APP_HOST;
+const APP_HOST = "http://test.seiu503.org"; // change this for production
 const CLIENT_URL =
   process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
 const SERVER_URL =
   process.env.NODE_ENV === "production" ? APP_HOST : "//localhost:3001";
+console.log(`auth.ctrl.js > 18: CLIENT_URL: ${CLIENT_URL}`);
 
 /* ============================ ROUTE HANDLERS ============================= */
 
 exports.googleCallback = (req, res) => {
-  // console.log("################# google callback");
+  console.log("################# google callback");
   if (req.user && req.user.err) {
     res.status(401).json({
       success: false,
@@ -39,10 +40,10 @@ exports.googleCallback = (req, res) => {
       // return user ID & google redirect flag as URL params
       const userInfo = utils.setUserInfo(userObj);
       const token = utils.generateToken(userInfo);
+      const redirect = `${CLIENT_URL}/admin/${userObj.id}/${token}`;
+      console.log(`auth.ctrl.js > 44: redirect: ${redirect}`);
 
-      return res
-        .status(200)
-        .redirect(`${CLIENT_URL}/admin/${userObj.id}/${token}`);
+      return res.status(200).redirect(redirect);
     } else {
       return res.status(422).redirect("/login");
     }
