@@ -10,7 +10,7 @@ const users = require("../../db/models/users");
 const utils = require("../utils");
 const userController = require("./users.ctrl");
 
-const APP_HOST = "http://test.seiu503.org"; // change this for production
+const APP_HOST = "http://test.seiu503signup.org"; // change this for production
 const CLIENT_URL =
   process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
 const SERVER_URL =
