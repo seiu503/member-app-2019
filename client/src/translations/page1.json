@@ -230,7 +230,7 @@
     "Nhập họ tên hợp pháp của quý vị. Điều này sẽ có hiệu lực như chữ ký của quý vị.",
     "输入您的合法姓名。这将作为您的签名。"
   ],
-  "directPayAuthorization": [
+  "directPayAuth": [
     "DIRECT PAY AUTHORIZATION",
     "Autorización de pago directo",
     "Разрешение на производство прямых платежей",
