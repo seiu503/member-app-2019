@@ -114,4 +114,9 @@ const validate = values => {
   return errors;
 };
 
+// when adding translations it may be easier to just import an array or object here and add a switch based on state's activeLanguage
+// rather than messing with adding translate callback function to an MUI error text for custom redux-form validation errors.
+// Not sure exactly what the best implementation would be.
+// Localization package author discusses solutions in this post: https://github.com/i18next/react-i18next/issues/306
+
 export default validate;
