@@ -40,6 +40,9 @@ export const defaultWelcomeInfo = {
   headline: `SEIU 503: It’s about more than a better job – it’s about a better world.`
 };
 
+// detects browser settings defaultLanguage. If that language is one of the languages
+// we provide translations for (or a specific dialect like "es-ar" instead of just "es")
+// it sets the active language of the localization package to that language. Defaults to English.
 export const detectDefaultLanguage = () => {
   let defaultLanguage = "en";
   const acceptableLangs = ["en", "es", "ru", "vi", "zh"];
@@ -83,6 +86,8 @@ export const scrollToFirstError = errors => {
   }
 };
 
+// converts any string into camelCase/pascalCase used for formatting IDs of
+// employerType and employerName picklist options to match IDs in translation files
 export const camelCaseConverter = str => {
   let newStr = str.toLowerCase().replace(/\W+(.)/g, function(match, chr) {
     return chr.toUpperCase();
