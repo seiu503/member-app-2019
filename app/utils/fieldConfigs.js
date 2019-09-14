@@ -586,22 +586,15 @@ const contactsTableFields = {
 };
 
 const submissionsTableFields = {
-  ip_address: {
-    oldFormPage: "none",
-    req: "Y",
-    CAPEreq: true,
-    postgresFieldName: "ip_address",
-    clientFieldName: "idAddress",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "IP Address",
-    SFAPIName: "IP_Address__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: "192.0.2.0"
+  submission_status: {
+    tableDisplay: true,
+    postgresFieldName: "submission_status",
+    fieldLabel: "Submission Status",
+    testingSample: "Success",
+    postgresFieldName: "submission_status"
   },
   submission_date: {
-    oldFormPage: "none",
+    tableDisplay: true,
     req: "Y",
     CAPEreq: true,
     postgresFieldName: "submission_date",
@@ -614,78 +607,8 @@ const submissionsTableFields = {
     SQLDataType: "Timestamp",
     testingSample: formatDate(new Date())
   },
-  agency_number: {
-    oldFormPage: "none",
-    req: "Y",
-    postgresFieldName: "agency_number",
-    clientFieldName: "agencyNumber",
-    HtmlInputType: "n/a (see Contacts)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Agency Number",
-    SFAPIName: "agencyNumber__c",
-    SFDataType: "",
-    SQLDataType: "",
-    testingSample: "123456"
-  },
-  account_subdivision: {
-    oldFormPage: "none",
-    req: "Y",
-    postgresFieldName: "account_subdivision",
-    clientFieldName: "employerType",
-    HtmlInputType: "none",
-    SFTable: "Worker (Contact)", // Account field
-    SFFieldLabel: "WS Subdivision (from Agency)",
-    SFAPIName: "Account.WS_Subdivision_from_Agency__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: "Nursing Homes"
-  },
-  birthdate: {
-    oldFormPage: "none",
-    newFormTab: 0,
-    req: "Y",
-    postgresFieldName: "birthdate",
-    clientFieldName: "birthdate",
-    HtmlInputType: "n/a (see Contacts)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Birthdate",
-    SFAPIName: "Birthdate__c",
-    SFDataType: "Date",
-    SQLDataType: "Date",
-    testingSample: new Date("01/01/2001")
-  },
-  cell_phone: {
-    oldFormPage: "none",
-    newFormTab: 0,
-    req: "Y",
-    CAPEreq: true,
-    postgresFieldName: "cell_phone",
-    clientFieldName: "cellPhone",
-    HtmlInputType: "n/a (see Contacts)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Cell Phone",
-    SFAPIName: "Cell_Phone__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: "123-456-7890"
-  },
-  employer_name: {
-    oldFormPage: "none",
-    newFormTab: 0,
-    req: "Y",
-    CAPEreq: true,
-    postgresFieldName: "employer_name",
-    clientFieldName: "employerName",
-    HtmlInputType: "n/a (see Contacts)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "EmployerName_fromWebForm",
-    SFAPIName: "EmployerName_fromWebForm__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: "employer_name"
-  },
   first_name: {
-    oldFormPage: "none",
+    tableDisplay: true,
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
@@ -700,7 +623,7 @@ const submissionsTableFields = {
     testingSample: "firstname"
   },
   last_name: {
-    oldFormPage: "none",
+    tableDisplay: true,
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
@@ -714,8 +637,135 @@ const submissionsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "lastname"
   },
+  home_email: {
+    tableDisplay: true,
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "home_email",
+    clientFieldName: "homeEmail",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Home Email",
+    SFAPIName: "Home_Email__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "fake@email.com"
+  },
+  employer_name: {
+    tableDisplay: true,
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "employer_name",
+    clientFieldName: "employerName",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "EmployerName_fromWebForm",
+    fieldLabel: "Employer",
+    SFAPIName: "EmployerName_fromWebForm__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "employer_name"
+  },
+  online_campaign_source: {
+    tableDisplay: true,
+    req: "N",
+    postgresFieldName: "online_campaign_source",
+    clientFieldName: "onlineCampaignSource",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Online Campaign Source",
+    SFAPIName: "Online_Campaign_Source__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "online_campaign_source"
+  },
+  contact_id: {
+    tableDisplay: true,
+    req: "N",
+    postgresFieldName: "contact_id",
+    clientFieldName: "contactId",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Contact ID",
+    SFAPIName: "Contact_ID_from_FA_prefill__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: null
+  },
+  ip_address: {
+    tableDisplay: false,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "ip_address",
+    clientFieldName: "idAddress",
+    HtmlInputType: "(formula; no user-facing input)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "IP Address",
+    SFAPIName: "IP_Address__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "192.0.2.0"
+  },
+  agency_number: {
+    tableDisplay: false,
+    req: "Y",
+    postgresFieldName: "agency_number",
+    clientFieldName: "agencyNumber",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Agency Number",
+    SFAPIName: "agencyNumber__c",
+    SFDataType: "",
+    SQLDataType: "",
+    testingSample: "123456"
+  },
+  account_subdivision: {
+    tableDisplay: false,
+    req: "Y",
+    postgresFieldName: "account_subdivision",
+    clientFieldName: "employerType",
+    HtmlInputType: "none",
+    SFTable: "Worker (Contact)", // Account field
+    SFFieldLabel: "WS Subdivision (from Agency)",
+    fieldLabel: "Subdivision",
+    SFAPIName: "Account.WS_Subdivision_from_Agency__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "Nursing Homes"
+  },
+  birthdate: {
+    tableDisplay: false,
+    newFormTab: 0,
+    req: "Y",
+    postgresFieldName: "birthdate",
+    clientFieldName: "birthdate",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Birthdate",
+    SFAPIName: "Birthdate__c",
+    SFDataType: "Date",
+    SQLDataType: "Date",
+    testingSample: new Date("01/01/2001")
+  },
+  cell_phone: {
+    tableDisplay: false,
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "cell_phone",
+    clientFieldName: "cellPhone",
+    HtmlInputType: "n/a (see Contacts)",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "Cell Phone",
+    SFAPIName: "Cell_Phone__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "123-456-7890"
+  },
   home_street: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
@@ -730,7 +780,7 @@ const submissionsTableFields = {
     testingSample: "home_street"
   },
   home_city: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
@@ -745,7 +795,7 @@ const submissionsTableFields = {
     testingSample: "home_city"
   },
   home_state: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
@@ -760,7 +810,7 @@ const submissionsTableFields = {
     testingSample: "OR"
   },
   home_zip: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 0,
     req: "Y",
     CAPEreq: true,
@@ -774,23 +824,8 @@ const submissionsTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "12345"
   },
-  home_email: {
-    oldFormPage: "none",
-    newFormTab: 0,
-    req: "Y",
-    CAPEreq: true,
-    postgresFieldName: "home_email",
-    clientFieldName: "homeEmail",
-    HtmlInputType: "n/a (see Contacts)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Home Email",
-    SFAPIName: "Home_Email__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: "fake@email.com"
-  },
   preferred_language: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 0,
     req: "Y",
     postgresFieldName: "preferred_language",
@@ -804,7 +839,7 @@ const submissionsTableFields = {
     testingSample: "English"
   },
   terms_agree: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 1,
     req: "Y",
     postgresFieldName: "terms_agree",
@@ -819,7 +854,7 @@ const submissionsTableFields = {
   },
   signature: {
     newFormTab: 1,
-    oldFormPage: "none",
+    tableDisplay: false,
     req: "Y",
     postgresFieldName: "signature",
     clientFieldName: "signature",
@@ -832,7 +867,7 @@ const submissionsTableFields = {
     testingSample: "http://example.com/signature.png"
   },
   text_auth_opt_out: {
-    oldFormPage: "none",
+    tableDisplay: false,
     req: "N",
     postgresFieldName: "text_auth_opt_out",
     clientFieldName: "textAuthOptOut",
@@ -844,34 +879,8 @@ const submissionsTableFields = {
     SQLDataType: "Boolean",
     testingSample: false
   },
-  online_campaign_source: {
-    oldFormPage: "none",
-    req: "N",
-    postgresFieldName: "online_campaign_source",
-    clientFieldName: "onlineCampaignSource",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Online Campaign Source",
-    SFAPIName: "Online_Campaign_Source__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: "online_campaign_source"
-  },
-  contact_id: {
-    oldFormPage: "none",
-    req: "N",
-    postgresFieldName: "contact_id",
-    clientFieldName: "contactId",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Contact ID",
-    SFAPIName: "Contact_ID_from_FA_prefill__c",
-    SFDataType: "Text(255)",
-    SQLDataType: "VARCHAR(255)",
-    testingSample: null
-  },
   legal_language: {
-    oldFormPage: "none",
+    tableDisplay: false,
     req: "Y",
     postgresFieldName: "legal_language",
     clientFieldName: "legalLanguage",
@@ -884,7 +893,7 @@ const submissionsTableFields = {
     testingSample: "Lorem ipsum dolor sit amet."
   },
   maintenance_of_effort: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 1,
     req: "Y",
     postgresFieldName: "maintenance_of_effort",
@@ -898,7 +907,7 @@ const submissionsTableFields = {
     testingSample: formatDate(new Date())
   },
   seiu503_cba_app_date: {
-    oldFormPage: "none",
+    tableDisplay: false,
     req: "Y",
     postgresFieldName: "seiu503_cba_app_date",
     clientFieldName: "seiu503CBAAppDate",
@@ -911,7 +920,7 @@ const submissionsTableFields = {
     testingSample: formatDate(new Date())
   },
   direct_pay_auth: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 1,
     req: "P",
     postgresFieldName: "direct_pay_auth",
@@ -925,7 +934,7 @@ const submissionsTableFields = {
     testingSample: formatDate(new Date())
   },
   direct_deposit_auth: {
-    oldFormPage: "none",
+    tableDisplay: false,
     newFormTab: 1,
     req: "P",
     postgresFieldName: "direct_deposit_auth",
@@ -939,7 +948,7 @@ const submissionsTableFields = {
     testingSample: formatDate(new Date())
   },
   immediate_past_member_status: {
-    oldFormPage: "none",
+    tableDisplay: false,
     req: "N",
     postgresFieldName: "immediate_past_member_status",
     clientFieldName: "immediatePastMemberStatus",
@@ -950,6 +959,12 @@ const submissionsTableFields = {
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Not a Member"
+  },
+  submission_errors: {
+    tableDisplay: false,
+    postgresFieldName: "submission_errors",
+    testingSample: "Salesforce Error",
+    fieldLabel: "Submission Errors"
   }
 };
 
@@ -1034,6 +1049,7 @@ const capeTableFields = {
     HtmlInputType: "n/a (see Contacts)",
     SFTable: "OnlineMemberApp__c",
     SFFieldLabel: "EmployerName_fromWebForm",
+    fieldLabel: "Employer",
     SFAPIName: "EmployerName_fromWebForm__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
@@ -1050,6 +1066,7 @@ const capeTableFields = {
     // SFTable: "OnlineMemberApp__c",
     // SFFieldLabel: "EmployerName_fromWebForm", ????
     // SFAPIName: "EmployerName_fromWebForm__c", ????
+    fieldLabel: "Job Title",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "job title"
@@ -1208,6 +1225,7 @@ const capeTableFields = {
     // SFTable: "OnlineMemberApp__c",
     // SFFieldLabel: "Legal Language",
     // SFAPIName: "Legal_Language__c",
+    fieldLabel: "Legal Language",
     SFDataType: "Long Text Area(32768)",
     SQLDataType: "Text",
     testingSample: "Lorem ipsum dolor sit amet."
@@ -1216,13 +1234,15 @@ const capeTableFields = {
     req: "Y",
     postgresFieldName: "cape_amount",
     clientFieldName: "capeAmount",
+    fieldLabel: "CAPE Amount",
     testingSample: 10
   },
   employerType: {
     req: "Y",
     postgresFieldName: "employer_type",
     clientFieldName: "employerType",
-    testingSample: "adult foster home"
+    testingSample: "adult foster home",
+    fieldLabel: "Employer Type"
   }
 };
 
@@ -1437,6 +1457,7 @@ const Page2TableFields = {
     HtmlInputType: "select",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Gender (503)",
+    fieldLabel: "Gender",
     SFAPIName: "Gender__c",
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
@@ -1463,6 +1484,7 @@ const Page2TableFields = {
     HtmlInputType: "select",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Gender Pronoun",
+    fieldLabel: "Pronouns",
     SFAPIName: "Prounoun__c",
     SFDataType: "Picklist(text)",
     SQLDataType: "VARCHAR(255)",
@@ -1501,7 +1523,8 @@ const Page2TableFields = {
     clientFieldName: "worksite",
     HtmlInputType: "text",
     SFTable: "Worker (Contact)",
-    SFFieldLabel: "Worksite (manual entry from webform",
+    SFFieldLabel: "Worksite (manual entry from webform)",
+    fieldLabel: "Worksite",
     SFAPIName: "Worksite_manual_entry_from_webform__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
@@ -1514,7 +1537,7 @@ const Page2TableFields = {
     clientFieldName: "workPhone",
     HtmlInputType: "tel",
     SFTable: "Worker (Contact)",
-    SFFieldLabel: "Cell Phone",
+    SFFieldLabel: "Work Phone",
     SFAPIName: "Work_Phone__c",
     SFDataType: "Phone",
     SQLDataType: "VARCHAR(255)",
@@ -1631,6 +1654,39 @@ const generateSFDJRFieldList = () => {
   return fieldList;
 };
 
+// use this for one-time generation, save to submissionFormElements
+// can't be used to generate dynamically on client bc
+// fieldConfigs is outside the /scr directory
+
+// const generateTableDisplayFields = () => {
+//   const fieldList = [];
+//   const allFields = { ...submissionsTableFields, ...paymentFields, ...capeTableFields, ...Page2TableFields };
+//   Object.keys(allFields).map(function(key, index) {
+//     if (allFields[key].postgresFieldName) {
+//       if (allFields[key].SQLDataType === "DATE") {
+//         fieldList.push({
+//           'title': allFields[key].fieldLabel ? allFields[key].fieldLabel : allFields[key].SFFieldLabel,
+//           'field': allFields[key].postgresFieldName,
+//           'hidden': allFields[key].tableDisplay === true ? false : true,
+//           'type': 'date',
+//           'render': rowData => formatDate(rowData[allFields[key].postgresFieldName])
+//         });
+//       } else {
+//         fieldList.push({
+//           'title': allFields[key].fieldLabel ? allFields[key].fieldLabel : allFields[key].SFFieldLabel,
+//           'field': allFields[key].postgresFieldName,
+//           'hidden': allFields[key].tableDisplay === true ? false : true,
+//         });
+//       }
+//     }
+
+//   });
+
+//   console.log(`submTableFieldList`);
+//   console.log(fieldList);
+//   return fieldList;
+// }
+
 module.exports = {
   contactsTableFields,
   submissionsTableFields,
@@ -1643,5 +1699,6 @@ module.exports = {
   generatePage2Validate,
   generateSFContactFieldList,
   generateSFDJRFieldList,
+  // generateTableDisplayFields,
   formatDate
 };

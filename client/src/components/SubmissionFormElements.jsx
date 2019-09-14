@@ -16,7 +16,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
-import { camelCaseConverter } from "../utils/index";
+import { camelCaseConverter, formatDate } from "../utils";
 
 import { forwardRef } from "react";
 import AddBox from "@material-ui/icons/AddBox";
@@ -1354,6 +1354,132 @@ export const afhDuesCopy = afhDuesRate =>
 
 export const commDuesCopy =
   "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+
+export const submTableFieldList = [
+  { title: "Submission Status", field: "submission_status", hidden: false },
+  {
+    title: "Submission Date",
+    field: "submission_date",
+    hidden: false,
+    defaultSort: "desc"
+  },
+  { title: "First Name", field: "first_name", hidden: false },
+  { title: "Last Name", field: "last_name", hidden: false },
+  { title: "Home Email", field: "home_email", hidden: false },
+  { title: "Employer", field: "employer_name", hidden: false },
+  {
+    title: "Online Campaign Source",
+    field: "online_campaign_source",
+    hidden: false
+  },
+  { title: "Contact ID", field: "contact_id", hidden: false },
+  { title: "IP Address", field: "ip_address", hidden: false },
+  { title: "Agency Number", field: "agency_number", hidden: false },
+  { title: "Subdivision", field: "account_subdivision", hidden: false },
+  { title: "Birthdate", field: "birthdate", hidden: true },
+  { title: "Cell Phone", field: "cell_phone", hidden: true },
+  { title: "Home Street", field: "home_street", hidden: true },
+  { title: "Home City", field: "home_city", hidden: true },
+  { title: "Home State", field: "home_state", hidden: true },
+  { title: "Home Zip", field: "home_zip", hidden: true },
+  { title: "Preferred Language", field: "preferred_language", hidden: true },
+  { title: "termsagree", field: "terms_agree", hidden: true },
+  { title: "Signature", field: "signature", hidden: true },
+  {
+    title: "Text Authorization Opt Out",
+    field: "text_auth_opt_out",
+    hidden: true
+  },
+  { title: "Legal Language", field: "legal_language", hidden: true },
+  {
+    title: "Maintenance of Effort",
+    field: "maintenance_of_effort",
+    hidden: true
+  },
+  {
+    title: "503 CBA App Date",
+    field: "seiu503_cba_app_date",
+    type: "date",
+    render: rowData => formatDate(rowData.seiu503_cba_app_date),
+    hidden: true
+  },
+  {
+    title: "Direct Pay Authorization",
+    field: "direct_pay_auth",
+    type: "date",
+    render: rowData => formatDate(rowData.direct_pay_auth),
+    hidden: true
+  },
+  {
+    title: "Direct Deposit Authorization",
+    field: "direct_deposit_auth",
+    type: "date",
+    render: rowData => formatDate(rowData.direct_deposit_auth),
+    hidden: true
+  },
+  {
+    title: "Immediate Past Member Status",
+    field: "immediate_past_member_status",
+    hidden: true
+  },
+  { title: "Submission Errors", field: "submission_errors", hidden: true },
+  { title: "Dues Day", field: "deduction_day_of_month", hidden: true },
+  {
+    title: "Active Account Last 4",
+    field: "active_method_last_four",
+    hidden: true
+  },
+  { title: "Unioni.se MemberID", field: "member_short_id", hidden: true },
+  { title: "Payment Method", field: "payment_method", hidden: true },
+  {
+    title: "AFH Number of Residents",
+    field: "medicaid_residents",
+    hidden: true
+  },
+  { title: "Job Class/Title", field: "job_title", hidden: true },
+  { title: "Legal Language", field: "cape_legal", hidden: true },
+  { title: "CAPE Amount", field: "cape_amount", hidden: true },
+  { title: "Employer Type", field: "employer_type", hidden: true },
+  { title: "Mail-To City", field: "mail_to_city", hidden: true },
+  { title: "Mail-To State/Province", field: "mail_to_state", hidden: true },
+  { title: "Mail-To Street", field: "mail_to_street", hidden: true },
+  {
+    title: "Mail-To Zip/Postal Code",
+    field: "mail_to_postal_code",
+    hidden: true
+  },
+  { title: "Ethnicity", field: "ethnicity", hidden: true },
+  { title: "LGBTQIA+ ID", field: "lgbtq_id", hidden: true },
+  { title: "Trans ID", field: "trans_id", hidden: true },
+  { title: "Disability ID", field: "disability_id", hidden: true },
+  {
+    title: "Deaf or hard-of-hearing",
+    field: "deaf_or_hard_of_hearing",
+    hidden: true
+  },
+  {
+    title: "Blind or visually impaired",
+    field: "blind_or_visually_impaired",
+    hidden: true
+  },
+  { title: "Gender", field: "gender", hidden: true },
+  {
+    title: "Gender Other - Description",
+    field: "gender_other_description",
+    hidden: true
+  },
+  { title: "Pronouns", field: "gender_pronoun", hidden: true },
+  {
+    title: "Hire date",
+    field: "hire_date",
+    hidden: true,
+    type: "date",
+    render: rowData => formatDate(rowData.hire_date)
+  },
+  { title: "Worksite", field: "worksite", hidden: true },
+  { title: "Work Phone", field: "work_phone", hidden: true },
+  { title: "Work email", field: "work_email", hidden: true }
+];
 
 TextField.propTypes = {
   input: PropTypes.shape({

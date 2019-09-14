@@ -13,10 +13,13 @@ const {
   generateSampleSubmission,
   submissionsTableFields,
   Page2TableFields
+  // generateTableDisplayFields
 } = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
 const localIpUrl = require("local-ip-url");
 require("../app/config/passport")(passport);
+
+// generateTableDisplayFields();
 
 let submissionBody = generateSampleSubmission();
 
