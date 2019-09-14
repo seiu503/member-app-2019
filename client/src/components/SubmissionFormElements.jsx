@@ -732,6 +732,10 @@ export const renderRadioGroup = ({
   </Translate>
 );
 
+// If/when you get these translated, you will probably have to place them in
+// a translation .json file and where they are called in Tab2.jsx instead of
+// just adding them as is, place a <Translate> component there and pass it the correct
+// id using the same ternary you already have in place there.
 export const hcwDirectDepositAuthText = (
   <React.Fragment>
     <p>
