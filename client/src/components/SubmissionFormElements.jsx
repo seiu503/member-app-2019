@@ -16,7 +16,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
-import { camelCaseConverter, formatDate } from "../utils";
+import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
 
 import { forwardRef } from "react";
 import AddBox from "@material-ui/icons/AddBox";
@@ -1361,6 +1361,7 @@ export const submTableFieldList = [
     title: "Submission Date",
     field: "submission_date",
     hidden: false,
+    render: rowData => formatDateTime(rowData.submission_date),
     defaultSort: "desc"
   },
   { title: "First Name", field: "first_name", hidden: false },
@@ -1400,21 +1401,21 @@ export const submTableFieldList = [
     title: "503 CBA App Date",
     field: "seiu503_cba_app_date",
     type: "date",
-    render: rowData => formatDate(rowData.seiu503_cba_app_date),
+    render: rowData => formatDateTime(rowData.seiu503_cba_app_date),
     hidden: true
   },
   {
     title: "Direct Pay Authorization",
     field: "direct_pay_auth",
     type: "date",
-    render: rowData => formatDate(rowData.direct_pay_auth),
+    render: rowData => formatDateTime(rowData.direct_pay_auth),
     hidden: true
   },
   {
     title: "Direct Deposit Authorization",
     field: "direct_deposit_auth",
     type: "date",
-    render: rowData => formatDate(rowData.direct_deposit_auth),
+    render: rowData => formatDateTime(rowData.direct_deposit_auth),
     hidden: true
   },
   {

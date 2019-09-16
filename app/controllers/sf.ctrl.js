@@ -332,6 +332,9 @@ exports.deleteSFContactById = async (req, res, next) => {
 
 exports.createSFOnlineMemberApp = async (req, res, next) => {
   let conn = new jsforce.Connection({ loginUrl });
+  return res
+    .status(500)
+    .json({ message: "Error creating SF Online Member App" });
   try {
     await conn.login(user, password);
   } catch (err) {
@@ -448,6 +451,9 @@ exports.createSFDJR = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 440: createSFDJR`);
   const body = { ...req.body };
   // console.log(body);
+  return res
+    .status(500)
+    .json({ message: "Error creating SF Direct Join Rate" });
 
   let conn = new jsforce.Connection({ loginUrl });
   try {

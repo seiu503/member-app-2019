@@ -58,7 +58,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
-    this.saveSubmissionSuccess = this.saveSubmissionSuccess.bind(this);
+    // this.saveSubmissionSuccess = this.saveSubmissionSuccess.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -193,38 +193,39 @@ export class SubmissionFormPage1Container extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
-          return this.props.handleError(this.props.submission.error);
+          return this.handleError(this.props.submission.error);
         }
         // console.log(result.type);
       })
       .catch(err => {
         // console.log(err);
-        return this.props.handleError(err);
+        return this.handleError(err);
       });
   }
 
-  async saveSubmissionSuccess(submission_id) {
-    const updates = {
-      submission_status: "success"
-    };
-    this.props.apiSubmission
-      .updateSubmission(submission_id, updates)
-      .then(result => {
-        // console.log(result.type);
-        if (
-          result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          // console.log(this.props.submission.error);
-          return this.props.handleError(this.props.submission.error);
-        }
-        // console.log(result.type);
-      })
-      .catch(err => {
-        // console.log(err);
-        return this.props.handleError(err);
-      });
-  }
+  // async saveSubmissionSuccess(submission_id) {
+  //   const updates = {
+  //     submission_status: "success"
+  //   };
+  //   this.props.apiSubmission
+  //     .updateSubmission(submission_id, updates)
+  //     .then(result => {
+  //       console.log(`saveSubmissionSuccess`);
+  //       console.log(result.type);
+  //       if (
+  //         result.type === "UPDATE_SUBMISSION_FAILURE" ||
+  //         this.props.submission.error
+  //       ) {
+  //         // console.log(this.props.submission.error);
+  //         return this.handleError(this.props.submission.error);
+  //       }
+  //       // console.log(result.type);
+  //     })
+  //     .catch(err => {
+  //       // console.log(err);
+  //       return this.handleError(err);
+  //     });
+  // }
 
   async prepForContact(values) {
     return new Promise(resolve => {
@@ -349,6 +350,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSubmission() {
+    console.log("createSubmission");
     const { formValues } = this.props;
 
     // create initial submission using data in tabs 1 & 2
@@ -357,6 +359,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues);
+    console.log(body.submission_date);
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
@@ -369,9 +372,43 @@ export class SubmissionFormPage1Container extends React.Component {
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
     if (!this.props.submission.formPage1.paymentRequired) {
+      console.log("no payment required, writing OMA to SF and on to CAPE");
       body.Worker__c = this.props.submission.salesforceId;
-      return this.props.apiSF.createSFOMA(body);
-      // goto CAPE ...
+      return this.props.apiSF
+        .createSFOMA(body)
+        .then(result => {
+          console.log(result.type);
+          if (
+            result.type !== "CREATE_SF_OMA_SUCCESS" ||
+            this.props.submission.error
+          ) {
+            this.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "createSFOMA",
+              this.props.submission.error
+            );
+            // goto CAPE tab
+            this.changeTab(this.props.howManyTabs - 1);
+          } else {
+            // this.saveSubmissionSuccess(this.props.submission.submissionId).then(() => {
+            //   // goto CAPE tab
+            this.changeTab(this.props.howManyTabs - 1);
+            // })
+            // .catch(err => {
+            //   console.log(err);
+            //   return handleError(err);
+            // })
+          }
+        })
+        .catch(err => {
+          this.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFOMA",
+            err
+          );
+          console.log(err);
+          return handleError(err);
+        });
     }
     // if payment required, return out of this function and move to next tab
     return;
@@ -1017,7 +1054,6 @@ export class SubmissionFormPage1Container extends React.Component {
           suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           saveSubmissionErrors={this.saveSubmissionErrors}
-          saveSubmissionSuccess={this.saveSubmissionSuccess}
         />
       </div>
     );
