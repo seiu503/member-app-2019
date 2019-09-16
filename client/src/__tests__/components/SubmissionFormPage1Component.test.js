@@ -111,7 +111,10 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  verifyRecaptchaScore: jest.fn().mockImplementation(() => Promise.resolve(0.9))
+  verifyRecaptchaScore: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(0.9)),
+  saveSubmissionErrors: jest.fn()
 };
 
 createSFDJRSuccess = jest
