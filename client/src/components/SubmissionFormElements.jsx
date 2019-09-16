@@ -18,6 +18,47 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 
 import { camelCaseConverter } from "../utils/index";
 
+import { forwardRef } from "react";
+import AddBox from "@material-ui/icons/AddBox";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
+import Check from "@material-ui/icons/Check";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Clear from "@material-ui/icons/Clear";
+import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import Edit from "@material-ui/icons/Edit";
+import FilterList from "@material-ui/icons/FilterList";
+import FirstPage from "@material-ui/icons/FirstPage";
+import LastPage from "@material-ui/icons/LastPage";
+import Remove from "@material-ui/icons/Remove";
+import SaveAlt from "@material-ui/icons/SaveAlt";
+import Search from "@material-ui/icons/Search";
+import ViewColumn from "@material-ui/icons/ViewColumn";
+
+export const tableIcons = {
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => (
+    <ChevronRight {...props} ref={ref} />
+  )),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
+
 export const handleError = err => {
   return openSnackbar(
     "error",
@@ -240,7 +281,9 @@ export const stylesPage1 = theme => ({
   head: {
     color: theme.palette.primary.light,
     fontSize: "2em",
-    fontWeight: 700
+    fontWeight: 700,
+    lineHeight: 1.1,
+    marginBottom: 15
   },
   form: {
     maxWidth: 600,
@@ -249,7 +292,7 @@ export const stylesPage1 = theme => ({
     padding: "20px 20px 40px 20px",
     borderRadius: "0 0 4px 4px",
     [theme.breakpoints.only("xs")]: {
-      padding: "10px 5px 40px 5px"
+      padding: "15px 15px 40px 15px"
     }
   },
   buttonWrap: {
@@ -413,9 +456,130 @@ export const stylesPage1 = theme => ({
   horizRadioBold: {
     fontWeight: 700
   },
-  body: {},
+  subhead: {
+    color: theme.palette.primary.light,
+    fontSize: "1.5em",
+    fontWeight: 400,
+    paddingBottom: 20
+  },
   paymentCopy: {
     paddingBottom: "1.5em"
+  },
+  card: {
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column"
+    }
+  },
+  details: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  content: {
+    flex: "1 0 auto"
+  },
+  cover: {
+    minWidth: 200,
+    minHeight: 200
+  },
+  cardHead: {
+    color: theme.palette.primary.light,
+    fontWeight: 400,
+    paddingBottom: 10
+  },
+  quoteAttr: {
+    color: theme.palette.primary.light,
+    fontStyle: "italic",
+    paddingTop: 10
+  },
+  pullQuote: {
+    textIndent: 20
+  },
+  suggestedAmounts: {
+    display: "block",
+    flexWrap: "wrap",
+    margin: "0 -1.666666666666667% 13px",
+    paddingTop: 35
+  },
+  suggestedAmountBoxes: {
+    flexDirection: "row",
+    flexWrap: "nowrap"
+  },
+  suggestedAmountBox: {
+    width: "21%",
+    height: 60,
+    margin: "13px 1.666666666666667% 0",
+    display: "inline-block"
+  },
+  boxLabel: {
+    height: "100%",
+    fontSize: 20,
+    lineHeight: "60px",
+    fontWeight: 300,
+    color: "#4C4C4C",
+    textAlign: "center",
+    border: "1px solid #C4C3C3",
+    borderRadius: 3,
+    display: "block",
+    transition:
+      "color 0.1s, background-color 0.1s, border-color 0.1s, font-weight 0.1s",
+    position: "relative",
+    cursor: "pointer",
+    margin: 0
+  },
+  boxInput: {
+    float: "left",
+    opacity: 0,
+    width: 0,
+    height: 0,
+    position: "absolute",
+    padding: 0,
+    margin: 0,
+    border: 0,
+    "&:focus + label": {
+      outline: "rgba(83,16,120, 0.5) auto 3px"
+    },
+    "&:checked + label": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: 2,
+      fontWeight: 700
+    },
+    "&:checked + $boxLabel": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: 2,
+      fontWeight: 700
+    }
+  },
+  capeAmount: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%"
+  },
+  boxCurrency: {
+    fontSize: 14,
+    lineHeight: "14px",
+    fontWeight: 400,
+    verticalAlign: "text-top",
+    position: "absolute",
+    top: 22,
+    left: -22,
+    whiteSpace: "nowrap"
+  },
+  boxItem: {
+    position: "absolute",
+    height: "100%"
+  },
+  boxAmount: {
+    position: "relative",
+    left: -10
+  },
+  capeRadioLabel: {
+    fontSize: "1.2em",
+    color: theme.palette.primary.light,
+    fontWeight: 700,
+    textAlign: "center"
   }
 });
 export const stylesPage2 = theme => ({
@@ -572,6 +736,7 @@ export const renderTextField = ({
           {...input}
           {...custom}
           data-test="component-text-field"
+          inputProps={{ id: id }}
         />
       )}
     </Translate>
@@ -611,7 +776,9 @@ export const renderSelect = ({
         </InputLabel>
         <Select
           native
-          input={<OutlinedInput labelWidth={labelWidth} />}
+          input={
+            <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+          }
           className={align === "right" ? classes.selectRight : classes.select}
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
@@ -662,6 +829,7 @@ export const renderCheckbox = ({
               className={classes.checkbox}
               data-test="component-checkbox"
               name="checkbox"
+              inputProps={{ id: id }}
             />
           }
         />
@@ -679,6 +847,7 @@ export const renderCheckbox = ({
 export const renderRadioGroup = ({
   input,
   id,
+  label,
   options,
   validate,
   classes,
@@ -701,6 +870,7 @@ export const renderRadioGroup = ({
         </FormLabel>
 
         <RadioGroup
+          data-test="component-radio-group"
           aria-label={formControlName}
           name={formControlName}
           className={
@@ -709,18 +879,100 @@ export const renderRadioGroup = ({
           onChange={(event, value) => {
             input.onChange(value);
             if (additionalOnChange) {
-              additionalOnChange(value);
+              additionalOnChange(event);
             }
           }}
         >
-          {options.map(item => (
-            <FormControlLabel
-              key={shortid()}
-              value={item}
-              control={<Radio checked={item === input.value} />}
-              label={item}
-            />
-          ))}
+          {options.map(item => {
+            return (
+              <FormControlLabel
+                key={shortid()}
+                value={item}
+                className={legendClass}
+                control={
+                  <Radio
+                    checked={item.toString() === input.value.toString()}
+                    color="primary"
+                    inputProps={{ id: id }}
+                    data-test="component-radio"
+                  />
+                }
+                label={item}
+              />
+            );
+          })}
+        </RadioGroup>
+        {touched && error && (
+          <FormHelperText className={classes.checkboxErrorText}>
+            {error}
+          </FormHelperText>
+        )}
+      </FormControl>
+    )}
+  </Translate>
+);
+
+export const renderCAPERadioGroup = ({
+  input,
+  label,
+  id,
+  options,
+  validate,
+  classes,
+  direction,
+  meta: { touched, error },
+  formControlName,
+  legendClass,
+  additionalOnChange,
+  ...custom
+}) => (
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        component="fieldset"
+        error={!!(touched && error)}
+        className={classes[formControlName] || classes.formControl}
+      >
+        <FormLabel component="legend" className={classes.capeRadioLabel}>
+          {translate(id)}
+        </FormLabel>
+
+        <RadioGroup
+          data-test="component-cape-radio-group"
+          aria-label={formControlName}
+          name={formControlName}
+          id={formControlName}
+          className={classes.horizGroup}
+          onChange={(event, value) => {
+            input.onChange(value);
+            if (additionalOnChange) {
+              additionalOnChange(event);
+            }
+          }}
+        >
+          {options.map(item => {
+            let labelText = `$${item}`;
+            if (item === "Other") {
+              labelText = item;
+            }
+            return (
+              <FormControlLabel
+                key={shortid()}
+                value={item}
+                className={classes.suggestedAmountBox}
+                label={labelText}
+                labelPlacement="bottom"
+                control={
+                  <Radio
+                    checked={item.toString() === input.value.toString()}
+                    color="primary"
+                    inputProps={{ id: id }}
+                    data-test="component-radio"
+                  />
+                }
+              />
+            );
+          })}
         </RadioGroup>
         {touched && error && (
           <FormHelperText className={classes.checkboxErrorText}>
@@ -1000,6 +1252,77 @@ export const membershipTerms = (
       Union, whichever occurs first, I notify the Union and my employer in
       writing, with my valid signature, of my desire to revoke this
       authorization.
+    </p>
+  </React.Fragment>
+);
+
+export const capeLegalCheckoff = (
+  <React.Fragment>
+    <p>
+      By submitting this form, I hereby authorize my Employer to deduct the
+      designated amount from my monthly earnings as a contribution to SEIU Local
+      503, OPEU CAPE.
+    </p>
+    <p>
+      My contribution will be used to support member-endorsed candidates and for
+      expenditures in connection with elections for Local, Legislative,
+      Statewide, and Federal offices. These elected officials make critical
+      decisions on salaries, health care, retirement, and other benefits and
+      laws affecting SEIU Local 503, OPEU members.{" "}
+    </p>
+    <p>
+      A portion of this contribution (as much as 48% for the average
+      contributor) may be used by SEIU for federal elections.
+    </p>
+    <p>
+      The contribution amounts indicated above are only suggestions and I may
+      choose not to contribute or to vary my contribution amount without
+      reprisal from my Union or my Employer.{" "}
+    </p>
+    <p>
+      As per federal law, only union members and union executive/administrative
+      staff who are U.S. citizens or lawful permanent residents are eligible to
+      contribute to SEIU COPE (the Federal Committee on Political Education).
+      This authorization is made voluntarily and is not a condition of my
+      employment or membership in the union.{" "}
+    </p>
+    <p>
+      This authorization shall remain in effect until revoked in writing by me.
+      This contribution is in addition to union dues. This contribution is not
+      deductible for federal income tax purposes.
+    </p>
+  </React.Fragment>
+);
+
+export const capeLegalStripe = (
+  <React.Fragment>
+    <p>By submitting this form I am agreeing with the terms stated here:</p>
+    <p>
+      This authorization is made voluntarily and is not a condition of my
+      employment or membership in the union.
+    </p>
+    <p>
+      The contribution amounts indicated above are only suggestions and I may
+      choose not to contribute or to vary my contribution amount without
+      reprisal from my Union or my Employer.
+    </p>
+    <p>
+      Federal law states that only represented workers and
+      executive/administrative staff who are U.S. citizens or lawful permanent
+      residents are eligible to contribute to CAPE.
+    </p>
+    <p>
+      My contribution will be used to support member-endorsed candidates and for
+      expenditures in connection with elections for Local, Legislative,
+      Statewide and Federal offices. These elected officials make critical
+      decisions on salaries, health care, retirement and other benefits and laws
+      affecting SEIU Local 503 members. A portion of this contribution (as much
+      as 48% for the average contributor) may be used by SEIU for federal
+      elections.
+    </p>
+    <p>
+      This contribution is in addition to dues and existing contributions
+      through payroll deduction/ACH transfer.
     </p>
   </React.Fragment>
 );

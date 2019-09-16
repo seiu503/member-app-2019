@@ -68,6 +68,7 @@ const defaultProps = {
     uploadImage: () => Promise.resolve({ type: "UPLOAD_IMAGE_SUCCESS" }),
     getContentById: () => Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
   },
+  apiSubmission: {},
   initialize: jest.fn(),
   setActiveLanguage: jest.fn(),
   classes: {},

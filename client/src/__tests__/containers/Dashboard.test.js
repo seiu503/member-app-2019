@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import {
@@ -80,13 +82,6 @@ const setup = (props = {}) => {
 describe("<Dashboard />", () => {
   it("renders without error", () => {
     wrapper = setup();
-    const component = findByTestAttr(wrapper, "component-dashboard");
-    expect(component.length).toBe(1);
-  });
-
-  it("renders connected component", () => {
-    store = storeFactory(initialState);
-    wrapper = mount(<DashboardConnected {...defaultProps} store={store} />);
     const component = findByTestAttr(wrapper, "component-dashboard");
     expect(component.length).toBe(1);
   });
@@ -175,9 +170,7 @@ describe("<Dashboard />", () => {
         getProfile: () => Promise.resolve({ type: "GET_PROFILE_FAILURE" })
       }
     };
-    wrapper = mount(
-      <DashboardConnected {...defaultProps} {...props} store={store} />
-    );
+    wrapper = setup(props);
   });
 
   test("getProfile throws error if api call fails", () => {
@@ -188,8 +181,6 @@ describe("<Dashboard />", () => {
         }
       }
     };
-    wrapper = mount(
-      <DashboardConnected {...defaultProps} {...props} store={store} />
-    );
+    wrapper = setup(props);
   });
 });

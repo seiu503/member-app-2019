@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import queryString from "query-string";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -9,8 +10,8 @@ import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
+import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
-import globalTranslations from "../translations/globalTranslations";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const { employerTypeMap, getKeyByValue } = formElements;
@@ -155,11 +156,9 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
-  reCaptchaChange = response => {
-    // console.log(response, "<= dis your captcha token");
-  };
-
   async updateSubmission() {
+    // console.log("updateSubmission");
+    this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
     const updates = {
@@ -175,6 +174,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
+        // console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -191,12 +191,15 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createSFOMA() {
+    // console.log("createSFOMA");
+    this.props.actions.setSpinner();
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
     body.Worker__c = this.props.submission.salesforceId;
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
@@ -212,31 +215,35 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async createOrUpdateSFDJR() {
+    this.props.actions.setSpinner();
     // console.log("createOrUpdateSFDJR");
-    // const { formValues } = this.props;
+
     const { formPage1, payment } = this.props.submission;
-    // console.log(formPage1.paymentType);
+
     const id = this.props.submission.djrId;
-    // console.log(id);
+
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
-      Unioni_se_MemberID__c: payment.memberShortId
+      Unioni_se_MemberID__c: payment.memberShortId,
+      Active_Account_Last_4__c: payment.activeMethodLast4
     };
-    // console.log(body);
 
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
     // console.log(`formPage1.employerId: ${formPage1.employerId}`);
+    // console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
+    // console.log("if these dont match then create a new record");
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
       // console.log("createSFDJR");
+      // console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
@@ -259,6 +266,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
+    // console.log("updateSFDJR");
     // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
@@ -279,26 +287,33 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
+    // console.log("handleSubmit");
+    this.props.actions.setSpinner();
+
+    await this.props
+      .verifyRecaptchaScore()
+      .then(score => {
+        // console.log(`score: ${score}`);
+        if (!score || score <= 0.5) {
+          console.log(`recaptcha failed: ${score}`);
+          return this.props.handleError(
+            "ReCaptcha validation failed, please reload the page and try again."
+          );
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
-      console.log("310");
+      // console.log('validMethod');
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    // console.log(`validMethod? ${validMethod}`);
-    // console.log(
-    //   `paymentMethodAdded? ${
-    //     this.props.submission.formPage1.paymentMethodAdded
-    //   }`
-    // );
-    // console.log(
-    //   `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
-    // submit validation: payment method
+
     if (
       this.props.submission.formPage1.paymentRequired &&
       this.props.submission.formPage1.paymentType === "Card" &&
@@ -316,15 +331,16 @@ export class SubmissionFormPage1Component extends React.Component {
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
-        // TODO: redirect to CAPE here...
-        // (before resetting form so can reuse data on CAPE tab)
+        // redirect to CAPE tab
+        this.props.handleTab(this.props.howManyTabs - 1);
 
-        this.props.reset("submissionPage1");
-        this.props.history.push(
-          `/page2/?id=${this.props.submission.salesforceId}`
-        );
+        // this.props.reset("submissionPage1");
+        // this.props.history.push(
+        //   `/page2/?id=${this.props.submission.salesforceId}`
+        // );
       })
       .catch(err => {
+        console.log("342");
         console.log(err);
         this.props.handleError(err);
       });
@@ -336,6 +352,8 @@ export class SubmissionFormPage1Component extends React.Component {
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = this.updateEmployersPicklist() || [""];
+    const values = queryString.parse(this.props.location.search);
+    const checkoff = !this.props.submission.formPage1.paymentRequired;
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     return (
@@ -343,94 +361,113 @@ export class SubmissionFormPage1Component extends React.Component {
         data-test="component-submissionformpage1"
         className={classes.formContainer}
       >
-        {typeof this.props.tab !== "number" && (
-          <WelcomeInfo
-            location={this.props.location}
-            history={this.props.history}
-            handleTab={this.props.handleTab}
-            style={
-              typeof this.props.tab !== "number"
-                ? { display: "block" }
-                : { display: "none" }
-            }
+        {values.cape ? (
+          <CAPEForm
+            {...this.props}
+            standAlone={true}
+            verifyCallback={this.verifyCallback}
+            employerTypesList={employerTypesList}
+            employerList={employerList}
+            handleInput={this.props.apiSubmission.handleInput}
+            updateEmployersPicklist={this.updateEmployersPicklist}
+            classes={classes}
+            loading={this.props.submission.loading}
+            formPage1={this.props.submission.formPage1}
+            iFrameURL={this.props.submission.payment.cardAddingUrl}
+            payment={this.props.submission.payment}
+            renderSelect={this.renderSelect}
+            renderTextField={this.renderTextField}
+            renderCheckbox={this.renderCheckbox}
+            checkoff={checkoff}
           />
-        )}
-
-        {this.props.tab >= 0 && (
-          <div
-            style={
-              this.props.tab >= 0 ? { display: "block" } : { display: "none" }
-            }
-          >
-            <NavTabs
-              tab={this.props.tab}
-              handleTab={this.props.handleTab}
-              pristine={this.props.pristine}
-              valid={this.props.valid}
-              submitting={this.props.submitting}
-              submitForm={this.props.submitForm}
-              formValues={this.props.formValues}
-            />
-            {this.props.tab === 0 && (
-              <Tab1Form
-                onSubmit={() => this.props.handleTab(1)}
-                classes={classes}
-                employerTypesList={employerTypesList}
-                employerList={employerList}
-                handleInput={this.props.apiSubmission.handleInput}
-                updateEmployersPicklist={this.updateEmployersPicklist}
-                renderSelect={this.renderSelect}
-                renderTextField={this.renderTextField}
-                renderCheckbox={this.renderCheckbox}
-                formValues={this.props.formValues}
-                width={this.props.width}
+        ) : (
+          <React.Fragment>
+            {typeof this.props.tab !== "number" && (
+              <WelcomeInfo
+                location={this.props.location}
+                history={this.props.history}
                 handleTab={this.props.handleTab}
-                submitErrors={this.props.submitErrors}
-                reCaptchaChange={this.reCaptchaChange}
-                reCaptchaRef={this.props.reCaptchaRef}
-              />
-            )}
-            {this.props.tab === 1 && (
-              <Tab2Form
-                onSubmit={() => this.props.handleTab(2)}
-                classes={classes}
-                legal_language={this.props.legal_language}
-                direct_pay={this.props.direct_pay}
-                direct_deposit={this.props.direct_deposit}
-                sigBox={this.props.sigBox}
-                signatureType={this.props.signatureType}
-                toggleSignatureInputType={this.props.toggleSignatureInputType}
-                clearSignature={this.props.clearSignature}
-                handleInput={this.props.apiSubmission.handleInput}
-                renderSelect={this.renderSelect}
-                renderTextField={this.renderTextField}
-                renderCheckbox={this.renderCheckbox}
-                formValues={this.props.formValues}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                initialize={this.props.initialize}
-              />
-            )}
-            {this.props.tab === 2 && (
-              <Tab3Form
-                onSubmit={this.handleSubmit}
-                classes={classes}
-                loading={this.props.submission.loading}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                formValues={this.props.formValues}
-                formPage1={this.props.submission.formPage1}
-                paymentRequired={
-                  this.props.submission.formPage1.paymentRequired
+                style={
+                  typeof this.props.tab !== "number"
+                    ? { display: "block" }
+                    : { display: "none" }
                 }
-                handleInput={this.props.submission.handleInput}
-                iFrameURL={this.props.submission.payment.cardAddingUrl}
-                afhDuesRate={this.props.submission.formPage1.afhDuesRate}
-                payment={this.props.submission.payment}
-                toggleCardAddingFrame={this.props.toggleCardAddingFrame}
               />
             )}
-          </div>
+
+            {this.props.tab >= 0 && (
+              <div
+                style={
+                  this.props.tab >= 0
+                    ? { display: "block" }
+                    : { display: "none" }
+                }
+              >
+                <NavTabs {...this.props} />
+                {this.props.tab === 0 && (
+                  <Tab1Form
+                    {...this.props}
+                    onSubmit={() => this.props.handleTab(1)}
+                    verifyCallback={this.verifyCallback}
+                    classes={classes}
+                    employerTypesList={employerTypesList}
+                    employerList={employerList}
+                    handleInput={this.props.apiSubmission.handleInput}
+                    updateEmployersPicklist={this.updateEmployersPicklist}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                  />
+                )}
+                {this.props.tab === 1 && (
+                  <Tab2Form
+                    {...this.props}
+                    onSubmit={() => this.props.handleTab(2)}
+                    classes={classes}
+                    handleInput={this.props.apiSubmission.handleInput}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                  />
+                )}
+                {this.props.tab === 2 && (
+                  <Tab3Form
+                    {...this.props}
+                    onSubmit={this.handleSubmit}
+                    classes={classes}
+                    loading={this.props.submission.loading}
+                    formPage1={this.props.submission.formPage1}
+                    paymentRequired={
+                      this.props.submission.formPage1.paymentRequired
+                    }
+                    handleInput={this.props.submission.handleInput}
+                    iFrameURL={this.props.submission.payment.cardAddingUrl}
+                    afhDuesRate={this.props.submission.formPage1.afhDuesRate}
+                    payment={this.props.submission.payment}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    checkoff={checkoff}
+                  />
+                )}
+                {this.props.tab === 3 && (
+                  <CAPEForm
+                    {...this.props}
+                    classes={classes}
+                    loading={this.props.submission.loading}
+                    formPage1={this.props.submission.formPage1}
+                    handleInput={this.props.submission.handleInput}
+                    iFrameURL={this.props.submission.payment.cardAddingUrl}
+                    payment={this.props.submission.payment}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    checkoff={checkoff}
+                  />
+                )}
+              </div>
+            )}
+          </React.Fragment>
         )}
       </div>
     );
@@ -483,11 +520,6 @@ SubmissionFormPage1Component.propTypes = {
     getTrimmedCanvas: PropTypes.func
   }),
   handleTab: PropTypes.func,
-  reCaptchaRef: PropTypes.shape({
-    current: PropTypes.shape({
-      getValue: PropTypes.func
-    })
-  }),
   tab: PropTypes.number,
   pristine: PropTypes.bool,
   invalid: PropTypes.bool

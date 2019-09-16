@@ -10,7 +10,7 @@ const users = require("../../db/models/users");
 const utils = require("../utils");
 const userController = require("./users.ctrl");
 
-const APP_HOST = process.env.APP_HOST;
+const APP_HOST = "http://test.seiu503signup.org"; // change this for production
 const CLIENT_URL =
   process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
 const SERVER_URL =
@@ -39,10 +39,9 @@ exports.googleCallback = (req, res) => {
       // return user ID & google redirect flag as URL params
       const userInfo = utils.setUserInfo(userObj);
       const token = utils.generateToken(userInfo);
+      const redirect = `${CLIENT_URL}/admin/${userObj.id}/${token}`;
 
-      return res
-        .status(200)
-        .redirect(`${CLIENT_URL}/admin/${userObj.id}/${token}`);
+      return res.status(200).redirect(redirect);
     } else {
       return res.status(422).redirect("/login");
     }

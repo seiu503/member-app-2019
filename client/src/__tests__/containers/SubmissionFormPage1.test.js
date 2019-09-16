@@ -167,6 +167,10 @@ let refreshUnioniseTokenError = jest
     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
   );
 
+let refreshRecaptchaMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({}));
+
 let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
@@ -255,6 +259,7 @@ const defaultProps = {
     push: pushMock
   },
   reCaptchaRef: { ...reCaptchaRef },
+  refreshRecaptcha: refreshRecaptchaMock,
   sigBox: { ...sigBox },
   content: {
     error: null
@@ -273,6 +278,9 @@ const defaultProps = {
     current: {
       innerHTML: "pay"
     }
+  },
+  actions: {
+    setSpinner: jest.fn()
   }
 };
 
@@ -1717,10 +1725,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           preferredLanguage: "English"
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          verify: () =>
+            Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            reCaptchaValue: ""
+          }
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,

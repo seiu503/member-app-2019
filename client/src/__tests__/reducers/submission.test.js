@@ -86,6 +86,32 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
+    test("getAllSubmissions", () => {
+      const action = {
+        type: "GET_ALL_SUBMISSIONS_SUCCESS",
+        payload: [
+          {
+            id: "1",
+            first_name: "first",
+            last_name: "last",
+            email: "test@test.com"
+          }
+        ]
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        allSubmissions: [
+          {
+            id: "1",
+            first_name: "first",
+            last_name: "last",
+            email: "test@test.com"
+          }
+        ],
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
     test("getSFContact", () => {
       const payload = {
         Id: "123",
@@ -165,7 +191,8 @@ describe("submission reducer", () => {
           whichCard: "Use existing",
           medicaidResidents: 0,
           paymentMethodAdded: false,
-          afhDuesRate: 0
+          afhDuesRate: 0,
+          capeAmount: ""
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -322,6 +349,22 @@ describe("submission reducer", () => {
           unioniseRefreshToken: "",
           cardAddingUrl: "url",
           memberShortId: "string"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getIframeExisting", () => {
+      const action = {
+        type: "GET_IFRAME_EXISTING_SUCCESS",
+        payload: {
+          cardAddingUrl: "newUrl"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        payment: {
+          ...INITIAL_STATE.payment,
+          cardAddingUrl: "newUrl"
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);

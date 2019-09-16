@@ -5,18 +5,12 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 
 import { openSnackbar } from "./Notifier";
+import SubmissionsTable from "./SubmissionsTable";
 
 import * as Actions from "../store/actions";
 import * as apiProfileActions from "../store/actions/apiProfileActions";
 
-import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import CardMedia from "@material-ui/core/CardMedia";
-import CardContent from "@material-ui/core/CardContent";
-import Avatar from "@material-ui/core/Avatar";
 import { withStyles } from "@material-ui/core/styles";
-
-import PurpleBokeh from "../img/purple_bokeh.jpg";
 
 const styles = theme => ({
   root: {
@@ -89,6 +83,7 @@ export class DashboardUnconnected extends React.Component {
     this.props.api
       .getProfile(token, userId)
       .then(result => {
+        // console.log(result.type);
         if (result.type === "GET_PROFILE_SUCCESS") {
           this.props.actions.setLoggedIn();
           // check for redirect url in local storage
@@ -101,7 +96,8 @@ export class DashboardUnconnected extends React.Component {
           }
         } else {
           console.log("not logged in");
-          openSnackbar("error", "Please log in to view your profile");
+          console.log(result);
+          openSnackbar("error", "Please log in to view this page.");
         }
       })
       .catch(err => {
@@ -114,29 +110,10 @@ export class DashboardUnconnected extends React.Component {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
     const redirect = window.localStorage.getItem("redirect");
-    const { name, avatar_url } = this.props.profile.profile;
+
     return (
       <div className={classes.container} data-test="component-dashboard">
-        {loggedIn && !redirect && (
-          <Card className={classes.card}>
-            <CardMedia
-              className={classes.media}
-              title="Purple lights"
-              image={PurpleBokeh}
-            >
-              <Avatar
-                alt={`${name}`}
-                className={classes.avatar}
-                src={avatar_url}
-              />
-            </CardMedia>
-            <CardContent>
-              <Typography variant="h5" className={classes.name}>
-                {`${name}`}
-              </Typography>
-            </CardContent>
-          </Card>
-        )}
+        {loggedIn && !redirect && <SubmissionsTable />}
       </div>
     );
   }

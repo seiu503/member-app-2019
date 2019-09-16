@@ -89,14 +89,15 @@ describe("<Tab3 />", () => {
       handleSubmit: fn => fn,
       classes: {},
       formValues: {
-        employerType: "homecare"
+        employerType: "adult foster home"
       },
       formPage1: {
         paymentType: "Card",
         paymentRequired: true,
         newCardNeeded: true,
-        employerName: "homecare"
+        employerName: "adult foster home"
       },
+      afhDuesRate: 17.59304,
       payment: {
         activeMethodLast4: "1234",
         paymentErrorHold: false
@@ -108,7 +109,7 @@ describe("<Tab3 />", () => {
       expect(component.length).toBe(1);
     });
 
-    it("calls handleSubmit on submit", () => {
+    it("calls handleSubmit on submit", async () => {
       wrapper = shallow(<Tab3 {...props} />);
       handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;

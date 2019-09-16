@@ -33,6 +33,18 @@ export const randomInt = () => {
   return Math.floor(Math.random() * (+max - +min)) + +min;
 };
 
+export const isPaymentRequired = employerType => {
+  if (
+    employerType &&
+    (employerType.toLowerCase() === "community member" ||
+      employerType.toLowerCase() === "retired" ||
+      employerType.toLowerCase() === "adult foster home")
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export const defaultWelcomeInfo = {
   body: `<p>Demonstrate your commitment to your co-workers and the people you serve in a few simple steps. To get started, click “Next.”</p>
 <p>Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories – including increasing our pay and benefits and improving our workplace conditions. </p>
@@ -76,6 +88,8 @@ export const scrollToFirstError = errors => {
     const firstError = errorsArray.find(
       error => !!document.getElementById(error)
     );
+    // console.log(errorsArray);
+    // console.log(firstError);
     const el = document.getElementById(firstError);
     const position =
       el.getBoundingClientRect().top + document.documentElement.scrollTop;
@@ -85,6 +99,8 @@ export const scrollToFirstError = errors => {
     window.scrollTo({ top: position - offset, behavior: "smooth" });
   }
 };
+
+export const onSubmitFailFn = errors => scrollToFirstError(errors);
 
 // converts any string into camelCase/pascalCase used for formatting IDs of
 // employerType and employerName picklist options to match IDs in translation files

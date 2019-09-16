@@ -1,6 +1,7 @@
 import update from "immutability-helper";
 import moment from "moment";
 import * as formElements from "../../components/SubmissionFormElements";
+import * as utils from "../../utils";
 
 import {
   ADD_SUBMISSION_REQUEST,
@@ -9,6 +10,9 @@ import {
   UPDATE_SUBMISSION_REQUEST,
   UPDATE_SUBMISSION_SUCCESS,
   UPDATE_SUBMISSION_FAILURE,
+  GET_ALL_SUBMISSIONS_REQUEST,
+  GET_ALL_SUBMISSIONS_SUCCESS,
+  GET_ALL_SUBMISSIONS_FAILURE,
   SAVE_SALESFORCEID,
   HANDLE_INPUT
 } from "../actions/apiSubmissionActions";
@@ -74,7 +78,8 @@ export const INITIAL_STATE = {
     immediatePastMemberStatus: "Not a Member",
     afhDuesRate: 0,
     newCardNeeded: false,
-    whichCard: "Use existing"
+    whichCard: "Use existing",
+    capeAmount: ""
   },
   formPage2: {
     gender: ""
@@ -90,7 +95,9 @@ export const INITIAL_STATE = {
     unioniseToken: "",
     unioniseRefreshToken: "",
     djrEmployerId: ""
-  }
+  },
+  allSubmissions: [],
+  currentSubmission: {}
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -119,6 +126,7 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_OMA_SUCCESS:
     case GET_UNIONISE_TOKEN_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
+    case GET_ALL_SUBMISSIONS_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -180,6 +188,7 @@ function Submission(state = INITIAL_STATE, action) {
           }
           return null;
         });
+        const paymentRequired = utils.isPaymentRequired(employerType);
         return update(state, {
           salesforceId: { $set: action.payload.Id },
           formPage1: {
@@ -202,7 +211,8 @@ function Submission(state = INITIAL_STATE, action) {
             textAuthOptOut: { $set: false },
             immediatePastMemberStatus: {
               $set: action.payload.Binary_Membership__c
-            }
+            },
+            paymentRequired: { $set: paymentRequired }
           },
           formPage2: {
             africanOrAfricanAmerican: {
@@ -284,6 +294,12 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case GET_ALL_SUBMISSIONS_SUCCESS:
+      return update(state, {
+        allSubmissions: { $set: action.payload },
+        error: { $set: null }
+      });
+
     case LOOKUP_SF_CONTACT_SUCCESS:
     case CREATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_SUCCESS:
@@ -294,11 +310,17 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_IFRAME_URL_SUCCESS:
-    case GET_IFRAME_EXISTING_SUCCESS:
       return update(state, {
         payment: {
           cardAddingUrl: { $set: action.payload.cardAddingUrl },
           memberShortId: { $set: action.payload.memberShortId }
+        }
+      });
+
+    case GET_IFRAME_EXISTING_SUCCESS:
+      return update(state, {
+        payment: {
+          cardAddingUrl: { $set: action.payload.cardAddingUrl }
         }
       });
 
@@ -325,6 +347,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_DJR_FAILURE:
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_FAILURE:
+    case GET_ALL_SUBMISSIONS_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

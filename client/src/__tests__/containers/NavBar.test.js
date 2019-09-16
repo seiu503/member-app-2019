@@ -17,7 +17,7 @@ const main_ref = {
 const defaultProps = {
   classes: {},
   appState: {
-    loggedIn: false
+    loggedIn: true
   },
   profile: {
     profile: {
@@ -86,24 +86,6 @@ describe("<NavBar />", () => {
     expect(component.length).toBe(1);
   });
 
-  test("renders menu links", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "menu-links");
-    expect(component.length).toBe(1);
-  });
-
-  test("renders mobile menu items", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "mobile-link");
-    expect(component.length).toBeGreaterThan(0);
-  });
-
-  test("renders standard menu items", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "standard-menu-link");
-    expect(component.length).toBeGreaterThan(0);
-  });
-
   test("if `loggedId` = true, renders admin menu links", () => {
     const wrapper = setup({ appState: { loggedIn: true } });
     const component = findByTestAttr(wrapper, "admin-menu-links");
@@ -149,7 +131,9 @@ describe("<NavBar />", () => {
 
   test("clicking mobile menu item calls `handleClose` function", () => {
     const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "mobile-link").dive();
+    const menuItem = findByTestAttr(wrapper, "mobile-link")
+      .first()
+      .dive();
 
     // mock handleClose function
     const handleCloseMock = jest.fn();
@@ -167,7 +151,9 @@ describe("<NavBar />", () => {
 
   test("clicking mobile menu item redirects to correct link", () => {
     const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "mobile-link").dive();
+    const menuItem = findByTestAttr(wrapper, "mobile-link")
+      .first()
+      .dive();
     menuItem.setProps({ link: "home" });
 
     // mock `history.push()`
@@ -185,30 +171,30 @@ describe("<NavBar />", () => {
     pushMock.mockRestore();
   });
 
-  test("clicking standard menu item redirects to correct link", () => {
-    const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "standard-menu-link").dive();
+  // test("clicking standard menu item redirects to correct link", () => {
+  //   const wrapper = setup();
+  //   const menuItem = findByTestAttr(wrapper, "standard-menu-link").dive();
 
-    // link isn't passed as a prop to this element but
-    // the same link variable is used to set the button text
-    // so we can extract the text from the button to test whether it
-    // redirects to the right route
-    const link = menuItem.text();
+  //   // link isn't passed as a prop to this element but
+  //   // the same link variable is used to set the button text
+  //   // so we can extract the text from the button to test whether it
+  //   // redirects to the right route
+  //   const link = menuItem.text();
 
-    // mock `history.push()`
-    const pushMock = jest.fn();
-    wrapper.setProps({ history: { push: pushMock } });
+  //   // mock `history.push()`
+  //   const pushMock = jest.fn();
+  //   wrapper.setProps({ history: { push: pushMock } });
 
-    // simulate click
-    menuItem.simulate("click");
+  //   // simulate click
+  //   menuItem.simulate("click");
 
-    // expect the `history.push` mock to have been called with correct link
-    expect(pushMock.mock.calls.length).toBe(1);
-    expect(pushMock.mock.calls[0]).toEqual([`/${link}`]);
+  //   // expect the `history.push` mock to have been called with correct link
+  //   expect(pushMock.mock.calls.length).toBe(1);
+  //   expect(pushMock.mock.calls[0]).toEqual([`/${link}`]);
 
-    // restore mock
-    pushMock.mockRestore();
-  });
+  //   // restore mock
+  //   pushMock.mockRestore();
+  // });
 
   test("`handleClick` sets anchorEl to current target", () => {
     const wrapper = setup();

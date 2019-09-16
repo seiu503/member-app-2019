@@ -100,7 +100,7 @@ export const openSnackbar = (
     return openSnackbarFn(variant, message);
   } else {
     // console.log("openSnackbarFn is undefined");
-    setTimeout(() => openSnackbarFn(variant, message), 50);
+    setTimeout(() => openSnackbarFn(variant, message), 100);
   }
 };
 
