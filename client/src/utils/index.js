@@ -3,12 +3,7 @@ const options = { year: "numeric", month: "short", day: "numeric" };
 export const formatDate = date =>
   new Date(date).toLocaleDateString("en-US", options);
 
-export const formatDateTime = date => {
-  if (date) {
-    console.log(new Date(date).toLocaleString());
-    return new Date(date).toLocaleString();
-  }
-};
+export const formatDateTime = date => new Date(date).toLocaleString();
 
 // force focus on #main when using skip navigation link
 // (some browsers will only focus form inputs, links, and buttons)

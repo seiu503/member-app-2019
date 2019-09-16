@@ -158,7 +158,6 @@ export class SubmissionsTableUnconnected extends React.Component {
           <div className={classes.gridWrapper}>
             <MaterialTable
               style={{ width: "100%", margin: "0 20px" }}
-              // add submission status / error reporting fields to fieldconfigs
               columns={submTableFieldList}
               isLoading={this.props.submission.loading}
               data={this.props.submission.allSubmissions}
@@ -167,7 +166,13 @@ export class SubmissionsTableUnconnected extends React.Component {
                 exportButton: true,
                 filtering: true,
                 sorting: true,
-                columnsButton: true
+                columnsButton: true,
+                rowStyle: rowData => ({
+                  backgroundColor:
+                    rowData && rowData.submission_status === "error"
+                      ? "#f9c7c7"
+                      : "#FFF"
+                })
               }}
               icons={tableIcons}
             />

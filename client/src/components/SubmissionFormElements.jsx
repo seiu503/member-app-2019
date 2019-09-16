@@ -1364,6 +1364,7 @@ export const submTableFieldList = [
     render: rowData => formatDateTime(rowData.submission_date),
     defaultSort: "desc"
   },
+  { title: "Submission Errors", field: "submission_errors", hidden: false },
   { title: "First Name", field: "first_name", hidden: false },
   { title: "Last Name", field: "last_name", hidden: false },
   { title: "Home Email", field: "home_email", hidden: false },
@@ -1423,7 +1424,6 @@ export const submTableFieldList = [
     field: "immediate_past_member_status",
     hidden: true
   },
-  { title: "Submission Errors", field: "submission_errors", hidden: true },
   { title: "Dues Day", field: "deduction_day_of_month", hidden: true },
   {
     title: "Active Account Last 4",

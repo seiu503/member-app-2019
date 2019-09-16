@@ -170,18 +170,16 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async saveSubmissionErrors(submission_id, method, error) {
-    let submissionErrors = [];
     // 1. retrieve existing errors array from current submission
-    const { submission_errors } = this.props.submission.currentSubmission;
-    // if existing errors, push those into temp array
-    if (submission_errors) {
-      submissionErrors.push(submission_errors);
+    let { submission_errors } = this.props.submission.currentSubmission;
+    if (submission_errors === null) {
+      submission_errors = "";
     }
-    // 2. append new object with method key and error key to array
-    submissionErrors.push({ method, error });
+    // 2. add new data to string
+    submission_errors += `Attempted method: ${method}, Error: ${error}. `;
     // 3. update submission_errors and submission_status on submission by id
     const updates = {
-      submission_errors: [...submissionErrors],
+      submission_errors,
       submission_status: "error"
     };
     this.props.apiSubmission
