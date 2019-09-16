@@ -66,7 +66,7 @@ export const handleError = err => {
   );
 };
 
-// hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
+// hardcoded select options
 export const stateList = [
   "",
   "AL",
@@ -255,7 +255,7 @@ export const findEmployerObject = (employerObjects, employerName) =>
       })[0]
     : { Name: "" };
 
-// MUI styles object
+// MUI styles objects
 export const stylesPage1 = theme => ({
   formContainer: {
     padding: "80px 0 140px 0",
@@ -673,6 +673,8 @@ export const stylesPage2 = theme => ({
 });
 
 // helper functions for localization package when translating labels
+// this is required so that only the label is translated and the not value
+// of select, checkbox, and text inputs
 const inputLabelTranslateHelper = (id, label, translate) => {
   if (translate(id).includes("Missing translationId:")) {
     return label;
@@ -700,7 +702,7 @@ const optionsLabelTranslateHelper = (id, item, translate) => {
   }
 };
 
-// custom MUI friendly TEXT input
+// custom MUI friendly TEXT input with translated label
 export const renderTextField = ({
   input,
   id,
@@ -743,7 +745,7 @@ export const renderTextField = ({
 
 const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 
-// custom MUI friendly SELECT input
+// custom MUI friendly SELECT input with translated label
 export const renderSelect = ({
   input,
   name,
@@ -798,7 +800,7 @@ export const renderSelect = ({
   </Translate>
 );
 
-// custom MUI friendly CHECKBOX input
+// custom MUI friendly CHECKBOX input with translated label
 export const renderCheckbox = ({
   input,
   label,
@@ -841,27 +843,7 @@ export const renderCheckbox = ({
   </Translate>
 );
 
-// const translateLabel = (label, localize, id) => {
-//   const langArr = localize.languages;
-//   for (let i = 0; i < langArr.length; i++) {
-//     if (langArr[i].active) {
-//       console.log("translations = ", localize.translations);
-//       console.log(
-//         "i =",
-//         i,
-//         "active language =",
-//         langArr[i].code,
-//         "label = ",
-//         label,
-//         "id = ",
-//         id
-//       );
-//       return localize.translations.id[i];
-//     } else return label;
-//   }
-// };
-
-// custom MUI friendly RADIO group
+// custom MUI friendly RADIO group with translated label
 export const renderRadioGroup = ({
   input,
   id,
@@ -1002,6 +984,10 @@ export const renderCAPERadioGroup = ({
   </Translate>
 );
 
+// If/when you get these translated, you will probably have to place them in
+// a translation .json file and where they are called in Tab2.jsx instead of
+// just adding them as is, place a <Translate> component there and pass it the correct
+// id using the same ternary you already have in place there.
 export const hcwDirectDepositAuthText = (
   <React.Fragment>
     <p>
