@@ -57,6 +57,8 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
+    this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
+    this.saveSubmissionSuccess = this.saveSubmissionSuccess.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -168,9 +170,60 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async saveSubmissionErrors(submission_id, method, error) {
-    // 1. retrieve existing errors array from submission by id
+    let submissionErrors = [];
+    // 1. retrieve existing errors array from current submission
+    const { submission_errors } = this.props.submission.currentSubmission;
+    // if existing errors, push those into temp array
+    if (submission_errors) {
+      submissionErrors.push(submission_errors);
+    }
     // 2. append new object with method key and error key to array
+    submissionErrors.push({ method, error });
     // 3. update submission_errors and submission_status on submission by id
+    const updates = {
+      submission_errors: [...submissionErrors],
+      submission_status: "error"
+    };
+    this.props.apiSubmission
+      .updateSubmission(submission_id, updates)
+      .then(result => {
+        // console.log(result.type);
+        if (
+          result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return this.props.handleError(this.props.submission.error);
+        }
+        // console.log(result.type);
+      })
+      .catch(err => {
+        // console.log(err);
+        return this.props.handleError(err);
+      });
+  }
+
+  async saveSubmissionSuccess(submission_id) {
+    const updates = {
+      submission_status: "success"
+    };
+    this.props.apiSubmission
+      .updateSubmission(submission_id, updates)
+      .then(result => {
+        // console.log(result.type);
+        if (
+          result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return this.props.handleError(this.props.submission.error);
+        }
+        // console.log(result.type);
+      })
+      .catch(err => {
+        // console.log(err);
+        return this.props.handleError(err);
+      });
   }
 
   async prepForContact(values) {
@@ -307,6 +360,7 @@ export class SubmissionFormPage1Container extends React.Component {
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
+      // .then(() => console.dir(this.props.submission.currentSubmission))
       .catch(err => {
         console.log(err);
         return handleError(err);
@@ -962,6 +1016,8 @@ export class SubmissionFormPage1Container extends React.Component {
           handleCAPESubmit={this.handleCAPESubmit}
           suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
+          saveSubmissionErrors={this.saveSubmissionErrors}
+          saveSubmissionSuccess={this.saveSubmissionSuccess}
         />
       </div>
     );

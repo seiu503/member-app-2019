@@ -285,6 +285,7 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         submissionId: { $set: action.payload.submission_id },
+        currentSubmission: { $set: action.payload.currentSubmission },
         error: { $set: null }
       });
 

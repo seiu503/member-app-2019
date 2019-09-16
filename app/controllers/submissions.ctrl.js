@@ -157,7 +157,11 @@ const createSubmission = async (req, res, next) => {
     res.locals.submission_id = createSubmissionResult[0].id;
     return res
       .status(200)
-      .json({ salesforce_id, submission_id: createSubmissionResult[0].id });
+      .json({
+        salesforce_id,
+        submission_id: createSubmissionResult[0].id,
+        currentSubmission: createSubmissionResult[0]
+      });
   }
 };
 
