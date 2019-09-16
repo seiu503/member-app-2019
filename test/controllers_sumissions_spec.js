@@ -73,10 +73,8 @@ suite("sumissions.ctrl.js", function() {
         chai.assert(res.locals.submission_id);
         id = res.locals.submission_id;
         assert.calledWith(res.status, 200);
-        assert.calledWith(res.json, {
-          salesforce_id: "123",
-          submission_id: id
-        });
+        chai.assert.property(res.locals, "submission_id");
+        chai.assert.property(res.locals, "currentSubmission");
       } catch (err) {
         console.log(err);
       }

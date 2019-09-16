@@ -155,13 +155,12 @@ const createSubmission = async (req, res, next) => {
     });
   } else {
     res.locals.submission_id = createSubmissionResult[0].id;
-    return res
-      .status(200)
-      .json({
-        salesforce_id,
-        submission_id: createSubmissionResult[0].id,
-        currentSubmission: createSubmissionResult[0]
-      });
+    res.locals.currentSubmission = createSubmissionResult[0];
+    return res.status(200).json({
+      salesforce_id,
+      submission_id: createSubmissionResult[0].id,
+      currentSubmission: createSubmissionResult[0]
+    });
   }
 };
 
