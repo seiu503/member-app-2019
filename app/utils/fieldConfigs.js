@@ -1581,6 +1581,7 @@ const generateSampleSubmission = () => {
   Object.keys(submissionsTableFields).map(function(key, index) {
     sampleData[key] = submissionsTableFields[key].testingSample;
   });
+  delete sampleData.submission_status;
   return sampleData;
 };
 const requiredFields = [
@@ -1654,9 +1655,10 @@ const generateSFDJRFieldList = () => {
   return fieldList;
 };
 
-// use this for one-time generation, save to submissionFormElements
+// use this for one-time generation, copy console log and
+// save to submissionFormElements
 // can't be used to generate dynamically on client bc
-// fieldConfigs is outside the /scr directory
+// fieldConfigs is outside the /src directory
 
 // const generateTableDisplayFields = () => {
 //   const fieldList = [];

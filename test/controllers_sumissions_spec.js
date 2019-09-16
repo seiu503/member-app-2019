@@ -152,10 +152,14 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > updateSubmission", function() {
     beforeEach(function() {
       return new Promise(resolve => {
+        // console.log(`155: id = ${id}`);
         submissionBody.salesforce_id = "123";
         delete submissionBody.submission_id;
         delete submissionBody.account_subdivision;
         delete submissionBody.contact_id;
+        delete submissionBody.submisson_status;
+        // console.log(`submissionBody`);
+        // console.log(submissionBody);
         req = mockReq({
           body: submissionBody,
           params: {
@@ -175,9 +179,9 @@ suite("sumissions.ctrl.js", function() {
     test("updates a submission and returns submission id to client", async function() {
       try {
         await submCtrl.updateSubmission(req, res, next);
-        chai.assert(res.locals.submission_id !== undefined);
+        chai.assert(res.locals.submission_id);
         id = res.locals.submission_id;
-        // console.log(id);
+
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, { submission_id: id });
       } catch (err) {

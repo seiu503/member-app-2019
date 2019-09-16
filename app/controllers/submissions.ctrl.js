@@ -169,20 +169,24 @@ const createSubmission = async (req, res, next) => {
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  // console.log(`subm.ctrl.js > 173: ${id}`);
+  // console.log(`subm.ctrl.js > 173 - id: ${id} (updates below)`);
   // console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
+      // console.log('subm.ctrl.js > 176: !updates');
       return res.status(422).json({ message: "No updates submitted" });
     }
     if (!id) {
+      // console.log('subm.ctrl.js > 180: !id');
       return res.status(422).json({ message: "No Id Provided in URL" });
     }
 
-    const updateSubmissionResult = await submissions.updateSubmission(
-      id,
-      updates
-    );
+    const updateSubmissionResult = await submissions
+      .updateSubmission(id, updates)
+      .catch(err => {
+        // console.log(`subm.ctrl.js > 188: err`)
+        // console.error(err);
+      });
 
     if (
       !updateSubmissionResult ||
@@ -192,12 +196,13 @@ const updateSubmission = async (req, res, next) => {
       const errmsg =
         updateSubmissionResult.message ||
         "There was an error updating the submission";
-      // console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+      console.error(`submissions.ctrl.js > 205: ${errmsg}`);
       return res.status(500).json({
         message: errmsg
       });
     } else {
       // console.log("subm.ctrl.js > 201: returning to client");
+      // console.log(updateSubmissionResult[0].id);
       // saving to res.locals to make id available for testing
       res.locals.submission_id = updateSubmissionResult[0].id;
       return res
