@@ -230,7 +230,7 @@
     "Nhập họ tên hợp pháp của quý vị. Điều này sẽ có hiệu lực như chữ ký của quý vị.",
     "输入您的合法姓名。这将作为您的签名。"
   ],
-  "directPayAuthorization": [
+  "directPayAuth": [
     "DIRECT PAY AUTHORIZATION",
     "Autorización de pago directo",
     "Разрешение на производство прямых платежей",
@@ -272,7 +272,7 @@
     "Tôi xác nhận rằng việc không trả phí công đoàn đúng hạn có thể ảnh hưởng đến tư cách thành viên của tôi trong Công đoàn, như được quy định trong bộ Quy tắc Hoạt động của SEIU Local 503. Các khoản đóng góp cho SEIU không được khấu trừ thuế theo dạng đóng góp từ thiện. Tuy nhiên, chúng có thể được khấu trừ thuế theo dạng chi phí kinh doanh thông thường và cần thiết.",
     "我确认，未能及时支付会费可能会影响我在工会中的会员资格（如 SEIU Local 503 附例中所载）。向 SEIU 作出的捐款，不会作为慈善捐款而免税。但是它们可作为一般及必要的营业支出而扣税。"
   ],
-  "directDepositAuthorization": [
+  "directDepositAuth": [
     "DIRECT DEPOSIT AUTHORIZATION",
     "Autorización de depósito directo",
     "Разрешение на осуществление прямого перевода средств",
