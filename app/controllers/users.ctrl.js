@@ -12,6 +12,7 @@ const users = require("../../db/models/users");
 /** Create a new user
  *  @param    {String}   name            Name from google profile.
  *  @param    {String}   email           Email from google profile.
+ *  @param    {String}   userType        User access type.
  *  @param    {String}   avatar_url      Picture from google profile.
  *  @param    {String}   google_id       Google unique ID.
  *  @param    {String}   google_token    Google auth token.
@@ -27,12 +28,9 @@ const createUser = (req, res, next) => {
     userType
   } = req.body;
   if (userType != "admin" || !userType) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message: "You do not have permission to do this. Please Consult an admin."
+    });
   }
   if (name && email) {
     return users
@@ -57,19 +55,22 @@ const createUser = (req, res, next) => {
  *  @param    {Object}   updates         Key/value pairs for fields to update.
  ****  @param    {String}   name        Updated name.
  ****  @param    {String}   email       Updated email.
+ ****  @param    {String}   userType    Updated User access type.
  ****  @param    {String}   avatar_url  Updated avatar_url.
  *  @returns  {Object}                   Updated user object OR error message.
  */
 const updateUser = (req, res, next) => {
   const { updates, userType } = req.body;
   const { id } = req.params;
-  if (userType != "admin" || !userType) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+  if (!userType) {
+    return res.status(500).json({
+      message: "You must be a user to make these changes. Please log in"
+    });
+  }
+  if (updates.type && userType !== "admin") {
+    return res.status(500).json({
+      message: "You do not have permission to do this. Please Consult an admin."
+    });
   }
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
@@ -96,12 +97,9 @@ const updateUser = (req, res, next) => {
 const deleteUser = (req, res, next) => {
   const { userType } = req.body;
   if (userType != "admin" || !userType) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message: "You do not have permission to do this. Please Consult an admin."
+    });
   }
   return users
     .deleteUser(req.params.id)
