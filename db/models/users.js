@@ -13,11 +13,20 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {String}   avatar_url     New user avatar url.
  *  @param    {String}   google_id      New user google id.
  *  @param    {String}   google_token   New user google token.
+ *  @param    {String}   type           New user type
  *  @returns  {Array}    Array of 1 newly-created User object.
  */
-const createUser = (name, email, avatar_url, google_id, google_token) => {
+const createUser = (name, email, avatar_url, google_id, google_token, type) => {
   return db
-    .insert({ id: uuid.v4(), name, email, avatar_url, google_id, google_token })
+    .insert({
+      id: uuid.v4(),
+      name,
+      email,
+      avatar_url,
+      google_id,
+      google_token,
+      type
+    })
     .into(TABLES.USERS)
     .returning("*");
 };
@@ -28,6 +37,7 @@ const createUser = (name, email, avatar_url, google_id, google_token) => {
  ****  @param    {String}   name        Updated name.
  ****  @param    {String}   email       Updated email.
  ****  @param    {String}   avatar_url  Updated avatar url.
+ ****  @param    {String}   type        New user type
  *  @returns  {Object}   User object.
  */
 const updateUser = (id, updates) => {

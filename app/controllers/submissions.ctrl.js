@@ -216,6 +216,15 @@ const updateSubmission = async (req, res, next) => {
  */
 const deleteSubmission = async (req, res, next) => {
   let result;
+  const { userType } = req.body;
+  if (userType != "admin" || !userType) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   try {
     result = await submissions.deleteSubmission(req.params.id);
     if (result.message === "Submission deleted successfully") {
@@ -233,6 +242,15 @@ const deleteSubmission = async (req, res, next) => {
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
 const getSubmissions = (req, res, next) => {
+  const { userType } = req.body;
+  if (!userType) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   return submissions
     .getSubmissions()
     .then(submissions => {
@@ -248,6 +266,15 @@ const getSubmissions = (req, res, next) => {
  *  @returns  {Object}        Submission object OR error message.
  */
 const getSubmissionById = (req, res, next) => {
+  const { userType } = req.body;
+  if (!userType) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   return submissions
     .getSubmissionById(req.params.id)
     .then(submission => {

@@ -13,10 +13,19 @@ const contentModel = require("../../db/models/content");
  *  @param    {String}   content_type  Content type
  ***  [headline|body_copy|image_url|redirect_url].
  *  @param    {String}   content         Content.
+ *  @param    {String}   userType        Type of user making request.
  *  @returns  {Object}                   New content object OR error message.
  */
 const createContent = (req, res, next) => {
-  const { content_type, content } = req.body;
+  const { content_type, content, userType } = req.body;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   if (content_type && content) {
     return contentModel
       .newContent(content_type, content)
@@ -38,11 +47,20 @@ const createContent = (req, res, next) => {
 /** Update an existing content record
  *  @param    {String}   id        Id of record to update.
  *  @param    {Object}   updates   Key/value pairs for fields to update.
+ *  @param    {String}   userType  Type of user making request.
  *  @returns  {Object}             Updated content object OR error message.
  */
 const updateContent = (req, res, next) => {
-  const updates = req.body;
+  const { updates, userType } = req.body;
   const { id } = req.params;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
   }
@@ -67,10 +85,20 @@ const updateContent = (req, res, next) => {
 };
 
 /** Delete content
- *  @param    {String}   id   Id of the content to delete.
+ *  @param    {String}   id         Id of the content to delete.
+ *  @param    {String}   userType   Type of user making request.
  *  @returns  Success or error message.
  */
 const deleteContent = (req, res, next) => {
+  const { userType } = req.body;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   return contentModel
     .deleteContent(req.params.id)
     .then(result => {
@@ -86,9 +114,19 @@ const deleteContent = (req, res, next) => {
 };
 
 /** Get all content
+ *  @param    {String}   userType   Type of user making request.
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContent = (req, res, next) => {
+  const { userType } = req.body;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   return contentModel
     .getContent()
     .then(records => res.status(200).json(records))
@@ -96,10 +134,20 @@ const getContent = (req, res, next) => {
 };
 
 /** Get one content record by id
- *  @param    {String}   id   Id of the requested content.
+ *  @param    {String}   id         Id of the requested content.
+ *  @param    {String}   userType   Type of user making request.
  *  @returns  {Object}        User object OR error message.
  */
 const getContentById = (req, res, next) => {
+  const { userType } = req.body;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   return contentModel
     .getContentById(req.params.id)
     .then(record => {
@@ -115,10 +163,20 @@ const getContentById = (req, res, next) => {
 };
 
 /** Get all content of a certain type
+ *  @param    {String}   userType       Type of user making request.
  *  @param    {String}   content_type   Type of the requested content.
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContentByType = (req, res, next) => {
+  const { userType } = req.body;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res
+      .status(500)
+      .json({
+        message:
+          "You do not have permission to do this. Please Consult an admin."
+      });
+  }
   return contentModel
     .getContentByType(req.params.content_type)
     .then(records => {
