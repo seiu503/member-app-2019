@@ -3,6 +3,7 @@ import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
 import PropTypes from "prop-types";
+import { Translate } from "react-localize-redux";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
@@ -80,7 +81,9 @@ export const Tab3 = props => {
               validMethod && (
                 <div data-test="component-choose-card">
                   <Typography component="p" className={classes.body}>
-                    Your existing payment method on file is the card ending in{" "}
+                    <Translate id="existingPaymentMethod">
+                      Your existing payment method on file is the card ending in
+                    </Translate>{" "}
                     {payment.activeMethodLast4}.
                   </Typography>
                   <Field
@@ -106,7 +109,7 @@ export const Tab3 = props => {
               formPage1.paymentRequired && (
                 <div data-test="component-iframe">
                   <Typography component="h2" className={classes.head}>
-                    Add a payment method
+                    <Translate id="addPayment">Add a payment method</Translate>
                   </Typography>
                   <div className={classes.iframeWrap}>
                     <Iframe
@@ -124,13 +127,17 @@ export const Tab3 = props => {
             {formPage1.paymentType === "Check" && (
               <div className={classes.paymentCopy}>
                 <Typography component="h2" className={classes.head}>
-                  To pay your dues by check:
+                  <Translate id="payByCheck1">
+                    To pay your dues by check:
+                  </Translate>
                 </Typography>
                 <Typography component="p" className={classes.body}>
-                  Please mail your payment of $5 (monthly) or $60 (annually) to
-                  SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
-                  'Retiree Dues' on your check. Dues are set by the SEIU Local
-                  503 bylaws.
+                  <Translate id="payByCheck2">
+                    Please mail your payment of $5 (monthly) or $60 (annually)
+                    to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please
+                    write 'Retiree Dues' on your check. Dues are set by the SEIU
+                    Local 503 bylaws.
+                  </Translate>
                 </Typography>
               </div>
             )}
@@ -143,7 +150,7 @@ export const Tab3 = props => {
                 className={classes.back}
                 variant="contained"
               >
-                Back
+                <Translate id="back">Back</Translate>
               </Button>
             </div>
 
@@ -154,7 +161,7 @@ export const Tab3 = props => {
               variant="contained"
               loading={loading}
             >
-              Submit
+              <Translate id="submitButton">Submit</Translate>
             </ButtonWithSpinner>
           </form>
         </div>

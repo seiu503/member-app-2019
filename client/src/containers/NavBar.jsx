@@ -3,6 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import queryString from "query-string";
+import { Translate } from "react-localize-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
@@ -218,7 +219,7 @@ export class NavBar extends React.Component {
               onClick={() => skip("main")}
               data-test="skiplink"
             >
-              Skip to content &rsaquo;
+              <Translate id="skipLink">Skip to content &rsaquo;</Translate>
             </Button>
             <Link to="/" className={classes.logoLink} data-test="logo-link">
               <img
@@ -235,7 +236,9 @@ export class NavBar extends React.Component {
               data-test="title"
             >
               <Link to="/" className={classes.title}>
-                {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
+                <Translate id={values.cape ? "capeBanner" : "siteBanner"}>
+                  {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
+                </Translate>
               </Link>
             </Typography>
             {loggedIn && (

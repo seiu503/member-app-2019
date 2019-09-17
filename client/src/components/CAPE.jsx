@@ -3,6 +3,7 @@ import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
 import { ReCaptcha } from "react-recaptcha-v3";
+import { Translate } from "react-localize-redux";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
@@ -65,29 +66,41 @@ export const CAPE = props => {
       >
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>
-            Contribute to CAPE: Citizen Action for Political Education
+            <Translate id="capeHeadline">
+              Contribute to CAPE: Citizen Action for Political Education
+            </Translate>
           </Typography>
           <Typography component="p" className={classes.subhead}>
-            Collective political action to raise wages, protect benefits, fund
-            public services, and build strong communities.
+            <Translate id="capeSubhead">
+              Collective political action to raise wages, protect benefits, fund
+              public services, and build strong communities.
+            </Translate>
           </Typography>
           <Typography component="p" className={classes.body}>
-            When workers unite, legislators listen. In 2019, SEIU Local 503 CAPE
-            advocacy led to historic wins:
+            <Translate id="capeBody1">
+              When workers unite, legislators listen. In 2019, SEIU Local 503
+              CAPE advocacy led to historic wins:
+            </Translate>
           </Typography>
           <ul className={classes.ul}>
             <li className={classes.li}>
-              Funding for raises and benefits for state employees and homecare
-              workers are double what they were in the last budget, setting
-              members up for strong contracts
+              <Translate id="capeBullet1">
+                Funding for raises and benefits for state employees and homecare
+                workers are double what they were in the last budget, setting
+                members up for strong contracts
+              </Translate>
             </li>
             <li className={classes.li}>
-              Oregon passed the strongest Paid Family and Medical Leave law in
-              the nation
+              <Translate id="capeBullet2">
+                Oregon passed the strongest Paid Family and Medical Leave law in
+                the nation
+              </Translate>
             </li>
             <li className={classes.li}>
-              Our state became the first in the U.S. to pass statewide rent
-              stabilization and ban no-cause evictions
+              <Translate id="capeBullet3">
+                Our state became the first in the U.S. to pass statewide rent
+                stabilization and ban no-cause evictions
+              </Translate>
             </li>
           </ul>
           <Card className={classes.card}>
@@ -98,7 +111,7 @@ export const CAPE = props => {
                   variant="h5"
                   className={classes.cardHead}
                 >
-                  Join us
+                  <Translate id="capeCardHead">Join us</Translate>
                 </Typography>
                 <div style={{ position: "relative" }}>
                   <FormatQuote
@@ -112,10 +125,12 @@ export const CAPE = props => {
                     }}
                   />
                   <Typography component="p" className={classes.pullQuote}>
-                    I can’t write big checks. But I contribute what I can each
-                    month to CAPE. And when we put all of our resources
-                    together, we have shown we can elect legislators in Oregon
-                    who will fight for working families and our clients.
+                    <Translate id="capePullQuote">
+                      I can’t write big checks. But I contribute what I can each
+                      month to CAPE. And when we put all of our resources
+                      together, we have shown we can elect legislators in Oregon
+                      who will fight for working families and our clients.
+                    </Translate>
                   </Typography>
                   <FormatQuote
                     style={{
@@ -128,7 +143,9 @@ export const CAPE = props => {
                   />
                 </div>
                 <Typography component="p" className={classes.quoteAttr}>
-                  &mdash;Deffo Mebrat, Adult Foster Care Provider
+                  <Translate id="capeQuoteAttr">
+                    &mdash;Deffo Mebrat, Adult Foster Care Provider
+                  </Translate>
                 </Typography>
               </CardContent>
             </div>
@@ -141,7 +158,9 @@ export const CAPE = props => {
         </div>
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>
-            Make your contribution today
+            <Translate id="capePaymentHead">
+              Make your contribution today
+            </Translate>
           </Typography>
           <div className={classes.suggestedAmounts}>
             <div className={classes.suggestedAmountBoxes}>
@@ -262,11 +281,7 @@ export const CAPE = props => {
             />
 
             <FormHelperText className={classes.formHelperText}>
-              Please use your personal email if you have one, since some
-              employers limit union communication via work email. If you don't
-              have a personal email, work email is fine. If you don't have an
-              email address, call us at 1.844.503.7348 to sign up over the
-              phone.
+              <Translate id="homeEmailHint" />
             </FormHelperText>
             <FormGroup>
               <Field
@@ -279,13 +294,7 @@ export const CAPE = props => {
               />
 
               <FormHelperText className={classes.formHelperText}>
-                † By providing my phone number, I understand that the Service
-                Employees International Union (SEIU), its local unions, and
-                affiliates may use automated calling technologies and/or text
-                message me on my cellular phone on a periodic basis. SEIU will
-                never charge for text message alerts. Carrier message and data
-                rates may apply to such alerts. Reply STOP to stop receiving
-                messages; reply HELP for more information.
+                <Translate id="phoneLegalLanguage" />
               </FormHelperText>
 
               <Field
@@ -338,7 +347,9 @@ export const CAPE = props => {
           validMethod && (
             <div data-test="component-choose-card">
               <Typography component="p" className={classes.body}>
-                Your existing payment method on file is the card ending in{" "}
+                <Translate id="existingPaymentMethod">
+                  Your existing payment method on file is the card ending in
+                </Translate>{" "}
                 {payment.activeMethodLast4}.
               </Typography>
               <Field
@@ -361,7 +372,7 @@ export const CAPE = props => {
         {iFrameURL && formPage1.newCardNeeded && formPage1.paymentRequired && (
           <div data-test="component-iframe">
             <Typography component="h2" className={classes.head}>
-              Add a payment method
+              <Translate id="addPayment">Add a payment method</Translate>
             </Typography>
             <div className={classes.iframeWrap}>
               <Iframe
@@ -394,7 +405,7 @@ export const CAPE = props => {
               className={classes.back}
               variant="contained"
             >
-              Back
+              <Translate id="back">Back</Translate>
             </Button>
           </div>
         )}
@@ -405,7 +416,7 @@ export const CAPE = props => {
           variant="contained"
           loading={loading}
         >
-          Submit
+          <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>
       </form>
     </div>
