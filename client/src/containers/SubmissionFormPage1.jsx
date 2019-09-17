@@ -991,12 +991,15 @@ export class SubmissionFormPage1Container extends React.Component {
   changeTab = newValue => {
     const newState = { ...this.state };
     newState.tab = newValue;
-    this.setState({ ...newState }, () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
 
     if (newValue === 2) {
       const { formPage1 } = this.props.submission;
+      console.log("why are we setting spinner here?");
+      console.log(
+        `formPage1.paymentType: ${formPage1.paymentType}`,
+        `formPage1.newCardNeeded: ${formPage1.newCardNeeded}`,
+        `formPage1.paymentRequired: ${formPage1.paymentRequired}`
+      );
       if (
         formPage1.paymentType === "Card" &&
         formPage1.newCardNeeded &&
@@ -1004,9 +1007,16 @@ export class SubmissionFormPage1Container extends React.Component {
       ) {
         // need to set spinner on transition to payment tab
         // while iframe loads
-        return this.props.actions.setSpinner();
+        console.log("setting spinner");
+        this.props.actions.setSpinner();
+        return this.setState({ ...newState }, () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
       }
     }
+    this.setState({ ...newState }, () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
   };
 
   render() {

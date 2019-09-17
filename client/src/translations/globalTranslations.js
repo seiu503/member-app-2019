@@ -1,4 +1,5 @@
 import employerPickList from "./employerPickList.json";
+import legalLanguage from "./legalLanguage.json";
 import linkDeliveryPage from "./linkDeliveryPage.json";
 import linkRequestForm from "./linkRequestForm.json";
 import page1 from "./page1.json";
@@ -12,6 +13,7 @@ import welcomeInfo from "./welcomeInfo.json";
 // instead of `employerPickList.adultFosterCareType`.
 const globalTranslations = {
   ...employerPickList,
+  ...legalLanguage,
   ...linkDeliveryPage,
   ...linkRequestForm,
   ...page1,

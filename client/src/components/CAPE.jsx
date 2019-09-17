@@ -53,9 +53,6 @@ export const CAPE = props => {
   } = props;
   // console.log(handleCAPESubmit);
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  const legalCopy = checkoff
-    ? formElements.capeLegalCheckoff
-    : formElements.capeLegalStripe;
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -387,7 +384,28 @@ export const CAPE = props => {
             </div>
           </div>
         )}
-        <div className={classes.legalCopy}>{legalCopy}</div>
+        <div className={classes.legalCopy}>
+          <p>
+            <Translate
+              id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+            />
+          </p>
+          <p>
+            <Translate id="capeLegal2" />
+          </p>
+          <p>
+            <Translate id="capeLegal3" />
+          </p>
+          <p>
+            <Translate id="capeLegal4" />
+          </p>
+          <p>
+            <Translate id="capeLegal5" />
+          </p>
+          <p>
+            <Translate id="capeLegal6" />
+          </p>
+        </div>
         {standAlone && (
           <ReCaptcha
             sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"

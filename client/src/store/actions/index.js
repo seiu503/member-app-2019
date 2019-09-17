@@ -16,6 +16,7 @@ export function setLoggedIn() {
 }
 
 export function setSpinner() {
+  console.log("setSpinner");
   return {
     type: SET_SPINNER
   };
