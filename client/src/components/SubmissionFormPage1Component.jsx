@@ -464,7 +464,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderCheckbox={this.renderCheckbox}
                   />
                 )}
-                {this.props.tab === 2 && (
+                {this.props.tab === 2 && this.props.howManyTabs === 4 && (
                   <Tab3Form
                     {...this.props}
                     onSubmit={this.handleSubmit}
@@ -484,7 +484,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     checkoff={checkoff}
                   />
                 )}
-                {this.props.tab === 3 && (
+                {(this.props.tab === 3 ||
+                  (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
                   <CAPEForm
                     {...this.props}
                     classes={classes}

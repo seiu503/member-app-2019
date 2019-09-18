@@ -335,7 +335,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 331: ${err}`);
+    console.error(`sf.ctrl.js > 331: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -355,8 +355,8 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Birthdate"];
     body.Birthdate__c = bodyRaw.birthdate;
     body.Worker__c = bodyRaw.Worker__c;
-    // console.log(`sf.ctrl.js > 347`);
-    // console.log(body);
+    console.log(`sf.ctrl.js > 347`);
+    console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
       ...body
@@ -368,7 +368,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       sf_OMA_id: OMA.id || OMA.Id
     });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 365: ${err}`);
+    console.error(`sf.ctrl.js > 365: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

@@ -201,30 +201,6 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
-  // async saveSubmissionSuccess(submission_id) {
-  //   const updates = {
-  //     submission_status: "success"
-  //   };
-  //   this.props.apiSubmission
-  //     .updateSubmission(submission_id, updates)
-  //     .then(result => {
-  //       console.log(`saveSubmissionSuccess`);
-  //       console.log(result.type);
-  //       if (
-  //         result.type === "UPDATE_SUBMISSION_FAILURE" ||
-  //         this.props.submission.error
-  //       ) {
-  //         // console.log(this.props.submission.error);
-  //         return this.handleError(this.props.submission.error);
-  //       }
-  //       // console.log(result.type);
-  //     })
-  //     .catch(err => {
-  //       // console.log(err);
-  //       return this.handleError(err);
-  //     });
-  // }
-
   async prepForContact(values) {
     return new Promise(resolve => {
       let returnValues = { ...values };
@@ -348,7 +324,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSubmission() {
-    console.log("createSubmission");
+    // console.log("createSubmission");
     const { formValues } = this.props;
 
     // create initial submission using data in tabs 1 & 2
@@ -357,7 +333,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues);
-    console.log(body.submission_date);
+    // console.log(body.submission_date);
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
@@ -370,12 +346,12 @@ export class SubmissionFormPage1Container extends React.Component {
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
     if (!this.props.submission.formPage1.paymentRequired) {
-      console.log("no payment required, writing OMA to SF and on to CAPE");
+      // console.log("no payment required, writing OMA to SF and on to CAPE");
       body.Worker__c = this.props.submission.salesforceId;
       return this.props.apiSF
         .createSFOMA(body)
         .then(result => {
-          console.log(result.type);
+          // console.log(result.type);
           if (
             result.type !== "CREATE_SF_OMA_SUCCESS" ||
             this.props.submission.error
@@ -801,7 +777,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleCAPESubmit(standAlone) {
     // e.preventDefault();
-    console.log("handleCAPESubmit");
+    // console.log("handleCAPESubmit");
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
@@ -820,7 +796,7 @@ export class SubmissionFormPage1Container extends React.Component {
         `/page2/?id=${this.props.submission.salesforceId}`
       );
     }
-    // otherwise, need to redirect to the thankyou page
+    // otherwise, need to redirect to the thankyou page or saved redirect url
     // but need to make that text dynamic and reuse component for both
     // cape and membership submits
   }
@@ -994,12 +970,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     if (newValue === 2) {
       const { formPage1 } = this.props.submission;
-      console.log("why are we setting spinner here?");
-      console.log(
-        `formPage1.paymentType: ${formPage1.paymentType}`,
-        `formPage1.newCardNeeded: ${formPage1.newCardNeeded}`,
-        `formPage1.paymentRequired: ${formPage1.paymentRequired}`
-      );
+
       if (
         formPage1.paymentType === "Card" &&
         formPage1.newCardNeeded &&
@@ -1007,7 +978,6 @@ export class SubmissionFormPage1Container extends React.Component {
       ) {
         // need to set spinner on transition to payment tab
         // while iframe loads
-        console.log("setting spinner");
         this.props.actions.setSpinner();
         return this.setState({ ...newState }, () => {
           window.scrollTo({ top: 0, behavior: "smooth" });

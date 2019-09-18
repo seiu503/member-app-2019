@@ -40,8 +40,7 @@ export class SubmissionFormPage2Container extends React.Component {
         });
     } else {
       // console.log("no id found");
-      //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
-      // return this.props.history.push("/")
+      return this.props.history.push("/");
     }
   }
   render() {

@@ -282,5 +282,12 @@
     "",
     "",
     ""
+  ],
+  "capeAmount": [
+    "Monthly donation amount",
+    "",
+    "",
+    "",
+    ""
   ]
 }

@@ -10,8 +10,7 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 
 import { validate } from "../utils/validators";
-import { onSubmitFailFn, isPaymentRequired } from "../utils";
-import CAPEForm from "./CAPE";
+import { onSubmitFailFn } from "../utils";
 import * as formElements from "./SubmissionFormElements";
 
 export const Tab3 = props => {
@@ -25,8 +24,7 @@ export const Tab3 = props => {
     formValues,
     formPage1,
     payment,
-    toggleCardAddingFrame,
-    handleCAPESubmit
+    toggleCardAddingFrame
   } = props;
   // console.log(isPaymentRequired(formValues.employerType));
   let duesCopy = "";
@@ -46,129 +44,121 @@ export const Tab3 = props => {
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
 
   return (
-    <React.Fragment>
-      {isPaymentRequired(formValues.employerType) ? (
-        <div data-test="component-tab3" className={classes.sectionContainer}>
-          <form
-            onSubmit={props.handleSubmit(onSubmit)}
-            id="tab3"
-            className={classes.form}
-          >
-            {formPage1.paymentRequired && (
-              <div className={classes.paymentCopy}>
-                <Typography component="p" className={classes.body}>
-                  {duesCopy}
-                </Typography>
-              </div>
-            )}
-            {formValues.employerType &&
-              formValues.employerType.toLowerCase() === "retired" && (
-                <Field
-                  data-test="radio-payment-type"
-                  label="How would you like to pay your union dues?"
-                  name="paymentType"
-                  formControlName="paymentType"
-                  id="paymentType"
-                  direction="horiz"
-                  className={classes.horizRadio}
-                  classes={classes}
-                  component={formElements.renderRadioGroup}
-                  options={formElements.paymentTypes}
-                />
-              )}
-            {formPage1.paymentRequired &&
-              formPage1.paymentType === "Card" &&
-              validMethod && (
-                <div data-test="component-choose-card">
-                  <Typography component="p" className={classes.body}>
-                    <Translate id="existingPaymentMethod">
-                      Your existing payment method on file is the card ending in
-                    </Translate>{" "}
-                    {payment.activeMethodLast4}.
-                  </Typography>
-                  <Field
-                    data-test="radio-which-card"
-                    label="Do you want to use the existing card or add a new one?"
-                    name="whichCard"
-                    formControlName="whichCard"
-                    id="whichCard"
-                    direction="horiz"
-                    className={classes.horizRadio}
-                    legendClass={classes.horizRadioBold}
-                    classes={classes}
-                    defaultItem="Use existing"
-                    additionalOnChange={toggleCardAddingFrame}
-                    component={formElements.renderRadioGroup}
-                    options={["Use existing", "Add new card"]}
-                  />
-                </div>
-              )}
-            {iFrameURL &&
-              formPage1.paymentType === "Card" &&
-              formPage1.newCardNeeded &&
-              formPage1.paymentRequired && (
-                <div data-test="component-iframe">
-                  <Typography component="h2" className={classes.head}>
-                    <Translate id="addPayment">Add a payment method</Translate>
-                  </Typography>
-                  <div className={classes.iframeWrap}>
-                    <Iframe
-                      url={iFrameURL}
-                      width="100%"
-                      height="100px"
-                      id="iFrame"
-                      className={classes.iframe}
-                      display="initial"
-                      position="relative"
-                    />
-                  </div>
-                </div>
-              )}
-            {formPage1.paymentType === "Check" && (
-              <div className={classes.paymentCopy}>
-                <Typography component="h2" className={classes.head}>
-                  <Translate id="payByCheck1">
-                    To pay your dues by check:
-                  </Translate>
-                </Typography>
-                <Typography component="p" className={classes.body}>
-                  <Translate id="payByCheck2">
-                    Please mail your payment of $5 (monthly) or $60 (annually)
-                    to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please
-                    write 'Retiree Dues' on your check. Dues are set by the SEIU
-                    Local 503 bylaws.
-                  </Translate>
-                </Typography>
-              </div>
-            )}
-            <div className={classes.buttonWrapTab3}>
-              <Button
-                type="button"
-                data-test="button-back"
-                onClick={() => back(1)}
-                color="primary"
-                className={classes.back}
-                variant="contained"
-              >
-                <Translate id="back">Back</Translate>
-              </Button>
+    <div data-test="component-tab3" className={classes.sectionContainer}>
+      <form
+        onSubmit={props.handleSubmit(onSubmit)}
+        id="tab3"
+        className={classes.form}
+      >
+        {formPage1.paymentRequired && (
+          <div className={classes.paymentCopy}>
+            <Typography component="p" className={classes.body}>
+              {duesCopy}
+            </Typography>
+          </div>
+        )}
+        {formValues.employerType &&
+          formValues.employerType.toLowerCase() === "retired" && (
+            <Field
+              data-test="radio-payment-type"
+              label="How would you like to pay your union dues?"
+              name="paymentType"
+              formControlName="paymentType"
+              id="paymentType"
+              direction="horiz"
+              className={classes.horizRadio}
+              classes={classes}
+              component={formElements.renderRadioGroup}
+              options={formElements.paymentTypes}
+            />
+          )}
+        {formPage1.paymentRequired &&
+          formPage1.paymentType === "Card" &&
+          validMethod && (
+            <div data-test="component-choose-card">
+              <Typography component="p" className={classes.body}>
+                <Translate id="existingPaymentMethod">
+                  Your existing payment method on file is the card ending in
+                </Translate>{" "}
+                {payment.activeMethodLast4}.
+              </Typography>
+              <Field
+                data-test="radio-which-card"
+                label="Do you want to use the existing card or add a new one?"
+                name="whichCard"
+                formControlName="whichCard"
+                id="whichCard"
+                direction="horiz"
+                className={classes.horizRadio}
+                legendClass={classes.horizRadioBold}
+                classes={classes}
+                defaultItem="Use existing"
+                additionalOnChange={toggleCardAddingFrame}
+                component={formElements.renderRadioGroup}
+                options={["Use existing", "Add new card"]}
+              />
             </div>
-
-            <ButtonWithSpinner
-              type="submit"
-              color="primary"
-              className={classes.formButton}
-              variant="contained"
-              loading={loading}
-            >
-              <Translate id="submitButton">Submit</Translate>
-            </ButtonWithSpinner>
-          </form>
+          )}
+        {iFrameURL &&
+          formPage1.paymentType === "Card" &&
+          formPage1.newCardNeeded &&
+          formPage1.paymentRequired && (
+            <div data-test="component-iframe">
+              <Typography component="h2" className={classes.head}>
+                <Translate id="addPayment">Add a payment method</Translate>
+              </Typography>
+              <div className={classes.iframeWrap}>
+                <Iframe
+                  url={iFrameURL}
+                  width="100%"
+                  height="100px"
+                  id="iFrame"
+                  className={classes.iframe}
+                  display="initial"
+                  position="relative"
+                />
+              </div>
+            </div>
+          )}
+        {formPage1.paymentType === "Check" && (
+          <div className={classes.paymentCopy}>
+            <Typography component="h2" className={classes.head}>
+              <Translate id="payByCheck1">To pay your dues by check:</Translate>
+            </Typography>
+            <Typography component="p" className={classes.body}>
+              <Translate id="payByCheck2">
+                Please mail your payment of $5 (monthly) or $60 (annually) to
+                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
+                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
+                bylaws.
+              </Translate>
+            </Typography>
+          </div>
+        )}
+        <div className={classes.buttonWrapTab3}>
+          <Button
+            type="button"
+            data-test="button-back"
+            onClick={() => back(1)}
+            color="primary"
+            className={classes.back}
+            variant="contained"
+          >
+            <Translate id="back">Back</Translate>
+          </Button>
         </div>
-      ) : (
-        <CAPEForm {...props} onSubmit={handleCAPESubmit} />
-      )}
-    </React.Fragment>
+
+        <ButtonWithSpinner
+          type="submit"
+          color="primary"
+          className={classes.formButton}
+          variant="contained"
+          loading={loading}
+        >
+          <Translate id="submitButton">Submit</Translate>
+        </ButtonWithSpinner>
+      </form>
+    </div>
   );
 };
 
