@@ -737,6 +737,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
+    console.log(value);
     if (value === "Add new card") {
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))

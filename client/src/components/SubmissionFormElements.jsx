@@ -879,7 +879,7 @@ export const renderRadioGroup = ({
           onChange={(event, value) => {
             input.onChange(value);
             if (additionalOnChange) {
-              additionalOnChange(event);
+              additionalOnChange(value);
             }
           }}
         >
