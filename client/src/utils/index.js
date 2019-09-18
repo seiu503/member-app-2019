@@ -93,12 +93,14 @@ export const scrollToFirstError = errors => {
     // console.log(errorsArray);
     // console.log(firstError);
     const el = document.getElementById(firstError);
-    const position =
-      el.getBoundingClientRect().top + document.documentElement.scrollTop;
-
-    const offset = 200;
-
-    window.scrollTo({ top: position - offset, behavior: "smooth" });
+    if (el) {
+      const position =
+        el.getBoundingClientRect().top + document.documentElement.scrollTop;
+      const offset = 200;
+      window.scrollTo({ top: position - offset, behavior: "smooth" });
+    } else {
+      console.log(`can't find element for ${firstError}`);
+    }
   }
 };
 
