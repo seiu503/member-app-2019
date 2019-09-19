@@ -204,6 +204,9 @@ export class AppUnconnected extends Component {
     this.recaptcha_ref.current.execute();
   }
 
+  // resubmit submission and deleteSubmission methods here, to be passed to submission table
+  // move prepForSubmission method up to App, possibly updateSubmission too?
+
   render() {
     const { classes } = this.props;
     return (

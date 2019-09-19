@@ -43,23 +43,6 @@ let authenticateMock;
 let userStub;
 
 suite("routes : content", function() {
-  // // this runs once before the whole suite
-  // // rollback and migrate testing database
-  // before(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback().then(() => {
-  //       return db.migrate.latest();
-  //     });
-  //   });
-  // });
-
-  // // rollback to cleanup after tests are over
-  // after(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback();
-  //   });
-  // });
-
   after(() => {
     return knexCleaner.clean(db);
   });

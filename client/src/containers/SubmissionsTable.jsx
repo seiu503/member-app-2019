@@ -7,9 +7,12 @@ import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
-import * as utils from "../utils";
+
 import AlertDialog from "../components/AlertDialog";
-import { tableIcons } from "../components/SubmissionFormElements";
+import {
+  tableIcons,
+  submTableFieldList
+} from "../components/SubmissionFormElements";
 import { openSnackbar } from "./Notifier";
 
 import Typography from "@material-ui/core/Typography";
@@ -155,26 +158,7 @@ export class SubmissionsTableUnconnected extends React.Component {
           <div className={classes.gridWrapper}>
             <MaterialTable
               style={{ width: "100%", margin: "0 20px" }}
-              // columnList should be generated from fieldConfigs file
-              // reorder submissionsTableFields and mark as hidden or not
-              // write generator function to generate columns list including
-              // date formatters or other data manipulation as needed
-              // add submission status / error reporting fields to fieldconfigs
-              columns={[
-                { title: "First name", field: "first_name" },
-                { title: "Last name", field: "last_name" },
-                { title: "Employer", field: "employer_name" },
-                { title: "Email", field: "home_email" },
-                { title: "Source code", field: "campaign_source_code" },
-                { title: "Id", field: "id" },
-                {
-                  title: "Updated at",
-                  field: "updated_at",
-                  type: "date",
-                  render: rowData => utils.formatDate(rowData.updated_at),
-                  defaultSort: "desc"
-                }
-              ]}
+              columns={submTableFieldList}
               isLoading={this.props.submission.loading}
               data={this.props.submission.allSubmissions}
               title="Submissions"
@@ -182,7 +166,13 @@ export class SubmissionsTableUnconnected extends React.Component {
                 exportButton: true,
                 filtering: true,
                 sorting: true,
-                columnsButton: true
+                columnsButton: true,
+                rowStyle: rowData => ({
+                  backgroundColor:
+                    rowData && rowData.submission_status === "error"
+                      ? "#f9c7c7"
+                      : "#FFF"
+                })
               }}
               icons={tableIcons}
             />

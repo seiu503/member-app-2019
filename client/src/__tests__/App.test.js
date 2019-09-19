@@ -226,13 +226,15 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
     });
-    test(' "/page2" path should render SubmissionFormPage2 component', () => {
-      const jsdomAlert = window.alert; // remember the jsdom alert
-      window.alert = () => {}; // provide an empty implementation for window.alert
-      wrapper = routeSetup("/page2");
+    test(' "/page2?id={id}" path should render SubmissionFormPage2 component', () => {
+      wrapper = routeSetup("/page2?id=12345678");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(SubmissionFormPage2)).toHaveLength(1);
-      window.alert = jsdomAlert; // restore the jsdom alert
+    });
+    test(' "/page2" path should not render SubmissionFormPage2 component without an id in route parameters', () => {
+      wrapper = routeSetup("/page2");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(1);
+      expect(wrapper.find(SubmissionFormPage2)).toHaveLength(0);
     });
     // test(' "/logout" path should render Logout component', () => {
     //   wrapper = routeSetup('/logout');

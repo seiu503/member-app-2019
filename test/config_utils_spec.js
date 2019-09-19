@@ -6,7 +6,9 @@ const { assert } = chai;
 const jwt = require("jsonwebtoken");
 const {
   generateSampleValidate,
-  generatePage2Validate
+  generatePage2Validate,
+  generateCAPEValidate,
+  formatDate
 } = require("../app/utils/fieldConfigs");
 const utils = require("../app/utils/index");
 
@@ -20,6 +22,16 @@ suite("fieldConfig.js / utils.js", function() {
   test("generates sample validate page 2", () => {
     const result = generatePage2Validate();
     assert.equal(result.hireDate, "2019-11-11");
+  });
+
+  test("generates sample CAPE validate", () => {
+    const result = generateCAPEValidate();
+    assert.equal(result.agencyNumber, "123456");
+  });
+
+  test("formats date as YYYY-MM-DD for salesforce", () => {
+    const result = formatDate("1/1/2000");
+    assert.equal(result, "2000-01-01");
   });
 
   test("handleError returns 500 status and error to client", () => {

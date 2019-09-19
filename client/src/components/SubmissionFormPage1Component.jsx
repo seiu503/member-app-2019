@@ -205,11 +205,21 @@ export class SubmissionFormPage1Component extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFOMA",
+            this.props.submission.error
+          );
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
         // console.log(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "createSFOMA",
+          err
+        );
         return this.props.handleError(err);
       });
   }
@@ -253,11 +263,21 @@ export class SubmissionFormPage1Component extends React.Component {
             this.props.submission.error
           ) {
             // console.log(this.props.submission.error);
+            this.props.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "createSFDJR",
+              this.props.submission.error
+            );
             return this.props.handleError(this.props.submission.error);
           }
         })
         .catch(err => {
           // console.log(err);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFDJR",
+            err
+          );
           return this.props.handleError(err);
         });
     }
@@ -277,11 +297,21 @@ export class SubmissionFormPage1Component extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "updateSFDJR",
+            this.props.submission.error
+          );
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
         // console.log(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "updateSFDJR",
+          err
+        );
         return this.props.handleError(err);
       });
   }
@@ -332,16 +362,24 @@ export class SubmissionFormPage1Component extends React.Component {
     ])
       .then(() => {
         // redirect to CAPE tab
-        this.props.handleTab(this.props.howManyTabs - 1);
-
-        // this.props.reset("submissionPage1");
-        // this.props.history.push(
-        //   `/page2/?id=${this.props.submission.salesforceId}`
-        // );
+        if (!this.props.submission.error) {
+          this.props.handleTab(this.props.howManyTabs - 1);
+        } else {
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "handleSubmit",
+            this.props.submission.error
+          );
+          this.props.handleError(this.props.submission.error);
+        }
       })
       .catch(err => {
-        console.log("342");
         console.log(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "handleSubmit",
+          err
+        );
         this.props.handleError(err);
       });
   }
@@ -430,7 +468,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderCheckbox={this.renderCheckbox}
                   />
                 )}
-                {this.props.tab === 2 && (
+                {this.props.tab === 2 && this.props.howManyTabs === 4 && (
                   <Tab3Form
                     {...this.props}
                     onSubmit={this.handleSubmit}
@@ -450,7 +488,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     checkoff={checkoff}
                   />
                 )}
-                {this.props.tab === 3 && (
+                {(this.props.tab === 3 ||
+                  (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
                   <CAPEForm
                     {...this.props}
                     classes={classes}

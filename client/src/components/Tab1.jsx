@@ -85,7 +85,9 @@ export const Tab1 = props => {
                 type="number"
                 classes={classes}
                 component={renderTextField}
-                InputProps={{ inputProps: { min: 0, max: 9 } }}
+                InputProps={{
+                  inputProps: { min: 0, max: 9, id: "medicaidResidents" }
+                }}
               />
             )}
           <FormGroup row classes={{ root: classes.formGroup2Col }}>

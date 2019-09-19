@@ -57,7 +57,6 @@ describe("<NavBar />", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "skiplink");
     expect(component.length).toBe(1);
-    expect(component.text()).toBe("Skip to content ›");
   });
 
   test("renders a logo link and logo image", () => {
@@ -98,13 +97,13 @@ describe("<NavBar />", () => {
     expect(component.length).toBe(0);
   });
 
-  test("clicking skiplink calls `skip` function", () => {
+  test("clicking skiplink calls `skipToMain` method", () => {
     // create a mock function so we can see whether it's called on click
     utils.skip = jest.fn();
     const wrapper = setup();
 
     // simulate click
-    const skipLink = findByTestAttr(wrapper, "skiplink");
+    const skipLink = findByTestAttr(wrapper, "skiplink-button");
     skipLink.simulate("click");
 
     // expect the mock to have been called once

@@ -63,13 +63,19 @@ describe("submission reducer", () => {
         type: "ADD_SUBMISSION_SUCCESS",
         payload: {
           salesforce_id: "1",
-          submission_id: "2"
+          submission_id: "2",
+          currentSubmission: {
+            submission_errors: ""
+          }
         }
       };
       const expectedState = {
         ...INITIAL_STATE,
         salesforceId: "1",
-        submissionId: "2"
+        submissionId: "2",
+        currentSubmission: {
+          submission_errors: ""
+        }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
