@@ -363,13 +363,17 @@ export class SubmissionFormPage1Component extends React.Component {
       .then(() => {
         // redirect to CAPE tab
         if (!this.props.submission.error) {
-          // this.props.saveSubmissionSuccess(this.props.submission.submissionId).then(() => {
           this.props.handleTab(this.props.howManyTabs - 1);
-          // });
+        } else {
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "handleSubmit",
+            this.props.submission.error
+          );
+          this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        console.log("342");
         console.log(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,

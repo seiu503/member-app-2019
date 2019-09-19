@@ -152,6 +152,10 @@ export class NavBar extends React.Component {
     this.props.main_ref.current.classList.remove("is-blurred");
   }
 
+  skipToMain() {
+    return skip("main");
+  }
+
   render() {
     const values = queryString.parse(this.props.location.search);
     const { classes } = this.props;
@@ -216,10 +220,12 @@ export class NavBar extends React.Component {
               color="primary"
               variant="contained"
               className={classes.skip}
-              onClick={() => skip("main")}
-              data-test="skiplink"
+              onClick={this.skipToMain}
+              data-test="skiplink-button"
             >
-              <Translate id="skipLink">Skip to content &rsaquo;</Translate>
+              <Translate id="skipLink" data-test="skiplink">
+                Skip to content &rsaquo;
+              </Translate>
             </Button>
             <Link to="/" className={classes.logoLink} data-test="logo-link">
               <img

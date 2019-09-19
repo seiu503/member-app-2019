@@ -58,7 +58,6 @@ export class SubmissionFormPage1Container extends React.Component {
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
-    // this.saveSubmissionSuccess = this.saveSubmissionSuccess.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -737,7 +736,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
-    console.log(value);
     if (value === "Add new card") {
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))

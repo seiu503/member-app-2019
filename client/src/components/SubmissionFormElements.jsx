@@ -1017,7 +1017,7 @@ export const submTableFieldList = [
     field: "online_campaign_source",
     hidden: false
   },
-  { title: "Contact ID", field: "contact_id", hidden: false },
+  { title: "Contact ID", field: "salesforce_id", hidden: false },
   { title: "IP Address", field: "ip_address", hidden: false },
   { title: "Agency Number", field: "agency_number", hidden: false },
   { title: "Subdivision", field: "account_subdivision", hidden: false },
