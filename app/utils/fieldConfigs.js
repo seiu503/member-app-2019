@@ -684,7 +684,7 @@ const submissionsTableFields = {
   contact_id: {
     tableDisplay: true,
     req: "N",
-    postgresFieldName: "contact_id",
+    postgresFieldName: "salesforce_id",
     clientFieldName: "contactId",
     HtmlInputType: "(formula; no user-facing input)",
     SFTable: "OnlineMemberApp__c",
