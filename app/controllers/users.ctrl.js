@@ -29,7 +29,8 @@ const createUser = (req, res, next) => {
   } = req.body;
   if (userType != "admin" || !userType) {
     return res.status(500).json({
-      message: "You do not have permission to do this. Please Consult an admin."
+      message:
+        "You do not have permission to do this. Please Consult an admin. u32"
     });
   }
   if (name && email) {
@@ -69,7 +70,8 @@ const updateUser = (req, res, next) => {
   }
   if (updates.type && userType !== "admin") {
     return res.status(500).json({
-      message: "You do not have permission to do this. Please Consult an admin."
+      message:
+        "You do not have permission to do this. Please Consult an admin. u72"
     });
   }
   if (!updates || !Object.keys(updates).length) {
@@ -98,7 +100,8 @@ const deleteUser = (req, res, next) => {
   const { userType } = req.body;
   if (userType != "admin" || !userType) {
     return res.status(500).json({
-      message: "You do not have permission to do this. Please Consult an admin."
+      message:
+        "You do not have permission to do this. Please Consult an admin. u101"
     });
   }
   return users

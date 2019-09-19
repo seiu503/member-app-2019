@@ -218,12 +218,10 @@ const deleteSubmission = async (req, res, next) => {
   let result;
   const { userType } = req.body;
   if (userType != "admin" || !userType) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. s225"
+    });
   }
   try {
     result = await submissions.deleteSubmission(req.params.id);
@@ -242,14 +240,12 @@ const deleteSubmission = async (req, res, next) => {
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
 const getSubmissions = (req, res, next) => {
-  const { userType } = req.body;
+  const userType = req.params.type;
   if (!userType) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. s251"
+    });
   }
   return submissions
     .getSubmissions()
@@ -266,14 +262,12 @@ const getSubmissions = (req, res, next) => {
  *  @returns  {Object}        Submission object OR error message.
  */
 const getSubmissionById = (req, res, next) => {
-  const { userType } = req.body;
+  const userType = req.params.type;
   if (!userType) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. s275"
+    });
   }
   return submissions
     .getSubmissionById(req.params.id)

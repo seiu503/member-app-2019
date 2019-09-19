@@ -45,8 +45,9 @@ const styles = theme => ({
 export class SubmissionsTableUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
+    const { type } = this.props.profile.profile;
     this.props.apiSubmission
-      .getAllSubmissions(authToken)
+      .getAllSubmissions(authToken, type)
       .then(result => {
         if (
           result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
@@ -71,7 +72,10 @@ export class SubmissionsTableUnconnected extends React.Component {
         this.props.submission.allSubmissions.length
     ) {
       this.props.apiSubmission
-        .getAllSubmissions(this.props.appState.authToken)
+        .getAllSubmissions(
+          this.props.appState.authToken,
+          this.props.profile.profile.type
+        )
         .then(result => {
           if (
             result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||

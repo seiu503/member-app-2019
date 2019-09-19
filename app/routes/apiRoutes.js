@@ -297,7 +297,7 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 //
 // router.get("/submission/:id", submissionCtrl.getSubmissionById);
 router.get(
-  "/submission/:id",
+  "/submission/:type/:id",
   authCtrl.requireAuth,
   submissionCtrl.getSubmissionById
 );
@@ -308,7 +308,11 @@ router.get(
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", authCtrl.requireAuth, submissionCtrl.getSubmissions);
+router.get(
+  "/submission/:type",
+  authCtrl.requireAuth,
+  submissionCtrl.getSubmissions
+);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3

@@ -19,12 +19,10 @@ const contentModel = require("../../db/models/content");
 const createContent = (req, res, next) => {
   const { content_type, content, userType } = req.body;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. c26"
+    });
   }
   if (content_type && content) {
     return contentModel
@@ -54,12 +52,10 @@ const updateContent = (req, res, next) => {
   const { updates, userType } = req.body;
   const { id } = req.params;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. c61"
+    });
   }
   if (!updates || !Object.keys(updates).length) {
     return res.status(404).json({ message: "No updates submitted" });
@@ -92,12 +88,10 @@ const updateContent = (req, res, next) => {
 const deleteContent = (req, res, next) => {
   const { userType } = req.body;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. c99"
+    });
   }
   return contentModel
     .deleteContent(req.params.id)
@@ -120,12 +114,10 @@ const deleteContent = (req, res, next) => {
 const getContent = (req, res, next) => {
   const { userType } = req.body;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. c127"
+    });
   }
   return contentModel
     .getContent()
@@ -141,12 +133,10 @@ const getContent = (req, res, next) => {
 const getContentById = (req, res, next) => {
   const { userType } = req.body;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. c148"
+    });
   }
   return contentModel
     .getContentById(req.params.id)
@@ -170,12 +160,10 @@ const getContentById = (req, res, next) => {
 const getContentByType = (req, res, next) => {
   const { userType } = req.body;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res
-      .status(500)
-      .json({
-        message:
-          "You do not have permission to do this. Please Consult an admin."
-      });
+    return res.status(500).json({
+      message:
+        "You do not have permission to do this. Please Consult an admin. c177"
+    });
   }
   return contentModel
     .getContentByType(req.params.content_type)
