@@ -216,7 +216,7 @@ const updateSubmission = async (req, res, next) => {
  */
 const deleteSubmission = async (req, res, next) => {
   let result;
-  const { userType } = req.body;
+  const userType = req.params.user_type;
   if (userType != "admin" || !userType) {
     return res.status(500).json({
       message:
@@ -240,7 +240,7 @@ const deleteSubmission = async (req, res, next) => {
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
 const getSubmissions = (req, res, next) => {
-  const userType = req.params.type;
+  const userType = req.params.user_type;
   if (!userType) {
     return res.status(500).json({
       message:
@@ -262,7 +262,7 @@ const getSubmissions = (req, res, next) => {
  *  @returns  {Object}        Submission object OR error message.
  */
 const getSubmissionById = (req, res, next) => {
-  const userType = req.params.type;
+  const userType = req.params.user_type;
   if (!userType) {
     return res.status(500).json({
       message:

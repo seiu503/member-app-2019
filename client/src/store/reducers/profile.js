@@ -12,7 +12,8 @@ export const INITIAL_STATE = {
     id: "",
     name: "",
     email: "",
-    avatar_url: ""
+    avatar_url: "",
+    type: ""
   },
   error: null
 };

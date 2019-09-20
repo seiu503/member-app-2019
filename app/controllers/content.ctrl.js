@@ -86,7 +86,7 @@ const updateContent = (req, res, next) => {
  *  @returns  Success or error message.
  */
 const deleteContent = (req, res, next) => {
-  const { userType } = req.body;
+  const userType = req.params.user_type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -112,7 +112,7 @@ const deleteContent = (req, res, next) => {
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContent = (req, res, next) => {
-  const { userType } = req.body;
+  const userType = req.params.user_type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -131,13 +131,6 @@ const getContent = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getContentById = (req, res, next) => {
-  const { userType } = req.body;
-  if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an admin. c148"
-    });
-  }
   return contentModel
     .getContentById(req.params.id)
     .then(record => {
@@ -158,7 +151,7 @@ const getContentById = (req, res, next) => {
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContentByType = (req, res, next) => {
-  const { userType } = req.body;
+  const userType = req.params.user_type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:

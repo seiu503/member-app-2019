@@ -167,7 +167,7 @@ router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 //        }
 //   Returns: JSON content object on success.
 //
-router.get("/content/:id", contentCtrl.getContentById);
+router.get("/content/:user_type/:id", contentCtrl.getContentById);
 
 // GET CONTENT BY TYPE
 //   Example: GET >> /api/contenttype/headline
@@ -178,7 +178,10 @@ router.get("/content/:id", contentCtrl.getContentById);
 //        }
 //   Returns: Array of content objects on success.
 //
-router.get("/contenttype/:content_type", contentCtrl.getContentByType);
+router.get(
+  "/contenttype/:user_type/:content_type",
+  contentCtrl.getContentByType
+);
 
 // GET ALL CONTENT
 //   Example: GET >> /api/content/
@@ -186,7 +189,7 @@ router.get("/contenttype/:content_type", contentCtrl.getContentByType);
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content/", authCtrl.requireAuth, contentCtrl.getContent);
+router.get("/content/:user_type", authCtrl.requireAuth, contentCtrl.getContent);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -197,7 +200,11 @@ router.get("/content/", authCtrl.requireAuth, contentCtrl.getContent);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/content/:id", authCtrl.requireAuth, contentCtrl.deleteContent);
+router.delete(
+  "/content/:user_type/:id",
+  authCtrl.requireAuth,
+  contentCtrl.deleteContent
+);
 
 /* ========================= IMAGE ROUTES =========================== */
 
@@ -297,7 +304,7 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 //
 // router.get("/submission/:id", submissionCtrl.getSubmissionById);
 router.get(
-  "/submission/:type/:id",
+  "/submission/:user_type/:id",
   authCtrl.requireAuth,
   submissionCtrl.getSubmissionById
 );
@@ -309,7 +316,7 @@ router.get(
 //   Returns: Array of submission objects on success.
 //
 router.get(
-  "/submission/:type",
+  "/submission/:user_type",
   authCtrl.requireAuth,
   submissionCtrl.getSubmissions
 );
@@ -325,7 +332,7 @@ router.get(
 //
 // router.delete("/submission/:id", submissionCtrl.deleteSubmission);
 router.delete(
-  "/submission/:id",
+  "/submission/:user_type/:id",
   authCtrl.requireAuth,
   submissionCtrl.deleteSubmission
 );

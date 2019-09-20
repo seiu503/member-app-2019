@@ -81,10 +81,10 @@ export function updateSubmission(id, body) {
   };
 }
 
-export function getAllSubmissions(token, type) {
+export function getAllSubmissions(token, userType) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/submission/${type}`,
+      endpoint: `${BASE_URL}/api/submission/${userType}`,
       method: "GET",
       types: [
         GET_ALL_SUBMISSIONS_REQUEST,
