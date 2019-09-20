@@ -186,12 +186,27 @@ export class AppUnconnected extends Component {
           })
           .catch(err => console.log(err));
       }
+      this.props.apiProfile.getProfile(authToken, userId).then(result => {
+        if (result.type === "GET_PROFILE_SUCCESS") {
+          this.props.actions.setLoggedIn(result.payload.type);
+          // check for redirect url in local storage
+          const redirect = window.localStorage.getItem("redirect");
+          if (redirect) {
+            // redirect to originally requested page and then
+            // clear value from local storage
+            this.props.history.push(redirect);
+            window.localStorage.removeItem("redirect");
+          }
+        } else {
+          console.log("not logged in");
+          console.log(result);
+        }
+        const defaultLanguage = detectDefaultLanguage();
+        this.props.setActiveLanguage(defaultLanguage);
+        loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
+      });
     }
-    const defaultLanguage = detectDefaultLanguage();
-    this.props.setActiveLanguage(defaultLanguage);
-    loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
   }
-
   verifyCallback(recaptchaToken) {
     // console.log(recaptchaToken, "<= your recaptcha token");
     this.props.apiSubmission.handleInput({
@@ -207,7 +222,7 @@ export class AppUnconnected extends Component {
   render() {
     const { classes } = this.props;
     return (
-      <div data-test="component-app" className={classes.appRoot}>
+      <div data- test="component-app" className={classes.appRoot}>
         <ReCaptcha
           ref={this.recaptcha_ref}
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"

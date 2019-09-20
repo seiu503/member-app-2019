@@ -99,34 +99,42 @@ const styles = theme => ({
 
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
-    const { authToken } = this.props.appState;
-    this.props.apiContent
-      .getAllContent(authToken)
-      .then(result => {
-        if (
-          result.type === "GET_ALL_CONTENT_FAILURE" ||
-          this.props.content.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.content.error ||
-              "An error occured while fetching content"
-          );
-        }
-      })
-      .catch(err => {
-        openSnackbar("error", err);
-      });
+    const { authToken, userType } = this.props.appState;
+    if (userType) {
+      console.log("mount ", userType);
+      this.props.apiContent
+        .getAllContent(authToken, userType)
+        .then(result => {
+          if (
+            result.type === "GET_ALL_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occured while fetching content"
+            );
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
+        });
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
-      (!prevProps.appState.authToken && this.props.appState.authToken) ||
+      // (!prevProps.appState.authToken && this.props.appState.authToken) ||
       prevProps.content.allContent.length !==
-        this.props.content.allContent.length
+        this.props.content.allContent.length ||
+      prevProps.appState.userType !== this.props.appState.userType
     ) {
+      console.log("update ", this.props.appState.userType);
       this.props.apiContent
-        .getAllContent(this.props.appState.authToken)
+        .getAllContent(
+          this.props.appState.authToken,
+          this.props.appState.userType
+        )
         .then(result => {
           if (
             result.type === "GET_ALL_CONTENT_FAILURE" ||

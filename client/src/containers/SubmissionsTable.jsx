@@ -45,36 +45,39 @@ const styles = theme => ({
 export class SubmissionsTableUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
-    const { type } = this.props.profile.profile;
-    this.props.apiSubmission
-      .getAllSubmissions(authToken, type)
-      .then(result => {
-        if (
-          result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
-          this.props.submission.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.submission.error ||
-              "An error occured while fetching submissions"
-          );
-        }
-      })
-      .catch(err => {
-        openSnackbar("error", err);
-      });
+    const { userType } = this.props.appState;
+    if (userType) {
+      this.props.apiSubmission
+        .getAllSubmissions(authToken, userType)
+        .then(result => {
+          if (
+            result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
+            this.props.submission.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.submission.error ||
+                "An error occured while fetching submissions"
+            );
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
+        });
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
       (!prevProps.appState.authToken && this.props.appState.authToken) ||
       prevProps.submission.allSubmissions.length !==
-        this.props.submission.allSubmissions.length
+        this.props.submission.allSubmissions.length ||
+      prevProps.appState.userType !== this.props.appState.userType
     ) {
       this.props.apiSubmission
         .getAllSubmissions(
           this.props.appState.authToken,
-          this.props.profile.profile.type
+          this.props.appState.userType
         )
         .then(result => {
           if (

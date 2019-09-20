@@ -98,7 +98,8 @@ export const INITIAL_STATE = {
   loggedIn: false,
   authToken: "",
   loading: false,
-  redirect: ""
+  redirect: "",
+  userType: ""
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -130,7 +131,10 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, { redirect: { $set: action.payload } });
 
     case SET_LOGGEDIN:
-      return update(state, { loggedIn: { $set: true } });
+      return update(state, {
+        loggedIn: { $set: true },
+        userType: { $set: action.payload }
+      });
 
     case GET_CONTENT_BY_ID_REQUEST:
     case ADD_CONTENT_REQUEST:
