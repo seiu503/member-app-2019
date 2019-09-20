@@ -218,7 +218,7 @@ export class AppUnconnected extends Component {
           verifyCallback={this.verifyCallback}
         />
         <CssBaseline />
-        <NavBar scroll={this.scroll} main_ref={this.main_ref} />
+        <NavBar main_ref={this.main_ref} />
         <Notifier />
         {this.props.appState.loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
