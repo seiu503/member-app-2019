@@ -49,7 +49,8 @@ export const CAPE = props => {
     verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
-    employerList
+    employerList,
+    cape_legal
   } = props;
   // console.log(handleCAPESubmit);
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -384,7 +385,7 @@ export const CAPE = props => {
             </div>
           </div>
         )}
-        <div className={classes.legalCopy}>
+        <div className={classes.legalCopy} ref={cape_legal}>
           <p>
             <Translate
               id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}

@@ -1187,7 +1187,7 @@ const capeTableFields = {
     SFAPIName: "Worker__c",
     SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: null
+    testingSample: "12345678"
   },
   cape_legal: {
     oldFormPage: "none",

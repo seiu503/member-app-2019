@@ -138,6 +138,7 @@ export class AppUnconnected extends Component {
     this.recaptcha_ref = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
+    this.cape_legal = React.createRef();
     this.direct_pay = React.createRef();
     this.direct_deposit = React.createRef();
     this.sigBox = React.createRef();
@@ -230,6 +231,7 @@ export class AppUnconnected extends Component {
                 <SubmissionFormPage1
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
+                  cape_legal={this.cape_legal}
                   direct_pay={this.direct_pay}
                   direct_deposit={this.direct_deposit}
                   sigBox={this.sigBox}

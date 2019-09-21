@@ -30,6 +30,7 @@ import {
   stylesPage1,
   blankSig,
   formatSFDate,
+  formatDateTime,
   formatBirthdate,
   findEmployerObject,
   handleError
@@ -775,8 +776,9 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    // e.preventDefault();
-    // console.log("handleCAPESubmit");
+    console.log("handleCAPESubmit");
+    console.log(this.props.formValues);
+    const { formValues } = this.props;
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
@@ -785,10 +787,69 @@ export class SubmissionFormPage1Container extends React.Component {
         "ReCaptcha validation failed, please reload the page and try again."
       );
     }
-    // generate body (different for standalone vs tab 4)
-    // if checkoff, just save occupation, date and amount
-    // if paymentRequired get cardaddingiframe & save unionise info
-    // update validate function to require payment info if paymentRequired
+
+    // if no contact in prefill or from previous form tabs...
+    if (!this.props.submission.salesforceId) {
+      // lookup contact by first/last/email
+      const lookupBody = {
+        first_name: formValues.firstName,
+        last_name: formValues.lastName,
+        home_email: formValues.homeEmail
+      };
+      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+    }
+
+    // find employer object
+    const employerObject = findEmployerObject(
+      this.props.submission.employerObjects,
+      formValues.employerName
+    );
+    console.log(employerObject);
+
+    // set campaign source
+    const q = queryString.parse(this.props.location.search);
+    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+
+    // set body fields
+    const checkoff = !this.props.submission.formPage1.paymentRequired;
+    const paymentMethod = checkoff ? "Checkoff" : "Unionise";
+    const donationAmount =
+      formValues.capeAmount === "Other"
+        ? formValues.capeAmountOther
+        : formValues.capeAmount;
+
+    // generate body
+    const body = {
+      IP_Address__c: localIpUrl(),
+      Submission_DateTime__c: formElements.formatDateTime(new Date()),
+      Worker__c: this.props.submission.salesforceId,
+      First_Name__c: formValues.firstName,
+      Last_Name__c: formValues.lastName,
+      Email__c: formValues.homeEmail,
+      Cell_Phone__c: formValues.mobilePhone,
+      Street__c: formValues.homeState,
+      City__c: formValues.homeCity,
+      State__c: formValues.homeState,
+      Zip__c: formValues.homeZip,
+      Occupation__c: formValues.jobTitle,
+      Employer__c: employerObject.Id,
+      Agency_Number__c: employerObject.Agency_Number__c,
+      Payment_Method__c: paymentMethod,
+      Online_Campaign_Source__c: campaignSource,
+      CAPE_Legal_Language__c: this.props.cape_legal.current.innerHTML,
+      Donation_Amount__c: donationAmount,
+      // need to add UI to select donation frequency
+      Donation_Frequency__c: "Monthly",
+      // get this from getSFDJR call on CAPE component mount
+      Unioni_se_MemberID__c: ""
+    };
+    // make api call to create CAPE record here
+
+    // update capeValidate function to require payment info if paymentRequired
+
     this.props.reset("submissionPage1");
     if (!standAlone) {
       this.props.history.push(
