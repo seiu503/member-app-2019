@@ -13,7 +13,7 @@ const cape = require("../../db/models/cape");
 
 /** Create a CAPE record
  *  @param    {String}   ip_address             IP address
- *  @param    {Timestamp} CAPE_date       CAPE timestamp
+ *  @param    {Timestamp}submission_date        Timestamp
  *  @param    {String}   agency_number          Agency number
  *  @param    {String}   cell_phone             Cell phone
  *  @param    {String}   employer_id            Employer id
@@ -25,12 +25,12 @@ const cape = require("../../db/models/cape");
  *  @param    {String}   home_zip               Home zip
  *  @param    {String}   home_email             Home email
  *  @param    {String}   job_title              Occupation
- *  @param    {String}   paymentMethod          ('Checkoff' || 'Unionisee')
+ *  @param    {String}   payment_method         ('Checkoff' || 'Unionisee')
  *  @param    {String}   online_campaign_source Online campaign source
  *  @param    {String}   cape_legal             Legal language
- *  @param    {Number}   capeAmount             Donation amount in $
- *  @param    {String}   donationFrequency      ('Monthly' || 'One-time')
- *  @param    {String}   memberShortId          Unioni.se member shortId
+ *  @param    {Number}   cape_amount            Donation amount in $
+ *  @param    {String}   donation_frequency     ('Monthly' || 'One-time')
+ *  @param    {String}   member_short_id        Unioni.se member shortId
 
  *  @returns  {Array}    Array of 1 newly-created CAPE Object.
  */
@@ -38,7 +38,7 @@ const createCAPE = async (req, res, next) => {
   // console.log("cape.ctrl.js > 38: createCAPE");
   let {
     ip_address,
-    CAPE_date,
+    submission_date,
     contact_id,
     first_name,
     last_name,
@@ -50,18 +50,19 @@ const createCAPE = async (req, res, next) => {
     home_zip,
     job_title,
     employer_id,
-    agency_number,
-    paymentMethod,
+    payment_method,
     online_campaign_source,
     cape_legal,
-    capeAmount,
-    donationFrequency,
-    memberShortId
+    cape_amount,
+    donation_frequency,
+    member_short_id
   } = req.body;
+
+  console.log(`cape.ctrl.js > 62: ${ip_address}`);
 
   const requiredFields = [
     "ip_address",
-    "CAPE_date",
+    "submission_date",
     "contact_id",
     "first_name",
     "last_name",
@@ -73,12 +74,11 @@ const createCAPE = async (req, res, next) => {
     "home_zip",
     "job_title",
     "employer_id",
-    "agency_number",
-    "paymentMethod",
+    "payment_method",
     "online_campaign_source",
     "cape_legal",
-    "capeAmount",
-    "donationFrequency"
+    "cape_amount",
+    "donation_frequency"
   ];
 
   const missingField = requiredFields.find(field => !(field in req.body));
@@ -92,7 +92,7 @@ const createCAPE = async (req, res, next) => {
 
   const createCAPEResult = await cape.createCAPE(
     ip_address,
-    CAPE_date,
+    submission_date,
     contact_id,
     first_name,
     last_name,
@@ -104,20 +104,19 @@ const createCAPE = async (req, res, next) => {
     home_zip,
     job_title,
     employer_id,
-    agency_number,
-    paymentMethod,
+    payment_method,
     online_campaign_source,
     cape_legal,
-    capeAmount,
-    donationFrequency,
-    memberShortId
+    cape_amount,
+    donation_frequency,
+    member_short_id
   );
 
   if (!createCAPEResult || createCAPEResult.message) {
-    // console.log(
-    //   `cape.ctrl.js > 118: ${createCAPEResult.message ||
-    //     "There was an error saving the CAPE record"}`
-    // );
+    console.log(
+      `cape.ctrl.js > 118: ${createCAPEResult.message ||
+        "There was an error saving the CAPE record"}`
+    );
     return res.status(500).json({
       message:
         createCAPEResult.message || "There was an error saving the CAPE record"

@@ -21,17 +21,17 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {String}   home_zip               Home zip
  *  @param    {String}   home_email             Home email
  *  @param    {String}   job_title              Occupation
- *  @param    {String}   paymentMethod          ('Checkoff' || 'Unionisee')
+ *  @param    {String}   payment_method         ('Checkoff' || 'Unionisee')
  *  @param    {String}   online_campaign_source Online campaign source
  *  @param    {String}   cape_legal             Legal language
- *  @param    {Number}   capeAmount             Donation amount in $
- *  @param    {String}   donationFrequency      ('Monthly' || 'One-time')
- *  @param    {String}   memberShortId          Unioni.se member shortId
+ *  @param    {Number}   cape_amount            Donation amount in $
+ *  @param    {String}   donation_frequency     ('Monthly' || 'One-time')
+ *  @param    {String}   member_short_id        Unioni.se member shortId
 
  *  @returns  {Array}    Array of 1 newly-created CAPE Object.
  */
 
-const createCape = (
+const createCAPE = (
   ip_address,
   submission_date,
   contact_id,
@@ -45,17 +45,17 @@ const createCape = (
   home_zip,
   job_title,
   employer_id,
-  agency_number,
-  paymentMethod,
+  payment_method,
   online_campaign_source,
   cape_legal,
-  capeAmount,
-  donationFrequency,
-  memberShortId
+  cape_amount,
+  donation_frequency,
+  member_short_id
 ) => {
   return db
     .insert({
       id: uuid.v4(),
+      ip_address,
       submission_date,
       contact_id,
       first_name,
@@ -68,13 +68,12 @@ const createCape = (
       home_zip,
       job_title,
       employer_id,
-      agency_number,
-      paymentMethod,
+      payment_method,
       online_campaign_source,
       cape_legal,
-      capeAmount,
-      donationFrequency,
-      memberShortId
+      cape_amount,
+      donation_frequency,
+      member_short_id
     })
     .into(TABLES.CAPE)
     .returning("*");

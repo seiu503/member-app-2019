@@ -30,7 +30,6 @@ import {
   stylesPage1,
   blankSig,
   formatSFDate,
-  formatDateTime,
   formatBirthdate,
   findEmployerObject,
   handleError
@@ -804,6 +803,7 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.employerName
     );
     console.log(employerObject);
+    console.log(employerObject.Agency_Number__c);
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
@@ -814,13 +814,13 @@ export class SubmissionFormPage1Container extends React.Component {
     const paymentMethod = checkoff ? "Checkoff" : "Unionise";
     const donationAmount =
       formValues.capeAmount === "Other"
-        ? formValues.capeAmountOther
-        : formValues.capeAmount;
+        ? parseFloat(formValues.capeAmountOther)
+        : parseFloat(formValues.capeAmount);
 
     // generate body
     const body = {
       ip_address: localIpUrl(),
-      submission_date: formElements.formatDateTime(new Date()),
+      submission_date: utils.formatDate(new Date()),
       contact_id: this.props.submission.salesforceId,
       first_name: formValues.firstName,
       last_name: formValues.lastName,
@@ -832,15 +832,14 @@ export class SubmissionFormPage1Container extends React.Component {
       home_zip: formValues.homeZip,
       job_title: formValues.jobTitle,
       employer_id: employerObject.Id,
-      agency_number: employerObject.Agency_Number__c,
-      paymentMethod: paymentMethod,
+      payment_method: paymentMethod,
       online_campaign_source: campaignSource,
       cape_legal: this.props.cape_legal.current.innerHTML,
-      capeAmount: donationAmount,
+      cape_amount: donationAmount,
       // need to add UI to select donation frequency
-      donationFrequency: "Monthly",
+      donation_frequency: "Monthly",
       // get this from getSFDJR call on CAPE component mount
-      memberShortId: ""
+      member_short_id: ""
     };
     console.log(body);
 
@@ -869,7 +868,7 @@ export class SubmissionFormPage1Container extends React.Component {
       });
 
     if (
-      sfCapeREsult.type !== "CREATE_SF_CAPE_SUCCESS" ||
+      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
       this.props.submission.error
     ) {
       console.log(this.props.submission.error);

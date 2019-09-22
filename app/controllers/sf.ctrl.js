@@ -3,6 +3,7 @@ const axios = require("axios");
 const {
   contactsTableFields,
   submissionsTableFields,
+  capeTableFields,
   generateSFContactFieldList,
   generateSFDJRFieldList,
   paymentFields,
@@ -520,7 +521,7 @@ exports.updateSFDJR = async (req, res, next) => {
  *  @returns  success or error message
  */
 
-exports.createCAPE = async (req, res, next) => {
+exports.createSFCAPE = async (req, res, next) => {
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -540,7 +541,10 @@ exports.createCAPE = async (req, res, next) => {
       }
     });
 
-    console.log(`sf.ctrl.js > 543`);
+    // convert datetime to yyyy-mm-dd format
+    body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
+
+    console.log(`sf.ctrl.js > 547`);
     console.log(body);
 
     CAPE = await conn.sobject("CAPE__c").create({

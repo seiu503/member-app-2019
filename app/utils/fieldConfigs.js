@@ -991,24 +991,11 @@ const capeTableFields = {
     clientFieldName: "submissionDate",
     HtmlInputType: "(formula; no user-facing input)",
     SFTable: "CAPE__c",
-    SFFieldLabel: "Submission DateTime",
-    SFAPIName: "Submission_DateTime__c",
-    SFDataType: "Date/Time",
+    SFFieldLabel: "Submission Date",
+    SFAPIName: "Submission_Date__c",
+    SFDataType: "Date",
     SQLDataType: "Timestamp",
     testingSample: formatDate(new Date())
-  },
-  agency_number: {
-    oldFormPage: "none",
-    req: "Y",
-    postgresFieldName: "agency_number",
-    clientFieldName: "agencyNumber",
-    HtmlInputType: "n/a (see Contacts)",
-    SFTable: "CAPE__c",
-    SFFieldLabel: "Agency Number",
-    SFAPIName: "Agency_Number__c",
-    SFDataType: "",
-    SQLDataType: "",
-    testingSample: "123456"
   },
   cell_phone: {
     oldFormPage: "none",
@@ -1203,7 +1190,7 @@ const capeTableFields = {
     SQLDataType: "Text",
     testingSample: "Lorem ipsum dolor sit amet."
   },
-  capeAmount: {
+  cape_amount: {
     req: "Y",
     postgresFieldName: "cape_amount",
     clientFieldName: "capeAmount",
@@ -1214,7 +1201,7 @@ const capeTableFields = {
     fieldLabel: "Donation Amount",
     testingSample: 10
   },
-  donationFrequency: {
+  donation_frequency: {
     req: "Y",
     postgresFieldName: "donation_frequency",
     clientFieldName: "donationFrequency",
@@ -1225,7 +1212,7 @@ const capeTableFields = {
     fieldLabel: "Donation Frequency",
     testingSample: "Monthly"
   },
-  activeMethodLast4: {
+  active_method_last_four: {
     req: "N",
     postgresFieldName: "active_method_last_four",
     clientFieldName: "activeMethodLast4",
@@ -1237,7 +1224,7 @@ const capeTableFields = {
     unioniseFieldName: "activeMethod.last4",
     testingSample: "1234"
   },
-  memberShortId: {
+  member_short_id: {
     req: "N",
     postgresFieldName: "member_short_id",
     clientFieldName: "memberShortId", // unioni.se member unique id
@@ -1248,7 +1235,7 @@ const capeTableFields = {
     unioniseFieldName: "memberId",
     testingSample: "BPA9DS6T"
   },
-  paymentMethod: {
+  payment_method: {
     SFTable: "CAPE__c",
     SFFieldLabel: "Payment Method",
     SFAPIName: "Payment_Method__c",
@@ -1257,7 +1244,7 @@ const capeTableFields = {
     clientFieldName: "paymentMethod",
     testingSample: "Unionise"
   },
-  paymentErrorHold: {
+  payment_error_hold: {
     SFTable: "CAPE__c",
     SFFieldLabel: "Payment Error Hold",
     SFAPIName: "Payment_Error_Hold__c",
@@ -1723,6 +1710,7 @@ module.exports = {
   generatePage2Validate,
   generateSFContactFieldList,
   generateSFDJRFieldList,
+  capeTableFields,
   // generateTableDisplayFields,
   formatDate
 };
