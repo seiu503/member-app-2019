@@ -364,14 +364,7 @@ export class SubmissionFormPage1Container extends React.Component {
             // goto CAPE tab
             this.changeTab(this.props.howManyTabs - 1);
           } else {
-            // this.saveSubmissionSuccess(this.props.submission.submissionId).then(() => {
-            //   // goto CAPE tab
             this.changeTab(this.props.howManyTabs - 1);
-            // })
-            // .catch(err => {
-            //   console.log(err);
-            //   return handleError(err);
-            // })
           }
         })
         .catch(err => {
@@ -781,6 +774,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const { formValues } = this.props;
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
+    console.log(score);
     if (!score || score <= 0.5) {
       console.log(`recaptcha failed: ${score}`);
       return handleError(
@@ -790,6 +784,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
+      console.log("looking up sfid");
       // lookup contact by first/last/email
       const lookupBody = {
         first_name: formValues.firstName,
@@ -802,6 +797,7 @@ export class SubmissionFormPage1Container extends React.Component {
       });
     }
 
+    console.log(this.props.submission.salesforceId);
     // find employer object
     const employerObject = findEmployerObject(
       this.props.submission.employerObjects,
@@ -823,30 +819,61 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // generate body
     const body = {
-      IP_Address__c: localIpUrl(),
-      Submission_DateTime__c: formElements.formatDateTime(new Date()),
-      Worker__c: this.props.submission.salesforceId,
-      First_Name__c: formValues.firstName,
-      Last_Name__c: formValues.lastName,
-      Email__c: formValues.homeEmail,
-      Cell_Phone__c: formValues.mobilePhone,
-      Street__c: formValues.homeState,
-      City__c: formValues.homeCity,
-      State__c: formValues.homeState,
-      Zip__c: formValues.homeZip,
-      Occupation__c: formValues.jobTitle,
-      Employer__c: employerObject.Id,
-      Agency_Number__c: employerObject.Agency_Number__c,
-      Payment_Method__c: paymentMethod,
-      Online_Campaign_Source__c: campaignSource,
-      CAPE_Legal_Language__c: this.props.cape_legal.current.innerHTML,
-      Donation_Amount__c: donationAmount,
+      ip_address: localIpUrl(),
+      submission_date: formElements.formatDateTime(new Date()),
+      contact_id: this.props.submission.salesforceId,
+      first_name: formValues.firstName,
+      last_name: formValues.lastName,
+      home_email: formValues.homeEmail,
+      cell_phone: formValues.mobilePhone,
+      home_street: formValues.homeStreet,
+      home_city: formValues.homeCity,
+      home_state: formValues.homeState,
+      home_zip: formValues.homeZip,
+      job_title: formValues.jobTitle,
+      employer_id: employerObject.Id,
+      agency_number: employerObject.Agency_Number__c,
+      paymentMethod: paymentMethod,
+      online_campaign_source: campaignSource,
+      cape_legal: this.props.cape_legal.current.innerHTML,
+      capeAmount: donationAmount,
       // need to add UI to select donation frequency
-      Donation_Frequency__c: "Monthly",
+      donationFrequency: "Monthly",
       // get this from getSFDJR call on CAPE component mount
-      Unioni_se_MemberID__c: ""
+      memberShortId: ""
     };
+    console.log(body);
     // make api call to create CAPE record here
+
+    const capeResult = await this.props.apiSubmission
+      .createCAPE(body)
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+
+    if (
+      capeResult.type !== "CREATE_CAPE_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    }
+
+    const sfCapeResult = await this.props.apiSF
+      .createSFCAPE(body)
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+
+    if (
+      sfCapeREsult.type !== "CREATE_SF_CAPE_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    }
 
     // update capeValidate function to require payment info if paymentRequired
 

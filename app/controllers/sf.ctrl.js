@@ -511,6 +511,58 @@ exports.updateSFDJR = async (req, res, next) => {
   }
 };
 
+/* ================================== CAPE ================================= */
+
+/* +++++++++++++++++++++++++++++++ CAPE: POST ++++++++++++++++++++++++++++++ */
+
+/** Create a CAPE object in Salesforce with submission data
+ *  @param    {Object}   body         Submission object
+ *  @returns  success or error message
+ */
+
+exports.createCAPE = async (req, res, next) => {
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 528: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+
+  let cape;
+  try {
+    const bodyRaw = { ...req.body };
+    const body = {};
+    Object.keys(bodyRaw).forEach(key => {
+      if (capeTableFields[key]) {
+        const sfFieldName = capeTableFields[key].SFAPIName;
+        body[sfFieldName] = bodyRaw[key];
+      }
+    });
+    delete body["Account.Id"];
+    delete body["Account.Agency_Number__c"];
+    delete body["Account.WS_Subdivision_from_Agency__c"];
+    delete body["Birthdate"];
+    body.Birthdate__c = bodyRaw.birthdate;
+    body.Worker__c = bodyRaw.Worker__c;
+    // console.log(`sf.ctrl.js > 347`);
+    // console.log(body);
+
+    OMA = await conn.sobject("OnlineMemberApp__c").create({
+      ...body
+    });
+
+    return res.status(200).json({
+      salesforce_id: res.locals.sf_contact_id,
+      submission_id: res.locals.submission_id,
+      sf_OMA_id: OMA.id || OMA.Id
+    });
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 365: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 /* =============================== ACCOUNTS =============================== */
 
 /* +++++++++++++++++++++++++++++++ ACCOUNTS: GET ++++++++++++++++++++++++++ */
