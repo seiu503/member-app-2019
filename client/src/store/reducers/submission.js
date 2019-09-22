@@ -140,6 +140,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_ALL_SUBMISSIONS_REQUEST:
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
+    case CREATE_SF_CAPE_SUCCESS:
       return update(state, {
         error: { $set: null }
       });

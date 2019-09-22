@@ -21,6 +21,8 @@ exports.up = function(knex) {
       table.string("donation_frequency").notNullable();
       table.string("member_short_id");
       table.decimal("cape_amount").notNullable();
+      table.string("cape_status").notNullable();
+      table.text("cape_errors");
       table.timestamp("created_at").defaultTo(knex.fn.now());
       table.timestamp("updated_at").defaultTo(knex.fn.now());
     })

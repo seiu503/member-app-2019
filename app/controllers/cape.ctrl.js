@@ -55,10 +55,10 @@ const createCAPE = async (req, res, next) => {
     cape_legal,
     cape_amount,
     donation_frequency,
-    member_short_id
+    member_short_id,
+    cape_status,
+    cape_errors
   } = req.body;
-
-  console.log(`cape.ctrl.js > 62: ${ip_address}`);
 
   const requiredFields = [
     "ip_address",
@@ -78,7 +78,8 @@ const createCAPE = async (req, res, next) => {
     "online_campaign_source",
     "cape_legal",
     "cape_amount",
-    "donation_frequency"
+    "donation_frequency",
+    "cape_status"
   ];
 
   const missingField = requiredFields.find(field => !(field in req.body));
@@ -109,7 +110,9 @@ const createCAPE = async (req, res, next) => {
     cape_legal,
     cape_amount,
     donation_frequency,
-    member_short_id
+    member_short_id,
+    cape_status,
+    cape_errors
   );
 
   if (!createCAPEResult || createCAPEResult.message) {

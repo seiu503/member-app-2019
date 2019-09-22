@@ -843,6 +843,34 @@ export class SubmissionFormPage1Container extends React.Component {
     };
     console.log(body);
 
+    let cape_errors = "",
+      cape_status = "";
+
+    // write CAPE contribution to SF
+    const sfCapeResult = await this.props.apiSF
+      .createSFCAPE(body)
+      .catch(err => {
+        console.log(err);
+        cape_errors += err;
+        cape_status = "Error";
+        handleError(err);
+      });
+
+    if (
+      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      cape_errors += this.props.submission.error;
+      cape_status = "Error";
+      console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    } else {
+      cape_status = "Success";
+    }
+
+    body.cape_status = cape_status;
+    body.cape_errors = cape_errors;
+
     // create CAPE record in postgres
     const capeResult = await this.props.apiSubmission
       .createCAPE(body)
@@ -859,22 +887,6 @@ export class SubmissionFormPage1Container extends React.Component {
       return handleError(this.props.submission.error);
     }
 
-    // write CAPE contribution to SF
-    const sfCapeResult = await this.props.apiSF
-      .createSFCAPE(body)
-      .catch(err => {
-        console.log(err);
-        return handleError(err);
-      });
-
-    if (
-      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
-      this.props.submission.error
-    ) {
-      console.log(this.props.submission.error);
-      return handleError(this.props.submission.error);
-    }
-
     // update capeValidate function to require payment info if paymentRequired
 
     this.props.reset("submissionPage1");
@@ -882,10 +894,15 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.history.push(
         `/page2/?id=${this.props.submission.salesforceId}`
       );
+    } else {
+      openSnackbar(
+        "success",
+        "Thank you. Your CAPE submission was proccessed."
+      );
+      // need to redirect to the thankyou page or saved redirect url here,
+      // but need to make that text dynamic and reuse component for both
+      // cape and membership submits
     }
-    // otherwise, need to redirect to the thankyou page or saved redirect url
-    // but need to make that text dynamic and reuse component for both
-    // cape and membership submits
   }
 
   async handleTab2() {

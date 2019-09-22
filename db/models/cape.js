@@ -25,6 +25,8 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {String}   online_campaign_source Online campaign source
  *  @param    {String}   cape_legal             Legal language
  *  @param    {Number}   cape_amount            Donation amount in $
+ *  @param    {String}   cape_status            ('Success' || 'Error')
+ *  @param    {String}   cape_errors            Salesforce errors, if any
  *  @param    {String}   donation_frequency     ('Monthly' || 'One-time')
  *  @param    {String}   member_short_id        Unioni.se member shortId
 
@@ -50,7 +52,9 @@ const createCAPE = (
   cape_legal,
   cape_amount,
   donation_frequency,
-  member_short_id
+  member_short_id,
+  cape_status,
+  cape_errors
 ) => {
   return db
     .insert({
@@ -73,7 +77,9 @@ const createCAPE = (
       cape_legal,
       cape_amount,
       donation_frequency,
-      member_short_id
+      member_short_id,
+      cape_status,
+      cape_errors
     })
     .into(TABLES.CAPE)
     .returning("*");
