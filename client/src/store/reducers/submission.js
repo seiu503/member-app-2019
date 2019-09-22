@@ -127,6 +127,8 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_UNIONISE_TOKEN_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_ALL_SUBMISSIONS_REQUEST:
+    case CREATE_CAPE_REQUEST:
+    case CREATE_SF_CAPE_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -349,6 +351,8 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_FAILURE:
     case GET_ALL_SUBMISSIONS_FAILURE:
+    case CREATE_SF_CAPE_FAILURE:
+    case CREATE_CAPE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

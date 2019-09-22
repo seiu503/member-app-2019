@@ -843,8 +843,8 @@ export class SubmissionFormPage1Container extends React.Component {
       memberShortId: ""
     };
     console.log(body);
-    // make api call to create CAPE record here
 
+    // create CAPE record in postgres
     const capeResult = await this.props.apiSubmission
       .createCAPE(body)
       .catch(err => {
@@ -860,6 +860,7 @@ export class SubmissionFormPage1Container extends React.Component {
       return handleError(this.props.submission.error);
     }
 
+    // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
       .createSFCAPE(body)
       .catch(err => {

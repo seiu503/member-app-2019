@@ -375,6 +375,56 @@ export function getSFDJRById(id) {
   };
 }
 
+/* ================================== CAPE ================================= */
+
+/* ++++++++++++++++++++++++++++++++ CAPE: POST +++++++++++++++++++++++++++++ */
+
+export const CREATE_SF_CAPE_REQUEST = "CREATE_SF_CAPE_REQUEST";
+export const CREATE_SF_CAPE_SUCCESS = "CREATE_SF_CAPE_SUCCESS";
+export const CREATE_SF_CAPE_FAILURE = "CREATE_SF_CAPE_FAILURE";
+
+/*
+ * Function: createSFCAPE -- create a SF CAPE record
+ * @param {object} body
+ * This action dispatches additional actions as it executes:
+ *   CREATE_SF_CAPE_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   CREATE_SF_CAPE_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   CREATE_SF_CAPE_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function createSFCAPE(body) {
+  // console.log(body);
+  // console.log(JSON.stringify(body));
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfCAPE`,
+      method: "POST",
+      types: [
+        CREATE_SF_CAPE_REQUEST,
+        CREATE_SF_CAPE_SUCCESS,
+        {
+          type: CREATE_SF_CAPE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
 /* ================================ ACCOUNTS =============================== */
 
 /* +++++++++++++++++++++++++++++ ACCOUNTS: GET +++++++++++++++++++++++++++++ */

@@ -539,26 +539,19 @@ exports.createCAPE = async (req, res, next) => {
         body[sfFieldName] = bodyRaw[key];
       }
     });
-    delete body["Account.Id"];
-    delete body["Account.Agency_Number__c"];
-    delete body["Account.WS_Subdivision_from_Agency__c"];
-    delete body["Birthdate"];
-    body.Birthdate__c = bodyRaw.birthdate;
-    body.Worker__c = bodyRaw.Worker__c;
-    // console.log(`sf.ctrl.js > 347`);
-    // console.log(body);
 
-    OMA = await conn.sobject("OnlineMemberApp__c").create({
+    console.log(`sf.ctrl.js > 543`);
+    console.log(body);
+
+    CAPE = await conn.sobject("CAPE__c").create({
       ...body
     });
 
     return res.status(200).json({
-      salesforce_id: res.locals.sf_contact_id,
-      submission_id: res.locals.submission_id,
-      sf_OMA_id: OMA.id || OMA.Id
+      cape_id: CAPE.id || CAPE.Id
     });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 365: ${err}`);
+    console.error(`sf.ctrl.js > 554: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
