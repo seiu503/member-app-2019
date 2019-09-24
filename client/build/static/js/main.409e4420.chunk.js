@@ -198,270 +198,270 @@
       var i = {};
       a.r(i),
         a.d(i, "HANDLE_INPUT", function() {
-          return Ba;
-        }),
-        a.d(i, "HANDLE_DELETE_OPEN", function() {
           return Ha;
         }),
-        a.d(i, "HANDLE_DELETE_CLOSE", function() {
+        a.d(i, "HANDLE_DELETE_OPEN", function() {
           return Ga;
         }),
-        a.d(i, "CLEAR_FORM", function() {
+        a.d(i, "HANDLE_DELETE_CLOSE", function() {
           return za;
         }),
-        a.d(i, "GET_CONTENT_BY_ID_REQUEST", function() {
+        a.d(i, "CLEAR_FORM", function() {
           return qa;
         }),
-        a.d(i, "GET_CONTENT_BY_ID_SUCCESS", function() {
+        a.d(i, "GET_CONTENT_BY_ID_REQUEST", function() {
           return Wa;
         }),
-        a.d(i, "GET_CONTENT_BY_ID_FAILURE", function() {
+        a.d(i, "GET_CONTENT_BY_ID_SUCCESS", function() {
           return $a;
         }),
-        a.d(i, "ADD_CONTENT_REQUEST", function() {
+        a.d(i, "GET_CONTENT_BY_ID_FAILURE", function() {
           return Va;
         }),
-        a.d(i, "ADD_CONTENT_SUCCESS", function() {
+        a.d(i, "ADD_CONTENT_REQUEST", function() {
           return Qa;
         }),
-        a.d(i, "ADD_CONTENT_FAILURE", function() {
+        a.d(i, "ADD_CONTENT_SUCCESS", function() {
           return Ya;
         }),
-        a.d(i, "GET_ALL_CONTENT_REQUEST", function() {
+        a.d(i, "ADD_CONTENT_FAILURE", function() {
           return Ja;
         }),
-        a.d(i, "GET_ALL_CONTENT_SUCCESS", function() {
+        a.d(i, "GET_ALL_CONTENT_REQUEST", function() {
           return Za;
         }),
-        a.d(i, "GET_ALL_CONTENT_FAILURE", function() {
+        a.d(i, "GET_ALL_CONTENT_SUCCESS", function() {
           return Ka;
         }),
-        a.d(i, "DELETE_CONTENT_REQUEST", function() {
+        a.d(i, "GET_ALL_CONTENT_FAILURE", function() {
           return Xa;
         }),
-        a.d(i, "DELETE_CONTENT_SUCCESS", function() {
+        a.d(i, "DELETE_CONTENT_REQUEST", function() {
           return en;
         }),
-        a.d(i, "DELETE_CONTENT_FAILURE", function() {
+        a.d(i, "DELETE_CONTENT_SUCCESS", function() {
           return tn;
         }),
-        a.d(i, "DELETE_IMAGE_REQUEST", function() {
+        a.d(i, "DELETE_CONTENT_FAILURE", function() {
           return an;
         }),
-        a.d(i, "DELETE_IMAGE_SUCCESS", function() {
+        a.d(i, "DELETE_IMAGE_REQUEST", function() {
           return nn;
         }),
-        a.d(i, "DELETE_IMAGE_FAILURE", function() {
+        a.d(i, "DELETE_IMAGE_SUCCESS", function() {
           return rn;
         }),
-        a.d(i, "UPDATE_CONTENT_REQUEST", function() {
+        a.d(i, "DELETE_IMAGE_FAILURE", function() {
           return on;
         }),
-        a.d(i, "UPDATE_CONTENT_SUCCESS", function() {
+        a.d(i, "UPDATE_CONTENT_REQUEST", function() {
           return sn;
         }),
-        a.d(i, "UPDATE_CONTENT_FAILURE", function() {
+        a.d(i, "UPDATE_CONTENT_SUCCESS", function() {
           return cn;
         }),
-        a.d(i, "UPLOAD_IMAGE_REQUEST", function() {
+        a.d(i, "UPDATE_CONTENT_FAILURE", function() {
           return ln;
         }),
-        a.d(i, "UPLOAD_IMAGE_SUCCESS", function() {
+        a.d(i, "UPLOAD_IMAGE_REQUEST", function() {
           return dn;
         }),
-        a.d(i, "UPLOAD_IMAGE_FAILURE", function() {
+        a.d(i, "UPLOAD_IMAGE_SUCCESS", function() {
           return un;
         }),
-        a.d(i, "handleInput", function() {
+        a.d(i, "UPLOAD_IMAGE_FAILURE", function() {
           return pn;
         }),
-        a.d(i, "handleDeleteOpen", function() {
+        a.d(i, "handleInput", function() {
           return mn;
         }),
-        a.d(i, "handleDeleteClose", function() {
+        a.d(i, "handleDeleteOpen", function() {
           return hn;
         }),
-        a.d(i, "clearForm", function() {
+        a.d(i, "handleDeleteClose", function() {
           return gn;
         }),
-        a.d(i, "getContentById", function() {
+        a.d(i, "clearForm", function() {
           return fn;
         }),
-        a.d(i, "getAllContent", function() {
+        a.d(i, "getContentById", function() {
           return bn;
         }),
-        a.d(i, "addContent", function() {
+        a.d(i, "getAllContent", function() {
           return yn;
         }),
-        a.d(i, "uploadImage", function() {
+        a.d(i, "addContent", function() {
           return En;
         }),
-        a.d(i, "updateContent", function() {
+        a.d(i, "uploadImage", function() {
           return An;
         }),
-        a.d(i, "deleteContent", function() {
+        a.d(i, "updateContent", function() {
           return Sn;
         }),
-        a.d(i, "deleteImage", function() {
+        a.d(i, "deleteContent", function() {
           return vn;
+        }),
+        a.d(i, "deleteImage", function() {
+          return Cn;
         });
       var s = {};
       a.r(s),
         a.d(s, "GET_SF_CONTACT_REQUEST", function() {
-          return Gr;
-        }),
-        a.d(s, "GET_SF_CONTACT_SUCCESS", function() {
           return zr;
         }),
-        a.d(s, "GET_SF_CONTACT_FAILURE", function() {
+        a.d(s, "GET_SF_CONTACT_SUCCESS", function() {
           return qr;
         }),
-        a.d(s, "getSFContactById", function() {
+        a.d(s, "GET_SF_CONTACT_FAILURE", function() {
           return Wr;
         }),
-        a.d(s, "CREATE_SF_CONTACT_REQUEST", function() {
+        a.d(s, "getSFContactById", function() {
           return $r;
         }),
-        a.d(s, "CREATE_SF_CONTACT_SUCCESS", function() {
+        a.d(s, "CREATE_SF_CONTACT_REQUEST", function() {
           return Vr;
         }),
-        a.d(s, "CREATE_SF_CONTACT_FAILURE", function() {
+        a.d(s, "CREATE_SF_CONTACT_SUCCESS", function() {
           return Qr;
         }),
-        a.d(s, "createSFContact", function() {
+        a.d(s, "CREATE_SF_CONTACT_FAILURE", function() {
           return Yr;
         }),
-        a.d(s, "UPDATE_SF_CONTACT_REQUEST", function() {
+        a.d(s, "createSFContact", function() {
           return Jr;
         }),
-        a.d(s, "UPDATE_SF_CONTACT_SUCCESS", function() {
+        a.d(s, "UPDATE_SF_CONTACT_REQUEST", function() {
           return Zr;
         }),
-        a.d(s, "UPDATE_SF_CONTACT_FAILURE", function() {
+        a.d(s, "UPDATE_SF_CONTACT_SUCCESS", function() {
           return Kr;
         }),
-        a.d(s, "updateSFContact", function() {
+        a.d(s, "UPDATE_SF_CONTACT_FAILURE", function() {
           return Xr;
         }),
-        a.d(s, "LOOKUP_SF_CONTACT_REQUEST", function() {
+        a.d(s, "updateSFContact", function() {
           return eo;
         }),
-        a.d(s, "LOOKUP_SF_CONTACT_SUCCESS", function() {
+        a.d(s, "LOOKUP_SF_CONTACT_REQUEST", function() {
           return to;
         }),
-        a.d(s, "LOOKUP_SF_CONTACT_FAILURE", function() {
+        a.d(s, "LOOKUP_SF_CONTACT_SUCCESS", function() {
           return ao;
         }),
-        a.d(s, "lookupSFContact", function() {
+        a.d(s, "LOOKUP_SF_CONTACT_FAILURE", function() {
           return no;
         }),
-        a.d(s, "CREATE_SF_OMA_REQUEST", function() {
+        a.d(s, "lookupSFContact", function() {
           return ro;
         }),
-        a.d(s, "CREATE_SF_OMA_SUCCESS", function() {
+        a.d(s, "CREATE_SF_OMA_REQUEST", function() {
           return oo;
         }),
-        a.d(s, "CREATE_SF_OMA_FAILURE", function() {
+        a.d(s, "CREATE_SF_OMA_SUCCESS", function() {
           return io;
         }),
-        a.d(s, "createSFOMA", function() {
+        a.d(s, "CREATE_SF_OMA_FAILURE", function() {
           return so;
         }),
-        a.d(s, "CREATE_SF_DJR_REQUEST", function() {
+        a.d(s, "createSFOMA", function() {
           return co;
         }),
-        a.d(s, "CREATE_SF_DJR_SUCCESS", function() {
+        a.d(s, "CREATE_SF_DJR_REQUEST", function() {
           return lo;
         }),
-        a.d(s, "CREATE_SF_DJR_FAILURE", function() {
+        a.d(s, "CREATE_SF_DJR_SUCCESS", function() {
           return uo;
         }),
-        a.d(s, "createSFDJR", function() {
+        a.d(s, "CREATE_SF_DJR_FAILURE", function() {
           return po;
         }),
-        a.d(s, "UPDATE_SF_DJR_REQUEST", function() {
+        a.d(s, "createSFDJR", function() {
           return mo;
         }),
-        a.d(s, "UPDATE_SF_DJR_SUCCESS", function() {
+        a.d(s, "UPDATE_SF_DJR_REQUEST", function() {
           return ho;
         }),
-        a.d(s, "UPDATE_SF_DJR_FAILURE", function() {
+        a.d(s, "UPDATE_SF_DJR_SUCCESS", function() {
           return go;
         }),
-        a.d(s, "updateSFDJR", function() {
+        a.d(s, "UPDATE_SF_DJR_FAILURE", function() {
           return fo;
         }),
-        a.d(s, "GET_SF_DJR_REQUEST", function() {
+        a.d(s, "updateSFDJR", function() {
           return bo;
         }),
-        a.d(s, "GET_SF_DJR_SUCCESS", function() {
+        a.d(s, "GET_SF_DJR_REQUEST", function() {
           return yo;
         }),
-        a.d(s, "GET_SF_DJR_FAILURE", function() {
+        a.d(s, "GET_SF_DJR_SUCCESS", function() {
           return Eo;
         }),
-        a.d(s, "getSFDJRById", function() {
+        a.d(s, "GET_SF_DJR_FAILURE", function() {
           return Ao;
         }),
-        a.d(s, "CREATE_SF_CAPE_REQUEST", function() {
+        a.d(s, "getSFDJRById", function() {
           return So;
         }),
-        a.d(s, "CREATE_SF_CAPE_SUCCESS", function() {
+        a.d(s, "CREATE_SF_CAPE_REQUEST", function() {
           return vo;
         }),
-        a.d(s, "CREATE_SF_CAPE_FAILURE", function() {
+        a.d(s, "CREATE_SF_CAPE_SUCCESS", function() {
           return Co;
         }),
-        a.d(s, "createSFCAPE", function() {
+        a.d(s, "CREATE_SF_CAPE_FAILURE", function() {
           return Oo;
         }),
-        a.d(s, "GET_SF_EMPLOYERS_REQUEST", function() {
+        a.d(s, "createSFCAPE", function() {
           return _o;
         }),
-        a.d(s, "GET_SF_EMPLOYERS_SUCCESS", function() {
+        a.d(s, "GET_SF_EMPLOYERS_REQUEST", function() {
           return To;
         }),
-        a.d(s, "GET_SF_EMPLOYERS_FAILURE", function() {
+        a.d(s, "GET_SF_EMPLOYERS_SUCCESS", function() {
           return Io;
         }),
-        a.d(s, "getSFEmployers", function() {
+        a.d(s, "GET_SF_EMPLOYERS_FAILURE", function() {
           return No;
         }),
-        a.d(s, "GET_UNIONISE_TOKEN_REQUEST", function() {
+        a.d(s, "getSFEmployers", function() {
           return ko;
         }),
-        a.d(s, "GET_UNIONISE_TOKEN_SUCCESS", function() {
+        a.d(s, "GET_UNIONISE_TOKEN_REQUEST", function() {
           return wo;
         }),
-        a.d(s, "GET_UNIONISE_TOKEN_FAILURE", function() {
+        a.d(s, "GET_UNIONISE_TOKEN_SUCCESS", function() {
           return xo;
         }),
-        a.d(s, "getUnioniseToken", function() {
+        a.d(s, "GET_UNIONISE_TOKEN_FAILURE", function() {
           return Ro;
         }),
-        a.d(s, "GET_IFRAME_URL_REQUEST", function() {
+        a.d(s, "getUnioniseToken", function() {
           return Po;
         }),
-        a.d(s, "GET_IFRAME_URL_SUCCESS", function() {
+        a.d(s, "GET_IFRAME_URL_REQUEST", function() {
           return Uo;
         }),
-        a.d(s, "GET_IFRAME_URL_FAILURE", function() {
+        a.d(s, "GET_IFRAME_URL_SUCCESS", function() {
           return Do;
         }),
-        a.d(s, "getIframeURL", function() {
+        a.d(s, "GET_IFRAME_URL_FAILURE", function() {
           return Lo;
         }),
-        a.d(s, "GET_IFRAME_EXISTING_REQUEST", function() {
+        a.d(s, "getIframeURL", function() {
           return jo;
         }),
-        a.d(s, "GET_IFRAME_EXISTING_SUCCESS", function() {
+        a.d(s, "GET_IFRAME_EXISTING_REQUEST", function() {
           return Fo;
         }),
-        a.d(s, "GET_IFRAME_EXISTING_FAILURE", function() {
+        a.d(s, "GET_IFRAME_EXISTING_SUCCESS", function() {
           return Mo;
         }),
-        a.d(s, "getIframeExisting", function() {
+        a.d(s, "GET_IFRAME_EXISTING_FAILURE", function() {
           return Bo;
+        }),
+        a.d(s, "getIframeExisting", function() {
+          return Ho;
         });
       var c = a(0),
         l = a.n(c),
@@ -714,15 +714,18 @@
       var Oe,
         _e = { year: "numeric", month: "short", day: "numeric" },
         Te = function(e) {
+          return new Date(e).toLocaleDateString("en-US", _e);
+        },
+        Ie = function(e) {
           return new Date(e).toLocaleString();
         },
-        Ie = {
+        Ne = {
           headline: "headline",
           bodyCopy: "body copy",
           image: "image",
           redirectUrl: "redirect URL"
         },
-        Ne = function(e) {
+        ke = function(e) {
           return !(
             !e ||
             ("community member" !== e.toLowerCase() &&
@@ -730,13 +733,13 @@
               "adult foster home" !== e.toLowerCase())
           );
         },
-        ke = {
+        we = {
           body:
             '<p>Demonstrate your commitment to your co-workers and the people you serve in a few simple steps. To get started, click \u201cNext.\u201d</p>\n<p>Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories \u2013 including increasing our pay and benefits and improving our workplace conditions. </p>\n<p>We have strength in numbers. Click "Next" to join tens of thousands of public service workers and care providers who make Oregon a great place to work and live. By joining, you commit to maintaining your membership for one year, or paying a non-member fee equivalent. Dues are 1.7% of your salary + $2.75/month.</p>',
           headline:
             "SEIU 503: It\u2019s about more than a better job \u2013 it\u2019s about a better world."
         },
-        we = function(e) {
+        xe = function(e) {
           if (e) {
             var t = Object.keys(e).find(function(e) {
                 return !!document.getElementById(e);
@@ -750,22 +753,22 @@
             } else console.log("can't find element for ".concat(t));
           }
         },
-        xe = a(57),
-        Re = a.n(xe),
-        Pe = a(663),
-        Ue = a(238),
-        De = a(70),
-        Le = a(163),
-        je = a(164),
-        Fe = a(299),
-        Me = a.n(Fe),
-        Be = a(157),
-        He = a(294),
-        Ge = a(237),
-        ze = a(666),
-        qe = a(298),
-        We = a.n(qe),
-        $e = (function(e) {
+        Re = a(57),
+        Pe = a.n(Re),
+        Ue = a(663),
+        De = a(238),
+        Le = a(70),
+        je = a(163),
+        Fe = a(164),
+        Me = a(299),
+        Be = a.n(Me),
+        He = a(157),
+        Ge = a(294),
+        ze = a(237),
+        qe = a(666),
+        We = a(298),
+        $e = a.n(We),
+        Ve = (function(e) {
           function t(e) {
             var a;
             return (
@@ -812,7 +815,7 @@
                 key: "render",
                 value: function() {
                   var e = this,
-                    t = Re.a.parse(this.props.location.search),
+                    t = Pe.a.parse(this.props.location.search),
                     a = this.props.classes,
                     n = this.state.anchorEl,
                     r = this.props.appState.loggedIn,
@@ -822,10 +825,10 @@
                         r = t.handleClose,
                         o = t.link;
                       return l.a.createElement(
-                        He.a,
+                        Ge.a,
                         {
                           button: !0,
-                          component: Le.a,
+                          component: je.a,
                           href: "/".concat(o),
                           onClick: function() {
                             e.props.history.push("/".concat(o)), r();
@@ -833,7 +836,7 @@
                           className: a.menuItem,
                           "data-test": "menu-item-mobile"
                         },
-                        l.a.createElement(Ge.a, {
+                        l.a.createElement(ze.a, {
                           primary: n,
                           primaryTypographyProps: { color: "secondary" }
                         })
@@ -857,7 +860,7 @@
                       { "data-test": "admin-menu-links" },
                       o.map(function(e, t) {
                         return l.a.createElement(
-                          Le.a,
+                          je.a,
                           {
                             key: t,
                             className: a.menuLink,
@@ -871,13 +874,13 @@
                     "div",
                     { className: a.root, "data-test": "component-navbar" },
                     l.a.createElement(
-                      Pe.a,
+                      Ue.a,
                       { position: "fixed", className: a.appBar },
                       l.a.createElement(
-                        Ue.a,
+                        De.a,
                         null,
                         l.a.createElement(
-                          Le.a,
+                          je.a,
                           {
                             color: "primary",
                             variant: "contained",
@@ -899,14 +902,14 @@
                             "data-test": "logo-link"
                           },
                           l.a.createElement("img", {
-                            src: We.a,
+                            src: $e.a,
                             alt: "SEIU 503",
                             className: a.logo,
                             "data-test": "logo-image"
                           })
                         ),
                         l.a.createElement(
-                          De.a,
+                          Le.a,
                           {
                             variant: "h6",
                             color: "inherit",
@@ -930,7 +933,7 @@
                             l.a.Fragment,
                             null,
                             l.a.createElement(
-                              je.a,
+                              Fe.a,
                               {
                                 className: a.menuButton,
                                 color: "secondary",
@@ -942,10 +945,10 @@
                                 },
                                 "data-test": "menu-button"
                               },
-                              l.a.createElement(Me.a, null)
+                              l.a.createElement(Be.a, null)
                             ),
                             l.a.createElement(
-                              Be.a,
+                              He.a,
                               {
                                 id: "nav-menu",
                                 anchorEl: n,
@@ -962,7 +965,7 @@
                                   horizontal: "right",
                                   vertical: "top"
                                 },
-                                TransitionComponent: ze.a,
+                                TransitionComponent: qe.a,
                                 TransitionProps: { direction: "left" },
                                 PaperProps: { className: a.drawer },
                                 "data-test": "menu"
@@ -984,7 +987,7 @@
             t
           );
         })(l.a.Component),
-        Ve = Object(C.f)(
+        Qe = Object(C.f)(
           Object(k.a)(function(e) {
             var t;
             return {
@@ -1080,17 +1083,17 @@
           })(
             Object(p.b)(function(e) {
               return { appState: e.appState, profile: e.profile };
-            })($e)
+            })(Ve)
           )
         ),
-        Qe = function(e) {
+        Ye = function(e) {
           return l.a.createElement(
             "div",
             { className: e.classes.footer, "data-test": "component-footer" },
             "SEIU Local 503"
           );
         },
-        Ye = function(e) {
+        Je = function(e) {
           return l.a.createElement(
             "div",
             { className: e.classes.message, "data-test": "component-thankyou" },
@@ -1108,7 +1111,7 @@
             )
           );
         },
-        Je = function(e) {
+        Ze = function(e) {
           return l.a.createElement(
             "div",
             {
@@ -1118,7 +1121,7 @@
             "404 error. Sorry, page not found."
           );
         },
-        Ze = (function(e) {
+        Ke = (function(e) {
           function t() {
             return (
               Object(f.a)(this, t),
@@ -1148,7 +1151,7 @@
                       "data-test": "component-logout"
                     },
                     l.a.createElement(
-                      De.a,
+                      Le.a,
                       {
                         variant: "h5",
                         className: this.props.classes.message,
@@ -1163,34 +1166,34 @@
             t
           );
         })(l.a.Component),
-        Ke = Object(p.b)(null, function(e) {
+        Xe = Object(p.b)(null, function(e) {
           return { actions: Object(O.b)(n, e) };
-        })(Ze),
-        Xe = a(3),
-        et = a(166),
-        tt = a.n(et),
-        at = a(304),
-        nt = a.n(at),
-        rt = a(95),
-        ot = a.n(rt),
-        it = a(167),
-        st = a.n(it),
-        ct = a(625),
-        lt = a(300),
-        dt = a.n(lt),
-        ut = a(301),
-        pt = a.n(ut),
-        mt = a(302),
-        ht = a.n(mt),
-        gt = a(303),
-        ft = a.n(gt),
-        bt = { success: dt.a, warning: pt.a, error: ht.a, info: ft.a },
-        yt = Object(k.a)(function(e) {
+        })(Ke),
+        et = a(3),
+        tt = a(166),
+        at = a.n(tt),
+        nt = a(304),
+        rt = a.n(nt),
+        ot = a(95),
+        it = a.n(ot),
+        st = a(167),
+        ct = a.n(st),
+        lt = a(625),
+        dt = a(300),
+        ut = a.n(dt),
+        pt = a(301),
+        mt = a.n(pt),
+        ht = a(302),
+        gt = a.n(ht),
+        ft = a(303),
+        bt = a.n(ft),
+        yt = { success: ut.a, warning: mt.a, error: gt.a, info: bt.a },
+        Et = Object(k.a)(function(e) {
           return {
-            success: { backgroundColor: ot.a[600] },
+            success: { backgroundColor: it.a[600] },
             error: { backgroundColor: e.palette.error.dark },
             info: { backgroundColor: e.palette.primary.dark },
-            warning: { backgroundColor: st.a[700] },
+            warning: { backgroundColor: ct.a[700] },
             icon: { fontSize: 20 },
             iconVariant: { opacity: 0.9, marginRight: 15 },
             message: { display: "flex", alignItems: "center" },
@@ -1202,19 +1205,19 @@
             n = e.message,
             r = e.onClose,
             o = e.variant,
-            i = Object(Xe.a)(e, [
+            i = Object(et.a)(e, [
               "classes",
               "className",
               "message",
               "onClose",
               "variant"
             ]),
-            s = bt[o];
+            s = yt[o];
           return l.a.createElement(
-            ct.a,
+            lt.a,
             Object.assign(
               {
-                className: tt()(t[o], a),
+                className: at()(t[o], a),
                 "data-test": "component-custom-snackbar",
                 "aria-describedby": "client-snackbar",
                 message: l.a.createElement(
@@ -1225,14 +1228,14 @@
                     "data-test": "message"
                   },
                   l.a.createElement(s, {
-                    className: tt()(t.icon, t.iconVariant),
+                    className: at()(t.icon, t.iconVariant),
                     "data-test": "message-icon"
                   }),
                   n
                 ),
                 action: [
                   l.a.createElement(
-                    je.a,
+                    Fe.a,
                     {
                       key: "close",
                       "aria-label": "Close",
@@ -1241,7 +1244,7 @@
                       onClick: r,
                       "data-test": "icon-button"
                     },
-                    l.a.createElement(nt.a, {
+                    l.a.createElement(rt.a, {
                       className: t.icon,
                       "data-test": "close-icon"
                     })
@@ -1252,8 +1255,8 @@
             )
           );
         }),
-        Et = a(634),
-        At = (function(e) {
+        At = a(634),
+        St = (function(e) {
           function t() {
             var e, a;
             Object(f.a)(this, t);
@@ -1301,7 +1304,7 @@
                     "data-test": "message-span"
                   });
                   return l.a.createElement(
-                    Et.a,
+                    At.a,
                     {
                       anchorOrigin: { vertical: "bottom", horizontal: "right" },
                       open: this.state.open,
@@ -1309,7 +1312,7 @@
                       onClose: this.handleSnackbarClose,
                       "data-test": "component-notifier"
                     },
-                    l.a.createElement(yt, {
+                    l.a.createElement(Et, {
                       variant: this.state.variant,
                       message: e,
                       open: this.state.open,
@@ -1324,21 +1327,21 @@
             t
           );
         })(l.a.Component),
-        St = function(e, t, a, n) {
+        vt = function(e, t, a, n) {
           if ("function" === typeof Oe || n) return Oe(e, t);
           setTimeout(function() {
             return Oe(e, t);
           }, 100);
         },
-        vt = At,
-        Ct = a(305),
-        Ot = a.n(Ct),
-        _t = a(633),
-        Tt = a(628),
-        It = a(629),
-        Nt = a(627),
-        kt = a(670),
-        wt = Object(k.a)(function(e) {
+        Ct = St,
+        Ot = a(305),
+        _t = a.n(Ot),
+        Tt = a(633),
+        It = a(628),
+        Nt = a(629),
+        kt = a(627),
+        wt = a(670),
+        xt = Object(k.a)(function(e) {
           return {
             root: { margin: 0, padding: 20 },
             danger: {
@@ -1353,7 +1356,7 @@
             "div",
             { "data-test": "component-alert-dialog" },
             l.a.createElement(
-              _t.a,
+              Tt.a,
               {
                 "data-test": "dialog",
                 open: e.open,
@@ -1366,15 +1369,15 @@
               },
               e.title &&
                 l.a.createElement(
-                  It.a,
+                  Nt.a,
                   { id: "alert-dialog-title", "data-test": "dialog-title" },
                   e.title
                 ),
               l.a.createElement(
-                Nt.a,
+                kt.a,
                 null,
                 l.a.createElement(
-                  kt.a,
+                  wt.a,
                   {
                     id: "alert-dialog-description",
                     "data-test": "dialog-content"
@@ -1383,10 +1386,10 @@
                 )
               ),
               l.a.createElement(
-                Tt.a,
+                It.a,
                 null,
                 l.a.createElement(
-                  Le.a,
+                  je.a,
                   {
                     onClick: e.handleClose,
                     variant: "outlined",
@@ -1396,7 +1399,7 @@
                   "Cancel"
                 ),
                 l.a.createElement(
-                  Le.a,
+                  je.a,
                   {
                     onClick: e.action,
                     className: e.danger ? e.classes.danger : e.classes.primary,
@@ -1410,85 +1413,85 @@
             )
           );
         }),
-        xt = a(116),
-        Rt = a.n(xt),
-        Pt = a(2),
-        Ut = a.n(Pt),
-        Dt = a(289),
-        Lt = a(286),
-        jt = a(287),
-        Ft = a(681),
-        Mt = a(256),
-        Bt = a(255),
-        Ht = a(259),
-        Gt = a(667),
-        zt = a(626),
-        qt = a(678),
-        Wt = a(671),
-        $t = a(321),
-        Vt = a.n($t),
-        Qt = a(318),
-        Yt = a.n(Qt),
-        Jt = a(317),
-        Zt = a.n(Jt),
-        Kt = a(319),
-        Xt = a.n(Kt),
-        ea = a(314),
-        ta = a.n(ea),
-        aa = a(315),
-        na = a.n(aa),
-        ra = a(316),
-        oa = a.n(ra),
-        ia = a(322),
-        sa = a.n(ia),
-        ca = a(313),
-        la = a.n(ca),
-        da = a(320),
-        ua = a.n(da),
-        pa = a(323),
-        ma = a.n(pa),
-        ha = {
+        Rt = a(116),
+        Pt = a.n(Rt),
+        Ut = a(2),
+        Dt = a.n(Ut),
+        Lt = a(289),
+        jt = a(286),
+        Ft = a(287),
+        Mt = a(681),
+        Bt = a(256),
+        Ht = a(255),
+        Gt = a(259),
+        zt = a(667),
+        qt = a(626),
+        Wt = a(678),
+        $t = a(671),
+        Vt = a(321),
+        Qt = a.n(Vt),
+        Yt = a(318),
+        Jt = a.n(Yt),
+        Zt = a(317),
+        Kt = a.n(Zt),
+        Xt = a(319),
+        ea = a.n(Xt),
+        ta = a(314),
+        aa = a.n(ta),
+        na = a(315),
+        ra = a.n(na),
+        oa = a(316),
+        ia = a.n(oa),
+        sa = a(322),
+        ca = a.n(sa),
+        la = a(313),
+        da = a.n(la),
+        ua = a(320),
+        pa = a.n(ua),
+        ma = a(323),
+        ha = a.n(ma),
+        ga = {
           Export: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(la.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(da.a, Object.assign({}, e, { ref: t }));
           }),
           Filter: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(ta.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(aa.a, Object.assign({}, e, { ref: t }));
           }),
           FirstPage: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(na.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(ra.a, Object.assign({}, e, { ref: t }));
           }),
           LastPage: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(oa.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(ia.a, Object.assign({}, e, { ref: t }));
           }),
           NextPage: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(Zt.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(Kt.a, Object.assign({}, e, { ref: t }));
           }),
           PreviousPage: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(Yt.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(Jt.a, Object.assign({}, e, { ref: t }));
           }),
           ResetSearch: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(Xt.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(ea.a, Object.assign({}, e, { ref: t }));
           }),
           Search: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(ua.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(pa.a, Object.assign({}, e, { ref: t }));
           }),
           SortArrow: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(Vt.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(Qt.a, Object.assign({}, e, { ref: t }));
           }),
           ThirdStateCheck: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(sa.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(ca.a, Object.assign({}, e, { ref: t }));
           }),
           ViewColumn: Object(c.forwardRef)(function(e, t) {
-            return l.a.createElement(ma.a, Object.assign({}, e, { ref: t }));
+            return l.a.createElement(ha.a, Object.assign({}, e, { ref: t }));
           })
         },
-        ga = function(e) {
-          return St(
+        fa = function(e) {
+          return vt(
             "error",
             e || "Sorry, something went wrong. Please try again."
           );
         },
-        fa = [
+        ba = [
           "",
           "AL",
           "AK",
@@ -1541,8 +1544,8 @@
           "WI",
           "WY"
         ],
-        ba = ["Check", "Card"],
-        ya = {
+        ya = ["Check", "Card"],
+        Ea = {
           PNP: "Non-Profit",
           Retirees: "Retired",
           State: "State Agency",
@@ -1555,7 +1558,7 @@
           "Private Homecare": "Private Homecare Agency",
           "Community Members": "Community Member"
         },
-        Ea = function(e) {
+        Aa = function(e) {
           var t = new Date(e),
             a = "" + (t.getMonth() + 1),
             n = "" + t.getDate(),
@@ -1566,14 +1569,14 @@
             [r, a, n].join("-")
           );
         },
-        Aa = function(e) {
+        Sa = function(e) {
           var t = ""
             .concat(e.mm, "/")
             .concat(e.dd, "/")
             .concat(e.yyyy);
-          return Ea(t);
+          return Aa(t);
         },
-        Sa = function(e, t) {
+        va = function(e, t) {
           return e
             ? e.filter(function(e) {
                 return "community member" === t.toLowerCase()
@@ -1582,10 +1585,10 @@
               })[0]
             : { Name: "" };
         },
-        va = function(e, t, a) {
+        Ca = function(e, t, a) {
           return a(e).includes("Missing translationId:") ? t : a(e);
         },
-        Ca = function(e) {
+        Oa = function(e) {
           var t = e.input,
             a = e.id,
             n = (e.name, e.label),
@@ -1597,7 +1600,7 @@
             d = e.short,
             u = e.mobile,
             p = (e.translate,
-            Object(Xe.a)(e, [
+            Object(et.a)(e, [
               "input",
               "id",
               "name",
@@ -1612,10 +1615,10 @@
           return l.a.createElement(_.b, null, function(e) {
             var r = e.translate;
             return l.a.createElement(
-              Dt.a,
+              Lt.a,
               Object.assign(
                 {
-                  label: va(a, n, r),
+                  label: Ca(a, n, r),
                   error: !(!o || !i),
                   variant: "outlined",
                   className: s.input,
@@ -1635,10 +1638,10 @@
             );
           });
         },
-        Oa = function(e) {
+        _a = function(e) {
           return "right" === e ? { direction: "ltr" } : {};
         },
-        _a = function(e) {
+        Ta = function(e) {
           var t = e.input,
             a = e.name,
             n = e.id,
@@ -1653,7 +1656,7 @@
             m = e.short,
             h = e.mobile,
             g = e.formControlName,
-            f = Object(Xe.a)(e, [
+            f = Object(et.a)(e, [
               "input",
               "name",
               "id",
@@ -1670,7 +1673,7 @@
           return l.a.createElement(_.b, null, function(e) {
             var s = e.translate;
             return l.a.createElement(
-              Bt.a,
+              Ht.a,
               Object.assign(
                 {
                   variant: "outlined",
@@ -1683,13 +1686,13 @@
                   style: m ? { width: 80 } : h ? { width: "100%" } : {}
                 }
               ),
-              l.a.createElement(Mt.a, { htmlFor: a }, va(n, r, s)),
+              l.a.createElement(Bt.a, { htmlFor: a }, Ca(n, r, s)),
               l.a.createElement(
-                Lt.a,
+                jt.a,
                 Object.assign(
                   {
                     native: !0,
-                    input: l.a.createElement(Ft.a, {
+                    input: l.a.createElement(Mt.a, {
                       labelWidth: u,
                       inputProps: { id: n }
                     }),
@@ -1704,9 +1707,9 @@
                   return l.a.createElement(
                     "option",
                     {
-                      key: Rt()(),
+                      key: Pt()(),
                       value: e ? e.toLowerCase() : "",
-                      style: Oa(i)
+                      style: _a(i)
                     },
                     (function(e, t, a) {
                       var n;
@@ -1737,7 +1740,7 @@
             );
           });
         },
-        Ta = function(e) {
+        Ia = function(e) {
           var t = e.input,
             a = e.label,
             n = e.id,
@@ -1747,7 +1750,7 @@
             s = o.error,
             c = e.formControlName,
             d = (e.localize,
-            Object(Xe.a)(e, [
+            Object(et.a)(e, [
               "input",
               "label",
               "id",
@@ -1760,12 +1763,12 @@
           return l.a.createElement(_.b, null, function(e) {
             var o = e.translate;
             return l.a.createElement(
-              Bt.a,
+              Ht.a,
               { error: !(!i || !s), className: r[c] || r.formControl },
-              l.a.createElement(Ht.a, {
-                label: va(n, a, o),
+              l.a.createElement(Gt.a, {
+                label: Ca(n, a, o),
                 control: l.a.createElement(
-                  jt.a,
+                  Ft.a,
                   Object.assign(
                     { color: "primary", checked: !!t.value },
                     d,
@@ -1781,11 +1784,11 @@
               }),
               i &&
                 s &&
-                l.a.createElement(Gt.a, { className: r.checkboxErrorText }, s)
+                l.a.createElement(zt.a, { className: r.checkboxErrorText }, s)
             );
           });
         },
-        Ia = function(e) {
+        Na = function(e) {
           var t = e.input,
             a = e.id,
             n = (e.label, e.options),
@@ -1797,7 +1800,7 @@
             d = e.formControlName,
             u = e.legendClass,
             p = e.additionalOnChange;
-          Object(Xe.a)(e, [
+          Object(et.a)(e, [
             "input",
             "id",
             "label",
@@ -1813,19 +1816,19 @@
           return l.a.createElement(_.b, null, function(e) {
             var i = e.translate;
             return l.a.createElement(
-              Bt.a,
+              Ht.a,
               {
                 component: "fieldset",
                 error: !(!s || !c),
                 className: r[d] || r.formControl
               },
               l.a.createElement(
-                zt.a,
+                qt.a,
                 { component: "legend", className: r.radioLabel },
                 i(a)
               ),
               l.a.createElement(
-                Wt.a,
+                $t.a,
                 {
                   "data-test": "component-radio-group",
                   "aria-label": d,
@@ -1836,11 +1839,11 @@
                   }
                 },
                 n.map(function(e) {
-                  return l.a.createElement(Ht.a, {
-                    key: Rt()(),
+                  return l.a.createElement(Gt.a, {
+                    key: Pt()(),
                     value: e,
                     className: u,
-                    control: l.a.createElement(qt.a, {
+                    control: l.a.createElement(Wt.a, {
                       checked: e.toString() === t.value.toString(),
                       color: "primary",
                       inputProps: { id: a },
@@ -1852,11 +1855,11 @@
               ),
               s &&
                 c &&
-                l.a.createElement(Gt.a, { className: r.checkboxErrorText }, c)
+                l.a.createElement(zt.a, { className: r.checkboxErrorText }, c)
             );
           });
         },
-        Na = function(e) {
+        ka = function(e) {
           var t = e.input,
             a = (e.label, e.id),
             n = e.options,
@@ -1866,7 +1869,7 @@
             s = o.error,
             c = e.formControlName,
             d = (e.legendClass, e.additionalOnChange);
-          Object(Xe.a)(e, [
+          Object(et.a)(e, [
             "input",
             "label",
             "id",
@@ -1882,19 +1885,19 @@
           return l.a.createElement(_.b, null, function(e) {
             var o = e.translate;
             return l.a.createElement(
-              Bt.a,
+              Ht.a,
               {
                 component: "fieldset",
                 error: !(!i || !s),
                 className: r[c] || r.formControl
               },
               l.a.createElement(
-                zt.a,
+                qt.a,
                 { component: "legend", className: r.capeRadioLabel },
                 o(a)
               ),
               l.a.createElement(
-                Wt.a,
+                $t.a,
                 {
                   "data-test": "component-cape-radio-group",
                   "aria-label": c,
@@ -1909,13 +1912,13 @@
                   var n = "$".concat(e);
                   return (
                     "Other" === e && (n = e),
-                    l.a.createElement(Ht.a, {
-                      key: Rt()(),
+                    l.a.createElement(Gt.a, {
+                      key: Pt()(),
                       value: e,
                       className: r.suggestedAmountBox,
                       label: n,
                       labelPlacement: "bottom",
-                      control: l.a.createElement(qt.a, {
+                      control: l.a.createElement(Wt.a, {
                         checked: e.toString() === t.value.toString(),
                         color: "primary",
                         inputProps: { id: a },
@@ -1927,13 +1930,13 @@
               ),
               i &&
                 s &&
-                l.a.createElement(Gt.a, { className: r.checkboxErrorText }, s)
+                l.a.createElement(zt.a, { className: r.checkboxErrorText }, s)
             );
           });
         },
-        ka =
+        wa =
           "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=",
-        wa = [
+        xa = [
           {
             title: "Submission Status",
             field: "submission_status",
@@ -1944,7 +1947,7 @@
             field: "submission_date",
             hidden: !1,
             render: function(e) {
-              return Te(e.submission_date);
+              return Ie(e.submission_date);
             },
             defaultSort: "desc"
           },
@@ -1995,7 +1998,7 @@
             field: "seiu503_cba_app_date",
             type: "date",
             render: function(e) {
-              return Te(e.seiu503_cba_app_date);
+              return Ie(e.seiu503_cba_app_date);
             },
             hidden: !0
           },
@@ -2004,7 +2007,7 @@
             field: "direct_pay_auth",
             type: "date",
             render: function(e) {
-              return Te(e.direct_pay_auth);
+              return Ie(e.direct_pay_auth);
             },
             hidden: !0
           },
@@ -2013,7 +2016,7 @@
             field: "direct_deposit_auth",
             type: "date",
             render: function(e) {
-              return Te(e.direct_deposit_auth);
+              return Ie(e.direct_deposit_auth);
             },
             hidden: !0
           },
@@ -2078,68 +2081,65 @@
             hidden: !0,
             type: "date",
             render: function(e) {
-              return (
-                (t = e.hire_date), new Date(t).toLocaleDateString("en-US", _e)
-              );
-              var t;
+              return Te(e.hire_date);
             }
           },
           { title: "Worksite", field: "worksite", hidden: !0 },
           { title: "Work Phone", field: "work_phone", hidden: !0 },
           { title: "Work email", field: "work_email", hidden: !0 }
         ];
-      (Dt.a.propTypes = {
-        input: Ut.a.shape({
-          onBlur: Ut.a.func,
-          onChange: Ut.a.func,
-          onDragStart: Ut.a.func,
-          onDrop: Ut.a.func,
-          onFocus: Ut.a.func,
-          value: Ut.a.string
+      (Lt.a.propTypes = {
+        input: Dt.a.shape({
+          onBlur: Dt.a.func,
+          onChange: Dt.a.func,
+          onDragStart: Dt.a.func,
+          onDrop: Dt.a.func,
+          onFocus: Dt.a.func,
+          value: Dt.a.string
         }),
-        name: Ut.a.string,
-        label: Ut.a.string,
-        touched: Ut.a.bool,
-        error: Ut.a.oneOfType([Ut.a.string, Ut.a.bool]),
-        helperText: Ut.a.oneOfType([Ut.a.string, Ut.a.bool])
+        name: Dt.a.string,
+        label: Dt.a.string,
+        touched: Dt.a.bool,
+        error: Dt.a.oneOfType([Dt.a.string, Dt.a.bool]),
+        helperText: Dt.a.oneOfType([Dt.a.string, Dt.a.bool])
       }),
-        (Lt.a.propTypes = {
-          input: Ut.a.shape({
-            onBlur: Ut.a.func,
-            onChange: Ut.a.func,
-            onDragStart: Ut.a.func,
-            onDrop: Ut.a.func,
-            onFocus: Ut.a.func,
-            value: Ut.a.string
-          }),
-          name: Ut.a.string,
-          label: Ut.a.string,
-          labelWidth: Ut.a.string,
-          formControlName: Ut.a.string,
-          options: Ut.a.array,
-          touched: Ut.a.bool,
-          error: Ut.a.oneOfType([Ut.a.string, Ut.a.bool])
-        }),
         (jt.a.propTypes = {
-          input: Ut.a.shape({
-            onBlur: Ut.a.func,
-            onChange: Ut.a.func,
-            onDragStart: Ut.a.func,
-            onDrop: Ut.a.func,
-            onFocus: Ut.a.func,
-            value: Ut.a.string
+          input: Dt.a.shape({
+            onBlur: Dt.a.func,
+            onChange: Dt.a.func,
+            onDragStart: Dt.a.func,
+            onDrop: Dt.a.func,
+            onFocus: Dt.a.func,
+            value: Dt.a.string
           }),
-          name: Ut.a.string,
-          label: Ut.a.string,
-          touched: Ut.a.bool,
-          error: Ut.a.oneOfType([Ut.a.string, Ut.a.bool]),
-          checked: Ut.a.bool
+          name: Dt.a.string,
+          label: Dt.a.string,
+          labelWidth: Dt.a.string,
+          formControlName: Dt.a.string,
+          options: Dt.a.array,
+          touched: Dt.a.bool,
+          error: Dt.a.oneOfType([Dt.a.string, Dt.a.bool])
         }),
-        (Bt.a.propTypes = {
-          touched: Ut.a.bool,
-          error: Ut.a.oneOfType([Ut.a.string, Ut.a.bool])
+        (Ft.a.propTypes = {
+          input: Dt.a.shape({
+            onBlur: Dt.a.func,
+            onChange: Dt.a.func,
+            onDragStart: Dt.a.func,
+            onDrop: Dt.a.func,
+            onFocus: Dt.a.func,
+            value: Dt.a.string
+          }),
+          name: Dt.a.string,
+          label: Dt.a.string,
+          touched: Dt.a.bool,
+          error: Dt.a.oneOfType([Dt.a.string, Dt.a.bool]),
+          checked: Dt.a.bool
+        }),
+        (Ht.a.propTypes = {
+          touched: Dt.a.bool,
+          error: Dt.a.oneOfType([Dt.a.string, Dt.a.bool])
         });
-      var xa = (function(e) {
+      var Ra = (function(e) {
           function t() {
             var e, a;
             Object(f.a)(this, t);
@@ -2170,14 +2170,14 @@
                     .then(function(t) {
                       ("GET_ALL_SUBMISSIONS_FAILURE" === t.type ||
                         e.props.submission.error) &&
-                        St(
+                        vt(
                           "error",
                           e.props.submission.error ||
                             "An error occured while fetching submissions"
                         );
                     })
                     .catch(function(e) {
-                      St("error", e);
+                      vt("error", e);
                     });
                 }
               },
@@ -2193,14 +2193,14 @@
                       .then(function(e) {
                         ("GET_ALL_SUBMISSIONS_FAILURE" === e.type ||
                           n.props.submission.error) &&
-                          St(
+                          vt(
                             "error",
                             n.props.submission.error ||
                               "An error occured while fetching submissions"
                           );
                       })
                       .catch(function(e) {
-                        St("error", e);
+                        vt("error", e);
                       });
                 }
               },
@@ -2223,7 +2223,7 @@
                                   this.props.apiSubmission
                                     .deleteSubmission(a, t.id)
                                     .catch(function(e) {
-                                      St("error", r.props.submission.error);
+                                      vt("error", r.props.submission.error);
                                     })
                                 );
                               case 3:
@@ -2231,7 +2231,7 @@
                                 n.type &&
                                 "DELETE_SUBMISSION_SUCCESS" === n.type
                                   ? "DELETE_SUBMISSION_SUCCESS" === n.type &&
-                                    (St(
+                                    (vt(
                                       "success",
                                       "Deleted submission from "
                                         .concat(t.firstName, " ")
@@ -2240,7 +2240,7 @@
                                     this.props.apiSubmission.getAllSubmissions(
                                       a
                                     ))
-                                  : St("error", this.props.submission.error);
+                                  : vt("error", this.props.submission.error);
                               case 5:
                               case "end":
                                 return e.stop();
@@ -2276,7 +2276,7 @@
                       className: e.root
                     },
                     this.props.submission.deleteDialogOpen &&
-                      l.a.createElement(wt, {
+                      l.a.createElement(xt, {
                         open: this.props.submission.deleteDialogOpen,
                         handleClose: this.props.apiSubmission.handleDeleteClose,
                         title: "Delete Submission",
@@ -2291,7 +2291,7 @@
                       "div",
                       { className: e.section },
                       l.a.createElement(
-                        De.a,
+                        Le.a,
                         {
                           variant: "h2",
                           align: "center",
@@ -2305,9 +2305,9 @@
                       l.a.createElement(
                         "div",
                         { className: e.gridWrapper },
-                        l.a.createElement(Ot.a, {
+                        l.a.createElement(_t.a, {
                           style: { width: "100%", margin: "0 20px" },
-                          columns: wa,
+                          columns: xa,
                           isLoading: this.props.submission.loading,
                           data: this.props.submission.allSubmissions,
                           title: "Submissions",
@@ -2325,7 +2325,7 @@
                               };
                             }
                           },
-                          icons: ha
+                          icons: ga
                         })
                       )
                     )
@@ -2336,7 +2336,7 @@
             t
           );
         })(l.a.Component),
-        Ra = Object(p.b)(
+        Pa = Object(p.b)(
           function(e) {
             return {
               appState: e.appState,
@@ -2347,8 +2347,8 @@
           function(e) {
             return { apiSubmission: Object(O.b)(o, e) };
           }
-        )(xa),
-        Pa = Object(C.f)(
+        )(Ra),
+        Ua = Object(C.f)(
           Object(k.a)(function(e) {
             return {
               root: {
@@ -2374,9 +2374,9 @@
                 { padding: "10px 0px" }
               )
             };
-          })(Ra)
+          })(Pa)
         ),
-        Ua = (function(e) {
+        Da = (function(e) {
           function t() {
             return (
               Object(f.a)(this, t),
@@ -2418,10 +2418,10 @@
                           t &&
                             (a.props.history.push(t),
                             window.localStorage.removeItem("redirect"));
-                        } else console.log("not logged in"), console.log(e), St("error", "Please log in to view this page.");
+                        } else console.log("not logged in"), console.log(e), vt("error", "Please log in to view this page.");
                       })
                       .catch(function(e) {
-                        St("error", e);
+                        vt("error", e);
                       });
                 }
               },
@@ -2437,7 +2437,7 @@
                       className: e.container,
                       "data-test": "component-dashboard"
                     },
-                    t && !a && l.a.createElement(Pa, null)
+                    t && !a && l.a.createElement(Ua, null)
                   );
                 }
               }
@@ -2445,15 +2445,15 @@
             t
           );
         })(l.a.Component),
-        Da = Object(p.b)(
+        La = Object(p.b)(
           function(e) {
             return { appState: e.appState, profile: e.profile };
           },
           function(e) {
             return { actions: Object(O.b)(n, e), api: Object(O.b)(r, e) };
           }
-        )(Ua),
-        La = Object(C.f)(
+        )(Da),
+        ja = Object(C.f)(
           Object(k.a)(function(e) {
             return {
               root: { margin: 20, padding: 20, maxWidth: 1200 },
@@ -2475,60 +2475,60 @@
               },
               name: { color: "primary", textAlign: "center", marginTop: 15 }
             };
-          })(Da)
+          })(La)
         ),
-        ja = a(324),
-        Fa = a(325),
-        Ma = a.n(Fa),
-        Ba = "HANDLE_INPUT",
-        Ha = "HANDLE_DELETE_OPEN",
-        Ga = "HANDLE_DELETE_CLOSE",
-        za = "CLEAR_FORM",
-        qa = "GET_CONTENT_BY_ID_REQUEST",
-        Wa = "GET_CONTENT_BY_ID_SUCCESS",
-        $a = "GET_CONTENT_BY_ID_FAILURE",
-        Va = "ADD_CONTENT_REQUEST",
-        Qa = "ADD_CONTENT_SUCCESS",
-        Ya = "ADD_CONTENT_FAILURE",
-        Ja = "GET_ALL_CONTENT_REQUEST",
-        Za = "GET_ALL_CONTENT_SUCCESS",
-        Ka = "GET_ALL_CONTENT_FAILURE",
-        Xa = "DELETE_CONTENT_REQUEST",
-        en = "DELETE_CONTENT_SUCCESS",
-        tn = "DELETE_CONTENT_FAILURE",
-        an = "DELETE_IMAGE_REQUEST",
-        nn = "DELETE_IMAGE_SUCCESS",
-        rn = "DELETE_IMAGE_FAILURE",
-        on = "UPDATE_CONTENT_REQUEST",
-        sn = "UPDATE_CONTENT_SUCCESS",
-        cn = "UPDATE_CONTENT_FAILURE",
-        ln = "UPLOAD_IMAGE_REQUEST",
-        dn = "UPLOAD_IMAGE_SUCCESS",
-        un = "UPLOAD_IMAGE_FAILURE";
-      function pn(e) {
+        Fa = a(324),
+        Ma = a(325),
+        Ba = a.n(Ma),
+        Ha = "HANDLE_INPUT",
+        Ga = "HANDLE_DELETE_OPEN",
+        za = "HANDLE_DELETE_CLOSE",
+        qa = "CLEAR_FORM",
+        Wa = "GET_CONTENT_BY_ID_REQUEST",
+        $a = "GET_CONTENT_BY_ID_SUCCESS",
+        Va = "GET_CONTENT_BY_ID_FAILURE",
+        Qa = "ADD_CONTENT_REQUEST",
+        Ya = "ADD_CONTENT_SUCCESS",
+        Ja = "ADD_CONTENT_FAILURE",
+        Za = "GET_ALL_CONTENT_REQUEST",
+        Ka = "GET_ALL_CONTENT_SUCCESS",
+        Xa = "GET_ALL_CONTENT_FAILURE",
+        en = "DELETE_CONTENT_REQUEST",
+        tn = "DELETE_CONTENT_SUCCESS",
+        an = "DELETE_CONTENT_FAILURE",
+        nn = "DELETE_IMAGE_REQUEST",
+        rn = "DELETE_IMAGE_SUCCESS",
+        on = "DELETE_IMAGE_FAILURE",
+        sn = "UPDATE_CONTENT_REQUEST",
+        cn = "UPDATE_CONTENT_SUCCESS",
+        ln = "UPDATE_CONTENT_FAILURE",
+        dn = "UPLOAD_IMAGE_REQUEST",
+        un = "UPLOAD_IMAGE_SUCCESS",
+        pn = "UPLOAD_IMAGE_FAILURE";
+      function mn(e) {
         var t = e.target,
           a = t.name,
           n = t.value;
-        return { type: Ba, payload: { name: a, value: n } };
+        return { type: Ha, payload: { name: a, value: n } };
       }
-      function mn(e) {
-        return { type: Ha, payload: { selectedContent: e } };
-      }
-      function hn() {
-        return { type: Ga };
+      function hn(e) {
+        return { type: Ga, payload: { selectedContent: e } };
       }
       function gn() {
         return { type: za };
       }
-      function fn(e) {
+      function fn() {
+        return { type: qa };
+      }
+      function bn(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/content/").concat(e),
           method: "GET",
           types: [
-            qa,
             Wa,
+            $a,
             {
-              type: $a,
+              type: Va,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -2539,15 +2539,15 @@
           ]
         });
       }
-      function bn(e) {
+      function yn(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/content"),
           method: "GET",
           types: [
-            Ja,
             Za,
+            Ka,
             {
-              type: Ka,
+              type: Xa,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -2562,15 +2562,15 @@
           }
         });
       }
-      function yn(e, t) {
+      function En(e, t) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/content/"),
           method: "POST",
           types: [
-            Va,
             Qa,
+            Ya,
             {
-              type: Ya,
+              type: Ja,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -2586,8 +2586,8 @@
           body: JSON.stringify(t)
         });
       }
-      function En(e, t) {
-        var a = new Ma.a();
+      function An(e, t) {
+        var a = new Ba.a();
         return (
           a.append("image", e, e.name),
           t && a.append("id", t),
@@ -2595,10 +2595,10 @@
             endpoint: "".concat(H, "/api/image/single"),
             method: "POST",
             types: [
-              ln,
               dn,
+              un,
               {
-                type: un,
+                type: pn,
                 payload: function(e, t, a) {
                   return a.json().then(function(e) {
                     var t = "Sorry, something went wrong :(";
@@ -2611,15 +2611,15 @@
           })
         );
       }
-      function An(e, t, a) {
+      function Sn(e, t, a) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/content/").concat(t),
           method: "PUT",
           types: [
-            on,
             sn,
+            cn,
             {
-              type: cn,
+              type: ln,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -2635,15 +2635,15 @@
           body: JSON.stringify(a)
         });
       }
-      function Sn(e, t) {
+      function vn(e, t) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/content/").concat(t),
           method: "DELETE",
           types: [
-            Xa,
             en,
+            tn,
             {
-              type: tn,
+              type: an,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -2655,15 +2655,15 @@
           headers: { Authorization: "Bearer ".concat(e) }
         });
       }
-      function vn(e, t) {
+      function Cn(e, t) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/image/").concat(t),
           method: "DELETE",
           types: [
-            an,
             nn,
+            rn,
             {
-              type: rn,
+              type: on,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -2675,35 +2675,35 @@
           headers: { Authorization: "Bearer ".concat(e) }
         });
       }
-      var Cn = a(241),
-        On = { color: "#ffffff", marginLeft: "10px" },
-        _n = function(e) {
-          return l.a.createElement(Cn.a, {
-            style: On,
+      var On = a(241),
+        _n = { color: "#ffffff", marginLeft: "10px" },
+        Tn = function(e) {
+          return l.a.createElement(On.a, {
+            style: _n,
             size: 20,
             "data-test": "component-spinner-adornment"
           });
         },
-        Tn = function(e) {
+        In = function(e) {
           var t = e.children,
             a = e.loading,
-            n = Object(Xe.a)(e, ["children", "loading"]);
+            n = Object(et.a)(e, ["children", "loading"]);
           return l.a.createElement(
-            Le.a,
+            je.a,
             Object.assign({}, n, {
               "data-test": "component-button-with-spinner"
             }),
             t,
             a &&
               l.a.createElement(
-                _n,
+                Tn,
                 Object.assign({}, n, { "data-test": "spinner-adornment" })
               )
           );
         };
-      Tn.defaultProps = { loading: !1 };
-      var In = Tn;
-      function Nn(e, t) {
+      In.defaultProps = { loading: !1 };
+      var Nn = In;
+      function kn(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -2715,16 +2715,16 @@
         }
         return a;
       }
-      function kn(e) {
+      function wn(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? Nn(a, !0).forEach(function(t) {
+            ? kn(a, !0).forEach(function(t) {
                 Object(v.a)(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : Nn(a).forEach(function(t) {
+            : kn(a).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -2734,7 +2734,7 @@
         }
         return e;
       }
-      var wn = (function(e) {
+      var xn = (function(e) {
           function t(e) {
             var a;
             return (
@@ -2743,24 +2743,24 @@
                 this,
                 Object(E.a)(t).call(this, e)
               )).handleClose = function() {
-                var e = kn({}, a.state);
+                var e = wn({}, a.state);
                 (e.open = !1),
-                  a.setState(kn({}, e), function() {
+                  a.setState(wn({}, e), function() {
                     a.props.apiContent.clearForm(),
                       a.props.history.push("/library");
                   });
               }),
               (a.handleSave = function(e) {
-                var t = kn({}, a.state);
+                var t = wn({}, a.state);
                 (t.open = !1),
                   (t.files = e),
-                  a.setState(kn({}, t), function() {
+                  a.setState(wn({}, t), function() {
                     a.handleUpload(a.state.files[0]);
                   });
               }),
               (a.handleOpen = function() {
-                var e = kn({}, a.state);
-                (e.open = !0), a.setState(kn({}, e));
+                var e = wn({}, a.state);
+                (e.open = !0), a.setState(wn({}, e));
               }),
               (a.onDropRejected = function(e) {
                 var t = [];
@@ -2773,7 +2773,7 @@
                     t.push(
                       "Invalid file type. Accepted file types are .jpeg, .jpg, .png, and .gif."
                     ),
-                  t.length && St("error", t.join(" "));
+                  t.length && vt("error", t.join(" "));
               }),
               (a.handleUpload = function(e) {
                 var t = a.props.appState.authToken,
@@ -2784,18 +2784,18 @@
                   .uploadImage(e, r, o)
                   .then(function(e) {
                     "UPLOAD_IMAGE_FAILURE" === e.type || a.props.content.error
-                      ? St(
+                      ? vt(
                           "error",
                           a.props.content.error ||
                             "An error occured while trying to upload your image."
                         )
-                      : (St("success", "".concat(n, " Saved.")),
+                      : (vt("success", "".concat(n, " Saved.")),
                         a.props.apiContent.clearForm(),
                         a.props.apiContent.getAllContent(t),
                         a.props.history.push("/library"));
                   })
                   .catch(function(e) {
-                    return St("error", e);
+                    return vt("error", e);
                   });
               }),
               (a.state = { open: !1, files: [] }),
@@ -2817,14 +2817,14 @@
                       .then(function(t) {
                         ("GET_CONTENT_BY_ID_FAILURE" === t.type ||
                           e.props.content.error) &&
-                          St(
+                          vt(
                             "error",
                             e.props.content.error ||
                               "An error occured while trying to fetch your content."
                           );
                       })
                       .catch(function(e) {
-                        return St("error", e);
+                        return vt("error", e);
                       });
                 }
               },
@@ -2848,19 +2848,19 @@
                             .then(function(e) {
                               "UPDATE_CONTENT_FAILURE" === e.type ||
                               t.props.content.error
-                                ? St(
+                                ? vt(
                                     "error",
                                     t.props.content.error ||
                                       "An error occured while trying to update your content."
                                   )
-                                : (St("success", "Updated ".concat(Ie[r], ".")),
+                                : (vt("success", "Updated ".concat(Ne[r], ".")),
                                   t.props.apiContent.clearForm(),
                                   t.props.history.push("/library"));
                             })
                             .catch(function(e) {
-                              return St("error", e);
+                              return vt("error", e);
                             })
-                        : St(
+                        : vt(
                             "error",
                             this.props.content.error ||
                               "An error occured while trying to save your content."
@@ -2870,17 +2870,17 @@
                           .then(function(e) {
                             "ADD_CONTENT_FAILURE" === e.type ||
                             t.props.content.error
-                              ? St(
+                              ? vt(
                                   "error",
                                   t.props.content.error ||
                                     "An error occured while trying to save your content."
                                 )
-                              : (St("success", "Saved ".concat(Ie[r], ".")),
+                              : (vt("success", "Saved ".concat(Ne[r], ".")),
                                 t.props.apiContent.clearForm(),
                                 t.props.history.push("/library"));
                           })
                           .catch(function(e) {
-                            return St("error", e);
+                            return vt("error", e);
                           });
                 }
               },
@@ -2896,7 +2896,7 @@
                       "data-test": "component-text-input-form"
                     },
                     l.a.createElement(
-                      De.a,
+                      Le.a,
                       {
                         variant: "h2",
                         align: "center",
@@ -2916,15 +2916,15 @@
                         id: "form"
                       },
                       l.a.createElement(
-                        Bt.a,
+                        Ht.a,
                         { component: "fieldset", className: t.formControl },
                         l.a.createElement(
-                          zt.a,
+                          qt.a,
                           { component: "legend", className: t.radioLabel },
                           "Content Type"
                         ),
                         l.a.createElement(
-                          Wt.a,
+                          $t.a,
                           {
                             "aria-label": "Content Type",
                             name: "content_type",
@@ -2932,24 +2932,24 @@
                             value: this.props.content.form.content_type || "",
                             onChange: this.props.apiContent.handleInput
                           },
-                          l.a.createElement(Ht.a, {
+                          l.a.createElement(Gt.a, {
                             value: "headline",
-                            control: l.a.createElement(qt.a, null),
+                            control: l.a.createElement(Wt.a, null),
                             label: "Headline"
                           }),
-                          l.a.createElement(Ht.a, {
+                          l.a.createElement(Gt.a, {
                             value: "bodyCopy",
-                            control: l.a.createElement(qt.a, null),
+                            control: l.a.createElement(Wt.a, null),
                             label: "Body"
                           }),
-                          l.a.createElement(Ht.a, {
+                          l.a.createElement(Gt.a, {
                             value: "image",
-                            control: l.a.createElement(qt.a, null),
+                            control: l.a.createElement(Wt.a, null),
                             label: "Image"
                           }),
-                          l.a.createElement(Ht.a, {
+                          l.a.createElement(Gt.a, {
                             value: "redirectUrl",
-                            control: l.a.createElement(qt.a, null),
+                            control: l.a.createElement(Wt.a, null),
                             label: "Redirect URL"
                           })
                         )
@@ -2959,10 +2959,10 @@
                         ? l.a.createElement(
                             l.a.Fragment,
                             null,
-                            l.a.createElement(Dt.a, {
+                            l.a.createElement(Lt.a, {
                               name: "content",
                               id: "content",
-                              label: Ie[this.props.content.form.content_type],
+                              label: Ne[this.props.content.form.content_type],
                               type:
                                 this.props.content.form.content_type &&
                                 this.props.content.form.content_type.includes(
@@ -2985,7 +2985,7 @@
                               className: t.input
                             }),
                             l.a.createElement(
-                              In,
+                              Nn,
                               {
                                 type: "submit",
                                 color: "secondary",
@@ -2997,7 +2997,7 @@
                                 }
                               },
                               "Save ",
-                              Ie[this.props.content.form.content_type]
+                              Ne[this.props.content.form.content_type]
                             )
                           )
                         : this.props.content.form.content_type &&
@@ -3006,7 +3006,7 @@
                             l.a.Fragment,
                             null,
                             l.a.createElement(
-                              In,
+                              Nn,
                               {
                                 onClick: this.handleOpen.bind(this),
                                 variant: "contained",
@@ -3017,7 +3017,7 @@
                               },
                               "Choose Image"
                             ),
-                            l.a.createElement(ja.a, {
+                            l.a.createElement(Fa.a, {
                               open: this.state.open,
                               onDropRejected: this.onDropRejected,
                               onSave: this.handleSave,
@@ -3042,15 +3042,15 @@
             t
           );
         })(l.a.Component),
-        xn = Object(p.b)(
+        Rn = Object(p.b)(
           function(e) {
             return { content: e.content, appState: e.appState };
           },
           function(e) {
             return { apiContent: Object(O.b)(i, e) };
           }
-        )(wn),
-        Rn = Object(k.a)(function(e) {
+        )(xn),
+        Pn = Object(k.a)(function(e) {
           return {
             root: {},
             container: {
@@ -3072,32 +3072,32 @@
             formControl: { width: "100%" },
             radioLabel: { width: "100%", textAlign: "center" }
           };
-        })(xn),
-        Pn = a(188),
-        Un = a.n(Pn),
-        Dn = a(293),
-        Ln = a(291),
-        jn = a(290),
-        Fn = a(281),
-        Mn = a(292),
-        Bn = a(61),
-        Hn = a(326),
-        Gn = a.n(Hn),
-        zn = a(63),
-        qn = a(680),
-        Wn = a(310),
-        $n = a(677),
-        Vn = a(669),
-        Qn = a(115),
-        Yn = a(327),
-        Jn = a.n(Yn),
-        Zn = a(328),
-        Kn = a.n(Zn),
-        Xn = a(329),
-        er = a.n(Xn),
-        tr = a(330),
-        ar = a.n(tr),
-        nr = Object(Wn.a)({
+        })(Rn),
+        Un = a(188),
+        Dn = a.n(Un),
+        Ln = a(293),
+        jn = a(291),
+        Fn = a(290),
+        Mn = a(281),
+        Bn = a(292),
+        Hn = a(61),
+        Gn = a(326),
+        zn = a.n(Gn),
+        qn = a(63),
+        Wn = a(680),
+        $n = a(310),
+        Vn = a(677),
+        Qn = a(669),
+        Yn = a(115),
+        Jn = a(327),
+        Zn = a.n(Jn),
+        Kn = a(328),
+        Xn = a.n(Kn),
+        er = a(329),
+        tr = a.n(er),
+        ar = a(330),
+        nr = a.n(ar),
+        rr = Object($n.a)({
           root: {
             flexGrow: 1,
             maxWidth: 600,
@@ -3105,16 +3105,16 @@
             borderRadius: "4px 4px 0 0"
           }
         });
-      function rr(e) {
+      function or(e) {
         for (
           var t,
-            a = nr(),
+            a = rr(),
             n = e.howManyTabs,
             r = [
-              l.a.createElement(Jn.a, { style: { color: "#531078" } }),
-              l.a.createElement(Kn.a, { style: { color: "#531078" } }),
-              l.a.createElement(er.a, { style: { color: "#531078" } }),
-              l.a.createElement(ar.a, { style: { color: "#531078" } })
+              l.a.createElement(Zn.a, { style: { color: "#531078" } }),
+              l.a.createElement(Xn.a, { style: { color: "#531078" } }),
+              l.a.createElement(tr.a, { style: { color: "#531078" } }),
+              l.a.createElement(nr.a, { style: { color: "#531078" } })
             ],
             o = [],
             i = 0;
@@ -3123,20 +3123,20 @@
         )
           o.push(
             ((t = i),
-            l.a.createElement(Vn.a, {
+            l.a.createElement(Qn.a, {
               icon: r[t],
               "aria-label": t + 1,
               id: "tab".concat(t + 1),
               index: t,
               disabled: !0,
-              key: Rt()()
+              key: Pt()()
             }))
           );
         return l.a.createElement(
-          Qn.a,
+          Yn.a,
           { className: a.root, "data-test": "component-navtabs" },
           l.a.createElement(
-            $n.a,
+            Vn.a,
             {
               value: e.tab,
               variant: "fullWidth",
@@ -3148,10 +3148,10 @@
           )
         );
       }
-      var or = a(284),
-        ir = a(285),
-        sr = a(630),
-        cr = function(e) {
+      var ir = a(284),
+        sr = a(285),
+        cr = a(630),
+        lr = function(e) {
           var t = {};
           return (
             [
@@ -3253,8 +3253,8 @@
             t
           );
         },
-        lr = fa,
-        dr = [
+        dr = ba,
+        ur = [
           "",
           "01",
           "02",
@@ -3269,7 +3269,7 @@
           "11",
           "12"
         ],
-        ur = [
+        pr = [
           "",
           "English",
           "ASL (Sign Language)",
@@ -3283,7 +3283,7 @@
           "Arabic",
           "Haitian Creole"
         ],
-        pr = function(e) {
+        mr = function(e) {
           for (
             var t = (function(e) {
                 switch (e) {
@@ -3306,7 +3306,7 @@
             n < 10 ? a.push("0" + n) : a.push(n.toString());
           return a.unshift(""), a;
         },
-        mr = function() {
+        hr = function() {
           for (
             var e = [], t = new Date().getFullYear() - 109;
             t <= new Date().getFullYear();
@@ -3315,16 +3315,16 @@
             e.unshift(t.toString());
           return e.unshift(""), e;
         },
-        hr = Object(ir.a)({
+        gr = Object(sr.a)({
           form: "submissionPage1",
-          validate: cr,
+          validate: lr,
           destroyOnUnmount: !1,
           forceUnregisterOnUnmount: !0,
           enableReinitialize: !0,
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return we(e);
+            return xe(e);
           }
         })(function(e) {
           var t = e.onSubmit,
@@ -3347,7 +3347,7 @@
               l.a.createElement(
                 "div",
                 { className: a.formSection },
-                l.a.createElement(or.a, {
+                l.a.createElement(ir.a, {
                   "data-test": "select-employer-type",
                   label: "Employer Type",
                   name: "employerType",
@@ -3362,7 +3362,7 @@
                   labelWidth: 100
                 }),
                 "" !== d.employerType &&
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     labelWidth: 104,
                     label: "Employer Name",
                     name: "employerName",
@@ -3374,7 +3374,7 @@
                   }),
                 d.employerType &&
                   "adult foster home" === d.employerType.toLowerCase() &&
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Number of Medicaid Residents",
                     name: "medicaidResidents",
                     id: "medicaidResidents",
@@ -3386,11 +3386,11 @@
                     }
                   }),
                 l.a.createElement(
-                  sr.a,
+                  cr.a,
                   { row: !0, classes: { root: a.formGroup2Col } },
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     twocol: !0,
-                    mobile: !Object(qn.c)("sm", u),
+                    mobile: !Object(Wn.c)("sm", u),
                     label: "First Name",
                     name: "firstName",
                     id: "firstName",
@@ -3398,9 +3398,9 @@
                     classes: { input2col: a.input2col },
                     component: s
                   }),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     twocol: !0,
-                    mobile: !Object(qn.c)("sm", u),
+                    mobile: !Object(Wn.c)("sm", u),
                     name: "lastName",
                     id: "lastName",
                     label: "Last Name",
@@ -3410,14 +3410,14 @@
                   })
                 ),
                 l.a.createElement(
-                  zt.a,
+                  qt.a,
                   { className: a.formLabel, component: "legend" },
                   l.a.createElement(_.b, { id: "birthDate" })
                 ),
                 l.a.createElement(
-                  sr.a,
+                  cr.a,
                   { row: !0, classes: { root: a.formGroup2ColShort } },
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Month",
                     name: "mm",
                     id: "mm",
@@ -3426,9 +3426,9 @@
                     formControlName: "formControlDate",
                     component: i,
                     labelWidth: 41,
-                    options: dr
+                    options: ur
                   }),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Day",
                     name: "dd",
                     id: "dd",
@@ -3437,9 +3437,9 @@
                     classes: a,
                     component: i,
                     labelWidth: 24,
-                    options: pr(e)
+                    options: mr(e)
                   }),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Year",
                     name: "yyyy",
                     id: "yyyy",
@@ -3448,10 +3448,10 @@
                     classes: a,
                     component: i,
                     labelWidth: 30,
-                    options: mr()
+                    options: hr()
                   })
                 ),
-                l.a.createElement(or.a, {
+                l.a.createElement(ir.a, {
                   label: "Preferred Language",
                   name: "preferredLanguage",
                   id: "preferredLanguage",
@@ -3459,14 +3459,14 @@
                   classes: a,
                   component: i,
                   labelWidth: 132,
-                  options: ur
+                  options: pr
                 }),
                 l.a.createElement(
-                  zt.a,
+                  qt.a,
                   { className: a.formLabel, component: "legend" },
                   "Address"
                 ),
-                l.a.createElement(or.a, {
+                l.a.createElement(ir.a, {
                   label: "Home Street",
                   name: "homeStreet",
                   id: "homeStreet",
@@ -3475,51 +3475,51 @@
                   component: s
                 }),
                 l.a.createElement(
-                  Gt.a,
+                  zt.a,
                   { className: a.formHelperText },
                   l.a.createElement(_.b, { id: "homeStreetHint" })
                 ),
                 l.a.createElement(
-                  sr.a,
+                  cr.a,
                   {
                     className: a.formGroup,
                     row: !0,
                     classes: { root: a.formGroup2Col }
                   },
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Home City",
                     name: "homeCity",
                     id: "homeCity",
                     type: "text",
                     twocol: !0,
-                    mobile: !Object(qn.c)("sm", u),
+                    mobile: !Object(Wn.c)("sm", u),
                     classes: a,
                     component: s
                   }),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Home State",
                     name: "homeState",
                     id: "homeState",
                     type: "select",
                     short: !0,
-                    mobile: !Object(qn.c)("sm", u),
+                    mobile: !Object(Wn.c)("sm", u),
                     classes: a,
                     component: i,
-                    options: lr,
+                    options: dr,
                     labelWidth: 80
                   }),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Home Zip",
                     name: "homeZip",
                     id: "homeZip",
                     short: !0,
-                    mobile: !Object(qn.c)("sm", u),
+                    mobile: !Object(Wn.c)("sm", u),
                     type: "text",
                     classes: a,
                     component: s
                   })
                 ),
-                l.a.createElement(or.a, {
+                l.a.createElement(ir.a, {
                   label: "Home Email",
                   name: "homeEmail",
                   id: "homeEmail",
@@ -3528,14 +3528,14 @@
                   component: s
                 }),
                 l.a.createElement(
-                  Gt.a,
+                  zt.a,
                   { className: a.formHelperText },
                   l.a.createElement(_.b, { id: "homeEmailHint" })
                 ),
                 l.a.createElement(
-                  sr.a,
+                  cr.a,
                   null,
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Mobile Phone\u2020",
                     name: "mobilePhone",
                     id: "mobilePhone",
@@ -3544,11 +3544,11 @@
                     component: s
                   }),
                   l.a.createElement(
-                    Gt.a,
+                    zt.a,
                     { className: a.formHelperText },
                     l.a.createElement(_.b, { id: "phoneLegalLanguage" })
                   ),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Opt Out Of Receiving Mobile Alerts",
                     name: "textAuthOptOut",
                     id: "textAuthOptOut",
@@ -3567,7 +3567,7 @@
                   "div",
                   { className: a.buttonWrap },
                   l.a.createElement(
-                    Le.a,
+                    je.a,
                     {
                       type: "submit",
                       color: "primary",
@@ -3581,27 +3581,27 @@
             )
           );
         }),
-        gr = Object(p.b)(function(e) {
+        fr = Object(p.b)(function(e) {
           return {
             submission: e.submission,
             initialValues: e.submission.formPage1,
-            formValues: Object(Dn.a)("submissionPage1")(e) || {},
-            submitErrors: Object(Mn.a)("submissionPage1")(e)
+            formValues: Object(Ln.a)("submissionPage1")(e) || {},
+            submitErrors: Object(Bn.a)("submissionPage1")(e)
           };
-        })(hr),
-        fr = Object(qn.a)()(gr),
-        br = a(332),
-        yr = a.n(br),
-        Er = Object(ir.a)({
+        })(gr),
+        br = Object(Wn.a)()(fr),
+        yr = a(332),
+        Er = a.n(yr),
+        Ar = Object(sr.a)({
           form: "submissionPage1",
-          validate: cr,
+          validate: lr,
           destroyOnUnmount: !1,
           forceUnregisterOnUnmount: !0,
           enableReinitialize: !0,
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return we(e);
+            return xe(e);
           }
         })(function(e) {
           var t = e.onSubmit,
@@ -3635,7 +3635,7 @@
                 className: a.form,
                 style: { paddingTop: 40 }
               },
-              l.a.createElement(or.a, {
+              l.a.createElement(ir.a, {
                 formControlName: "controlCheckbox",
                 label: "Agree to Terms of Membership",
                 name: "termsAgree",
@@ -3676,7 +3676,7 @@
                 l.a.createElement(
                   l.a.Fragment,
                   null,
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     formControlName: "controlCheckbox",
                     "data-test": "checkbox-DPA",
                     label: "Direct Pay Authorization",
@@ -3756,7 +3756,7 @@
                 l.a.createElement(
                   l.a.Fragment,
                   null,
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     formControlName: "controlCheckbox",
                     "data-test": "checkbox-DDA",
                     label: "Direct Deposit Authorization",
@@ -3791,7 +3791,7 @@
                   )
                 ),
               l.a.createElement(
-                De.a,
+                Le.a,
                 { component: "h3", className: a.fieldLabel },
                 l.a.createElement(_.b, { id: "signatureTitle" })
               ),
@@ -3799,7 +3799,7 @@
                 l.a.createElement(
                   l.a.Fragment,
                   null,
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Signature",
                     "data-test": "input-signature",
                     name: "signature",
@@ -3809,7 +3809,7 @@
                     component: n
                   }),
                   l.a.createElement(
-                    Gt.a,
+                    zt.a,
                     { className: a.formHelperText },
                     l.a.createElement(_.b, { id: "signatureHint" })
                   )
@@ -3821,7 +3821,7 @@
                   l.a.createElement(
                     "div",
                     { className: a.sigBox },
-                    l.a.createElement(yr.a, {
+                    l.a.createElement(Er.a, {
                       ref: d,
                       penColor: "black",
                       canvasProps: {
@@ -3836,7 +3836,7 @@
                       onChange: p
                     }),
                     l.a.createElement(
-                      Le.a,
+                      je.a,
                       {
                         type: "button",
                         onClick: u,
@@ -3848,7 +3848,7 @@
                     )
                   ),
                   l.a.createElement(
-                    Gt.a,
+                    zt.a,
                     { className: a.formHelperText },
                     "Draw your signature in the box above.\xa0",
                     l.a.createElement(
@@ -3871,7 +3871,7 @@
                 "div",
                 { className: a.buttonWrap },
                 l.a.createElement(
-                  Le.a,
+                  je.a,
                   {
                     type: "button",
                     "data-test": "button-back",
@@ -3885,7 +3885,7 @@
                   "Back"
                 ),
                 l.a.createElement(
-                  Le.a,
+                  je.a,
                   {
                     type: "submit",
                     color: "primary",
@@ -3898,17 +3898,17 @@
             )
           );
         }),
-        Ar = a(178),
-        Sr = Object(ir.a)({
+        Sr = a(178),
+        vr = Object(sr.a)({
           form: "submissionPage1",
-          validate: cr,
+          validate: lr,
           destroyOnUnmount: !1,
           forceUnregisterOnUnmount: !1,
           enableReinitialize: !0,
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return we(e);
+            return xe(e);
           }
         })(function(e) {
           var t = e.onSubmit,
@@ -3952,14 +3952,14 @@
                   "div",
                   { className: a.paymentCopy },
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "p", className: a.body },
                     p
                   )
                 ),
               s.employerType &&
                 "retired" === s.employerType.toLowerCase() &&
-                l.a.createElement(or.a, {
+                l.a.createElement(ir.a, {
                   "data-test": "radio-payment-type",
                   label: "How would you like to pay your union dues?",
                   name: "paymentType",
@@ -3968,8 +3968,8 @@
                   direction: "horiz",
                   className: a.horizRadio,
                   classes: a,
-                  component: Ia,
-                  options: ba
+                  component: Na,
+                  options: ya
                 }),
               c.paymentRequired &&
                 "Card" === c.paymentType &&
@@ -3978,7 +3978,7 @@
                   "div",
                   { "data-test": "component-choose-card" },
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "p", className: a.body },
                     l.a.createElement(
                       _.b,
@@ -3989,7 +3989,7 @@
                     d.activeMethodLast4,
                     "."
                   ),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     "data-test": "radio-which-card",
                     label:
                       "Do you want to use the existing card or add a new one?",
@@ -4002,7 +4002,7 @@
                     classes: a,
                     defaultItem: "Use existing",
                     additionalOnChange: u,
-                    component: Ia,
+                    component: Na,
                     options: ["Use existing", "Add new card"]
                   })
                 ),
@@ -4014,7 +4014,7 @@
                   "div",
                   { "data-test": "component-iframe" },
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "h2", className: a.head },
                     l.a.createElement(
                       _.b,
@@ -4025,7 +4025,7 @@
                   l.a.createElement(
                     "div",
                     { className: a.iframeWrap },
-                    l.a.createElement(Ar.a, {
+                    l.a.createElement(Sr.a, {
                       url: r,
                       width: "100%",
                       height: "100px",
@@ -4041,7 +4041,7 @@
                   "div",
                   { className: a.paymentCopy },
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "h2", className: a.head },
                     l.a.createElement(
                       _.b,
@@ -4050,7 +4050,7 @@
                     )
                   ),
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "p", className: a.body },
                     l.a.createElement(
                       _.b,
@@ -4063,7 +4063,7 @@
                 "div",
                 { className: a.buttonWrapTab3 },
                 l.a.createElement(
-                  Le.a,
+                  je.a,
                   {
                     type: "button",
                     "data-test": "button-back",
@@ -4078,7 +4078,7 @@
                 )
               ),
               l.a.createElement(
-                In,
+                Nn,
                 {
                   type: "submit",
                   color: "primary",
@@ -4091,21 +4091,21 @@
             )
           );
         }),
-        vr = Object(p.b)(function(e) {
+        Cr = Object(p.b)(function(e) {
           return {
             submission: e.submission,
             initialValues: e.submission.formPage1,
-            formValues: Object(Dn.a)("submissionPage1")(e) || {}
+            formValues: Object(Ln.a)("submissionPage1")(e) || {}
           };
-        })(Sr),
-        Cr = a(672),
-        Or = a(673),
-        _r = a(674),
-        Tr = a(228),
-        Ir = a.n(Tr),
-        Nr = a(333),
-        kr = a.n(Nr),
-        wr = Object(ir.a)({
+        })(vr),
+        Or = a(672),
+        _r = a(673),
+        Tr = a(674),
+        Ir = a(228),
+        Nr = a.n(Ir),
+        kr = a(333),
+        wr = a.n(kr),
+        xr = Object(sr.a)({
           form: "submissionPage1",
           validate: function(e) {
             var t = {};
@@ -4170,7 +4170,7 @@
           keepDirtyOnReinitialize: !0,
           updateUnregisteredFields: !0,
           onSubmitFail: function(e) {
-            return we(e);
+            return xe(e);
           }
         })(function(e) {
           var t = e.handleCAPESubmit,
@@ -4211,7 +4211,7 @@
                 "div",
                 { className: a.paymentCopy },
                 l.a.createElement(
-                  De.a,
+                  Le.a,
                   { component: "h2", className: a.head },
                   l.a.createElement(
                     _.b,
@@ -4220,7 +4220,7 @@
                   )
                 ),
                 l.a.createElement(
-                  De.a,
+                  Le.a,
                   { component: "p", className: a.subhead },
                   l.a.createElement(
                     _.b,
@@ -4229,7 +4229,7 @@
                   )
                 ),
                 l.a.createElement(
-                  De.a,
+                  Le.a,
                   { component: "p", className: a.body },
                   l.a.createElement(
                     _.b,
@@ -4269,16 +4269,16 @@
                   )
                 ),
                 l.a.createElement(
-                  Cr.a,
+                  Or.a,
                   { className: a.card },
                   l.a.createElement(
                     "div",
                     { className: a.details },
                     l.a.createElement(
-                      Or.a,
+                      _r.a,
                       { className: a.content },
                       l.a.createElement(
-                        De.a,
+                        Le.a,
                         {
                           component: "h5",
                           variant: "h5",
@@ -4293,7 +4293,7 @@
                       l.a.createElement(
                         "div",
                         { style: { position: "relative" } },
-                        l.a.createElement(Ir.a, {
+                        l.a.createElement(Nr.a, {
                           style: {
                             color: "#531078",
                             transform: "scaleX(-1)",
@@ -4304,7 +4304,7 @@
                           }
                         }),
                         l.a.createElement(
-                          De.a,
+                          Le.a,
                           { component: "p", className: a.pullQuote },
                           l.a.createElement(
                             _.b,
@@ -4312,7 +4312,7 @@
                             "I can\u2019t write big checks. But I contribute what I can each month to CAPE. And when we put all of our resources together, we have shown we can elect legislators in Oregon who will fight for working families and our clients."
                           )
                         ),
-                        l.a.createElement(Ir.a, {
+                        l.a.createElement(Nr.a, {
                           style: {
                             color: "#531078",
                             position: "absolute",
@@ -4323,7 +4323,7 @@
                         })
                       ),
                       l.a.createElement(
-                        De.a,
+                        Le.a,
                         { component: "p", className: a.quoteAttr },
                         l.a.createElement(
                           _.b,
@@ -4333,9 +4333,9 @@
                       )
                     )
                   ),
-                  l.a.createElement(_r.a, {
+                  l.a.createElement(Tr.a, {
                     className: a.cover,
-                    image: kr.a,
+                    image: wr.a,
                     title: "Deffo Mebrat"
                   })
                 )
@@ -4344,7 +4344,7 @@
                 "div",
                 { className: a.paymentCopy },
                 l.a.createElement(
-                  De.a,
+                  Le.a,
                   { component: "h2", className: a.head },
                   l.a.createElement(
                     _.b,
@@ -4358,7 +4358,7 @@
                   l.a.createElement(
                     "div",
                     { className: a.suggestedAmountBoxes },
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       "data-test": "radio-cape-amount",
                       label: "Monthly donation amount",
                       name: "capeAmount",
@@ -4367,7 +4367,7 @@
                       direction: "horiz",
                       className: a.horizRadio,
                       classes: a,
-                      component: Na,
+                      component: ka,
                       options: [10, 13, 15, "Other"],
                       additionalOnChange: f
                     })
@@ -4375,7 +4375,7 @@
                 )
               ),
               "Other" === s.capeAmount &&
-                l.a.createElement(or.a, {
+                l.a.createElement(ir.a, {
                   "data-test": "field-other-amount",
                   label: "Monthly Donation Amount",
                   name: "capeAmountOther",
@@ -4390,11 +4390,11 @@
                   "div",
                   { "data-test": "form-contact-info" },
                   l.a.createElement(
-                    sr.a,
+                    cr.a,
                     { row: !0, classes: { root: a.formGroup2Col } },
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       twocol: !0,
-                      mobile: !Object(qn.c)("sm", u),
+                      mobile: !Object(Wn.c)("sm", u),
                       label: "First Name",
                       name: "firstName",
                       id: "firstName",
@@ -4402,9 +4402,9 @@
                       classes: { input2col: a.input2col },
                       component: m
                     }),
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       twocol: !0,
-                      mobile: !Object(qn.c)("sm", u),
+                      mobile: !Object(Wn.c)("sm", u),
                       name: "lastName",
                       id: "lastName",
                       label: "Last Name",
@@ -4414,11 +4414,11 @@
                     })
                   ),
                   l.a.createElement(
-                    zt.a,
+                    qt.a,
                     { className: a.formLabel, component: "legend" },
                     "Address"
                   ),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Home Street",
                     name: "homeStreet",
                     id: "homeStreet",
@@ -4427,46 +4427,46 @@
                     component: m
                   }),
                   l.a.createElement(
-                    sr.a,
+                    cr.a,
                     {
                       className: a.formGroup,
                       row: !0,
                       classes: { root: a.formGroup2Col }
                     },
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       label: "Home City",
                       name: "homeCity",
                       id: "homeCity",
                       type: "text",
                       twocol: !0,
-                      mobile: !Object(qn.c)("sm", u),
+                      mobile: !Object(Wn.c)("sm", u),
                       classes: a,
                       component: m
                     }),
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       label: "Home State",
                       name: "homeState",
                       id: "homeState",
                       type: "select",
                       short: !0,
-                      mobile: !Object(qn.c)("sm", u),
+                      mobile: !Object(Wn.c)("sm", u),
                       classes: a,
                       component: p,
-                      options: fa,
+                      options: ba,
                       labelWidth: 80
                     }),
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       label: "Home Zip",
                       name: "homeZip",
                       id: "homeZip",
                       short: !0,
-                      mobile: !Object(qn.c)("sm", u),
+                      mobile: !Object(Wn.c)("sm", u),
                       type: "text",
                       classes: a,
                       component: m
                     })
                   ),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     label: "Home Email",
                     name: "homeEmail",
                     id: "homeEmail",
@@ -4475,14 +4475,14 @@
                     component: m
                   }),
                   l.a.createElement(
-                    Gt.a,
+                    zt.a,
                     { className: a.formHelperText },
                     l.a.createElement(_.b, { id: "homeEmailHint" })
                   ),
                   l.a.createElement(
-                    sr.a,
+                    cr.a,
                     null,
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       label: "Mobile Phone\u2020",
                       name: "mobilePhone",
                       id: "mobilePhone",
@@ -4491,11 +4491,11 @@
                       component: m
                     }),
                     l.a.createElement(
-                      Gt.a,
+                      zt.a,
                       { className: a.formHelperText },
                       l.a.createElement(_.b, { id: "phoneLegalLanguage" })
                     ),
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       label: "Opt Out Of Receiving Mobile Alerts",
                       name: "textAuthOptOut",
                       id: "textAuthOptOut",
@@ -4505,7 +4505,7 @@
                       component: h
                     })
                   ),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     "data-test": "select-employer-type",
                     label: "Employer Type",
                     name: "employerType",
@@ -4520,7 +4520,7 @@
                     labelWidth: 100
                   }),
                   "" !== s.employerType &&
-                    l.a.createElement(or.a, {
+                    l.a.createElement(ir.a, {
                       labelWidth: 104,
                       label: "Employer Name",
                       name: "employerName",
@@ -4531,7 +4531,7 @@
                       options: S
                     })
                 ),
-              l.a.createElement(or.a, {
+              l.a.createElement(ir.a, {
                 label: "Job Title",
                 name: "jobTitle",
                 id: "jobTitle",
@@ -4546,7 +4546,7 @@
                   "div",
                   { "data-test": "component-choose-card" },
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "p", className: a.body },
                     l.a.createElement(
                       _.b,
@@ -4557,7 +4557,7 @@
                     d.activeMethodLast4,
                     "."
                   ),
-                  l.a.createElement(or.a, {
+                  l.a.createElement(ir.a, {
                     "data-test": "radio-which-card",
                     label:
                       "Do you want to use the existing card or add a new one?",
@@ -4570,7 +4570,7 @@
                     classes: a,
                     defaultItem: "Use existing",
                     additionalOnChange: g,
-                    component: Ia,
+                    component: Na,
                     options: ["Use existing", "Add new card"]
                   })
                 ),
@@ -4581,7 +4581,7 @@
                   "div",
                   { "data-test": "component-iframe" },
                   l.a.createElement(
-                    De.a,
+                    Le.a,
                     { component: "h2", className: a.head },
                     l.a.createElement(
                       _.b,
@@ -4592,7 +4592,7 @@
                   l.a.createElement(
                     "div",
                     { className: a.iframeWrap },
-                    l.a.createElement(Ar.a, {
+                    l.a.createElement(Sr.a, {
                       url: r,
                       width: "100%",
                       height: "100px",
@@ -4650,7 +4650,7 @@
                   "div",
                   { className: a.buttonWrapTab3 },
                   l.a.createElement(
-                    Le.a,
+                    je.a,
                     {
                       type: "button",
                       "data-test": "button-back",
@@ -4665,7 +4665,7 @@
                   )
                 ),
               l.a.createElement(
-                In,
+                Nn,
                 {
                   type: "submit",
                   color: "primary",
@@ -4678,18 +4678,18 @@
             )
           );
         }),
-        xr = Object(p.b)(function(e) {
+        Rr = Object(p.b)(function(e) {
           return {
             submission: e.submission,
             initialValues: e.submission.formPage1,
-            formValues: Object(Dn.a)("submissionPage1")(e) || {}
+            formValues: Object(Ln.a)("submissionPage1")(e) || {}
           };
-        })(wr),
-        Rr = Object(qn.a)()(xr),
-        Pr = a(179),
-        Ur = a(180),
-        Dr = a.n(Ur),
-        Lr = (function(e) {
+        })(xr),
+        Pr = Object(Wn.a)()(Rr),
+        Ur = a(179),
+        Dr = a(180),
+        Lr = a.n(Dr),
+        jr = (function(e) {
           function t(e) {
             var a;
             return (
@@ -4698,7 +4698,7 @@
                 a.props.classes),
               (a.renderBodyCopy = function(e) {
                 var t = [];
-                Object.keys(Pr).forEach(function(a) {
+                Object.keys(Ur).forEach(function(a) {
                   a.includes("bodyCopy".concat(e)) && t.push(a);
                 });
                 var n = l.a.createElement(
@@ -4713,7 +4713,7 @@
                   })
                 );
                 return l.a.createElement(
-                  De.a,
+                  Le.a,
                   {
                     variant: "body1",
                     component: "div",
@@ -4726,8 +4726,8 @@
                 );
               }),
               (a.state = {
-                headline: { text: ke.headline, id: 0 },
-                body: { text: ke.body, id: 0 },
+                headline: { text: we.headline, id: 0 },
+                body: { text: we.body, id: 0 },
                 image: null
               }),
               a
@@ -4740,7 +4740,7 @@
                 key: "componentDidMount",
                 value: function() {
                   var e = this,
-                    t = Re.a.parse(this.props.location.search);
+                    t = Pe.a.parse(this.props.location.search);
                   (t.h || t.b || t.i) &&
                     [t.h, t.i, t.b]
                       .filter(function(e) {
@@ -4788,18 +4788,18 @@
                           "data-test": "component-welcome-info"
                         },
                         l.a.createElement(
-                          Cr.a,
+                          Or.a,
                           { className: this.classes.welcomeCard },
-                          l.a.createElement(_r.a, {
+                          l.a.createElement(Tr.a, {
                             className: this.classes.media,
                             title: "Welcome Photo",
                             alt: "Welcome Photo",
                             image: this.state.image
                               ? this.state.image.text
-                              : Dr.a
+                              : Lr.a
                           }),
                           l.a.createElement(
-                            De.a,
+                            Le.a,
                             {
                               variant: "h3",
                               align: "left",
@@ -4817,7 +4817,7 @@
                             "div",
                             { className: this.classes.buttonWrap },
                             l.a.createElement(
-                              Le.a,
+                              je.a,
                               {
                                 type: "button",
                                 onClick: function() {
@@ -4838,7 +4838,7 @@
             t
           );
         })(l.a.Component),
-        jr = Object(k.a)(function(e) {
+        Fr = Object(k.a)(function(e) {
           var t, a;
           return {
             root: ((t = {}),
@@ -4884,15 +4884,15 @@
             function(e) {
               return { apiContent: Object(O.b)(i, e) };
             }
-          )(Lr)
+          )(jr)
         ),
-        Fr = ya,
-        Mr = function(e, t) {
+        Mr = Ea,
+        Br = function(e, t) {
           return Object.keys(e).find(function(a) {
             return e[a].toLowerCase() === t.toLowerCase();
           });
         },
-        Br = (function(e) {
+        Hr = (function(e) {
           function t(e) {
             var a;
             return (
@@ -4908,9 +4908,9 @@
                     target: { name: "paymentMethodAdded", value: !0 }
                   });
               }),
-              (a.renderTextField = Ca),
-              (a.renderSelect = _a),
-              (a.renderCheckbox = Ta),
+              (a.renderTextField = Oa),
+              (a.renderSelect = Ta),
+              (a.renderCheckbox = Ia),
               (a.loadEmployersPicklist = function() {
                 var e = a.props.submission.employerObjects
                     ? a.props.submission.employerObjects.map(function(e) {
@@ -4919,8 +4919,8 @@
                           : e.Sub_Division__c;
                       })
                     : [""],
-                  t = (Object(zn.a)(new Set(e)) || [""]).map(function(e) {
-                    return Fr[e] ? Fr[e] : "";
+                  t = (Object(qn.a)(new Set(e)) || [""]).map(function(e) {
+                    return Mr[e] ? Mr[e] : "";
                   }) || [""];
                 return t.unshift(""), t;
               }),
@@ -4936,7 +4936,7 @@
                 ) {
                   var n = (t
                     ? e.filter(function(e) {
-                        return e.Sub_Division__c === Mr(Fr, t);
+                        return e.Sub_Division__c === Br(Mr, t);
                       })
                     : [{ Name: "" }]
                   ).map(function(e) {
@@ -5364,7 +5364,7 @@
                       { Name: "", Sub_Division__c: "" }
                     ],
                     n = this.updateEmployersPicklist() || [""],
-                    r = Re.a.parse(this.props.location.search),
+                    r = Pe.a.parse(this.props.location.search),
                     o = !this.props.submission.formPage1.paymentRequired;
                   return l.a.createElement(
                     "div",
@@ -5374,7 +5374,7 @@
                     },
                     r.cape
                       ? l.a.createElement(
-                          Rr,
+                          Pr,
                           Object.assign({}, this.props, {
                             standAlone: !0,
                             verifyCallback: this.verifyCallback,
@@ -5399,7 +5399,7 @@
                           l.a.Fragment,
                           null,
                           "number" !== typeof this.props.tab &&
-                            l.a.createElement(jr, {
+                            l.a.createElement(Fr, {
                               location: this.props.location,
                               history: this.props.history,
                               handleTab: this.props.handleTab,
@@ -5417,10 +5417,10 @@
                                     ? { display: "block" }
                                     : { display: "none" }
                               },
-                              l.a.createElement(rr, this.props),
+                              l.a.createElement(or, this.props),
                               0 === this.props.tab &&
                                 l.a.createElement(
-                                  fr,
+                                  br,
                                   Object.assign({}, this.props, {
                                     onSubmit: function() {
                                       return e.props.handleTab(1);
@@ -5440,7 +5440,7 @@
                                 ),
                               1 === this.props.tab &&
                                 l.a.createElement(
-                                  Er,
+                                  Ar,
                                   Object.assign({}, this.props, {
                                     onSubmit: function() {
                                       return e.props.handleTab(2);
@@ -5456,7 +5456,7 @@
                               2 === this.props.tab &&
                                 4 === this.props.howManyTabs &&
                                 l.a.createElement(
-                                  vr,
+                                  Cr,
                                   Object.assign({}, this.props, {
                                     onSubmit: this.handleSubmit,
                                     classes: t,
@@ -5481,7 +5481,7 @@
                                 (2 === this.props.tab &&
                                   3 === this.props.howManyTabs)) &&
                                 l.a.createElement(
-                                  Rr,
+                                  Pr,
                                   Object.assign({}, this.props, {
                                     classes: t,
                                     loading: this.props.submission.loading,
@@ -5506,19 +5506,19 @@
             t
           );
         })(l.a.Component),
-        Hr = Object(qn.a)()(Object(_.e)(Br)),
-        Gr = "GET_SF_CONTACT_REQUEST",
-        zr = "GET_SF_CONTACT_SUCCESS",
-        qr = "GET_SF_CONTACT_FAILURE";
-      function Wr(e) {
+        Gr = Object(Wn.a)()(Object(_.e)(Hr)),
+        zr = "GET_SF_CONTACT_REQUEST",
+        qr = "GET_SF_CONTACT_SUCCESS",
+        Wr = "GET_SF_CONTACT_FAILURE";
+      function $r(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sf/").concat(e),
           method: "GET",
           types: [
-            Gr,
             zr,
+            qr,
             {
-              type: qr,
+              type: Wr,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5530,18 +5530,18 @@
           headers: { "Content-Type": "application/json" }
         });
       }
-      var $r = "CREATE_SF_CONTACT_REQUEST",
-        Vr = "CREATE_SF_CONTACT_SUCCESS",
-        Qr = "CREATE_SF_CONTACT_FAILURE";
-      function Yr(e) {
+      var Vr = "CREATE_SF_CONTACT_REQUEST",
+        Qr = "CREATE_SF_CONTACT_SUCCESS",
+        Yr = "CREATE_SF_CONTACT_FAILURE";
+      function Jr(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sf"),
           method: "POST",
           types: [
-            $r,
             Vr,
+            Qr,
             {
-              type: Qr,
+              type: Yr,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5554,18 +5554,18 @@
           body: JSON.stringify(e)
         });
       }
-      var Jr = "UPDATE_SF_CONTACT_REQUEST",
-        Zr = "UPDATE_SF_CONTACT_SUCCESS",
-        Kr = "UPDATE_SF_CONTACT_FAILURE";
-      function Xr(e, t) {
+      var Zr = "UPDATE_SF_CONTACT_REQUEST",
+        Kr = "UPDATE_SF_CONTACT_SUCCESS",
+        Xr = "UPDATE_SF_CONTACT_FAILURE";
+      function eo(e, t) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sf/").concat(e),
           method: "PUT",
           types: [
-            Jr,
             Zr,
+            Kr,
             {
-              type: Kr,
+              type: Xr,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5578,18 +5578,18 @@
           body: JSON.stringify(t)
         });
       }
-      var eo = "LOOKUP_SF_CONTACT_REQUEST",
-        to = "LOOKUP_SF_CONTACT_SUCCESS",
-        ao = "LOOKUP_SF_CONTACT_FAILURE";
-      function no(e) {
+      var to = "LOOKUP_SF_CONTACT_REQUEST",
+        ao = "LOOKUP_SF_CONTACT_SUCCESS",
+        no = "LOOKUP_SF_CONTACT_FAILURE";
+      function ro(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sflookup"),
           method: "PUT",
           types: [
-            eo,
             to,
+            ao,
             {
-              type: ao,
+              type: no,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5602,18 +5602,18 @@
           body: JSON.stringify(e)
         });
       }
-      var ro = "CREATE_SF_OMA_REQUEST",
-        oo = "CREATE_SF_OMA_SUCCESS",
-        io = "CREATE_SF_OMA_FAILURE";
-      function so(e) {
+      var oo = "CREATE_SF_OMA_REQUEST",
+        io = "CREATE_SF_OMA_SUCCESS",
+        so = "CREATE_SF_OMA_FAILURE";
+      function co(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sfOMA"),
           method: "POST",
           types: [
-            ro,
             oo,
+            io,
             {
-              type: io,
+              type: so,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5626,18 +5626,18 @@
           body: JSON.stringify(e)
         });
       }
-      var co = "CREATE_SF_DJR_REQUEST",
-        lo = "CREATE_SF_DJR_SUCCESS",
-        uo = "CREATE_SF_DJR_FAILURE";
-      function po(e) {
+      var lo = "CREATE_SF_DJR_REQUEST",
+        uo = "CREATE_SF_DJR_SUCCESS",
+        po = "CREATE_SF_DJR_FAILURE";
+      function mo(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sfDJR"),
           method: "POST",
           types: [
-            co,
             lo,
+            uo,
             {
-              type: uo,
+              type: po,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5650,18 +5650,18 @@
           body: JSON.stringify(e)
         });
       }
-      var mo = "UPDATE_SF_DJR_REQUEST",
-        ho = "UPDATE_SF_DJR_SUCCESS",
-        go = "UPDATE_SF_DJR_FAILURE";
-      function fo(e, t) {
+      var ho = "UPDATE_SF_DJR_REQUEST",
+        go = "UPDATE_SF_DJR_SUCCESS",
+        fo = "UPDATE_SF_DJR_FAILURE";
+      function bo(e, t) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sfDJR/").concat(e),
           method: "PUT",
           types: [
-            mo,
             ho,
+            go,
             {
-              type: go,
+              type: fo,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5674,18 +5674,18 @@
           body: JSON.stringify(t)
         });
       }
-      var bo = "GET_SF_DJR_REQUEST",
-        yo = "GET_SF_DJR_SUCCESS",
-        Eo = "GET_SF_DJR_FAILURE";
-      function Ao(e) {
+      var yo = "GET_SF_DJR_REQUEST",
+        Eo = "GET_SF_DJR_SUCCESS",
+        Ao = "GET_SF_DJR_FAILURE";
+      function So(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sfDJR/").concat(e),
           method: "GET",
           types: [
-            bo,
             yo,
+            Eo,
             {
-              type: Eo,
+              type: Ao,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5697,18 +5697,18 @@
           headers: { "Content-Type": "application/json" }
         });
       }
-      var So = "CREATE_SF_CAPE_REQUEST",
-        vo = "CREATE_SF_CAPE_SUCCESS",
-        Co = "CREATE_SF_CAPE_FAILURE";
-      function Oo(e) {
+      var vo = "CREATE_SF_CAPE_REQUEST",
+        Co = "CREATE_SF_CAPE_SUCCESS",
+        Oo = "CREATE_SF_CAPE_FAILURE";
+      function _o(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sfCAPE"),
           method: "POST",
           types: [
-            So,
             vo,
+            Co,
             {
-              type: Co,
+              type: Oo,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5721,18 +5721,18 @@
           body: JSON.stringify(e)
         });
       }
-      var _o = "GET_SF_EMPLOYERS_REQUEST",
-        To = "GET_SF_EMPLOYERS_SUCCESS",
-        Io = "GET_SF_EMPLOYERS_FAILURE";
-      function No() {
+      var To = "GET_SF_EMPLOYERS_REQUEST",
+        Io = "GET_SF_EMPLOYERS_SUCCESS",
+        No = "GET_SF_EMPLOYERS_FAILURE";
+      function ko() {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/sfaccts"),
           method: "GET",
           types: [
-            _o,
             To,
+            Io,
             {
-              type: Io,
+              type: No,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5744,18 +5744,18 @@
           headers: { "Content-Type": "application/json" }
         });
       }
-      var ko = "GET_UNIONISE_TOKEN_REQUEST",
-        wo = "GET_UNIONISE_TOKEN_SUCCESS",
-        xo = "GET_UNIONISE_TOKEN_FAILURE";
-      function Ro() {
+      var wo = "GET_UNIONISE_TOKEN_REQUEST",
+        xo = "GET_UNIONISE_TOKEN_SUCCESS",
+        Ro = "GET_UNIONISE_TOKEN_FAILURE";
+      function Po() {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "".concat(H, "/api/unionise/gettoken"),
           method: "POST",
           types: [
-            ko,
             wo,
+            xo,
             {
-              type: xo,
+              type: Ro,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5766,18 +5766,18 @@
           ]
         });
       }
-      var Po = "GET_IFRAME_URL_REQUEST",
-        Uo = "GET_IFRAME_URL_SUCCESS",
-        Do = "GET_IFRAME_URL_FAILURE";
-      function Lo(e) {
+      var Uo = "GET_IFRAME_URL_REQUEST",
+        Do = "GET_IFRAME_URL_SUCCESS",
+        Lo = "GET_IFRAME_URL_FAILURE";
+      function jo(e) {
         return Object(v.a)({}, F.RSAA, {
           endpoint: "https://lab.unioni.se/web/signup/create-member",
           method: "POST",
           types: [
-            Po,
             Uo,
+            Do,
             {
-              type: Do,
+              type: Lo,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5790,10 +5790,10 @@
           body: JSON.stringify(e)
         });
       }
-      var jo = "GET_IFRAME_EXISTING_REQUEST",
-        Fo = "GET_IFRAME_EXISTING_SUCCESS",
-        Mo = "GET_IFRAME_EXISTING_FAILURE";
-      function Bo(e, t) {
+      var Fo = "GET_IFRAME_EXISTING_REQUEST",
+        Mo = "GET_IFRAME_EXISTING_SUCCESS",
+        Bo = "GET_IFRAME_EXISTING_FAILURE";
+      function Ho(e, t) {
         var a = JSON.stringify({ memberShortId: t }),
           n = {
             "Content-Type": "application/json",
@@ -5803,10 +5803,10 @@
           endpoint: "".concat(H, "/api/unionise/iframe"),
           method: "POST",
           types: [
-            jo,
             Fo,
+            Mo,
             {
-              type: Mo,
+              type: Bo,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
                   var t = "Sorry, something went wrong :(";
@@ -5819,7 +5819,7 @@
           headers: n
         });
       }
-      var Ho = Object(k.a)(function(e) {
+      var Go = Object(k.a)(function(e) {
         return {
           modalButtonRed: {
             backgroundColor: "#b71c1c",
@@ -5851,7 +5851,7 @@
           "div",
           null,
           l.a.createElement(
-            _t.a,
+            Tt.a,
             {
               "data-test": "component-modal",
               open: e.open,
@@ -5860,17 +5860,17 @@
               "aria-describedby": "alert-dialog-description"
             },
             l.a.createElement(
-              It.a,
+              Nt.a,
               { id: "alert-dialog-title" },
               l.a.createElement(_.b, { id: "modalTitle" }),
               " ",
               "".concat(e.fullName, "?")
             ),
             l.a.createElement(
-              Nt.a,
+              kt.a,
               null,
               l.a.createElement(
-                kt.a,
+                wt.a,
                 { id: "alert-dialog-description" },
                 l.a.createElement(_.b, { id: "modalDescription" }),
                 " ",
@@ -5878,10 +5878,10 @@
               )
             ),
             l.a.createElement(
-              Tt.a,
+              It.a,
               { className: t.dialogActionsOverride },
               l.a.createElement(
-                Le.a,
+                je.a,
                 {
                   "data-test": "button-link-request",
                   onClick: function() {
@@ -5894,7 +5894,7 @@
                 l.a.createElement(_.b, { id: "modalErrorButtonPostName" })
               ),
               l.a.createElement(
-                Le.a,
+                je.a,
                 {
                   onClick: e.handleClose,
                   className: t.modalButtonGreen,
@@ -5908,7 +5908,7 @@
           )
         );
       });
-      function Go(e, t) {
+      function zo(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -5920,16 +5920,16 @@
         }
         return a;
       }
-      function zo(e) {
+      function qo(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? Go(a, !0).forEach(function(t) {
+            ? zo(a, !0).forEach(function(t) {
                 Object(v.a)(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : Go(a).forEach(function(t) {
+            : zo(a).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -5939,7 +5939,7 @@
         }
         return e;
       }
-      var qo = (function(e) {
+      var Wo = (function(e) {
           function t(e) {
             var a;
             return (
@@ -5966,14 +5966,14 @@
               }),
               (a.trimSignature = function() {
                 var e = a.props.sigBox.current.toDataURL("image/jpeg");
-                if (e === ka)
+                if (e === wa)
                   throw new Error(
                     "Please draw your signature or click the link to type it instead"
                   );
                 return a.dataURItoBlob(e);
               }),
               (a.changeTab = function(e) {
-                var t = zo({}, a.state);
+                var t = qo({}, a.state);
                 if (((t.tab = e), 2 === e)) {
                   var n = a.props.submission.formPage1;
                   if (
@@ -5983,12 +5983,12 @@
                   )
                     return (
                       a.props.actions.setSpinner(),
-                      a.setState(zo({}, t), function() {
+                      a.setState(qo({}, t), function() {
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       })
                     );
                 }
-                a.setState(zo({}, t), function() {
+                a.setState(qo({}, t), function() {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 });
               }),
@@ -6031,7 +6031,7 @@
                 key: "componentDidMount",
                 value: function() {
                   var e = this,
-                    t = Re.a.parse(this.props.location.search);
+                    t = Pe.a.parse(this.props.location.search);
                   if (t.id) {
                     var a = t.id;
                     this.props.apiSF
@@ -6042,7 +6042,7 @@
                           e.handleOpen();
                       })
                       .catch(function(e) {
-                        return ga(e);
+                        return fa(e);
                       });
                   }
                 }
@@ -6050,15 +6050,15 @@
               {
                 key: "handleOpen",
                 value: function() {
-                  var e = zo({}, this.state);
-                  (e.open = !0), this.setState(zo({}, e));
+                  var e = qo({}, this.state);
+                  (e.open = !0), this.setState(qo({}, e));
                 }
               },
               {
                 key: "handleClose",
                 value: function() {
-                  var e = zo({}, this.state);
-                  (e.open = !1), this.setState(zo({}, e));
+                  var e = qo({}, this.state);
+                  (e.open = !1), this.setState(qo({}, e));
                 }
               },
               {
@@ -6070,7 +6070,7 @@
                       i = ""
                         .concat(e, "_")
                         .concat(t, "__signature__")
-                        .concat(Ea(new Date()), ".jpg");
+                        .concat(Aa(new Date()), ".jpg");
                     o instanceof Blob && (o.name = i),
                       a.props.apiContent
                         .uploadImage(o)
@@ -6078,7 +6078,7 @@
                           "UPLOAD_IMAGE_FAILURE" === e.type ||
                           a.props.content.error
                             ? n(
-                                ga(
+                                fa(
                                   a.props.content.error ||
                                     "An error occured while trying to save your Signature. Please try typing it instead"
                                 )
@@ -6086,7 +6086,7 @@
                             : n(e.payload.content);
                         })
                         .catch(function(e) {
-                          n(ga(e));
+                          n(fa(e));
                         });
                   });
                 }
@@ -6157,10 +6157,10 @@
                               return e.abrupt(
                                 "return",
                                 new Promise(function(e) {
-                                  var n = zo({}, t),
-                                    r = Aa(t);
+                                  var n = qo({}, t),
+                                    r = Sa(t);
                                   n.birthdate = r;
-                                  var o = Sa(
+                                  var o = va(
                                     a.props.submission.employerObjects,
                                     t.employerName
                                   );
@@ -6192,16 +6192,16 @@
                 value: function(e) {
                   var t = this;
                   return new Promise(function(a) {
-                    var n = zo({}, e);
+                    var n = qo({}, e);
                     (n.direct_pay_auth = e.directPayAuth
-                      ? Ea(new Date())
+                      ? Aa(new Date())
                       : null),
                       (n.direct_deposit_auth = e.directDepositAuth
-                        ? Ea(new Date())
+                        ? Aa(new Date())
                         : null),
                       (n.legalLanguage =
                         t.props.submission.formPage1.legalLanguage);
-                    var r = Re.a.parse(t.props.location.search);
+                    var r = Pe.a.parse(t.props.location.search);
                     (n.campaignSource =
                       r && r.s ? r.s : "Direct seiu503signup"),
                       e.salesforceId ||
@@ -6284,7 +6284,7 @@
                                   (T = n.signature),
                                   (I = n.reCaptchaValue),
                                   e.abrupt("return", {
-                                    ip_address: Un()(),
+                                    ip_address: Dn()(),
                                     submission_date: new Date(),
                                     agency_number: c,
                                     birthdate: i,
@@ -6354,7 +6354,7 @@
                                   this.props.apiSubmission
                                     .addSubmission(a)
                                     .catch(function(e) {
-                                      return console.log(e), ga(e);
+                                      return console.log(e), fa(e);
                                     })
                                 );
                               case 6:
@@ -6394,7 +6394,7 @@
                                             e
                                           ),
                                           console.log(e),
-                                          ga(e)
+                                          fa(e)
                                         );
                                       })
                                   )
@@ -6470,7 +6470,7 @@
                                   this.props.apiSF
                                     .createSFContact(y)
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     })
                                 );
                               case 7:
@@ -6543,7 +6543,7 @@
                                   this.props.apiSF
                                     .updateSFContact(y, E)
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     })
                                 );
                               case 8:
@@ -6572,11 +6572,11 @@
                       .then(function(t) {
                         ("GET_SF_DJR_FAILURE" === t.type ||
                           e.props.submission.error) &&
-                          a(ga(e.props.submission.error)),
+                          a(fa(e.props.submission.error)),
                           a(t);
                       })
                       .catch(function(e) {
-                        a(ga(e));
+                        a(fa(e));
                       });
                   });
                 }
@@ -6613,10 +6613,10 @@
                                         "CREATE_SF_DJR_FAILURE" === e.type ||
                                         n.props.submission.error
                                       )
-                                        return ga(n.props.submission.error);
+                                        return fa(n.props.submission.error);
                                     })
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     });
                               case 3:
                               case "end":
@@ -6665,10 +6665,10 @@
                                         "UPDATE_SF_DJR_FAILURE" === e.type ||
                                         r.props.submission.error
                                       )
-                                        return ga(r.props.submission.error);
+                                        return fa(r.props.submission.error);
                                     })
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     });
                               case 4:
                               case "end":
@@ -6701,7 +6701,7 @@
                                 );
                               case 2:
                                 return (
-                                  (t = Un()()),
+                                  (t = Dn()()),
                                   (a = this.props.submission.formPage1
                                     .reCaptchaValue),
                                   (e.next = 6),
@@ -6711,7 +6711,7 @@
                                       return (
                                         console.log("recaptcha failed"),
                                         console.log(e),
-                                        ga(
+                                        fa(
                                           "ReCaptcha validation failed, please reload the page and try again."
                                         )
                                       );
@@ -6766,14 +6766,14 @@
                                           "GET_IFRAME_EXISTING_FAILURE" ===
                                             e.type
                                         )
-                                          return ga(
+                                          return fa(
                                             e.payload.message ||
                                               n.props.submission.error ||
                                               "Sorry, something went wrong. Please try again."
                                           );
                                       })
                                       .catch(function(e) {
-                                        return ga(e);
+                                        return fa(e);
                                       })
                                   )
                                 );
@@ -6808,8 +6808,8 @@
                             switch ((e.prev = e.next)) {
                               case 0:
                                 (t = this.props.formValues),
-                                  (a = Aa(t)),
-                                  "en" === (n = Gn()(t.preferredLanguage)) &&
+                                  (a = Sa(t)),
+                                  "en" === (n = zn()(t.preferredLanguage)) &&
                                     (n = "en-US"),
                                   "es" === n && (n = "es-US"),
                                   (r = {
@@ -6838,14 +6838,14 @@
                                         e.payload.message ||
                                         "GET_IFRAME_URL_FAILURE" === e.type
                                       )
-                                        return ga(
+                                        return fa(
                                           e.payload.message ||
                                             o.props.submission.error ||
                                             "Sorry, something went wrong. Please try again."
                                         );
                                     })
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     });
                               case 7:
                               case "end":
@@ -6881,7 +6881,7 @@
                                       return !e.payload.access_token ||
                                         e.payload.message ||
                                         "GET_UNIONISE_TOKEN_FAILURE" === e.type
-                                        ? ga(
+                                        ? fa(
                                             e.payload.message ||
                                               t.props.submission.error ||
                                               "Sorry, something went wrong. Please try again."
@@ -6889,7 +6889,7 @@
                                         : e.payload.access_token;
                                     })
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     })
                                 );
                               case 1:
@@ -6930,7 +6930,7 @@
                                   this.props.apiSF
                                     .getUnioniseToken()
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     })
                                 );
                               case 4:
@@ -7050,7 +7050,7 @@
                                 return (
                                   (e.next = 3),
                                   this.getIframeURL().catch(function(e) {
-                                    return ga(e);
+                                    return fa(e);
                                   })
                                 );
                               case 3:
@@ -7106,7 +7106,7 @@
                                     t.firstName,
                                     t.lastName
                                   ).catch(function(e) {
-                                    return ga(e);
+                                    return fa(e);
                                   })
                                 );
                               case 4:
@@ -7139,7 +7139,7 @@
                 value: (function() {
                   var e = Object(g.a)(
                     h.a.mark(function e(t) {
-                      var a, n, r, o, i, s, c, l, d, u;
+                      var a, n, r, o, i, s, c, l, d, u, p, m;
                       return h.a.wrap(
                         function(e) {
                           for (;;)
@@ -7165,7 +7165,7 @@
                                   console.log("recaptcha failed: ".concat(n)),
                                   e.abrupt(
                                     "return",
-                                    ga(
+                                    fa(
                                       "ReCaptcha validation failed, please reload the page and try again."
                                     )
                                   )
@@ -7186,7 +7186,7 @@
                                   this.props.apiSF
                                     .lookupSFContact(r)
                                     .catch(function(e) {
-                                      return console.log(e), ga(e);
+                                      return console.log(e), fa(e);
                                     })
                                 );
                               case 15:
@@ -7194,22 +7194,23 @@
                                   console.log(
                                     this.props.submission.salesforceId
                                   ),
-                                  (o = Sa(
+                                  (o = va(
                                     this.props.submission.employerObjects,
                                     a.employerName
                                   )),
                                   console.log(o),
-                                  (i = Re.a.parse(this.props.location.search)),
+                                  console.log(o.Agency_Number__c),
+                                  (i = Pe.a.parse(this.props.location.search)),
                                   (s = i && i.s ? i.s : "Direct seiu503signup"),
                                   (c = !this.props.submission.formPage1
                                     .paymentRequired),
                                   (l = c ? "Checkoff" : "Unionise"),
                                   (d =
                                     "Other" === a.capeAmount
-                                      ? a.capeAmountOther
-                                      : a.capeAmount),
+                                      ? parseFloat(a.capeAmountOther)
+                                      : parseFloat(a.capeAmount)),
                                   (u = {
-                                    ip_address: Un()(),
+                                    ip_address: Dn()(),
                                     submission_date: Te(new Date()),
                                     contact_id: this.props.submission
                                       .salesforceId,
@@ -7223,48 +7224,28 @@
                                     home_zip: a.homeZip,
                                     job_title: a.jobTitle,
                                     employer_id: o.Id,
-                                    agency_number: o.Agency_Number__c,
-                                    paymentMethod: l,
+                                    payment_method: l,
                                     online_campaign_source: s,
                                     cape_legal: this.props.cape_legal.current
                                       .innerHTML,
-                                    capeAmount: d,
-                                    donationFrequency: "Monthly",
-                                    memberShortId: ""
+                                    cape_amount: d,
+                                    donation_frequency: "Monthly",
+                                    member_short_id: ""
                                   }),
                                   console.log(u),
-                                  (e.next = 27),
-                                  this.props.apiSubmission
-                                    .createCAPE(u)
-                                    .catch(function(e) {
-                                      return console.log(e), ga(e);
-                                    })
-                                );
-                              case 27:
-                                if (
-                                  "CREATE_CAPE_SUCCESS" === e.sent.type &&
-                                  !this.props.submission.error
-                                ) {
-                                  e.next = 31;
-                                  break;
-                                }
-                                return (
-                                  console.log(this.props.submission.error),
-                                  e.abrupt(
-                                    "return",
-                                    ga(this.props.submission.error)
-                                  )
-                                );
-                              case 31:
-                                return (
-                                  (e.next = 33),
+                                  (p = ""),
+                                  (m = ""),
+                                  (e.next = 29),
                                   this.props.apiSF
                                     .createSFCAPE(u)
                                     .catch(function(e) {
-                                      return console.log(e), ga(e);
+                                      console.log(e),
+                                        (p += e),
+                                        (m = "Error"),
+                                        fa(e);
                                     })
                                 );
-                              case 33:
+                              case 29:
                                 if (
                                   "CREATE_SF_CAPE_SUCCESS" === e.sent.type &&
                                   !this.props.submission.error
@@ -7273,21 +7254,55 @@
                                   break;
                                 }
                                 return (
+                                  (p += this.props.submission.error),
+                                  (m = "Error"),
                                   console.log(this.props.submission.error),
                                   e.abrupt(
                                     "return",
-                                    ga(this.props.submission.error)
+                                    fa(this.props.submission.error)
                                   )
                                 );
                               case 37:
+                                m = "Success";
+                              case 38:
+                                return (
+                                  (u.cape_status = m),
+                                  (u.cape_errors = p),
+                                  (e.next = 42),
+                                  this.props.apiSubmission
+                                    .createCAPE(u)
+                                    .catch(function(e) {
+                                      return console.log(e), fa(e);
+                                    })
+                                );
+                              case 42:
+                                if (
+                                  "CREATE_CAPE_SUCCESS" === e.sent.type &&
+                                  !this.props.submission.error
+                                ) {
+                                  e.next = 46;
+                                  break;
+                                }
+                                return (
+                                  console.log(this.props.submission.error),
+                                  e.abrupt(
+                                    "return",
+                                    fa(this.props.submission.error)
+                                  )
+                                );
+                              case 46:
                                 this.props.reset("submissionPage1"),
-                                  t ||
-                                    this.props.history.push(
-                                      "/page2/?id=".concat(
-                                        this.props.submission.salesforceId
+                                  t
+                                    ? vt(
+                                        "success",
+                                        "Thank you. Your CAPE submission was proccessed."
                                       )
-                                    );
-                              case 39:
+                                    : this.props.history.push(
+                                        "/page2/?id=".concat(
+                                          this.props.submission.salesforceId
+                                        )
+                                      );
+                              case 48:
                               case "end":
                                 return e.stop();
                             }
@@ -7318,7 +7333,7 @@
                                   (t = this.props.formValues),
                                   (e.next = 3),
                                   this.saveSignature().catch(function(e) {
-                                    return ga(e);
+                                    return fa(e);
                                   })
                                 );
                               case 3:
@@ -7328,7 +7343,7 @@
                                 }
                                 return e.abrupt(
                                   "return",
-                                  St("error", "Please provide a signature")
+                                  vt("error", "Please provide a signature")
                                 );
                               case 6:
                                 if (
@@ -7365,11 +7380,11 @@
                                           .paymentRequired &&
                                           t &&
                                           a.getIframeURL().catch(function(e) {
-                                            return ga(e);
+                                            return fa(e);
                                           });
                                     })
                                     .catch(function(e) {
-                                      return ga(e);
+                                      return fa(e);
                                     })
                                 );
                               case 10:
@@ -7377,7 +7392,7 @@
                                   this.saveLegalLanguage(),
                                   (e.next = 13),
                                   this.createSubmission().catch(function(e) {
-                                    return ga(e);
+                                    return fa(e);
                                   })
                                 );
                               case 13:
@@ -7422,13 +7437,13 @@
                                   console.log("recaptcha failed: ".concat(a)),
                                   e.abrupt(
                                     "return",
-                                    ga(
+                                    fa(
                                       "ReCaptcha validation failed, please reload the page and try again."
                                     )
                                   )
                                 );
                               case 7:
-                                if (!Ne(t.employerType)) {
+                                if (!ke(t.employerType)) {
                                   e.next = 15;
                                   break;
                                 }
@@ -7442,12 +7457,12 @@
                                   })
                                 );
                               case 10:
-                                ((n = zo({}, this.state)).howManyTabs = 4),
+                                ((n = qo({}, this.state)).howManyTabs = 4),
                                   this.setState(n),
                                   (e.next = 18);
                                 break;
                               case 15:
-                                ((r = zo({}, this.state)).howManyTabs = 3),
+                                ((r = qo({}, this.state)).howManyTabs = 3),
                                   this.setState(r);
                               case 18:
                                 if (
@@ -7461,7 +7476,7 @@
                                 return (
                                   (e.next = 23),
                                   this.updateSFContact().catch(function(e) {
-                                    return console.log(e), ga(e);
+                                    return console.log(e), fa(e);
                                   })
                                 );
                               case 23:
@@ -7477,7 +7492,7 @@
                                   this.props.apiSF
                                     .lookupSFContact(o)
                                     .catch(function(e) {
-                                      return console.log(e), ga(e);
+                                      return console.log(e), fa(e);
                                     })
                                 );
                               case 27:
@@ -7488,7 +7503,7 @@
                                 return (
                                   (e.next = 30),
                                   this.updateSFContact().catch(function(e) {
-                                    return console.log(e), ga(e);
+                                    return console.log(e), fa(e);
                                   })
                                 );
                               case 30:
@@ -7497,7 +7512,7 @@
                                 return (
                                   (e.next = 33),
                                   this.createSFContact().catch(function(e) {
-                                    return console.log(e), ga(e);
+                                    return console.log(e), fa(e);
                                   })
                                 );
                               case 33:
@@ -7522,11 +7537,11 @@
                 value: function(e) {
                   return 1 === e
                     ? this.handleTab1().catch(function(e) {
-                        return ga(e);
+                        return fa(e);
                       })
                     : 2 === e
                     ? this.handleTab2().catch(function(e) {
-                        return ga(e);
+                        return fa(e);
                       })
                     : this.changeTab(e);
                 }
@@ -7553,7 +7568,7 @@
                   return l.a.createElement(
                     "div",
                     { "data-test": "container-submission-form-page-1" },
-                    l.a.createElement(Ho, {
+                    l.a.createElement(Go, {
                       open:
                         this.state.open &&
                         e.length &&
@@ -7563,7 +7578,7 @@
                       history: this.props.history
                     }),
                     l.a.createElement(
-                      Hr,
+                      Gr,
                       Object.assign({}, this.props, {
                         tab: this.state.tab,
                         howManyTabs: this.state.howManyTabs,
@@ -7574,7 +7589,7 @@
                         toggleSignatureInputType: this.toggleSignatureInputType,
                         clearSignature: this.clearSignature,
                         generateSubmissionBody: this.generateSubmissionBody,
-                        handleError: ga,
+                        handleError: fa,
                         toggleCardAddingFrame: this.toggleCardAddingFrame,
                         handleCAPESubmit: this.handleCAPESubmit,
                         suggestedAmountOnChange: this.suggestedAmountOnChange,
@@ -7589,19 +7604,19 @@
             t
           );
         })(l.a.Component),
-        Wo = Object(p.b)(
+        $o = Object(p.b)(
           function(e) {
             return {
               submission: e.submission,
               appState: e.appState,
               content: e.content,
               initialValues: e.submission.formPage1,
-              formValues: Object(Dn.a)("submissionPage1")(e) || {},
-              pristine: Object(Ln.a)("submissionPage1")(e),
-              submitting: Object(jn.a)("submissionPage1")(e),
-              valid: Object(Fn.a)("submissionPage1")(e),
-              submitErrors: Object(Mn.a)("submissionPage1")(e),
-              reset: Bn.a
+              formValues: Object(Ln.a)("submissionPage1")(e) || {},
+              pristine: Object(jn.a)("submissionPage1")(e),
+              submitting: Object(Fn.a)("submissionPage1")(e),
+              valid: Object(Mn.a)("submissionPage1")(e),
+              submitErrors: Object(Bn.a)("submissionPage1")(e),
+              reset: Hn.a
             };
           },
           function(e) {
@@ -7611,12 +7626,12 @@
               apiSF: Object(O.b)(s, e),
               actions: Object(O.b)(n, e),
               submitForm: function() {
-                return e(Object(Bn.b)("submissionPage1"));
+                return e(Object(Hn.b)("submissionPage1"));
               }
             };
           }
-        )(qo),
-        $o = Object(k.a)(function(e) {
+        )(Wo),
+        Vo = Object(k.a)(function(e) {
           var t;
           return {
             formContainer: ((t = {
@@ -7872,23 +7887,23 @@
               textAlign: "center"
             }
           };
-        })(Wo),
-        Vo = a(334),
-        Qo = a.n(Vo),
-        Yo = a(675),
-        Jo = fa,
-        Zo = ["", "Female", "Male", "Non-Binary", "Other"],
-        Ko = ["", "She/Her/Hers", "He/Him/His", "They/Them/Their(s)", "Other"],
-        Xo = (function(e) {
+        })($o),
+        Qo = a(334),
+        Yo = a.n(Qo),
+        Jo = a(675),
+        Zo = ba,
+        Ko = ["", "Female", "Male", "Non-Binary", "Other"],
+        Xo = ["", "She/Her/Hers", "He/Him/His", "They/Them/Their(s)", "Other"],
+        ei = (function(e) {
           function t(e) {
             var a;
             return (
               Object(f.a)(this, t),
               ((a = Object(y.a)(this, Object(E.a)(t).call(this, e))).classes =
                 a.props.classes),
-              (a.renderTextField = Ca),
-              (a.renderSelect = _a),
-              (a.renderCheckbox = Ta),
+              (a.renderTextField = Oa),
+              (a.renderSelect = Ta),
+              (a.renderCheckbox = Ia),
               (a.calcEthnicity = function(e) {
                 var t = e.africanOrAfricanAmerican,
                   a = e.arabAmericanMiddleEasternOrNorthAfrican,
@@ -7998,7 +8013,7 @@
                                 }),
                                 (C = a.removeFalsy(v)),
                                 (O = a.props.submission.salesforceId) ||
-                                  ((_ = Re.a.parse(a.props.location.search))
+                                  ((_ = Pe.a.parse(a.props.location.search))
                                     .id &&
                                     (O = _.id)),
                                 (C.salesforce_id = O),
@@ -8008,7 +8023,7 @@
                                 a.props.apiSubmission
                                   .updateSubmission(T, C)
                                   .catch(function(e) {
-                                    return ga(e);
+                                    return fa(e);
                                   })
                               );
                             case 11:
@@ -8021,7 +8036,7 @@
                               }
                               return e.abrupt(
                                 "return",
-                                ga(a.props.submission.error)
+                                fa(a.props.submission.error)
                               );
                             case 14:
                               a.props.apiSF
@@ -8031,16 +8046,16 @@
                                     "UPDATE_SF_CONTACT_FAILURE" === e.type ||
                                     a.props.submission.error
                                   )
-                                    return ga(a.props.submission.error);
+                                    return fa(a.props.submission.error);
                                   a.props.reset("submissionPage2"),
-                                    St(
+                                    vt(
                                       "success",
                                       "Your information was updated!"
                                     ),
                                     a.props.history.push("/thankyou");
                                 })
                                 .catch(function(e) {
-                                  return ga(e);
+                                  return fa(e);
                                 }),
                                 (e.next = 20);
                               break;
@@ -8048,7 +8063,7 @@
                               return (
                                 (e.prev = 17),
                                 (e.t0 = e.catch(8)),
-                                e.abrupt("return", ga(e.t0))
+                                e.abrupt("return", fa(e.t0))
                               );
                             case 20:
                             case "end":
@@ -8096,12 +8111,12 @@
                         l.a.createElement(
                           "div",
                           { className: this.classes.checkIcon },
-                          l.a.createElement(Qo.a, {
+                          l.a.createElement(Yo.a, {
                             style: { color: "#66BB6A", height: 100, width: 100 }
                           })
                         ),
                         l.a.createElement(
-                          Gt.a,
+                          zt.a,
                           {
                             className: this.classes.page2IntroText,
                             id: "page2IntroText"
@@ -8109,9 +8124,9 @@
                           l.a.createElement(_.b, { id: "introParagraph" })
                         )
                       ),
-                      l.a.createElement(Yo.a, { style: { margin: 20 } }),
+                      l.a.createElement(Jo.a, { style: { margin: 20 } }),
                       l.a.createElement(
-                        zt.a,
+                        qt.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -8121,9 +8136,9 @@
                         })
                       ),
                       l.a.createElement(
-                        sr.a,
+                        cr.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "African or African-American",
                           name: "africanOrAfricanAmerican",
                           id: "africanOrAfricanAmerican",
@@ -8131,7 +8146,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label:
                             "Arab American, Middle Eastern, or North African",
                           name: "arabAmericanMiddleEasternOrNorthAfrican",
@@ -8140,7 +8155,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Asian or Asian American",
                           name: "asianOrAsianAmerican",
                           id: "asianOrAsianAmerican",
@@ -8148,7 +8163,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Hispanic or Latinx",
                           name: "hispanicOrLatinx",
                           id: "hispanicOrLatinx",
@@ -8156,7 +8171,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Native American or Indigenous",
                           name: "nativeAmericanOrIndigenous",
                           id: "nativeAmericanOrIndigenous",
@@ -8164,7 +8179,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Native Hawaiian or Other Pacific Islander",
                           name: "nativeHawaiianOrOtherPacificIslander",
                           id: "nativeHawaiianOrOtherPacificIslander",
@@ -8172,7 +8187,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "White",
                           name: "white",
                           id: "white",
@@ -8180,7 +8195,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Other",
                           name: "other",
                           id: "other",
@@ -8188,7 +8203,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Declined",
                           name: "declined",
                           id: "declined",
@@ -8198,7 +8213,7 @@
                         })
                       ),
                       l.a.createElement(
-                        zt.a,
+                        qt.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -8206,9 +8221,9 @@
                         l.a.createElement(_.b, { id: "otherSocailIdentities" })
                       ),
                       l.a.createElement(
-                        sr.a,
+                        cr.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "I identify as LGBTQIA+",
                           name: "lgbtqId",
                           id: "lgbtqId",
@@ -8217,7 +8232,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "I identify as transgender",
                           name: "transId",
                           id: "transId",
@@ -8226,7 +8241,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label:
                             "I identify as disabled or a person with a disability",
                           name: "disabilityId",
@@ -8236,7 +8251,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "I identify as Deaf or hard-of-hearing",
                           name: "deafOrHardOfHearing",
                           id: "deafOrHardOfHearing",
@@ -8245,7 +8260,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "I identify as Blind or visually impaired",
                           name: "blindOrVisuallyImpaired",
                           id: "blindOrVisuallyImpaired",
@@ -8254,7 +8269,7 @@
                           component: this.renderCheckbox,
                           localize: this.props.localize
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Gender",
                           name: "gender",
                           id: "gender",
@@ -8262,10 +8277,10 @@
                           classes: this.classes,
                           component: this.renderSelect,
                           labelWidth: 50,
-                          options: Zo
+                          options: Ko
                         }),
                         "other" === this.props.formValues.gender &&
-                          l.a.createElement(or.a, {
+                          l.a.createElement(ir.a, {
                             label: "If other, Please describe",
                             name: "genderOtherDescription",
                             id: "genderOtherDescription",
@@ -8273,7 +8288,7 @@
                             classes: this.classes,
                             component: this.renderTextField
                           }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Your pronouns",
                           name: "genderPronoun",
                           id: "genderPronoun",
@@ -8281,11 +8296,11 @@
                           classes: this.classes,
                           component: this.renderSelect,
                           labelWidth: 97,
-                          options: Ko
+                          options: Xo
                         })
                       ),
                       l.a.createElement(
-                        zt.a,
+                        qt.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -8293,9 +8308,9 @@
                         l.a.createElement(_.b, { id: "employmentInfo" })
                       ),
                       l.a.createElement(
-                        sr.a,
+                        cr.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Job Class/Title",
                           name: "jobTitle",
                           id: "jobTitle",
@@ -8303,7 +8318,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Hire Date",
                           name: "hireDate",
                           id: "hireDate",
@@ -8311,7 +8326,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Worksite",
                           name: "worksite",
                           id: "worksite",
@@ -8319,7 +8334,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Work Email",
                           name: "workEmail",
                           id: "workEmail",
@@ -8327,7 +8342,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Work Phone",
                           name: "workPhone",
                           id: "workPhone",
@@ -8337,7 +8352,7 @@
                         })
                       ),
                       l.a.createElement(
-                        zt.a,
+                        qt.a,
                         {
                           className: this.classes.formLabel,
                           component: "legend"
@@ -8345,7 +8360,7 @@
                         l.a.createElement(_.b, { id: "mailToAddress" })
                       ),
                       l.a.createElement(
-                        Gt.a,
+                        zt.a,
                         {
                           className: this.classes.formHelperText,
                           id: "mailingAddressDescription"
@@ -8353,9 +8368,9 @@
                         l.a.createElement(_.b, { id: "fieldHintAddress" })
                       ),
                       l.a.createElement(
-                        sr.a,
+                        cr.a,
                         { className: this.classes.formGroup },
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Mailing Street",
                           name: "mailToStreet",
                           id: "mailToStreet",
@@ -8363,7 +8378,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Mailing City",
                           name: "mailToCity",
                           id: "mailToCity",
@@ -8371,7 +8386,7 @@
                           classes: this.classes,
                           component: this.renderTextField
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Mailing State",
                           name: "mailToState",
                           id: "mailToState",
@@ -8380,9 +8395,9 @@
                           formControlName: "formControlDate",
                           component: this.renderSelect,
                           labelWidth: 88,
-                          options: Jo
+                          options: Zo
                         }),
-                        l.a.createElement(or.a, {
+                        l.a.createElement(ir.a, {
                           label: "Mailing ZIP",
                           name: "mailToZip",
                           id: "mailToZip",
@@ -8392,7 +8407,7 @@
                         })
                       ),
                       l.a.createElement(
-                        In,
+                        Nn,
                         {
                           type: "submit",
                           color: "primary",
@@ -8410,12 +8425,12 @@
             t
           );
         })(l.a.Component),
-        ei = Object(ir.a)({
+        ti = Object(sr.a)({
           form: "submissionPage2",
-          validate: cr,
+          validate: lr,
           enableReinitialize: !0
-        })(Xo),
-        ti = (function(e) {
+        })(ei),
+        ai = (function(e) {
           function t() {
             var e, a;
             Object(f.a)(this, t);
@@ -8437,7 +8452,7 @@
                 value: function() {
                   var e = this.props.submission.salesforceId;
                   if (!e) {
-                    var t = Re.a.parse(this.props.location.search);
+                    var t = Pe.a.parse(this.props.location.search);
                     t.id && (e = t.id);
                   }
                   if (!e) return this.props.history.push("/");
@@ -8445,7 +8460,7 @@
                     .getSFContactById(e)
                     .then(function(e) {})
                     .catch(function(e) {
-                      ga(e);
+                      fa(e);
                     });
                 }
               },
@@ -8455,7 +8470,7 @@
                   return l.a.createElement(
                     "div",
                     { "data-test": "container-submission-form-page-2" },
-                    l.a.createElement(ei, this.props)
+                    l.a.createElement(ti, this.props)
                   );
                 }
               }
@@ -8463,14 +8478,14 @@
             t
           );
         })(l.a.Component),
-        ai = Object(p.b)(
+        ni = Object(p.b)(
           function(e) {
             return {
               submission: e.submission,
               appState: e.appState,
               initialValues: e.submission.formPage2,
               localize: e.localize,
-              formValues: Object(Dn.a)("submissionPage2")(e) || {}
+              formValues: Object(Ln.a)("submissionPage2")(e) || {}
             };
           },
           function(e) {
@@ -8479,8 +8494,8 @@
               apiSF: Object(O.b)(s, e)
             };
           }
-        )(ti),
-        ni = Object(k.a)(function(e) {
+        )(ai),
+        ri = Object(k.a)(function(e) {
           return {
             root: { margin: "80px 0" },
             formContainer: Object(v.a)(
@@ -8543,13 +8558,13 @@
             },
             formHelperText: { margin: "0 0 10px", fontSize: "15px" }
           };
-        })(Object(_.e)(ai)),
-        ri = a(631),
-        oi = a(336),
-        ii = a.n(oi),
-        si = a(335),
-        ci = a.n(si),
-        li = Object(k.a)(function(e) {
+        })(Object(_.e)(ni)),
+        oi = a(631),
+        ii = a(336),
+        si = a.n(ii),
+        ci = a(335),
+        li = a.n(ci),
+        di = Object(k.a)(function(e) {
           return {
             root: { margin: 20, padding: 20, maxWidth: 1200 },
             button: Object(v.a)(
@@ -8629,20 +8644,20 @@
               "div",
               { className: t.cardContent, "data-test": "card-content" },
               l.a.createElement(
-                De.a,
+                Le.a,
                 { component: "h2", className: t.title, "data-test": "title" },
                 r
               ),
               "image" !== r &&
                 l.a.createElement(
-                  De.a,
+                  Le.a,
                   { component: "p", className: t.body, "data-test": "body" },
                   n
                 )
             )
           );
         }),
-        di = {
+        ui = {
           display: "flex",
           justifyContent: "center",
           position: "fixed",
@@ -8653,20 +8668,20 @@
           zIndex: 3,
           backgroundColor: "rgba(0,0,0,.4)"
         },
-        ui = { position: "relative", top: "44%" },
-        pi = function(e) {
+        pi = { position: "relative", top: "44%" },
+        mi = function(e) {
           return l.a.createElement(
             "div",
-            { style: di },
-            l.a.createElement(Cn.a, {
-              style: ui,
+            { style: ui },
+            l.a.createElement(On.a, {
+              style: pi,
               color: "primary",
               size: 50,
               "data-test": "component-spinner"
             })
           );
         },
-        mi = (function(e) {
+        hi = (function(e) {
           function t() {
             var e, a;
             Object(f.a)(this, t);
@@ -8697,14 +8712,14 @@
                     .then(function(t) {
                       ("GET_ALL_CONTENT_FAILURE" === t.type ||
                         e.props.content.error) &&
-                        St(
+                        vt(
                           "error",
                           e.props.content.error ||
                             "An error occured while fetching content"
                         );
                     })
                     .catch(function(e) {
-                      St("error", e);
+                      vt("error", e);
                     });
                 }
               },
@@ -8720,14 +8735,14 @@
                       .then(function(e) {
                         ("GET_ALL_CONTENT_FAILURE" === e.type ||
                           n.props.content.error) &&
-                          St(
+                          vt(
                             "error",
                             n.props.content.error ||
                               "An error occured while fetching content"
                           );
                       })
                       .catch(function(e) {
-                        St("error", e);
+                        vt("error", e);
                       });
                 }
               },
@@ -8755,7 +8770,7 @@
                                   e.next = 8;
                                   break;
                                 }
-                                St("error", this.props.content.error),
+                                vt("error", this.props.content.error),
                                   (e.next = 18);
                                 break;
                               case 8:
@@ -8774,7 +8789,7 @@
                                 );
                               case 13:
                                 "DELETE_IMAGE_SUCCESS" === e.sent.type &&
-                                  (St(
+                                  (vt(
                                     "success",
                                     "Deleted ".concat(t.content_type, ".")
                                   ),
@@ -8783,7 +8798,7 @@
                                 break;
                               case 17:
                                 "DELETE_CONTENT_SUCCESS" === n.type &&
-                                  (St(
+                                  (vt(
                                     "success",
                                     "Deleted ".concat(t.content_type, ".")
                                   ),
@@ -8808,16 +8823,16 @@
                 value: function() {
                   var e = this,
                     t = this.props.classes,
-                    a = Ie[this.props.content.currentContent.content_type];
+                    a = Ne[this.props.content.currentContent.content_type];
                   return l.a.createElement(
                     "div",
                     {
                       "data-test": "component-content-library",
                       className: t.root
                     },
-                    this.props.appState.loading && l.a.createElement(pi, null),
+                    this.props.appState.loading && l.a.createElement(mi, null),
                     this.props.content.deleteDialogOpen &&
-                      l.a.createElement(wt, {
+                      l.a.createElement(xt, {
                         open: this.props.content.deleteDialogOpen,
                         handleClose: this.props.apiContent.handleDeleteClose,
                         title: "Delete Content",
@@ -8836,7 +8851,7 @@
                       "div",
                       { className: t.section },
                       l.a.createElement(
-                        De.a,
+                        Le.a,
                         {
                           variant: "h2",
                           align: "center",
@@ -8862,7 +8877,7 @@
                               "div",
                               { className: t.actionArea },
                               l.a.createElement(
-                                ri.a,
+                                oi.a,
                                 {
                                   className: t.buttonDelete,
                                   onClick: function() {
@@ -8872,10 +8887,10 @@
                                   "aria-label": "Delete Content",
                                   "data-test": "delete"
                                 },
-                                l.a.createElement(ci.a, null)
+                                l.a.createElement(li.a, null)
                               ),
                               l.a.createElement(
-                                ri.a,
+                                oi.a,
                                 {
                                   className: t.buttonEdit,
                                   onClick: function() {
@@ -8887,10 +8902,10 @@
                                   "aria-label": "Edit Content",
                                   "data-test": "edit"
                                 },
-                                l.a.createElement(ii.a, null)
+                                l.a.createElement(si.a, null)
                               )
                             ),
-                            l.a.createElement(li, { contentTile: a })
+                            l.a.createElement(di, { contentTile: a })
                           );
                         })
                       )
@@ -8902,7 +8917,7 @@
             t
           );
         })(l.a.Component),
-        hi = Object(p.b)(
+        gi = Object(p.b)(
           function(e) {
             return {
               appState: e.appState,
@@ -8913,8 +8928,8 @@
           function(e) {
             return { apiContent: Object(O.b)(i, e) };
           }
-        )(mi),
-        gi = Object(C.f)(
+        )(hi),
+        fi = Object(C.f)(
           Object(k.a)(function(e) {
             var t;
             return {
@@ -8982,9 +8997,9 @@
               }),
               t)
             };
-          })(hi)
+          })(gi)
         ),
-        fi = (function(e) {
+        bi = (function(e) {
           function t(e) {
             var a;
             return (
@@ -9018,10 +9033,10 @@
                       if (e.payload.salesforce_id) {
                         var a = t.props.submission.salesforceId;
                         t.props.history.push("/?id=".concat(a));
-                      } else St("error", e.payload.message || "An error occurred while trying to fetch data from salesforce.");
+                      } else vt("error", e.payload.message || "An error occurred while trying to fetch data from salesforce.");
                     })
                     .catch(function(e) {
-                      St(
+                      vt(
                         "error",
                         t.props.submission.error ||
                           "An error occurred while trying to fetch data from salesforce."
@@ -9041,7 +9056,7 @@
                       "data-test": "component-link-request"
                     },
                     l.a.createElement(
-                      De.a,
+                      Le.a,
                       {
                         variant: "h2",
                         align: "center",
@@ -9065,7 +9080,7 @@
                       },
                       l.a.createElement(_.b, null, function(a) {
                         var n = a.translate;
-                        return l.a.createElement(Dt.a, {
+                        return l.a.createElement(Lt.a, {
                           "data-test": "firstName",
                           name: "firstName",
                           id: "firstName",
@@ -9082,7 +9097,7 @@
                       }),
                       l.a.createElement(_.b, null, function(a) {
                         var n = a.translate;
-                        return l.a.createElement(Dt.a, {
+                        return l.a.createElement(Lt.a, {
                           "data-test": "lastName",
                           name: "lastName",
                           id: "lastName",
@@ -9099,7 +9114,7 @@
                       }),
                       l.a.createElement(_.b, null, function(a) {
                         var n = a.translate;
-                        return l.a.createElement(Dt.a, {
+                        return l.a.createElement(Lt.a, {
                           "data-test": "homeEmail",
                           name: "homeEmail",
                           id: "homeEmail",
@@ -9115,7 +9130,7 @@
                         });
                       }),
                       l.a.createElement(
-                        In,
+                        Nn,
                         {
                           type: "submit",
                           color: "secondary",
@@ -9133,7 +9148,7 @@
             t
           );
         })(l.a.Component),
-        bi = Object(p.b)(
+        yi = Object(p.b)(
           function(e) {
             return { submission: e.submission };
           },
@@ -9143,8 +9158,8 @@
               apiSubmission: Object(O.b)(o, e)
             };
           }
-        )(fi),
-        yi = Object(k.a)(function(e) {
+        )(bi),
+        Ei = Object(k.a)(function(e) {
           return {
             root: {},
             container: { padding: "80px 0 140px 0", background: "white" },
@@ -9166,8 +9181,8 @@
             formControl: { width: "100%" },
             radioLabel: { width: "100%", textAlign: "center" }
           };
-        })(bi);
-      function Ei(e, t) {
+        })(yi);
+      function Ai(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -9179,16 +9194,16 @@
         }
         return a;
       }
-      var Ai = (function(e) {
+      var Si = (function(e) {
           for (var t = 1; t < arguments.length; t++) {
             var a = null != arguments[t] ? arguments[t] : {};
             t % 2
-              ? Ei(a, !0).forEach(function(t) {
+              ? Ai(a, !0).forEach(function(t) {
                   Object(v.a)(e, t, a[t]);
                 })
               : Object.getOwnPropertyDescriptors
               ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-              : Ei(a).forEach(function(t) {
+              : Ai(a).forEach(function(t) {
                   Object.defineProperty(
                     e,
                     t,
@@ -9213,9 +9228,9 @@
           {},
           a(343),
           {},
-          Pr
+          Ur
         ),
-        Si = (function(e) {
+        vi = (function(e) {
           function t(e) {
             var a;
             return (
@@ -9245,7 +9260,7 @@
                 }
               }),
               (a.state = { deleteDialogOpen: !1, animation: !1, more: !1 }),
-              a.props.addTranslation(Ai),
+              a.props.addTranslation(Si),
               (a.verifyCallback = a.verifyCallback.bind(Object(A.a)(a))),
               (a.refreshRecaptcha = a.refreshRecaptcha.bind(Object(A.a)(a))),
               a
@@ -9350,9 +9365,9 @@
                       verifyCallback: this.verifyCallback
                     }),
                     l.a.createElement(N.a, null),
-                    l.a.createElement(Ve, { main_ref: this.main_ref }),
-                    l.a.createElement(vt, null),
-                    this.props.appState.loading && l.a.createElement(pi, null),
+                    l.a.createElement(Qe, { main_ref: this.main_ref }),
+                    l.a.createElement(Ct, null),
+                    this.props.appState.loading && l.a.createElement(mi, null),
                     l.a.createElement(
                       "main",
                       {
@@ -9368,7 +9383,7 @@
                           path: "/",
                           render: function(t) {
                             return l.a.createElement(
-                              $o,
+                              Vo,
                               Object.assign(
                                 {
                                   setRedirect: e.setRedirect,
@@ -9390,7 +9405,7 @@
                           path: "/thankyou",
                           render: function(t) {
                             return l.a.createElement(
-                              Ye,
+                              Je,
                               Object.assign(
                                 {
                                   setRedirect: e.setRedirect,
@@ -9404,14 +9419,14 @@
                         l.a.createElement(C.a, {
                           path: "/admin/:id?/:token?",
                           render: function(e) {
-                            return l.a.createElement(La, e);
+                            return l.a.createElement(ja, e);
                           }
                         }),
                         l.a.createElement(C.a, {
                           path: "/library",
                           render: function(t) {
                             return l.a.createElement(
-                              gi,
+                              fi,
                               Object.assign({ setRedirect: e.setRedirect }, t)
                             );
                           }
@@ -9420,7 +9435,7 @@
                           path: "/new",
                           render: function(t) {
                             return l.a.createElement(
-                              Rn,
+                              Pn,
                               Object.assign({ setRedirect: e.setRedirect }, t)
                             );
                           }
@@ -9429,7 +9444,7 @@
                           path: "/edit/:id",
                           render: function(t) {
                             return l.a.createElement(
-                              Rn,
+                              Pn,
                               Object.assign(
                                 { edit: !0, setRedirect: e.setRedirect },
                                 t
@@ -9441,7 +9456,7 @@
                           path: "/logout",
                           render: function(t) {
                             return l.a.createElement(
-                              Ke,
+                              Xe,
                               Object.assign({ classes: e.props.classes }, t)
                             );
                           }
@@ -9451,7 +9466,7 @@
                           path: "/page2",
                           render: function(t) {
                             return l.a.createElement(
-                              ni,
+                              ri,
                               Object.assign({ setRedirect: e.setRedirect }, t)
                             );
                           }
@@ -9460,21 +9475,21 @@
                           exact: !0,
                           path: "/linkrequest",
                           render: function(e) {
-                            return l.a.createElement(yi, e);
+                            return l.a.createElement(Ei, e);
                           }
                         }),
                         l.a.createElement(C.a, {
                           path: "*",
                           render: function(t) {
                             return l.a.createElement(
-                              Je,
+                              Ze,
                               Object.assign({ classes: e.props.classes }, t)
                             );
                           }
                         })
                       )
                     ),
-                    l.a.createElement(Qe, { classes: this.props.classes })
+                    l.a.createElement(Ye, { classes: this.props.classes })
                   );
                 }
               }
@@ -9482,7 +9497,7 @@
             t
           );
         })(c.Component),
-        vi = Object(p.b)(
+        Ci = Object(p.b)(
           function(e) {
             return {
               appState: e.appState,
@@ -9498,8 +9513,8 @@
               setActiveLanguage: Object(O.b)(_.d, e)
             };
           }
-        )(Si),
-        Ci = Object(k.a)(function(e) {
+        )(vi),
+        Oi = Object(k.a)(function(e) {
           var t, a, n, r;
           return {
             root: { flexGrow: 1, boxSizing: "border-box" },
@@ -9517,7 +9532,7 @@
               width: "100vw",
               height: "100%",
               minHeight: "80vh",
-              backgroundImage: 'url("'.concat(Dr.a, '")'),
+              backgroundImage: 'url("'.concat(Lr.a, '")'),
               backgroundAttachment: "fixed",
               backgroundPosition: "bottom"
             }),
@@ -9578,133 +9593,134 @@
             },
             form: { background: "white" }
           };
-        })(Object(C.f)(Object(_.e)(vi))),
-        Oi = a(288),
-        _i = a(23),
-        Ti = a.n(_i),
-        Ii = { loggedIn: !1, authToken: "", loading: !1, redirect: "" };
-      var Ni = function() {
+        })(Object(C.f)(Object(_.e)(Ci))),
+        _i = a(288),
+        Ti = a(23),
+        Ii = a.n(Ti),
+        Ni = { loggedIn: !1, authToken: "", loading: !1, redirect: "" };
+      var ki = function() {
           var e =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : Ii,
+                : Ni,
             t = arguments.length > 1 ? arguments[1] : void 0;
           switch (t.type) {
             case w:
-              return Ii;
+              return Ni;
             case R:
-              return Ti()(e, { loading: { $set: !0 } });
+              return Ii()(e, { loading: { $set: !0 } });
             case z:
-              return Ti()(e, {
+              return Ii()(e, {
                 loggedIn: { $set: !0 },
                 authToken: { $set: t.payload.token },
                 loading: { $set: !1 }
               });
             case q:
-              return Ti()(e, { loggedIn: { $set: !1 }, loading: { $set: !1 } });
+              return Ii()(e, { loggedIn: { $set: !1 }, loading: { $set: !1 } });
             case P:
-              return Ti()(e, { redirect: { $set: t.payload } });
+              return Ii()(e, { redirect: { $set: t.payload } });
             case x:
-              return Ti()(e, { loggedIn: { $set: !0 } });
-            case qa:
-            case Va:
-            case on:
-            case ln:
-            case an:
-            case Xa:
-            case Ja:
+              return Ii()(e, { loggedIn: { $set: !0 } });
+            case Wa:
+            case Qa:
+            case sn:
+            case dn:
+            case nn:
+            case en:
+            case Za:
             case G:
             case W:
             case ee:
             case se:
-            case Gr:
-            case _o:
-            case eo:
-            case Po:
-            case $r:
-            case ro:
-            case Jr:
-            case co:
-            case bo:
-            case mo:
-            case jo:
-            case ko:
+            case zr:
+            case To:
+            case to:
+            case Uo:
+            case Vr:
+            case oo:
+            case Zr:
+            case lo:
+            case yo:
+            case ho:
+            case Fo:
+            case wo:
             case he:
             case de:
             case ne:
-            case So:
-              return Ti()(e, { loading: { $set: !0 } });
-            case Wa:
+            case vo:
+              return Ii()(e, { loading: { $set: !0 } });
             case $a:
-            case Qa:
+            case Va:
             case Ya:
-            case sn:
+            case Ja:
             case cn:
-            case dn:
+            case ln:
             case un:
-            case nn:
+            case pn:
             case rn:
-            case en:
+            case on:
             case tn:
-            case Za:
+            case an:
             case Ka:
+            case Xa:
             case $:
             case V:
             case te:
             case ae:
             case le:
-            case zr:
             case qr:
-            case To:
+            case Wr:
             case Io:
-            case to:
+            case No:
             case ao:
-            case Uo:
+            case no:
             case Do:
-            case Vr:
+            case Lo:
             case Qr:
-            case oo:
+            case Yr:
             case io:
-            case Zr:
+            case so:
             case Kr:
+            case Xr:
+            case Ao:
+            case po:
+            case fo:
             case Eo:
             case uo:
             case go:
-            case yo:
-            case lo:
-            case ho:
-            case Fo:
             case Mo:
-            case wo:
+            case Bo:
             case xo:
+            case Ro:
             case ge:
             case fe:
             case ue:
             case pe:
             case oe:
-            case vo:
+            case re:
             case Co:
-              return Ti()(e, { loading: { $set: !1 } });
+            case Oo:
+              return Ii()(e, { loading: { $set: !1 } });
             default:
               return e;
           }
         },
-        ki = {
+        wi = {
           profile: { id: "", name: "", email: "", avatar_url: "" },
           error: null
         };
-      var wi = function() {
+      var xi = function() {
         var e,
           t =
-            arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : ki,
+            arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : wi,
           a = arguments.length > 1 ? arguments[1] : void 0;
         switch (a.type) {
           case w:
-            return ki;
+            return wi;
           case W:
-            return Ti()(t, { error: { $set: null } });
+            return Ii()(t, { error: { $set: null } });
           case $:
-            return Ti()(t, {
+            return Ii()(t, {
               profile: {
                 id: { $set: a.payload.id },
                 name: { $set: a.payload.name },
@@ -9719,13 +9735,13 @@
                 "string" === typeof a.payload.message
                   ? a.payload.message
                   : "Sorry, something went wrong :(\nPlease try again."),
-              Ti()(t, { error: { $set: e } })
+              Ii()(t, { error: { $set: e } })
             );
           default:
             return t;
         }
       };
-      function xi(e, t) {
+      function Ri(e, t) {
         var a = Object.keys(e);
         if (Object.getOwnPropertySymbols) {
           var n = Object.getOwnPropertySymbols(e);
@@ -9737,16 +9753,16 @@
         }
         return a;
       }
-      function Ri(e) {
+      function Pi(e) {
         for (var t = 1; t < arguments.length; t++) {
           var a = null != arguments[t] ? arguments[t] : {};
           t % 2
-            ? xi(a, !0).forEach(function(t) {
+            ? Ri(a, !0).forEach(function(t) {
                 Object(v.a)(e, t, a[t]);
               })
             : Object.getOwnPropertyDescriptors
             ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(a))
-            : xi(a).forEach(function(t) {
+            : Ri(a).forEach(function(t) {
                 Object.defineProperty(
                   e,
                   t,
@@ -9756,7 +9772,7 @@
         }
         return e;
       }
-      var Pi = {
+      var Ui = {
         filteredList: [],
         allContent: [],
         deleteDialogOpen: !1,
@@ -9769,28 +9785,28 @@
         form: { content_type: "", content: "", dialogOpen: !1 },
         error: null
       };
-      var Ui = function() {
+      var Di = function() {
           var e,
             t =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : Pi,
+                : Ui,
             a = arguments.length > 1 ? arguments[1] : void 0;
           switch (a.type) {
             case w:
-              return Pi;
-            case Ba:
-              return Ti()(t, {
+              return Ui;
+            case Ha:
+              return Ii()(t, {
                 form: Object(v.a)({}, a.payload.name, { $set: a.payload.value })
               });
-            case Ha:
-              return Ti()(t, {
-                deleteDialogOpen: { $set: !0 },
-                currentContent: { $set: Ri({}, a.payload.selectedContent) }
-              });
             case Ga:
-            case en:
-              return Ti()(t, {
+              return Ii()(t, {
+                deleteDialogOpen: { $set: !0 },
+                currentContent: { $set: Pi({}, a.payload.selectedContent) }
+              });
+            case za:
+            case tn:
+              return Ii()(t, {
                 deleteDialogOpen: { $set: !1 },
                 currentContent: {
                   id: { $set: "" },
@@ -9801,8 +9817,8 @@
                 },
                 error: { $set: null }
               });
-            case za:
-              return Ti()(t, {
+            case qa:
+              return Ii()(t, {
                 form: {
                   content_type: { $set: null },
                   content: { $set: "" },
@@ -9811,19 +9827,19 @@
                   dialogOpen: { $set: !1 }
                 }
               });
-            case qa:
-            case Va:
-            case on:
-            case Xa:
-            case ln:
-            case Ja:
-            case an:
-              return Ti()(t, { error: { $set: null } });
             case Wa:
             case Qa:
             case sn:
+            case en:
             case dn:
-              return Ti()(t, {
+            case Za:
+            case nn:
+              return Ii()(t, { error: { $set: null } });
+            case $a:
+            case Ya:
+            case cn:
+            case un:
+              return Ii()(t, {
                 form: {
                   content_type: { $set: a.payload.content_type },
                   content: { $set: a.payload.content },
@@ -9833,34 +9849,34 @@
                 },
                 error: { $set: null }
               });
-            case nn:
-              return Ti()(t, { error: { $set: null } });
-            case Za:
-              return Ti()(t, {
+            case rn:
+              return Ii()(t, { error: { $set: null } });
+            case Ka:
+              return Ii()(t, {
                 allContent: { $set: a.payload },
                 error: { $set: null }
               });
-            case $a:
-            case Ya:
-            case cn:
-            case tn:
-            case un:
-            case Ka:
-            case rn:
+            case Va:
+            case Ja:
+            case ln:
+            case an:
+            case pn:
+            case Xa:
+            case on:
               return (
                 (e =
                   "string" === typeof a.payload.message
                     ? a.payload.message
                     : "Sorry, something went wrong :(\nPlease try again."),
-                Ti()(t, { error: { $set: e } })
+                Ii()(t, { error: { $set: e } })
               );
             default:
               return t;
           }
         },
-        Di = a(190),
-        Li = a.n(Di),
-        ji = {
+        Li = a(190),
+        ji = a.n(Li),
+        Fi = {
           error: null,
           salesforceId: null,
           submissionId: null,
@@ -9904,58 +9920,59 @@
           currentCAPE: {},
           allCAPE: []
         };
-      var Fi = function() {
+      var Mi = function() {
           var e,
             t =
               arguments.length > 0 && void 0 !== arguments[0]
                 ? arguments[0]
-                : ji,
+                : Fi,
             a = arguments.length > 1 ? arguments[1] : void 0;
           switch (a.type) {
             case me:
-              return Ti()(t, {
+              return Ii()(t, {
                 formPage1: Object(v.a)({}, a.payload.name, {
                   $set: a.payload.value
                 })
               });
             case ee:
             case se:
-            case Gr:
-            case _o:
-            case eo:
-            case Po:
-            case $r:
-            case ro:
-            case Jr:
-            case bo:
-            case co:
-            case mo:
+            case zr:
+            case To:
+            case to:
+            case Uo:
+            case Vr:
             case oo:
-            case ko:
-            case jo:
-            case de:
-            case ne:
-            case So:
-              return Ti()(t, { error: { $set: null } });
+            case Zr:
+            case yo:
             case lo:
             case ho:
-              return Ti()(t, {
+            case io:
+            case wo:
+            case Fo:
+            case de:
+            case ne:
+            case vo:
+            case Co:
+              return Ii()(t, { error: { $set: null } });
+            case uo:
+            case go:
+              return Ii()(t, {
                 error: { $set: null },
                 djrId: { $set: a.payload.sf_djr_id }
               });
-            case To:
+            case Io:
               var n = a.payload
                 ? a.payload.map(function(e) {
                     return e.Name;
                   })
                 : [""];
-              return Ti()(t, {
+              return Ii()(t, {
                 employerNames: { $set: n },
                 employerObjects: { $set: a.payload }
               });
-            case zr:
+            case qr:
               if (a.payload) {
-                var r = ya,
+                var r = Ea,
                   o = "";
                 a.payload.Account.WS_Subdivision_from_Agency__c
                   ? (o = a.payload.Account.WS_Subdivision_from_Agency__c)
@@ -9979,13 +9996,13 @@
                     "Declined" === e ? (l.declined = !0) : (l[e] = !0), null
                   );
                 });
-                var d = Ne(i);
-                return Ti()(t, {
+                var d = ke(i);
+                return Ii()(t, {
                   salesforceId: { $set: a.payload.Id },
                   formPage1: {
-                    mm: { $set: Li()(a.payload.Birthdate).format("MM") },
-                    dd: { $set: Li()(a.payload.Birthdate).format("DD") },
-                    yyyy: { $set: Li()(a.payload.Birthdate).format("YYYY") },
+                    mm: { $set: ji()(a.payload.Birthdate).format("MM") },
+                    dd: { $set: ji()(a.payload.Birthdate).format("DD") },
+                    yyyy: { $set: ji()(a.payload.Birthdate).format("YYYY") },
                     mobilePhone: { $set: a.payload.MobilePhone },
                     employerName: { $set: s },
                     employerType: { $set: i },
@@ -10056,9 +10073,9 @@
                   error: { $set: null }
                 });
               }
-              return ji;
-            case yo:
-              return Ti()(t, {
+              return Fi;
+            case Eo:
+              return Ii()(t, {
                 payment: {
                   activeMethodLast4: {
                     $set: a.payload.Active_Account_Last_4__c
@@ -10070,101 +10087,101 @@
                 djrId: { $set: a.payload.Id || a.payload.id }
               });
             case te:
-              return Ti()(t, {
+              return Ii()(t, {
                 salesforceId: { $set: a.payload.salesforce_id },
                 submissionId: { $set: a.payload.submission_id },
                 currentSubmission: { $set: a.payload.currentSubmission },
                 error: { $set: null }
               });
             case re:
-              return Ti()(t, {
+              return Ii()(t, {
                 cape: { id: { $set: a.payload.cape_id } },
                 currentCAPE: { $set: a.payload.currentCAPE },
                 error: { $set: null }
               });
             case ce:
-              return Ti()(t, {
+              return Ii()(t, {
                 submissionId: { $set: a.payload.submission_id },
                 error: { $set: null }
               });
             case ue:
-              return Ti()(t, {
+              return Ii()(t, {
                 allSubmissions: { $set: a.payload },
                 error: { $set: null }
               });
-            case to:
-            case Vr:
-            case Zr:
-              return Ti()(t, {
+            case ao:
+            case Qr:
+            case Kr:
+              return Ii()(t, {
                 salesforceId: { $set: a.payload.salesforce_id },
                 error: { $set: null },
                 redirect: { $set: !0 }
               });
-            case Uo:
-              return Ti()(t, {
+            case Do:
+              return Ii()(t, {
                 payment: {
                   cardAddingUrl: { $set: a.payload.cardAddingUrl },
                   memberShortId: { $set: a.payload.memberShortId }
                 }
               });
-            case Fo:
-              return Ti()(t, {
+            case Mo:
+              return Ii()(t, {
                 payment: { cardAddingUrl: { $set: a.payload.cardAddingUrl } }
               });
-            case wo:
-              return Ti()(t, {
+            case xo:
+              return Ii()(t, {
                 payment: {
                   unioniseToken: { $set: a.payload.access_token },
                   unioniseRefreshToken: { $set: a.payload.refresh_token }
                 }
               });
             case ae:
-            case qr:
+            case Wr:
             case le:
-            case Io:
-            case ao:
-            case Do:
-            case Qr:
-            case io:
-            case Kr:
-            case uo:
-            case go:
-            case Eo:
-            case Mo:
-            case xo:
+            case No:
+            case no:
+            case Lo:
+            case Yr:
+            case so:
+            case Xr:
+            case po:
+            case fo:
+            case Ao:
+            case Bo:
+            case Ro:
             case pe:
-            case Co:
+            case Oo:
             case oe:
               return (
                 (e =
                   "string" === typeof a.payload.message
                     ? a.payload.message
                     : "Sorry, something went wrong :(\nPlease try again."),
-                Ti()(t, { error: { $set: e } })
+                Ii()(t, { error: { $set: e } })
               );
             case ie:
-              return Ti()(t, {
+              return Ii()(t, {
                 salesforceId: { $set: a.payload.salesforceId }
               });
             default:
               return t;
           }
         },
-        Mi = Object(O.c)({
-          appState: Ni,
-          profile: wi,
-          content: Ui,
-          submission: Fi,
+        Bi = Object(O.c)({
+          appState: ki,
+          profile: xi,
+          content: Di,
+          submission: Mi,
           localize: _.c,
-          form: Oi.a
+          form: _i.a
         }),
-        Bi = Object(O.a)(F.apiMiddleware),
-        Hi = [F.apiMiddleware],
-        Gi = (O.a.apply(void 0, Hi)(O.e),
+        Hi = Object(O.a)(F.apiMiddleware),
+        Gi = [F.apiMiddleware],
+        zi = (O.a.apply(void 0, Gi)(O.e),
         Object(O.e)(
-          Mi,
+          Bi,
           Object(O.d)(
-            Bi,
+            Hi,
             window.__REDUX_DEVTOOLS_EXTENSION__
               ? window.__REDUX_DEVTOOLS_EXTENSION__()
               : function(e) {
@@ -10179,17 +10196,17 @@
             /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
           )
       );
-      var zi = a(344),
-        qi = a.n(zi),
-        Wi = a(345),
-        $i = a(175),
-        Vi = a.n($i),
-        Qi = {
+      var qi = a(344),
+        Wi = a.n(qi),
+        $i = a(345),
+        Vi = a(175),
+        Qi = a.n(Vi),
+        Yi = {
           palette: {
             primary: { main: "#2c0940", light: "#531078" },
             secondary: { main: "#ffce04", light: "#ffffff" },
-            danger: { main: Vi.a[900], light: Vi.a[700] },
-            success: { main: ot.a[600], light: ot.a[400] },
+            danger: { main: Qi.a[900], light: Qi.a[700] },
+            success: { main: it.a[600], light: it.a[400] },
             textColor: "#333",
             secondaryTextColor: "#531078",
             bodyBackground: "#fff",
@@ -10252,8 +10269,8 @@
             }
           }
         },
-        Yi = Object(Wi.a)(Qi),
-        Ji = (function(e) {
+        Ji = Object($i.a)(Yi),
+        Zi = (function(e) {
           function t() {
             return (
               Object(f.a)(this, t),
@@ -10281,24 +10298,24 @@
             t
           );
         })(l.a.Component),
-        Zi = Object(C.f)(Ji);
+        Ki = Object(C.f)(Zi);
       Object(d.render)(
         l.a.createElement(
           p.a,
-          { store: Gi },
+          { store: zi },
           l.a.createElement(
             u.a,
             null,
             l.a.createElement(
-              Zi,
+              Ki,
               null,
               l.a.createElement(
-                qi.a,
-                { theme: Yi },
+                Wi.a,
+                { theme: Ji },
                 l.a.createElement(
                   _.a,
-                  { store: Gi },
-                  l.a.createElement(Ci, null)
+                  { store: zi },
+                  l.a.createElement(Oi, null)
                 )
               )
             )
@@ -10314,4 +10331,4 @@
   },
   [[392, 1, 2]]
 ]);
-//# sourceMappingURL=main.2747496a.chunk.js.map
+//# sourceMappingURL=main.409e4420.chunk.js.map
