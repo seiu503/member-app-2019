@@ -51,10 +51,14 @@ export const CAPE = props => {
     updateEmployersPicklist,
     handleEmployerTypeChange,
     employerList,
-    cape_legal
+    cape_legal,
+    newCardNeeded
   } = props;
-  // console.log(handleCAPESubmit);
+
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
+  console.log(`iFrameURL: ${iFrameURL}`);
+  console.log(`formPage1.paymentRequired: ${formPage1.paymentRequired}`);
+  console.log(`formPage1.newCardNeeded: ${formPage1.newCardNeeded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -218,6 +222,47 @@ export const CAPE = props => {
             </FormGroup>
 
             <FormLabel className={classes.formLabel} component="legend">
+              <Translate id="birthDate" />
+            </FormLabel>
+            <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
+              <Field
+                label="Month"
+                name="mm"
+                id="mm"
+                type="select"
+                classes={classes}
+                formControlName="formControlDate"
+                component={renderSelect}
+                labelWidth={41}
+                options={formElements.monthList}
+              />
+
+              <Field
+                label="Day"
+                name="dd"
+                id="dd"
+                type="select"
+                formControlName="formControlDate"
+                classes={classes}
+                component={renderSelect}
+                labelWidth={24}
+                options={formElements.dateOptions(props)}
+              />
+
+              <Field
+                label="Year"
+                name="yyyy"
+                id="yyyy"
+                type="select"
+                formControlName="formControlDate"
+                classes={classes}
+                component={renderSelect}
+                labelWidth={30}
+                options={formElements.yearOptions()}
+              />
+            </FormGroup>
+
+            <FormLabel className={classes.formLabel} component="legend">
               Address
             </FormLabel>
 
@@ -318,7 +363,7 @@ export const CAPE = props => {
               options={employerTypesList}
               onChange={e => {
                 updateEmployersPicklist(e);
-                handleEmployerTypeChange().then(() => {
+                handleEmployerTypeChange(e.target.value).then(() => {
                   console.log(`checkoff: ${checkoff}`);
                 });
               }}
@@ -373,24 +418,26 @@ export const CAPE = props => {
               />
             </div>
           )}
-        {iFrameURL && formPage1.newCardNeeded && formPage1.paymentRequired && (
-          <div data-test="component-iframe">
-            <Typography component="h2" className={classes.head}>
-              <Translate id="addPayment">Add a payment method</Translate>
-            </Typography>
-            <div className={classes.iframeWrap}>
-              <Iframe
-                url={iFrameURL}
-                width="100%"
-                height="100px"
-                id="iFrame"
-                className={classes.iframe}
-                display="initial"
-                position="relative"
-              />
+        {iFrameURL &&
+          (formPage1.newCardNeeded || newCardNeeded) &&
+          formPage1.paymentRequired && (
+            <div data-test="component-iframe">
+              <Typography component="h2" className={classes.head}>
+                <Translate id="addPayment">Add a payment method</Translate>
+              </Typography>
+              <div className={classes.iframeWrap}>
+                <Iframe
+                  url={iFrameURL}
+                  width="100%"
+                  height="100px"
+                  id="iFrame"
+                  className={classes.iframe}
+                  display="initial"
+                  position="relative"
+                />
+              </div>
             </div>
-          </div>
-        )}
+          )}
         <div className={classes.legalCopy} ref={cape_legal}>
           <p>
             <Translate

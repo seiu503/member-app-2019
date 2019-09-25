@@ -299,7 +299,8 @@ export const stylesPage1 = theme => ({
     width: "100%",
     padding: "0 20px 40px 0",
     display: "flex",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    marginTop: 20
   },
   buttonWrapTab3: {
     width: "100%",
@@ -427,7 +428,7 @@ export const stylesPage1 = theme => ({
     }
   },
   controlCheckbox: {
-    margin: "-35px 0 40px 0"
+    margin: "-35px 0 0 0"
   },
   formHelperTextLegal: {
     margin: "-50px 0 50px 0",

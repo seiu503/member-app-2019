@@ -139,14 +139,15 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(document.querySelector('input[name="capeAmount"]:checked').value);
   };
 
-  async handleEmployerTypeChange() {
+  async handleEmployerTypeChange(employerType) {
     console.log("handleEmployerTypeChange");
-    const { formValues } = this.props;
+    console.log(employerType);
     // check if payment is required and store this in redux store for later
-    if (utils.isPaymentRequired(formValues.employerType)) {
+    if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
+      return this.getIframeNew(true);
     }
   }
 
@@ -605,8 +606,8 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
-  async getIframeNew() {
-    // console.log("getIframeNew");
+  async getIframeNew(cape) {
+    console.log("getIframeNew");
     const { formValues } = this.props;
 
     const birthdate = formatBirthdate(formValues);
@@ -629,7 +630,6 @@ export class SubmissionFormPage1Container extends React.Component {
         zip: formValues.homeZip
       },
       email: formValues.homeEmail,
-      language,
       cellPhone: formValues.mobilePhone,
       birthDate: birthdate,
       employerExternalId: "SW001",
@@ -638,12 +638,27 @@ export class SubmissionFormPage1Container extends React.Component {
       employeeExternalId: this.props.apiSubmission.submissionId,
       agreesToMessages: !formValues.textAuthOptOut
     };
-    // console.log(JSON.stringify(body));
+
+    if (!cape) {
+      body.language = language;
+    } else {
+      console.log("generating body for CAPE iFrame request");
+      const donationAmount =
+        formValues.capeAmount === "Other"
+          ? parseFloat(formValues.capeAmountOther)
+          : parseFloat(formValues.capeAmount);
+      body.deductionType = "CAPE";
+      body.politicalType = "monthly";
+      body.deductionAmount = donationAmount;
+      body.deductionCurrency = "USD";
+      body.deductionDayOfMonth = 10;
+    }
+    console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        // console.log(result.payload);
+        console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||

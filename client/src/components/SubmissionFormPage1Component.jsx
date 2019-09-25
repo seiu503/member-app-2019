@@ -403,6 +403,7 @@ export class SubmissionFormPage1Component extends React.Component {
           <CAPEForm
             {...this.props}
             standAlone={true}
+            newCardNeeded={true}
             verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
