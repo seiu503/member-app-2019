@@ -2525,7 +2525,7 @@ knex-migrate@^1.7.2:
     req-from "^1.0.1"
     umzug "^2.1.0"
 
-knex@^0.19.2:
+knex@^0.19.4:
   version "0.19.4"
   resolved "https://registry.yarnpkg.com/knex/-/knex-0.19.4.tgz#cf62f8824392387152a0a188a6585d5dea6832bb"
   integrity sha512-FRnR2iWEAoKkrVo3KyiEYeGwUjZOZT2WDko/tn3nCKzQdn6m8+5qSUeYLGa9zM8SwFGJriYKQSSMiDJKLILcMQ==
