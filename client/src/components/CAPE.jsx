@@ -362,7 +362,7 @@ export const CAPE = props => {
               onChange={e => {
                 updateEmployersPicklist(e);
                 handleEmployerTypeChange(e.target.value).then(() => {
-                  console.log(`checkoff: ${checkoff}`);
+                  // console.log(`checkoff: ${checkoff}`);
                 });
               }}
               labelWidth={100}

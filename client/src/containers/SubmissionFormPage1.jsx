@@ -135,7 +135,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   suggestedAmountOnChange = e => {
-    console.log("suggestedAmountOnChange");
+    // call getIframeNew for standalone CAPE when donation amount is set
+    // console.log("suggestedAmountOnChange");
     if (e.target.value === "Other") {
       return;
     }
@@ -144,14 +145,12 @@ export class SubmissionFormPage1Container extends React.Component {
       params.cape &&
       utils.isPaymentRequired(this.props.submission.formPage1.employerType)
     ) {
-      console.log("paymentRequired && cape");
       this.getIframeNew(true, e.target.value);
     }
   };
 
   async handleEmployerTypeChange(employerType) {
-    console.log("handleEmployerTypeChange");
-    console.log(employerType);
+    // console.log("handleEmployerTypeChange");
     // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
@@ -622,7 +621,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeNew(cape, capeAmount) {
-    console.log("getIframeNew");
+    // console.log("getIframeNew");
     const { formValues } = this.props;
 
     const birthdate = formatBirthdate(formValues);
@@ -657,27 +656,23 @@ export class SubmissionFormPage1Container extends React.Component {
     if (!cape) {
       body.language = language;
     } else {
-      console.log("generating body for CAPE iFrame request");
+      // console.log("generating body for CAPE iFrame request");
       const donationAmount =
         capeAmount === "Other"
           ? parseFloat(formValues.capeAmountOther)
           : parseFloat(capeAmount);
-      console.log(formValues);
-      console.log(donationAmount);
-      console.log(capeAmount);
-      console.log(formValues.capeAmountOther);
       body.deductionType = "CAPE";
       body.politicalType = "monthly";
       body.deductionAmount = donationAmount;
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        console.log(result.payload);
+        // console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -951,9 +946,7 @@ export class SubmissionFormPage1Container extends React.Component {
         "success",
         "Thank you. Your CAPE submission was proccessed."
       );
-      // need to redirect to the thankyou page or saved redirect url here,
-      // but need to make that text dynamic and reuse component for both
-      // cape and membership submits
+      this.props.history.push(`/thankyou/?cape=true`);
     }
   }
 
