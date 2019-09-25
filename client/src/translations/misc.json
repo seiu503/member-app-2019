@@ -8,15 +8,15 @@
 	],
 "clearSignature": [
 	"Clear Signature",
-	"Firma legible",
+	"Borrar firma",
 	"Удалить подпись",
 	"Xóa chữ ký",
 	"清除签名"
 ],
 "typeSignature": [
 	"Click here to type your signature",
-	"Haga clic aquí para firmar",
-	"Нажмите здесь, чтобы ввести подпись",
+	"Haga clic aquí para escribir su firma",
+	"Нажмите здесь, чтобы ввести подпись с помощью клавиатуры",
 	"Nhấp vào đây để gõ chữ ký của quý vị",
 	"单击此处键入您的签名"
 ],
