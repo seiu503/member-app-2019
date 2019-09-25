@@ -51,8 +51,7 @@ export const CAPE = props => {
     updateEmployersPicklist,
     handleEmployerTypeChange,
     employerList,
-    cape_legal,
-    newCardNeeded
+    cape_legal
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -416,26 +415,24 @@ export const CAPE = props => {
               />
             </div>
           )}
-        {iFrameURL &&
-          (formPage1.newCardNeeded || newCardNeeded) &&
-          formPage1.paymentRequired && (
-            <div data-test="component-iframe">
-              <Typography component="h2" className={classes.head}>
-                <Translate id="addPayment">Add a payment method</Translate>
-              </Typography>
-              <div className={classes.iframeWrap}>
-                <Iframe
-                  url={iFrameURL}
-                  width="100%"
-                  height="100px"
-                  id="iFrame"
-                  className={classes.iframe}
-                  display="initial"
-                  position="relative"
-                />
-              </div>
+        {!checkoff && iFrameURL && (
+          <div data-test="component-iframe">
+            <Typography component="h2" className={classes.head}>
+              <Translate id="addPayment">Add a payment method</Translate>
+            </Typography>
+            <div className={classes.iframeWrap}>
+              <Iframe
+                url={iFrameURL}
+                width="100%"
+                height="100px"
+                id="iFrame"
+                className={classes.iframe}
+                display="initial"
+                position="relative"
+              />
             </div>
-          )}
+          </div>
+        )}
         <div className={classes.legalCopy} ref={cape_legal}>
           <p>
             <Translate

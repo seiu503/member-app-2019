@@ -77,6 +77,15 @@ export class SubmissionFormPage1Container extends React.Component {
           ) {
             this.handleOpen();
           }
+          if (
+            utils.isPaymentRequired(
+              this.props.submission.formPage1.employerType
+            ) &&
+            params.cape
+          ) {
+            console.log("paymentRequired && cape");
+            this.getIframeNew(true);
+          }
         })
         .catch(err => {
           // console.log(err);
