@@ -12,39 +12,43 @@ import FormLabel from "@material-ui/core/FormLabel";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = theme => ({
-  root: {
-    margin: 20,
-    padding: 20,
-    maxWidth: 1200
-  },
-  card: {
-    margin: "auto",
-    width: "100%",
-    maxWidth: 300
-  },
-  media: {
-    height: 0,
-    paddingTop: "56.25%", // 16:9
-    position: "relative"
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    position: "absolute",
-    top: 100,
-    left: "calc(50% - 40px)"
-  },
+  root: {},
   container: {
-    height: "100%",
-    minHeight: "100vh",
+    padding: "80px 0 140px 0",
+    background: "white",
+    minHeight: "100vh"
+  },
+  head: {
+    color: theme.palette.primary.light
+  },
+  form: {
+    maxWidth: 600,
+    margin: "auto"
+  },
+  group: {
     display: "flex",
-    flexDirection: "column",
+    width: "100%",
+    flexDirection: "row",
     justifyContent: "center"
   },
-  name: {
-    color: "primary",
-    textAlign: "center",
-    marginTop: 15
+  input: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  textarea: {
+    width: "100%",
+    margin: "0 0 20px 0"
+  },
+  formButton: {
+    width: "100%",
+    padding: 20
+  },
+  formControl: {
+    width: "100%"
+  },
+  radioLabel: {
+    width: "100%",
+    textAlign: "center"
   }
 });
 
@@ -52,52 +56,53 @@ export class UserFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      edit: "createUser"
+      form: "createUser"
     };
-    this.submit = this.submit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
     //check for userType status here
   }
   handleChange(e) {
-    this.setState({ edit: e.target.value });
+    this.setState({ form: e.target.value });
   }
 
   render() {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
     const redirect = window.localStorage.getItem("redirect");
-
     return (
       <div className={classes.container} data-test="user-form-container">
-        <FormControl component="fieldset" className={classes.formControl}>
-          <FormLabel component="legend" className={classes.radioLabel}>
-            Create or Edit User
-          </FormLabel>
-          <RadioGroup
-            aria-label="User Action"
-            name="user_action"
-            className={classes.group}
-            value={this.state.edit}
-            onChange={this.handleChange}
-          >
-            <FormControlLabel
-              value="createUser"
-              control={<Radio />}
-              label="Create User"
-            />
-            <FormControlLabel
-              value="editUser"
-              control={<Radio />}
-              label="Edit User"
-            />
-          </RadioGroup>
-        </FormControl>
-        {loggedIn && !redirect && this.state.edit === "createUser" && (
+        <form>
+          <FormControl component="fieldset" className={classes.formControl}>
+            <FormLabel component="legend" className={classes.radioLabel}>
+              Create or Edit User
+            </FormLabel>
+            <RadioGroup
+              aria-label="User Action"
+              name="user_action"
+              className={classes.group}
+              value={this.state.form}
+              onChange={this.handleChange}
+            >
+              <FormControlLabel
+                value="createUser"
+                control={<Radio />}
+                label="Create User"
+              />
+              <FormControlLabel
+                value="editUser"
+                control={<Radio />}
+                label="Edit User"
+              />
+            </RadioGroup>
+          </FormControl>
+        </form>
+        {loggedIn && !redirect && this.state.form === "createUser" && (
           <CreateUser />
         )}
-        {loggedIn && !redirect && this.state.edit === "editUser" && (
+        {loggedIn && !redirect && this.state.form === "editUser" && (
           <EditUser />
         )}
       </div>

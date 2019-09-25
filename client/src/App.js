@@ -28,6 +28,7 @@ import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
 import LinkRequest from "./containers/LinkRequest";
+import UserForm from "./containers/UserForm";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
@@ -289,6 +290,12 @@ export class AppUnconnected extends Component {
                   setRedirect={this.setRedirect}
                   {...routeProps}
                 />
+              )}
+            />
+            <Route
+              path="/user"
+              render={routeProps => (
+                <UserForm setRedirect={this.setRedirect} {...routeProps} />
               )}
             />
             <Route

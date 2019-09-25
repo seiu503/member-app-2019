@@ -15,7 +15,9 @@ import {
   DELETE_USER_SUCCESS,
   DELETE_USER_FAILURE,
   HANDLE_INPUT,
-  CLEAR_FORM
+  CLEAR_FORM,
+  HANDLE_DELETE_OPEN,
+  HANDLE_DELETE_CLOSE
 } from "../actions/apiUserActions";
 
 export const INITIAL_STATE = {

@@ -7,21 +7,21 @@ import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 
-import * as apiUserActions from "../store/actions/userActions";
+import * as apiUserActions from "../store/actions/apiUserActions";
 
-import { openSnackbar } from "./Notifier";
+import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 
 const styles = theme => ({
   root: {},
   container: {
-    padding: "80px 0 140px 0",
+    padding: "10px 0 140px 0",
     background: "white"
   },
   head: {
     color: theme.palette.primary.light,
     fontSize: "2.5em",
-    marginBottom: "2em"
+    marginBottom: "1em"
   },
   form: {
     maxWidth: 600,
@@ -105,7 +105,7 @@ export class CreateUserFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container} data-test="user-form-home">
+      <div className={classes.container} data-test="create-user-form">
         <Typography
           variant="h2"
           align="center"
@@ -113,7 +113,7 @@ export class CreateUserFormUnconnected extends React.Component {
           className={classes.head}
           style={{ paddingTop: 20 }}
         >
-          Create or Edit a User
+          Create a User
         </Typography>
         <form
           onSubmit={e => this.submit(e)}
@@ -125,7 +125,7 @@ export class CreateUserFormUnconnected extends React.Component {
             data-test="fullName"
             name="fullName"
             id="fullName"
-            label={translate("fullName")}
+            label="fullName"
             type="text"
             variant="outlined"
             required
@@ -137,7 +137,7 @@ export class CreateUserFormUnconnected extends React.Component {
             data-test="email"
             name="email"
             id="email"
-            label={translate("email")}
+            label="email"
             type="text"
             variant="outlined"
             required
@@ -149,7 +149,7 @@ export class CreateUserFormUnconnected extends React.Component {
             data-test="userType"
             name="userType"
             id="userType"
-            label={translate("userType")}
+            label="userType"
             type="text"
             variant="outlined"
             required
