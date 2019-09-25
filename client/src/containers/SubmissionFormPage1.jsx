@@ -58,6 +58,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
+    this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -137,6 +138,17 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(event);
     // console.log(document.querySelector('input[name="capeAmount"]:checked').value);
   };
+
+  async handleEmployerTypeChange() {
+    console.log("handleEmployerTypeChange");
+    const { formValues } = this.props;
+    // check if payment is required and store this in redux store for later
+    if (utils.isPaymentRequired(formValues.employerType)) {
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: true }
+      });
+    }
+  }
 
   toggleSignatureInputType = () => {
     let type = this.state.signatureType === "draw" ? "write" : "draw";
@@ -1136,6 +1148,7 @@ export class SubmissionFormPage1Container extends React.Component {
           suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           saveSubmissionErrors={this.saveSubmissionErrors}
+          handleEmployerTypeChange={this.handleEmployerTypeChange}
         />
       </div>
     );

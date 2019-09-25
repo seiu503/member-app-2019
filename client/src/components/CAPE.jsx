@@ -49,6 +49,7 @@ export const CAPE = props => {
     verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
+    handleEmployerTypeChange,
     employerList,
     cape_legal
   } = props;
@@ -315,7 +316,12 @@ export const CAPE = props => {
               classes={classes}
               component={renderSelect}
               options={employerTypesList}
-              onChange={e => updateEmployersPicklist(e)}
+              onChange={e => {
+                updateEmployersPicklist(e);
+                handleEmployerTypeChange().then(() => {
+                  console.log(`checkoff: ${checkoff}`);
+                });
+              }}
               labelWidth={100}
             />
             {formValues.employerType !== "" && (

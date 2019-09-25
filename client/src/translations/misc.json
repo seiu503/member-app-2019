@@ -38,7 +38,8 @@
 	"To pay your dues by check:",
 	"Pagar sus cuotas con cheque:",
 	"Чтобы оплатить свои отчисления чеком",
-	"Cách trả thuế bằng séc:	通过支票支付会费："
+	"Cách trả thuế bằng séc:",
+	"通过支票支付会费："
 ],
 "payByCheck2": [
 	"Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree Dues' on your check. Dues are set by the SEIU Local 503 bylaws.",
@@ -51,11 +52,11 @@
 	"Do you want to use the existing card or add a new one?",
 	"¿Quiere utilizar la tarjeta existente o agregar una nueva?",
 	"Использовать существующую карту или добавить новую?",
-	"Quý vị muốn dùng thẻ hiện tại hay thêm thẻ mới?	",
+	"Quý vị muốn dùng thẻ hiện tại hay thêm thẻ mới? ",
 	"您想使用现有的卡还是添加新卡？"
 ],
 "back": ["Back", "Atrás", "Назад", "Quay lại", "上一步"],
-"next": ["Next", "Siguiente", "Далее", "Tiếp tục", "	下一步"],
+"next": ["Next", "Siguiente", "Далее", "Tiếp tục", "下一步"],
 "pageNotFound": [
   	"404 error. Sorry, page not found.",
   	"Error 404. Lo sentimos, página no encontrada.",
@@ -172,15 +173,12 @@
 	"Must be at exactly 5 characters long",
 	"Deben ser exactamente 5 caracteres",
 	"Длина строки должна составлять ровно 5 символов",
-	"Phải gồm đúng 5 ký",
-	"tự	必须恰好为 5 个字符的长度"
+	"Phải gồm đúng 5 ký tự",
+	"必须恰好为 5 个字符的长度"
 ],
 "snackBarSuccess": [
-	"Success, Your information was updated",
-	"Su información fue actualizada correctamente",
-	"Ваша информация успешно обновлена",
-	"Đã cập nhật thành công thông tin của quý vị	",
-	"成功，您的信息已更新"
+	"Success, Your information was updated", "Su información fue actualizada correctamente", "Ваша информация успешно обновлена",
+	"Đã cập nhật thành công thông tin của quý vị", "成功，您的信息已更新"
 ],
 "fetchingSalesForceError": [
 	"An error occurred while trying to fetch data from Salesforce.",
