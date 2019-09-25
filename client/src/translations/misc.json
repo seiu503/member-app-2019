@@ -180,13 +180,6 @@
 	"Success, Your information was updated", "Su información fue actualizada correctamente", "Ваша информация успешно обновлена",
 	"Đã cập nhật thành công thông tin của quý vị", "成功，您的信息已更新"
 ],
-"fetchingSalesForceError": [
-	"An error occurred while trying to fetch data from Salesforce.",
-	"Ocurrió un error mientras se trataba de obtener la información de Salesforce.",
-	"При попытке получить данные из Salesforce произошла ошибка.",
-	"Đã xảy ra lỗi khi cố tìm nạp dữ liệu từ Salesforce.	",
-	"尝试从 Salesforce 获取数据时发生错误。"
-],
 "captchaError": [
 	"Please verify you are human with Captcha",
 	"Verifique que es un humano con Captcha",
@@ -200,6 +193,13 @@
 	"Добавьте подпись",
 	"Vui lòng cung cấp chữ ký",
 	"请提供签名"
+],
+"fetchingSalesForceError": [
+	"An error occurred while trying to fetch data from Salesforce.",
+	"Ocurrió un error mientras se trataba de obtener la información de Salesforce.",
+	"При попытке получить данные из Salesforce произошла ошибка",
+	"Đã xảy ra lỗi khi cố tìm nạp dữ liệu từ Salesforce.",
+	"尝试从 Salesforce 获取数据时发生错误。"
 ],
 "": [
   "",
