@@ -44,13 +44,15 @@
 	"Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree Dues' on your check. Dues are set by the SEIU Local 503 bylaws.",
 	"Envíe su pago de $5 (mensuales) o $60 (anuales) a SEIU Local 503 a la siguiente dirección: PO Box 12159, Salem, O 97309. Escriba 'Retiree Dues' (Cuota en calidad de jubilado) en su cheque. Los estatutos de SEIU Local 503 establecen las cuotas.",
 	"отправляйте платеж в размере 5 долларов США (ежемесячно) или 60 долларов США (ежегодно) по адресу: SEIU Local 503, PO Box 12159, Salem, OR 97309. На чеке напишите Retiree Dues («Пенсионные отчисления»). Размер отчислений устанавливается Уставом SEIU Local 503.",
-	"Vui lòng gửi khoản thanh toán $5 (hàng tháng) hoặc $60 (hàng năm) đến địa chỉ SEIU Local 503, PO Box 12159, Salem HOẶC 97309. Vui lòng viết “Retiree Dues” (Thuế hưu trí) trên séc của quý vị. Thuế được đặt theo nội quy của SEIU Local 503.	请将您 5 美元（每月）或 60 美元（每年）的付款邮寄至 SEIU Local 503, PO Box 12159, Salem, OR 97309。请在支票上写上 'Retiree Dues'（退休人员会费）。会费依据 SEIU Local 503 的细则而定。"
+	"Vui lòng gửi khoản thanh toán $5 (hàng tháng) hoặc $60 (hàng năm) đến địa chỉ SEIU Local 503, PO Box 12159, Salem HOẶC 97309. Vui lòng viết “Retiree Dues” (Thuế hưu trí) trên séc của quý vị. Thuế được đặt theo nội quy của SEIU Local 503.",
+	"请将您 5 美元（每月）或 60 美元（每年）的付款邮寄至 SEIU Local 503, PO Box 12159, Salem, OR 97309。请在支票上写上 'Retiree Dues'（退休人员会费）。会费依据 SEIU Local 503 的细则而定。"
 ],
 "whichCard": [
 	"Do you want to use the existing card or add a new one?",
 	"¿Quiere utilizar la tarjeta existente o agregar una nueva?",
 	"Использовать существующую карту или добавить новую?",
-	"Quý vị muốn dùng thẻ hiện tại hay thêm thẻ mới?	您想使用现有的卡还是添加新卡？"
+	"Quý vị muốn dùng thẻ hiện tại hay thêm thẻ mới?	",
+	"您想使用现有的卡还是添加新卡？"
 ],
 "back": ["Back", "Atrás", "Назад", "Quay lại", "上一步"],
 "next": ["Next", "Siguiente", "Далее", "Tiếp tục", "	下一步"],
@@ -63,10 +65,10 @@
 ],
 "infoSubmitted": [
 	"Your information has been submitted.",
-  	"Su información ha sido enviada.",
-  	"Ваша информация отправлена.",
-  	"Đã gửi thông tin của quý vị.",
-  	"您的信息已提交。"
+	"Su información ha sido enviada.",
+	"Ваша информация отправлена.",
+	"Đã gửi thông tin của quý vị.",
+	"您的信息已提交。"
 ],
 "cancel": [
 	"Cancel",
@@ -200,5 +202,12 @@
 	"Добавьте подпись",
 	"Vui lòng cung cấp chữ ký",
 	"请提供签名"
+],
+"": [
+  "",
+  "",
+  "",
+  "",
+  ""
 ]
 }

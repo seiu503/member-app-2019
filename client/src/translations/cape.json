@@ -76,25 +76,12 @@
     "Khoản đóng góp hàng tháng",
     "月捐款额"
    ],
-  "whichCard": [
-    "Do you want to use the existing card or add a new one?",
-    "",
-    "",
-    "",
-    ""
-  ],
-  "capeAmount": [
-    "Monthly donation amount",
-    "",
-    "",
-    "",
-    ""
-  ],
  "capeLegalCheckoff1": [
    "By submitting this form, I hereby authorize my Employer to deduct the designated amount from my monthly earnings as a contribution to SEIU Local 503, OPEU CAPE.",
     "Por medio del presente, y tras haber enviado este formulario, autorizo a mi Empleador a deducir de mis ganancias mensuales el monto designado como aporte al CAPE de SEIU Local 503, OPEU.",
     "Отправляя эту форму, я уполномочиваю своего Работодателя вычитать указанную сумму из моей ежемесячной заработной платы в качестве взноса в профсоюз SEIU Local 503, OPEU CAPE.",
-    "Bằng việc gửi biểu mẫu này, tôi ủy quyền cho Chủ sử dụng lao động của mình chiết khấu một khoản chỉ định từ tiền lương hàng tháng của tôi để làm khoản đóng góp cho CAPE SEIU Local 503, OPEU.  通过提交此表格，我特此授权我的雇主从我的月收入中扣除指定金额作为本人向 SEIU Local 503，OPEU CAPE 的捐款。"
+    "Bằng việc gửi biểu mẫu này, tôi ủy quyền cho Chủ sử dụng lao động của mình chiết khấu một khoản chỉ định từ tiền lương hàng tháng của tôi để làm khoản đóng góp cho CAPE SEIU Local 503, OPEU.",
+    "通过提交此表格，我特此授权我的雇主从我的月收入中扣除指定金额作为本人向 SEIU Local 503，OPEU CAPE 的捐款。"
 ],
 "capeLegalStripe1": [
   "By submitting this form I am agreeing with the terms stated here:",
