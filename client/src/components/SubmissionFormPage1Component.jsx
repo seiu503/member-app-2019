@@ -53,7 +53,6 @@ export class SubmissionFormPage1Component extends React.Component {
 
   // check for messages from iframe
   receiveMessage = event => {
-    console.log("receiveMessage");
     // Do we trust the sender of this message?
     // ******* This will need to be changed to the
     // unioni.se prod url in production **********

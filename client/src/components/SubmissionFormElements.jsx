@@ -718,6 +718,7 @@ export const renderTextField = ({
   short,
   mobile,
   translate,
+  additionalOnChange,
   ...custom
 }) => {
   return (
@@ -741,6 +742,12 @@ export const renderTextField = ({
           {...custom}
           data-test="component-text-field"
           inputProps={{ id: id }}
+          onBlur={event => {
+            input.onBlur();
+            if (additionalOnChange) {
+              additionalOnChange(event);
+            }
+          }}
         />
       )}
     </Translate>

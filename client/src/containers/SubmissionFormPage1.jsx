@@ -77,15 +77,6 @@ export class SubmissionFormPage1Container extends React.Component {
           ) {
             this.handleOpen();
           }
-          if (
-            utils.isPaymentRequired(
-              this.props.submission.formPage1.employerType
-            ) &&
-            params.cape
-          ) {
-            console.log("paymentRequired && cape");
-            this.getIframeNew(true);
-          }
         })
         .catch(err => {
           // console.log(err);
@@ -143,20 +134,35 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  suggestedAmountOnChange = event => {
-    // console.log(event);
-    // console.log(document.querySelector('input[name="capeAmount"]:checked').value);
+  suggestedAmountOnChange = e => {
+    console.log("suggestedAmountOnChange");
+    if (e.target.value === "Other") {
+      return;
+    }
+    const params = queryString.parse(this.props.location.search);
+    if (
+      params.cape &&
+      utils.isPaymentRequired(this.props.submission.formPage1.employerType)
+    ) {
+      console.log("paymentRequired && cape");
+      this.getIframeNew(true, e.target.value);
+    }
   };
 
   async handleEmployerTypeChange(employerType) {
     console.log("handleEmployerTypeChange");
     console.log(employerType);
-    // check if payment is required and store this in redux store for later
+    // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
       return this.getIframeNew(true);
+    } else {
+      // hide iframe if already rendered if change to checkoff
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: false }
+      });
     }
   }
 
@@ -615,7 +621,7 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
-  async getIframeNew(cape) {
+  async getIframeNew(cape, capeAmount) {
     console.log("getIframeNew");
     const { formValues } = this.props;
 
@@ -653,9 +659,13 @@ export class SubmissionFormPage1Container extends React.Component {
     } else {
       console.log("generating body for CAPE iFrame request");
       const donationAmount =
-        formValues.capeAmount === "Other"
+        capeAmount === "Other"
           ? parseFloat(formValues.capeAmountOther)
-          : parseFloat(formValues.capeAmount);
+          : parseFloat(capeAmount);
+      console.log(formValues);
+      console.log(donationAmount);
+      console.log(capeAmount);
+      console.log(formValues.capeAmountOther);
       body.deductionType = "CAPE";
       body.politicalType = "monthly";
       body.deductionAmount = donationAmount;

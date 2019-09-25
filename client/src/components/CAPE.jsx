@@ -55,7 +55,7 @@ export const CAPE = props => {
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
+  // console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -175,7 +175,7 @@ export const CAPE = props => {
                 classes={classes}
                 component={formElements.renderCAPERadioGroup}
                 options={[10, 13, 15, "Other"]}
-                additionalOnChange={suggestedAmountOnChange}
+                additionalOnChange={e => suggestedAmountOnChange(e)}
               />
             </div>
           </div>
@@ -190,6 +190,7 @@ export const CAPE = props => {
             inputProps={{ min: 1 }}
             classes={classes}
             component={renderTextField}
+            additionalOnChange={e => suggestedAmountOnChange(e)}
           />
         )}
         {standAlone && (
@@ -343,7 +344,7 @@ export const CAPE = props => {
                 name="textAuthOptOut"
                 id="textAuthOptOut"
                 type="checkbox"
-                formControlName="controlCheckbox"
+                formControlName="controlCheckboxMargin"
                 classes={classes}
                 component={renderCheckbox}
               />
