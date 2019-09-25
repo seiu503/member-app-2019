@@ -7,6 +7,7 @@ import page2 from "./page2.json";
 import prefillModal from "./prefillModal.json";
 import welcomeInfo from "./welcomeInfo.json";
 import cape from "./cape.json";
+import misc from "./misc.json";
 
 // Import any new translation files above and add them to this object with spread operator.
 // This object is imported in App.js so that all components in app have access to all translations.
@@ -21,7 +22,8 @@ const globalTranslations = {
   ...page2,
   ...prefillModal,
   ...welcomeInfo,
-  ...cape
+  ...cape,
+  ...misc
 };
 
 export default globalTranslations;
