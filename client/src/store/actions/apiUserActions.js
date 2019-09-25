@@ -4,9 +4,11 @@ import FormData from "form-data";
 
 export const HANDLE_INPUT = "HANDLE_INPUT";
 export const CLEAR_FORM = "CLEAR_FORM";
-export const GET_USER_BY_ID_REQUEST = "GET_USER_BY_ID_REQUEST";
-export const GET_USER_BY_ID_SUCCESS = "GET_USER_BY_ID_SUCCESS";
-export const GET_USER_BY_ID_FAILURE = "GET_USER_BY_ID_FAILURE";
+export const HANDLE_DELETE_OPEN = "HANDLE_DELETE_OPEN";
+export const HANDLE_DELETE_CLOSE = "HANDLE_DELETE_CLOSE";
+export const GET_USER_BY_EMAIL_REQUEST = "GET_USER_BY_EMAIL_REQUEST";
+export const GET_USER_BY_EMAIL_SUCCESS = "GET_USER_BY_EMAIL_SUCCESS";
+export const GET_USER_BY_EMAIL_FAILURE = "GET_USER_BY_EMAIL_FAILURE";
 export const ADD_USER_REQUEST = "ADD_USER_REQUEST";
 export const ADD_USER_SUCCESS = "ADD_USER_SUCCESS";
 export const ADD_USER_FAILURE = "ADD_USER_FAILURE";
@@ -29,15 +31,28 @@ export function clearForm() {
   };
 }
 
+export function handleDeleteOpen(selectedUser) {
+  return {
+    type: HANDLE_DELETE_OPEN,
+    payload: { selectedUser }
+  };
+}
+
+export function handleDeleteClose() {
+  return {
+    type: HANDLE_DELETE_CLOSE
+  };
+}
+
 /*
  * Function: getUserById -- get a single User item by email
  * @param {string} email
  * This action dispatches additional actions as it executes:
- *   GET_USER_BY_ID_REQUEST:
+ *   GET_USER_BY_EMAIL_REQUEST:
  *     Initiates a spinner on the home page.
- *   GET_USER_BY_ID_SUCCESS:
+ *   GET_USER_BY_EMAIL_SUCCESS:
  *     If User successfully retrieved, hides spinner
- *   GET_USER_BY_ID_FAILURE:
+ *   GET_USER_BY_EMAIL_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
 export function getUserByEmail(email) {
@@ -46,10 +61,10 @@ export function getUserByEmail(email) {
       endpoint: `${BASE_URL}/api/user/${email}`,
       method: "GET",
       types: [
-        GET_USER_BY_ID_REQUEST,
-        GET_USER_BY_ID_SUCCESS,
+        GET_USER_BY_EMAIL_REQUEST,
+        GET_USER_BY_EMAIL_SUCCESS,
         {
-          type: GET_USER_BY_ID_FAILURE,
+          type: GET_USER_BY_EMAIL_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";
