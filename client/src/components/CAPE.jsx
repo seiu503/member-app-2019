@@ -56,9 +56,7 @@ export const CAPE = props => {
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  console.log(`iFrameURL: ${iFrameURL}`);
-  console.log(`formPage1.paymentRequired: ${formPage1.paymentRequired}`);
-  console.log(`formPage1.newCardNeeded: ${formPage1.newCardNeeded}`);
+  console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>

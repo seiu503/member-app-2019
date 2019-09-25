@@ -808,6 +808,14 @@ export class SubmissionFormPage1Container extends React.Component {
       );
     }
 
+    if (
+      this.props.submission.formPage1.paymentRequired &&
+      !this.props.submission.formPage1.paymentMethodAdded
+    ) {
+      // console.log("No payment method added");
+      return handleError("Please click 'Add a Card' to add a payment method");
+    }
+
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
       console.log("looking up sfid");
@@ -865,10 +873,10 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_amount: donationAmount,
       // need to add UI to select donation frequency
       donation_frequency: "Monthly",
-      // get this from getSFDJR call on CAPE component mount
-      member_short_id: ""
+      member_short_id: this.props.submission.payment.memberShortId
     };
     console.log(body);
+    console.log(body.member_short_id);
 
     let cape_errors = "",
       cape_status = "";
@@ -913,8 +921,6 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
     }
-
-    // update capeValidate function to require payment info if paymentRequired
 
     this.props.reset("submissionPage1");
     if (!standAlone) {

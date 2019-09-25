@@ -141,6 +141,11 @@ export const capeValidate = values => {
       requiredField: "capeAmountOther",
       controllingField: "capeAmount",
       controllingValues: ["Other"]
+    },
+    {
+      requiredField: "paymentMethodAdded",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home", "retired", "community member"]
     }
   ];
   conditionalRequiredFields.forEach(obj => {
@@ -165,7 +170,6 @@ export const capeValidate = values => {
     (values.employerType.toLowerCase() === "adult foster home" ||
       values.employerType.toLowerCase() === "retired" ||
       values.employerType.toLowerCase() === "community member") &&
-    values.paymentType === "Card" &&
     !values.paymentMethodAdded
   ) {
     errors.paymentMethodAdded = `Please add a payment method.`;
