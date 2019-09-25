@@ -1,56 +1,50 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+import CreateUser from "../components/CreateUser";
+import EditUser from "../components/EditUser";
 
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormLabel from "@material-ui/core/FormLabel";
 import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-
-import * as apiUserActions from "../store/actions/userActions";
-
-import { openSnackbar } from "./Notifier";
-import ButtonWithSpinner from "../components/ButtonWithSpinner";
 
 const styles = theme => ({
-  root: {},
-  container: {
-    padding: "80px 0 140px 0",
-    background: "white"
+  root: {
+    margin: 20,
+    padding: 20,
+    maxWidth: 1200
   },
-  head: {
-    color: theme.palette.primary.light,
-    fontSize: "2.5em",
-    marginBottom: "2em"
-  },
-  form: {
-    maxWidth: 600,
-    margin: "auto"
-  },
-  group: {
-    display: "flex",
+  card: {
+    margin: "auto",
     width: "100%",
-    flexDirection: "row",
+    maxWidth: 300
+  },
+  media: {
+    height: 0,
+    paddingTop: "56.25%", // 16:9
+    position: "relative"
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    position: "absolute",
+    top: 100,
+    left: "calc(50% - 40px)"
+  },
+  container: {
+    height: "100%",
+    minHeight: "100vh",
+    display: "flex",
+    flexDirection: "column",
     justifyContent: "center"
   },
-  input: {
-    width: "100%",
-    margin: "0 0 20px 0"
-  },
-  textarea: {
-    width: "100%",
-    margin: "0 0 20px 0"
-  },
-  formButton: {
-    width: "100%",
-    padding: 20
-  },
-  formControl: {
-    width: "100%"
-  },
-  radioLabel: {
-    width: "100%",
-    textAlign: "center"
+  name: {
+    color: "primary",
+    textAlign: "center",
+    marginTop: 15
   }
 });
 
@@ -58,115 +52,54 @@ export class UserFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      edit: false
+      edit: "createUser"
     };
     this.submit = this.submit.bind(this);
   }
 
-  componentDidMount() {}
-
-  submit(e) {
-    e.preventDefault();
-    const { firstName, lastName, email, userType } = this.props.user.form;
-    const body = {
-      fullName,
-      email,
-      userType
-    };
-    return this.props.apiUser
-      .lookupUser(email)
-      .then(result => {
-        // console.log(result);
-        if (result.payload.user_id) {
-          // console.log(result.payload);
-          openSnackbar(
-            "error",
-            "This user already exists. Please pick a different email or select 'Edit User' above"
-          );
-        } else {
-          this.props.apiUser.createUser(body).then(result => {
-            if (result.payload.user_id) {
-              openSnackbar("success", "user created successfully!");
-              this.clearForm();
-            }
-          });
-        }
-      })
-      .catch(err => {
-        // console.log(err);
-        openSnackbar(
-          "error",
-          this.props.user.error ||
-            "An error occurred while trying to create user"
-        );
-      });
+  componentDidMount() {
+    //check for userType status here
+  }
+  handleChange(e) {
+    this.setState({ edit: e.target.value });
   }
 
   render() {
     const { classes } = this.props;
+    const { loggedIn } = this.props.appState;
+    const redirect = window.localStorage.getItem("redirect");
+
     return (
-      <div className={classes.container} data-test="user-form-home">
-        <Typography
-          variant="h2"
-          align="center"
-          gutterBottom
-          className={classes.head}
-          style={{ paddingTop: 20 }}
-        >
-          Create or Edit a User
-        </Typography>
-        <form
-          onSubmit={e => this.submit(e)}
-          className={classes.form}
-          onError={errors => console.log(errors)}
-          id="form"
-        >
-          <TextField
-            data-test="fullName"
-            name="fullName"
-            id="fullName"
-            label={translate("fullName")}
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.user.form.fullName}
-            onChange={e => this.props.apiUser.handleInput(e)}
-            className={classes.input}
-          />
-          <TextField
-            data-test="email"
-            name="email"
-            id="email"
-            label={translate("email")}
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.user.form.email}
-            onChange={e => this.props.apiUser.handleInput(e)}
-            className={classes.input}
-          />
-          <TextField
-            data-test="userType"
-            name="userType"
-            id="userType"
-            label={translate("userType")}
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.user.form.email}
-            onChange={e => this.props.apiUser.handleInput(e)}
-            className={classes.input}
-          />
-          <ButtonWithSpinner
-            type="submit"
-            color="secondary"
-            className={classes.formButton}
-            variant="contained"
-            loading={this.props.user.loading}
+      <div className={classes.container} data-test="user-form-container">
+        <FormControl component="fieldset" className={classes.formControl}>
+          <FormLabel component="legend" className={classes.radioLabel}>
+            Create or Edit User
+          </FormLabel>
+          <RadioGroup
+            aria-label="User Action"
+            name="user_action"
+            className={classes.group}
+            value={this.state.edit}
+            onChange={this.handleChange}
           >
-            Submit
-          </ButtonWithSpinner>
-        </form>
+            <FormControlLabel
+              value="createUser"
+              control={<Radio />}
+              label="Create User"
+            />
+            <FormControlLabel
+              value="editUser"
+              control={<Radio />}
+              label="Edit User"
+            />
+          </RadioGroup>
+        </FormControl>
+        {loggedIn && !redirect && this.state.edit === "createUser" && (
+          <CreateUser />
+        )}
+        {loggedIn && !redirect && this.state.edit === "editUser" && (
+          <EditUser />
+        )}
       </div>
     );
   }
@@ -190,16 +123,9 @@ UserFormUnconnected.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  user: state.user
+  appState: state.appState
 });
 
-const mapDispatchToProps = dispatch => ({
-  apiUser: bindActionCreators(apiUserActions, dispatch)
-});
-
-export const UserFormConnected = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserFormUnconnected);
+export const UserFormConnected = connect(mapStateToProps)(UserFormUnconnected);
 
 export default withStyles(styles)(UserFormConnected);
