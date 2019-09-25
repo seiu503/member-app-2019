@@ -430,6 +430,9 @@ export const stylesPage1 = theme => ({
   controlCheckbox: {
     margin: "-35px 0 0 0"
   },
+  controlCheckboxMargin: {
+    margin: "-35px 0 40px 0"
+  },
   formHelperTextLegal: {
     margin: "-50px 0 50px 0",
     fontSize: "14px",
