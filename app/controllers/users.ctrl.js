@@ -22,20 +22,21 @@ const createUser = (req, res, next) => {
   const {
     name,
     email,
+    type,
     avatar_url,
     google_id,
     google_token,
-    userType
+    requestingUserType
   } = req.body;
-  if (userType != "admin" || !userType) {
+  if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
         "You do not have permission to do this. Please Consult an admin. u32"
     });
   }
-  if (name && email) {
+  if (name && email && type) {
     return users
-      .createUser(name, email, avatar_url, google_id, google_token)
+      .createUser(name, email, type, avatar_url, google_id, google_token)
       .then(users => {
         const user = users[0];
         res.status(200).json(user);
@@ -97,8 +98,8 @@ const updateUser = (req, res, next) => {
  *  @returns  Success or error message.
  */
 const deleteUser = (req, res, next) => {
-  const { userType } = req.body;
-  if (userType != "admin" || !userType) {
+  const requestingUserType = req.params.user_type;
+  if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
         "You do not have permission to do this. Please Consult an admin. u101"
@@ -156,11 +157,8 @@ const getUserByEmail = (req, res, next) => {
   return users
     .getUserByEmail(req.params.email)
     .then(user => {
-      if (!user || user.message) {
-        console.log(user.message);
-        return res
-          .status(404)
-          .json({ message: user.message || "User not found" });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
       } else {
         res.status(200).json(user);
       }

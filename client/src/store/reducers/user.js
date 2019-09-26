@@ -54,8 +54,7 @@ function User(state = INITIAL_STATE, action) {
 
     case HANDLE_DELETE_OPEN:
       return update(state, {
-        deleteDialogOpen: { $set: true },
-        currentUser: { $set: { ...action.payload.selectedUser } }
+        deleteDialogOpen: { $set: true }
       });
 
     case HANDLE_DELETE_CLOSE:

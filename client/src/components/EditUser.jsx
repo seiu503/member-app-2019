@@ -11,6 +11,8 @@ import * as apiUserActions from "../store/actions/apiUserActions";
 
 import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
+import Spinner from "../components/Spinner";
+import AlertDialog from "../components/AlertDialog";
 
 const styles = theme => ({
   root: {},
@@ -45,6 +47,15 @@ const styles = theme => ({
     width: "100%",
     padding: 20
   },
+  buttonDelete: {
+    width: "100%",
+    padding: 20,
+    marginTop: "20px",
+    backgroundColor: theme.palette.danger.main,
+    "&:hover": {
+      backgroundColor: theme.palette.danger.light
+    }
+  },
   formControl: {
     width: "100%"
   },
@@ -71,9 +82,9 @@ export class CreateUserFormUnconnected extends React.Component {
     return this.props.apiUser
       .getUserByEmail(existingUserEmail)
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (result.payload.message) {
-          console.log(result.payload);
+          // console.log(result.payload);
           openSnackbar(
             "error",
             result.payload.message ||
@@ -118,117 +129,175 @@ export class CreateUserFormUnconnected extends React.Component {
       });
   }
 
+  handleDeleteDialogOpen = user => {
+    if (user && this.props.appState.loggedIn) {
+      this.props.apiUser.handleDeleteOpen(user);
+    }
+  };
+
+  async deleteUser(user) {
+    const token = this.props.appState.authToken;
+    // const type = this.props.appState.type;
+    const type = "admin";
+    const userDeleteResult = await this.props.apiUser.deleteUser(
+      token,
+      user.id,
+      type
+    );
+    if (
+      !userDeleteResult.type ||
+      userDeleteResult.type !== "DELETE_CONTENT_SUCCESS"
+    ) {
+      openSnackbar("error", this.props.user.error);
+    } else if (userDeleteResult.type === "DELETE_CONTENT_SUCCESS") {
+      openSnackbar("success", `Deleted ${user.name}.`);
+      this.props.history.push(`/user`);
+    }
+  }
+
   render() {
     const { classes } = this.props;
-    if (this.props.user.currentUser.id) {
-      return (
-        <div>
-          <Typography
-            variant="h2"
-            align="center"
-            gutterBottom
-            className={classes.head}
-            style={{ paddingTop: 20 }}
-          >
-            Edit a User
-          </Typography>
-          <form
-            onSubmit={e => this.submit(e)}
-            className={classes.form}
-            onError={errors => console.log(errors)}
-            id="form"
-          >
-            <TextField
-              data-test="fullName"
-              name="fullName"
-              id="fullName"
-              label="fullName"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.user.form.fullName}
-              onChange={e => this.props.apiUser.handleInput(e)}
-              className={classes.input}
-            />
-            <TextField
-              data-test="email"
-              name="email"
-              id="email"
-              label="email"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.user.form.email}
-              onChange={e => this.props.apiUser.handleInput(e)}
-              className={classes.input}
-            />
-            <TextField
-              data-test="userType"
-              name="userType"
-              id="userType"
-              label="userType"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.user.form.userType}
-              onChange={e => this.props.apiUser.handleInput(e)}
-              className={classes.input}
-            />
-            <ButtonWithSpinner
-              type="submit"
-              color="secondary"
-              className={classes.formButton}
-              variant="contained"
-              loading={this.props.user.loading}
+    return (
+      <div data-test="component-edit-user" className={classes.root}>
+        {this.props.appState.loading && <Spinner />}
+        {this.props.user.deleteDialogOpen && (
+          <AlertDialog
+            open={this.props.user.deleteDialogOpen}
+            handleClose={this.props.apiUser.handleDeleteClose}
+            title="Delete Content"
+            content={`Are you sure you want to delete ${
+              this.props.user.currentUser.name
+            }? This action cannot be undone and all user data will be lost.`}
+            danger={true}
+            action={() => {
+              this.deleteUser(this.props.user.currentUser);
+              this.props.apiUser.handleDeleteClose();
+            }}
+            buttonText="Delete"
+            data-test="alert-dialog"
+          />
+        )}
+        {this.props.user.currentUser.id && (
+          <div>
+            <Typography
+              variant="h2"
+              align="center"
+              gutterBottom
+              className={classes.head}
+              style={{ paddingTop: 20 }}
             >
-              Submit
-            </ButtonWithSpinner>
-          </form>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <Typography
-            variant="h2"
-            align="center"
-            gutterBottom
-            className={classes.head}
-            style={{ paddingTop: 20 }}
-          >
-            Find User to Edit
-          </Typography>
-          <form
-            onSubmit={e => this.findUserByEmail(e)}
-            className={classes.form}
-            onError={errors => console.log(errors)}
-            id="form"
-          >
-            <TextField
-              data-test="existingUserEmail"
-              name="existingUserEmail"
-              id="existingUserEmail"
-              label="existingUserEmail"
-              type="text"
-              variant="outlined"
-              required
-              value={this.props.user.form.existingUserEmail}
-              onChange={e => this.props.apiUser.handleInput(e)}
-              className={classes.input}
-            />
-            <ButtonWithSpinner
-              type="submit"
-              color="secondary"
-              className={classes.formButton}
-              variant="contained"
-              loading={this.props.user.loading}
+              Edit a User
+            </Typography>
+            <form
+              onSubmit={e => this.submit(e)}
+              className={classes.form}
+              onError={errors => console.log(errors)}
+              id="form"
             >
-              Look Up
-            </ButtonWithSpinner>
-          </form>
-        </div>
-      );
-    }
+              <TextField
+                data-test="fullName"
+                name="fullName"
+                id="fullName"
+                label="Name"
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.user.form.fullName}
+                onChange={e => this.props.apiUser.handleInput(e)}
+                className={classes.input}
+              />
+              <TextField
+                data-test="email"
+                name="email"
+                id="email"
+                label="Email"
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.user.form.email}
+                onChange={e => this.props.apiUser.handleInput(e)}
+                className={classes.input}
+              />
+              <TextField
+                data-test="userType"
+                name="userType"
+                id="userType"
+                label="User Type"
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.user.form.userType}
+                onChange={e => this.props.apiUser.handleInput(e)}
+                className={classes.input}
+              />
+              <ButtonWithSpinner
+                type="submit"
+                color="secondary"
+                className={classes.formButton}
+                variant="contained"
+                loading={this.props.user.loading}
+              >
+                Submit
+              </ButtonWithSpinner>
+              <ButtonWithSpinner
+                onClick={() =>
+                  this.handleDeleteDialogOpen(this.props.user.currentUser)
+                }
+                color="primary"
+                aria-label="Delete Content"
+                data-test="delete"
+                className={classes.buttonDelete}
+                variant="contained"
+                loading={this.props.user.loading}
+              >
+                Delete User
+              </ButtonWithSpinner>
+            </form>
+          </div>
+        )}
+        {!this.props.user.currentUser.id && (
+          <div>
+            <Typography
+              variant="h2"
+              align="center"
+              gutterBottom
+              className={classes.head}
+              style={{ paddingTop: 20 }}
+            >
+              Find User to Edit
+            </Typography>
+            <form
+              onSubmit={e => this.findUserByEmail(e)}
+              className={classes.form}
+              onError={errors => console.log(errors)}
+              id="form"
+            >
+              <TextField
+                data-test="existingUserEmail"
+                name="existingUserEmail"
+                id="existingUserEmail"
+                label="existingUserEmail"
+                type="text"
+                variant="outlined"
+                required
+                value={this.props.user.form.existingUserEmail}
+                onChange={e => this.props.apiUser.handleInput(e)}
+                className={classes.input}
+              />
+              <ButtonWithSpinner
+                type="submit"
+                color="secondary"
+                className={classes.formButton}
+                variant="contained"
+                loading={this.props.user.loading}
+              >
+                Look Up
+              </ButtonWithSpinner>
+            </form>
+          </div>
+        )}
+      </div>
+    );
   }
 }
 
@@ -250,7 +319,8 @@ CreateUserFormUnconnected.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  appState: state.appState
 });
 
 const mapDispatchToProps = dispatch => ({

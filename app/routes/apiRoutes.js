@@ -135,7 +135,11 @@ router.get("/user/", userCtrl.getUsers);
 //   Returns: success message on success.
 //
 
-router.delete("/user/:id", authCtrl.requireAuth, userCtrl.deleteUser);
+router.delete(
+  "/user/:id/:user_type",
+  authCtrl.requireAuth,
+  userCtrl.deleteUser
+);
 
 /* ============================= CONTENT ROUTES ============================ */
 

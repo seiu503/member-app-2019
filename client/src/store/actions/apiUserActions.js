@@ -31,10 +31,10 @@ export function clearForm() {
   };
 }
 
-export function handleDeleteOpen(selectedUser) {
+export function handleDeleteOpen(user) {
   return {
     type: HANDLE_DELETE_OPEN,
-    payload: { selectedUser }
+    payload: { user }
   };
 }
 
@@ -177,10 +177,10 @@ export function updateUser(token, id, body) {
  *   DELETE_USER_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function deleteUser(token, id) {
+export function deleteUser(token, id, type) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/user/${id}`,
+      endpoint: `${BASE_URL}/api/user/${id}/${type}`,
       method: "DELETE",
       types: [
         DELETE_USER_REQUEST,
