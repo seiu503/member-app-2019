@@ -54,14 +54,13 @@ export class SubmissionFormPage1Component extends React.Component {
   // check for messages from iframe
   receiveMessage = event => {
     // Do we trust the sender of this message?
-    // ******* This will need to be changed to the
-    // unioni.se prod url in production **********
+    // ******* change to unioni.se prod url in production **********
     if (event.origin !== "https://lab.unioni.se") {
       return;
     }
 
     if (event.data.notification.type === "success") {
-      console.log("success");
+      // console.log("success");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
@@ -246,9 +245,6 @@ export class SubmissionFormPage1Component extends React.Component {
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
-    // console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
-    // console.log("if these dont match then create a new record");
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
@@ -326,14 +322,14 @@ export class SubmissionFormPage1Component extends React.Component {
       .then(score => {
         // console.log(`score: ${score}`);
         if (!score || score <= 0.5) {
-          console.log(`recaptcha failed: ${score}`);
+          // console.log(`recaptcha failed: ${score}`);
           return this.props.handleError(
             "ReCaptcha validation failed, please reload the page and try again."
           );
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
@@ -375,7 +371,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,
           "handleSubmit",

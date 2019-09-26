@@ -544,8 +544,8 @@ exports.createSFCAPE = async (req, res, next) => {
     // convert datetime to yyyy-mm-dd format
     body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
 
-    console.log(`sf.ctrl.js > 547`);
-    console.log(body);
+    // console.log(`sf.ctrl.js > 547`);
+    // console.log(body);
 
     CAPE = await conn.sobject("CAPE__c").create({
       ...body

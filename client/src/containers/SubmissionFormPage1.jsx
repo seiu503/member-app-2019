@@ -399,7 +399,7 @@ export class SubmissionFormPage1Container extends React.Component {
             "createSFOMA",
             err
           );
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
     }
@@ -583,8 +583,8 @@ export class SubmissionFormPage1Container extends React.Component {
     const result = await this.props.apiSubmission
       .verify(token, ip_address)
       .catch(err => {
-        console.log("recaptcha failed");
-        console.log(err);
+        // console.log("recaptcha failed");
+        // console.log(err);
         return handleError(
           "ReCaptcha validation failed, please reload the page and try again."
         );
@@ -809,14 +809,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    console.log("handleCAPESubmit");
-    console.log(this.props.formValues);
+    // console.log("handleCAPESubmit");
     const { formValues } = this.props;
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
-    console.log(score);
+    // console.log(score);
     if (!score || score <= 0.5) {
-      console.log(`recaptcha failed: ${score}`);
+      // console.log(`recaptcha failed: ${score}`);
       return handleError(
         "ReCaptcha validation failed, please reload the page and try again."
       );
@@ -832,7 +831,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      console.log("looking up sfid");
+      // console.log("looking up sfid");
       // lookup contact by first/last/email
       const lookupBody = {
         first_name: formValues.firstName,
@@ -840,19 +839,19 @@ export class SubmissionFormPage1Container extends React.Component {
         home_email: formValues.homeEmail
       };
       await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
     }
 
-    console.log(this.props.submission.salesforceId);
+    // console.log(this.props.submission.salesforceId);
     // find employer object
     const employerObject = findEmployerObject(
       this.props.submission.employerObjects,
       formValues.employerName
     );
-    console.log(employerObject);
-    console.log(employerObject.Agency_Number__c);
+    // console.log(employerObject);
+    // console.log(employerObject.Agency_Number__c);
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
@@ -889,8 +888,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: "Monthly",
       member_short_id: this.props.submission.payment.memberShortId
     };
-    console.log(body);
-    console.log(body.member_short_id);
+    // console.log(body);
 
     let cape_errors = "",
       cape_status = "";
@@ -899,7 +897,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const sfCapeResult = await this.props.apiSF
       .createSFCAPE(body)
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         cape_errors += err;
         cape_status = "Error";
         handleError(err);
@@ -911,7 +909,7 @@ export class SubmissionFormPage1Container extends React.Component {
     ) {
       cape_errors += this.props.submission.error;
       cape_status = "Error";
-      console.log(this.props.submission.error);
+      // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
     } else {
       cape_status = "Success";
@@ -924,7 +922,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const capeResult = await this.props.apiSubmission
       .createCAPE(body)
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
 
@@ -932,7 +930,7 @@ export class SubmissionFormPage1Container extends React.Component {
       capeResult.type !== "CREATE_CAPE_SUCCESS" ||
       this.props.submission.error
     ) {
-      console.log(this.props.submission.error);
+      // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
     }
 
@@ -1023,7 +1021,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      console.log(`recaptcha failed: ${score}`);
+      // console.log(`recaptcha failed: ${score}`);
       return handleError(
         "ReCaptcha validation failed, please reload the page and try again."
       );
@@ -1050,16 +1048,12 @@ export class SubmissionFormPage1Container extends React.Component {
     if (!reCaptchaValue) {
       // console.log("no reCaptcha value");
     }
-    // await this.props.apiSubmission.handleInput({
-    //   target: { name: "reCaptchaValue", value: reCaptchaValue }
-    // });
-    // console.log(this.props.submission.formPage1.reCaptchaValue);
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
       // update existing contact, move to next tab
       await this.updateSFContact().catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
       return this.changeTab(1);
@@ -1072,7 +1066,7 @@ export class SubmissionFormPage1Container extends React.Component {
       home_email: formValues.homeEmail
     };
     await this.props.apiSF.lookupSFContact(body).catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
     // console.log(result);
@@ -1080,7 +1074,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
       await this.updateSFContact().catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
       return this.changeTab(1);
@@ -1089,7 +1083,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // otherwise, create new contact with submission data,
     // then move to next tab
     await this.createSFContact().catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
     return this.changeTab(1);

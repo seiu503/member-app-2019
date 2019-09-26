@@ -193,11 +193,11 @@ const deleteCAPE = async (req, res, next) => {
   let result;
   try {
     result = await cape.deleteCAPE(req.params.id);
-    if (result.message === "CAPE deleted successfully") {
+    if (result.message === "CAPE record deleted successfully") {
       return res.status(200).json({ message: result.message });
     }
     return res.status(500).json({
-      message: "An error occurred and the CAPE was not deleted."
+      message: "An error occurred and the CAPE record was not deleted."
     });
   } catch (err) {
     return res.status(500).json({ message: err.message });

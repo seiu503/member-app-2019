@@ -699,7 +699,7 @@ const submissionsTableFields = {
     req: "Y",
     CAPEreq: true,
     postgresFieldName: "ip_address",
-    clientFieldName: "idAddress",
+    clientFieldName: "ipAddress",
     HtmlInputType: "(formula; no user-facing input)",
     SFTable: "OnlineMemberApp__c",
     SFFieldLabel: "IP Address",
@@ -1151,7 +1151,7 @@ const capeTableFields = {
   },
   online_campaign_source: {
     oldFormPage: "none",
-    req: "N",
+    req: "Y",
     postgresFieldName: "online_campaign_source",
     clientFieldName: "onlineCampaignSource",
     HtmlInputType: "(formula; no user-facing input)",
@@ -1164,7 +1164,7 @@ const capeTableFields = {
   },
   contact_id: {
     oldFormPage: "none",
-    req: "N",
+    req: "Y",
     CAPEreq: true,
     postgresFieldName: "contact_id",
     clientFieldName: "contactId",
@@ -1236,6 +1236,7 @@ const capeTableFields = {
     testingSample: "BPA9DS6T"
   },
   payment_method: {
+    req: "Y",
     SFTable: "CAPE__c",
     SFFieldLabel: "Payment Method",
     SFAPIName: "Payment_Method__c",
@@ -1252,6 +1253,11 @@ const capeTableFields = {
     // postgresFieldName: "payment_error_hold", // not saved to postgres
     clientFieldName: "paymentErrorHold",
     testingSample: false
+  },
+  cape_status: {
+    req: "Y",
+    postgresFieldName: "cape_status",
+    testingSample: "Success"
   }
 };
 
@@ -1618,13 +1624,14 @@ const generateCAPEValidate = () => {
   const sampleData = {};
   Object.keys(capeTableFields).map(function(key, index) {
     if (capeTableFields[key].req === "Y") {
-      let clientFieldName = capeTableFields[key].clientFieldName;
-      sampleData[clientFieldName] = capeTableFields[key].testingSample;
+      // let clientFieldName = capeTableFields[key].clientFieldName;
+      // sampleData[clientFieldName] = capeTableFields[key].testingSample;
+      sampleData[key] = capeTableFields[key].testingSample;
     }
   });
-  sampleData.mobilePhone = sampleData.cellPhone;
-  sampleData.homePostalCode = sampleData.homeZip;
-  delete sampleData.cellPhone;
+  // sampleData.mobilePhone = sampleData.cellPhone;
+  // sampleData.homePostalCode = sampleData.homeZip;
+  // delete sampleData.cellPhone;
   return sampleData;
 };
 const generateSampleValidate = () => {
