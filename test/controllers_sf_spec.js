@@ -18,13 +18,13 @@ const {
   generateSampleSubmission,
   generateSFDJRFieldList,
   paymentFields,
-  generateCAPEValidate
+  generateCAPEValidateBackEnd
 } = require("../app/utils/fieldConfigs");
 const fieldList = generateSFContactFieldList();
 const paymentFieldList = generateSFDJRFieldList();
 
 let submissionBody = generateSampleSubmission();
-let capeBody = generateCAPEValidate();
+let capeBody = generateCAPEValidateBackEnd();
 const { db, TABLES } = require("../app/config/knex");
 
 const djrBody = {

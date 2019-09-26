@@ -9,12 +9,12 @@ const passport = require("passport");
 const knexCleaner = require("knex-cleaner");
 const capeCtrl = require("../app/controllers/cape.ctrl.js");
 const cape = require("../db/models/cape");
-const { generateCAPEValidate } = require("../app/utils/fieldConfigs");
+const { generateCAPEValidateBackEnd } = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
 const localIpUrl = require("local-ip-url");
 require("../app/config/passport")(passport);
 
-let capeBody = generateCAPEValidate();
+let capeBody = generateCAPEValidateBackEnd();
 
 let responseStub,
   id,

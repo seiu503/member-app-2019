@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
-import { generateCAPEValidate } from "../../../../app/utils/fieldConfigs";
+import { generateCAPEValidateFrontEnd } from "../../../../app/utils/fieldConfigs";
 import { CAPE, CAPEForm } from "../../components/CAPE";
 import * as formElements from "../../components/SubmissionFormElements";
 
@@ -112,7 +112,10 @@ describe("<CAPE />", () => {
       payment: {
         activeMethodLast4: "1234",
         paymentErrorHold: false
-      }
+      },
+      handleEmployerTypeChange: jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}))
     };
 
     it("renders without error", () => {
@@ -131,7 +134,10 @@ describe("<CAPE />", () => {
         updateEmployersPicklist: updateEmployersPicklistMock
       });
       component = findByTestAttr(wrapper, "select-employer-type").first();
-      component.simulate("change");
+      const event = {
+        target: { value: "the-value" }
+      };
+      component.simulate("change", event);
       expect(updateEmployersPicklistMock.mock.calls.length).toBe(1);
     });
 
@@ -141,7 +147,7 @@ describe("<CAPE />", () => {
       handleSubmit = handleSubmitMock;
 
       // imported function that creates dummy data for form
-      testData = generateCAPEValidate();
+      testData = generateCAPEValidateFrontEnd();
 
       wrapper.setProps({ handleSubmit: handleSubmitMock });
       component = wrapper.find("form");
@@ -167,7 +173,7 @@ describe("<CAPE />", () => {
       wrapper = shallow(<CAPE {...props} />);
 
       // imported function that creates dummy data for form
-      testData = generateCAPEValidate();
+      testData = generateCAPEValidateFrontEnd();
 
       wrapper.setProps({ back: backMock });
       component = findByTestAttr(wrapper, "button-back");

@@ -2,7 +2,7 @@ import { validate, capeValidate } from "../../utils/validators";
 import {
   generateSampleValidate,
   generatePage2Validate,
-  generateCAPEValidate
+  generateCAPEValidateFrontEnd
 } from "../../../../app/utils/fieldConfigs";
 
 let testData, testDataPage2, testDataCAPE, combinedData;
@@ -11,13 +11,13 @@ describe("Redux-Form custom Validators", () => {
   beforeEach(() => {
     testData = generateSampleValidate();
     testDataPage2 = generatePage2Validate();
-    testDataCAPE = generateCAPEValidate();
+    testDataCAPE = generateCAPEValidateFrontEnd();
     combinedData = { ...testData, ...testDataPage2 };
   });
   afterAll(() => {
     testData = generateSampleValidate();
     testDataPage2 = generatePage2Validate();
-    testDataCAPE = generateCAPEValidate();
+    testDataCAPE = generateCAPEValidateFrontEnd();
   });
   test("no errors on well formed values", () => {
     expect(validate(testData)).toStrictEqual({});

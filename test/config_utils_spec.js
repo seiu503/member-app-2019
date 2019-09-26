@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const {
   generateSampleValidate,
   generatePage2Validate,
-  generateCAPEValidate,
+  generateCAPEValidateBackEnd,
   formatDate
 } = require("../app/utils/fieldConfigs");
 const utils = require("../app/utils/index");
@@ -25,7 +25,7 @@ suite("fieldConfig.js / utils.js", function() {
   });
 
   test("generates sample CAPE validate", () => {
-    const result = generateCAPEValidate();
+    const result = generateCAPEValidateBackEnd();
     assert.equal(result.employer_id, "employer_id");
   });
 

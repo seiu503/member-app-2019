@@ -1028,6 +1028,38 @@ const capeTableFields = {
     SQLDataType: "VARCHAR(255)",
     testingSample: "employer_id"
   },
+  employer_name: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "employer_name",
+    clientFieldName: "employerName",
+    HtmlInputType: "n/a (see Contacts)",
+    // SFTable: "CAPE__c",
+    // SFFieldLabel: "Employer",
+    // fieldLabel: "Employer",
+    // SFAPIName: "Employer__c",
+    // SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "employer_name"
+  },
+  employer_type: {
+    oldFormPage: "none",
+    newFormTab: 0,
+    req: "Y",
+    CAPEreq: true,
+    postgresFieldName: "employer_type",
+    clientFieldName: "employerType",
+    HtmlInputType: "n/a (see Contacts)",
+    // SFTable: "CAPE__c",
+    // SFFieldLabel: "Employer",
+    // fieldLabel: "Employer",
+    // SFAPIName: "Employer__c",
+    // SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "employer_id"
+  },
   job_title: {
     oldFormPage: "none",
     newFormTab: 0,
@@ -1620,18 +1652,26 @@ const requiredFields = [
   "signature"
 ];
 
-const generateCAPEValidate = () => {
+const generateCAPEValidateBackEnd = () => {
   const sampleData = {};
   Object.keys(capeTableFields).map(function(key, index) {
     if (capeTableFields[key].req === "Y") {
-      // let clientFieldName = capeTableFields[key].clientFieldName;
-      // sampleData[clientFieldName] = capeTableFields[key].testingSample;
       sampleData[key] = capeTableFields[key].testingSample;
     }
   });
-  // sampleData.mobilePhone = sampleData.cellPhone;
-  // sampleData.homePostalCode = sampleData.homeZip;
-  // delete sampleData.cellPhone;
+  return sampleData;
+};
+const generateCAPEValidateFrontEnd = () => {
+  const sampleData = {};
+  Object.keys(capeTableFields).map(function(key, index) {
+    if (capeTableFields[key].req === "Y") {
+      let clientFieldName = capeTableFields[key].clientFieldName;
+      sampleData[clientFieldName] = capeTableFields[key].testingSample;
+    }
+  });
+  sampleData.mobilePhone = sampleData.cellPhone;
+  sampleData.homePostalCode = sampleData.homeZip;
+  delete sampleData.cellPhone;
   return sampleData;
 };
 const generateSampleValidate = () => {
@@ -1713,7 +1753,8 @@ module.exports = {
   Page2TableFields,
   generateSampleSubmission,
   generateSampleValidate,
-  generateCAPEValidate,
+  generateCAPEValidateBackEnd,
+  generateCAPEValidateFrontEnd,
   generatePage2Validate,
   generateSFContactFieldList,
   generateSFDJRFieldList,
