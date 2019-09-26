@@ -106,6 +106,17 @@ router.put("/user/:id", authCtrl.requireAuth, userCtrl.updateUser);
 //
 router.get("/user/:id", userCtrl.getUserById);
 
+// GET ONE USER BY EMAIL
+//   Example: GET >> /api/user/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON user object on success.
+//
+router.get("/user/email/:email", userCtrl.getUserByEmail);
+
 // GET ALL USERS
 //   Example: GET >> /api/user/
 //   Secured: no

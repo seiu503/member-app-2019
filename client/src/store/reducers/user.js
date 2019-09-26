@@ -32,7 +32,8 @@ export const INITIAL_STATE = {
   form: {
     email: "",
     fullName: "",
-    user_type: ""
+    user_type: "",
+    existingUserEmail: ""
   },
   error: null
 };
@@ -89,15 +90,26 @@ function User(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
-    case GET_USER_BY_EMAIL_SUCCESS:
     case ADD_USER_SUCCESS:
     case UPDATE_USER_SUCCESS:
       return update(state, {
         form: {
-          email: { $set: action.payload.user },
-          fullName: { $set: action.payload.fullName },
+          email: { $set: action.payload.email },
+          fullName: { $set: action.payload.name },
           user_type: { $set: action.payload.user_type }
         },
+        dialogOpen: { $set: false },
+        error: { $set: null }
+      });
+
+    case GET_USER_BY_EMAIL_SUCCESS:
+      return update(state, {
+        form: {
+          email: { $set: action.payload.email },
+          fullName: { $set: action.payload.name },
+          user_type: { $set: action.payload.user_type }
+        },
+        currentUser: { $set: action.payload },
         dialogOpen: { $set: false },
         error: { $set: null }
       });

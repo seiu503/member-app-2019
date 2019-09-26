@@ -58,7 +58,7 @@ export function handleDeleteClose() {
 export function getUserByEmail(email) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/user/${email}`,
+      endpoint: `${BASE_URL}/api/user/email/${email}`,
       method: "GET",
       types: [
         GET_USER_BY_EMAIL_REQUEST,

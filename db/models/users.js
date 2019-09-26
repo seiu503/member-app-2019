@@ -69,6 +69,18 @@ const getUserById = id => {
     .returning("*");
 };
 
+/** Find a user by email
+ *  @param    {String}   email   The email of the user to return.
+ *  @returns  {Object}        User object.
+ */
+
+const getUserByEmail = email => {
+  return db(TABLES.USERS)
+    .where({ email })
+    .first()
+    .returning("*");
+};
+
 /** Find a user by google_id
  *  @param    {String}   google_id   The google_id of the user to return.
  *  @returns  {Object}        User object.
@@ -104,5 +116,6 @@ module.exports = {
   getUserById,
   getUserByGoogleId,
   getUsers,
-  deleteUser
+  deleteUser,
+  getUserByEmail
 };

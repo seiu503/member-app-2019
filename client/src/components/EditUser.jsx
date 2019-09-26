@@ -65,6 +65,33 @@ export class CreateUserFormUnconnected extends React.Component {
 
   componentDidMount() {}
 
+  findUserByEmail(e) {
+    e.preventDefault();
+    const { existingUserEmail } = this.props.user.form;
+    return this.props.apiUser
+      .getUserByEmail(existingUserEmail)
+      .then(result => {
+        console.log(result);
+        if (result.payload.message) {
+          console.log(result.payload);
+          openSnackbar(
+            "error",
+            result.payload.message ||
+              "An error occurred while trying to find user"
+          );
+        } else {
+          openSnackbar("success", "user found successfully!");
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        openSnackbar(
+          "error",
+          this.props.user.error || "An error occurred while trying to find user"
+        );
+      });
+  }
+
   submit(e) {
     e.preventDefault();
     const { fullName, email, userType } = this.props.user.form;
@@ -73,23 +100,12 @@ export class CreateUserFormUnconnected extends React.Component {
       email,
       userType
     };
-    return this.props.apiUser
-      .lookupUser(email)
+    this.props.apiUser
+      .updateUser(body)
       .then(result => {
-        // console.log(result);
-        if (result.payload.user_id) {
-          // console.log(result.payload);
-          openSnackbar(
-            "error",
-            "This user already exists. Please pick a different email or select 'Edit User' above"
-          );
-        } else {
-          this.props.apiUser.createUser(body).then(result => {
-            if (result.payload.user_id) {
-              openSnackbar("success", "user created successfully!");
-              this.clearForm();
-            }
-          });
+        if (result.payload.id) {
+          openSnackbar("success", "user created successfully!");
+          this.clearForm();
         }
       })
       .catch(err => {
@@ -104,71 +120,115 @@ export class CreateUserFormUnconnected extends React.Component {
 
   render() {
     const { classes } = this.props;
-    return (
-      <div className={classes.container} data-test="edit-user-form">
-        <Typography
-          variant="h2"
-          align="center"
-          gutterBottom
-          className={classes.head}
-          style={{ paddingTop: 20 }}
-        >
-          Edit a User
-        </Typography>
-        <form
-          onSubmit={e => this.submit(e)}
-          className={classes.form}
-          onError={errors => console.log(errors)}
-          id="form"
-        >
-          <TextField
-            data-test="fullName"
-            name="fullName"
-            id="fullName"
-            label="fullName"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.user.form.fullName}
-            onChange={e => this.props.apiUser.handleInput(e)}
-            className={classes.input}
-          />
-          <TextField
-            data-test="email"
-            name="email"
-            id="email"
-            label="email"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.user.form.email}
-            onChange={e => this.props.apiUser.handleInput(e)}
-            className={classes.input}
-          />
-          <TextField
-            data-test="userType"
-            name="userType"
-            id="userType"
-            label="userType"
-            type="text"
-            variant="outlined"
-            required
-            value={this.props.user.form.email}
-            onChange={e => this.props.apiUser.handleInput(e)}
-            className={classes.input}
-          />
-          <ButtonWithSpinner
-            type="submit"
-            color="secondary"
-            className={classes.formButton}
-            variant="contained"
-            loading={this.props.user.loading}
+    if (this.props.user.currentUser.id) {
+      return (
+        <div>
+          <Typography
+            variant="h2"
+            align="center"
+            gutterBottom
+            className={classes.head}
+            style={{ paddingTop: 20 }}
           >
-            Submit
-          </ButtonWithSpinner>
-        </form>
-      </div>
-    );
+            Edit a User
+          </Typography>
+          <form
+            onSubmit={e => this.submit(e)}
+            className={classes.form}
+            onError={errors => console.log(errors)}
+            id="form"
+          >
+            <TextField
+              data-test="fullName"
+              name="fullName"
+              id="fullName"
+              label="fullName"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.user.form.fullName}
+              onChange={e => this.props.apiUser.handleInput(e)}
+              className={classes.input}
+            />
+            <TextField
+              data-test="email"
+              name="email"
+              id="email"
+              label="email"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.user.form.email}
+              onChange={e => this.props.apiUser.handleInput(e)}
+              className={classes.input}
+            />
+            <TextField
+              data-test="userType"
+              name="userType"
+              id="userType"
+              label="userType"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.user.form.userType}
+              onChange={e => this.props.apiUser.handleInput(e)}
+              className={classes.input}
+            />
+            <ButtonWithSpinner
+              type="submit"
+              color="secondary"
+              className={classes.formButton}
+              variant="contained"
+              loading={this.props.user.loading}
+            >
+              Submit
+            </ButtonWithSpinner>
+          </form>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <Typography
+            variant="h2"
+            align="center"
+            gutterBottom
+            className={classes.head}
+            style={{ paddingTop: 20 }}
+          >
+            Find User to Edit
+          </Typography>
+          <form
+            onSubmit={e => this.findUserByEmail(e)}
+            className={classes.form}
+            onError={errors => console.log(errors)}
+            id="form"
+          >
+            <TextField
+              data-test="existingUserEmail"
+              name="existingUserEmail"
+              id="existingUserEmail"
+              label="existingUserEmail"
+              type="text"
+              variant="outlined"
+              required
+              value={this.props.user.form.existingUserEmail}
+              onChange={e => this.props.apiUser.handleInput(e)}
+              className={classes.input}
+            />
+            <ButtonWithSpinner
+              type="submit"
+              color="secondary"
+              className={classes.formButton}
+              variant="contained"
+              loading={this.props.user.loading}
+            >
+              Look Up
+            </ButtonWithSpinner>
+          </form>
+        </div>
+      );
+    }
   }
 }
 

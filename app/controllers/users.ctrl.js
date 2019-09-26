@@ -148,6 +148,25 @@ const getUserById = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
+/** Get one user
+ *  @param    {String}   email   Email of the requested user.
+ *  @returns  {Object}        User object OR error message.
+ */
+const getUserByEmail = (req, res, next) => {
+  return users
+    .getUserByEmail(req.params.email)
+    .then(user => {
+      if (!user || user.message) {
+        console.log(user.message);
+        return res
+          .status(404)
+          .json({ message: user.message || "User not found" });
+      } else {
+        res.status(200).json(user);
+      }
+    })
+    .catch(err => res.status(404).json({ message: err.message }));
+};
 /* ================================ EXPORT ================================= */
 
 module.exports = {
@@ -155,5 +174,6 @@ module.exports = {
   updateUser,
   deleteUser,
   getUserById,
+  getUserByEmail,
   getUsers
 };
