@@ -1,8 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
+
 import CreateUser from "../components/CreateUser";
 import EditUser from "../components/EditUser";
+import Spinner from "../components/Spinner";
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -56,13 +59,13 @@ export class UserFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      form: "createUser"
+      form: ""
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
-    //check for userType status here
+    this.setState({ form: "createUser" });
   }
   handleChange(e) {
     this.setState({ form: e.target.value });
@@ -71,39 +74,41 @@ export class UserFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
-    const redirect = window.localStorage.getItem("redirect");
+    const { loading } = this.props.appState;
     return (
       <div className={classes.container} data-test="user-form-container">
-        <form>
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend" className={classes.radioLabel}>
-              Create or Edit User
-            </FormLabel>
-            <RadioGroup
-              aria-label="User Action"
-              name="user_action"
-              className={classes.group}
-              value={this.state.form}
-              onChange={this.handleChange}
-            >
-              <FormControlLabel
-                value="createUser"
-                control={<Radio />}
-                label="Create User"
-              />
-              <FormControlLabel
-                value="editUser"
-                control={<Radio />}
-                label="Edit User"
-              />
-            </RadioGroup>
-          </FormControl>
-        </form>
-        {loggedIn && !redirect && this.state.form === "createUser" && (
-          <CreateUser />
+        {loading && <Spinner />}
+        {loggedIn && (
+          <form>
+            <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend" className={classes.radioLabel}>
+                Create or Edit User
+              </FormLabel>
+              <RadioGroup
+                aria-label="User Action"
+                name="user_action"
+                className={classes.group}
+                value={this.state.form}
+                onChange={this.handleChange}
+              >
+                <FormControlLabel
+                  value="createUser"
+                  control={<Radio />}
+                  label="Create User"
+                />
+                <FormControlLabel
+                  value="editUser"
+                  control={<Radio />}
+                  label="Edit User"
+                />
+              </RadioGroup>
+            </FormControl>
+          </form>
         )}
-        {loggedIn && !redirect && this.state.form === "editUser" && (
-          <EditUser />
+        {loggedIn && this.state.form === "createUser" && <CreateUser />}
+        {loggedIn && this.state.form === "editUser" && <EditUser />}
+        {!loading && !loggedIn && this.state.form && (
+          <Redirect to="/noaccess" />
         )}
       </div>
     );
@@ -128,7 +133,8 @@ UserFormUnconnected.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  appState: state.appState
+  appState: state.appState,
+  localize: state.localize
 });
 
 export const UserFormConnected = connect(mapStateToProps)(UserFormUnconnected);

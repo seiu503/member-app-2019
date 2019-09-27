@@ -14,6 +14,7 @@ import Button from "@material-ui/core/Button";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
 import SamplePhoto from "../img/sample-form-photo.jpg";
+import Spinner from "../components/Spinner";
 
 const styles = theme => ({
   root: {
@@ -121,11 +122,9 @@ export class WelcomeInfoUnconnected extends React.Component {
   };
 
   render() {
-    if (this.props.appState.loading) {
-      return <div>loading...</div>;
-    }
     return (
       <div className={this.classes.root} data-test="component-welcome-info">
+        {this.props.appState.loading && <Spinner />}
         <Card className={this.classes.welcomeCard}>
           <CardMedia
             className={this.classes.media}

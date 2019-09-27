@@ -18,6 +18,7 @@ import { detectDefaultLanguage } from "./utils/index";
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
 import FormThankYou from "./components/FormThankYou";
+import NoAccess from "./components/NoAccess";
 import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Dashboard from "./containers/Dashboard";
@@ -257,6 +258,17 @@ export class AppUnconnected extends Component {
               path="/thankyou"
               render={routeProps => (
                 <FormThankYou
+                  setRedirect={this.setRedirect}
+                  classes={this.props.classes}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/noaccess"
+              render={routeProps => (
+                <NoAccess
                   setRedirect={this.setRedirect}
                   classes={this.props.classes}
                   {...routeProps}

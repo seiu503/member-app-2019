@@ -159,7 +159,6 @@ export class CreateUserFormUnconnected extends React.Component {
     const { classes } = this.props;
     return (
       <div data-test="component-edit-user" className={classes.root}>
-        {this.props.appState.loading && <Spinner />}
         {this.props.user.deleteDialogOpen && (
           <AlertDialog
             open={this.props.user.deleteDialogOpen}
