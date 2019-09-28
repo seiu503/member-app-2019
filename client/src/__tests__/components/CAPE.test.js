@@ -30,6 +30,7 @@ const defaultProps = {
   loading: false,
   pristine: false,
   invalid: false,
+  change: jest.fn(),
   formValues: {
     paymentType: "Card",
     employerName: "blah",
@@ -99,6 +100,7 @@ describe("<CAPE />", () => {
     const props = {
       handleSubmit: fn => fn,
       classes: {},
+      change: jest.fn(),
       formValues: {
         employerType: "adult foster home"
       },
@@ -153,10 +155,27 @@ describe("<CAPE />", () => {
       const event = {
         target: { value: "the-value" }
       };
-      // component.prop('suggestedAmountOnChange')(event);
-      // expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
       component.simulate("change", event);
       expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
+    });
+
+    it("calls reduxForm `change` prop on capeAmountOther Change", () => {
+      wrapper = shallow(<CAPE {...props} />);
+      const changeMock = jest.fn();
+
+      wrapper.setProps({
+        change: changeMock,
+        formValues: {
+          capeAmount: "Other"
+        }
+      });
+
+      component = findByTestAttr(wrapper, "field-other-amount").first();
+      const event = {
+        target: { value: "the-value" }
+      };
+      component.simulate("change", event);
+      expect(changeMock).toHaveBeenCalled();
     });
 
     it("calls handleSubmit on submit", async () => {

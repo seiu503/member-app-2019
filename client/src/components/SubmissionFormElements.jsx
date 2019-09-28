@@ -934,7 +934,6 @@ export const renderCAPERadioGroup = ({
   meta: { touched, error },
   formControlName,
   legendClass,
-  additionalOnChange,
   ...custom
 }) => (
   <Translate>
@@ -955,7 +954,6 @@ export const renderCAPERadioGroup = ({
           id={formControlName}
           className={classes.horizGroup}
           onChange={input.onChange}
-          value={input.value}
         >
           {options.map(item => {
             let labelText = `$${item}`;
