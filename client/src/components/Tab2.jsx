@@ -277,7 +277,7 @@ export const Tab2Form = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(Tab2);
 
 export default Tab2Form;
