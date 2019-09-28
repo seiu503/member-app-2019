@@ -954,12 +954,8 @@ export const renderCAPERadioGroup = ({
           name={formControlName}
           id={formControlName}
           className={classes.horizGroup}
-          onChange={(event, value) => {
-            input.onChange(value);
-            if (additionalOnChange) {
-              additionalOnChange(event);
-            }
-          }}
+          onChange={input.onChange}
+          value={input.value}
         >
           {options.map(item => {
             let labelText = `$${item}`;

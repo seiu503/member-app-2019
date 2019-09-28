@@ -7,7 +7,8 @@ import {
   isPristine,
   isValid,
   getFormSubmitErrors,
-  reset
+  reset,
+  change
 } from "redux-form";
 // import { loadReCaptcha } from "react-recaptcha-v3";
 
@@ -842,6 +843,17 @@ export class SubmissionFormPage1Container extends React.Component {
         // console.log(err);
         return handleError(err);
       });
+      // if nothing found on lookup, need to create new contact
+      if (!this.props.submission.salesforceId) {
+        await this.createSFContact()
+          .then(() => {
+            console.log(this.props.submission.salesforceId);
+          })
+          .catch(err => {
+            // console.log(err);
+            return handleError(err);
+          });
+      }
     }
 
     // console.log(this.props.submission.salesforceId);
@@ -888,7 +900,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: "Monthly",
       member_short_id: this.props.submission.payment.memberShortId
     };
-    // console.log(body);
+    console.log(body);
 
     let cape_errors = "",
       cape_status = "";
@@ -1160,6 +1172,7 @@ export class SubmissionFormPage1Container extends React.Component {
         />
         <SubmissionFormPage1Wrap
           {...this.props}
+          change={change}
           tab={this.state.tab}
           howManyTabs={this.state.howManyTabs}
           handleTab={this.handleTab}

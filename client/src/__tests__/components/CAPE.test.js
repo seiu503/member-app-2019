@@ -141,6 +141,24 @@ describe("<CAPE />", () => {
       expect(updateEmployersPicklistMock.mock.calls.length).toBe(1);
     });
 
+    it("calls suggestedAmountOnChange on capeAmount Change", () => {
+      wrapper = shallow(<CAPE {...props} />);
+      const suggestedAmountOnChangeMock = jest.fn();
+
+      wrapper.setProps({
+        suggestedAmountOnChange: suggestedAmountOnChangeMock
+      });
+
+      component = findByTestAttr(wrapper, "radio-cape-amount").first();
+      const event = {
+        target: { value: "the-value" }
+      };
+      // component.prop('suggestedAmountOnChange')(event);
+      // expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
+      component.simulate("change", event);
+      expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
+    });
+
     it("calls handleSubmit on submit", async () => {
       wrapper = shallow(<CAPE {...props} />);
       handleSubmitMock = jest.fn();

@@ -51,7 +51,8 @@ export const CAPE = props => {
     updateEmployersPicklist,
     handleEmployerTypeChange,
     employerList,
-    cape_legal
+    cape_legal,
+    change
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -175,7 +176,10 @@ export const CAPE = props => {
                 classes={classes}
                 component={formElements.renderCAPERadioGroup}
                 options={[10, 13, 15, "Other"]}
-                additionalOnChange={e => suggestedAmountOnChange(e)}
+                onChange={(event, value) => {
+                  change("capeAmount", value);
+                  suggestedAmountOnChange(event);
+                }}
               />
             </div>
           </div>
