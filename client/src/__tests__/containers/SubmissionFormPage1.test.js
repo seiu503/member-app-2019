@@ -21,14 +21,7 @@ import { handleInput } from "../../store/actions/apiSubmissionActions";
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
 
-let store,
-  wrapper,
-  trimSignatureMock,
-  handleUploadMock,
-  lookupSFContactMock,
-  addSubmissionMock,
-  createSFContactMock,
-  updateSFContactMock;
+let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn(),
@@ -71,6 +64,17 @@ let createSFContactError = jest
   .mockImplementation(() =>
     Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
   );
+
+let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_CONTACT_SUCCESS",
+    payload: {
+      Birthdate: moment("01-01-1900", "MM-DD-YYYY"),
+      firstName: "test",
+      lastName: "test"
+    }
+  })
+);
 
 let getSFContactByIdError = jest
   .fn()
@@ -155,17 +159,17 @@ let getUnioniseTokenError = jest
     Promise.resolve({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
   );
 
-let refreshUnioniseTokenSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_SUCCESS", payload: {} })
-  );
+// let refreshUnioniseTokenSuccess = jest
+//   .fn()
+//   .mockImplementation(() =>
+//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_SUCCESS", payload: {} })
+//   );
 
-let refreshUnioniseTokenError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
-  );
+// let refreshUnioniseTokenError = jest
+//   .fn()
+//   .mockImplementation(() =>
+//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
+//   );
 
 let refreshRecaptchaMock = jest
   .fn()
@@ -236,11 +240,7 @@ const defaultProps = {
   classes: {},
   apiSF: {
     getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
-    getSFContactById: () =>
-      Promise.resolve({
-        type: "GET_SF_CONTACT_SUCCESS",
-        payload: { Birthdate: moment("01-01-1900", "MM-DD-YYYY") }
-      }),
+    getSFContactById: getSFContactByIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
@@ -332,8 +332,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           search: "id=1"
         },
         apiSF: {
-          getSFContactById: getSFContactById,
+          getSFContactById: getSFContactByIdSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        },
+        submission: {
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          }
         }
       };
       store = storeFactory(initialState);
@@ -345,6 +351,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       );
       const spyCall = dispatchSpy.mock.calls[0][0];
       expect(spyCall).toEqual("1");
+      wrapper.instance().componentDidMount();
+      return getSFContactByIdSuccess()
+        .then(() => {
+          expect(wrapper.instance().handleOpen).toHaveBeenCalled();
+        })
+        .catch(err => {
+          // console.log(err)
+        });
     });
 
     test("handles error if `getSFContactById` fails", () => {
@@ -414,6 +428,127 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
+    });
+  });
+
+  describe("suggestedAmountOnChange", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    test("`suggestedAmountOnChange` calls getIframeNew if cape && paymentRequired", () => {
+      let getIframeNewMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        location: {
+          search: "?cape=true"
+        },
+        submission: {
+          formPage1: {
+            employerType: "retired"
+          }
+        }
+      };
+      const fakeEvent = {
+        target: {
+          value: "test"
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.instance().suggestedAmountOnChange(fakeEvent);
+      expect(getIframeNewMock.mock.calls.length).toBe(1);
+    });
+
+    test("`suggestedAmountOnChange` does not call getIframeNew if capeAmount ==='Other'", () => {
+      let getIframeNewMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        location: {
+          search: "?cape=true"
+        },
+        submission: {
+          formPage1: {
+            employerType: "retired"
+          }
+        }
+      };
+      const fakeEvent = {
+        target: {
+          value: "Other"
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.instance().suggestedAmountOnChange(fakeEvent);
+      expect(getIframeNewMock.mock.calls.length).toBe(0);
+    });
+  });
+
+  describe("handleEmployerTypeChange", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    test("`handleEmployerTypeChange` calls getIframeNew if paymentRequired", async function() {
+      let getIframeNewMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let handleInputMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        submission: {
+          formPage1: {
+            employerType: "fake"
+          }
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.instance().handleEmployerTypeChange("retired");
+      expect(handleInputMock.mock.calls.length).toBe(1);
+      await handleInputMock();
+      expect(getIframeNewMock.mock.calls.length).toBe(1);
+    });
+
+    test("`suggestedAmountOnChange` does not call getIframeNew if !paymentRequired", () => {
+      let getIframeNewMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        submission: {
+          formPage1: {
+            employerType: "fake"
+          }
+        },
+        apiSubmission: {
+          handleInput: jest.fn().mockImplementation(() => Promise.resolve({}))
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.instance().handleEmployerTypeChange("homecare");
+      expect(getIframeNewMock.mock.calls.length).toBe(0);
     });
   });
 
