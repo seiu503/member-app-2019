@@ -218,13 +218,13 @@ export class SubmissionFormPage1Container extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
-          return this.handleError(this.props.submission.error);
+          return handleError(this.props.submission.error);
         }
         // console.log(result.type);
       })
       .catch(err => {
         // console.log(err);
-        return this.handleError(err);
+        return handleError(err);
       });
   }
 
@@ -650,7 +650,7 @@ export class SubmissionFormPage1Container extends React.Component {
       employerExternalId: "SW001",
       // ^^ fixed value for dev / staging
       // this will be Agency number in production
-      employeeExternalId: this.props.apiSubmission.submissionId,
+      employeeExternalId: this.props.submission.submissionId,
       agreesToMessages: !formValues.textAuthOptOut
     };
 
@@ -847,7 +847,7 @@ export class SubmissionFormPage1Container extends React.Component {
       if (!this.props.submission.salesforceId) {
         await this.createSFContact()
           .then(() => {
-            console.log(this.props.submission.salesforceId);
+            // console.log(this.props.submission.salesforceId);
           })
           .catch(err => {
             // console.log(err);
@@ -900,7 +900,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: "Monthly",
       member_short_id: this.props.submission.payment.memberShortId
     };
-    console.log(body);
+    // console.log(body);
 
     let cape_errors = "",
       cape_status = "";
@@ -945,7 +945,6 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
     }
-
     this.props.reset("submissionPage1");
     if (!standAlone) {
       this.props.history.push(
