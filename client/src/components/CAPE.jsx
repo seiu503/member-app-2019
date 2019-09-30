@@ -49,10 +49,14 @@ export const CAPE = props => {
     verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
-    employerList
+    handleEmployerTypeChange,
+    employerList,
+    cape_legal,
+    change
   } = props;
-  // console.log(handleCAPESubmit);
+
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
+  // console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -172,7 +176,10 @@ export const CAPE = props => {
                 classes={classes}
                 component={formElements.renderCAPERadioGroup}
                 options={[10, 13, 15, "Other"]}
-                additionalOnChange={suggestedAmountOnChange}
+                onChange={(event, value) => {
+                  change("capeAmount", value);
+                  suggestedAmountOnChange(event);
+                }}
               />
             </div>
           </div>
@@ -187,6 +194,10 @@ export const CAPE = props => {
             inputProps={{ min: 1 }}
             classes={classes}
             component={renderTextField}
+            onChange={(event, value) => {
+              change("capeAmountOther", value);
+            }}
+            additionalOnChange={suggestedAmountOnChange}
           />
         )}
         {standAlone && (
@@ -212,6 +223,47 @@ export const CAPE = props => {
                 classes={{ input2col: classes.input2col }}
                 component={renderTextField}
                 type="text"
+              />
+            </FormGroup>
+
+            <FormLabel className={classes.formLabel} component="legend">
+              <Translate id="birthDate" />
+            </FormLabel>
+            <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
+              <Field
+                label="Month"
+                name="mm"
+                id="mm"
+                type="select"
+                classes={classes}
+                formControlName="formControlDate"
+                component={renderSelect}
+                labelWidth={41}
+                options={formElements.monthList}
+              />
+
+              <Field
+                label="Day"
+                name="dd"
+                id="dd"
+                type="select"
+                formControlName="formControlDate"
+                classes={classes}
+                component={renderSelect}
+                labelWidth={24}
+                options={formElements.dateOptions(props)}
+              />
+
+              <Field
+                label="Year"
+                name="yyyy"
+                id="yyyy"
+                type="select"
+                formControlName="formControlDate"
+                classes={classes}
+                component={renderSelect}
+                labelWidth={30}
+                options={formElements.yearOptions()}
               />
             </FormGroup>
 
@@ -299,7 +351,7 @@ export const CAPE = props => {
                 name="textAuthOptOut"
                 id="textAuthOptOut"
                 type="checkbox"
-                formControlName="controlCheckbox"
+                formControlName="controlCheckboxMargin"
                 classes={classes}
                 component={renderCheckbox}
               />
@@ -314,7 +366,12 @@ export const CAPE = props => {
               classes={classes}
               component={renderSelect}
               options={employerTypesList}
-              onChange={e => updateEmployersPicklist(e)}
+              onChange={e => {
+                updateEmployersPicklist(e);
+                handleEmployerTypeChange(e.target.value).then(() => {
+                  // console.log(`checkoff: ${checkoff}`);
+                });
+              }}
               labelWidth={100}
             />
             {formValues.employerType !== "" && (
@@ -366,7 +423,7 @@ export const CAPE = props => {
               />
             </div>
           )}
-        {iFrameURL && formPage1.newCardNeeded && formPage1.paymentRequired && (
+        {!checkoff && iFrameURL && (
           <div data-test="component-iframe">
             <Typography component="h2" className={classes.head}>
               <Translate id="addPayment">Add a payment method</Translate>
@@ -384,7 +441,7 @@ export const CAPE = props => {
             </div>
           </div>
         )}
-        <div className={classes.legalCopy}>
+        <div className={classes.legalCopy} ref={cape_legal}>
           <p>
             <Translate
               id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
@@ -465,7 +522,7 @@ export const CAPEForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(CAPE);
 
 // connect to redux store

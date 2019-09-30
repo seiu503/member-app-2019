@@ -15,6 +15,7 @@ const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
 const sfCtrl = require("../controllers/sf.ctrl");
+const capeCtrl = require("../controllers/cape.ctrl");
 
 /* ============================== AUTH ROUTES =========================== */
 
@@ -326,6 +327,37 @@ router.delete(
   submissionCtrl.deleteSubmission
 );
 
+/* ============================== CAPE ROUTES =========================== */
+
+// CREATE A CAPE RECORD
+//   Example: POST >> /api/cape
+//   Secured: no
+//   Expects:
+//     request body properties : {
+//        ip_address             : String
+//        submission_date        : Timestamp
+//        agency_number          : String
+//        cell_phone             : String
+//        employer_id            : String
+//        first_name             : String
+//        last_name              : String
+//        home_street            : String
+//        home_city              : String
+//        home_state             : String
+//        home_zip               : String
+//        home_email             : String
+//        job_title              : String
+//        paymentMethod          : String ('Checkoff' || 'Unionisee')
+//        online_campaign_source : String
+//        cape_legal             : Text
+//        capeAmount             : Number
+//        donationFrequency      : String ('Monthly' || 'One-time')
+//        memberShortId          : String
+//        }
+//   Returns: JSON new CAPE object on success.
+//
+router.post("/cape", capeCtrl.createCAPE);
+
 /* =========================== SALESFORCE ROUTES =========================== */
 
 /* =============================== CONTACTS ================================ */
@@ -456,6 +488,37 @@ router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
 //   Returns: Success or error message.
 //
 router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
+
+/* ============================== CAPE ROUTES =========================== */
+
+// CREATE A CAPE RECORD
+//   Example: POST >> /api/sfCAPE
+//   Secured: no
+//   Expects:
+//     request body properties : {
+//        ip_address             : String
+//        submission_date        : Timestamp
+//        agency_number          : String
+//        cell_phone             : String
+//        employer_id            : String
+//        first_name             : String
+//        last_name              : String
+//        home_street            : String
+//        home_city              : String
+//        home_state             : String
+//        home_zip               : String
+//        home_email             : String
+//        job_title              : String
+//        paymentMethod          : String ('Checkoff' || 'Unionisee')
+//        online_campaign_source : String
+//        cape_legal             : Text
+//        capeAmount             : Number
+//        donationFrequency      : String ('Monthly' || 'One-time')
+//        memberShortId          : String
+//        }
+//   Returns: JSON new CAPE object on success.
+//
+router.post("/sfCAPE", sfCtrl.createSFCAPE);
 
 /* =============================== ACCOUNTS ================================ */
 

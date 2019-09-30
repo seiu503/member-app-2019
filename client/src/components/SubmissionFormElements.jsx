@@ -299,7 +299,8 @@ export const stylesPage1 = theme => ({
     width: "100%",
     padding: "0 20px 40px 0",
     display: "flex",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    marginTop: 20
   },
   buttonWrapTab3: {
     width: "100%",
@@ -427,6 +428,9 @@ export const stylesPage1 = theme => ({
     }
   },
   controlCheckbox: {
+    margin: "-35px 0 0 0"
+  },
+  controlCheckboxMargin: {
     margin: "-35px 0 40px 0"
   },
   formHelperTextLegal: {
@@ -714,6 +718,7 @@ export const renderTextField = ({
   short,
   mobile,
   translate,
+  additionalOnChange,
   ...custom
 }) => {
   return (
@@ -737,6 +742,12 @@ export const renderTextField = ({
           {...custom}
           data-test="component-text-field"
           inputProps={{ id: id }}
+          onBlur={event => {
+            input.onBlur();
+            if (additionalOnChange) {
+              additionalOnChange(event);
+            }
+          }}
         />
       )}
     </Translate>
@@ -923,7 +934,6 @@ export const renderCAPERadioGroup = ({
   meta: { touched, error },
   formControlName,
   legendClass,
-  additionalOnChange,
   ...custom
 }) => (
   <Translate>
@@ -943,12 +953,7 @@ export const renderCAPERadioGroup = ({
           name={formControlName}
           id={formControlName}
           className={classes.horizGroup}
-          onChange={(event, value) => {
-            input.onChange(value);
-            if (additionalOnChange) {
-              additionalOnChange(event);
-            }
-          }}
+          onChange={input.onChange}
         >
           {options.map(item => {
             let labelText = `$${item}`;

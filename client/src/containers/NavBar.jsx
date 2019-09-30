@@ -194,7 +194,6 @@ export class NavBar extends React.Component {
               primary={link}
               handleClose={this.handleClose}
               link={link}
-              scroll={this.props.scroll}
               data-test="mobile-link"
             />
           );

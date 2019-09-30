@@ -17,12 +17,14 @@ const {
   generateSFContactFieldList,
   generateSampleSubmission,
   generateSFDJRFieldList,
-  paymentFields
+  paymentFields,
+  generateCAPEValidateBackEnd
 } = require("../app/utils/fieldConfigs");
 const fieldList = generateSFContactFieldList();
 const paymentFieldList = generateSFDJRFieldList();
 
 let submissionBody = generateSampleSubmission();
+let capeBody = generateCAPEValidateBackEnd();
 const { db, TABLES } = require("../app/config/knex");
 
 const djrBody = {
@@ -1349,6 +1351,95 @@ suite("sf.ctrl.js", function() {
       //     console.log(res.err);
       //     expect(res.error).to.equal(unioniseError);
       //   });
+    });
+  });
+
+  suite("sfCtrl > createSFCAPE", function() {
+    beforeEach(function() {
+      return new Promise(resolve => {
+        req = mockReq({
+          body: {
+            ...capeBody
+          }
+        });
+        responseStub = { cape_id: contactStub.id };
+        jsforceSObjectCreateStub = sinon.stub().returns((null, contactStub));
+        loginStub = sinon.stub();
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            create: jsforceSObjectCreateStub
+          })
+        };
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    test("creates a CAPE record", async function() {
+      responseStub = { cape_id: "0035500000VFkjOAAT" };
+      jsforceConnectionStub = sinon
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+      try {
+        await sfCtrl.createSFCAPE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if login fails", async function() {
+      loginError =
+        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginStub = sinon.stub().throws(new Error(loginError));
+      jsforceStub.login = loginStub;
+      jsforceConnectionStub = sinon
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.createSFCAPE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: loginError });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns error if sobject create fails", async function() {
+      sobjectError =
+        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      jsforceSObjectCreateStub = sinon.stub().throws(new Error(sobjectError));
+      jsforceStub = {
+        login: loginStub,
+        sobject: sinon.stub().returns({ create: jsforceSObjectCreateStub })
+      };
+      jsforceConnectionStub = sinon
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      const res = mockRes();
+      const req = mockReq({
+        body: capeBody
+      });
+      try {
+        await sfCtrl.createSFCAPE(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(jsforceStub.sobject, "CAPE__c");
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: sobjectError });
+      } catch (err) {
+        console.log(err);
+      }
     });
   });
 });

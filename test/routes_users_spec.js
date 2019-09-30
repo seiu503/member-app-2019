@@ -34,8 +34,7 @@ let id2;
 /* ================================= TESTS ================================= */
 
 chai.use(chaiHttp);
-let authenticateMock;
-let userStub;
+let authenticateMock, userStub, dbMethodStub;
 
 suite("routes : static", function() {
   const app = require("../server");
@@ -58,6 +57,9 @@ suite("routes : user", function() {
 
   suite("POST /api/user/", function() {
     const app = require("../server");
+    afterEach(() => {
+      sinon.restore();
+    });
     test("creates and returns new user", function(done) {
       chai
         .request(app)
@@ -82,6 +84,21 @@ suite("routes : user", function() {
           done();
         });
     });
+    test("returns an error if db method fails", function(done) {
+      dbMethodStub = sinon
+        .stub(users, "createUser")
+        .resolves({ message: "Error" });
+      chai
+        .request(app)
+        .post("/api/user/")
+        .send({ username: "user" })
+        .end(function(err, res) {
+          assert.equal(res.status, 500);
+          assert.equal(res.type, "application/json");
+          assert.isNotNull(res.body.message);
+          done();
+        });
+    });
   });
 
   suite("secured routes", function() {
@@ -91,6 +108,7 @@ suite("routes : user", function() {
 
     afterEach(() => {
       authenticateMock.restore();
+      sinon.restore();
     });
 
     suite("GET /api/user/:id", function() {
@@ -124,6 +142,20 @@ suite("routes : user", function() {
             done();
           });
       });
+      test("returns an error if db method fails", function(done) {
+        dbMethodStub = sinon
+          .stub(users, "getUserById")
+          .resolves({ message: "Error" });
+        chai
+          .request(app)
+          .get(`/api/user/${userId}`)
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
     });
 
     suite("GET /api/user/", function() {
@@ -147,6 +179,20 @@ suite("routes : user", function() {
             done();
           });
       });
+      test("returns an error if db method fails", function(done) {
+        dbMethodStub = sinon
+          .stub(users, "getUsers")
+          .resolves({ message: "Error" });
+        chai
+          .request(app)
+          .get(`/api/user/`)
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
     });
 
     suite("PUT /api/user/:id", function() {
@@ -157,6 +203,7 @@ suite("routes : user", function() {
       });
       afterEach(() => {
         userStub.restore();
+        sinon.restore();
       });
 
       test("updates a user", function(done) {
@@ -214,6 +261,27 @@ suite("routes : user", function() {
             done();
           });
       });
+      test("returns an error if db method fails", function(done) {
+        const app = require("../server");
+        dbMethodStub = sinon
+          .stub(users, "updateUser")
+          .resolves({ message: "Error" });
+        const updates = {
+          email: updatedEmail,
+          name: updatedName,
+          avatar_url: updatedAvatar_url
+        };
+        chai
+          .request(app)
+          .put(`/api/user/${userId}`)
+          .send({ updates })
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
     });
 
     suite("DELETE", function() {
@@ -224,6 +292,7 @@ suite("routes : user", function() {
       });
       afterEach(() => {
         userStub.restore();
+        sinon.restore();
       });
       test("delete a user", function(done) {
         const app = require("../server");
@@ -241,6 +310,21 @@ suite("routes : user", function() {
         chai
           .request(app)
           .delete("/api/user/123456789")
+          .end(function(err, res) {
+            assert.equal(res.status, 404);
+            assert.equal(res.type, "application/json");
+            assert.isNotNull(res.body.message);
+            done();
+          });
+      });
+      test("returns an error if db method fails", function(done) {
+        const app = require("../server");
+        dbMethodStub = sinon
+          .stub(users, "deleteUser")
+          .resolves({ message: "Error" });
+        chai
+          .request(app)
+          .delete(`/api/user/${userId}`)
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");

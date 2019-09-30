@@ -44,6 +44,9 @@ import {
   UPDATE_SUBMISSION_REQUEST,
   // UPDATE_SUBMISSION_SUCCESS,
   UPDATE_SUBMISSION_FAILURE,
+  CREATE_CAPE_REQUEST,
+  CREATE_CAPE_SUCCESS,
+  CREATE_CAPE_FAILURE,
   GET_ALL_SUBMISSIONS_REQUEST,
   GET_ALL_SUBMISSIONS_SUCCESS,
   GET_ALL_SUBMISSIONS_FAILURE,
@@ -87,10 +90,13 @@ import {
   UPDATE_SF_DJR_FAILURE,
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
-  GET_UNIONISE_TOKEN_FAILURE
+  GET_UNIONISE_TOKEN_FAILURE,
+  CREATE_SF_CAPE_REQUEST,
+  CREATE_SF_CAPE_SUCCESS,
+  CREATE_SF_CAPE_FAILURE
 } from "../actions/apiSFActions";
 
-// CREATE_SF_OMA_SUCCESS, UPDATE_SUBMISSION_SUCCESS
+// CREATE_CAPE_SUCCESS, UPDATE_SUBMISSION_SUCCESS
 // intentionally omitted because they are being called in a
 // long Promise.all chain
 
@@ -157,6 +163,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_UNIONISE_TOKEN_REQUEST:
     case VERIFY_REQUEST:
     case GET_ALL_SUBMISSIONS_REQUEST:
+    case CREATE_CAPE_REQUEST:
+    case CREATE_SF_CAPE_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -208,6 +216,10 @@ function appState(state = INITIAL_STATE, action) {
     case VERIFY_FAILURE:
     case GET_ALL_SUBMISSIONS_SUCCESS:
     case GET_ALL_SUBMISSIONS_FAILURE:
+    case CREATE_CAPE_FAILURE:
+    case CREATE_CAPE_SUCCESS:
+    case CREATE_SF_CAPE_SUCCESS:
+    case CREATE_SF_CAPE_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

@@ -47,7 +47,7 @@ export const Tab2 = props => {
         style={{ paddingTop: 40 }}
       >
         <Field
-          formControlName="controlCheckbox"
+          formControlName="controlCheckboxMargin"
           label="Agree to Terms of Membership"
           name="termsAgree"
           id="termsAgree"
@@ -82,7 +82,7 @@ export const Tab2 = props => {
         {(hcw || afh || community || retiree) && (
           <React.Fragment>
             <Field
-              formControlName="controlCheckbox"
+              formControlName="controlCheckboxMargin"
               data-test="checkbox-DPA"
               label="Direct Pay Authorization"
               name="directPayAuth"
@@ -141,7 +141,7 @@ export const Tab2 = props => {
         {hcw && (
           <React.Fragment>
             <Field
-              formControlName="controlCheckbox"
+              formControlName="controlCheckboxMargin"
               data-test="checkbox-DDA"
               label="Direct Deposit Authorization"
               name="directDepositAuth"
@@ -277,7 +277,7 @@ export const Tab2Form = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(Tab2);
 
 export default Tab2Form;

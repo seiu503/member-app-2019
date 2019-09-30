@@ -92,7 +92,13 @@ const deleteUser = (req, res, next) => {
 const getUsers = (req, res, next) => {
   return users
     .getUsers()
-    .then(users => res.status(200).json(users))
+    .then(result => {
+      if (!result || result.message) {
+        return res.status(404).json({ message: result.message });
+      } else {
+        return res.status(200).json(result);
+      }
+    })
     .catch(err => res.status(404).json({ message: err.message }));
 };
 

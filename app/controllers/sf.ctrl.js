@@ -3,6 +3,7 @@ const axios = require("axios");
 const {
   contactsTableFields,
   submissionsTableFields,
+  capeTableFields,
   generateSFContactFieldList,
   generateSFDJRFieldList,
   paymentFields,
@@ -511,6 +512,54 @@ exports.updateSFDJR = async (req, res, next) => {
   }
 };
 
+/* ================================== CAPE ================================= */
+
+/* +++++++++++++++++++++++++++++++ CAPE: POST ++++++++++++++++++++++++++++++ */
+
+/** Create a CAPE object in Salesforce with submission data
+ *  @param    {Object}   body         Submission object
+ *  @returns  success or error message
+ */
+
+exports.createSFCAPE = async (req, res, next) => {
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 528: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+
+  let cape;
+  try {
+    const bodyRaw = { ...req.body };
+    const body = {};
+    Object.keys(bodyRaw).forEach(key => {
+      if (capeTableFields[key]) {
+        const sfFieldName = capeTableFields[key].SFAPIName;
+        body[sfFieldName] = bodyRaw[key];
+      }
+    });
+
+    // convert datetime to yyyy-mm-dd format
+    body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
+
+    console.log(`sf.ctrl.js > 547`);
+    console.log(body);
+
+    CAPE = await conn.sobject("CAPE__c").create({
+      ...body
+    });
+
+    return res.status(200).json({
+      cape_id: CAPE.id || CAPE.Id
+    });
+  } catch (err) {
+    console.error(`sf.ctrl.js > 558: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 /* =============================== ACCOUNTS =============================== */
 
 /* +++++++++++++++++++++++++++++++ ACCOUNTS: GET ++++++++++++++++++++++++++ */
@@ -526,7 +575,7 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 521: ${err}`);
+    console.error(`sf.ctrl.js > 521: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
@@ -538,7 +587,7 @@ exports.getAllEmployers = async (req, res, next) => {
     }
     return res.status(200).json(accounts.records);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 533: ${err}`);
+    console.error(`sf.ctrl.js > 533: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

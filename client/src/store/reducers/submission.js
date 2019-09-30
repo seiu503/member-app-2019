@@ -13,6 +13,9 @@ import {
   GET_ALL_SUBMISSIONS_REQUEST,
   GET_ALL_SUBMISSIONS_SUCCESS,
   GET_ALL_SUBMISSIONS_FAILURE,
+  CREATE_CAPE_REQUEST,
+  CREATE_CAPE_SUCCESS,
+  CREATE_CAPE_FAILURE,
   SAVE_SALESFORCEID,
   HANDLE_INPUT
 } from "../actions/apiSubmissionActions";
@@ -53,7 +56,10 @@ import {
   GET_IFRAME_EXISTING_FAILURE,
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
-  GET_UNIONISE_TOKEN_FAILURE
+  GET_UNIONISE_TOKEN_FAILURE,
+  CREATE_SF_CAPE_REQUEST,
+  CREATE_SF_CAPE_SUCCESS,
+  CREATE_SF_CAPE_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -97,7 +103,12 @@ export const INITIAL_STATE = {
     djrEmployerId: ""
   },
   allSubmissions: [],
-  currentSubmission: {}
+  currentSubmission: {},
+  cape: {
+    id: ""
+  },
+  currentCAPE: {},
+  allCAPE: []
 };
 
 function Submission(state = INITIAL_STATE, action) {
@@ -127,6 +138,9 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_UNIONISE_TOKEN_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_ALL_SUBMISSIONS_REQUEST:
+    case CREATE_CAPE_REQUEST:
+    case CREATE_SF_CAPE_REQUEST:
+    case CREATE_SF_CAPE_SUCCESS:
       return update(state, {
         error: { $set: null }
       });
@@ -289,6 +303,15 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case CREATE_CAPE_SUCCESS:
+      return update(state, {
+        cape: {
+          id: { $set: action.payload.cape_id }
+        },
+        currentCAPE: { $set: action.payload.currentCAPE },
+        error: { $set: null }
+      });
+
     case UPDATE_SUBMISSION_SUCCESS:
       return update(state, {
         submissionId: { $set: action.payload.submission_id },
@@ -349,6 +372,8 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_FAILURE:
     case GET_ALL_SUBMISSIONS_FAILURE:
+    case CREATE_SF_CAPE_FAILURE:
+    case CREATE_CAPE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {
