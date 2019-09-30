@@ -77,7 +77,10 @@ export class SubmissionFormPage1Component extends React.Component {
     // from redux store to replace with more user-friendly names
     const employerTypesListRaw = this.props.submission.employerObjects
       ? this.props.submission.employerObjects.map(employer => {
-          if (employer.Name === "Community Members") {
+          if (
+            employer.Name &&
+            employer.Name.toLowerCase() === "community members"
+          ) {
             return "Community Members";
           } else {
             return employer.Sub_Division__c;
