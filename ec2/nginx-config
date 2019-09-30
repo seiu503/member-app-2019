@@ -1,0 +1,25 @@
+server {
+	listen       80 default_server;
+  listen       [::]:80 default_server;
+  server_name  test.seiu503signup.org 50.112.148.213;
+  root         /home/ubuntu/seiu503Deployed/client/build;
+
+	location /api/ {
+    proxy_pass http://127.0.0.1:8080; # 172.31.28.121 is private IP
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_cache_bypass $http_upgrade;
+  }
+
+  location / {
+    root /home/ubuntu/seiu503Deployed/client/build;
+    index index.html;
+  }
+}
+
+
+
+
+
