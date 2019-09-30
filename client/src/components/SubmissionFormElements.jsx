@@ -416,6 +416,9 @@ export const stylesPage1 = theme => ({
     justifyContent: "space-between",
     width: 280
   },
+  formGroupTopMargin: {
+    marginTop: 30
+  },
   input: {
     width: "100%",
     margin: "0 0 30px 0"

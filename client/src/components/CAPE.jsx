@@ -225,6 +225,37 @@ export const CAPE = props => {
                 type="text"
               />
             </FormGroup>
+            <FormGroup classes={{ root: classes.formGroupTopMargin }}>
+              <Field
+                data-test="select-employer-type"
+                label="Employer Type"
+                name="employerType"
+                id="employerType"
+                type="select"
+                classes={classes}
+                component={renderSelect}
+                options={employerTypesList}
+                onChange={e => {
+                  updateEmployersPicklist(e);
+                  handleEmployerTypeChange(e.target.value).then(() => {
+                    // console.log(`checkoff: ${checkoff}`);
+                  });
+                }}
+                labelWidth={100}
+              />
+              {formValues.employerType !== "" && (
+                <Field
+                  labelWidth={104}
+                  label="Employer Name"
+                  name="employerName"
+                  id="employerName"
+                  type="select"
+                  classes={classes}
+                  component={renderSelect}
+                  options={employerList}
+                />
+              )}
+            </FormGroup>
 
             <FormLabel className={classes.formLabel} component="legend">
               <Translate id="birthDate" />
@@ -356,36 +387,6 @@ export const CAPE = props => {
                 component={renderCheckbox}
               />
             </FormGroup>
-
-            <Field
-              data-test="select-employer-type"
-              label="Employer Type"
-              name="employerType"
-              id="employerType"
-              type="select"
-              classes={classes}
-              component={renderSelect}
-              options={employerTypesList}
-              onChange={e => {
-                updateEmployersPicklist(e);
-                handleEmployerTypeChange(e.target.value).then(() => {
-                  // console.log(`checkoff: ${checkoff}`);
-                });
-              }}
-              labelWidth={100}
-            />
-            {formValues.employerType !== "" && (
-              <Field
-                labelWidth={104}
-                label="Employer Name"
-                name="employerName"
-                id="employerName"
-                type="select"
-                classes={classes}
-                component={renderSelect}
-                options={employerList}
-              />
-            )}
           </div>
         )}
         <Field
