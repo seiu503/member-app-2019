@@ -4,6 +4,9 @@ import BASE_URL from "./apiConfig.js";
 export const ADD_SUBMISSION_REQUEST = "ADD_SUBMISSION_REQUEST";
 export const ADD_SUBMISSION_SUCCESS = "ADD_SUBMISSION_SUCCESS";
 export const ADD_SUBMISSION_FAILURE = "ADD_SUBMISSION_FAILURE";
+export const CREATE_CAPE_REQUEST = "CREATE_CAPE_REQUEST";
+export const CREATE_CAPE_SUCCESS = "CREATE_CAPE_SUCCESS";
+export const CREATE_CAPE_FAILURE = "CREATE_CAPE_FAILURE";
 export const SAVE_SALESFORCEID = "SAVE_SALESFORCEID";
 export const UPDATE_SUBMISSION_REQUEST = "UPDATE_SUBMISSION_REQUEST";
 export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
@@ -142,6 +145,35 @@ export function verify(token, ip_address) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ token, ip_address })
+    }
+  };
+}
+
+export function createCAPE(body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/cape`,
+      method: "POST",
+      types: [
+        CREATE_CAPE_REQUEST,
+        CREATE_CAPE_SUCCESS,
+        {
+          type: CREATE_CAPE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
     }
   };
 }

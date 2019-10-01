@@ -7,7 +7,7 @@ describe("utils/index", () => {
   });
   it("`randomInt` generates a random number between 100 and 999", () => {
     const number = utils.randomInt();
-    expect(number).toBeGreaterThan(100);
+    expect(number).toBeGreaterThan(99);
     expect(number).toBeLessThan(999);
   });
   it("`skip` switches focus to targeted element", () => {

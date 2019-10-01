@@ -14,7 +14,7 @@ const APP_HOST = "http://test.seiu503signup.org"; // change this for production
 const CLIENT_URL =
   process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
 const SERVER_URL =
-  process.env.NODE_ENV === "production" ? APP_HOST : "//localhost:3001";
+  process.env.NODE_ENV === "production" ? APP_HOST : "//localhost:8080";
 
 /* ============================ ROUTE HANDLERS ============================= */
 

@@ -678,11 +678,10 @@
     "Sở Tài nguyên Nước (Water Resources Department)",
     "水资源部门"
   ],
-  "": [
-    "",
-    "",
-    "",
-    "",
-    ""
-  ]
+  "communityMembers": [
+    "Community Members",
+    "Miembros de la comunidad",
+    "Члены сообщества",
+    "Thành viên cộng đồng",
+    "社区成员"]
 }

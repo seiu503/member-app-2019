@@ -27,20 +27,6 @@ let id;
 let id2;
 
 describe("content model tests", () => {
-  // before(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback().then(() => {
-  //       return db.migrate.latest();
-  //     });
-  //   });
-  // });
-
-  // // rollback to cleanup after tests are over
-  // after(() => {
-  //   return knexCleaner.clean(db).then(() => {
-  //     return db.migrate.rollback();
-  //   });
-  // });
   after(() => {
     return knexCleaner.clean(db);
   });

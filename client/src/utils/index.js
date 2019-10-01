@@ -3,6 +3,8 @@ const options = { year: "numeric", month: "short", day: "numeric" };
 export const formatDate = date =>
   new Date(date).toLocaleDateString("en-US", options);
 
+export const formatDateTime = date => new Date(date).toLocaleString();
+
 // force focus on #main when using skip navigation link
 // (some browsers will only focus form inputs, links, and buttons)
 export const skip = targetId => {
@@ -91,12 +93,14 @@ export const scrollToFirstError = errors => {
     // console.log(errorsArray);
     // console.log(firstError);
     const el = document.getElementById(firstError);
-    const position =
-      el.getBoundingClientRect().top + document.documentElement.scrollTop;
-
-    const offset = 200;
-
-    window.scrollTo({ top: position - offset, behavior: "smooth" });
+    if (el) {
+      const position =
+        el.getBoundingClientRect().top + document.documentElement.scrollTop;
+      const offset = 200;
+      window.scrollTo({ top: position - offset, behavior: "smooth" });
+    } else {
+      console.log(`can't find element for ${firstError}`);
+    }
   }
 };
 

@@ -54,13 +54,13 @@ export class SubmissionFormPage1Component extends React.Component {
   // check for messages from iframe
   receiveMessage = event => {
     // Do we trust the sender of this message?
-    // ******* This will need to be changed to the
-    // unioni.se prod url in production **********
+    // ******* change to unioni.se prod url in production **********
     if (event.origin !== "https://lab.unioni.se") {
       return;
     }
 
     if (event.data.notification.type === "success") {
+      // console.log("success");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
@@ -205,11 +205,21 @@ export class SubmissionFormPage1Component extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFOMA",
+            this.props.submission.error
+          );
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
         // console.log(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "createSFOMA",
+          err
+        );
         return this.props.handleError(err);
       });
   }
@@ -235,9 +245,6 @@ export class SubmissionFormPage1Component extends React.Component {
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
-    // console.log(`payment.djrEmployerId: ${payment.djrEmployerId}`);
-    // console.log("if these dont match then create a new record");
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
@@ -253,11 +260,21 @@ export class SubmissionFormPage1Component extends React.Component {
             this.props.submission.error
           ) {
             // console.log(this.props.submission.error);
+            this.props.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "createSFDJR",
+              this.props.submission.error
+            );
             return this.props.handleError(this.props.submission.error);
           }
         })
         .catch(err => {
           // console.log(err);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFDJR",
+            err
+          );
           return this.props.handleError(err);
         });
     }
@@ -277,11 +294,21 @@ export class SubmissionFormPage1Component extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "updateSFDJR",
+            this.props.submission.error
+          );
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
         // console.log(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "updateSFDJR",
+          err
+        );
         return this.props.handleError(err);
       });
   }
@@ -295,14 +322,14 @@ export class SubmissionFormPage1Component extends React.Component {
       .then(score => {
         // console.log(`score: ${score}`);
         if (!score || score <= 0.5) {
-          console.log(`recaptcha failed: ${score}`);
+          // console.log(`recaptcha failed: ${score}`);
           return this.props.handleError(
             "ReCaptcha validation failed, please reload the page and try again."
           );
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
       });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
@@ -332,16 +359,24 @@ export class SubmissionFormPage1Component extends React.Component {
     ])
       .then(() => {
         // redirect to CAPE tab
-        this.props.handleTab(this.props.howManyTabs - 1);
-
-        // this.props.reset("submissionPage1");
-        // this.props.history.push(
-        //   `/page2/?id=${this.props.submission.salesforceId}`
-        // );
+        if (!this.props.submission.error) {
+          this.props.handleTab(this.props.howManyTabs - 1);
+        } else {
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "handleSubmit",
+            this.props.submission.error
+          );
+          this.props.handleError(this.props.submission.error);
+        }
       })
       .catch(err => {
-        console.log("342");
-        console.log(err);
+        // console.log(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "handleSubmit",
+          err
+        );
         this.props.handleError(err);
       });
   }
@@ -365,6 +400,7 @@ export class SubmissionFormPage1Component extends React.Component {
           <CAPEForm
             {...this.props}
             standAlone={true}
+            newCardNeeded={true}
             verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
@@ -430,7 +466,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderCheckbox={this.renderCheckbox}
                   />
                 )}
-                {this.props.tab === 2 && (
+                {this.props.tab === 2 && this.props.howManyTabs === 4 && (
                   <Tab3Form
                     {...this.props}
                     onSubmit={this.handleSubmit}
@@ -450,7 +486,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     checkoff={checkoff}
                   />
                 )}
-                {this.props.tab === 3 && (
+                {(this.props.tab === 3 ||
+                  (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
                   <CAPEForm
                     {...this.props}
                     classes={classes}

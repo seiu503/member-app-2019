@@ -85,7 +85,9 @@ export const Tab1 = props => {
                 type="number"
                 classes={classes}
                 component={renderTextField}
-                InputProps={{ inputProps: { min: 0, max: 9 } }}
+                InputProps={{
+                  inputProps: { min: 0, max: 9, id: "medicaidResidents" }
+                }}
               />
             )}
           <FormGroup row classes={{ root: classes.formGroup2Col }}>
@@ -309,7 +311,7 @@ export const Tab1Form = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(Tab1);
 
 // connect to redux store

@@ -46,6 +46,7 @@
     "enzyme": "^3.9.0",
     "enzyme-adapter-react-16": "^1.13.1",
     "enzyme-to-json": "^3.3.5",
+    "eslint-plugin-import": "^2.18.2",
     "form-data": "^2.4.0",
     "fs": "^0.0.1-security",
     "jest-canvas-mock": "^2.1.0",

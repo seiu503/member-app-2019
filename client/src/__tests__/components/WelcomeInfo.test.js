@@ -104,6 +104,7 @@ describe("<WelcomeInfo />", () => {
       let getContentMockHeadline = () =>
         Promise.resolve({
           payload: {
+            id: 1,
             content_type: "headline",
             content: "fake headline"
           }
@@ -121,13 +122,14 @@ describe("<WelcomeInfo />", () => {
         <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
       );
       return getContentMockHeadline().then(() => {
-        expect(wrapper.state().headline).toEqual("fake headline");
+        expect(wrapper.state().headline.text).toEqual("fake headline");
       });
     });
     test("body", () => {
       let getContentMockBody = () =>
         Promise.resolve({
           payload: {
+            id: 2,
             content_type: "bodyCopy",
             content: "fake body"
           }
@@ -145,13 +147,14 @@ describe("<WelcomeInfo />", () => {
         <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
       );
       return getContentMockBody().then(() => {
-        expect(wrapper.state().body).toEqual("fake body");
+        expect(wrapper.state().body.text).toEqual("fake body");
       });
     });
     test("image", () => {
       let getContentMockImage = () =>
         Promise.resolve({
           payload: {
+            id: 3,
             content_type: "image",
             content: "fake image"
           }
@@ -169,13 +172,14 @@ describe("<WelcomeInfo />", () => {
         <WelcomeInfoUnconnected {...defaultProps} {...props} store={store} />
       );
       return getContentMockImage().then(() => {
-        expect(wrapper.state().image).toEqual("fake image");
+        expect(wrapper.state().image.text).toEqual("fake image");
       });
     });
     test("break", () => {
       let getContentMockImage = () =>
         Promise.resolve({
           payload: {
+            id: null,
             content_type: "break",
             content: "bad news"
           }
@@ -231,9 +235,9 @@ describe("<WelcomeInfo />", () => {
 
   it("has generic content if no ids in query", () => {
     wrapper = unconnectedSetup();
-    expect(wrapper.instance().state.headline).toEqual(
+    expect(wrapper.instance().state.headline.text).toEqual(
       defaultWelcomeInfo.headline
     );
-    expect(wrapper.instance().state.body).toEqual(defaultWelcomeInfo.body);
+    expect(wrapper.instance().state.body.text).toEqual(defaultWelcomeInfo.body);
   });
 });

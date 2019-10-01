@@ -7,7 +7,8 @@ import {
   isPristine,
   isValid,
   getFormSubmitErrors,
-  reset
+  reset,
+  change
 } from "redux-form";
 // import { loadReCaptcha } from "react-recaptcha-v3";
 
@@ -57,6 +58,8 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
+    this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
+    this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -132,10 +135,36 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  suggestedAmountOnChange = event => {
-    // console.log(event);
-    // console.log(document.querySelector('input[name="capeAmount"]:checked').value);
+  suggestedAmountOnChange = e => {
+    // call getIframeNew for standalone CAPE when donation amount is set
+    // console.log("suggestedAmountOnChange");
+    if (e.target.value === "Other") {
+      return;
+    }
+    const params = queryString.parse(this.props.location.search);
+    if (
+      params.cape &&
+      utils.isPaymentRequired(this.props.submission.formPage1.employerType)
+    ) {
+      this.getIframeNew(true, e.target.value);
+    }
   };
+
+  async handleEmployerTypeChange(employerType) {
+    // console.log("handleEmployerTypeChange");
+    // render iframe if payment required
+    if (utils.isPaymentRequired(employerType)) {
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: true }
+      });
+      return this.getIframeNew(true);
+    } else {
+      // hide iframe if already rendered if change to checkoff
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: false }
+      });
+    }
+  }
 
   toggleSignatureInputType = () => {
     let type = this.state.signatureType === "draw" ? "write" : "draw";
@@ -167,25 +196,37 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   };
 
-  // just navigate to tab, don't run validation on current tab
-  changeTab = newValue => {
-    const newState = { ...this.state };
-    newState.tab = newValue;
-    this.setState({ ...newState }, () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-
-    if (newValue === 2) {
-      const { formPage1 } = this.props.submission;
-      if (
-        formPage1.paymentType === "Card" &&
-        formPage1.newCardNeeded &&
-        formPage1.paymentRequired
-      ) {
-        return this.props.actions.setSpinner();
-      }
+  async saveSubmissionErrors(submission_id, method, error) {
+    // 1. retrieve existing errors array from current submission
+    let { submission_errors } = this.props.submission.currentSubmission;
+    if (submission_errors === null) {
+      submission_errors = "";
     }
-  };
+    // 2. add new data to string
+    submission_errors += `Attempted method: ${method}, Error: ${error}. `;
+    // 3. update submission_errors and submission_status on submission by id
+    const updates = {
+      submission_errors,
+      submission_status: "error"
+    };
+    this.props.apiSubmission
+      .updateSubmission(submission_id, updates)
+      .then(result => {
+        // console.log(result.type);
+        if (
+          result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          return handleError(this.props.submission.error);
+        }
+        // console.log(result.type);
+      })
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+  }
 
   async prepForContact(values) {
     return new Promise(resolve => {
@@ -310,6 +351,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSubmission() {
+    // console.log("createSubmission");
     const { formValues } = this.props;
 
     // create initial submission using data in tabs 1 & 2
@@ -318,9 +360,11 @@ export class SubmissionFormPage1Container extends React.Component {
     // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues);
+    // console.log(body.submission_date);
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
+      // .then(() => console.dir(this.props.submission.currentSubmission))
       .catch(err => {
         console.log(err);
         return handleError(err);
@@ -329,9 +373,36 @@ export class SubmissionFormPage1Container extends React.Component {
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
     if (!this.props.submission.formPage1.paymentRequired) {
+      // console.log("no payment required, writing OMA to SF and on to CAPE");
       body.Worker__c = this.props.submission.salesforceId;
-      return this.props.apiSF.createSFOMA(body);
-      // goto CAPE ...
+      return this.props.apiSF
+        .createSFOMA(body)
+        .then(result => {
+          // console.log(result.type);
+          if (
+            result.type !== "CREATE_SF_OMA_SUCCESS" ||
+            this.props.submission.error
+          ) {
+            this.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "createSFOMA",
+              this.props.submission.error
+            );
+            // goto CAPE tab
+            this.changeTab(this.props.howManyTabs - 1);
+          } else {
+            this.changeTab(this.props.howManyTabs - 1);
+          }
+        })
+        .catch(err => {
+          this.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFOMA",
+            err
+          );
+          // console.log(err);
+          return handleError(err);
+        });
     }
     // if payment required, return out of this function and move to next tab
     return;
@@ -505,7 +576,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async verifyRecaptchaScore() {
     // refresh token
-    // await loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
     await this.props.refreshRecaptcha();
 
     // then verify
@@ -514,92 +584,14 @@ export class SubmissionFormPage1Container extends React.Component {
     const result = await this.props.apiSubmission
       .verify(token, ip_address)
       .catch(err => {
-        console.log("recaptcha failed");
-        console.log(err);
+        // console.log("recaptcha failed");
+        // console.log(err);
         return handleError(
           "ReCaptcha validation failed, please reload the page and try again."
         );
       });
     // console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
-  }
-
-  async handleTab1() {
-    const { formValues } = this.props;
-
-    // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    if (!score || score <= 0.5) {
-      console.log(`recaptcha failed: ${score}`);
-      return handleError(
-        "ReCaptcha validation failed, please reload the page and try again."
-      );
-    }
-
-    // handle moving from tab 1 to tab 2:
-
-    // check if payment is required and store this in redux store for later
-    if (utils.isPaymentRequired(formValues.employerType)) {
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: true }
-      });
-      const newState = { ...this.state };
-      newState.howManyTabs = 4;
-      this.setState(newState);
-    } else {
-      const newState = { ...this.state };
-      newState.howManyTabs = 3;
-      this.setState(newState);
-    }
-
-    // submit validation: recaptcha
-    const reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
-    if (!reCaptchaValue) {
-      // console.log("no reCaptcha value");
-    }
-    // await this.props.apiSubmission.handleInput({
-    //   target: { name: "reCaptchaValue", value: reCaptchaValue }
-    // });
-    // console.log(this.props.submission.formPage1.reCaptchaValue);
-
-    // check if SF contact id already exists (prefill case)
-    if (this.props.submission.salesforceId) {
-      // update existing contact, move to next tab
-      await this.updateSFContact().catch(err => {
-        console.log(err);
-        return handleError(err);
-      });
-      return this.changeTab(1);
-    }
-
-    // otherwise, lookup contact by first/last/email
-    const body = {
-      first_name: formValues.firstName,
-      last_name: formValues.lastName,
-      home_email: formValues.homeEmail
-    };
-    await this.props.apiSF.lookupSFContact(body).catch(err => {
-      console.log(err);
-      return handleError(err);
-    });
-    // console.log(result);
-
-    // if lookup was successful, update existing contact and move to next tab
-    if (this.props.submission.salesforceId) {
-      await this.updateSFContact().catch(err => {
-        console.log(err);
-        return handleError(err);
-      });
-      return this.changeTab(1);
-    }
-
-    // otherwise, create new contact with submission data,
-    // then move to next tab
-    await this.createSFContact().catch(err => {
-      console.log(err);
-      return handleError(err);
-    });
-    return this.changeTab(1);
   }
 
   async getIframeExisting() {
@@ -629,7 +621,7 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
-  async getIframeNew() {
+  async getIframeNew(cape, capeAmount) {
     // console.log("getIframeNew");
     const { formValues } = this.props;
 
@@ -653,15 +645,29 @@ export class SubmissionFormPage1Container extends React.Component {
         zip: formValues.homeZip
       },
       email: formValues.homeEmail,
-      language,
       cellPhone: formValues.mobilePhone,
       birthDate: birthdate,
       employerExternalId: "SW001",
       // ^^ fixed value for dev / staging
       // this will be Agency number in production
-      employeeExternalId: this.props.apiSubmission.submissionId,
+      employeeExternalId: this.props.submission.submissionId,
       agreesToMessages: !formValues.textAuthOptOut
     };
+
+    if (!cape) {
+      body.language = language;
+    } else {
+      // console.log("generating body for CAPE iFrame request");
+      const donationAmount =
+        capeAmount === "Other"
+          ? parseFloat(formValues.capeAmountOther)
+          : parseFloat(capeAmount);
+      body.deductionType = "CAPE";
+      body.politicalType = "monthly";
+      body.deductionAmount = donationAmount;
+      body.deductionCurrency = "USD";
+      body.deductionDayOfMonth = 10;
+    }
     // console.log(JSON.stringify(body));
 
     this.props.apiSF
@@ -803,6 +809,156 @@ export class SubmissionFormPage1Container extends React.Component {
     return formValues.signature;
   }
 
+  async handleCAPESubmit(standAlone) {
+    // console.log("handleCAPESubmit");
+    const { formValues } = this.props;
+    // verify recaptcha score
+    const score = await this.verifyRecaptchaScore();
+    // console.log(score);
+    if (!score || score <= 0.5) {
+      // console.log(`recaptcha failed: ${score}`);
+      return handleError(
+        "ReCaptcha validation failed, please reload the page and try again."
+      );
+    }
+
+    if (
+      this.props.submission.formPage1.paymentRequired &&
+      !this.props.submission.formPage1.paymentMethodAdded
+    ) {
+      // console.log("No payment method added");
+      return handleError("Please click 'Add a Card' to add a payment method");
+    }
+
+    // if no contact in prefill or from previous form tabs...
+    if (!this.props.submission.salesforceId) {
+      // console.log("looking up sfid");
+      // lookup contact by first/last/email
+      const lookupBody = {
+        first_name: formValues.firstName,
+        last_name: formValues.lastName,
+        home_email: formValues.homeEmail
+      };
+      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+      // if nothing found on lookup, need to create new contact
+      if (!this.props.submission.salesforceId) {
+        await this.createSFContact()
+          .then(() => {
+            // console.log(this.props.submission.salesforceId);
+          })
+          .catch(err => {
+            // console.log(err);
+            return handleError(err);
+          });
+      }
+    }
+
+    // console.log(this.props.submission.salesforceId);
+    // find employer object
+    const employerObject = findEmployerObject(
+      this.props.submission.employerObjects,
+      formValues.employerName
+    );
+    // console.log(employerObject);
+    // console.log(employerObject.Agency_Number__c);
+
+    // set campaign source
+    const q = queryString.parse(this.props.location.search);
+    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+
+    // set body fields
+    const checkoff = !this.props.submission.formPage1.paymentRequired;
+    const paymentMethod = checkoff ? "Checkoff" : "Unionise";
+    const donationAmount =
+      formValues.capeAmount === "Other"
+        ? parseFloat(formValues.capeAmountOther)
+        : parseFloat(formValues.capeAmount);
+
+    // generate body
+    const body = {
+      ip_address: localIpUrl(),
+      submission_date: utils.formatDate(new Date()),
+      contact_id: this.props.submission.salesforceId,
+      first_name: formValues.firstName,
+      last_name: formValues.lastName,
+      home_email: formValues.homeEmail,
+      cell_phone: formValues.mobilePhone,
+      home_street: formValues.homeStreet,
+      home_city: formValues.homeCity,
+      home_state: formValues.homeState,
+      home_zip: formValues.homeZip,
+      job_title: formValues.jobTitle,
+      employer_id: employerObject.Id,
+      payment_method: paymentMethod,
+      online_campaign_source: campaignSource,
+      cape_legal: this.props.cape_legal.current.innerHTML,
+      cape_amount: donationAmount,
+      // need to add UI to select donation frequency
+      donation_frequency: "Monthly",
+      member_short_id: this.props.submission.payment.memberShortId
+    };
+    // console.log(body);
+
+    let cape_errors = "",
+      cape_status = "";
+
+    // write CAPE contribution to SF
+    const sfCapeResult = await this.props.apiSF
+      .createSFCAPE(body)
+      .catch(err => {
+        // console.log(err);
+        cape_errors += err;
+        cape_status = "Error";
+        handleError(err);
+      });
+
+    if (
+      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      cape_errors += this.props.submission.error;
+      cape_status = "Error";
+      // console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    } else {
+      cape_status = "Success";
+    }
+
+    body.cape_status = cape_status;
+    body.cape_errors = cape_errors;
+
+    // create CAPE record in postgres
+    const capeResult = await this.props.apiSubmission
+      .createCAPE(body)
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+
+    if (
+      capeResult.type !== "CREATE_CAPE_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      // console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    }
+    this.props.reset("submissionPage1");
+    if (!standAlone) {
+      this.props.history.push(
+        `/page2/?id=${this.props.submission.salesforceId}`
+      );
+    } else {
+      openSnackbar(
+        "success",
+        "Thank you. Your CAPE submission was proccessed."
+      );
+      this.props.history.push(`/thankyou/?cape=true`);
+    }
+  }
+
   async handleTab2() {
     const { formValues } = this.props;
     // submit validation: signature
@@ -870,30 +1026,78 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.changeTab(2);
   }
 
-  async handleCAPESubmit(standAlone) {
-    // e.preventDefault();
-    console.log("handleCAPESubmit");
+  async handleTab1() {
+    const { formValues } = this.props;
+
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      console.log(`recaptcha failed: ${score}`);
+      // console.log(`recaptcha failed: ${score}`);
       return handleError(
         "ReCaptcha validation failed, please reload the page and try again."
       );
     }
-    // generate body (different for standalone vs tab 4)
-    // if checkoff, just save occupation, date and amount
-    // if paymentRequired get cardaddingiframe & save unionise info
-    // update validate function to require payment info if paymentRequired
-    this.props.reset("submissionPage1");
-    if (!standAlone) {
-      this.props.history.push(
-        `/page2/?id=${this.props.submission.salesforceId}`
-      );
+
+    // handle moving from tab 1 to tab 2:
+
+    // check if payment is required and store this in redux store for later
+    if (utils.isPaymentRequired(formValues.employerType)) {
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: true }
+      });
+      const newState = { ...this.state };
+      newState.howManyTabs = 4;
+      this.setState(newState);
+    } else {
+      const newState = { ...this.state };
+      newState.howManyTabs = 3;
+      this.setState(newState);
     }
-    // otherwise, need to redirect to the thankyou page
-    // but need to make that text dynamic and reuse component for both
-    // cape and membership submits
+
+    // submit validation: recaptcha
+    const reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
+    if (!reCaptchaValue) {
+      // console.log("no reCaptcha value");
+    }
+
+    // check if SF contact id already exists (prefill case)
+    if (this.props.submission.salesforceId) {
+      // update existing contact, move to next tab
+      await this.updateSFContact().catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+      return this.changeTab(1);
+    }
+
+    // otherwise, lookup contact by first/last/email
+    const body = {
+      first_name: formValues.firstName,
+      last_name: formValues.lastName,
+      home_email: formValues.homeEmail
+    };
+    await this.props.apiSF.lookupSFContact(body).catch(err => {
+      // console.log(err);
+      return handleError(err);
+    });
+    // console.log(result);
+
+    // if lookup was successful, update existing contact and move to next tab
+    if (this.props.submission.salesforceId) {
+      await this.updateSFContact().catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+      return this.changeTab(1);
+    }
+
+    // otherwise, create new contact with submission data,
+    // then move to next tab
+    await this.createSFContact().catch(err => {
+      // console.log(err);
+      return handleError(err);
+    });
+    return this.changeTab(1);
   }
 
   handleTab(newValue) {
@@ -912,6 +1116,32 @@ export class SubmissionFormPage1Container extends React.Component {
       return this.changeTab(newValue);
     }
   }
+
+  // just navigate to tab, don't run validation on current tab
+  changeTab = newValue => {
+    const newState = { ...this.state };
+    newState.tab = newValue;
+
+    if (newValue === 2) {
+      const { formPage1 } = this.props.submission;
+
+      if (
+        formPage1.paymentType === "Card" &&
+        formPage1.newCardNeeded &&
+        formPage1.paymentRequired
+      ) {
+        // need to set spinner on transition to payment tab
+        // while iframe loads
+        this.props.actions.setSpinner();
+        return this.setState({ ...newState }, () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+    }
+    this.setState({ ...newState }, () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  };
 
   render() {
     const fullName = `${
@@ -941,6 +1171,7 @@ export class SubmissionFormPage1Container extends React.Component {
         />
         <SubmissionFormPage1Wrap
           {...this.props}
+          change={change}
           tab={this.state.tab}
           howManyTabs={this.state.howManyTabs}
           handleTab={this.handleTab}
@@ -955,6 +1186,8 @@ export class SubmissionFormPage1Container extends React.Component {
           handleCAPESubmit={this.handleCAPESubmit}
           suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
+          saveSubmissionErrors={this.saveSubmissionErrors}
+          handleEmployerTypeChange={this.handleEmployerTypeChange}
         />
       </div>
     );

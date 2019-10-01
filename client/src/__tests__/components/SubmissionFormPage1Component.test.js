@@ -48,6 +48,10 @@ const initialState = {
   }
 };
 
+const saveSubmissionErrorsMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({}));
+
 // initial props for form
 const defaultProps = {
   submission: {
@@ -111,7 +115,10 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  verifyRecaptchaScore: jest.fn().mockImplementation(() => Promise.resolve(0.9))
+  verifyRecaptchaScore: jest
+    .fn()
+    .mockImplementation(() => Promise.resolve(0.9)),
+  saveSubmissionErrors: saveSubmissionErrorsMock
 };
 
 createSFDJRSuccess = jest
@@ -390,22 +397,27 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     // });
 
     it("errors if there is no signature", async function() {
-      // imported function that creates dummy data for form
-      testData = generateSampleValidate();
-      // test function that will count calls as well as return success object
       updateSubmissionError = jest
         .fn()
         .mockImplementation(() =>
           Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
+      testData = generateSampleValidate();
+      formElements.handleError = jest.fn();
+      addSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+        );
 
-      // replacing openSnackbar import with mock function
-      formElements.handleError = handleErrorMock;
-      // creating wrapper
-      props.apiSubmission.updateSubmission = updateSubmissionError;
+      props.tab = 2;
+      props.submission.formPage1.paymentMethodAdded = true;
+      props.submission.error = "Error";
+      props.saveSubmissionErrors = saveSubmissionErrorsMock;
+      props.howManyTabs = 4;
+      props.handleError = handleErrorMock;
+
       wrapper = unconnectedSetup(props);
-      wrapper.setProps({ tab: 2 });
-      wrapper.update();
 
       delete testData.signature;
       // simulate submit with dummy data
@@ -415,7 +427,9 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         await updateSubmissionError();
         await createSFDJRSuccess();
         await createSFOMASuccess();
-        expect(formElements.handleError.mock.calls.length).toBe(1);
+        await saveSubmissionErrorsMock();
+
+        expect(handleErrorMock.mock.calls[0][0]).toBe("Error");
       } catch (err) {
         console.log(err);
       }

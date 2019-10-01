@@ -3,6 +3,7 @@ import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
 import { ReCaptcha } from "react-recaptcha-v3";
+import { Translate } from "react-localize-redux";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
@@ -48,13 +49,14 @@ export const CAPE = props => {
     verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
-    employerList
+    handleEmployerTypeChange,
+    employerList,
+    cape_legal,
+    change
   } = props;
-  // console.log(handleCAPESubmit);
+
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  const legalCopy = checkoff
-    ? formElements.capeLegalCheckoff
-    : formElements.capeLegalStripe;
+  // console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -65,29 +67,41 @@ export const CAPE = props => {
       >
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>
-            Contribute to CAPE: Citizen Action for Political Education
+            <Translate id="capeHeadline">
+              Contribute to CAPE: Citizen Action for Political Education
+            </Translate>
           </Typography>
           <Typography component="p" className={classes.subhead}>
-            Collective political action to raise wages, protect benefits, fund
-            public services, and build strong communities.
+            <Translate id="capeSubhead">
+              Collective political action to raise wages, protect benefits, fund
+              public services, and build strong communities.
+            </Translate>
           </Typography>
           <Typography component="p" className={classes.body}>
-            When workers unite, legislators listen. In 2019, SEIU Local 503 CAPE
-            advocacy led to historic wins:
+            <Translate id="capeBody1">
+              When workers unite, legislators listen. In 2019, SEIU Local 503
+              CAPE advocacy led to historic wins:
+            </Translate>
           </Typography>
           <ul className={classes.ul}>
             <li className={classes.li}>
-              Funding for raises and benefits for state employees and homecare
-              workers are double what they were in the last budget, setting
-              members up for strong contracts
+              <Translate id="capeBullet1">
+                Funding for raises and benefits for state employees and homecare
+                workers are double what they were in the last budget, setting
+                members up for strong contracts
+              </Translate>
             </li>
             <li className={classes.li}>
-              Oregon passed the strongest Paid Family and Medical Leave law in
-              the nation
+              <Translate id="capeBullet2">
+                Oregon passed the strongest Paid Family and Medical Leave law in
+                the nation
+              </Translate>
             </li>
             <li className={classes.li}>
-              Our state became the first in the U.S. to pass statewide rent
-              stabilization and ban no-cause evictions
+              <Translate id="capeBullet3">
+                Our state became the first in the U.S. to pass statewide rent
+                stabilization and ban no-cause evictions
+              </Translate>
             </li>
           </ul>
           <Card className={classes.card}>
@@ -98,7 +112,7 @@ export const CAPE = props => {
                   variant="h5"
                   className={classes.cardHead}
                 >
-                  Join us
+                  <Translate id="capeCardHead">Join us</Translate>
                 </Typography>
                 <div style={{ position: "relative" }}>
                   <FormatQuote
@@ -112,10 +126,12 @@ export const CAPE = props => {
                     }}
                   />
                   <Typography component="p" className={classes.pullQuote}>
-                    I can’t write big checks. But I contribute what I can each
-                    month to CAPE. And when we put all of our resources
-                    together, we have shown we can elect legislators in Oregon
-                    who will fight for working families and our clients.
+                    <Translate id="capePullQuote">
+                      I can’t write big checks. But I contribute what I can each
+                      month to CAPE. And when we put all of our resources
+                      together, we have shown we can elect legislators in Oregon
+                      who will fight for working families and our clients.
+                    </Translate>
                   </Typography>
                   <FormatQuote
                     style={{
@@ -128,7 +144,9 @@ export const CAPE = props => {
                   />
                 </div>
                 <Typography component="p" className={classes.quoteAttr}>
-                  &mdash;Deffo Mebrat, Adult Foster Care Provider
+                  <Translate id="capeQuoteAttr">
+                    &mdash;Deffo Mebrat, Adult Foster Care Provider
+                  </Translate>
                 </Typography>
               </CardContent>
             </div>
@@ -141,7 +159,9 @@ export const CAPE = props => {
         </div>
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>
-            Make your contribution today
+            <Translate id="capePaymentHead">
+              Make your contribution today
+            </Translate>
           </Typography>
           <div className={classes.suggestedAmounts}>
             <div className={classes.suggestedAmountBoxes}>
@@ -156,7 +176,10 @@ export const CAPE = props => {
                 classes={classes}
                 component={formElements.renderCAPERadioGroup}
                 options={[10, 13, 15, "Other"]}
-                additionalOnChange={suggestedAmountOnChange}
+                onChange={(event, value) => {
+                  change("capeAmount", value);
+                  suggestedAmountOnChange(event);
+                }}
               />
             </div>
           </div>
@@ -171,6 +194,10 @@ export const CAPE = props => {
             inputProps={{ min: 1 }}
             classes={classes}
             component={renderTextField}
+            onChange={(event, value) => {
+              change("capeAmountOther", value);
+            }}
+            additionalOnChange={suggestedAmountOnChange}
           />
         )}
         {standAlone && (
@@ -196,6 +223,47 @@ export const CAPE = props => {
                 classes={{ input2col: classes.input2col }}
                 component={renderTextField}
                 type="text"
+              />
+            </FormGroup>
+
+            <FormLabel className={classes.formLabel} component="legend">
+              <Translate id="birthDate" />
+            </FormLabel>
+            <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
+              <Field
+                label="Month"
+                name="mm"
+                id="mm"
+                type="select"
+                classes={classes}
+                formControlName="formControlDate"
+                component={renderSelect}
+                labelWidth={41}
+                options={formElements.monthList}
+              />
+
+              <Field
+                label="Day"
+                name="dd"
+                id="dd"
+                type="select"
+                formControlName="formControlDate"
+                classes={classes}
+                component={renderSelect}
+                labelWidth={24}
+                options={formElements.dateOptions(props)}
+              />
+
+              <Field
+                label="Year"
+                name="yyyy"
+                id="yyyy"
+                type="select"
+                formControlName="formControlDate"
+                classes={classes}
+                component={renderSelect}
+                labelWidth={30}
+                options={formElements.yearOptions()}
               />
             </FormGroup>
 
@@ -262,11 +330,7 @@ export const CAPE = props => {
             />
 
             <FormHelperText className={classes.formHelperText}>
-              Please use your personal email if you have one, since some
-              employers limit union communication via work email. If you don't
-              have a personal email, work email is fine. If you don't have an
-              email address, call us at 1.844.503.7348 to sign up over the
-              phone.
+              <Translate id="homeEmailHint" />
             </FormHelperText>
             <FormGroup>
               <Field
@@ -279,13 +343,7 @@ export const CAPE = props => {
               />
 
               <FormHelperText className={classes.formHelperText}>
-                † By providing my phone number, I understand that the Service
-                Employees International Union (SEIU), its local unions, and
-                affiliates may use automated calling technologies and/or text
-                message me on my cellular phone on a periodic basis. SEIU will
-                never charge for text message alerts. Carrier message and data
-                rates may apply to such alerts. Reply STOP to stop receiving
-                messages; reply HELP for more information.
+                <Translate id="phoneLegalLanguage" />
               </FormHelperText>
 
               <Field
@@ -293,7 +351,7 @@ export const CAPE = props => {
                 name="textAuthOptOut"
                 id="textAuthOptOut"
                 type="checkbox"
-                formControlName="controlCheckbox"
+                formControlName="controlCheckboxMargin"
                 classes={classes}
                 component={renderCheckbox}
               />
@@ -308,7 +366,12 @@ export const CAPE = props => {
               classes={classes}
               component={renderSelect}
               options={employerTypesList}
-              onChange={e => updateEmployersPicklist(e)}
+              onChange={e => {
+                updateEmployersPicklist(e);
+                handleEmployerTypeChange(e.target.value).then(() => {
+                  // console.log(`checkoff: ${checkoff}`);
+                });
+              }}
               labelWidth={100}
             />
             {formValues.employerType !== "" && (
@@ -338,7 +401,9 @@ export const CAPE = props => {
           validMethod && (
             <div data-test="component-choose-card">
               <Typography component="p" className={classes.body}>
-                Your existing payment method on file is the card ending in{" "}
+                <Translate id="existingPaymentMethod">
+                  Your existing payment method on file is the card ending in
+                </Translate>{" "}
                 {payment.activeMethodLast4}.
               </Typography>
               <Field
@@ -358,10 +423,10 @@ export const CAPE = props => {
               />
             </div>
           )}
-        {iFrameURL && formPage1.newCardNeeded && formPage1.paymentRequired && (
+        {!checkoff && iFrameURL && (
           <div data-test="component-iframe">
             <Typography component="h2" className={classes.head}>
-              Add a payment method
+              <Translate id="addPayment">Add a payment method</Translate>
             </Typography>
             <div className={classes.iframeWrap}>
               <Iframe
@@ -376,7 +441,28 @@ export const CAPE = props => {
             </div>
           </div>
         )}
-        <div className={classes.legalCopy}>{legalCopy}</div>
+        <div className={classes.legalCopy} ref={cape_legal}>
+          <p>
+            <Translate
+              id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+            />
+          </p>
+          <p>
+            <Translate id="capeLegal2" />
+          </p>
+          <p>
+            <Translate id="capeLegal3" />
+          </p>
+          <p>
+            <Translate id="capeLegal4" />
+          </p>
+          <p>
+            <Translate id="capeLegal5" />
+          </p>
+          <p>
+            <Translate id="capeLegal6" />
+          </p>
+        </div>
         {standAlone && (
           <ReCaptcha
             sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
@@ -394,7 +480,7 @@ export const CAPE = props => {
               className={classes.back}
               variant="contained"
             >
-              Back
+              <Translate id="back">Back</Translate>
             </Button>
           </div>
         )}
@@ -405,7 +491,7 @@ export const CAPE = props => {
           variant="contained"
           loading={loading}
         >
-          Submit
+          <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>
       </form>
     </div>
@@ -436,7 +522,7 @@ export const CAPEForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(CAPE);
 
 // connect to redux store

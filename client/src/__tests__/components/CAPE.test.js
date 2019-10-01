@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
-import { generateCAPEValidate } from "../../../../app/utils/fieldConfigs";
+import { generateCAPEValidateFrontEnd } from "../../../../app/utils/fieldConfigs";
 import { CAPE, CAPEForm } from "../../components/CAPE";
 import * as formElements from "../../components/SubmissionFormElements";
 
@@ -30,6 +30,7 @@ const defaultProps = {
   loading: false,
   pristine: false,
   invalid: false,
+  change: jest.fn(),
   formValues: {
     paymentType: "Card",
     employerName: "blah",
@@ -99,6 +100,7 @@ describe("<CAPE />", () => {
     const props = {
       handleSubmit: fn => fn,
       classes: {},
+      change: jest.fn(),
       formValues: {
         employerType: "adult foster home"
       },
@@ -112,7 +114,10 @@ describe("<CAPE />", () => {
       payment: {
         activeMethodLast4: "1234",
         paymentErrorHold: false
-      }
+      },
+      handleEmployerTypeChange: jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}))
     };
 
     it("renders without error", () => {
@@ -131,8 +136,46 @@ describe("<CAPE />", () => {
         updateEmployersPicklist: updateEmployersPicklistMock
       });
       component = findByTestAttr(wrapper, "select-employer-type").first();
-      component.simulate("change");
+      const event = {
+        target: { value: "the-value" }
+      };
+      component.simulate("change", event);
       expect(updateEmployersPicklistMock.mock.calls.length).toBe(1);
+    });
+
+    it("calls suggestedAmountOnChange on capeAmount Change", () => {
+      wrapper = shallow(<CAPE {...props} />);
+      const suggestedAmountOnChangeMock = jest.fn();
+
+      wrapper.setProps({
+        suggestedAmountOnChange: suggestedAmountOnChangeMock
+      });
+
+      component = findByTestAttr(wrapper, "radio-cape-amount").first();
+      const event = {
+        target: { value: "the-value" }
+      };
+      component.simulate("change", event);
+      expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
+    });
+
+    it("calls reduxForm `change` prop on capeAmountOther Change", () => {
+      wrapper = shallow(<CAPE {...props} />);
+      const changeMock = jest.fn();
+
+      wrapper.setProps({
+        change: changeMock,
+        formValues: {
+          capeAmount: "Other"
+        }
+      });
+
+      component = findByTestAttr(wrapper, "field-other-amount").first();
+      const event = {
+        target: { value: "the-value" }
+      };
+      component.simulate("change", event);
+      expect(changeMock).toHaveBeenCalled();
     });
 
     it("calls handleSubmit on submit", async () => {
@@ -141,7 +184,7 @@ describe("<CAPE />", () => {
       handleSubmit = handleSubmitMock;
 
       // imported function that creates dummy data for form
-      testData = generateCAPEValidate();
+      testData = generateCAPEValidateFrontEnd();
 
       wrapper.setProps({ handleSubmit: handleSubmitMock });
       component = wrapper.find("form");
@@ -167,7 +210,7 @@ describe("<CAPE />", () => {
       wrapper = shallow(<CAPE {...props} />);
 
       // imported function that creates dummy data for form
-      testData = generateCAPEValidate();
+      testData = generateCAPEValidateFrontEnd();
 
       wrapper.setProps({ back: backMock });
       component = findByTestAttr(wrapper, "button-back");

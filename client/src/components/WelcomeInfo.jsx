@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import sanitizeHtml from "sanitize-html";
+// import sanitizeHtml from "sanitize-html";
+import { Translate } from "react-localize-redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
@@ -13,6 +14,7 @@ import Button from "@material-ui/core/Button";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
+import welcomeInfo from "../translations/welcomeInfo.json";
 import SamplePhoto from "../img/sample-form-photo.jpg";
 import Spinner from "../components/Spinner";
 
@@ -73,8 +75,14 @@ export class WelcomeInfoUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      headline: defaultWelcomeInfo.headline,
-      body: defaultWelcomeInfo.body,
+      headline: {
+        text: defaultWelcomeInfo.headline,
+        id: 0
+      },
+      body: {
+        text: defaultWelcomeInfo.body,
+        id: 0
+      },
       image: null
     };
   }
@@ -98,11 +106,26 @@ export class WelcomeInfoUnconnected extends React.Component {
             } else {
               switch (result.payload.content_type) {
                 case "headline":
-                  return this.setState({ headline: result.payload.content });
+                  return this.setState({
+                    headline: {
+                      text: result.payload.content,
+                      id: id
+                    }
+                  });
                 case "bodyCopy":
-                  return this.setState({ body: result.payload.content });
+                  return this.setState({
+                    body: {
+                      text: result.payload.content,
+                      id: id
+                    }
+                  });
                 case "image":
-                  return this.setState({ image: result.payload.content });
+                  return this.setState({
+                    image: {
+                      text: result.payload.content,
+                      id: id
+                    }
+                  });
                 default:
                   break;
               }
@@ -115,10 +138,41 @@ export class WelcomeInfoUnconnected extends React.Component {
     }
   }
 
-  createMarkup = () => {
-    return {
-      __html: sanitizeHtml(this.state.body)
-    };
+  renderBodyCopy = id => {
+    // sample spanish translations in bodyCopy0_xx and headline0 keys
+    // (in /translations/welcomeInfo.json) are for testing only and
+    // should be replaced with better translations when we get them
+    let paragraphIds = [];
+    // find all paragraphs belonging to this bodyCopy id
+    Object.keys(welcomeInfo).forEach(key => {
+      if (key.includes(`bodyCopy${id}`)) {
+        paragraphIds.push(key);
+      }
+    });
+    // for each paragraph selected, generate translated text
+    // in appropriate language rendered inside a <p> tag
+    const paragraphs = (
+      <React.Fragment>
+        {paragraphIds.map((id, index) => (
+          <p key={id}>
+            <Translate id={id} />
+          </p>
+        ))}
+      </React.Fragment>
+    );
+    // wrap in MUI typography element and return
+    return (
+      <Typography
+        variant="body1"
+        component="div"
+        align="left"
+        gutterBottom
+        className={this.classes.body}
+        data-test="body"
+      >
+        {paragraphs}
+      </Typography>
+    );
   };
 
   render() {
@@ -130,7 +184,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             className={this.classes.media}
             title="Welcome Photo"
             alt="Welcome Photo"
-            image={this.state.image || SamplePhoto}
+            image={this.state.image ? this.state.image.text : SamplePhoto}
           />
 
           <Typography
@@ -141,17 +195,9 @@ export class WelcomeInfoUnconnected extends React.Component {
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
-            {this.state.headline}
+            <Translate id={`headline${this.state.headline.id}`} />
           </Typography>
-
-          <Typography
-            variant="body1"
-            align="left"
-            gutterBottom
-            className={this.classes.body}
-            data-test="body"
-            dangerouslySetInnerHTML={this.createMarkup()}
-          />
+          {this.renderBodyCopy(this.state.body.id)}
           <div className={this.classes.buttonWrap}>
             <Button
               type="button"
@@ -160,7 +206,7 @@ export class WelcomeInfoUnconnected extends React.Component {
               className={this.classes.next}
               variant="contained"
             >
-              Next
+              <Translate id="next">Next</Translate>
             </Button>
           </div>
         </Card>
