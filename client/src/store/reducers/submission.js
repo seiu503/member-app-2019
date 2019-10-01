@@ -100,7 +100,8 @@ export const INITIAL_STATE = {
     paymentErrorHold: false,
     unioniseToken: "",
     unioniseRefreshToken: "",
-    djrEmployerId: ""
+    djrEmployerId: "",
+    currentCAPEFromSF: 0
   },
   allSubmissions: [],
   currentSubmission: {},
@@ -276,6 +277,9 @@ function Submission(state = INITIAL_STATE, action) {
             workEmail: { $set: action.payload.Work_Email__c },
             workPhone: { $set: action.payload.Work_Phone__c },
             hireDate: { $set: action.payload.Hire_Date__c }
+          },
+          payment: {
+            currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
           },
           error: { $set: null }
         });

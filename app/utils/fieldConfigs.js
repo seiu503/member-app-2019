@@ -582,6 +582,14 @@ const contactsTableFields = {
     SFDataType: "Formula(text)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Not a Member"
+  },
+  Current_CAPE__c: {
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Current CAPE",
+    SFAPIName: "Current_CAPE__c",
+    SFDataType: "Formula(currency)",
+    SQLDataType: "Number(3,2)",
+    testingSample: 10
   }
 };
 
