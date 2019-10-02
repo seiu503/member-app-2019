@@ -112,7 +112,7 @@ export class ContentLibraryUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while fetching content"
+                "An error occurred while fetching content"
             );
           }
         })
@@ -143,7 +143,7 @@ export class ContentLibraryUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while fetching content"
+                "An error occurred while fetching content"
             );
           }
         })

@@ -120,7 +120,7 @@ export class SubmissionFormPage1Container extends React.Component {
             resolve(
               handleError(
                 this.props.content.error ||
-                  "An error occured while trying to save your Signature. Please try typing it instead"
+                  "An error occurred while trying to save your Signature. Please try typing it instead"
               )
             );
           } else {

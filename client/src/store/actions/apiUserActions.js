@@ -55,10 +55,10 @@ export function handleDeleteClose() {
  *   GET_USER_BY_EMAIL_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function getUserByEmail(email) {
+export function getUserByEmail(email, requestingUserType) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/user/email/${email}`,
+      endpoint: `${BASE_URL}/api/user/email/${email}/${requestingUserType}`,
       method: "GET",
       types: [
         GET_USER_BY_EMAIL_REQUEST,
@@ -177,10 +177,10 @@ export function updateUser(token, id, body) {
  *   DELETE_USER_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function deleteUser(token, id, type) {
+export function deleteUser(token, id, requestingUserType) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/user/${id}/${type}`,
+      endpoint: `${BASE_URL}/api/user/${id}/${requestingUserType}`,
       method: "DELETE",
       types: [
         DELETE_USER_REQUEST,

@@ -60,7 +60,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.submission.error ||
-                "An error occured while fetching submissions"
+                "An error occurred while fetching submissions"
             );
           }
         })
@@ -90,7 +90,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.submission.error ||
-                "An error occured while fetching submissions"
+                "An error occurred while fetching submissions"
             );
           }
         })

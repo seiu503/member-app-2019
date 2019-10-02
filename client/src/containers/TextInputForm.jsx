@@ -82,7 +82,7 @@ export class TextInputFormUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while trying to fetch your content."
+                "An error occurred while trying to fetch your content."
             );
           } else {
             // console.log(this.props.content.form)
@@ -153,7 +153,7 @@ export class TextInputFormUnconnected extends React.Component {
           openSnackbar(
             "error",
             this.props.content.error ||
-              "An error occured while trying to upload your image."
+              "An error occurred while trying to upload your image."
           );
         } else {
           openSnackbar("success", `${filename} Saved.`);
@@ -188,7 +188,7 @@ export class TextInputFormUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while trying to save your content."
+                "An error occurred while trying to save your content."
             );
           } else {
             openSnackbar("success", `Saved ${utils.labelsObj[content_type]}.`);
@@ -208,7 +208,7 @@ export class TextInputFormUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while trying to update your content."
+                "An error occurred while trying to update your content."
             );
           } else {
             openSnackbar(
@@ -224,7 +224,7 @@ export class TextInputFormUnconnected extends React.Component {
       openSnackbar(
         "error",
         this.props.content.error ||
-          "An error occured while trying to save your content."
+          "An error occurred while trying to save your content."
       );
     }
   }

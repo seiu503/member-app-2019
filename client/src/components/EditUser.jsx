@@ -79,8 +79,9 @@ export class CreateUserFormUnconnected extends React.Component {
   findUserByEmail(e) {
     e.preventDefault();
     const { existingUserEmail } = this.props.user.form;
+    const requestingUserType = this.props.appState.userType;
     return this.props.apiUser
-      .getUserByEmail(existingUserEmail)
+      .getUserByEmail(existingUserEmail, requestingUserType)
       .then(result => {
         // console.log(result);
         if (result.payload.message) {
@@ -106,27 +107,32 @@ export class CreateUserFormUnconnected extends React.Component {
   submit(e) {
     e.preventDefault();
     const { fullName, email, userType } = this.props.user.form;
+    const authToken = this.props.appState.authToken;
+    const requestingUserType = this.props.appState.userType;
     const body = {
-      fullName,
-      email,
-      userType
+      updates: {
+        fullName,
+        email,
+        userType
+      },
+      requestingUserType
     };
-    this.props.apiUser
-      .updateUser(body)
+    return this.props.apiUser
+      .updateUser(authToken, body)
       .then(result => {
-        if (result.payload.id) {
-          openSnackbar("success", "user created successfully!");
-          this.clearForm();
+        if (result.type === "UPDATE_USER_FAILURE" || this.props.user.error) {
+          openSnackbar(
+            "error",
+            this.props.user.error ||
+              "An error occurred while trying to update user"
+          );
+        } else {
+          openSnackbar("success", "User Created Successfully!");
+          this.props.apiUser.clearForm();
+          this.props.history.push("/admin");
         }
       })
-      .catch(err => {
-        // console.log(err);
-        openSnackbar(
-          "error",
-          this.props.user.error ||
-            "An error occurred while trying to create user"
-        );
-      });
+      .catch(err => openSnackbar("error", err));
   }
 
   handleDeleteDialogOpen = user => {
@@ -137,12 +143,11 @@ export class CreateUserFormUnconnected extends React.Component {
 
   async deleteUser(user) {
     const token = this.props.appState.authToken;
-    // const type = this.props.appState.type;
-    const type = "admin";
+    const requestingUserType = this.props.appState.type;
     const userDeleteResult = await this.props.apiUser.deleteUser(
       token,
       user.id,
-      type
+      requestingUserType
     );
     if (
       !userDeleteResult.type ||

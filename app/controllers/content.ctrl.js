@@ -68,7 +68,7 @@ const updateContent = (req, res, next) => {
         return res.status(404).json({
           message:
             record.message ||
-            "An error occured while trying to update this content"
+            "An error occurred while trying to update this content"
         });
       } else {
         return res.status(200).json(record);

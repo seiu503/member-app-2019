@@ -234,7 +234,7 @@ describe("<TextInputForm />", () => {
     return addContentErrorMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "error",
-        "An error occured while trying to save your content."
+        "An error occurred while trying to save your content."
       );
     });
   });
@@ -298,7 +298,7 @@ describe("<TextInputForm />", () => {
     return updateContentErrorMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "error",
-        "An error occured while trying to update your content."
+        "An error occurred while trying to update your content."
       );
     });
   });
@@ -326,7 +326,7 @@ describe("<TextInputForm />", () => {
     wrapper.instance().submit(fakeEvent);
     expect(Notifier.openSnackbar).toHaveBeenCalledWith(
       "error",
-      "An error occured while trying to save your content."
+      "An error occurred while trying to save your content."
     );
   });
 
@@ -560,7 +560,7 @@ describe("<TextInputForm />", () => {
       .then(() => {
         expect(Notifier.openSnackbar).toHaveBeenCalledWith(
           "error",
-          "An error occured while trying to upload your image."
+          "An error occurred while trying to upload your image."
         );
         uploadImageErrorMock.mockRestore();
       })

@@ -116,7 +116,7 @@ router.get("/user/:id", userCtrl.getUserById);
 //        }
 //   Returns: JSON user object on success.
 //
-router.get("/user/email/:email", userCtrl.getUserByEmail);
+router.get("/user/email/:email/:user_type", userCtrl.getUserByEmail);
 
 // GET ALL USERS
 //   Example: GET >> /api/user/

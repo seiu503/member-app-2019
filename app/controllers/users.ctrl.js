@@ -64,15 +64,9 @@ const createUser = (req, res, next) => {
 const updateUser = (req, res, next) => {
   const { updates, userType } = req.body;
   const { id } = req.params;
-  if (!userType) {
+  if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
-      message: "You must be a user to make these changes. Please log in"
-    });
-  }
-  if (updates.type && userType !== "admin") {
-    return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an admin. u72"
+      message: "You do not have permission to do this. Please Consult an admin."
     });
   }
   if (!updates || !Object.keys(updates).length) {
@@ -84,7 +78,7 @@ const updateUser = (req, res, next) => {
       if (user.message || !user) {
         return res.status(404).json({
           message:
-            user.message || "An error occured while trying to update this user"
+            user.message || "An error occurred while trying to update this user"
         });
       } else {
         return res.status(200).json(user);
@@ -101,8 +95,7 @@ const deleteUser = (req, res, next) => {
   const requestingUserType = req.params.user_type;
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an admin. u101"
+      message: "You do not have permission to do this. Please Consult an admin."
     });
   }
   return users
@@ -160,6 +153,12 @@ const getUserById = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getUserByEmail = (req, res, next) => {
+  const requestingUserType = req.params.user_type;
+  if (requestingUserType != "admin" || !requestingUserType) {
+    return res.status(500).json({
+      message: "You do not have permission to do this. Please Consult an admin."
+    });
+  }
   return users
     .getUserByEmail(req.params.email)
     .then(user => {
