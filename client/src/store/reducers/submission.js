@@ -16,6 +16,9 @@ import {
   CREATE_CAPE_REQUEST,
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
+  GET_CAPE_BY_SFID_REQUEST,
+  GET_CAPE_BY_SFID_SUCCESS,
+  GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
   HANDLE_INPUT
 } from "../actions/apiSubmissionActions";
@@ -106,7 +109,13 @@ export const INITIAL_STATE = {
   allSubmissions: [],
   currentSubmission: {},
   cape: {
-    id: ""
+    id: "",
+    memberShortId: "",
+    donationAmount: 0,
+    paymentMethod: "",
+    donationFrequency: "",
+    activeMethodLast4: "",
+    paymentErrorHold: false
   },
   currentCAPE: {},
   allCAPE: []
@@ -299,6 +308,18 @@ function Submission(state = INITIAL_STATE, action) {
       });
     }
 
+    case GET_CAPE_BY_SFID_SUCCESS: {
+      return update(state, {
+        cape: {
+          id: { $set: action.payload.Id || action.payload.id },
+          memberShortId: { $set: action.payload.member_short_id },
+          donationAmount: { $set: action.payload.cape_amount },
+          paymentMethod: { $set: action.payload.payment_method },
+          donationFrequency: { $set: action.payload.donation_frequency }
+        }
+      });
+    }
+
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
@@ -378,6 +399,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_ALL_SUBMISSIONS_FAILURE:
     case CREATE_SF_CAPE_FAILURE:
     case CREATE_CAPE_FAILURE:
+    case GET_CAPE_BY_SFID_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

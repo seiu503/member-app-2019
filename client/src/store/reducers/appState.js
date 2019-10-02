@@ -47,6 +47,9 @@ import {
   CREATE_CAPE_REQUEST,
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
+  GET_CAPE_BY_SFID_REQUEST,
+  GET_CAPE_BY_SFID_SUCCESS,
+  GET_CAPE_BY_SFID_FAILURE,
   GET_ALL_SUBMISSIONS_REQUEST,
   GET_ALL_SUBMISSIONS_SUCCESS,
   GET_ALL_SUBMISSIONS_FAILURE,
@@ -165,6 +168,7 @@ function appState(state = INITIAL_STATE, action) {
     case GET_ALL_SUBMISSIONS_REQUEST:
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
+    case GET_CAPE_BY_SFID_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -220,6 +224,8 @@ function appState(state = INITIAL_STATE, action) {
     case CREATE_CAPE_SUCCESS:
     case CREATE_SF_CAPE_SUCCESS:
     case CREATE_SF_CAPE_FAILURE:
+    case GET_CAPE_BY_SFID_SUCCESS:
+    case GET_CAPE_BY_SFID_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

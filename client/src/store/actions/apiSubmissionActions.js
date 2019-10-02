@@ -7,6 +7,9 @@ export const ADD_SUBMISSION_FAILURE = "ADD_SUBMISSION_FAILURE";
 export const CREATE_CAPE_REQUEST = "CREATE_CAPE_REQUEST";
 export const CREATE_CAPE_SUCCESS = "CREATE_CAPE_SUCCESS";
 export const CREATE_CAPE_FAILURE = "CREATE_CAPE_FAILURE";
+export const GET_CAPE_BY_SFID_REQUEST = "GET_CAPE_BY_SFID_REQUEST";
+export const GET_CAPE_BY_SFID_SUCCESS = "GET_CAPE_BY_SFID_SUCCESS";
+export const GET_CAPE_BY_SFID_FAILURE = "GET_CAPE_BY_SFID_FAILURE";
 export const SAVE_SALESFORCEID = "SAVE_SALESFORCEID";
 export const UPDATE_SUBMISSION_REQUEST = "UPDATE_SUBMISSION_REQUEST";
 export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
@@ -174,6 +177,34 @@ export function createCAPE(body) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
+    }
+  };
+}
+
+export function getCAPEBySFId(id) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/capeBySF/${id}`,
+      method: "GET",
+      types: [
+        GET_CAPE_BY_SFID_REQUEST,
+        GET_CAPE_BY_SFID_SUCCESS,
+        {
+          type: GET_CAPE_BY_SFID_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
   };
 }
