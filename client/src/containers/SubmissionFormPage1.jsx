@@ -635,6 +635,16 @@ export class SubmissionFormPage1Container extends React.Component {
       language = "es-US";
     }
 
+    // need to check if existing postgres cape record for this person first
+    // by running getCapeBy salesforceId
+    // if exists, then get iframe existing here (get memberShortId from existing CAPE record )
+    // also make route for createPaymentRequest
+    // writePaymentStatus back to our api
+
+    const externalId = this.props.submission.submissionId
+      ? this.props.submission.submissionId
+      : this.props.submission.salesforceId;
+
     const body = {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
@@ -650,8 +660,8 @@ export class SubmissionFormPage1Container extends React.Component {
       employerExternalId: "SW001",
       // ^^ fixed value for dev / staging
       // this will be Agency number in production
-      employeeExternalId: this.props.submission.submissionId,
-      agreesToMessages: !formValues.textAuthOptOut
+      agreesToMessages: !formValues.textAuthOptOut,
+      employeeExternalId: externalId
     };
 
     if (!cape) {
