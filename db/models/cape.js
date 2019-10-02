@@ -107,7 +107,7 @@ const getAllCAPE = () => {
   return db(TABLES.CAPE).returning("*");
 };
 
-/** Find CAPE by id
+/** Find CAPE by Postgres id
  *  @param    {String}   id   The id of the CAPE object
  *  @returns  {Object}        CAPE Object.
  */
@@ -115,6 +115,18 @@ const getAllCAPE = () => {
 const getCAPEById = id => {
   return db(TABLES.CAPE)
     .where({ id })
+    .first()
+    .returning("*");
+};
+
+/** Find CAPE by Salesforce Contact id
+ *  @param    {String}   id   The SF ContactId of the CAPE object
+ *  @returns  {Object}        CAPE Object.
+ */
+
+const getCAPEBySFId = id => {
+  return db(TABLES.CAPE)
+    .where({ contact_id: id })
     .first()
     .returning("*");
 };
@@ -141,6 +153,7 @@ module.exports = {
   createCAPE,
   updateCAPE,
   getCAPEById,
+  getCAPEBySFId,
   getAllCAPE,
   deleteCAPE
 };

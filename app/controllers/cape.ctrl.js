@@ -219,7 +219,7 @@ const getAllCAPE = (req, res, next) => {
 };
 
 /** Get one CAPE record by id
- *  @param    {String}   id   Id of the requested CAPE.
+ *  @param    {String}   id   Postgres id of the requested CAPE record.
  *  @returns  {Object}        CAPE object OR error message.
  */
 const getCAPEById = (req, res, next) => {
@@ -229,7 +229,28 @@ const getCAPEById = (req, res, next) => {
       if (!CAPE || CAPE.message) {
         return res
           .status(404)
-          .json({ message: CAPE.message || "CAPE not found" });
+          .json({ message: CAPE.message || "CAPE record not found" });
+      } else {
+        // for testing
+        res.locals.testData = CAPE;
+        return res.status(200).json(CAPE);
+      }
+    })
+    .catch(err => res.status(404).json({ message: err.message }));
+};
+
+/** Get one CAPE record by SF Contact id
+ *  @param    {String}   id   SF Contact Id of the requested CAPE record.
+ *  @returns  {Object}        CAPE object OR error message.
+ */
+const getCAPEBySFId = (req, res, next) => {
+  return cape
+    .getCAPEBySFId(req.params.id)
+    .then(CAPE => {
+      if (!CAPE || CAPE.message) {
+        return res
+          .status(404)
+          .json({ message: CAPE.message || "CAPE record not found" });
       } else {
         // for testing
         res.locals.testData = CAPE;
@@ -246,5 +267,6 @@ module.exports = {
   updateCAPE,
   deleteCAPE,
   getCAPEById,
+  getCAPEBySFId,
   getAllCAPE
 };

@@ -358,6 +358,17 @@ router.delete(
 //
 router.post("/cape", capeCtrl.createCAPE);
 
+// GET A CAPE RECORD BY SF CONTACT ID
+//   Example: GET >> /api/capeBySF/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON CAPE object on success.
+//
+router.get("/capeBySF/:id", capeCtrl.getCAPEBySFId);
+
 /* =========================== SALESFORCE ROUTES =========================== */
 
 /* =============================== CONTACTS ================================ */
