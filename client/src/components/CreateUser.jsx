@@ -209,11 +209,17 @@ CreateUserFormUnconnected.propTypes = {
       email: PropTypes.string,
       userType: PromiseRejectionEvent.string
     }),
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    error: PropTypes.string
   }).isRequired,
   apiUser: PropTypes.shape({
     handleInput: PropTypes.func,
-    clearForm: PropTypes.func
+    clearForm: PropTypes.func,
+    addUser: PropTypes.func
+  }),
+  appState: PropTypes.shape({
+    authToken: PropTypes.string,
+    userType: PropTypes.string
   }),
   classes: PropTypes.object
 };

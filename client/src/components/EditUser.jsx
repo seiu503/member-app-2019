@@ -143,7 +143,7 @@ export class CreateUserFormUnconnected extends React.Component {
 
   async deleteUser(user) {
     const token = this.props.appState.authToken;
-    const requestingUserType = this.props.appState.type;
+    const requestingUserType = this.props.appState.userType;
     const userDeleteResult = await this.props.apiUser.deleteUser(
       token,
       user.id,
@@ -317,7 +317,17 @@ CreateUserFormUnconnected.propTypes = {
   }).isRequired,
   apiUser: PropTypes.shape({
     handleInput: PropTypes.func,
-    clearForm: PropTypes.func
+    clearForm: PropTypes.func,
+    getUserByEmail: PropTypes.func,
+    updateUser: PropTypes.func,
+    handleDeleteOpen: PropTypes.func,
+    deleteUser: PropTypes.func,
+    handleDeleteClose: PropTypes.func
+  }),
+  appState: PropTypes.shape({
+    authToken: PropTypes.string,
+    userType: PropTypes.string,
+    loggedIn: PropTypes.bool
   }),
   classes: PropTypes.object
 };

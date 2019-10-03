@@ -116,19 +116,11 @@ export class UserFormUnconnected extends React.Component {
 }
 
 UserFormUnconnected.propTypes = {
-  user: PropTypes.shape({
-    form: PropTypes.shape({
-      firstName: PropTypes.string,
-      lastName: PropTypes.string,
-      email: PropTypes.string,
-      userType: PromiseRejectionEvent.string
-    }),
+  appState: PropTypes.shape({
+    loggedIn: PropTypes.bool,
+    authToken: PropTypes.string,
     loading: PropTypes.bool
   }).isRequired,
-  apiUser: PropTypes.shape({
-    handleInput: PropTypes.func,
-    clearForm: PropTypes.func
-  }),
   classes: PropTypes.object
 };
 
