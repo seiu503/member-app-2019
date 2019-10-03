@@ -97,7 +97,7 @@ export class DashboardUnconnected extends React.Component {
         } else {
           console.log("not logged in");
           console.log(result);
-          openSnackbar("error", "Please log in to view this page.");
+          this.props.history.push("/noaccess");
         }
       })
       .catch(err => {

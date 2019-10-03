@@ -4,6 +4,9 @@ import BASE_URL from "./apiConfig.js";
 export const ADD_SUBMISSION_REQUEST = "ADD_SUBMISSION_REQUEST";
 export const ADD_SUBMISSION_SUCCESS = "ADD_SUBMISSION_SUCCESS";
 export const ADD_SUBMISSION_FAILURE = "ADD_SUBMISSION_FAILURE";
+export const DELETE_SUBMISSION_REQUEST = "DELETE_SUBMISSION_REQUEST";
+export const DELETE_SUBMISSION_SUCCESS = "DELETE_SUBMISSION_SUCCESS";
+export const DELETE_SUBMISSION_FAILURE = "DELETE_SUBMISSION_FAILURE";
 export const CREATE_CAPE_REQUEST = "CREATE_CAPE_REQUEST";
 export const CREATE_CAPE_SUCCESS = "CREATE_CAPE_SUCCESS";
 export const CREATE_CAPE_FAILURE = "CREATE_CAPE_FAILURE";
@@ -177,3 +180,32 @@ export function createCAPE(body) {
     }
   };
 }
+
+// export function deleteSubmission(token, id, userType) {
+//   return {
+//     [RSAA]: {
+//       endpoint: `${BASE_URL}/api/submission/${userType}/${id}`,
+//       method: "DELETE",
+//       types: [
+//         DELETE_SUBMISSION_REQUEST,
+//         DELETE_SUBMISSION_SUCCESS,
+//         {
+//           type: DELETE_SUBMISSION_FAILURE,
+//           payload: (action, state, res) => {
+//             return res.json().then(data => {
+//               let message = "Sorry, something went wrong :(";
+//               if (data && data.message) {
+//                 message = data.message;
+//               }
+//               return { message };
+//             });
+//           }
+//         }
+//       ],
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json"
+//       }
+//     }
+//   };
+// }

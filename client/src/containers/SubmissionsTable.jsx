@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import BASE_URL from "../store/actions/apiConfig";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 
@@ -44,6 +45,9 @@ const styles = theme => ({
     }
   }
 });
+const loginLinkStr = "click here to login";
+const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
+const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an admin to request access.`;
 
 export class SubmissionsTableUnconnected extends React.Component {
   componentDidMount() {
@@ -77,39 +81,47 @@ export class SubmissionsTableUnconnected extends React.Component {
         this.props.submission.allSubmissions.length ||
       prevProps.appState.userType !== this.props.appState.userType
     ) {
-      this.props.apiSubmission
-        .getAllSubmissions(
-          this.props.appState.authToken,
-          this.props.appState.userType
-        )
-        .then(result => {
-          if (
-            result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
-            this.props.submission.error
-          ) {
-            openSnackbar(
-              "error",
-              this.props.submission.error ||
-                "An error occurred while fetching submissions"
-            );
-          }
-        })
-        .catch(err => {
-          openSnackbar("error", err);
-        });
+      if (this.props.appState.userType) {
+        this.props.apiSubmission
+          .getAllSubmissions(
+            this.props.appState.authToken,
+            this.props.appState.userType
+          )
+          .then(result => {
+            if (
+              result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
+              this.props.submission.error
+            ) {
+              openSnackbar(
+                "error",
+                this.props.submission.error ||
+                  "An error occurred while fetching submissions"
+              );
+            }
+          })
+          .catch(err => {
+            openSnackbar("error", err);
+          });
+      }
     }
   }
 
   handleDeleteDialogOpen = submission => {
-    if (submission && this.props.appState.loggedIn) {
-      this.props.apiSubmission.handleDeleteOpen(submission);
+    if (submission && this.props.appState.userType) {
+      const { userType } = this.props.appState;
+      if (!userType || userType === "view") {
+        openSnackbar("error", warning);
+      } else {
+        this.props.apiSubmission.handleDeleteOpen(submission);
+      }
     }
   };
 
   async deleteSubmission(submissionData) {
     const token = this.props.appState.authToken;
+    const { userType } = this.props.appState;
     const submissionDeleteResult = await this.props.apiSubmission
-      .deleteSubmission(token, submissionData.id)
+      .deleteSubmission(token, submissionData.id, userType)
       .catch(err => {
         openSnackbar("error", this.props.submission.error);
       });
