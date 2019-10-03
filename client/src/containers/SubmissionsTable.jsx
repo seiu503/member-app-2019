@@ -107,7 +107,7 @@ export class SubmissionsTableUnconnected extends React.Component {
   }
 
   handleDeleteDialogOpen = submission => {
-    if (submission && this.props.appState.userType) {
+    if (submission && this.props.appState.loggedIn) {
       const { userType } = this.props.appState;
       if (!userType || userType === "view") {
         openSnackbar("error", warning);

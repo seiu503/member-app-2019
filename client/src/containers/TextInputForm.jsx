@@ -17,6 +17,7 @@ import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
 
 import { openSnackbar } from "./Notifier";
+import Spinner from "../components/Spinner";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 
 const styles = theme => ({
@@ -73,7 +74,10 @@ export class TextInputFormUnconnected extends React.Component {
   componentDidMount() {
     if (this.props.edit && this.props.match.params.id) {
       this.props.apiContent
-        .getContentById(this.props.match.params.id)
+        .getContentById(
+          this.props.match.params.id,
+          this.props.appState.userType
+        )
         .then(result => {
           if (
             result.type === "GET_CONTENT_BY_ID_FAILURE" ||
@@ -168,10 +172,11 @@ export class TextInputFormUnconnected extends React.Component {
   submit(e) {
     e.preventDefault();
     const { content_type, content } = this.props.content.form;
-    const authToken = this.props.appState.authToken;
+    const { authToken, userType } = this.props.appState;
     const body = {
       content_type,
-      content
+      content,
+      userType
     };
     let id;
     if (this.props.match.params.id) {
@@ -231,6 +236,7 @@ export class TextInputFormUnconnected extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { userType, loading } = this.props.appState;
     return (
       <div className={classes.container} data-test="component-text-input-form">
         <Typography
@@ -242,111 +248,116 @@ export class TextInputFormUnconnected extends React.Component {
         >
           Admin Dashboard
         </Typography>
-        <form
-          className={classes.form}
-          onError={errors => console.log(errors)}
-          id="form"
-        >
-          <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend" className={classes.radioLabel}>
-              Content Type
-            </FormLabel>
-            <RadioGroup
-              aria-label="Content Type"
-              name="content_type"
-              className={classes.group}
-              value={this.props.content.form.content_type || ""}
-              onChange={this.props.apiContent.handleInput}
-            >
-              <FormControlLabel
-                value="headline"
-                control={<Radio />}
-                label="Headline"
-              />
-              <FormControlLabel
-                value="bodyCopy"
-                control={<Radio />}
-                label="Body"
-              />
-              <FormControlLabel
-                value="image"
-                control={<Radio />}
-                label="Image"
-              />
-              <FormControlLabel
-                value="redirectUrl"
-                control={<Radio />}
-                label="Redirect URL"
-              />
-            </RadioGroup>
-          </FormControl>
-          {this.props.content.form.content_type &&
-          this.props.content.form.content_type !== "image" ? (
-            <React.Fragment>
-              <TextField
-                name="content"
-                id="content"
-                label={utils.labelsObj[this.props.content.form.content_type]}
-                type={
-                  this.props.content.form.content_type &&
-                  this.props.content.form.content_type.includes("Url")
-                    ? "url"
-                    : "text"
-                }
-                multiline={this.props.content.form.content_type === "bodyCopy"}
-                rows={
-                  this.props.content.form.content_type === "bodyCopy" ? 5 : 1
-                }
-                variant="outlined"
-                required
-                value={this.props.content.form.content}
+        {!loading && !["admin", "edit"].includes(userType) && <Spinner />}
+        {!loading && ["admin", "edit"].includes(userType) && (
+          <form
+            className={classes.form}
+            onError={errors => console.log(errors)}
+            id="form"
+          >
+            <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend" className={classes.radioLabel}>
+                Content Type
+              </FormLabel>
+              <RadioGroup
+                aria-label="Content Type"
+                name="content_type"
+                className={classes.group}
+                value={this.props.content.form.content_type || ""}
                 onChange={this.props.apiContent.handleInput}
-                className={classes.input}
-              />
-              <ButtonWithSpinner
-                type="submit"
-                color="secondary"
-                className={classes.formButton}
-                variant="contained"
-                loading={this.props.content.loading}
-                onClick={e => this.submit(e)}
               >
-                Save {utils.labelsObj[this.props.content.form.content_type]}
-              </ButtonWithSpinner>
-            </React.Fragment>
-          ) : this.props.content.form.content_type &&
-            this.props.content.form.content_type === "image" ? (
-            <React.Fragment>
-              <ButtonWithSpinner
-                onClick={this.handleOpen.bind(this)}
-                variant="contained"
-                color="secondary"
-                component="label"
-                className={classes.formButton}
-                loading={this.props.content.loading}
-              >
-                Choose Image
-              </ButtonWithSpinner>
-              <DropzoneDialog
-                open={this.state.open}
-                onDropRejected={this.onDropRejected}
-                onSave={this.handleSave}
-                acceptedFiles={[
-                  "image/jpeg",
-                  "image/jpg",
-                  "image/png",
-                  "image/gif"
-                ]}
-                showPreviews={true}
-                maxFileSize={2000000}
-                filesLimit={1} // until add server support for multiupload
-                onClose={this.handleClose}
-              />
-            </React.Fragment>
-          ) : (
-            ""
-          )}
-        </form>
+                <FormControlLabel
+                  value="headline"
+                  control={<Radio />}
+                  label="Headline"
+                />
+                <FormControlLabel
+                  value="bodyCopy"
+                  control={<Radio />}
+                  label="Body"
+                />
+                <FormControlLabel
+                  value="image"
+                  control={<Radio />}
+                  label="Image"
+                />
+                <FormControlLabel
+                  value="redirectUrl"
+                  control={<Radio />}
+                  label="Redirect URL"
+                />
+              </RadioGroup>
+            </FormControl>
+            {this.props.content.form.content_type &&
+            this.props.content.form.content_type !== "image" ? (
+              <React.Fragment>
+                <TextField
+                  name="content"
+                  id="content"
+                  label={utils.labelsObj[this.props.content.form.content_type]}
+                  type={
+                    this.props.content.form.content_type &&
+                    this.props.content.form.content_type.includes("Url")
+                      ? "url"
+                      : "text"
+                  }
+                  multiline={
+                    this.props.content.form.content_type === "bodyCopy"
+                  }
+                  rows={
+                    this.props.content.form.content_type === "bodyCopy" ? 5 : 1
+                  }
+                  variant="outlined"
+                  required
+                  value={this.props.content.form.content}
+                  onChange={this.props.apiContent.handleInput}
+                  className={classes.input}
+                />
+                <ButtonWithSpinner
+                  type="submit"
+                  color="secondary"
+                  className={classes.formButton}
+                  variant="contained"
+                  loading={this.props.content.loading}
+                  onClick={e => this.submit(e)}
+                >
+                  Save {utils.labelsObj[this.props.content.form.content_type]}
+                </ButtonWithSpinner>
+              </React.Fragment>
+            ) : this.props.content.form.content_type &&
+              this.props.content.form.content_type === "image" ? (
+              <React.Fragment>
+                <ButtonWithSpinner
+                  onClick={this.handleOpen.bind(this)}
+                  variant="contained"
+                  color="secondary"
+                  component="label"
+                  className={classes.formButton}
+                  loading={this.props.content.loading}
+                >
+                  Choose Image
+                </ButtonWithSpinner>
+                <DropzoneDialog
+                  open={this.state.open}
+                  onDropRejected={this.onDropRejected}
+                  onSave={this.handleSave}
+                  acceptedFiles={[
+                    "image/jpeg",
+                    "image/jpg",
+                    "image/png",
+                    "image/gif"
+                  ]}
+                  showPreviews={true}
+                  maxFileSize={2000000}
+                  filesLimit={1} // until add server support for multiupload
+                  onClose={this.handleClose}
+                />
+              </React.Fragment>
+            ) : (
+              ""
+            )}
+          </form>
+        )}
       </div>
     );
   }

@@ -108,15 +108,13 @@ const deleteContent = (req, res, next) => {
 };
 
 /** Get all content
- *  @param    {String}   userType   Type of user making request.
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContent = (req, res, next) => {
   const userType = req.params.user_type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an admin. c127"
+      message: "You do not have permission to do this. Please Consult an admin."
     });
   }
   return contentModel
@@ -127,10 +125,15 @@ const getContent = (req, res, next) => {
 
 /** Get one content record by id
  *  @param    {String}   id         Id of the requested content.
- *  @param    {String}   userType   Type of user making request.
  *  @returns  {Object}        User object OR error message.
  */
 const getContentById = (req, res, next) => {
+  const userType = req.params.user_type;
+  if (!userType || (userType !== "admin" && userType !== "edit")) {
+    return res.status(500).json({
+      message: "You do not have permission to do this. Please Consult an admin."
+    });
+  }
   return contentModel
     .getContentById(req.params.id)
     .then(record => {

@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import BASE_URL from "../store/actions/apiConfig";
+// import { Redirect } from "react-router-dom";
 
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
@@ -96,12 +98,13 @@ const styles = theme => ({
     }
   }
 });
-
+const loginLinkStr = "click here to login";
+const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
+const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an admin to request access.`;
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken, userType } = this.props.appState;
     if (userType) {
-      console.log("mount ", userType);
       this.props.apiContent
         .getAllContent(authToken, userType)
         .then(result => {
@@ -124,12 +127,13 @@ export class ContentLibraryUnconnected extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
-      // (!prevProps.appState.authToken && this.props.appState.authToken) ||
+      (!prevProps.appState.authToken &&
+        this.props.appState.authToken &&
+        this.props.appState.userType) ||
       prevProps.content.allContent.length !==
         this.props.content.allContent.length ||
       prevProps.appState.userType !== this.props.appState.userType
     ) {
-      console.log("update ", this.props.appState.userType);
       this.props.apiContent
         .getAllContent(
           this.props.appState.authToken,
@@ -155,15 +159,21 @@ export class ContentLibraryUnconnected extends React.Component {
 
   handleDeleteDialogOpen = tile => {
     if (tile && this.props.appState.loggedIn) {
+      const { userType } = this.props.appState;
+      if (!["admin", "edit"].includes(userType)) {
+        openSnackbar("error", warning);
+      }
       this.props.apiContent.handleDeleteOpen(tile);
     }
   };
 
   async deleteContent(contentData) {
     const token = this.props.appState.authToken;
+    const { userType } = this.props.appState;
     const contentDeleteResult = await this.props.apiContent.deleteContent(
       token,
-      contentData.id
+      contentData.id,
+      userType
     );
     if (
       !contentDeleteResult.type ||
@@ -192,12 +202,13 @@ export class ContentLibraryUnconnected extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { loggedIn, loading } = this.props.appState;
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
       <div data-test="component-content-library" className={classes.root}>
-        {this.props.appState.loading && <Spinner />}
-        {this.props.content.deleteDialogOpen && (
+        {loading && <Spinner />}
+        {loggedIn && this.props.content.deleteDialogOpen && (
           <AlertDialog
             open={this.props.content.deleteDialogOpen}
             handleClose={this.props.apiContent.handleDeleteClose}
@@ -224,37 +235,39 @@ export class ContentLibraryUnconnected extends React.Component {
             Content Library
           </Typography>
           <div className={classes.gridWrapper}>
-            {this.props.content.allContent.map(tile => {
-              return (
-                <div className={classes.card} key={tile.id} data-test="tile">
-                  <div className={classes.actionArea}>
-                    <FAB
-                      className={classes.buttonDelete}
-                      onClick={() => this.handleDeleteDialogOpen(tile)}
-                      color="primary"
-                      aria-label="Delete Content"
-                      data-test="delete"
-                    >
-                      <Delete />
-                    </FAB>
-                    <FAB
-                      className={classes.buttonEdit}
-                      onClick={() =>
-                        this.props.history.push(`/edit/${tile.id}`)
-                      }
-                      color="primary"
-                      aria-label="Edit Content"
-                      data-test="edit"
-                    >
-                      <Create />
-                    </FAB>
+            {loggedIn &&
+              this.props.content.allContent.map(tile => {
+                return (
+                  <div className={classes.card} key={tile.id} data-test="tile">
+                    <div className={classes.actionArea}>
+                      <FAB
+                        className={classes.buttonDelete}
+                        onClick={() => this.handleDeleteDialogOpen(tile)}
+                        color="primary"
+                        aria-label="Delete Content"
+                        data-test="delete"
+                      >
+                        <Delete />
+                      </FAB>
+                      <FAB
+                        className={classes.buttonEdit}
+                        onClick={() =>
+                          this.props.history.push(`/edit/${tile.id}`)
+                        }
+                        color="primary"
+                        aria-label="Edit Content"
+                        data-test="edit"
+                      >
+                        <Create />
+                      </FAB>
+                    </div>
+                    <ContentTile contentTile={tile} />
                   </div>
-                  <ContentTile contentTile={tile} />
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         </div>
+        {!loading && !loggedIn && <Spinner />}
       </div>
     );
   }
@@ -302,7 +315,8 @@ ContentLibraryUnconnected.propTypes = {
 const mapStateToProps = state => ({
   appState: state.appState,
   profile: state.profile,
-  content: state.content
+  content: state.content,
+  localize: state.localize
 });
 
 const mapDispatchToProps = dispatch => ({
