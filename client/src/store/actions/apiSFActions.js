@@ -565,6 +565,7 @@ export function getIframeURL(body) {
           type: GET_IFRAME_URL_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
+              console.log(data);
               let message = "Sorry, something went wrong :(";
               if (data && data.message) {
                 message = data.message;

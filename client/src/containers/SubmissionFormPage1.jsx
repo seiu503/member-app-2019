@@ -60,6 +60,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
     this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
+    this.lookupSFContact = this.lookupSFContact.bind(this);
   }
   componentDidMount() {
     // check for contact id in query string
@@ -151,13 +152,14 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async handleEmployerTypeChange(employerType) {
-    // console.log("handleEmployerTypeChange");
+    console.log("handleEmployerTypeChange");
     // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      return this.getIframeNew(true);
+      const params = queryString.parse(this.props.location.search);
+      return this.getIframeURL(params.cape);
     } else {
       // hide iframe if already rendered if change to checkoff
       await this.props.apiSubmission.handleInput({
@@ -233,7 +235,11 @@ export class SubmissionFormPage1Container extends React.Component {
       let returnValues = { ...values };
 
       // format birthdate
-      const birthdate = formatBirthdate(values);
+      let birthdate;
+      if (values.mm && values.dd && values.yyyy) {
+        birthdate = formatBirthdate(values);
+      }
+
       returnValues.birthdate = birthdate;
 
       // find employer object and set employer-related fields
@@ -408,7 +414,46 @@ export class SubmissionFormPage1Container extends React.Component {
     return;
   }
 
+  // lookup SF Contact by first, last, email; if none found then create new
+  async lookupSFContact() {
+    console.log("lookupSFContact");
+    const { formValues } = this.props;
+    if (
+      formValues.firstName &&
+      formValues.lastName &&
+      formValues.homeEmail &&
+      formValues.employerName &&
+      !this.props.submission.salesforceId
+    ) {
+      console.log("looking up sfid");
+      // lookup contact by first/last/email
+      const lookupBody = {
+        first_name: formValues.firstName,
+        last_name: formValues.lastName,
+        home_email: formValues.homeEmail
+        // employer_id: this.props.submission.formPage1.employerId
+      };
+      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+
+      // if nothing found on lookup, need to create new contact
+      if (!this.props.submission.salesforceId) {
+        await this.createSFContact()
+          .then(() => {
+            // console.log(this.props.submission.salesforceId);
+          })
+          .catch(err => {
+            // console.log(err);
+            return handleError(err);
+          });
+      }
+    }
+  }
+
   async createSFContact() {
+    console.log("createSFContact");
     const values = await this.prepForContact(this.props.formValues);
     let {
       firstName,
@@ -496,6 +541,35 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log(err);
       return handleError(err);
     });
+  }
+
+  async getCAPEBySFId() {
+    console.log("getCAPEBySFId");
+    const id = this.props.submission.salesforceId;
+    console.log(id);
+    if (id) {
+      return new Promise(resolve => {
+        this.props.apiSubmission
+          .getCAPEBySFId(id)
+          .then(result => {
+            // console.log(result);
+            if (
+              result.type === "GET_CAPE_BY_SFID_FAILURE" ||
+              this.props.submission.error
+            ) {
+              // console.log(this.props.submission.error);
+              resolve(handleError(this.props.submission.error));
+            }
+            resolve(result);
+          })
+          .catch(err => {
+            // console.log(err);
+            resolve(handleError(err));
+          });
+      });
+    } else {
+      console.log("no id");
+    }
   }
 
   getSFDJRById() {
@@ -601,13 +675,13 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        // console.log(result);
+        console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
           result.type === "GET_IFRAME_EXISTING_FAILURE"
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -622,10 +696,17 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeNew(cape, capeAmount) {
-    // console.log("getIframeNew");
+    console.log("getIframeNew");
     const { formValues } = this.props;
 
-    const birthdate = formatBirthdate(formValues);
+    let birthdate;
+    if (formValues.mm && formValues.dd && formValues.yyyy) {
+      birthdate = formatBirthdate(formValues);
+    }
+
+    if (!formValues.preferredLanguage) {
+      formValues.preferredLanguage = "English";
+    }
     // convert language to ISO code for unioni.se
     let language = isoConv(formValues.preferredLanguage);
     if (language === "en") {
@@ -635,16 +716,23 @@ export class SubmissionFormPage1Container extends React.Component {
       language = "es-US";
     }
 
-    // need to check if existing postgres cape record for this person first
-    // by running getCapeBy salesforceId
-    // if exists, then get iframe existing here (get memberShortId from existing CAPE record )
+    console.log("719");
     // also make route for createPaymentRequest
     // writePaymentStatus back to our api
 
-    const externalId = this.props.submission.submissionId
-      ? this.props.submission.submissionId
-      : this.props.submission.salesforceId;
+    let externalId;
+    if (this.props.submission.submissionId) {
+      externalId = this.props.submission.submissionId;
+    } else {
+      await this.createCAPE().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+      externalId = this.props.submission.cape.id;
+    }
 
+    console.log("735");
+    console.log(`externalId: ${externalId}`);
     const body = {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
@@ -663,6 +751,7 @@ export class SubmissionFormPage1Container extends React.Component {
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };
+    console.log(body);
 
     if (!cape) {
       body.language = language;
@@ -678,18 +767,18 @@ export class SubmissionFormPage1Container extends React.Component {
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    // console.log(JSON.stringify(body));
-
+    console.log(JSON.stringify(body));
+    console.log("763");
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        // console.log(result.payload);
+        console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
           result.type === "GET_IFRAME_URL_FAILURE"
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -698,7 +787,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return handleError(err);
       });
   }
@@ -708,13 +797,13 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.apiSF
       .getUnioniseToken()
       .then(result => {
-        // console.log(result.payload);
+        console.log(result.payload);
         if (
           !result.payload.access_token ||
           result.payload.message ||
           result.type === "GET_UNIONISE_TOKEN_FAILURE"
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -725,17 +814,36 @@ export class SubmissionFormPage1Container extends React.Component {
         return result.payload.access_token;
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return handleError(err);
       });
   }
 
-  async getIframeURL() {
-    // console.log("getIframeURL");
+  async getIframeURL(cape) {
+    console.log("getIframeURL");
     // first check if we have an existing unionise id
     // if so, we don't need to create a unionise member account; just fetch a
     // cardAddingURL from existing account
-    const memberShortId = this.props.submission.payment.memberShortId;
+    let memberShortId = this.props.submission.payment.memberShortId;
+    const { formValues } = this.props;
+    let capeAmount;
+    if (cape) {
+      capeAmount =
+        formValues.capeAmount === "Other"
+          ? parseFloat(formValues.capeAmountOther)
+          : parseFloat(formValues.capeAmount);
+    }
+    if (!this.props.submission.salesforceId) {
+      console.log("lookup sf contact");
+      await this.lookupSFContact();
+    }
+    if (!memberShortId && cape && this.props.submission.salesforceId) {
+      // check if existing postgres cape record to fetch memberShortId
+      await this.getCAPEBySFId();
+      await this.getSFDJRById();
+      memberShortId = this.props.submission.cape.memberShortId;
+      console.log(`memberShortId: ${memberShortId}`);
+    }
     if (memberShortId) {
       // first fetch an auth token to access secured unionise routes
       const access_token = await this.props.apiSF
@@ -746,10 +854,13 @@ export class SubmissionFormPage1Container extends React.Component {
         });
       // then get the card adding url for the existing account
       return this.getIframeExisting(access_token, memberShortId);
+    } else {
+      console.log("no memberShortId found");
     }
+
     // if we don't have the memberShortId, then we need to create a new
     // unionise member record and return the cardAddingUrl
-    return this.getIframeNew();
+    return this.getIframeNew(cape, capeAmount);
   }
 
   async saveLegalLanguage() {
@@ -819,61 +930,19 @@ export class SubmissionFormPage1Container extends React.Component {
     return formValues.signature;
   }
 
-  async handleCAPESubmit(standAlone) {
-    // console.log("handleCAPESubmit");
+  async generateCAPEBody() {
+    console.log("generateCAPEBody");
     const { formValues } = this.props;
-    // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    // console.log(score);
-    if (!score || score <= 0.5) {
-      // console.log(`recaptcha failed: ${score}`);
-      return handleError(
-        "ReCaptcha validation failed, please reload the page and try again."
-      );
-    }
-
-    if (
-      this.props.submission.formPage1.paymentRequired &&
-      !this.props.submission.formPage1.paymentMethodAdded
-    ) {
-      // console.log("No payment method added");
-      return handleError("Please click 'Add a Card' to add a payment method");
-    }
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      // console.log("looking up sfid");
-      // lookup contact by first/last/email
-      const lookupBody = {
-        first_name: formValues.firstName,
-        last_name: formValues.lastName,
-        home_email: formValues.homeEmail
-      };
-      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
-      // if nothing found on lookup, need to create new contact
-      if (!this.props.submission.salesforceId) {
-        await this.createSFContact()
-          .then(() => {
-            // console.log(this.props.submission.salesforceId);
-          })
-          .catch(err => {
-            // console.log(err);
-            return handleError(err);
-          });
-      }
+      await this.lookupSFContact();
     }
-
-    // console.log(this.props.submission.salesforceId);
     // find employer object
     const employerObject = findEmployerObject(
       this.props.submission.employerObjects,
       formValues.employerName
     );
-    // console.log(employerObject);
-    // console.log(employerObject.Agency_Number__c);
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
@@ -906,14 +975,61 @@ export class SubmissionFormPage1Container extends React.Component {
       online_campaign_source: campaignSource,
       cape_legal: this.props.cape_legal.current.innerHTML,
       cape_amount: donationAmount,
+      cape_status: "Incomplete",
       // need to add UI to select donation frequency
-      donation_frequency: "Monthly",
-      member_short_id: this.props.submission.payment.memberShortId
+      donation_frequency: "Monthly"
+      // member_short_id: this.props.submission.payment.memberShortId
     };
-    // console.log(body);
+    console.log(body);
+    return body;
+  }
+
+  // create an initial CAPE record in postgres to get returned ID
+  // not finalized until payment method added and SFCAPE status updated
+  async createCAPE() {
+    const body = await this.generateCAPEBody();
+    const capeResult = await this.props.apiSubmission
+      .createCAPE(body)
+      .catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+
+    if (
+      capeResult.type !== "CREATE_CAPE_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      // console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    }
+  }
+
+  async handleCAPESubmit(standAlone) {
+    console.log("handleCAPESubmit");
+
+    // verify recaptcha score
+    const score = await this.verifyRecaptchaScore();
+    // console.log(score);
+    if (!score || score <= 0.5) {
+      // console.log(`recaptcha failed: ${score}`);
+      return handleError(
+        "ReCaptcha validation failed, please reload the page and try again."
+      );
+    }
+
+    if (
+      this.props.submission.formPage1.paymentRequired &&
+      !this.props.submission.formPage1.paymentMethodAdded
+    ) {
+      // console.log("No payment method added");
+      return handleError("Please click 'Add a Card' to add a payment method");
+    }
 
     let cape_errors = "",
-      cape_status = "";
+      cape_status = "Pending";
+
+    const body = await this.generateCAPEBody();
+    delete body.cape_status;
 
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
@@ -937,19 +1053,28 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_status = "Success";
     }
 
-    body.cape_status = cape_status;
-    body.cape_errors = cape_errors;
+    const member_short_id =
+      this.props.submission.payment.memberShortId ||
+      this.props.submission.cape.memberShortId;
+    console.log(`member_short_id: ${member_short_id}`);
 
-    // create CAPE record in postgres
+    let updates = {
+      cape_status,
+      cape_errors,
+      member_short_id
+    };
+    let id = this.props.submission.cape.id;
+
+    // update CAPE record in postgres with status and error values
     const capeResult = await this.props.apiSubmission
-      .createCAPE(body)
+      .updateCAPE(id, updates)
       .catch(err => {
         // console.log(err);
         return handleError(err);
       });
 
     if (
-      capeResult.type !== "CREATE_CAPE_SUCCESS" ||
+      capeResult.type !== "UPDATE_CAPE_SUCCESS" ||
       this.props.submission.error
     ) {
       // console.log(this.props.submission.error);
@@ -1081,16 +1206,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // otherwise, lookup contact by first/last/email
-    const body = {
-      first_name: formValues.firstName,
-      last_name: formValues.lastName,
-      home_email: formValues.homeEmail
-    };
-    await this.props.apiSF.lookupSFContact(body).catch(err => {
-      // console.log(err);
-      return handleError(err);
-    });
-    // console.log(result);
+    await this.lookupSFContact();
 
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
@@ -1198,6 +1314,7 @@ export class SubmissionFormPage1Container extends React.Component {
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           saveSubmissionErrors={this.saveSubmissionErrors}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
+          lookupSFContact={this.lookupSFContact}
         />
       </div>
     );

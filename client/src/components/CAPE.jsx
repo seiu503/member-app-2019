@@ -52,7 +52,8 @@ export const CAPE = props => {
     handleEmployerTypeChange,
     employerList,
     cape_legal,
-    change
+    change,
+    lookupSFContact
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -212,6 +213,7 @@ export const CAPE = props => {
                 type="text"
                 classes={{ input2col: classes.input2col }}
                 component={renderTextField}
+                onBlur={lookupSFContact}
               />
 
               <Field
@@ -223,9 +225,24 @@ export const CAPE = props => {
                 classes={{ input2col: classes.input2col }}
                 component={renderTextField}
                 type="text"
+                onBlur={lookupSFContact}
               />
             </FormGroup>
             <FormGroup classes={{ root: classes.formGroupTopMargin }}>
+              <Field
+                label="Home Email"
+                name="homeEmail"
+                id="homeEmail"
+                type="email"
+                classes={classes}
+                component={renderTextField}
+                onBlur={lookupSFContact}
+              />
+            </FormGroup>
+            <FormHelperText className={classes.formHelperText}>
+              <Translate id="homeEmailHint" />
+            </FormHelperText>
+            <FormGroup>
               <Field
                 data-test="select-employer-type"
                 label="Employer Type"
@@ -235,12 +252,7 @@ export const CAPE = props => {
                 classes={classes}
                 component={renderSelect}
                 options={employerTypesList}
-                onChange={e => {
-                  updateEmployersPicklist(e);
-                  handleEmployerTypeChange(e.target.value).then(() => {
-                    // console.log(`checkoff: ${checkoff}`);
-                  });
-                }}
+                onChange={updateEmployersPicklist}
                 labelWidth={100}
               />
               {formValues.employerType !== "" && (
@@ -253,6 +265,7 @@ export const CAPE = props => {
                   classes={classes}
                   component={renderSelect}
                   options={employerList}
+                  onBlur={lookupSFContact}
                 />
               )}
             </FormGroup>
@@ -351,18 +364,6 @@ export const CAPE = props => {
               />
             </FormGroup>
 
-            <Field
-              label="Home Email"
-              name="homeEmail"
-              id="homeEmail"
-              type="email"
-              classes={classes}
-              component={renderTextField}
-            />
-
-            <FormHelperText className={classes.formHelperText}>
-              <Translate id="homeEmailHint" />
-            </FormHelperText>
             <FormGroup>
               <Field
                 label="Mobile Phone†"
@@ -396,6 +397,7 @@ export const CAPE = props => {
           type="text"
           classes={classes}
           component={renderTextField}
+          onBlur={() => handleEmployerTypeChange(formValues.employerType)}
         />
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&

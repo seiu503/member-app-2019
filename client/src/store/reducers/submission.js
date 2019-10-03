@@ -16,6 +16,9 @@ import {
   CREATE_CAPE_REQUEST,
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
+  UPDATE_CAPE_REQUEST,
+  UPDATE_CAPE_SUCCESS,
+  UPDATE_CAPE_FAILURE,
   GET_CAPE_BY_SFID_REQUEST,
   GET_CAPE_BY_SFID_SUCCESS,
   GET_CAPE_BY_SFID_FAILURE,
@@ -151,6 +154,8 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
     case CREATE_SF_CAPE_SUCCESS:
+    case GET_CAPE_BY_SFID_REQUEST:
+    case UPDATE_CAPE_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -329,6 +334,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case CREATE_CAPE_SUCCESS:
+    case UPDATE_CAPE_SUCCESS:
       return update(state, {
         cape: {
           id: { $set: action.payload.cape_id }
@@ -400,6 +406,7 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_CAPE_FAILURE:
     case CREATE_CAPE_FAILURE:
     case GET_CAPE_BY_SFID_FAILURE:
+    case UPDATE_CAPE_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

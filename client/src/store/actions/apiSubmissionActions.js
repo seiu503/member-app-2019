@@ -7,6 +7,9 @@ export const ADD_SUBMISSION_FAILURE = "ADD_SUBMISSION_FAILURE";
 export const CREATE_CAPE_REQUEST = "CREATE_CAPE_REQUEST";
 export const CREATE_CAPE_SUCCESS = "CREATE_CAPE_SUCCESS";
 export const CREATE_CAPE_FAILURE = "CREATE_CAPE_FAILURE";
+export const UPDATE_CAPE_REQUEST = "UPDATE_CAPE_REQUEST";
+export const UPDATE_CAPE_SUCCESS = "UPDATE_CAPE_SUCCESS";
+export const UPDATE_CAPE_FAILURE = "UPDATE_CAPE_FAILURE";
 export const GET_CAPE_BY_SFID_REQUEST = "GET_CAPE_BY_SFID_REQUEST";
 export const GET_CAPE_BY_SFID_SUCCESS = "GET_CAPE_BY_SFID_SUCCESS";
 export const GET_CAPE_BY_SFID_FAILURE = "GET_CAPE_BY_SFID_FAILURE";
@@ -162,6 +165,35 @@ export function createCAPE(body) {
         CREATE_CAPE_SUCCESS,
         {
           type: CREATE_CAPE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+export function updateCAPE(id, body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/cape/${id}`,
+      method: "PUT",
+      types: [
+        UPDATE_CAPE_REQUEST,
+        UPDATE_CAPE_SUCCESS,
+        {
+          type: UPDATE_CAPE_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
               let message = "Sorry, something went wrong :(";

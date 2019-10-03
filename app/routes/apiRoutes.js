@@ -358,6 +358,22 @@ router.delete(
 //
 router.post("/cape", capeCtrl.createCAPE);
 
+// UPDATE A CAPE RECORD
+//   Example: PUT >> /api/cape/:id
+//   Secured: no
+//   Expects:
+//     request params: {
+//        id: String
+//     }
+//     request body properties : {
+//        cape_status            : String ('Pending' || 'Success' || 'Error')
+//        cape_errors            : String
+//        memberShortId          : String
+//        }
+//   Returns: JSON new CAPE object on success.
+//
+router.put("/cape/:id", capeCtrl.updateCAPE);
+
 // GET A CAPE RECORD BY SF CONTACT ID
 //   Example: GET >> /api/capeBySF/0036100001gYL0HAAW
 //   Secured: no
