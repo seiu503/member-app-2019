@@ -1030,6 +1030,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
     const body = await this.generateCAPEBody();
     delete body.cape_status;
+    body.member_short_id =
+      this.props.submission.payment.memberShortId ||
+      this.props.submission.cape.memberShortId;
+    console.log("looking for memberShortId here");
+    console.log(body);
 
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
