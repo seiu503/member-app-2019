@@ -407,6 +407,7 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_CAPE_FAILURE:
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_FAILURE:
+      console.log(action.payload);
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

@@ -552,18 +552,18 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.apiSubmission
           .getCAPEBySFId(id)
           .then(result => {
-            // console.log(result);
+            console.log(result);
             if (
               result.type === "GET_CAPE_BY_SFID_FAILURE" ||
               this.props.submission.error
             ) {
-              // console.log(this.props.submission.error);
+              console.log(this.props.submission.error);
               resolve(handleError(this.props.submission.error));
             }
             resolve(result);
           })
           .catch(err => {
-            // console.log(err);
+            console.log(err);
             resolve(handleError(err));
           });
       });
@@ -669,8 +669,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    // console.log("getIframeExisting");
-    const memberShortId = this.props.submission.payment.memberShortId;
+    console.log("getIframeExisting");
+    const memberShortId =
+      this.props.submission.payment.memberShortId ||
+      this.props.submission.cape.memberShortId;
     const token = this.props.submission.payment.unioniseToken;
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
@@ -690,7 +692,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return handleError(err);
       });
   }
@@ -838,18 +840,21 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.lookupSFContact();
     }
     if (!memberShortId && cape && this.props.submission.salesforceId) {
-      // check if existing postgres cape record to fetch memberShortId
+      // check if existing postgres CAPE OR SFDJR to fetch memberShortId
       await this.getCAPEBySFId();
       await this.getSFDJRById();
-      memberShortId = this.props.submission.cape.memberShortId;
+      memberShortId =
+        this.props.submission.payment.memberShortId ||
+        this.props.submission.cape.memberShortId;
       console.log(`memberShortId: ${memberShortId}`);
     }
     if (memberShortId) {
+      console.log("getting unionise auth token");
       // first fetch an auth token to access secured unionise routes
       const access_token = await this.props.apiSF
         .getUnioniseToken()
         .catch(err => {
-          // console.log(err);
+          console.log(err);
           return handleError(err);
         });
       // then get the card adding url for the existing account
@@ -1033,8 +1038,6 @@ export class SubmissionFormPage1Container extends React.Component {
     body.member_short_id =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
-    console.log("looking for memberShortId here");
-    console.log(body);
 
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
@@ -1063,13 +1066,23 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.cape.memberShortId;
     console.log(`member_short_id: ${member_short_id}`);
 
-    let updates = {
+    // if initial cape was not already created
+    // in the process of generating the iframe url,
+    // (checkoff use case)
+    // create it now
+    if (!this.props.submission.cape.id) {
+      await this.createCAPE().catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+    }
+
+    const id = this.props.submission.cape.id;
+    const updates = {
       cape_status,
       cape_errors,
       member_short_id
     };
-    let id = this.props.submission.cape.id;
-
     // update CAPE record in postgres with status and error values
     const capeResult = await this.props.apiSubmission
       .updateCAPE(id, updates)

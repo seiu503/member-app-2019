@@ -60,6 +60,7 @@ export const tableIcons = {
 };
 
 export const handleError = err => {
+  console.log(err);
   return openSnackbar(
     "error",
     err || "Sorry, something went wrong. Please try again."
