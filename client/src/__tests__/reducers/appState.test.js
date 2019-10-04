@@ -23,7 +23,8 @@ describe("appState reducer", () => {
       loggedIn: true,
       authToken: "1234",
       loading: false,
-      redirect: ""
+      redirect: "",
+      userType: ""
     });
   });
   it("should handle GET_PROFILE_SUCCESS", () => {
@@ -36,7 +37,8 @@ describe("appState reducer", () => {
       loggedIn: false,
       authToken: "",
       loading: false,
-      redirect: ""
+      redirect: "",
+      userType: ""
     });
   });
   it("should handle VALIDATE_TOKEN_FAILURE", () => {
@@ -48,7 +50,8 @@ describe("appState reducer", () => {
       loggedIn: false,
       authToken: "",
       loading: false,
-      redirect: ""
+      redirect: "",
+      userType: ""
     });
   });
   it("should handle SET_REDIRECT_URL", () => {
@@ -61,7 +64,8 @@ describe("appState reducer", () => {
       loggedIn: false,
       authToken: "",
       loading: false,
-      redirect: "http://www.example.com"
+      redirect: "http://www.example.com",
+      userType: ""
     });
   });
 
@@ -74,7 +78,8 @@ describe("appState reducer", () => {
       loggedIn: true,
       authToken: "",
       loading: false,
-      redirect: ""
+      redirect: "",
+      userType: ""
     });
   });
 });

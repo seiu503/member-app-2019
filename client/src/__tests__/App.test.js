@@ -59,7 +59,8 @@ const defaultProps = {
     currentContent: { content_type: "headline", content: "This is a headline" }
   },
   apiProfile: {
-    validateToken: () => ({ type: "VALIDATE_TOKEN_SUCESS" })
+    validateToken: () => ({ type: "VALIDATE_TOKEN_SUCCESS" }),
+    getProfile: () => Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
   },
   apiContentActions: {
     handleInput: () => ({ type: "HANDLE_INPUT" }),

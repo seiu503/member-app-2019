@@ -207,7 +207,7 @@ CreateUserFormUnconnected.propTypes = {
       firstName: PropTypes.string,
       lastName: PropTypes.string,
       email: PropTypes.string,
-      userType: PromiseRejectionEvent.string
+      userType: PropTypes.string
     }),
     loading: PropTypes.bool,
     error: PropTypes.string

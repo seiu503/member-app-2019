@@ -43,7 +43,6 @@ const createUser = (name, email, avatar_url, google_id, google_token, type) => {
  *  @returns  {Object}   User object.
  */
 const updateUser = (id, updates) => {
-  console.log("model", id);
   return db(TABLES.USERS)
     .where({ id })
     .first()

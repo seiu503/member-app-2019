@@ -50,10 +50,7 @@ const findUserByEmail = async (profile, token, done) => {
         if (user.google_id) {
           return done(null, user);
         } else {
-          return updateUser(profile, token, user.id, done).catch(err => {
-            // console.log(`config/auth.js > 45`);
-            // console.log(err);
-          });
+          return updateUser(profile, token, user.id, done);
         }
       }
     })
@@ -63,14 +60,13 @@ const findUserByEmail = async (profile, token, done) => {
 };
 
 const updateUser = async (profile, token, userId, done) => {
-  console.log("line 63", userId);
   const google_id = profile.id;
   const google_token = token;
   const avatar_url = profile.picture;
   updates = { google_id, google_token, avatar_url };
-  // update user to database
-  let update = await User.updateUser(userId, updates)
-    .then(update => {
+  // update user on database
+  User.updateUser(userId, updates)
+    .then(user => {
       return done(null, user);
     })
     .catch(err => {
