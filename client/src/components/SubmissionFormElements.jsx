@@ -345,7 +345,8 @@ export const stylesPage1 = theme => ({
   horizGroup: {
     width: "100%",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "center"
   },
   back: {
     textTransform: "none",
@@ -608,6 +609,9 @@ export const stylesPage1 = theme => ({
   boxAmount: {
     position: "relative",
     left: -10
+  },
+  radioLabel: {
+    textAlign: "center"
   },
   capeRadioLabel: {
     fontSize: "1.2em",
