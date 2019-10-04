@@ -144,6 +144,7 @@ export const languageOptions = [
   "Cantonese AND Mandarin",
   "Mandarin",
   "Russian",
+  "Somali",
   "Spanish",
   "Vietnamese",
   "Amharic",
@@ -158,6 +159,24 @@ export const genderPronounOptions = [
   "They/Them/Their(s)",
   "Other"
 ];
+export const generateCAPEOptions = existingCAPE => {
+  const optionSteps = [10, 13, 15, 18, 20, 23, 25, 28, 30, 33, 35, 38, 40, 50];
+  const oneTimeSteps = [10, 15, 20, 25, 30, 40, 50, 100];
+  const monthlyOptions = [];
+  if (existingCAPE) {
+    const nextHighestOption = optionSteps.find(
+      option => option >= existingCAPE
+    );
+    const optionIndex = optionSteps.indexOf(nextHighestOption);
+    monthlyOptions.push(
+      optionSteps[optionIndex],
+      optionSteps[optionIndex + 1],
+      optionSteps[optionIndex + 2],
+      "Other"
+    );
+    console.log(monthlyOptions);
+  }
+};
 
 // switch helper for dateOptions
 export const getMaxDay = month => {
@@ -460,6 +479,13 @@ export const stylesPage1 = theme => ({
   horizRadio: {
     display: "flex",
     flexDirection: "row"
+  },
+  horizRadioCenter: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    margin: "auto",
+    textAlign: "center"
   },
   horizRadioBold: {
     fontWeight: 700

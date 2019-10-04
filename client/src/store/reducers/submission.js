@@ -91,7 +91,8 @@ export const INITIAL_STATE = {
     afhDuesRate: 0,
     newCardNeeded: false,
     whichCard: "Use existing",
-    capeAmount: ""
+    capeAmount: "",
+    donationFrequency: "Monthly"
   },
   formPage2: {
     gender: ""
@@ -116,9 +117,11 @@ export const INITIAL_STATE = {
     memberShortId: "",
     donationAmount: 0,
     paymentMethod: "",
-    donationFrequency: "",
+    donationFrequency: "Monthly",
     activeMethodLast4: "",
-    paymentErrorHold: false
+    paymentErrorHold: false,
+    monthlyOptions: [10, 13, 15, "Other"],
+    oneTimeOptions: [10, 25, 50, "Other"]
   },
   currentCAPE: {},
   allCAPE: []

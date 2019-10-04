@@ -418,6 +418,7 @@ export class SubmissionFormPage1Component extends React.Component {
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
             checkoff={checkoff}
+            capeObject={this.props.submission.cape}
           />
         ) : (
           <React.Fragment>
@@ -503,6 +504,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
+                    capeObject={this.props.submission.cape}
                   />
                 )}
               </div>
