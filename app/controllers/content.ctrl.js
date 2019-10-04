@@ -21,7 +21,7 @@ const createContent = (req, res, next) => {
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. c26"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   if (content_type && content) {
@@ -54,7 +54,7 @@ const updateContent = (req, res, next) => {
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. c61"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   if (!updates || !Object.keys(updates).length) {
@@ -90,7 +90,7 @@ const deleteContent = (req, res, next) => {
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. c99"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   return contentModel
@@ -114,7 +114,8 @@ const getContent = (req, res, next) => {
   const userType = req.params.user_type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
-      message: "You do not have permission to do this. Please Consult an admin."
+      message:
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   return contentModel
@@ -131,7 +132,8 @@ const getContentById = (req, res, next) => {
   const userType = req.params.user_type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
-      message: "You do not have permission to do this. Please Consult an admin."
+      message:
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   return contentModel
@@ -158,7 +160,7 @@ const getContentByType = (req, res, next) => {
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. c177"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   return contentModel

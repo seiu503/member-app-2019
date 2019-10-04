@@ -201,7 +201,7 @@ export class AppUnconnected extends Component {
             window.localStorage.removeItem("redirect");
           }
         } else {
-          console.log("not logged in");
+          console.log("not logged in", authToken, userId);
           console.log(result);
         }
         const defaultLanguage = detectDefaultLanguage();

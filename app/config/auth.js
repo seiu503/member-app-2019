@@ -40,17 +40,21 @@ const googleAuth = {
 
 // helper methods for updating existing profile with social login info
 
-const findExistingUser = async (profile, token, done) => {
-  const google_id = profile.id;
-  User.getUserByGoogleId(google_id)
+const findUserByEmail = async (profile, token, done) => {
+  User.getUserByEmail(profile.email)
     .then(user => {
       if (!user) {
-        return saveNewUser(profile, token, done).catch(err => {
-          // console.log(`config/auth.js > 45`);
-          // console.log(err);
-        });
+        req.authError = "You need an invitation from an administrator first";
+        return done(err, null);
       } else {
-        return done(null, user);
+        if (user.google_id) {
+          return done(null, user);
+        } else {
+          return updateUser(profile, token, user.id, done).catch(err => {
+            // console.log(`config/auth.js > 45`);
+            // console.log(err);
+          });
+        }
       }
     })
     .catch(err => {
@@ -58,17 +62,15 @@ const findExistingUser = async (profile, token, done) => {
     });
 };
 
-// save new user
-const saveNewUser = async (profile, token, done) => {
+const updateUser = async (profile, token, userId, done) => {
+  console.log("line 63", userId);
   const google_id = profile.id;
   const google_token = token;
-  const email = profile.emails ? profile.emails[0] : "";
-  const name = `${profile.name.givenName} ${profile.name.familyName}`;
   const avatar_url = profile.picture;
-
-  // save new user to database
-  User.createUser(name, email, avatar_url, google_id, google_token)
-    .then(user => {
+  updates = { google_id, google_token, avatar_url };
+  // update user to database
+  let update = await User.updateUser(userId, updates)
+    .then(update => {
       return done(null, user);
     })
     .catch(err => {
@@ -76,6 +78,44 @@ const saveNewUser = async (profile, token, done) => {
       return done(err, null);
     });
 };
+
+// const findExistingUser = async (profile, token, done) => {
+//   const google_id = profile.id;
+//   User.getUserByGoogleId(google_id)
+//     .then(user => {
+//       if (!user) {
+//         return saveNewUser(profile, token, done).catch(err => {
+//           // console.log(`config/auth.js > 45`);
+//           // console.log(err);
+//         });
+//       } else {
+//         return done(null, user);
+//       }
+//     })
+//     .catch(err => {
+//       done(err, null);
+//     });
+// };
+
+// save new user
+
+// const saveNewUser = async (profile, token, done) => {
+//   const google_id = profile.id;
+//   const google_token = token;
+//   const email = profile.emails ? profile.emails[0] : "";
+//   const name = `${profile.name.givenName} ${profile.name.familyName}`;
+//   const avatar_url = profile.picture;
+
+//   // save new user to database
+//   User.createUser(name, email, avatar_url, google_id, google_token)
+//     .then(user => {
+//       return done(null, user);
+//     })
+//     .catch(err => {
+//       console.log(err);
+//       return done(err, null);
+//     });
+// };
 
 // JWT strategy options
 const jwtOptions = {
@@ -117,7 +157,7 @@ const googleLogin = async (req, token, refreshToken, profile, done) => {
   //   }, ID: ${profile.id}`
   // );
   if (!req.user) {
-    return findExistingUser(profile, token, done).catch(err => {
+    return findUserByEmail(profile, token, done).catch(err => {
       console.log(err);
     });
   } else {
@@ -131,8 +171,10 @@ const googleStrategy = new GoogleStrategy(googleOptions, googleLogin);
 module.exports = {
   user,
   googleAuth,
-  findExistingUser,
-  saveNewUser,
+  // findExistingUser,
+  // saveNewUser,
+  findUserByEmail,
+  updateUser,
   jwtOptions,
   jwtLogin,
   jwtStrategy,

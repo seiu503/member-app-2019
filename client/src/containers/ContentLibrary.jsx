@@ -100,7 +100,7 @@ const styles = theme => ({
 });
 const loginLinkStr = "click here to login";
 const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
-const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an admin to request access.`;
+const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an administrator to request access.`;
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken, userType } = this.props.appState;

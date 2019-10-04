@@ -20,6 +20,13 @@ const SERVER_URL =
 
 exports.googleCallback = (req, res) => {
   // console.log("################# google callback");
+  if (req.authError) {
+    res.status(401).json({
+      success: false,
+      message: req.authError,
+      error: req.authError
+    });
+  }
   if (req.user && req.user.err) {
     res.status(401).json({
       success: false,

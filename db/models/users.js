@@ -34,13 +34,16 @@ const createUser = (name, email, avatar_url, google_id, google_token, type) => {
 /** Update a user
  *  @param    {String}   id             The id of the user to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
- ****  @param    {String}   name        Updated name.
- ****  @param    {String}   email       Updated email.
- ****  @param    {String}   avatar_url  Updated avatar url.
- ****  @param    {String}   type        New user type
+ ****  @param    {String}   name           Updated name.
+ ****  @param    {String}   email          Updated email.
+ ****  @param    {String}   avatar_url     Updated avatar url.
+ ****  @param    {String}   google_id      Updated google_id.
+ ****  @param    {String}   google_token   Updated google_token.
+ ****  @param    {String}   type           Updated user type
  *  @returns  {Object}   User object.
  */
 const updateUser = (id, updates) => {
+  console.log("model", id);
   return db(TABLES.USERS)
     .where({ id })
     .first()

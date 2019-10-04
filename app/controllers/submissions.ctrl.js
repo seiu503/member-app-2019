@@ -228,7 +228,7 @@ const deleteSubmission = async (req, res, next) => {
   if (userType != "admin" || !userType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. s225"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   try {
@@ -252,7 +252,7 @@ const getSubmissions = (req, res, next) => {
   if (!userType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. s251"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   return submissions
@@ -274,7 +274,7 @@ const getSubmissionById = (req, res, next) => {
   if (!userType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an admin. s275"
+        "You do not have permission to do this. Please Consult an administrator."
     });
   }
   return submissions
