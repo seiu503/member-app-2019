@@ -64,7 +64,14 @@ suite("routes : user", function() {
       chai
         .request(app)
         .post("/api/user/")
-        .send({ name, email, avatar_url, google_id, google_token })
+        .send({
+          name,
+          email,
+          avatar_url,
+          google_id,
+          google_token,
+          requestingUserType: "admin"
+        })
         .end(function(err, res) {
           userId = res.body.id;
           assert.equal(res.status, 200);
@@ -211,7 +218,8 @@ suite("routes : user", function() {
         const updates = {
           email: updatedEmail,
           name: updatedName,
-          avatar_url: updatedAvatar_url
+          avatar_url: updatedAvatar_url,
+          requestingUserType: "admin"
         };
         chai
           .request(app)
@@ -235,7 +243,8 @@ suite("routes : user", function() {
         const updates = {
           email: updatedEmail,
           name: updatedName,
-          avatar_url: updatedAvatar_url
+          avatar_url: updatedAvatar_url,
+          requestingUserType: "admin"
         };
         chai
           .request(app)
@@ -269,7 +278,8 @@ suite("routes : user", function() {
         const updates = {
           email: updatedEmail,
           name: updatedName,
-          avatar_url: updatedAvatar_url
+          avatar_url: updatedAvatar_url,
+          requestingUserType: "admin"
         };
         chai
           .request(app)
@@ -298,7 +308,7 @@ suite("routes : user", function() {
         const app = require("../server");
         chai
           .request(app)
-          .delete(`/api/user/${userId}`)
+          .delete(`/api/user/${userId}/admin`)
           .end(function(err, res) {
             assert.equal(res.body.message, "User deleted successfully");
             assert.isNull(err);
@@ -309,7 +319,7 @@ suite("routes : user", function() {
         const app = require("../server");
         chai
           .request(app)
-          .delete("/api/user/123456789")
+          .delete("/api/user/123456789/admin")
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");
@@ -324,7 +334,7 @@ suite("routes : user", function() {
           .resolves({ message: "Error" });
         chai
           .request(app)
-          .delete(`/api/user/${userId}`)
+          .delete(`/api/user/${userId}/admin`)
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");

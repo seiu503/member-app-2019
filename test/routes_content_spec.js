@@ -70,7 +70,7 @@ suite("routes : content", function() {
       chai
         .request(app)
         .post("/api/content/")
-        .send({ content_type, content })
+        .send({ content_type, content, userType: "admin" })
         .end(function(err, res) {
           id = res.body.id;
           assert.equal(res.status, 200);
@@ -98,7 +98,7 @@ suite("routes : content", function() {
     test("gets one content record by id", function(done) {
       chai
         .request(app)
-        .get(`/api/content/${id}`)
+        .get(`/api/content/admin/${id}`)
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
@@ -130,7 +130,7 @@ suite("routes : content", function() {
     test("gets all content records of a specific type", function(done) {
       chai
         .request(app)
-        .get(`/api/contenttype/headline`)
+        .get(`/api/contenttype/admin/headline`)
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
@@ -163,7 +163,7 @@ suite("routes : content", function() {
     test("gets all content", function(done) {
       chai
         .request(app)
-        .get(`/api/content`)
+        .get(`/api/content/admin`)
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
@@ -183,7 +183,8 @@ suite("routes : content", function() {
       const app = require("../server");
       const updates = {
         content_type: updatedContentType,
-        content: updated_content
+        content: updated_content,
+        userType: admin
       };
       chai
         .request(app)
@@ -204,7 +205,8 @@ suite("routes : content", function() {
       const app = require("../server");
       const updates = {
         content_type: updatedContentType,
-        content: updated_content
+        content: updated_content,
+        userType: admin
       };
       chai
         .request(app)
@@ -238,7 +240,7 @@ suite("routes : content", function() {
       const app = require("../server");
       chai
         .request(app)
-        .delete(`/api/content/${id}`)
+        .delete(`/api/content/admin/${id}`)
         .end(function(err, res) {
           assert.equal(res.body.message, "Content deleted successfully");
           assert.isNull(err);

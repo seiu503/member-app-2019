@@ -10409,15 +10409,15 @@
                         .catch(function(e) {
                           return console.log(e);
                         }),
-                      this.props.apiProfile.getProfile(t, n).then(function(t) {
-                        if ("GET_PROFILE_SUCCESS" === t.type) {
-                          e.props.actions.setLoggedIn(t.payload.type);
-                          var n = window.localStorage.getItem("redirect");
-                          n &&
-                            (e.props.history.push(n),
+                      this.props.apiProfile.getProfile(t, n).then(function(a) {
+                        if ("GET_PROFILE_SUCCESS" === a.type) {
+                          e.props.actions.setLoggedIn(a.payload.type);
+                          var r = window.localStorage.getItem("redirect");
+                          r &&
+                            (e.props.history.push(r),
                             window.localStorage.removeItem("redirect"));
-                        } else console.log("not logged in"), console.log(t);
-                        var a = (function() {
+                        } else console.log("not logged in", t, n), console.log(a);
+                        var o = (function() {
                           var e = "en",
                             t = ["en", "es", "ru", "vi", "zh"];
                           if (window.navigator.language) {
@@ -10439,7 +10439,7 @@
                                   return (e = t[o]);
                           return e;
                         })();
-                        e.props.setActiveLanguage(a),
+                        e.props.setActiveLanguage(o),
                           Object(k.loadReCaptcha)(
                             "6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
                           );
@@ -11599,4 +11599,4 @@
   },
   [[394, 1, 2]]
 ]);
-//# sourceMappingURL=main.7ee62ff0.chunk.js.map
+//# sourceMappingURL=main.64282d96.chunk.js.map

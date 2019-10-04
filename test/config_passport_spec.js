@@ -15,8 +15,8 @@ const chai = require("chai"),
   User = require("../db/models/users"),
   authConfig = require("../app/config/auth"),
   {
-    findExistingUser,
-    saveNewUser,
+    findUserByEmail,
+    updateUser,
     user,
     googleLogin,
     googleStrategy,
@@ -112,7 +112,7 @@ suite("routes : passport auth", function() {
       const getUserByGoogleIdStub = sinon
         .stub(User, "getUserByGoogleId")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
-      findExistingUser({ id }, token, done).then(() => {
+      findUserByEmail({ email }, token, done).then(() => {
         getUserByGoogleIdStub.should.have.been.calledOnce;
         sinon.restore();
       });
@@ -121,7 +121,7 @@ suite("routes : passport auth", function() {
       const createUserStub = sinon
         .stub(User, "createUser")
         .returns(Promise.resolve({ name, email, avatar_url, id }));
-      saveNewUser(profile, token, done).then(() => {
+      updateUser(profile, token, id, done).then(() => {
         createUserStub.should.have.been.calledOnce;
         sinon.restore();
         return knexCleaner.clean(db);
@@ -149,8 +149,8 @@ suite("routes : passport auth", function() {
       done();
     });
     test("should be a function", done => {
-      expect(findExistingUser).to.be.a("function");
-      expect(saveNewUser).to.be.a("function");
+      expect(findUserByEmail).to.be.a("function");
+      expect(updateUser).to.be.a("function");
       done();
     });
 

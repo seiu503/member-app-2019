@@ -44,7 +44,7 @@ const findUserByEmail = async (profile, token, done) => {
   User.getUserByEmail(profile.email)
     .then(user => {
       if (!user) {
-        req.authError = "You need an invitation from an administrator first";
+        err = "You need an invitation from an administrator first";
         return done(err, null);
       } else {
         if (user.google_id) {

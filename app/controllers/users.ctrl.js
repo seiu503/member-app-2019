@@ -62,7 +62,7 @@ const createUser = (req, res, next) => {
  *  @returns  {Object}                   Updated user object OR error message.
  */
 const updateUser = (req, res, next) => {
-  const { updates, userType } = req.body;
+  const { updates, requestingUserType } = req.body;
   const { id } = req.params;
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
