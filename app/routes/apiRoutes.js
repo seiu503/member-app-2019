@@ -628,6 +628,26 @@ router.post("/unionise/iframe", sfCtrl.getIframeExisting);
 //
 router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
 
+/* ===================== POST ONE-TIME PAYMENT REQUEST ===================== */
+
+// POST ONE-TIME PAYMENT REQUEST
+//   Example: POST >> /api/unionise/oneTimePayment
+//   Secured: no
+//   Expects: request body: {
+//     Object {
+//       memberShortId       : String  // ('J7K5HYDQ')
+//       amount: {
+//         currency          : String  // ('USD')
+//         amount            : Numeric // (1.1)
+//       },
+//       paymentPartType     : String  // ('CAPE')
+//       description         : String  // ('One-time CAPE contribution')
+//       plannedDatetime     : Timestamp // 2019-09-10T17:20:44.143+03:00
+//   }
+//   Returns: { id } or error message.
+//
+router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
+
 /* ================================ EXPORT ================================= */
 
 module.exports = router;

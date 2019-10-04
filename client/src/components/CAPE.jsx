@@ -54,7 +54,8 @@ export const CAPE = props => {
     cape_legal,
     change,
     lookupSFContact,
-    capeObject
+    capeObject,
+    handleDonationFrequencyChange
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -428,6 +429,10 @@ export const CAPE = props => {
             defaultItem="Monthly"
             component={formElements.renderRadioGroup}
             options={["Monthly", "One-Time"]}
+            onChange={(event, value) => {
+              change("donationFrequency", value);
+              handleDonationFrequencyChange(value);
+            }}
           />
         </div>
         {formPage1.paymentRequired &&

@@ -62,6 +62,9 @@ export class SubmissionFormPage1Container extends React.Component {
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
     this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
+    this.handleDonationFrequencyChange = this.handleDonationFrequencyChange.bind(
+      this
+    );
   }
   componentDidMount() {
     // check for contact id in query string
@@ -154,7 +157,6 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async handleEmployerTypeChange(employerType) {
-    console.log("handleEmployerTypeChange");
     // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
@@ -170,14 +172,28 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  async handleDonationFrequencyChange(frequency) {
+    console.log("handleDonationFrequencyChange");
+    // render iframe if one-time donation
+    if (frequency === "One-Time") {
+      console.log("One-Time");
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: true }
+      });
+      return this.getIframeURL(true);
+    } else {
+      // hide iframe if already rendered if change back to monthly and checkoff
+      await this.props.apiSubmission.handleInput({
+        target: { name: "paymentRequired", value: false }
+      });
+    }
+  }
+
   async setCAPEOptions() {
-    console.log("setCAPEOptions");
     const existingCAPE = this.props.submission.payment.currentCAPEFromSF;
-    console.log(`existingCAPE: ${existingCAPE}`);
     const { monthlyOptions, oneTimeOptions } = generateCAPEOptions(
       existingCAPE
     );
-    console.log(monthlyOptions, oneTimeOptions);
     await this.props.apiSubmission.setCAPEOptions({
       monthlyOptions,
       oneTimeOptions
@@ -1007,8 +1023,7 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_legal: this.props.cape_legal.current.innerHTML,
       cape_amount: donationAmount,
       cape_status: "Incomplete",
-      // need to add UI to select donation frequency
-      donation_frequency: "Monthly"
+      donation_frequency: formValues.donationFrequency
       // member_short_id: this.props.submission.payment.memberShortId
     };
     console.log(body);
@@ -1358,6 +1373,7 @@ export class SubmissionFormPage1Container extends React.Component {
           saveSubmissionErrors={this.saveSubmissionErrors}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           lookupSFContact={this.lookupSFContact}
+          handleDonationFrequencyChange={this.handleDonationFrequencyChange}
         />
       </div>
     );

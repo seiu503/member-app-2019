@@ -599,7 +599,7 @@ exports.getAllEmployers = async (req, res, next) => {
 
 /* +++++++++++++++++++++++++++++++ IFRAMEURL: GET +++++++++++++++++++++++++ */
 
-/** Get an iFrame URL for an existin unionise member by memberShortId
+/** Get an iFrame URL for an existing unionise member by memberShortId
  *  @param        String      memberShortId
  *  @param        String      token
  *  @returns  {String||Object}    cardAddingUrl OR error message.
@@ -678,6 +678,51 @@ exports.getUnioniseToken = async (req, res, next) => {
     })
     .catch(err => {
       // console.error(`sf.ctrl.js > 617: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
+};
+
+/* +++++++++++++++++++++++++++ ONE-TIME PAYMENT: POST +++++++++++++++++++++ */
+
+/** Post a request to process a one-time payment (CAPE contribution)
+ *  @param    {Object}   body
+ ****  memberShortId       : String
+ ****  amount: {
+ ****    currency          : String  // ('USD')
+ ****    amount            : Numeric // (1.1)
+ ****  },
+ ****  paymentPartType     : String  // ('CAPE')
+ ****  description         : String  // ('One-time CAPE contribution')
+ ****  plannedDatetime     : Timestamp // 2019-09-10T17:20:44.143+03:00
+ *  @returns  {Object}   payment request id or error message
+ *  {
+      id: String // ('a07dbd65-9f34-40e6-a203-5406302b8c75')
+    }
+ */
+
+exports.postPaymentRequest = async (req, res, next) => {
+  console.log("postPaymentRequest");
+
+  const data = { ...req.body };
+
+  console.log(data);
+  const url = "https://lab.unioni.se/api/v1/paymentRequests";
+
+  const headers = { "content-type": "application/x-www-form-urlencoded" };
+  axios
+    .post(url, data, { headers })
+    .then(response => {
+      console.log(`sf.ctrl.js > 716`);
+      console.log(response.data);
+      if (!response.data || !response.data.id) {
+        return res
+          .status(500)
+          .json({ message: "Error while posting payment request" });
+      }
+      return res.status(200).json(response.data);
+    })
+    .catch(err => {
+      console.error(`sf.ctrl.js > 726: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
