@@ -149,9 +149,10 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
           "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
       });
     }
-    return res
-      .status(200)
-      .json({ salesforce_id: contact.records[0].Id || contact.records[0].id });
+    return res.status(200).json({
+      salesforce_id: contact.records[0].Id || contact.records[0].id,
+      Current_CAPE__c: contact.records[0].Current_CAPE__c
+    });
   } catch (err) {
     // console.error(`sf.ctrl.js > 149: ${err}`);
     return res.status(500).json({ message: err.message });

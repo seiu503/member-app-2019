@@ -584,6 +584,7 @@ const contactsTableFields = {
     testingSample: "Not a Member"
   },
   Current_CAPE__c: {
+    clientFieldName: "currentCAPEFromSF",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Current CAPE",
     SFAPIName: "Current_CAPE__c",

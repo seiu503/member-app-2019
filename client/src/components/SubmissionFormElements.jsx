@@ -159,14 +159,18 @@ export const genderPronounOptions = [
   "They/Them/Their(s)",
   "Other"
 ];
+// set suggested donation amounts dynamically
+// based on member's existing donation level
 export const generateCAPEOptions = existingCAPE => {
   const optionSteps = [10, 13, 15, 18, 20, 23, 25, 28, 30, 33, 35, 38, 40, 50];
   const oneTimeSteps = [10, 15, 20, 25, 30, 40, 50, 100];
   const monthlyOptions = [];
+  const oneTimeOptions = [];
   if (existingCAPE) {
-    const nextHighestOption = optionSteps.find(
-      option => option >= existingCAPE
-    );
+    // if the member has an existing monthly CAPE contribution,
+    // start at the next highest amount and then
+    // suggest two higher amounts as possible options
+    const nextHighestOption = optionSteps.find(option => option > existingCAPE);
     const optionIndex = optionSteps.indexOf(nextHighestOption);
     monthlyOptions.push(
       optionSteps[optionIndex],
@@ -174,7 +178,28 @@ export const generateCAPEOptions = existingCAPE => {
       optionSteps[optionIndex + 2],
       "Other"
     );
-    console.log(monthlyOptions);
+    // console.log(monthlyOptions);
+    const nextHighestOptionOneTime = oneTimeSteps.find(
+      option => option > existingCAPE
+    );
+    const oneTimeIndex = oneTimeSteps.indexOf(nextHighestOptionOneTime);
+    oneTimeOptions.push(
+      oneTimeSteps[oneTimeIndex],
+      oneTimeSteps[oneTimeIndex + 1],
+      oneTimeSteps[oneTimeIndex + 2],
+      "Other"
+    );
+    // console.log(oneTimeOptions);
+    return {
+      monthlyOptions,
+      oneTimeOptions
+    };
+  } else {
+    // if no existing contribution on file, then return the default amounts
+    return {
+      monthlyOptions: [10, 13, 15, "Other"],
+      oneTimeOptions: [10, 25, 50, "Other"]
+    };
   }
 };
 

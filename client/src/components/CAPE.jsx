@@ -159,71 +159,6 @@ export const CAPE = props => {
             />
           </Card>
         </div>
-        <div className={classes.paymentCopy}>
-          <Typography component="h2" className={classes.head}>
-            <Translate id="capePaymentHead">
-              Make your contribution today
-            </Translate>
-          </Typography>
-          <div className={classes.suggestedAmounts}>
-            <div className={classes.suggestedAmountBoxes}>
-              <Field
-                data-test="radio-cape-amount"
-                label="Donation amount"
-                name="capeAmount"
-                formControlName="capeAmount"
-                id={
-                  formValues.donationFrequency === "Monthly"
-                    ? "capeAmountMonthly"
-                    : "capeAmountOneTime"
-                }
-                direction="horiz"
-                className={classes.horizRadio}
-                classes={classes}
-                component={formElements.renderCAPERadioGroup}
-                options={
-                  formValues.donationFrequency === "Monthly"
-                    ? capeObject.monthlyOptions
-                    : capeObject.oneTimeOptions
-                }
-                onChange={(event, value) => {
-                  change("capeAmount", value);
-                  suggestedAmountOnChange(event);
-                }}
-              />
-            </div>
-          </div>
-          {formValues.capeAmount === "Other" && (
-            <Field
-              data-test="field-other-amount"
-              label="Monthly Donation Amount"
-              name="capeAmountOther"
-              id="capeAmountOther"
-              type="number"
-              inputProps={{ min: 1 }}
-              classes={classes}
-              component={renderTextField}
-              onChange={(event, value) => {
-                change("capeAmountOther", value);
-              }}
-              additionalOnChange={suggestedAmountOnChange}
-            />
-          )}
-          <Field
-            data-test="radio-donation-frequency"
-            label="Monthly or One-Time Donation?"
-            name="donationFrequency"
-            formControlName="donationFrequency"
-            id="donationFrequency"
-            direction="horiz"
-            className={classes.horizRadioCenter}
-            legendClass={classes.horizRadioBold}
-            classes={classes}
-            defaultItem="Monthly"
-            component={formElements.renderRadioGroup}
-            options={["Monthly", "One-Time"]}
-          />
-        </div>
         {standAlone && (
           <div data-test="form-contact-info">
             <FormGroup row classes={{ root: classes.formGroup2Col }}>
@@ -422,6 +357,82 @@ export const CAPE = props => {
           component={renderTextField}
           onBlur={() => handleEmployerTypeChange(formValues.employerType)}
         />
+        <div className={classes.paymentCopy}>
+          <Typography component="h2" className={classes.head}>
+            <Translate id="capePaymentHead">
+              Make your contribution today
+            </Translate>
+          </Typography>
+          {payment.currentCAPEFromSF > 1 && (
+            <Typography component="p" className={classes.body}>
+              <Translate id="currentContribution1">
+                You are currently signed up to contribute
+              </Translate>
+              {` $${payment.currentCAPEFromSF} `}
+              <Translate id="currentContribution2">
+                per month. Would you like to increase your monthly contribution?
+              </Translate>
+            </Typography>
+          )}
+          <div className={classes.suggestedAmounts}>
+            <div className={classes.suggestedAmountBoxes}>
+              <Field
+                data-test="radio-cape-amount"
+                label="Donation amount"
+                name="capeAmount"
+                formControlName="capeAmount"
+                id={
+                  formValues.donationFrequency === "Monthly"
+                    ? "capeAmountMonthly"
+                    : "capeAmountOneTime"
+                }
+                direction="horiz"
+                className={classes.horizRadio}
+                classes={classes}
+                component={formElements.renderCAPERadioGroup}
+                options={
+                  formValues.donationFrequency === "Monthly"
+                    ? capeObject.monthlyOptions
+                    : capeObject.oneTimeOptions
+                }
+                onChange={(event, value) => {
+                  change("capeAmount", value);
+                  suggestedAmountOnChange(event);
+                }}
+              />
+            </div>
+          </div>
+          {formValues.capeAmount === "Other" && (
+            <Field
+              data-test="field-other-amount"
+              label="Monthly Donation Amount"
+              name="capeAmountOther"
+              id="capeAmountOther"
+              type="number"
+              inputProps={{ min: 1 }}
+              classes={classes}
+              component={renderTextField}
+              onChange={(event, value) => {
+                change("capeAmountOther", value);
+              }}
+              additionalOnChange={suggestedAmountOnChange}
+            />
+          )}
+          <Field
+            data-test="radio-donation-frequency"
+            label="Monthly or One-Time Donation?"
+            name="donationFrequency"
+            formControlName="donationFrequency"
+            id="donationFrequency"
+            direction="horiz"
+            className={classes.horizRadioCenter}
+            legendClass={classes.horizRadioBold}
+            classes={classes}
+            defaultItem="Monthly"
+            component={formElements.renderRadioGroup}
+            options={["Monthly", "One-Time"]}
+          />
+        </div>
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&
           validMethod && (

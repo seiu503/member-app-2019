@@ -33,7 +33,8 @@ import {
   formatSFDate,
   formatBirthdate,
   findEmployerObject,
-  handleError
+  handleError,
+  generateCAPEOptions
 } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
@@ -78,6 +79,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.formPage1.lastName
           ) {
             this.handleOpen();
+            this.setCAPEOptions();
           }
         })
         .catch(err => {
@@ -166,6 +168,20 @@ export class SubmissionFormPage1Container extends React.Component {
         target: { name: "paymentRequired", value: false }
       });
     }
+  }
+
+  async setCAPEOptions() {
+    console.log("setCAPEOptions");
+    const existingCAPE = this.props.submission.payment.currentCAPEFromSF;
+    console.log(`existingCAPE: ${existingCAPE}`);
+    const { monthlyOptions, oneTimeOptions } = generateCAPEOptions(
+      existingCAPE
+    );
+    console.log(monthlyOptions, oneTimeOptions);
+    await this.props.apiSubmission.setCAPEOptions({
+      monthlyOptions,
+      oneTimeOptions
+    });
   }
 
   toggleSignatureInputType = () => {
@@ -433,10 +449,16 @@ export class SubmissionFormPage1Container extends React.Component {
         home_email: formValues.homeEmail
         // employer_id: this.props.submission.formPage1.employerId
       };
-      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
+      await this.props.apiSF
+        .lookupSFContact(lookupBody)
+        .then(() => {
+          console.log(this.props.submission.payment.currentCAPEFromSF);
+          this.setCAPEOptions();
+        })
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
 
       // if nothing found on lookup, need to create new contact
       if (!this.props.submission.salesforceId) {

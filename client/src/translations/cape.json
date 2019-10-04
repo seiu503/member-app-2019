@@ -90,6 +90,21 @@
     "Đóng góp hàng tháng hay một lần?",
     "每月还是一次性捐赠？"
  ],
+ "currentContribution1": [
+    "You are currently signed up to contribute",
+    "Actualmente estás registrado para contribuir",
+    "В настоящее время вы зарегистрированы, чтобы внести свой вклад",
+    "Bạn hiện đang đăng ký để đóng góp",
+    "您目前已注册以供稿"
+
+ ],
+ "currentContribution2": [
+    "per month. Would you like to increase your monthly contribution?",
+    "por mes. ¿Le gustaría aumentar su contribución mensual?",
+    "в месяц. Хотели бы вы увеличить свой ежемесячный взнос?",
+    "mỗi tháng. Bạn có muốn tăng đóng góp hàng tháng của bạn?",
+    "每月。 您想增加每月供款吗？"
+ ],
  "capeLegalCheckoff1": [
    "By submitting this form, I hereby authorize my Employer to deduct the designated amount from my monthly earnings as a contribution to SEIU Local 503, OPEU CAPE.",
     "Por medio del presente, y tras haber enviado este formulario, autorizo a mi Empleador a deducir de mis ganancias mensuales el monto designado como aporte al CAPE de SEIU Local 503, OPEU.",

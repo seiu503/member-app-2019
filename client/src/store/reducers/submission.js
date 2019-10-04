@@ -23,7 +23,8 @@ import {
   GET_CAPE_BY_SFID_SUCCESS,
   GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
-  HANDLE_INPUT
+  HANDLE_INPUT,
+  SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -135,6 +136,14 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         formPage1: {
           [action.payload.name]: { $set: action.payload.value }
+        }
+      });
+
+    case SET_CAPE_OPTIONS:
+      return update(state, {
+        cape: {
+          monthlyOptions: { $set: action.payload.monthlyOptions },
+          oneTimeOptions: { $set: action.payload.oneTimeOptions }
         }
       });
 
@@ -359,12 +368,20 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case LOOKUP_SF_CONTACT_SUCCESS:
+      return update(state, {
+        salesforceId: { $set: action.payload.salesforce_id },
+        payment: {
+          currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
+        },
+        error: { $set: null },
+        redirect: { $set: true }
+      });
+
     case CREATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
-        error: { $set: null },
-        redirect: { $set: true }
+        error: { $set: null }
       });
 
     case GET_IFRAME_URL_SUCCESS:

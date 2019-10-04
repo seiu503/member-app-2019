@@ -21,6 +21,7 @@ export const GET_ALL_SUBMISSIONS_REQUEST = "GET_ALL_SUBMISSIONS_REQUEST";
 export const GET_ALL_SUBMISSIONS_SUCCESS = "GET_ALL_SUBMISSIONS_SUCCESS";
 export const GET_ALL_SUBMISSIONS_FAILURE = "GET_ALL_SUBMISSIONS_FAILURE";
 export const HANDLE_INPUT = "HANDLE_INPUT";
+export const SET_CAPE_OPTIONS = "SET_CAPE_OPTIONS";
 export const VERIFY_REQUEST = "VERIFY_REQUEST";
 export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
 export const VERIFY_FAILURE = "VERIFY_FAILURE";
@@ -29,6 +30,13 @@ export function handleInput({ target: { name, value } }) {
   return {
     type: HANDLE_INPUT,
     payload: { name, value }
+  };
+}
+
+export function setCAPEOptions({ monthlyOptions, oneTimeOptions }) {
+  return {
+    type: SET_CAPE_OPTIONS,
+    payload: { monthlyOptions, oneTimeOptions }
   };
 }
 
