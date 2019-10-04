@@ -171,7 +171,6 @@ export const CAPE = props => {
                 type="text"
                 classes={{ input2col: classes.input2col }}
                 component={renderTextField}
-                onBlur={lookupSFContact}
               />
 
               <Field
@@ -183,7 +182,6 @@ export const CAPE = props => {
                 classes={{ input2col: classes.input2col }}
                 component={renderTextField}
                 type="text"
-                onBlur={lookupSFContact}
               />
             </FormGroup>
             <FormGroup classes={{ root: classes.formGroupTopMargin }}>
@@ -194,7 +192,6 @@ export const CAPE = props => {
                 type="email"
                 classes={classes}
                 component={renderTextField}
-                onBlur={lookupSFContact}
               />
             </FormGroup>
             <FormHelperText className={classes.formHelperText}>
@@ -330,6 +327,7 @@ export const CAPE = props => {
                 type="tel"
                 classes={classes}
                 component={renderTextField}
+                onBlur={() => handleEmployerTypeChange(formValues.employerType)}
               />
 
               <FormHelperText className={classes.formHelperText}>
@@ -355,7 +353,6 @@ export const CAPE = props => {
           type="text"
           classes={classes}
           component={renderTextField}
-          onBlur={() => handleEmployerTypeChange(formValues.employerType)}
         />
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>

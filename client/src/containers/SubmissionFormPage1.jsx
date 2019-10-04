@@ -745,6 +745,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // writePaymentStatus back to our api
 
     let externalId;
+    console.log(`submissionId: ${this.props.submission.submissionId}`);
     if (this.props.submission.submissionId) {
       externalId = this.props.submission.submissionId;
     } else {
@@ -912,7 +913,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async calculateAFHDuesRate(medicaidResidents) {
+    console.log("calculateAFHDuesRate");
+    console.log(`medicaidResidents: ${medicaidResidents}`);
     let afhDuesRate = medicaidResidents * 14.84 + 2.75;
+    console.log(`afhDuesRate: ${afhDuesRate}`);
     this.props.apiSubmission.handleInput({
       target: { name: "afhDuesRate", value: afhDuesRate }
     });
@@ -1146,10 +1150,17 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     // for AFH, calculate dues rate:
     if (formValues.employerType.toLowerCase() === "adult foster home") {
-      this.calculateAFHDuesRate(
-        this.props.submission.formPage1.medicaidResidents
-      );
+      this.calculateAFHDuesRate(formValues.medicaidResidents);
     }
+
+    // save legal language
+    this.saveLegalLanguage();
+
+    // save partial submission (need to do this before generating iframe URL)
+    await this.createSubmission().catch(err => {
+      // console.log(err);
+      return handleError(err);
+    });
 
     // if payment required, check if existing payment method on file
     if (this.props.submission.formPage1.paymentRequired) {
@@ -1189,15 +1200,7 @@ export class SubmissionFormPage1Container extends React.Component {
         });
     }
 
-    // save legal language
-    this.saveLegalLanguage();
-
-    // save partial submission, then move to next tab
-    await this.createSubmission().catch(err => {
-      // console.log(err);
-      return handleError(err);
-    });
-
+    // move to next tab
     return this.changeTab(2);
   }
 
