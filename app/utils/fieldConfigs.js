@@ -1306,7 +1306,7 @@ const capeTableFields = {
     SFAPIName: "Payment_Error_Hold__c",
     SFDataType: "Boolean"
   },
-  one_time_payment_status: {}
+  one_time_payment_status: {} // need to add these 2 fields to cape obj in sandbox & prod
 };
 
 // all fields below here are for payment processing only
