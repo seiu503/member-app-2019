@@ -1,6 +1,6 @@
 import { RSAA } from "redux-api-middleware";
 import BASE_URL from "./apiConfig.js";
-import FormData from "form-data";
+// import FormData from "form-data";
 
 export const HANDLE_INPUT = "HANDLE_INPUT";
 export const CLEAR_FORM = "CLEAR_FORM";
@@ -45,7 +45,7 @@ export function handleDeleteClose() {
 }
 
 /*
- * Function: getUserById -- get a single User item by email
+ * Function: getUserByEmail -- get a single User item by email
  * @param {string} email
  * This action dispatches additional actions as it executes:
  *   GET_USER_BY_EMAIL_REQUEST:

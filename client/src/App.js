@@ -172,43 +172,51 @@ export class AppUnconnected extends Component {
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
+      console.log("not logged in, looking for id & token in localStorage");
       const authToken = window.localStorage.getItem("authToken");
       const userId = window.localStorage.getItem("userId");
+      console.log(userId);
+      console.log(`authToken: ${!!authToken}`);
       if (
         authToken &&
         authToken !== "undefined" &&
         userId &&
         userId !== "undefined"
       ) {
+        console.log("found id & token in localstorage, validating token");
         this.props.apiProfile
           .validateToken(authToken, userId)
           .then(result => {
+            console.log(result.type);
             if (result.type === "VALIDATE_TOKEN_FAILURE") {
               window.localStorage.clear();
             }
           })
           .catch(err => console.log(err));
       }
-      this.props.apiProfile.getProfile(authToken, userId).then(result => {
-        if (result.type === "GET_PROFILE_SUCCESS") {
-          this.props.actions.setLoggedIn(result.payload.type);
-          // check for redirect url in local storage
-          const redirect = window.localStorage.getItem("redirect");
-          if (redirect) {
-            // redirect to originally requested page and then
-            // clear value from local storage
-            this.props.history.push(redirect);
-            window.localStorage.removeItem("redirect");
+      if (authToken && userId) {
+        this.props.apiProfile.getProfile(authToken, userId).then(result => {
+          console.log(result.type);
+          if (result.type === "GET_PROFILE_SUCCESS") {
+            this.props.actions.setLoggedIn(result.payload.type);
+            // check for redirect url in local storage
+            const redirect = window.localStorage.getItem("redirect");
+            if (redirect) {
+              // redirect to originally requested page and then
+              // clear value from local storage
+              this.props.history.push(redirect);
+              window.localStorage.removeItem("redirect");
+            }
+          } else {
+            console.log("not logged in", authToken, userId);
+            console.log(result.type);
           }
-        } else {
-          console.log("not logged in", authToken, userId);
-          console.log(result);
-        }
-        const defaultLanguage = detectDefaultLanguage();
-        this.props.setActiveLanguage(defaultLanguage);
-        loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
-      });
+        });
+      }
     }
+    const defaultLanguage = detectDefaultLanguage();
+    this.props.setActiveLanguage(defaultLanguage);
+    loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
   }
   verifyCallback(recaptchaToken) {
     // console.log(recaptchaToken, "<= your recaptcha token");
@@ -227,6 +235,8 @@ export class AppUnconnected extends Component {
 
   render() {
     const { classes } = this.props;
+    const { loggedIn, userType, loading } = this.props.appState;
+    console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
       <div data- test="component-app" className={classes.appRoot}>
         <ReCaptcha
@@ -238,7 +248,7 @@ export class AppUnconnected extends Component {
         <CssBaseline />
         <NavBar main_ref={this.main_ref} />
         <Notifier />
-        {this.props.appState.loading && <Spinner />}
+        {loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
           <Switch>
             <Route
@@ -270,44 +280,60 @@ export class AppUnconnected extends Component {
               )}
             />
             <Route
-              exact
-              path="/noaccess"
-              render={routeProps => (
-                <NoAccess
-                  setRedirect={this.setRedirect}
-                  classes={this.props.classes}
-                  {...routeProps}
-                />
-              )}
-            />
-            <Route
               path="/admin/:id?/:token?"
               render={routeProps => <Dashboard {...routeProps} />}
             />
             <Route
               path="/library"
-              render={routeProps => (
-                <ContentLibrary
-                  setRedirect={this.setRedirect}
-                  {...routeProps}
-                />
-              )}
+              render={routeProps =>
+                loggedIn && userType === "admin" ? (
+                  <ContentLibrary
+                    setRedirect={this.setRedirect}
+                    {...routeProps}
+                  />
+                ) : (
+                  <NoAccess
+                    setRedirect={this.setRedirect}
+                    classes={this.props.classes}
+                    {...routeProps}
+                  />
+                )
+              }
             />
             <Route
               path="/new"
-              render={routeProps => (
-                <TextInputForm setRedirect={this.setRedirect} {...routeProps} />
-              )}
+              render={routeProps =>
+                loggedIn && ["admin", "edit"].includes(userType) ? (
+                  <TextInputForm
+                    setRedirect={this.setRedirect}
+                    {...routeProps}
+                  />
+                ) : (
+                  <NoAccess
+                    setRedirect={this.setRedirect}
+                    classes={this.props.classes}
+                    {...routeProps}
+                  />
+                )
+              }
             />
             <Route
               path="/edit/:id"
-              render={routeProps => (
-                <TextInputForm
-                  edit={true}
-                  setRedirect={this.setRedirect}
-                  {...routeProps}
-                />
-              )}
+              render={routeProps =>
+                loggedIn && ["admin", "edit"].includes(userType) ? (
+                  <TextInputForm
+                    edit={true}
+                    setRedirect={this.setRedirect}
+                    {...routeProps}
+                  />
+                ) : (
+                  <NoAccess
+                    setRedirect={this.setRedirect}
+                    classes={this.props.classes}
+                    {...routeProps}
+                  />
+                )
+              }
             />
             <Route
               path="/user"

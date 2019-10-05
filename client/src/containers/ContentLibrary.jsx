@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
 import BASE_URL from "../store/actions/apiConfig";
-// import { Redirect } from "react-router-dom";
 
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
@@ -15,7 +14,6 @@ import Delete from "@material-ui/icons/Delete";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
 import ContentTile from "../components/ContentTile";
-import Spinner from "../components/Spinner";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
 
@@ -98,9 +96,11 @@ const styles = theme => ({
     }
   }
 });
+
 const loginLinkStr = "click here to login";
 const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
 const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an administrator to request access.`;
+
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken, userType } = this.props.appState;
@@ -202,12 +202,11 @@ export class ContentLibraryUnconnected extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { loggedIn, loading } = this.props.appState;
+    const { loggedIn } = this.props.appState;
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
       <div data-test="component-content-library" className={classes.root}>
-        {loading && <Spinner />}
         {loggedIn && this.props.content.deleteDialogOpen && (
           <AlertDialog
             open={this.props.content.deleteDialogOpen}
@@ -267,7 +266,6 @@ export class ContentLibraryUnconnected extends React.Component {
               })}
           </div>
         </div>
-        {!loading && !loggedIn && <Spinner />}
       </div>
     );
   }

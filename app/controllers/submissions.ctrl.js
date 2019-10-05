@@ -252,7 +252,7 @@ const getSubmissions = (req, res, next) => {
   if (!userType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to access this content. Please consult an administrator."
     });
   }
   return submissions

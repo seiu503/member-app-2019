@@ -95,6 +95,20 @@ import {
   CREATE_SF_CAPE_SUCCESS,
   CREATE_SF_CAPE_FAILURE
 } from "../actions/apiSFActions";
+import {
+  GET_USER_BY_EMAIL_REQUEST,
+  GET_USER_BY_EMAIL_SUCCESS,
+  GET_USER_BY_EMAIL_FAILURE,
+  ADD_USER_REQUEST,
+  ADD_USER_SUCCESS,
+  ADD_USER_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAILURE,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE
+} from "../actions/apiUserActions";
 
 // CREATE_CAPE_SUCCESS, UPDATE_SUBMISSION_SUCCESS
 // intentionally omitted because they are being called in a
@@ -120,11 +134,23 @@ function appState(state = INITIAL_STATE, action) {
       });
     }
 
+    case GET_PROFILE_SUCCESS:
+      console.log("GET_PROFILE_SUCCESS");
+      console.log(action.payload);
+      return update(state, {
+        loggedIn: { $set: true },
+        loading: { $set: false },
+        userType: { $set: action.payload.type }
+      });
+
     case VALIDATE_TOKEN_SUCCESS:
+      console.log("VALIDATE_TOKEN_SUCCESS");
+      console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         authToken: { $set: action.payload.token },
-        loading: { $set: false }
+        loading: { $set: false },
+        userType: { $set: action.payload.user_type }
       });
 
     case VALIDATE_TOKEN_FAILURE:
@@ -137,6 +163,8 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, { redirect: { $set: action.payload } });
 
     case SET_LOGGEDIN:
+      console.log("SET_LOGGEDIN");
+      console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         userType: { $set: action.payload }
@@ -169,6 +197,10 @@ function appState(state = INITIAL_STATE, action) {
     case GET_ALL_SUBMISSIONS_REQUEST:
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
+    case GET_USER_BY_EMAIL_REQUEST:
+    case ADD_USER_REQUEST:
+    case UPDATE_USER_REQUEST:
+    case DELETE_USER_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -187,7 +219,6 @@ function appState(state = INITIAL_STATE, action) {
     case DELETE_CONTENT_FAILURE:
     case GET_ALL_CONTENT_SUCCESS:
     case GET_ALL_CONTENT_FAILURE:
-    case GET_PROFILE_SUCCESS:
     case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
@@ -224,6 +255,14 @@ function appState(state = INITIAL_STATE, action) {
     case CREATE_CAPE_SUCCESS:
     case CREATE_SF_CAPE_SUCCESS:
     case CREATE_SF_CAPE_FAILURE:
+    case GET_USER_BY_EMAIL_SUCCESS:
+    case GET_USER_BY_EMAIL_FAILURE:
+    case ADD_USER_SUCCESS:
+    case UPDATE_USER_SUCCESS:
+    case DELETE_USER_SUCCESS:
+    case ADD_USER_FAILURE:
+    case UPDATE_USER_FAILURE:
+    case DELETE_USER_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

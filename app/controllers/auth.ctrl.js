@@ -58,11 +58,11 @@ exports.googleCallback = (req, res) => {
 exports.requireAuth = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (err) {
-      // console.log(`auth.ctrl.js > 53: ${err}`);
+      console.log(`auth.ctrl.js > 53: ${err}`);
       return res.status(422).send({ success: false, message: err.message });
     }
     if (!user) {
-      // console.log(`auth.ctrl.js > 57: no user found`);
+      console.log(`auth.ctrl.js > 57: no user found`);
       return res.status(422).send({
         success: false,
         message: "Sorry, you must log in to view this page."

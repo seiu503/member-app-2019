@@ -41,8 +41,12 @@ const googleAuth = {
 // helper methods for updating existing profile with social login info
 
 const findUserByEmail = async (profile, token, done) => {
+  console.log("config.auth.js > 44:");
+  console.log(profile);
   User.getUserByEmail(profile.email)
     .then(user => {
+      console.log("config.auth.js > 46:");
+      console.log(user);
       if (!user) {
         err = "You need an invitation from an administrator first";
         return done(err, null);

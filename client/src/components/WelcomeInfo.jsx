@@ -16,7 +16,6 @@ import * as apiContentActions from "../store/actions/apiContentActions";
 import { defaultWelcomeInfo } from "../utils/index";
 import welcomeInfo from "../translations/welcomeInfo.json";
 import SamplePhoto from "../img/sample-form-photo.jpg";
-import Spinner from "../components/Spinner";
 
 const styles = theme => ({
   root: {
@@ -178,7 +177,6 @@ export class WelcomeInfoUnconnected extends React.Component {
   render() {
     return (
       <div className={this.classes.root} data-test="component-welcome-info">
-        {this.props.appState.loading && <Spinner />}
         <Card className={this.classes.welcomeCard}>
           <CardMedia
             className={this.classes.media}
