@@ -99,7 +99,10 @@ import {
   GET_UNIONISE_TOKEN_FAILURE,
   CREATE_SF_CAPE_REQUEST,
   CREATE_SF_CAPE_SUCCESS,
-  CREATE_SF_CAPE_FAILURE
+  CREATE_SF_CAPE_FAILURE,
+  POST_ONE_TIME_PAYMENT_REQUEST,
+  POST_ONE_TIME_PAYMENT_SUCCESS,
+  POST_ONE_TIME_PAYMENT_FAILURE
 } from "../actions/apiSFActions";
 
 // CREATE_CAPE_SUCCESS, UPDATE_SUBMISSION_SUCCESS
@@ -173,6 +176,7 @@ function appState(state = INITIAL_STATE, action) {
     case CREATE_SF_CAPE_REQUEST:
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
+    case POST_ONE_TIME_PAYMENT_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -232,6 +236,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_SUCCESS:
     case UPDATE_CAPE_FAILURE:
+    case POST_ONE_TIME_PAYMENT_SUCCESS:
+    case POST_ONE_TIME_PAYMENT_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

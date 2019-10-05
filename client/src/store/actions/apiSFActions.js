@@ -634,3 +634,53 @@ export function getIframeExisting(token, memberShortId) {
     }
   };
 }
+
+/* ++++++++++++++++++++ ONE-TIME PAYMENT REQUEST: POST ++++++++++++++++++++ */
+
+export const POST_ONE_TIME_PAYMENT_REQUEST = "POST_ONE_TIME_PAYMENT_REQUEST";
+export const POST_ONE_TIME_PAYMENT_SUCCESS = "POST_ONE_TIME_PAYMENT_SUCCESS";
+export const POST_ONE_TIME_PAYMENT_FAILURE = "POST_ONE_TIME_PAYMENT_FAILURE";
+
+/*
+ * Function: postOneTimePayment -- post a request to unioni.se to process a
+ * one-time CAPE contribution
+ *
+ * This action dispatches additional actions as it executes:
+ *   POST_ONE_TIME_PAYMENT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   POST_ONE_TIME_PAYMENT_SUCCESS:
+ *     If payment id successfully retrieved, hides spinner
+ *   POST_ONE_TIME_PAYMENT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function postOneTimePayment(body) {
+  const headers = {
+    "Content-Type": "application/json"
+  };
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/unionise/postOneTimePayment`,
+      // ^^ this is the staging endpoint
+      // will need to be switched over to production later on
+      method: "POST",
+      types: [
+        POST_ONE_TIME_PAYMENT_REQUEST,
+        POST_ONE_TIME_PAYMENT_SUCCESS,
+        {
+          type: POST_ONE_TIME_PAYMENT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      body: JSON.stringify(body),
+      headers: headers
+    }
+  };
+}

@@ -1299,7 +1299,14 @@ const capeTableFields = {
     req: "Y",
     postgresFieldName: "cape_status",
     testingSample: "Success"
-  }
+  },
+  one_time_payment_id: {
+    SFTable: "CAPE__c",
+    SFFieldLabel: "One-Time Payment Id",
+    SFAPIName: "Payment_Error_Hold__c",
+    SFDataType: "Boolean"
+  },
+  one_time_payment_status: {}
 };
 
 // all fields below here are for payment processing only

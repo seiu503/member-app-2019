@@ -64,6 +64,9 @@ import {
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
   GET_UNIONISE_TOKEN_FAILURE,
+  POST_ONE_TIME_PAYMENT_REQUEST,
+  POST_ONE_TIME_PAYMENT_SUCCESS,
+  POST_ONE_TIME_PAYMENT_FAILURE,
   CREATE_SF_CAPE_REQUEST,
   CREATE_SF_CAPE_SUCCESS,
   CREATE_SF_CAPE_FAILURE
@@ -122,7 +125,9 @@ export const INITIAL_STATE = {
     activeMethodLast4: "",
     paymentErrorHold: false,
     monthlyOptions: [10, 13, 15, "Other"],
-    oneTimeOptions: [10, 25, 50, "Other"]
+    oneTimeOptions: [10, 25, 50, "Other"],
+    oneTimePaymentId: "",
+    oneTimePaymentStatus: ""
   },
   currentCAPE: {},
   allCAPE: []
@@ -168,6 +173,7 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_CAPE_SUCCESS:
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
+    case POST_ONE_TIME_PAYMENT_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -355,6 +361,14 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
+    case POST_ONE_TIME_PAYMENT_SUCCESS:
+      return update(state, {
+        cape: {
+          oneTimePaymentId: { $set: action.payload.id }
+        },
+        error: { $set: null }
+      });
+
     case UPDATE_SUBMISSION_SUCCESS:
       return update(state, {
         submissionId: { $set: action.payload.submission_id },
@@ -427,6 +441,7 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_CAPE_FAILURE:
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_FAILURE:
+    case POST_ONE_TIME_PAYMENT_FAILURE:
       console.log(action.payload);
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
