@@ -28,7 +28,10 @@ const createUser = (req, res, next) => {
     google_token,
     requestingUserType
   } = req.body;
+  console.log(`users.ctrl.js > 31`);
+  console.log(req.body);
   if (requestingUserType != "admin" || !requestingUserType) {
+    console.log(`users.ctrl.js > 34`);
     return res.status(500).json({
       message:
         "You do not have permission to do this. Please Consult an administrator."

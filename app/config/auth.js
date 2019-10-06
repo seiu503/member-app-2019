@@ -46,7 +46,9 @@ const findUserByEmail = async (profile, token, done) => {
   User.getUserByEmail(profile.email)
     .then(user => {
       console.log("config.auth.js > 48:");
-      console.log(user.id);
+      if (user) {
+        console.log(user.id);
+      }
       if (!user) {
         err = "You need an invitation from an administrator first";
         return done(err, null);
@@ -129,7 +131,6 @@ const jwtLogin = async (req, payload, done) => {
   const id = payload.id;
   User.getUserById(id)
     .then(user => {
-      console.log("@@@@@@@@@@@@@@@@@@@@@@@");
       console.log(`config/auth.js > 132`);
       console.log(user.id);
       req.user = user;

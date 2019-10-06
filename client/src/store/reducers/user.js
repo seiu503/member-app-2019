@@ -24,14 +24,14 @@ export const INITIAL_STATE = {
   deleteDialogOpen: false,
   currentUser: {
     email: "",
-    fullName: "",
+    name: "",
     user_type: null,
     created_at: "",
     updated_at: ""
   },
   form: {
     email: "",
-    fullName: "",
+    name: "",
     user_type: "",
     existingUserEmail: ""
   },
@@ -64,7 +64,7 @@ function User(state = INITIAL_STATE, action) {
         currentUser: {
           id: { $set: "" },
           email: { $set: "" },
-          fullName: { $set: "" },
+          name: { $set: "" },
           user_type: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" }
@@ -76,8 +76,8 @@ function User(state = INITIAL_STATE, action) {
       return update(state, {
         form: {
           email: { $set: "" },
-          fullName: { $set: null },
-          user_type: { $set: null }
+          name: { $set: "" },
+          user_type: { $set: "" }
         }
       });
 
@@ -94,7 +94,7 @@ function User(state = INITIAL_STATE, action) {
       return update(state, {
         form: {
           email: { $set: action.payload.email },
-          fullName: { $set: action.payload.name },
+          name: { $set: action.payload.name },
           user_type: { $set: action.payload.user_type }
         },
         dialogOpen: { $set: false },
@@ -105,7 +105,7 @@ function User(state = INITIAL_STATE, action) {
       return update(state, {
         form: {
           email: { $set: action.payload.email },
-          fullName: { $set: action.payload.name },
+          name: { $set: action.payload.name },
           user_type: { $set: action.payload.user_type }
         },
         currentUser: { $set: action.payload },

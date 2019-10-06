@@ -61,7 +61,7 @@ export class DashboardUnconnected extends React.Component {
       // save userId & token to local storage
       window.localStorage.setItem("userId", userId);
       window.localStorage.setItem("authToken", token);
-      // this.props.actions.setLoggedIn();
+
       // remove id & token from route params after saving to local storage
       window.history.replaceState(
         null,
@@ -72,15 +72,14 @@ export class DashboardUnconnected extends React.Component {
       // if userId is not in route params
       // look in redux store or local storage
       userId =
-        this.props.profile.profile._id || window.localStorage.getItem("userId");
-      console.log(userId);
+        this.props.profile.profile.id || window.localStorage.getItem("userId");
       if (window.localStorage.getItem("authToken")) {
         token = window.localStorage.getItem("authToken");
       } else {
         token = this.props.appState.authToken;
       }
     }
-    if (!userId || !token) {
+    if (!userId || !token || userId === "undefined" || token === "undefined") {
       console.log("no user id or token");
       return openSnackbar("error", "Please log in to view this page");
     }
@@ -90,6 +89,7 @@ export class DashboardUnconnected extends React.Component {
       .then(result => {
         // console.log(result.type);
         if (result.type === "GET_PROFILE_SUCCESS") {
+          console.log(`setting userType: ${result.payload.type}`);
           this.props.actions.setLoggedIn(result.payload.type);
           // check for redirect url in local storage
           const redirect = window.localStorage.getItem("redirect");

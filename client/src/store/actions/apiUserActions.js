@@ -94,6 +94,7 @@ export function getUserByEmail(email, requestingUserType) {
  *     If database error, hides spinner, displays error toastr
  */
 export function addUser(token, body) {
+  console.log(body);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/user/`,
@@ -116,7 +117,7 @@ export function addUser(token, body) {
       ],
       headers: {
         Authorization: `Bearer ${token}`,
-        "User-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
     }
@@ -159,7 +160,7 @@ export function updateUser(token, id, body) {
       ],
       headers: {
         Authorization: `Bearer ${token}`,
-        "User-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
     }

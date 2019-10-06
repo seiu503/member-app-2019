@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+// import { Redirect } from "react-router-dom";
 
 import CreateUser from "../components/CreateUser";
 import EditUser from "../components/EditUser";
@@ -102,8 +102,12 @@ export class UserFormUnconnected extends React.Component {
             </FormControl>
           </form>
         )}
-        {loggedIn && this.state.form === "createUser" && <CreateUser />}
-        {loggedIn && this.state.form === "editUser" && <EditUser />}
+        {loggedIn && this.state.form === "createUser" && (
+          <CreateUser {...this.props} />
+        )}
+        {loggedIn && this.state.form === "editUser" && (
+          <EditUser {...this.props} />
+        )}
       </div>
     );
   }

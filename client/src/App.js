@@ -175,8 +175,7 @@ export class AppUnconnected extends Component {
       console.log("not logged in, looking for id & token in localStorage");
       const authToken = window.localStorage.getItem("authToken");
       const userId = window.localStorage.getItem("userId");
-      console.log(userId);
-      console.log(`authToken: ${!!authToken}`);
+      console.log(`authToken: ${!!authToken}, userId: ${userId}`);
       if (
         authToken &&
         authToken !== "undefined" &&
@@ -184,40 +183,55 @@ export class AppUnconnected extends Component {
         userId !== "undefined"
       ) {
         console.log("found id & token in localstorage, validating token");
+        console.log(!!authToken, userId);
         this.props.apiProfile
           .validateToken(authToken, userId)
           .then(result => {
             console.log(result.type);
             if (result.type === "VALIDATE_TOKEN_FAILURE") {
-              window.localStorage.clear();
+              console.log("VALIDATE_TOKEN_FAILURE: clearing localStorage");
+              return window.localStorage.clear();
+            }
+            if (
+              result.type === "VALIDATE_TOKEN_SUCCESS" &&
+              authToken &&
+              authToken !== "undefined" &&
+              userId &&
+              userId !== "undefined"
+            ) {
+              console.log(`validate token success: ${!!authToken}, ${userId}`);
+              this.props.apiProfile
+                .getProfile(authToken, userId)
+                .then(result => {
+                  console.log(result.type);
+                  if (result.type === "GET_PROFILE_SUCCESS") {
+                    console.log(
+                      `setting user type here: ${result.payload.type}`
+                    );
+                    this.props.actions.setLoggedIn(result.payload.type);
+                    // check for redirect url in local storage
+                    const redirect = window.localStorage.getItem("redirect");
+                    if (redirect) {
+                      // redirect to originally requested page and then
+                      // clear value from local storage
+                      this.props.history.push(redirect);
+                      window.localStorage.removeItem("redirect");
+                    }
+                  } else {
+                    console.log("not logged in", authToken, userId);
+                    console.log(result.type);
+                  }
+                });
             }
           })
           .catch(err => console.log(err));
-      }
-      if (authToken && userId) {
-        this.props.apiProfile.getProfile(authToken, userId).then(result => {
-          console.log(result.type);
-          if (result.type === "GET_PROFILE_SUCCESS") {
-            this.props.actions.setLoggedIn(result.payload.type);
-            // check for redirect url in local storage
-            const redirect = window.localStorage.getItem("redirect");
-            if (redirect) {
-              // redirect to originally requested page and then
-              // clear value from local storage
-              this.props.history.push(redirect);
-              window.localStorage.removeItem("redirect");
-            }
-          } else {
-            console.log("not logged in", authToken, userId);
-            console.log(result.type);
-          }
-        });
       }
     }
     const defaultLanguage = detectDefaultLanguage();
     this.props.setActiveLanguage(defaultLanguage);
     loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
   }
+
   verifyCallback(recaptchaToken) {
     // console.log(recaptchaToken, "<= your recaptcha token");
     this.props.apiSubmission.handleInput({

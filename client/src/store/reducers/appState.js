@@ -136,7 +136,7 @@ function appState(state = INITIAL_STATE, action) {
 
     case GET_PROFILE_SUCCESS:
       console.log("GET_PROFILE_SUCCESS");
-      console.log(action.payload);
+      // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         loading: { $set: false },
@@ -145,7 +145,7 @@ function appState(state = INITIAL_STATE, action) {
 
     case VALIDATE_TOKEN_SUCCESS:
       console.log("VALIDATE_TOKEN_SUCCESS");
-      console.log(action.payload);
+      // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         authToken: { $set: action.payload.token },
