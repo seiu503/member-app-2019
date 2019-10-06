@@ -39,13 +39,13 @@ const createUser = (req, res, next) => {
   }
   if (name && email && type) {
     return users
-      .createUser(name, email, type, avatar_url, google_id, google_token)
+      .createUser(name, email, avatar_url, google_id, google_token, type)
       .then(users => {
         const user = users[0];
         res.status(200).json(user);
       })
       .catch(err => {
-        console.log(`users.ctrl.js > 30: ${err}`);
+        console.log(`users.ctrl.js > 48: ${err}`);
         let message = err.message;
         if (
           err.message.includes(

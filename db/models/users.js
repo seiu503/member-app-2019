@@ -17,6 +17,7 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @returns  {Array}    Array of 1 newly-created User object.
  */
 const createUser = (name, email, avatar_url, google_id, google_token, type) => {
+  console.log(`models/users.js > ${type}`);
   return db
     .insert({
       id: uuid.v4(),

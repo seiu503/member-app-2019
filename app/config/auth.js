@@ -45,20 +45,17 @@ const findUserByEmail = async (profile, token, done) => {
   console.log(profile.id);
   User.getUserByEmail(profile.email)
     .then(user => {
-      console.log("config.auth.js > 48:");
+      console.log("config.auth.js > 48: (userId)");
       if (user) {
         console.log(user.id);
-      }
-      if (!user) {
-        err = "You need an invitation from an administrator first";
-        return done(err, null);
-      } else {
         if (user.google_id) {
           return done(null, user);
         } else {
           return updateUser(profile, token, user.id, done);
         }
       }
+      err = "You need an invitation from an administrator first";
+      return done(err, null);
     })
     .catch(err => {
       done(err, null);

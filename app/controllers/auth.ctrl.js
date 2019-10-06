@@ -34,19 +34,21 @@ exports.googleCallback = (req, res) => {
       error: req.user.err
     });
   } else {
-    const userObj = req.user
-      ? { ...req.user }
-      : req.session && req.session.user
-      ? { ...req.session.user }
-      : undefined;
+    const userObj = req.user ? { ...req.user } : undefined;
     if (userObj) {
       // successful authentication from provider
-      // console.log("successful google auth");
+      console.log("##############  successful google auth");
+      let user = userObj;
+      console.log("where is user id?");
+      console.log(userObj);
+      if (userObj["0"] && userObj["0"].id) {
+        user = userObj["0"];
+      }
       // generate token
       // return user ID & google redirect flag as URL params
-      const userInfo = utils.setUserInfo(userObj);
+      const userInfo = utils.setUserInfo(user);
       const token = utils.generateToken(userInfo);
-      const redirect = `${CLIENT_URL}/admin/${userObj.id}/${token}`;
+      const redirect = `${CLIENT_URL}/admin/${user.id}/${token}`;
 
       return res.status(200).redirect(redirect);
     } else {
