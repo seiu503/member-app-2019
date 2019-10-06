@@ -337,9 +337,17 @@ export class AppUnconnected extends Component {
             />
             <Route
               path="/user"
-              render={routeProps => (
-                <UserForm setRedirect={this.setRedirect} {...routeProps} />
-              )}
+              render={routeProps =>
+                loggedIn && userType === "admin" ? (
+                  <UserForm setRedirect={this.setRedirect} {...routeProps} />
+                ) : (
+                  <NoAccess
+                    setRedirect={this.setRedirect}
+                    classes={this.props.classes}
+                    {...routeProps}
+                  />
+                )
+              }
             />
             <Route
               path="/logout"

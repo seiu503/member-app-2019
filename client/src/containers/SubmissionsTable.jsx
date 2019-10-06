@@ -52,6 +52,8 @@ const warning = `You do not have access to the page you were trying to reach. Pl
 export class SubmissionsTableUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
+    console.log("########################");
+    console.log(`authToken: ${!!authToken}`);
     const { userType } = this.props.appState;
     if (userType) {
       this.props.apiSubmission

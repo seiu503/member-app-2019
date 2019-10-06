@@ -88,6 +88,7 @@ export function updateSubmission(id, body) {
 }
 
 export function getAllSubmissions(token, userType) {
+  console.log(`token: ${!!token}`);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/submission/${userType}`,

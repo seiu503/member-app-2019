@@ -5,7 +5,6 @@ import { Redirect } from "react-router-dom";
 
 import CreateUser from "../components/CreateUser";
 import EditUser from "../components/EditUser";
-import Spinner from "../components/Spinner";
 
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -74,10 +73,8 @@ export class UserFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
-    const { loading } = this.props.appState;
     return (
       <div className={classes.container} data-test="user-form-container">
-        {loading && <Spinner />}
         {loggedIn && (
           <form>
             <FormControl component="fieldset" className={classes.formControl}>
@@ -107,9 +104,6 @@ export class UserFormUnconnected extends React.Component {
         )}
         {loggedIn && this.state.form === "createUser" && <CreateUser />}
         {loggedIn && this.state.form === "editUser" && <EditUser />}
-        {!loading && !loggedIn && this.state.form && (
-          <Redirect to="/noaccess" />
-        )}
       </div>
     );
   }
