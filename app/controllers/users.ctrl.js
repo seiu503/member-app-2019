@@ -46,7 +46,15 @@ const createUser = (req, res, next) => {
       })
       .catch(err => {
         console.log(`users.ctrl.js > 30: ${err}`);
-        res.status(500).json({ message: err.message });
+        let message = err.message;
+        if (
+          err.message.includes(
+            'duplicate key value violates unique constraint "users_email_unique"'
+          )
+        ) {
+          message = `A user with email ${email} already exists.`;
+        }
+        res.status(500).json({ message });
       });
   } else {
     return res

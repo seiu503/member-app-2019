@@ -103,10 +103,10 @@ export class UserFormUnconnected extends React.Component {
           </form>
         )}
         {loggedIn && this.state.form === "createUser" && (
-          <CreateUser {...this.props} />
+          <CreateUser history={this.props.history} />
         )}
         {loggedIn && this.state.form === "editUser" && (
-          <EditUser {...this.props} />
+          <EditUser history={this.props.history} />
         )}
       </div>
     );
