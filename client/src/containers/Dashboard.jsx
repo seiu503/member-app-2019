@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 import { openSnackbar } from "./Notifier";
 import SubmissionsTable from "./SubmissionsTable";
+import NoAccess from "../components/NoAccess";
 
 import * as Actions from "../store/actions";
 import * as apiProfileActions from "../store/actions/apiProfileActions";
@@ -46,6 +47,21 @@ const styles = theme => ({
     color: "primary",
     textAlign: "center",
     marginTop: 15
+  },
+  message: {
+    margin: "auto",
+    width: "50%",
+    textAlign: "center",
+    height: "50%",
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+      height: "100%"
+    },
+    lineHeight: "2em",
+    background: "white",
+    borderRadius: "4px",
+    padding: 60,
+    fontSize: "1.2em"
   }
 });
 
@@ -56,9 +72,9 @@ export class DashboardUnconnected extends React.Component {
     if (this.props.match && this.props.match.params.id) {
       userId = this.props.match.params.id;
       token = this.props.match.params.token;
-      console.log(
-        `found userId & token in match params: ${!!token}, ${userId}`
-      );
+      // console.log(
+      //   `found userId & token in match params: ${!!token}, ${userId}`
+      // );
       // if logged in for first time through social auth,
       // save userId & token to local storage
       window.localStorage.setItem("userId", userId);
@@ -83,16 +99,15 @@ export class DashboardUnconnected extends React.Component {
     }
     if (!userId || !token || userId === "undefined" || token === "undefined") {
       console.log("no user id or token");
-      return openSnackbar("error", "Please log in to view this page");
     }
-    console.log(`retrieving profile with userId & token`);
+    // console.log(`retrieving profile with userId & token`);
     // retrieve user profile & save to redux store
     this.props.api
       .getProfile(token, userId)
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         if (result.type === "GET_PROFILE_SUCCESS") {
-          console.log(`setting userType: ${result.payload.type}`);
+          // console.log(`setting userType: ${result.payload.type}`);
           this.props.actions.setLoggedIn(result.payload.type);
           // check for redirect url in local storage
           const redirect = window.localStorage.getItem("redirect");
@@ -103,8 +118,8 @@ export class DashboardUnconnected extends React.Component {
             window.localStorage.removeItem("redirect");
           }
         } else {
-          console.log("not logged in");
-          console.log(result);
+          // console.log("not logged in");
+          // console.log(result);
         }
       })
       .catch(err => {
@@ -116,11 +131,14 @@ export class DashboardUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
-    const redirect = window.localStorage.getItem("redirect");
 
     return (
       <div className={classes.container} data-test="component-dashboard">
-        {loggedIn && !redirect && <SubmissionsTable />}
+        {loggedIn ? (
+          <SubmissionsTable />
+        ) : (
+          <NoAccess setRedirect={this.props.setRedirect} classes={classes} />
+        )}
       </div>
     );
   }

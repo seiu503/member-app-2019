@@ -41,13 +41,13 @@ const googleAuth = {
 // helper methods for updating existing profile with social login info
 
 const findUserByEmail = async (profile, token, done) => {
-  console.log("config.auth.js > 44: (googleId)");
-  console.log(profile.id);
+  // console.log("config.auth.js > 44: (googleId)");
+  // console.log(profile.id);
   User.getUserByEmail(profile.email)
     .then(user => {
-      console.log("config.auth.js > 48: (userId)");
+      // console.log("config.auth.js > 48: (userId)");
       if (user) {
-        console.log(user.id);
+        // console.log(user.id);
         if (user.google_id) {
           return done(null, user);
         } else {

@@ -104,7 +104,7 @@ const warning = `You do not have access to the page you were trying to reach. Pl
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
     const { authToken, userType } = this.props.appState;
-    if (userType) {
+    if (authToken && userType) {
       this.props.apiContent
         .getAllContent(authToken, userType)
         .then(result => {
@@ -127,9 +127,8 @@ export class ContentLibraryUnconnected extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
-      (!prevProps.appState.authToken &&
-        this.props.appState.authToken &&
-        this.props.appState.userType) ||
+      ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
+        (this.props.appState.authToken && this.props.appState.userType)) ||
       prevProps.content.allContent.length !==
         this.props.content.allContent.length ||
       prevProps.appState.userType !== this.props.appState.userType

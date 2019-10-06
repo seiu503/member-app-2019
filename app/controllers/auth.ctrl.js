@@ -37,10 +37,8 @@ exports.googleCallback = (req, res) => {
     const userObj = req.user ? { ...req.user } : undefined;
     if (userObj) {
       // successful authentication from provider
-      console.log("##############  successful google auth");
+      // console.log("##############  successful google auth");
       let user = userObj;
-      console.log("where is user id?");
-      console.log(userObj);
       if (userObj["0"] && userObj["0"].id) {
         user = userObj["0"];
       }
@@ -52,13 +50,13 @@ exports.googleCallback = (req, res) => {
 
       return res.status(200).redirect(redirect);
     } else {
-      return res.status(422).redirect("/login");
+      return res.status(422).redirect(`${CLIENT_URL}/login`);
     }
   }
 };
 
 const jwtCallback = (req, res, next) => {
-  console.log("auth.ctrl.js > 59: jwtCallback");
+  // console.log("auth.ctrl.js > 59: jwtCallback");
   if (req.authError) {
     console.log(`auth.ctrl.js > 61: ${req.authError}`);
     res.status(422).json({
@@ -83,8 +81,8 @@ const jwtCallback = (req, res, next) => {
     });
   }
   if (req.user) {
-    console.log(`auth.ctrl.js > 84`);
-    console.log(req.user.id);
+    // console.log(`auth.ctrl.js > 84`);
+    // console.log(req.user.id);
     req.login(req.user, loginErr => {
       if (loginErr) {
         return next(loginErr);
@@ -96,7 +94,7 @@ const jwtCallback = (req, res, next) => {
 };
 
 exports.requireAuth = async (req, res, next) => {
-  console.log(`auth.ctrl.js > 97: requireAuth`);
+  // console.log(`auth.ctrl.js > 97: requireAuth`);
   await passport.authenticate("jwt", { session: false }, (token, done) =>
     jwtCallback(req, res, next)
   )(req, res, next);

@@ -135,7 +135,7 @@ function appState(state = INITIAL_STATE, action) {
     }
 
     case GET_PROFILE_SUCCESS:
-      console.log("GET_PROFILE_SUCCESS");
+      // console.log("GET_PROFILE_SUCCESS");
       // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
@@ -144,7 +144,7 @@ function appState(state = INITIAL_STATE, action) {
       });
 
     case VALIDATE_TOKEN_SUCCESS:
-      console.log("VALIDATE_TOKEN_SUCCESS");
+      // console.log("VALIDATE_TOKEN_SUCCESS");
       // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
@@ -163,8 +163,8 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, { redirect: { $set: action.payload } });
 
     case SET_LOGGEDIN:
-      console.log("SET_LOGGEDIN");
-      console.log(action.payload);
+      // console.log("SET_LOGGEDIN");
+      // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         userType: { $set: action.payload }
