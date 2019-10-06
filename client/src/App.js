@@ -166,6 +166,7 @@ export class AppUnconnected extends Component {
     this.props.addTranslation(globalTranslations);
     this.verifyCallback = this.verifyCallback.bind(this);
     this.refreshRecaptcha = this.refreshRecaptcha.bind(this);
+    this.setRedirect = this.setRedirect.bind(this);
   }
 
   componentDidMount() {
@@ -243,6 +244,11 @@ export class AppUnconnected extends Component {
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: recaptchaToken }
     });
+  }
+
+  setRedirect() {
+    const currentPath = this.props.history.location.pathname;
+    window.localStorage.setItem("redirect", currentPath);
   }
 
   async refreshRecaptcha() {
