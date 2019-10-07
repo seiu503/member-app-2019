@@ -612,7 +612,9 @@ export class SubmissionFormPage1Container extends React.Component {
               this.props.submission.error
             ) {
               console.log(this.props.submission.error);
-              resolve(handleError(this.props.submission.error));
+              // don't return this error to client
+              // it's confusing if it's just 'no record found'...
+              resolve(console.log(this.props.submission.error));
             }
             resolve(result);
           })
@@ -1126,14 +1128,16 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log("handleCAPESubmit");
     const { formValues } = this.props;
 
-    // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    // console.log(score);
-    if (!score || score <= 0.5) {
-      // console.log(`recaptcha failed: ${score}`);
-      return handleError(
-        "ReCaptcha validation failed, please reload the page and try again."
-      );
+    if (standAlone) {
+      // verify recaptcha score
+      const score = await this.verifyRecaptchaScore();
+      // console.log(score);
+      if (!score || score <= 0.5) {
+        // console.log(`recaptcha failed: ${score}`);
+        return handleError(
+          "ReCaptcha validation failed, please reload the page and try again."
+        );
+      }
     }
 
     if (

@@ -226,10 +226,12 @@ const getCAPEById = (req, res, next) => {
   return cape
     .getCAPEById(req.params.id)
     .then(CAPE => {
-      if (!CAPE || CAPE.message) {
-        return res
-          .status(404)
-          .json({ message: CAPE.message || "CAPE record not found" });
+      if (!CAPE || (CAPE && CAPE.message)) {
+        let message = "CAPE record not found";
+        if (CAPE && CAPE.message) {
+          message = CAPE.message;
+        }
+        return res.status(404).json({ message });
       } else {
         // for testing
         res.locals.testData = CAPE;
@@ -247,10 +249,10 @@ const getCAPEBySFId = (req, res, next) => {
   return cape
     .getCAPEBySFId(req.params.id)
     .then(CAPE => {
-      if (!CAPE || CAPE.message) {
+      if (!CAPE || (CAPE && CAPE.message)) {
         console.log("cape.ctrl.js > 251: no cape record found");
         let message = "CAPE record not found";
-        if (CAPE.message) {
+        if (CAPE && CAPE.message) {
           message = CAPE.message;
         }
         return res.status(404).json({ message });

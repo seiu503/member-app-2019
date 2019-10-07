@@ -1311,7 +1311,7 @@ const capeTableFields = {
     SFFieldLabel: "One-Time Payment Status",
     SFAPIName: "One_Time_Payment_Status",
     SFDataType: "Text"
-  } // need to add these 2 fields to cape obj in sandbox & prod
+  }
 };
 
 // all fields below here are for payment processing only
