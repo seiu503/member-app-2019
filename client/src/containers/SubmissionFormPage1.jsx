@@ -46,7 +46,8 @@ export class SubmissionFormPage1Container extends React.Component {
       tab: undefined,
       legalLanguage: "",
       signatureType: "draw",
-      howManyTabs: 3
+      howManyTabs: 3,
+      displayCAPEPaymentFields: false
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -65,7 +66,9 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleDonationFrequencyChange = this.handleDonationFrequencyChange.bind(
       this
     );
+    this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
   }
+
   componentDidMount() {
     // check for contact id in query string
     const params = queryString.parse(this.props.location.search);
@@ -143,14 +146,18 @@ export class SubmissionFormPage1Container extends React.Component {
 
   suggestedAmountOnChange = e => {
     // call getIframeNew for standalone CAPE when donation amount is set
-    // console.log("suggestedAmountOnChange");
+    console.log("suggestedAmountOnChange");
+    const { formValues } = this.props;
     if (e.target.value === "Other") {
       return;
     }
     const params = queryString.parse(this.props.location.search);
     if (
-      params.cape &&
-      utils.isPaymentRequired(this.props.submission.formPage1.employerType)
+      (params.cape &&
+        utils.isPaymentRequired(
+          this.props.submission.formPage1.employerType
+        )) ||
+      formValues.donationFrequency === "One-Time"
     ) {
       this.getIframeNew(true, e.target.value);
     }
@@ -173,19 +180,28 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleDonationFrequencyChange(frequency) {
+    const { formValues } = this.props;
     console.log("handleDonationFrequencyChange");
-    // render iframe if one-time donation
-    if (frequency === "One-Time") {
+    // render iframe if one-time donation and cape amount set
+    const donationAmount =
+      formValues.capeAmount === "Other"
+        ? parseFloat(formValues.capeAmountOther)
+        : parseFloat(formValues.capeAmount);
+    if (frequency === "One-Time" && donationAmount) {
       console.log("One-Time");
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
       return this.getIframeURL(true);
     } else {
-      // hide iframe if already rendered if change back to monthly and checkoff
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: false }
-      });
+      const checkoff = !this.props.submission.formPage1.paymentRequired;
+      if (checkoff) {
+        // hide iframe if already rendered
+        // if change back to monthly and checkoff
+        await this.props.apiSubmission.handleInput({
+          target: { name: "paymentRequired", value: false }
+        });
+      }
     }
   }
 
@@ -756,7 +772,6 @@ export class SubmissionFormPage1Container extends React.Component {
       language = "es-US";
     }
 
-    console.log("719");
     // also make route for createPaymentRequest
     // writePaymentStatus back to our api
 
@@ -772,7 +787,6 @@ export class SubmissionFormPage1Container extends React.Component {
       externalId = this.props.submission.cape.id;
     }
 
-    console.log("735");
     console.log(`externalId: ${externalId}`);
     const body = {
       firstName: formValues.firstName,
@@ -809,7 +823,7 @@ export class SubmissionFormPage1Container extends React.Component {
       body.deductionDayOfMonth = 10;
     }
     console.log(JSON.stringify(body));
-    console.log("763");
+
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
@@ -977,6 +991,64 @@ export class SubmissionFormPage1Container extends React.Component {
     return formValues.signature;
   }
 
+  async postOneTimePayment() {
+    console.log("postOneTimePayment");
+    const { formValues } = this.props;
+    const donationAmount =
+      formValues.capeAmount === "Other"
+        ? parseFloat(formValues.capeAmountOther)
+        : parseFloat(formValues.capeAmount);
+    const memberShortId =
+      this.props.submission.payment.memberShortId ||
+      this.props.submission.cape.memberShortId;
+    const body = {
+      memberShortId,
+      amount: {
+        currency: "USD",
+        amount: donationAmount
+      },
+      paymentPartType: "CAPE",
+      description: "One-Time CAPE Contribution",
+      plannedDatetime: new Date()
+    };
+    console.log(body);
+
+    const result = await this.props.apiSF.getUnioniseToken().catch(err => {
+      console.log(err);
+      return handleError(err);
+    });
+    console.log(`access_token: ${!!result.payload.access_token}`);
+    console.log(result.payload.access_token);
+    const oneTimePaymentResult = await this.props.apiSF
+      .postOneTimePayment(result.payload.access_token, body)
+      .catch(err => {
+        console.log(err);
+        return handleError(err);
+      });
+
+    if (
+      oneTimePaymentResult.type !== "POST_ONE_TIME_PAYMENT_SUCCESS" ||
+      this.props.submission.error
+    ) {
+      console.log(this.props.submission.error);
+      return handleError(this.props.submission.error);
+    }
+  }
+
+  async checkCAPEPaymentLogic() {
+    console.log("checkCAPEPaymentLogic");
+    const { formValues } = this.props;
+
+    await this.handleEmployerTypeChange(formValues.employerType);
+    await this.handleDonationFrequencyChange(formValues.donationFrequency);
+
+    const newState = { ...this.state };
+    newState.displayCAPEPaymentFields = true;
+    this.setState(newState, () => {
+      console.log(this.state.displayCAPEPaymentFields);
+    });
+  }
+
   async generateCAPEBody() {
     console.log("generateCAPEBody");
     const { formValues } = this.props;
@@ -1052,6 +1124,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleCAPESubmit(standAlone) {
     console.log("handleCAPESubmit");
+    const { formValues } = this.props;
 
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
@@ -1064,7 +1137,8 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     if (
-      this.props.submission.formPage1.paymentRequired &&
+      (this.props.submission.formPage1.paymentRequired ||
+        formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
       // console.log("No payment method added");
@@ -1109,8 +1183,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // if initial cape was not already created
     // in the process of generating the iframe url,
-    // (checkoff use case)
-    // create it now
+    // (checkoff use case), create it now
     if (!this.props.submission.cape.id) {
       await this.createCAPE().catch(err => {
         console.log(err);
@@ -1118,13 +1191,29 @@ export class SubmissionFormPage1Container extends React.Component {
       });
     }
 
-    const id = this.props.submission.cape.id;
+    // if one-time payment, send API request to unioni.se to process it
+    await this.postOneTimePayment().catch(err => {
+      console.log(err);
+      return handleError(err);
+    });
+
+    // collect updates to cape record (values returned from other API calls,
+    // amount and frequency if not captured in initial iframe request)
+    const { id, oneTimePaymentId } = this.props.submission.cape;
+    const donationAmount =
+      formValues.capeAmount === "Other"
+        ? parseFloat(formValues.capeAmountOther)
+        : parseFloat(formValues.capeAmount);
     const updates = {
       cape_status,
       cape_errors,
-      member_short_id
+      member_short_id,
+      one_time_payment_id: oneTimePaymentId,
+      cape_amount: donationAmount,
+      donation_frequency: formValues.donationFrequency
     };
-    // update CAPE record in postgres with status and error values
+
+    // update CAPE record in postgres
     const capeResult = await this.props.apiSubmission
       .updateCAPE(id, updates)
       .catch(err => {
@@ -1374,6 +1463,8 @@ export class SubmissionFormPage1Container extends React.Component {
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           lookupSFContact={this.lookupSFContact}
           handleDonationFrequencyChange={this.handleDonationFrequencyChange}
+          checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}
+          displayCAPEPaymentFields={this.state.displayCAPEPaymentFields}
         />
       </div>
     );

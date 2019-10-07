@@ -249,9 +249,11 @@ const getCAPEBySFId = (req, res, next) => {
     .then(CAPE => {
       if (!CAPE || CAPE.message) {
         console.log("cape.ctrl.js > 251: no cape record found");
-        return res
-          .status(404)
-          .json({ message: CAPE.message || "CAPE record not found" });
+        let message = "CAPE record not found";
+        if (CAPE.message) {
+          message = CAPE.message;
+        }
+        return res.status(404).json({ message });
       } else {
         // for testing
         res.locals.testData = CAPE;

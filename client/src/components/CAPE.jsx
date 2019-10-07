@@ -55,7 +55,9 @@ export const CAPE = props => {
     change,
     lookupSFContact,
     capeObject,
-    handleDonationFrequencyChange
+    handleDonationFrequencyChange,
+    checkCAPEPaymentLogic,
+    displayCAPEPaymentFields
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -354,130 +356,137 @@ export const CAPE = props => {
           type="text"
           classes={classes}
           component={renderTextField}
+          onBlur={checkCAPEPaymentLogic}
         />
-        <div className={classes.paymentCopy}>
-          <Typography component="h2" className={classes.head}>
-            <Translate id="capePaymentHead">
-              Make your contribution today
-            </Translate>
-          </Typography>
-          {payment.currentCAPEFromSF > 1 && (
-            <Typography component="p" className={classes.body}>
-              <Translate id="currentContribution1">
-                You are currently signed up to contribute
-              </Translate>
-              {` $${payment.currentCAPEFromSF} `}
-              <Translate id="currentContribution2">
-                per month. Would you like to increase your monthly contribution?
-              </Translate>
-            </Typography>
-          )}
-          <div className={classes.suggestedAmounts}>
-            <div className={classes.suggestedAmountBoxes}>
+        {displayCAPEPaymentFields && (
+          <div data-test="component-cape-payment-fields">
+            <div className={classes.paymentCopy}>
+              <Typography component="h2" className={classes.head}>
+                <Translate id="capePaymentHead">
+                  Make your contribution today
+                </Translate>
+              </Typography>
+              {payment.currentCAPEFromSF > 1 && (
+                <Typography component="p" className={classes.body}>
+                  <Translate id="currentContribution1">
+                    You are currently signed up to contribute
+                  </Translate>
+                  {` $${payment.currentCAPEFromSF} `}
+                  <Translate id="currentContribution2">
+                    per month. Would you like to increase your monthly
+                    contribution?
+                  </Translate>
+                </Typography>
+              )}
+              <div className={classes.suggestedAmounts}>
+                <div className={classes.suggestedAmountBoxes}>
+                  <Field
+                    data-test="radio-cape-amount"
+                    label="Donation amount"
+                    name="capeAmount"
+                    formControlName="capeAmount"
+                    id={
+                      formValues.donationFrequency === "Monthly"
+                        ? "capeAmountMonthly"
+                        : "capeAmountOneTime"
+                    }
+                    direction="horiz"
+                    className={classes.horizRadio}
+                    classes={classes}
+                    component={formElements.renderCAPERadioGroup}
+                    options={
+                      formValues.donationFrequency === "Monthly"
+                        ? capeObject.monthlyOptions
+                        : capeObject.oneTimeOptions
+                    }
+                    onChange={(event, value) => {
+                      change("capeAmount", value);
+                      suggestedAmountOnChange(event);
+                    }}
+                  />
+                </div>
+              </div>
+              {formValues.capeAmount === "Other" && (
+                <Field
+                  data-test="field-other-amount"
+                  label="Monthly Donation Amount"
+                  name="capeAmountOther"
+                  id="capeAmountOther"
+                  type="number"
+                  inputProps={{ min: 1 }}
+                  classes={classes}
+                  component={renderTextField}
+                  onChange={(event, value) => {
+                    change("capeAmountOther", value);
+                  }}
+                  additionalOnChange={suggestedAmountOnChange}
+                />
+              )}
               <Field
-                data-test="radio-cape-amount"
-                label="Donation amount"
-                name="capeAmount"
-                formControlName="capeAmount"
-                id={
-                  formValues.donationFrequency === "Monthly"
-                    ? "capeAmountMonthly"
-                    : "capeAmountOneTime"
-                }
+                data-test="radio-donation-frequency"
+                label="Monthly or One-Time Donation?"
+                name="donationFrequency"
+                formControlName="donationFrequency"
+                id="donationFrequency"
                 direction="horiz"
-                className={classes.horizRadio}
+                className={classes.horizRadioCenter}
+                legendClass={classes.horizRadioBold}
                 classes={classes}
-                component={formElements.renderCAPERadioGroup}
-                options={
-                  formValues.donationFrequency === "Monthly"
-                    ? capeObject.monthlyOptions
-                    : capeObject.oneTimeOptions
-                }
+                defaultItem="Monthly"
+                component={formElements.renderRadioGroup}
+                options={["Monthly", "One-Time"]}
                 onChange={(event, value) => {
-                  change("capeAmount", value);
-                  suggestedAmountOnChange(event);
+                  change("donationFrequency", value);
+                  handleDonationFrequencyChange(value);
                 }}
               />
             </div>
-          </div>
-          {formValues.capeAmount === "Other" && (
-            <Field
-              data-test="field-other-amount"
-              label="Monthly Donation Amount"
-              name="capeAmountOther"
-              id="capeAmountOther"
-              type="number"
-              inputProps={{ min: 1 }}
-              classes={classes}
-              component={renderTextField}
-              onChange={(event, value) => {
-                change("capeAmountOther", value);
-              }}
-              additionalOnChange={suggestedAmountOnChange}
-            />
-          )}
-          <Field
-            data-test="radio-donation-frequency"
-            label="Monthly or One-Time Donation?"
-            name="donationFrequency"
-            formControlName="donationFrequency"
-            id="donationFrequency"
-            direction="horiz"
-            className={classes.horizRadioCenter}
-            legendClass={classes.horizRadioBold}
-            classes={classes}
-            defaultItem="Monthly"
-            component={formElements.renderRadioGroup}
-            options={["Monthly", "One-Time"]}
-            onChange={(event, value) => {
-              change("donationFrequency", value);
-              handleDonationFrequencyChange(value);
-            }}
-          />
-        </div>
-        {formPage1.paymentRequired &&
-          formPage1.paymentType === "Card" &&
-          validMethod && (
-            <div data-test="component-choose-card">
-              <Typography component="p" className={classes.body}>
-                <Translate id="existingPaymentMethod">
-                  Your existing payment method on file is the card ending in
-                </Translate>{" "}
-                {payment.activeMethodLast4}.
-              </Typography>
-              <Field
-                data-test="radio-which-card"
-                label="Do you want to use the existing card or add a new one?"
-                name="whichCard"
-                formControlName="whichCard"
-                id="whichCard"
-                direction="horiz"
-                className={classes.horizRadio}
-                legendClass={classes.horizRadioBold}
-                classes={classes}
-                defaultItem="Use existing"
-                additionalOnChange={toggleCardAddingFrame}
-                component={formElements.renderRadioGroup}
-                options={["Use existing", "Add new card"]}
-              />
-            </div>
-          )}
-        {!checkoff && iFrameURL && (
-          <div data-test="component-iframe">
-            <Typography component="h2" className={classes.head}>
-              <Translate id="addPayment">Add a payment method</Translate>
-            </Typography>
-            <div className={classes.iframeWrap}>
-              <Iframe
-                url={iFrameURL}
-                width="100%"
-                height="100px"
-                id="iFrame"
-                className={classes.iframe}
-                display="initial"
-                position="relative"
-              />
-            </div>
+            {formPage1.paymentRequired &&
+              formPage1.paymentType === "Card" &&
+              validMethod && (
+                <div data-test="component-choose-card">
+                  <Typography component="p" className={classes.body}>
+                    <Translate id="existingPaymentMethod">
+                      Your existing payment method on file is the card ending in
+                    </Translate>{" "}
+                    {payment.activeMethodLast4}.
+                  </Typography>
+                  <Field
+                    data-test="radio-which-card"
+                    label="Do you want to use the existing card or add a new one?"
+                    name="whichCard"
+                    formControlName="whichCard"
+                    id="whichCard"
+                    direction="horiz"
+                    className={classes.horizRadio}
+                    legendClass={classes.horizRadioBold}
+                    classes={classes}
+                    defaultItem="Use existing"
+                    additionalOnChange={toggleCardAddingFrame}
+                    component={formElements.renderRadioGroup}
+                    options={["Use existing", "Add new card"]}
+                  />
+                </div>
+              )}
+            {iFrameURL &&
+              (!checkoff || formValues.donationFrequency === "One-Time") && (
+                <div data-test="component-iframe">
+                  <Typography component="h2" className={classes.head}>
+                    <Translate id="addPayment">Add a payment method</Translate>
+                  </Typography>
+                  <div className={classes.iframeWrap}>
+                    <Iframe
+                      url={iFrameURL}
+                      width="100%"
+                      height="100px"
+                      id="iFrame"
+                      className={classes.iframe}
+                      display="initial"
+                      position="relative"
+                    />
+                  </div>
+                </div>
+              )}
           </div>
         )}
         <div className={classes.legalCopy} ref={cape_legal}>

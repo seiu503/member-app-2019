@@ -653,13 +653,15 @@ export const POST_ONE_TIME_PAYMENT_FAILURE = "POST_ONE_TIME_PAYMENT_FAILURE";
  *   POST_ONE_TIME_PAYMENT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function postOneTimePayment(body) {
+export function postOneTimePayment(token, body) {
   const headers = {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
   };
+  console.log(headers);
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/unionise/postOneTimePayment`,
+      endpoint: `${BASE_URL}/api/unionise/oneTimePayment`,
       // ^^ this is the staging endpoint
       // will need to be switched over to production later on
       method: "POST",

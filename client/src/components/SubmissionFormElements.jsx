@@ -163,7 +163,7 @@ export const genderPronounOptions = [
 // based on member's existing donation level
 export const generateCAPEOptions = existingCAPE => {
   const optionSteps = [10, 13, 15, 18, 20, 23, 25, 28, 30, 33, 35, 38, 40, 50];
-  const oneTimeSteps = [10, 15, 20, 25, 30, 40, 50, 100];
+  const oneTimeSteps = [15, 20, 25, 30, 40, 50, 100];
   const monthlyOptions = [];
   const oneTimeOptions = [];
   if (existingCAPE) {
@@ -189,7 +189,7 @@ export const generateCAPEOptions = existingCAPE => {
       oneTimeSteps[oneTimeIndex + 2],
       "Other"
     );
-    // console.log(oneTimeOptions);
+    console.log(oneTimeOptions);
     return {
       monthlyOptions,
       oneTimeOptions
@@ -198,7 +198,7 @@ export const generateCAPEOptions = existingCAPE => {
     // if no existing contribution on file, then return the default amounts
     return {
       monthlyOptions: [10, 13, 15, "Other"],
-      oneTimeOptions: [10, 25, 50, "Other"]
+      oneTimeOptions: [15, 20, 25, "Other"]
     };
   }
 };

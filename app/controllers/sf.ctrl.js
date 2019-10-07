@@ -706,13 +706,18 @@ exports.postPaymentRequest = async (req, res, next) => {
   const data = { ...req.body };
 
   console.log(data);
+  console.log(`####################`);
+  console.log(req.headers.authorization);
   const url = "https://lab.unioni.se/api/v1/paymentRequests";
 
-  const headers = { "content-type": "application/x-www-form-urlencoded" };
+  const headers = {
+    "content-type": "application/json",
+    Authorization: req.headers.authorization
+  };
   axios
     .post(url, data, { headers })
     .then(response => {
-      console.log(`sf.ctrl.js > 716`);
+      console.log(`sf.ctrl.js > 720`);
       console.log(response.data);
       if (!response.data || !response.data.id) {
         return res

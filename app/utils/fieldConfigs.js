@@ -1303,10 +1303,15 @@ const capeTableFields = {
   one_time_payment_id: {
     SFTable: "CAPE__c",
     SFFieldLabel: "One-Time Payment Id",
-    SFAPIName: "Payment_Error_Hold__c",
-    SFDataType: "Boolean"
+    SFAPIName: "One_Time_Payment_Id",
+    SFDataType: "Text"
   },
-  one_time_payment_status: {} // need to add these 2 fields to cape obj in sandbox & prod
+  one_time_payment_status: {
+    SFTable: "CAPE__c",
+    SFFieldLabel: "One-Time Payment Status",
+    SFAPIName: "One_Time_Payment_Status",
+    SFDataType: "Text"
+  } // need to add these 2 fields to cape obj in sandbox & prod
 };
 
 // all fields below here are for payment processing only

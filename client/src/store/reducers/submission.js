@@ -125,7 +125,7 @@ export const INITIAL_STATE = {
     activeMethodLast4: "",
     paymentErrorHold: false,
     monthlyOptions: [10, 13, 15, "Other"],
-    oneTimeOptions: [10, 25, 50, "Other"],
+    oneTimeOptions: [15, 20, 25, "Other"],
     oneTimePaymentId: "",
     oneTimePaymentStatus: ""
   },
