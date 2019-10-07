@@ -94,7 +94,6 @@ export function getUserByEmail(email, requestingUserType) {
  *     If database error, hides spinner, displays error toastr
  */
 export function addUser(token, body) {
-  console.log(body);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/user/`,
@@ -190,6 +189,7 @@ export function deleteUser(token, id, requestingUserType) {
           type: DELETE_USER_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
+              console.log(data);
               let message = "Sorry, something went wrong :(";
               if (data && data.message) {
                 message = data.message;

@@ -106,19 +106,20 @@ export class CreateUserFormUnconnected extends React.Component {
 
   submit(e) {
     e.preventDefault();
-    const { fullName, email, userType } = this.props.user.form;
+    const { fullName, email, type } = this.props.user.form;
     const authToken = this.props.appState.authToken;
     const requestingUserType = this.props.appState.userType;
+    let id = this.props.user.currentUser.id;
     const body = {
       updates: {
         fullName,
         email,
-        userType
+        type
       },
       requestingUserType
     };
     return this.props.apiUser
-      .updateUser(authToken, body)
+      .updateUser(authToken, id, body)
       .then(result => {
         if (result.type === "UPDATE_USER_FAILURE" || this.props.user.error) {
           openSnackbar(
@@ -127,7 +128,7 @@ export class CreateUserFormUnconnected extends React.Component {
               "An error occurred while trying to update user"
           );
         } else {
-          openSnackbar("success", "User Created Successfully!");
+          openSnackbar("success", "User updated successfully!");
           this.props.apiUser.clearForm();
           this.props.history.push("/admin");
         }
@@ -143,6 +144,7 @@ export class CreateUserFormUnconnected extends React.Component {
 
   async deleteUser(user) {
     const token = this.props.appState.authToken;
+    let name = user.name;
     const requestingUserType = this.props.appState.userType;
     const userDeleteResult = await this.props.apiUser.deleteUser(
       token,
@@ -151,12 +153,12 @@ export class CreateUserFormUnconnected extends React.Component {
     );
     if (
       !userDeleteResult.type ||
-      userDeleteResult.type !== "DELETE_CONTENT_SUCCESS"
+      userDeleteResult.type !== "DELETE_USER_SUCCESS"
     ) {
       openSnackbar("error", this.props.user.error);
-    } else if (userDeleteResult.type === "DELETE_CONTENT_SUCCESS") {
-      openSnackbar("success", `Deleted ${user.name}.`);
-      this.props.history.push(`/user`);
+    } else {
+      openSnackbar("success", `Successfully Deleted ${name}.`);
+      this.props.history.push(`/admin`);
     }
   }
 
@@ -168,7 +170,7 @@ export class CreateUserFormUnconnected extends React.Component {
           <AlertDialog
             open={this.props.user.deleteDialogOpen}
             handleClose={this.props.apiUser.handleDeleteClose}
-            title="Delete Content"
+            title="Delete User"
             content={`Are you sure you want to delete ${
               this.props.user.currentUser.name
             }? This action cannot be undone and all user data will be lost.`}
@@ -206,7 +208,7 @@ export class CreateUserFormUnconnected extends React.Component {
                 type="text"
                 variant="outlined"
                 required
-                value={this.props.user.form.fullName}
+                value={this.props.user.form.name}
                 onChange={e => this.props.apiUser.handleInput(e)}
                 className={classes.input}
               />
@@ -223,14 +225,14 @@ export class CreateUserFormUnconnected extends React.Component {
                 className={classes.input}
               />
               <TextField
-                data-test="userType"
-                name="userType"
-                id="userType"
+                data-test="type"
+                name="type"
+                id="type"
                 label="User Type"
                 type="text"
                 variant="outlined"
                 required
-                value={this.props.user.form.userType}
+                value={this.props.user.form.type}
                 onChange={e => this.props.apiUser.handleInput(e)}
                 className={classes.input}
               />

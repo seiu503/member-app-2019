@@ -64,20 +64,21 @@ export class CreateUserFormUnconnected extends React.Component {
     this.submit = this.submit.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    return this.props.apiUser.clearForm();
+  }
 
   submit(e) {
     e.preventDefault();
-    const { name, email, userType } = this.props.user.form;
+    const { name, email, type } = this.props.user.form;
     const authToken = this.props.appState.authToken;
     const requestingUserType = this.props.appState.userType;
     const body = {
       name,
       email,
-      type: userType,
+      type,
       requestingUserType
     };
-    console.log(body);
     return this.props.apiUser
       .addUser(authToken, body)
       .then(result => {
@@ -148,12 +149,12 @@ export class CreateUserFormUnconnected extends React.Component {
             <InputLabel htmlFor={"userType"}>User Type</InputLabel>
             <Select
               native
-              value={this.props.user.form.userType}
+              value={this.props.user.form.type}
               onChange={e => this.props.apiUser.handleInput(e)}
               input={
                 <OutlinedInput
                   labelWidth={80}
-                  inputProps={{ id: "userType", name: "userType" }}
+                  inputProps={{ id: "type", name: "type" }}
                 />
               }
               // className={align === "right" ? classes.selectRight : classes.select}

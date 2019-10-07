@@ -96,7 +96,7 @@ export class UserFormUnconnected extends React.Component {
                 <FormControlLabel
                   value="editUser"
                   control={<Radio />}
-                  label="Edit User"
+                  label="Edit/Delete User"
                 />
               </RadioGroup>
             </FormControl>

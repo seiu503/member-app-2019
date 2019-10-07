@@ -34,7 +34,7 @@ const createUser = (req, res, next) => {
     console.log(`users.ctrl.js > 34`);
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please Consult an administrator. 37"
     });
   }
   if (name && email && type) {
@@ -73,12 +73,13 @@ const createUser = (req, res, next) => {
  *  @returns  {Object}                   Updated user object OR error message.
  */
 const updateUser = (req, res, next) => {
+  console.log(req.body);
   const { updates, requestingUserType } = req.body;
   const { id } = req.params;
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please Consult an administrator. 81"
     });
   }
   if (!updates || !Object.keys(updates).length) {
@@ -108,15 +109,17 @@ const deleteUser = (req, res, next) => {
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please Consult an administrator 111."
     });
   }
   return users
     .deleteUser(req.params.id)
     .then(result => {
       if (result.message === "User deleted successfully") {
+        console.log(result.message, "119");
         return res.status(200).json({ message: result.message });
       } else {
+        console.log(result.message, "122");
         return res.status(404).json({
           message: "An error occurred and the user was not deleted."
         });
@@ -170,7 +173,7 @@ const getUserByEmail = (req, res, next) => {
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please Consult an administrator. 173"
     });
   }
   return users

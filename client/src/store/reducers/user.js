@@ -25,14 +25,14 @@ export const INITIAL_STATE = {
   currentUser: {
     email: "",
     name: "",
-    user_type: null,
+    type: null,
     created_at: "",
     updated_at: ""
   },
   form: {
     email: "",
     name: "",
-    user_type: "",
+    type: "",
     existingUserEmail: ""
   },
   error: null
@@ -65,7 +65,7 @@ function User(state = INITIAL_STATE, action) {
           id: { $set: "" },
           email: { $set: "" },
           name: { $set: "" },
-          user_type: { $set: "" },
+          type: { $set: "" },
           created_at: { $set: "" },
           updated_at: { $set: "" }
         },
@@ -77,7 +77,7 @@ function User(state = INITIAL_STATE, action) {
         form: {
           email: { $set: "" },
           name: { $set: "" },
-          user_type: { $set: "" }
+          type: { $set: "" }
         }
       });
 
@@ -95,7 +95,7 @@ function User(state = INITIAL_STATE, action) {
         form: {
           email: { $set: action.payload.email },
           name: { $set: action.payload.name },
-          user_type: { $set: action.payload.user_type }
+          type: { $set: action.payload.type }
         },
         dialogOpen: { $set: false },
         error: { $set: null }
@@ -106,7 +106,7 @@ function User(state = INITIAL_STATE, action) {
         form: {
           email: { $set: action.payload.email },
           name: { $set: action.payload.name },
-          user_type: { $set: action.payload.user_type }
+          type: { $set: action.payload.type }
         },
         currentUser: { $set: action.payload },
         dialogOpen: { $set: false },
