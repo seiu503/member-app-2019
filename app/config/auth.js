@@ -41,18 +41,21 @@ const googleAuth = {
 // helper methods for updating existing profile with social login info
 
 const findUserByEmail = async (profile, token, done) => {
+  // console.log("config.auth.js > 44: (googleId)");
+  // console.log(profile.id);
   User.getUserByEmail(profile.email)
     .then(user => {
-      if (!user) {
-        err = "You need an invitation from an administrator first";
-        return done(err, null);
-      } else {
+      // console.log("config.auth.js > 48: (userId)");
+      if (user) {
+        // console.log(user.id);
         if (user.google_id) {
           return done(null, user);
         } else {
           return updateUser(profile, token, user.id, done);
         }
       }
+      err = "You need an invitation from an administrator first";
+      return done(err, null);
     })
     .catch(err => {
       done(err, null);
@@ -121,16 +124,18 @@ const jwtOptions = {
 };
 
 const jwtLogin = async (req, payload, done) => {
+  console.log(`config/auth.js > 128: jwtLogin`);
   const id = payload.id;
   User.getUserById(id)
     .then(user => {
-      // console.log(`passport.js > 23`);
-      // console.log(user);
+      console.log(`config/auth.js > 132`);
+      console.log(user.id);
+      req.user = user;
       done(null, user);
     })
     .catch(err => {
-      // console.log("passport.js > 28");
-      // console.log(err);
+      console.log("config/auth.js > 137");
+      console.log(err);
       done(err, null);
     });
 };

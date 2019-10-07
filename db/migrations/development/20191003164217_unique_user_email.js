@@ -8,6 +8,8 @@ exports.up = function(knex) {
             .notNullable()
             .unique()
             .alter();
+          table.string("google_id").alter();
+          table.string("google_token").alter();
         });
       }
     })
@@ -20,7 +22,15 @@ exports.down = function(knex) {
       if (exists) {
         return knex.schema.table("users", function(table) {
           table
-            .date("email")
+            .string("email")
+            .notNullable()
+            .alter();
+          table
+            .string("google_id")
+            .notNullable()
+            .alter();
+          table
+            .string("google_token")
             .notNullable()
             .alter();
         });

@@ -68,15 +68,16 @@ export class CreateUserFormUnconnected extends React.Component {
 
   submit(e) {
     e.preventDefault();
-    const { fullName, email, userType } = this.props.user.form;
+    const { name, email, userType } = this.props.user.form;
     const authToken = this.props.appState.authToken;
     const requestingUserType = this.props.appState.userType;
     const body = {
-      fullName,
+      name,
       email,
-      userType,
+      type: userType,
       requestingUserType
     };
+    console.log(body);
     return this.props.apiUser
       .addUser(authToken, body)
       .then(result => {
@@ -89,7 +90,7 @@ export class CreateUserFormUnconnected extends React.Component {
         } else {
           openSnackbar("success", "User Created Successfully!");
           this.props.apiUser.clearForm();
-          this.props.history.push("/admin");
+          // this.props.history.push("/admin");
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -115,14 +116,14 @@ export class CreateUserFormUnconnected extends React.Component {
           id="form"
         >
           <TextField
-            data-test="fullName"
-            name="fullName"
-            id="fullName"
-            label="fullName"
+            data-test="component-name"
+            name="name"
+            id="name"
+            label="Full Name"
             type="text"
             variant="outlined"
             required
-            value={this.props.user.form.fullName}
+            value={this.props.user.form.name}
             onChange={e => this.props.apiUser.handleInput(e)}
             className={classes.input}
           />

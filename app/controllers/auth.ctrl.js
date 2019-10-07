@@ -34,48 +34,68 @@ exports.googleCallback = (req, res) => {
       error: req.user.err
     });
   } else {
-    const userObj = req.user
-      ? { ...req.user }
-      : req.session && req.session.user
-      ? { ...req.session.user }
-      : undefined;
+    const userObj = req.user ? { ...req.user } : undefined;
     if (userObj) {
       // successful authentication from provider
-      // console.log("successful google auth");
+      // console.log("##############  successful google auth");
+      let user = userObj;
+      if (userObj["0"] && userObj["0"].id) {
+        user = userObj["0"];
+      }
       // generate token
       // return user ID & google redirect flag as URL params
-      const userInfo = utils.setUserInfo(userObj);
+      const userInfo = utils.setUserInfo(user);
       const token = utils.generateToken(userInfo);
-      const redirect = `${CLIENT_URL}/admin/${userObj.id}/${token}`;
+      const redirect = `${CLIENT_URL}/admin/${user.id}/${token}`;
 
       return res.status(200).redirect(redirect);
     } else {
-      return res.status(422).redirect("/login");
+      return res.status(422).redirect(`${CLIENT_URL}/login`);
     }
   }
 };
 
-exports.requireAuth = (req, res, next) => {
-  passport.authenticate("jwt", { session: false }, (err, user, info) => {
-    if (err) {
-      // console.log(`auth.ctrl.js > 53: ${err}`);
-      return res.status(422).send({ success: false, message: err.message });
-    }
-    if (!user) {
-      // console.log(`auth.ctrl.js > 57: no user found`);
-      return res.status(422).send({
-        success: false,
-        message: "Sorry, you must log in to view this page."
-      });
-    }
-    if (user) {
-      req.login(user, loginErr => {
-        if (loginErr) {
-          return next(loginErr);
-        } else {
-          return next(null, user);
-        }
-      });
-    }
-  })(req, res, next);
+const jwtCallback = (req, res, next) => {
+  // console.log("auth.ctrl.js > 59: jwtCallback");
+  if (req.authError) {
+    console.log(`auth.ctrl.js > 61: ${req.authError}`);
+    res.status(422).json({
+      success: false,
+      message: `jwt auth failed: {req.authError}`,
+      error: req.authError
+    });
+  }
+  if (req.user && req.user.err) {
+    console.log(`auth.ctrl.js > 69: ${req.user.err}`);
+    res.status(422).json({
+      success: false,
+      message: `jwt auth failed: ${req.user.err}`,
+      error: req.user.err
+    });
+  }
+  if (!req.user) {
+    console.log(`auth.ctrl.js > 77: no user found`);
+    return res.status(422).send({
+      success: false,
+      message: "Sorry, you must log in to view this page."
+    });
+  }
+  if (req.user) {
+    // console.log(`auth.ctrl.js > 84`);
+    // console.log(req.user.id);
+    req.login(req.user, loginErr => {
+      if (loginErr) {
+        return next(loginErr);
+      } else {
+        return next(null, req.user);
+      }
+    });
+  }
+};
+
+exports.requireAuth = async (req, res, next) => {
+  // console.log(`auth.ctrl.js > 97: requireAuth`);
+  await passport.authenticate("jwt", { session: false }, (token, done) =>
+    jwtCallback(req, res, next)
+  )(req, res, next);
 };

@@ -28,7 +28,10 @@ const createUser = (req, res, next) => {
     google_token,
     requestingUserType
   } = req.body;
+  console.log(`users.ctrl.js > 31`);
+  console.log(req.body);
   if (requestingUserType != "admin" || !requestingUserType) {
+    console.log(`users.ctrl.js > 34`);
     return res.status(500).json({
       message:
         "You do not have permission to do this. Please Consult an administrator."
@@ -36,14 +39,22 @@ const createUser = (req, res, next) => {
   }
   if (name && email && type) {
     return users
-      .createUser(name, email, type, avatar_url, google_id, google_token)
+      .createUser(name, email, avatar_url, google_id, google_token, type)
       .then(users => {
         const user = users[0];
         res.status(200).json(user);
       })
       .catch(err => {
-        console.log(`users.ctrl.js > 30: ${err}`);
-        res.status(500).json({ message: err.message });
+        console.log(`users.ctrl.js > 48: ${err}`);
+        let message = err.message;
+        if (
+          err.message.includes(
+            'duplicate key value violates unique constraint "users_email_unique"'
+          )
+        ) {
+          message = `A user with email ${email} already exists.`;
+        }
+        res.status(500).json({ message });
       });
   } else {
     return res
