@@ -43,6 +43,7 @@ export class SubmissionFormPage1Container extends React.Component {
     super(props);
     this.state = {
       open: false,
+      capeOpen: false,
       tab: undefined,
       legalLanguage: "",
       signatureType: "draw",
@@ -67,6 +68,8 @@ export class SubmissionFormPage1Container extends React.Component {
       this
     );
     this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
+    this.handleCAPEOpen = this.handleCAPEOpen.bind(this);
+    this.handleCAPEClose = this.handleCAPEClose.bind(this);
   }
 
   componentDidMount() {
@@ -104,9 +107,21 @@ export class SubmissionFormPage1Container extends React.Component {
     this.setState({ ...newState });
   }
 
+  handleCAPEOpen() {
+    const newState = { ...this.state };
+    newState.capeOpen = true;
+    this.setState({ ...newState });
+  }
+
   handleClose() {
     const newState = { ...this.state };
     newState.open = false;
+    this.setState({ ...newState });
+  }
+
+  handleCAPEClose() {
+    const newState = { ...this.state };
+    newState.capeOpen = false;
     this.setState({ ...newState });
   }
 
@@ -707,6 +722,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async verifyRecaptchaScore() {
     // refresh token
     await this.props.refreshRecaptcha();
+    // window.grecaptcha.reset();
 
     // then verify
     const ip_address = localIpUrl();
@@ -1469,6 +1485,9 @@ export class SubmissionFormPage1Container extends React.Component {
           handleDonationFrequencyChange={this.handleDonationFrequencyChange}
           checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}
           displayCAPEPaymentFields={this.state.displayCAPEPaymentFields}
+          handleCAPEOpen={this.handleCAPEOpen}
+          handleCAPEClose={this.handleCAPEClose}
+          capeOpen={this.state.capeOpen}
         />
       </div>
     );

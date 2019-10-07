@@ -353,11 +353,35 @@ export const stylesPage1 = theme => ({
     display: "flex",
     justifyContent: "flex-start"
   },
+  buttonWrapCAPE: {
+    width: "100%",
+    padding: "0 20px 40px 0",
+    display: "flex",
+    justifyContent: "space-between"
+  },
   next: {
     textTransform: "none",
     fontSize: "1.3rem",
     padding: "6px 20px",
     color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  nextSmall: {
+    textTransform: "none",
+    fontSize: ".8rem",
+    padding: "3px 10px",
+    color: theme.palette.secondary.light,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  backSmall: {
+    textTransform: "none",
+    fontSize: ".8rem",
+    padding: "3px 10px",
+    color: theme.palette.secondary.light,
     "&:hover": {
       backgroundColor: theme.palette.primary.light
     }

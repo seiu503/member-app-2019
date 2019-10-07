@@ -5,6 +5,7 @@ import Iframe from "react-iframe";
 import { ReCaptcha } from "react-recaptcha-v3";
 import { Translate } from "react-localize-redux";
 
+import AlertDialog from "./AlertDialog";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
 import * as formElements from "./SubmissionFormElements";
@@ -57,7 +58,10 @@ export const CAPE = props => {
     capeObject,
     handleDonationFrequencyChange,
     checkCAPEPaymentLogic,
-    displayCAPEPaymentFields
+    displayCAPEPaymentFields,
+    handleCAPEOpen,
+    handleCAPEClose,
+    capeOpen
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -65,6 +69,21 @@ export const CAPE = props => {
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
+      {capeOpen && (
+        <AlertDialog
+          open={capeOpen}
+          handleClose={handleCAPEClose}
+          title="Skip to next tab"
+          content={`If you move to the next tab without clicking Submit, your CAPE contribution will not be processed.`}
+          danger={true}
+          action={() => {
+            props.history.push(`/page2/?id=${props.submission.salesforceId}`);
+            handleCAPEClose();
+          }}
+          buttonText="Skip"
+          data-test="alert-dialog"
+        />
+      )}
       <form
         onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
         id="CAPE"
@@ -518,20 +537,6 @@ export const CAPE = props => {
             verifyCallback={verifyCallback}
           />
         )}
-        {!standAlone && (
-          <div className={classes.buttonWrapTab3}>
-            <Button
-              type="button"
-              data-test="button-back"
-              onClick={() => back(1)}
-              color="primary"
-              className={classes.back}
-              variant="contained"
-            >
-              <Translate id="back">Back</Translate>
-            </Button>
-          </div>
-        )}
         <ButtonWithSpinner
           type="submit"
           color="primary"
@@ -541,6 +546,30 @@ export const CAPE = props => {
         >
           <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>
+        {!standAlone && (
+          <div className={classes.buttonWrapCAPE}>
+            <Button
+              type="button"
+              data-test="button-back"
+              onClick={() => back(1)}
+              color="primary"
+              className={classes.backSmall}
+              variant="contained"
+            >
+              <Translate id="back">Back</Translate>
+            </Button>
+            <Button
+              type="button"
+              data-test="button-next"
+              onClick={handleCAPEOpen}
+              color="primary"
+              className={classes.nextSmall}
+              variant="contained"
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );
