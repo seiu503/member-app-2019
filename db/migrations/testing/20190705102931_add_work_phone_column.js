@@ -2,15 +2,9 @@ exports.up = function(knex) {
   return Promise.all([
     knex.schema.hasTable("submissions").then(function(exists) {
       if (exists) {
-        return knex.schema
-          .hasColumn("submissions", "work_phone")
-          .then(function(exists) {
-            if (!exists) {
-              return knex.schema.table("submissions", function(table) {
-                table.string("work_phone");
-              });
-            }
-          });
+        return knex.schema.table("submissions", function(table) {
+          table.string("work_phone");
+        });
       }
     })
   ]);

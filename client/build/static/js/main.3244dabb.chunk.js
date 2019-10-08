@@ -9622,31 +9622,28 @@
         });
       }
       function es(e, t) {
-        return (
-          console.log(t),
-          Object(C.a)({}, M.RSAA, {
-            endpoint: "".concat(q, "/api/user/"),
-            method: "POST",
-            types: [
-              Bi,
-              Hi,
-              {
-                type: qi,
-                payload: function(e, t, a) {
-                  return a.json().then(function(e) {
-                    var t = "Sorry, something went wrong :(";
-                    return e && e.message && (t = e.message), { message: t };
-                  });
-                }
+        return Object(C.a)({}, M.RSAA, {
+          endpoint: "".concat(q, "/api/user/"),
+          method: "POST",
+          types: [
+            Bi,
+            Hi,
+            {
+              type: qi,
+              payload: function(e, t, a) {
+                return a.json().then(function(e) {
+                  var t = "Sorry, something went wrong :(";
+                  return e && e.message && (t = e.message), { message: t };
+                });
               }
-            ],
-            headers: {
-              Authorization: "Bearer ".concat(e),
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(t)
-          })
-        );
+            }
+          ],
+          headers: {
+            Authorization: "Bearer ".concat(e),
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(t)
+        });
       }
       function ts(e, t, a) {
         return Object(C.a)({}, M.RSAA, {
@@ -9686,6 +9683,7 @@
               type: $i,
               payload: function(e, t, a) {
                 return a.json().then(function(e) {
+                  console.log(e);
                   var t = "Sorry, something went wrong :(";
                   return e && e.message && (t = e.message), { message: t };
                 });
@@ -9711,7 +9709,12 @@
           return (
             Object(v.a)(t, e),
             Object(b.a)(t, [
-              { key: "componentDidMount", value: function() {} },
+              {
+                key: "componentDidMount",
+                value: function() {
+                  return this.props.apiUser.clearForm();
+                }
+              },
               {
                 key: "submit",
                 value: function(e) {
@@ -9720,7 +9723,7 @@
                   var a = this.props.user.form,
                     n = a.name,
                     r = a.email,
-                    o = a.userType,
+                    o = a.type,
                     i = this.props.appState.authToken,
                     s = {
                       name: n,
@@ -9728,24 +9731,21 @@
                       type: o,
                       requestingUserType: this.props.appState.userType
                     };
-                  return (
-                    console.log(s),
-                    this.props.apiUser
-                      .addUser(i, s)
-                      .then(function(e) {
-                        "ADD_USER_FAILURE" === e.type || t.props.user.error
-                          ? kt(
-                              "error",
-                              t.props.user.error ||
-                                "An error occurred while trying to create new user"
-                            )
-                          : (kt("success", "User Created Successfully!"),
-                            t.props.apiUser.clearForm());
-                      })
-                      .catch(function(e) {
-                        return kt("error", e);
-                      })
-                  );
+                  return this.props.apiUser
+                    .addUser(i, s)
+                    .then(function(e) {
+                      "ADD_USER_FAILURE" === e.type || t.props.user.error
+                        ? kt(
+                            "error",
+                            t.props.user.error ||
+                              "An error occurred while trying to create new user"
+                          )
+                        : (kt("success", "User Created Successfully!"),
+                          t.props.apiUser.clearForm());
+                    })
+                    .catch(function(e) {
+                      return kt("error", e);
+                    });
                 }
               },
               {
@@ -9823,13 +9823,13 @@
                           zt.a,
                           {
                             native: !0,
-                            value: this.props.user.form.userType,
+                            value: this.props.user.form.type,
                             onChange: function(t) {
                               return e.props.apiUser.handleInput(t);
                             },
                             input: d.a.createElement($t.a, {
                               labelWidth: 80,
-                              inputProps: { id: "userType", name: "userType" }
+                              inputProps: { id: "type", name: "type" }
                             }),
                             "data-test": "userType"
                           },
@@ -9977,7 +9977,7 @@
                             t.props.user.error ||
                               "An error occurred while trying to update user"
                           )
-                        : (kt("success", "User Created Successfully!"),
+                        : (kt("success", "User updated successfully!"),
                           t.props.apiUser.clearForm(),
                           t.props.history.push("/admin"));
                     })
@@ -9991,7 +9991,7 @@
                 value: (function() {
                   var e = Object(f.a)(
                     g.a.mark(function e(t) {
-                      var a, n, r;
+                      var a, n, r, o;
                       return g.a.wrap(
                         function(e) {
                           for (;;)
@@ -9999,21 +9999,21 @@
                               case 0:
                                 return (
                                   (a = this.props.appState.authToken),
-                                  (n = this.props.appState.userType),
-                                  (e.next = 4),
-                                  this.props.apiUser.deleteUser(a, t.id, n)
+                                  (n = t.name),
+                                  (r = this.props.appState.userType),
+                                  (e.next = 5),
+                                  this.props.apiUser.deleteUser(a, t.id, r)
                                 );
-                              case 4:
-                                (r = e.sent).type &&
-                                "DELETE_CONTENT_SUCCESS" === r.type
-                                  ? "DELETE_CONTENT_SUCCESS" === r.type &&
-                                    (kt(
+                              case 5:
+                                (o = e.sent).type &&
+                                "DELETE_USER_SUCCESS" === o.type
+                                  ? (kt(
                                       "success",
-                                      "Deleted ".concat(t.name, ".")
+                                      "Successfully Deleted ".concat(n, ".")
                                     ),
-                                    this.props.history.push("/user"))
+                                    this.props.history.push("/admin"))
                                   : kt("error", this.props.user.error);
-                              case 6:
+                              case 7:
                               case "end":
                                 return e.stop();
                             }
@@ -10040,7 +10040,7 @@
                       d.a.createElement(jt, {
                         open: this.props.user.deleteDialogOpen,
                         handleClose: this.props.apiUser.handleDeleteClose,
-                        title: "Delete Content",
+                        title: "Delete User",
                         content: "Are you sure you want to delete ".concat(
                           this.props.user.currentUser.name,
                           "? This action cannot be undone and all user data will be lost."
@@ -10318,7 +10318,7 @@
                             d.a.createElement(Qt.a, {
                               value: "editUser",
                               control: d.a.createElement(Kt.a, null),
-                              label: "Edit User"
+                              label: "Edit/Delete User"
                             })
                           )
                         )
@@ -11759,4 +11759,4 @@
   },
   [[394, 1, 2]]
 ]);
-//# sourceMappingURL=main.d811c5ee.chunk.js.map
+//# sourceMappingURL=main.3244dabb.chunk.js.map
