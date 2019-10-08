@@ -385,6 +385,20 @@ router.put("/cape/:id", capeCtrl.updateCAPE);
 //
 router.get("/capeBySF/:id", capeCtrl.getCAPEBySFId);
 
+// UPDATE A CAPE RECORD WITH PAYMENT STATUS BY ONE-TIME PAYMENT ID
+//   Example: PUT >> /api/capepayment
+//   Secured: no
+//   Expects:
+//     request body properties : {
+//        eventType       : String ('finish' || 'fail')
+//        info: {
+//            paymentId:  : String  ('809cc718-2075-4f5c-b3cd-1203fc3ae390'),
+//        },
+//      }
+//   Returns: JSON success or error message.
+//
+router.put("/capepayment", capeCtrl.updatePaymentStatus);
+
 /* =========================== SALESFORCE ROUTES =========================== */
 
 /* =============================== CONTACTS ================================ */

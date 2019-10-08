@@ -147,6 +147,21 @@ const deleteCAPE = id => {
     });
 };
 
+/** Update a CAPE record by one_time_payment_id
+ *  @param    {String}   one_time_payment_id    One-time payment id.
+ *  @param    {Object}   updates        Key/value pairs of fields to update.
+ *              •   one_time_payment_status   : string ('finish' || 'fail')
+ *  @returns  {Object}      Success or error message.
+ */
+const updateCAPEByPaymentId = (one_time_payment_id, updates) => {
+  return db(TABLES.CAPE)
+    .where({ one_time_payment_id })
+    .first()
+    .update(updates)
+    .update("updated_at", db.fn.now())
+    .returning("*");
+};
+
 /* ================================ exports ================================ */
 
 module.exports = {
@@ -155,5 +170,6 @@ module.exports = {
   getCAPEById,
   getCAPEBySFId,
   getAllCAPE,
-  deleteCAPE
+  deleteCAPE,
+  updateCAPEByPaymentId
 };

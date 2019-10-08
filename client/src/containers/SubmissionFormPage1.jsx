@@ -1165,6 +1165,18 @@ export class SubmissionFormPage1Container extends React.Component {
       return handleError("Please click 'Add a Card' to add a payment method");
     }
 
+    // if they clicked submit before the payment logic finished loading,
+    // they may not have donation amount fields visible
+    // but will still get an error that the field is missing
+    if (!formValues.capeAmount && !formValues.capeAmountOther) {
+      console.log("no donation amount chosen");
+      const newState = { ...this.state };
+      newState.displayCAPEPaymentFields = true;
+      return this.setState(newState, () => {
+        // console.log(this.state.displayCAPEPaymentFields);
+      });
+    }
+
     let cape_errors = "",
       cape_status = "Pending";
 
