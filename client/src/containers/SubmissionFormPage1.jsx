@@ -161,7 +161,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   suggestedAmountOnChange = e => {
     // call getIframeNew for standalone CAPE when donation amount is set
-    console.log("suggestedAmountOnChange");
+    // console.log("suggestedAmountOnChange");
     const { formValues } = this.props;
     if (e.target.value === "Other") {
       return;
@@ -179,6 +179,8 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async handleEmployerTypeChange(employerType) {
+    // console.log('handleEmployerTypeChange');
+    // console.log(employerType);
     // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
@@ -479,7 +481,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact() {
-    console.log("lookupSFContact");
+    // console.log("lookupSFContact");
     const { formValues } = this.props;
     if (
       formValues.firstName &&
@@ -522,7 +524,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async createSFContact() {
-    console.log("createSFContact");
+    // console.log("createSFContact");
     const values = await this.prepForContact(this.props.formValues);
     let {
       firstName,
@@ -741,7 +743,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    console.log("getIframeExisting");
+    // console.log("getIframeExisting");
     const memberShortId =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
@@ -749,13 +751,13 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.apiSF
       .getIframeExisting(token, memberShortId)
       .then(result => {
-        console.log(result);
+        // console.log(result);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
           result.type === "GET_IFRAME_EXISTING_FAILURE"
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -764,13 +766,13 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
 
   async getIframeNew(cape, capeAmount) {
-    console.log("getIframeNew");
+    // console.log("getIframeNew");
     const { formValues } = this.props;
 
     let birthdate;
@@ -794,7 +796,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // writePaymentStatus back to our api
 
     let externalId;
-    console.log(`submissionId: ${this.props.submission.submissionId}`);
+    // console.log(`submissionId: ${this.props.submission.submissionId}`);
     if (this.props.submission.submissionId) {
       externalId = this.props.submission.submissionId;
     } else {
@@ -805,7 +807,7 @@ export class SubmissionFormPage1Container extends React.Component {
       externalId = this.props.submission.cape.id;
     }
 
-    console.log(`externalId: ${externalId}`);
+    // console.log(`externalId: ${externalId}`);
     const body = {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
@@ -824,7 +826,7 @@ export class SubmissionFormPage1Container extends React.Component {
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };
-    console.log(body);
+    // console.log(body);
 
     if (!cape) {
       body.language = language;
@@ -840,18 +842,18 @@ export class SubmissionFormPage1Container extends React.Component {
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        console.log(result.payload);
+        // console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
           result.type === "GET_IFRAME_URL_FAILURE"
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -860,7 +862,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -870,13 +872,13 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.apiSF
       .getUnioniseToken()
       .then(result => {
-        console.log(result.payload);
+        // console.log(result.payload);
         if (
           !result.payload.access_token ||
           result.payload.message ||
           result.type === "GET_UNIONISE_TOKEN_FAILURE"
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -887,13 +889,13 @@ export class SubmissionFormPage1Container extends React.Component {
         return result.payload.access_token;
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
 
   async getIframeURL(cape) {
-    console.log("getIframeURL");
+    // console.log("getIframeURL");
     // first check if we have an existing unionise id
     // if so, we don't need to create a unionise member account; just fetch a
     // cardAddingURL from existing account
@@ -920,18 +922,18 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(`memberShortId: ${memberShortId}`);
     }
     if (memberShortId) {
-      console.log("getting unionise auth token");
+      // console.log("getting unionise auth token");
       // first fetch an auth token to access secured unionise routes
       const access_token = await this.props.apiSF
         .getUnioniseToken()
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
       // then get the card adding url for the existing account
       return this.getIframeExisting(access_token, memberShortId);
     } else {
-      console.log("no memberShortId found");
+      // console.log("no memberShortId found");
     }
 
     // if we don't have the memberShortId, then we need to create a new
@@ -961,10 +963,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async calculateAFHDuesRate(medicaidResidents) {
-    console.log("calculateAFHDuesRate");
-    console.log(`medicaidResidents: ${medicaidResidents}`);
+    // console.log("calculateAFHDuesRate");
+    // console.log(`medicaidResidents: ${medicaidResidents}`);
     let afhDuesRate = medicaidResidents * 14.84 + 2.75;
-    console.log(`afhDuesRate: ${afhDuesRate}`);
+    // console.log(`afhDuesRate: ${afhDuesRate}`);
     this.props.apiSubmission.handleInput({
       target: { name: "afhDuesRate", value: afhDuesRate }
     });
@@ -1010,7 +1012,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async postOneTimePayment() {
-    console.log("postOneTimePayment");
+    // console.log("postOneTimePayment");
     const { formValues } = this.props;
     const donationAmount =
       formValues.capeAmount === "Other"
@@ -1029,14 +1031,14 @@ export class SubmissionFormPage1Container extends React.Component {
       description: "One-Time CAPE Contribution",
       plannedDatetime: new Date()
     };
-    console.log(body);
+    // console.log(body);
 
     const result = await this.props.apiSF.getUnioniseToken().catch(err => {
       console.log(err);
       return handleError(err);
     });
-    console.log(`access_token: ${!!result.payload.access_token}`);
-    console.log(result.payload.access_token);
+    // console.log(`access_token: ${!!result.payload.access_token}`);
+    // console.log(result.payload.access_token);
     const oneTimePaymentResult = await this.props.apiSF
       .postOneTimePayment(result.payload.access_token, body)
       .catch(err => {
@@ -1068,7 +1070,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody() {
-    console.log("generateCAPEBody");
+    // console.log("generateCAPEBody");
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -1116,7 +1118,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: formValues.donationFrequency
       // member_short_id: this.props.submission.payment.memberShortId
     };
-    console.log(body);
+    // console.log(body);
     return body;
   }
 
@@ -1141,7 +1143,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    console.log("handleCAPESubmit");
+    // console.log("handleCAPESubmit");
     const { formValues } = this.props;
 
     if (standAlone) {
@@ -1169,7 +1171,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
@@ -1195,8 +1197,8 @@ export class SubmissionFormPage1Container extends React.Component {
         cape_status = "Error";
         handleError(err);
       });
-
-    console.log(sfCapeResult);
+    // console.log('1201');
+    // console.log(sfCapeResult);
     let sf_cape_id;
 
     if (
@@ -1211,11 +1213,11 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_status = "Success";
       sf_cape_id = sfCapeResult.payload.sf_cape_id;
     }
-
+    // console.log('1217');
     const member_short_id =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
-    console.log(`member_short_id: ${member_short_id}`);
+    // console.log(`member_short_id: ${member_short_id}`);
 
     // if initial cape was not already created
     // in the process of generating the iframe url,
@@ -1226,13 +1228,13 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(err);
       });
     }
-
+    // console.log('1232');
     // if one-time payment, send API request to unioni.se to process it
     await this.postOneTimePayment().catch(err => {
       console.log(err);
       return handleError(err);
     });
-
+    // console.log('1238');
     // collect updates to cape record (values returned from other API calls,
     // amount and frequency if not captured in initial iframe request)
     const { id, oneTimePaymentId } = this.props.submission.cape;
@@ -1250,13 +1252,11 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     // update CAPE record in postgres
-    const capeResult = await this.props.apiSubmission
-      .updateCAPE(id, updates)
-      .catch(err => {
-        console.log(err);
-        // return handleError(err); // don't return to client here
-      });
-    console.log(capeResult);
+    await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
+      console.log(err);
+      // return handleError(err); // don't return to client here
+    });
+    // console.log(capeResult);
 
     // update CAPE record in salesforce
     // generate body for this call
@@ -1264,7 +1264,7 @@ export class SubmissionFormPage1Container extends React.Component {
       Id: sf_cape_id,
       One_Time_Payment_Id__c: oneTimePaymentId
     };
-    console.log(sfCapeBody);
+    // console.log(sfCapeBody);
 
     const sfCapeUpdateResult = await this.props.apiSF
       .updateSFCAPE(sfCapeBody)

@@ -1,13 +1,6 @@
 import moment from "moment";
 import reducer, { INITIAL_STATE } from "../../store/reducers/submission";
-import {
-  contactsTableFields,
-  generateSFContactFieldList
-} from "../../../../app/utils/fieldConfigs.js";
 
-// this is a hack to allow the SubmissionFormPageComponent to import
-// this object even though it is stored outside the /src directory
-export const contactsTableFieldsExport = { ...contactsTableFields };
 describe("submission reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
@@ -162,7 +155,8 @@ describe("submission reducer", () => {
         Worksite_manual_entry_from_webform__c: "string",
         Work_Email__c: "string@string.com",
         Work_Phone__c: "123-456-7890",
-        Binary_Membership__c: "Not a Member"
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
       };
       const action = {
         type: "GET_SF_CONTACT_SUCCESS",
@@ -198,7 +192,8 @@ describe("submission reducer", () => {
           medicaidResidents: 0,
           paymentMethodAdded: false,
           afhDuesRate: 0,
-          capeAmount: ""
+          capeAmount: "",
+          donationFrequency: "Monthly"
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -293,7 +288,8 @@ describe("submission reducer", () => {
           djrEmployerId: "emloyerId",
           cardAddingUrl: "",
           unioniseRefreshToken: "",
-          unioniseToken: ""
+          unioniseToken: "",
+          currentCAPEFromSF: 0
         },
         djrId: "theDjrId"
       };
@@ -317,7 +313,8 @@ describe("submission reducer", () => {
           cardAddingUrl: "",
           djrEmployerId: "",
           memberShortId: "",
-          paymentErrorHold: false
+          paymentErrorHold: false,
+          currentCAPEFromSF: 0
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -354,7 +351,8 @@ describe("submission reducer", () => {
           unioniseToken: "",
           unioniseRefreshToken: "",
           cardAddingUrl: "url",
-          memberShortId: "string"
+          memberShortId: "string",
+          currentCAPEFromSF: 0
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -409,7 +407,8 @@ describe("submission reducer", () => {
       const action = {
         type: "LOOKUP_SF_CONTACT_SUCCESS",
         payload: {
-          salesforce_id: "string"
+          salesforce_id: "string",
+          Current_CAPE__c: 0
         }
       };
       const expectedState = {
