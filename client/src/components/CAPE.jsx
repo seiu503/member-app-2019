@@ -61,7 +61,10 @@ export const CAPE = props => {
     displayCAPEPaymentFields,
     handleCAPEOpen,
     handleCAPEClose,
-    capeOpen
+    capeOpen,
+    closeDialog,
+    mobilePhoneOnBlur,
+    donationFrequencyOnChange
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -76,12 +79,9 @@ export const CAPE = props => {
           title="Skip to next tab"
           content={`If you move to the next tab without clicking Submit, your CAPE contribution will not be processed.`}
           danger={true}
-          action={() => {
-            props.history.push(`/page2/?id=${props.submission.salesforceId}`);
-            handleCAPEClose();
-          }}
+          action={closeDialog}
           buttonText="Skip"
-          data-test="alert-dialog"
+          data-test="component-alert-dialog"
         />
       )}
       <form
@@ -349,7 +349,7 @@ export const CAPE = props => {
                 type="tel"
                 classes={classes}
                 component={renderTextField}
-                onBlur={() => handleEmployerTypeChange(formValues.employerType)}
+                onBlur={mobilePhoneOnBlur}
               />
 
               <FormHelperText className={classes.formHelperText}>
@@ -386,7 +386,11 @@ export const CAPE = props => {
                 </Translate>
               </Typography>
               {payment.currentCAPEFromSF > 1 && (
-                <Typography component="p" className={classes.body}>
+                <Typography
+                  component="p"
+                  className={classes.body}
+                  data-test="current-contribution"
+                >
                   <Translate id="currentContribution1">
                     You are currently signed up to contribute
                   </Translate>
@@ -454,10 +458,7 @@ export const CAPE = props => {
                 defaultItem="Monthly"
                 component={formElements.renderRadioGroup}
                 options={["Monthly", "One-Time"]}
-                onChange={(event, value) => {
-                  change("donationFrequency", value);
-                  handleDonationFrequencyChange(value);
-                }}
+                onChange={donationFrequencyOnChange}
               />
             </div>
             {formPage1.paymentRequired &&

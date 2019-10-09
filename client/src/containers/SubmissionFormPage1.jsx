@@ -70,6 +70,9 @@ export class SubmissionFormPage1Container extends React.Component {
     this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
     this.handleCAPEOpen = this.handleCAPEOpen.bind(this);
     this.handleCAPEClose = this.handleCAPEClose.bind(this);
+    this.closeDialog = this.closeDialog.bind(this);
+    this.mobilePhoneOnBlur = this.mobilePhoneOnBlur.bind(this);
+    this.donationFrequencyOnChange = this.donationFrequencyOnChange.bind(this);
   }
 
   componentDidMount() {
@@ -123,6 +126,19 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.capeOpen = false;
     this.setState({ ...newState });
+  }
+
+  closeDialog() {
+    this.props.history.push(`/page2/?id=${this.props.submission.salesforceId}`);
+    this.handleCAPEClose();
+  }
+  mobilePhoneOnBlur() {
+    this.handleEmployerTypeChange(this.props.formValues.employerType);
+  }
+
+  donationFrequencyOnChange(event, value) {
+    this.props.change("donationFrequency", value);
+    this.handleDonationFrequencyChange(value);
   }
 
   handleUpload(firstName, lastName) {
@@ -1520,6 +1536,9 @@ export class SubmissionFormPage1Container extends React.Component {
           handleCAPEOpen={this.handleCAPEOpen}
           handleCAPEClose={this.handleCAPEClose}
           capeOpen={this.state.capeOpen}
+          closeDialog={this.closeDialog}
+          mobilePhoneOnBlur={this.mobilePhoneOnBlur}
+          donationFrequencyOnChange={this.donationFrequencyOnChange}
         />
       </div>
     );
