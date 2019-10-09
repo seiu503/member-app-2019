@@ -49,6 +49,21 @@ describe("submission reducer", () => {
       }
     });
   });
+  it("should handle `setCAPEOptions`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_CAPE_OPTIONS",
+        payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      cape: {
+        ...INITIAL_STATE.cape,
+        monthlyOptions: [1, 2, 3],
+        oneTimeOptions: [4, 5, 6]
+      }
+    });
+  });
 
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {
@@ -416,6 +431,80 @@ describe("submission reducer", () => {
         salesforceId: "string",
         error: null,
         redirect: true
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getCAPEBySFId", () => {
+      const action = {
+        type: "GET_CAPE_BY_SFID_SUCCESS",
+        payload: {
+          Id: "123",
+          member_short_id: "456",
+          cape_amount: 5,
+          payment_method: "Unionise",
+          donation_frequency: "Monthly"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          id: "123",
+          memberShortId: "456",
+          donationAmount: 5,
+          paymentMethod: "Unionise",
+          donationFrequency: "Monthly"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createCAPE", () => {
+      const action = {
+        type: "CREATE_CAPE_SUCCESS",
+        payload: {
+          cape_id: "123",
+          currentCAPE: 5
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          id: "123"
+        },
+        currentCAPE: 5,
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("postOneTimePayment", () => {
+      const action = {
+        type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+        payload: {
+          id: "123"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          oneTimePaymentId: "123"
+        },
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createSFContact", () => {
+      const action = {
+        type: "CREATE_SF_CONTACT_SUCCESS",
+        payload: {
+          salesforce_id: "123"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        salesforceId: "123",
+        error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

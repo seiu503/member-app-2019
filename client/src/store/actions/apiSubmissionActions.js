@@ -233,8 +233,6 @@ export function getCAPEBySFId(id) {
           type: GET_CAPE_BY_SFID_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
-              console.log("error about undefined message coming from here???");
-              console.log(data);
               let message = "Sorry, something went wrong :(";
               if (data && data.message) {
                 message = data.message;
