@@ -1303,13 +1303,13 @@ const capeTableFields = {
   one_time_payment_id: {
     SFTable: "CAPE__c",
     SFFieldLabel: "One-Time Payment Id",
-    SFAPIName: "One_Time_Payment_Id",
+    SFAPIName: "One_Time_Payment_Id__c",
     SFDataType: "Text"
   },
   one_time_payment_status: {
     SFTable: "CAPE__c",
     SFFieldLabel: "One-Time Payment Status",
-    SFAPIName: "One_Time_Payment_Status",
+    SFAPIName: "One_Time_Payment_Status__c",
     SFDataType: "Text"
   }
 };

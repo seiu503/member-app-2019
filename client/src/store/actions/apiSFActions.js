@@ -425,6 +425,56 @@ export function createSFCAPE(body) {
   };
 }
 
+/* ++++++++++++++++++++++++++++++++ CAPE: POST +++++++++++++++++++++++++++++ */
+
+export const UPDATE_SF_CAPE_REQUEST = "UPDATE_SF_CAPE_REQUEST";
+export const UPDATE_SF_CAPE_SUCCESS = "UPDATE_SF_CAPE_FAILURE";
+export const UPDATE_SF_CAPE_FAILURE = "CREATE_SF_CAPE_FAILURE";
+
+/*
+ * Function: updateSFCAPE -- update a SF CAPE record, either by record Id or by one-time payment Id
+ * @param {object} body
+ *        (body must include both id and updates --
+ *        id not passed separately for this controller)
+ * This action dispatches additional actions as it executes:
+ *   UPDATE_SF_CAPE_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   UPDATE_SF_CAPE_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   UPDATE_SF_CAPE_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function updateSFCAPE(body) {
+  // console.log(body);
+  // console.log(JSON.stringify(body));
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfCAPE`,
+      method: "PUT",
+      types: [
+        UPDATE_SF_CAPE_REQUEST,
+        UPDATE_SF_CAPE_SUCCESS,
+        {
+          type: UPDATE_SF_CAPE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
 /* ================================ ACCOUNTS =============================== */
 
 /* +++++++++++++++++++++++++++++ ACCOUNTS: GET +++++++++++++++++++++++++++++ */

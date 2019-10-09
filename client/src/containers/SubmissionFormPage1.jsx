@@ -1196,6 +1196,9 @@ export class SubmissionFormPage1Container extends React.Component {
         handleError(err);
       });
 
+    console.log(sfCapeResult);
+    let sf_cape_id;
+
     if (
       sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
       this.props.submission.error
@@ -1206,6 +1209,7 @@ export class SubmissionFormPage1Container extends React.Component {
       return handleError(this.props.submission.error);
     } else {
       cape_status = "Success";
+      sf_cape_id = sfCapeResult.payload.sf_cape_id;
     }
 
     const member_short_id =
@@ -1249,12 +1253,28 @@ export class SubmissionFormPage1Container extends React.Component {
     const capeResult = await this.props.apiSubmission
       .updateCAPE(id, updates)
       .catch(err => {
-        // console.log(err);
+        console.log(err);
+        // return handleError(err); // don't return to client here
+      });
+    console.log(capeResult);
+
+    // update CAPE record in salesforce
+    // generate body for this call
+    const sfCapeBody = {
+      Id: sf_cape_id,
+      One_Time_Payment_Id__c: oneTimePaymentId
+    };
+    console.log(sfCapeBody);
+
+    const sfCapeUpdateResult = await this.props.apiSF
+      .updateSFCAPE(sfCapeBody)
+      .catch(err => {
+        console.log(err);
         return handleError(err);
       });
 
     if (
-      capeResult.type !== "UPDATE_CAPE_SUCCESS" ||
+      sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
       this.props.submission.error
     ) {
       // console.log(this.props.submission.error);

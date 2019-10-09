@@ -265,69 +265,6 @@ const getCAPEBySFId = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
-/** Update status of a one-time payment request from unioni.se
- *  @param    {String}   id   Payment Id of the requested CAPE record.
- *  @returns  {Object}        Success OR error message.
- */
-const updatePaymentStatus = async (req, res, next) => {
-  console.log(`cape.ctrl.js > 273`);
-  console.log(req.body);
-  let one_time_payment_id,
-    updates = {};
-  if (req.body && req.body.info && req.body.eventType) {
-    one_time_payment_id = req.body.info.paymentId;
-    updates.one_time_payment_status = req.body.eventType;
-  } else {
-    if (!req.body.eventType) {
-      console.log("cape.ctrl.js > 282: !eventType");
-      return res.status(422).json({ message: "No eventType submitted" });
-    }
-    if (!req.body.info.paymentId) {
-      console.log("cape.ctrl.js > 286: !paymentId");
-      return res.status(422).json({ message: "No payment Id submitted" });
-    }
-  }
-
-  console.log(
-    `cape.ctrl.js > 277: one_time_payment_id: ${one_time_payment_id} (updates below)`
-  );
-  console.log(updates);
-
-  try {
-    const updateCAPEResult = await cape
-      .updateCAPEByPaymentId(one_time_payment_id, updates)
-      .catch(err => {
-        console.log(`cape.ctrl.js > 291: err`);
-        console.error(err);
-      });
-
-    if (
-      !updateCAPEResult ||
-      updateCAPEResult.message ||
-      updateCAPEResult.length === 0
-    ) {
-      const errmsg =
-        updateCAPEResult.message ||
-        "There was an error updating the CAPE Record";
-      console.error(`cape.ctrl.js > 303: ${errmsg}`);
-      return res.status(500).json({
-        message: errmsg
-      });
-    } else {
-      console.log("cape.ctrl.js > 308: returning to client");
-      console.log(updateCAPEResult[0].id);
-      // saving to res.locals to make id available for testing
-      res.locals.cape_id = updateCAPEResult[0].id;
-      return res
-        .status(200)
-        .json({ message: "Updated payment status successfully" });
-    }
-  } catch (error) {
-    console.error(`cape.ctrl.js > 315: ${error}`);
-    return res.status(404).json({ message: error.message });
-  }
-};
-
 /* ================================ EXPORT ================================= */
 
 module.exports = {
@@ -336,6 +273,5 @@ module.exports = {
   deleteCAPE,
   getCAPEById,
   getCAPEBySFId,
-  getAllCAPE,
-  updatePaymentStatus
+  getAllCAPE
 };
