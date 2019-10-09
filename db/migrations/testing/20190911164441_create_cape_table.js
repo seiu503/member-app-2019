@@ -18,9 +18,11 @@ exports.up = function(knex) {
       table.string("employer_id").notNullable();
       table.text("cape_legal").notNullable();
       table.string("payment_method").notNullable();
-      table.string("donation_frequency").notNullable();
+      table.string("donation_frequency"); // optional for initial record generation
       table.string("member_short_id");
-      table.decimal("cape_amount").notNullable();
+      table.decimal("cape_amount"); // optional for initial record generation
+      table.string("one_time_payment_id");
+      table.string("one_time_payment_status");
       table.string("cape_status");
       table.text("cape_errors");
       table.timestamp("created_at").defaultTo(knex.fn.now());

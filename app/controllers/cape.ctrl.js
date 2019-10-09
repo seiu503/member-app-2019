@@ -165,15 +165,13 @@ const updateCAPE = async (req, res, next) => {
       updateCAPEResult.message ||
       updateCAPEResult.length === 0
     ) {
-      const errmsg =
+      const message =
         updateCAPEResult.message ||
         "There was an error updating the CAPE Record";
-      console.error(`cape.ctrl.js > 205: ${errmsg}`);
-      return res.status(500).json({
-        message: errmsg
-      });
+      // console.error(`cape.ctrl.js > 205: ${message}`);
+      return res.status(500).json({ message });
     } else {
-      // console.log("cape.ctrl.js > 201: returning to client");
+      // console.log("cape.ctrl.js > 174: returning to client");
       // console.log(updateCAPEResult[0].id);
       // saving to res.locals to make id available for testing
       res.locals.cape_id = updateCAPEResult[0].id;

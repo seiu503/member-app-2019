@@ -374,7 +374,10 @@ suite("sf.ctrl.js", function() {
     });
 
     test("finds a single contact by first, last, email", async function() {
-      responseStub = { salesforce_id: "0035500000VFkjOAAT" };
+      responseStub = {
+        salesforce_id: "0035500000VFkjOAAT",
+        Current_CAPE__c: undefined
+      };
       try {
         await sfCtrl.lookupSFContactByFLE(req, res);
         assert.called(jsforceConnectionStub);
@@ -719,7 +722,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("gets all Employers", async function() {
-      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
+      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider') and Sub_Division__c != null)`;
       try {
         await sfCtrl.getAllEmployers(req, res);
         assert.called(jsforceConnectionStub);
@@ -1380,7 +1383,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("creates a CAPE record", async function() {
-      responseStub = { cape_id: "0035500000VFkjOAAT" };
+      responseStub = { sf_cape_id: "0035500000VFkjOAAT" };
       jsforceConnectionStub = sinon
         .stub(jsforce, "Connection")
         .returns(jsforceStub);

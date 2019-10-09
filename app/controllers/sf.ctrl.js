@@ -545,8 +545,8 @@ exports.createSFCAPE = async (req, res, next) => {
     // convert datetime to yyyy-mm-dd format
     body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
 
-    console.log(`sf.ctrl.js > 547`);
-    console.log(body);
+    // console.log(`sf.ctrl.js > 547`);
+    // console.log(body);
 
     CAPE = await conn.sobject("CAPE__c").create({
       ...body
@@ -556,7 +556,7 @@ exports.createSFCAPE = async (req, res, next) => {
       sf_cape_id: CAPE.id || CAPE.Id
     });
   } catch (err) {
-    console.error(`sf.ctrl.js > 558: ${err}`);
+    // console.error(`sf.ctrl.js > 558: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -637,13 +637,11 @@ exports.updateSFCAPE = async (req, res, next) => {
             capeResult[0].errors[0]
           }`
         );
-        return res
-          .status(404)
-          .json({
-            message: `No matching record found for payment id ${one_time_payment_id}, ${
-              capeResult[0].errors[0]
-            }`
-          });
+        return res.status(404).json({
+          message: `No matching record found for payment id ${one_time_payment_id}, ${
+            capeResult[0].errors[0]
+          }`
+        });
       }
       // saving to res.locals to make id available for testing
       res.locals.sf_cape_id = capeResult.Id;
@@ -676,13 +674,11 @@ exports.updateSFCAPE = async (req, res, next) => {
             capeResult.errors[0]
           }`
         );
-        return res
-          .status(404)
-          .json({
-            message: `No matching record found for CAPE id ${req.body.Id}, ${
-              capeResult.errors[0]
-            }`
-          });
+        return res.status(404).json({
+          message: `No matching record found for CAPE id ${req.body.Id}, ${
+            capeResult.errors[0]
+          }`
+        });
       }
       // saving to res.locals to make id available for testing
       res.locals.sf_cape_id = capeResult.Id;
@@ -715,7 +711,7 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 521: ${err}`);
+    // console.error(`sf.ctrl.js > 718: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
@@ -727,7 +723,7 @@ exports.getAllEmployers = async (req, res, next) => {
     }
     return res.status(200).json(accounts.records);
   } catch (err) {
-    console.error(`sf.ctrl.js > 533: ${err}`);
+    // console.error(`sf.ctrl.js > 730: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

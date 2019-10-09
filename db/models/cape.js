@@ -137,7 +137,6 @@ const getCAPEBySFId = id => {
  */
 
 const deleteCAPE = id => {
-  console.log(`models/cape.js > 128: ${id}`);
   return db(TABLES.CAPE)
     .where({ id })
     .del()

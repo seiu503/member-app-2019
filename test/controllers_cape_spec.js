@@ -305,6 +305,7 @@ suite("cape.ctrl.js", function() {
         await capeCtrl.getCAPEById(req, res);
         assert.calledWith(res.status, 200);
         let result = res.locals.testData;
+        // console.log(result);
 
         // test that reponse matches data submitted
         // for each key that exists in the response

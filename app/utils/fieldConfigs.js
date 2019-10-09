@@ -1040,7 +1040,7 @@ const capeTableFields = {
   employer_name: {
     oldFormPage: "none",
     newFormTab: 0,
-    req: "Y",
+    req: "F",
     CAPEreq: true,
     postgresFieldName: "employer_name",
     clientFieldName: "employerName",
@@ -1056,7 +1056,7 @@ const capeTableFields = {
   employer_type: {
     oldFormPage: "none",
     newFormTab: 0,
-    req: "Y",
+    req: "F",
     CAPEreq: true,
     postgresFieldName: "employer_type",
     clientFieldName: "employerType",
@@ -1685,7 +1685,7 @@ const generateCAPEValidateBackEnd = () => {
 const generateCAPEValidateFrontEnd = () => {
   const sampleData = {};
   Object.keys(capeTableFields).map(function(key, index) {
-    if (capeTableFields[key].req === "Y") {
+    if (capeTableFields[key].req === "Y" || capeTableFields[key].req === "F") {
       let clientFieldName = capeTableFields[key].clientFieldName;
       sampleData[clientFieldName] = capeTableFields[key].testingSample;
     }
