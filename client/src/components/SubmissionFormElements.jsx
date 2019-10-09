@@ -189,7 +189,6 @@ export const generateCAPEOptions = existingCAPE => {
       oneTimeSteps[oneTimeIndex + 2],
       "Other"
     );
-    console.log(oneTimeOptions);
     return {
       monthlyOptions,
       oneTimeOptions
