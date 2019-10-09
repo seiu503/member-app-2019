@@ -3,6 +3,7 @@ import { shallow, mount } from "enzyme";
 import checkPropTypes from "check-prop-types";
 
 import * as formElements from "../../components/SubmissionFormElements";
+import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";
 
 const {
@@ -110,6 +111,13 @@ describe("Helper Functions", () => {
       expect(typeof employerObjectsTest).toBe("object");
       expect(employerObjectsTest).toEqual(employerObjects[1]);
     });
+  });
+
+  describe("handleError", () => {
+    const openSnackbarMock = jest.fn();
+    Notifier.openSnackbar = openSnackbarMock;
+    formElements.handleError("Error");
+    expect(openSnackbarMock.mock.calls.length).toBe(1);
   });
 });
 

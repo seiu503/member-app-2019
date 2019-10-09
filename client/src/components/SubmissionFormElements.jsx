@@ -1,7 +1,7 @@
 import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
-import { openSnackbar } from "../containers/Notifier";
+import Notifier from "../containers/Notifier";
 import { Translate } from "react-localize-redux";
 
 import TextField from "@material-ui/core/TextField";
@@ -61,7 +61,7 @@ export const tableIcons = {
 
 export const handleError = err => {
   // console.log(err);
-  return openSnackbar(
+  return Notifier.openSnackbar(
     "error",
     err || "Sorry, something went wrong. Please try again."
   );
