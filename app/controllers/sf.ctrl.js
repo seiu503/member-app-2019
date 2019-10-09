@@ -626,9 +626,13 @@ exports.updateSFCAPE = async (req, res, next) => {
         .update({
           One_Time_Payment_Status__c: req.body.eventType
         });
+      // console.log(`########################`);
+      // console.log('result of sobject.find');
+      // console.log(capeResult);
 
       console.log("sf.ctrl.js > 631: returning to client");
       console.log(capeResult[0]);
+
       if (!capeResult[0] || !capeResult[0].success) {
         console.log("sf.ctrl.js > 634");
         console.log(capeResult.errors);

@@ -1445,4 +1445,201 @@ suite("sf.ctrl.js", function() {
       }
     });
   });
+
+  suite("sfCtrl > updateSFCAPE", function() {
+    suite("unioni.se event request", function() {
+      beforeEach(function() {
+        return new Promise(resolve => {
+          req = mockReq({
+            body: {
+              info: {
+                paymentId: "123"
+              },
+              eventType: "finish"
+            }
+          });
+          responseStub = [contactStub];
+          jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+          loginStub = sinon.stub();
+          jsforceStub = {
+            login: loginStub,
+            sobject: sinon.stub().returns({
+              find: sinon.stub().returns({
+                update: jsforceSObjectUpdateStub
+              })
+            })
+          };
+          resolve();
+        });
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      test("updates a CAPE record", async function() {
+        responseStub = { message: "Updated payment status successfully" };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.json, responseStub);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if login fails", async function() {
+        loginError =
+          "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+        loginStub = sinon.stub().throws(new Error(loginError));
+        jsforceStub.login = loginStub;
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.status, 500);
+          assert.calledWith(res.json, { message: loginError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update fails", async function() {
+        sobjectError =
+          "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+        jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentId: "123"
+            },
+            eventType: "finish"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    });
+    suite("member app request", function() {
+      beforeEach(function() {
+        return new Promise(resolve => {
+          req = mockReq({
+            body: {
+              Id: "123",
+              One_Time_Payment_Id__c: "456"
+            }
+          });
+          responseStub = [contactStub];
+          jsforceSObjectUpdateStub = sinon.stub().returns((null, contactStub));
+          loginStub = sinon.stub();
+          jsforceStub = {
+            login: loginStub,
+            sobject: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          };
+          resolve();
+        });
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      test("updates a CAPE record", async function() {
+        responseStub = { message: "Updated payment Id successfully" };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.json, responseStub);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if login fails", async function() {
+        loginError =
+          "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+        loginStub = sinon.stub().throws(new Error(loginError));
+        jsforceStub.login = loginStub;
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.status, 500);
+          assert.calledWith(res.json, { message: loginError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update fails", async function() {
+        sobjectError =
+          "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+        jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({ update: jsforceSObjectUpdateStub })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123",
+            One_Time_Payment_Id__c: "456"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    });
+  });
 });
