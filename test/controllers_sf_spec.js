@@ -1446,7 +1446,7 @@ suite("sf.ctrl.js", function() {
     });
   });
 
-  suite("sfCtrl > updateSFCAPE", function() {
+  suite.only("sfCtrl > updateSFCAPE", function() {
     suite("unioni.se event request", function() {
       beforeEach(function() {
         return new Promise(resolve => {
@@ -1548,6 +1548,151 @@ suite("sf.ctrl.js", function() {
           console.log(err);
         }
       });
+
+      test("returns error if body has info key but no eventType", async function() {
+        sobjectError = "No eventType submitted";
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns({ message: sobjectError });
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentId: "123"
+            },
+            eventType: null
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.notCalled(jsforceConnectionStub);
+          assert.notCalled(jsforceStub.login);
+          assert.calledWith(res.status, 422);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if body has One_Time_Payment_Id__c key but no Id", async function() {
+        sobjectError = "No CAPE__c Id submitted";
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns({ message: sobjectError });
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            One_Time_Payment_Id__c: "123"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.notCalled(jsforceConnectionStub);
+          assert.notCalled(jsforceStub.login);
+          assert.calledWith(res.status, 422);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if no payment id in body", async function() {
+        sobjectError = "No payment Id submitted";
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns({ message: sobjectError });
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.notCalled(jsforceConnectionStub);
+          assert.notCalled(jsforceStub.login);
+          assert.calledWith(res.status, 422);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject find returns no record", async function() {
+        sobjectError = `No matching record found for payment id 123, Error0`;
+        const contactErrorStub = { ...contactStub };
+        contactErrorStub.errors = ["Error0"];
+        contactErrorStub.success = false;
+        responseStub = [contactErrorStub];
+        jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentId: "123"
+            },
+            eventType: "finish"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
     });
     suite("member app request", function() {
       beforeEach(function() {
@@ -1617,6 +1762,42 @@ suite("sf.ctrl.js", function() {
         jsforceStub = {
           login: loginStub,
           sobject: sinon.stub().returns({ update: jsforceSObjectUpdateStub })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123",
+            One_Time_Payment_Id__c: "456"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update returns no record", async function() {
+        sobjectError = `No matching record found for payment id 123, Error0`;
+        const contactErrorStub = { ...contactStub };
+        contactErrorStub.errors = ["Error0"];
+        contactErrorStub.success = false;
+        responseStub = [contactErrorStub];
+        jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            update: jsforceSObjectUpdateStub
+          })
         };
         jsforceConnectionStub = sinon
           .stub(jsforce, "Connection")
