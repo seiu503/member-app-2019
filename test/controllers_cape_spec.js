@@ -45,7 +45,7 @@ suite("cape.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          body: capeBody
+          body: generateCAPEValidateBackEnd()
         });
         next = sinon.stub();
         resolve();
@@ -92,23 +92,36 @@ suite("cape.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error saving the CAPE record";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      capeModelStub = sinon.stub(cape, "createCAPE").returns(dbMethodStub);
+      capeModelStub = sinon.stub(cape, "createCAPE").returns(null);
 
       try {
         await capeCtrl.createCAPE(req, res);
         assert.called(capeModelStub);
-        assert.called(dbMethods.createCAPE);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
     test("returns 500 if db method fails", async function() {
       capeModelStub = sinon
         .stub(cape, "createCAPE")
         .resolves({ message: "Error" });
+
+      try {
+        await capeCtrl.createCAPE(req, res);
+        assert.called(capeModelStub);
+        assert.called(dbMethods.createCAPE);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+    test("returns 500 if db method throws", async function() {
+      capeModelStub = sinon
+        .stub(cape, "createCAPE")
+        .rejects({ message: "Error" });
 
       try {
         await capeCtrl.createCAPE(req, res);
@@ -217,6 +230,22 @@ suite("cape.ctrl.js", function() {
         // console.log(err);
       }
     });
+
+    test("returns 500 if db method throws", async function() {
+      capeModelStub = sinon
+        .stub(cape, "updateCAPE")
+        .rejects({ message: "Error" });
+
+      try {
+        await capeCtrl.updateCAPE(req, res);
+        assert.called(capeModelStub);
+        assert.called(dbMethods.updateCAPE);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
   });
 
   suite("capeCtrl > getAllCAPE", function() {
@@ -270,6 +299,22 @@ suite("cape.ctrl.js", function() {
       capeModelStub = sinon
         .stub(cape, "getAllCAPE")
         .resolves({ message: "Error" });
+
+      try {
+        await capeCtrl.getAllCAPE(req, res);
+        assert.called(capeModelStub);
+        assert.called(dbMethods.getAllCAPE);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if db method throws", async function() {
+      capeModelStub = sinon
+        .stub(cape, "getAllCAPE")
+        .rejects({ message: "Error" });
 
       try {
         await capeCtrl.getAllCAPE(req, res);
@@ -362,6 +407,119 @@ suite("cape.ctrl.js", function() {
         // console.log(err);
       }
     });
+
+    test("returns 500 if db method throws", async function() {
+      capeModelStub = sinon
+        .stub(cape, "getCAPEById")
+        .rejects({ message: "Error" });
+
+      try {
+        await capeCtrl.getCAPEById(req, res);
+        assert.called(capeModelStub);
+        assert.called(dbMethods.getCAPEById);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+  });
+
+  suite("capeCtrl > getCAPEBySFId", function() {
+    beforeEach(function() {
+      return new Promise(resolve => {
+        req = mockReq({
+          params: {
+            id: "12345678"
+          }
+        });
+        resolve();
+      });
+    });
+
+    afterEach(() => {
+      sinon.restore();
+      res = mockRes();
+    });
+
+    test("gets one CAPE record by SF Id and returns 200", async function() {
+      try {
+        await capeCtrl.getCAPEBySFId(req, res);
+        assert.calledWith(res.status, 200);
+        let result = res.locals.testData;
+        // console.log(result);
+
+        // test that reponse matches data submitted
+        // for each key that exists in the response
+        Object.keys(capeBody).forEach(key => {
+          chai.assert.property(result, key);
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 404 if CAPE record not found", async function() {
+      errorMsg = "CAPE record not found";
+      capeModelStub = sinon
+        .stub(cape, "getCAPEBySFId")
+        .resolves(new Error(errorMsg));
+
+      try {
+        await capeCtrl.getCAPEBySFId(req, res);
+        assert.called(capeModelStub);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "CAPE record not found";
+      capeModelStub = sinon
+        .stub(cape, "getCAPEBySFId")
+        .rejects(new Error(errorMsg));
+
+      try {
+        await capeCtrl.getCAPEBySFId(req, res);
+        assert.called(capeModelStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 404 if db method returns no record", async function() {
+      capeModelStub = sinon
+        .stub(cape, "getCAPEBySFId")
+        .resolves({ message: "Error" });
+
+      try {
+        await capeCtrl.getCAPEBySFId(req, res);
+        assert.called(capeModelStub);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if db method throws", async function() {
+      capeModelStub = sinon
+        .stub(cape, "getCAPEBySFId")
+        .rejects({ message: "Error" });
+
+      try {
+        await capeCtrl.getCAPEBySFId(req, res);
+        assert.called(capeModelStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        console.log(err);
+      }
+    });
   });
 
   suite("capeCtrl > deleteCAPE", function() {
@@ -427,6 +585,22 @@ suite("cape.ctrl.js", function() {
       capeModelStub = sinon
         .stub(cape, "deleteCAPE")
         .resolves({ message: "Error" });
+
+      try {
+        await capeCtrl.deleteCAPE(req, res);
+        assert.called(capeModelStub);
+        assert.called(dbMethods.deleteCAPE);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: "Error" });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+
+    test("returns 500 if db method throws", async function() {
+      capeModelStub = sinon
+        .stub(cape, "deleteCAPE")
+        .rejects({ message: "Error" });
 
       try {
         await capeCtrl.deleteCAPE(req, res);

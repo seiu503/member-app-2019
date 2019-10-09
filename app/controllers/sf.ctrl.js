@@ -848,8 +848,8 @@ exports.postPaymentRequest = async (req, res, next) => {
   axios
     .post(url, data, { headers })
     .then(response => {
-      // console.log(`sf.ctrl.js > 720`);
-      // console.log(response.data);
+      // console.log(`sf.ctrl.js > 851`);
+      // console.log(response);
       if (!response.data || !response.data.id) {
         return res
           .status(500)

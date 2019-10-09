@@ -1406,7 +1406,7 @@ suite("sf.ctrl.js", function() {
       responseStub = { message: unioniseError };
       nock("https://lab.unioni.se")
         .post("/api/v1/paymentRequests")
-        .reply(500, { data: responseStub });
+        .reply(500, { ...responseStub });
       chai
         .request(app)
         .post("/api/unionise/oneTimePayment")
@@ -1431,10 +1431,10 @@ suite("sf.ctrl.js", function() {
         plannedDatetime: new Date()
       };
       unioniseError = new Error("Error while posting payment request");
-      responseStub = { message: unioniseError };
+      responseStub = unioniseError;
       nock("https://lab.unioni.se")
         .post("/api/v1/paymentRequests")
-        .reply(500, { data: responseStub });
+        .reply(500, responseStub);
       chai
         .request(app)
         .post("/api/unionise/oneTimePayment")
