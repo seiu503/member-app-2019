@@ -117,7 +117,11 @@ describe("<CAPE />", () => {
       },
       handleEmployerTypeChange: jest
         .fn()
-        .mockImplementation(() => Promise.resolve({}))
+        .mockImplementation(() => Promise.resolve({})),
+      capeObject: {
+        monthlyOptions: [1, 2, 3],
+        oneTimeOptions: [4, 5, 6]
+      }
     };
 
     it("renders without error", () => {
@@ -148,7 +152,8 @@ describe("<CAPE />", () => {
       const suggestedAmountOnChangeMock = jest.fn();
 
       wrapper.setProps({
-        suggestedAmountOnChange: suggestedAmountOnChangeMock
+        suggestedAmountOnChange: suggestedAmountOnChangeMock,
+        displayCAPEPaymentFields: true
       });
 
       component = findByTestAttr(wrapper, "radio-cape-amount").first();
@@ -167,7 +172,8 @@ describe("<CAPE />", () => {
         change: changeMock,
         formValues: {
           capeAmount: "Other"
-        }
+        },
+        displayCAPEPaymentFields: true
       });
 
       component = findByTestAttr(wrapper, "field-other-amount").first();
@@ -223,10 +229,16 @@ describe("<CAPE />", () => {
       handleSubmit = fn => fn;
       const props = {
         formValues: {
-          employerType: "adult foster home",
-          paymentType: "Card"
+          paymentType: "Card",
+          donationFrequency: "One-Time"
         },
-        iFrameURL: "example.com"
+        checkoff: false,
+        iFrameURL: "example.com",
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6]
+        }
       };
       wrapper = setup(props);
       const component = findByTestAttr(wrapper, "component-iframe");
@@ -260,6 +272,11 @@ describe("<CAPE />", () => {
       const props = {
         formValues: {
           capeAmount: "Other"
+        },
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6]
         }
       };
       wrapper = setup(props);
