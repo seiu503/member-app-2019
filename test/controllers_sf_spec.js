@@ -1305,7 +1305,7 @@ suite("sf.ctrl.js", function() {
       const app = require("../server");
       responseStub = { cardAddingUrl: "http://www.url.com" };
       nock("https://lab.unioni.se")
-        .post("/v1/members/123ABC/generate-payment-method-iframe-url")
+        .post("/api/v1/members/123ABC/generate-payment-method-iframe-url")
         .reply(200, { data: responseStub });
       // chai
       //   .request(app)
@@ -1354,6 +1354,98 @@ suite("sf.ctrl.js", function() {
       //     console.log(res.err);
       //     expect(res.error).to.equal(unioniseError);
       //   });
+    });
+  });
+
+  suite("sfCtrl > postPaymentRequest", function() {
+    afterEach(() => {
+      nock.cleanAll();
+      sinon.restore();
+    });
+
+    test("posts a one-time payment request to unionise", async function() {
+      const app = require("../server");
+      const body = {
+        memberShortId: "J7K5HYDQ",
+        amount: {
+          currency: "USD",
+          amount: 1.1
+        },
+        paymentPartType: "CAPE",
+        description: "One-time CAPE contribution",
+        plannedDatetime: new Date()
+      };
+      responseStub = { id: "a07dbd65-9f34-40e6-a203-5406302b8c75" };
+      nock("https://lab.unioni.se")
+        .post("/api/v1/paymentRequests")
+        .reply(200, { data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/oneTimePayment")
+        .set({ Authorization: "Bearer 12345" })
+        .send(body)
+        .end(function(err, res) {
+          expect(res.status).to.equal(200);
+          expect(res.data).to.equal(responseStub);
+        });
+    });
+
+    test("returns error if no access token in response", async function() {
+      const app = require("../server");
+      const body = {
+        memberShortId: "J7K5HYDQ",
+        amount: {
+          currency: "USD",
+          amount: 1.1
+        },
+        paymentPartType: "CAPE",
+        description: "One-time CAPE contribution",
+        plannedDatetime: new Date()
+      };
+      unioniseError = "Error while posting payment request";
+      responseStub = { message: unioniseError };
+      nock("https://lab.unioni.se")
+        .post("/api/v1/paymentRequests")
+        .reply(500, { data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/oneTimePayment")
+        .set({ Authorization: "Bearer 12345" })
+        .send(body)
+        .end(function(err, res) {
+          expect(res.status).to.equal(500);
+          expect(res.data).to.equal(responseStub);
+        });
+    });
+
+    test("returns error if unionise api call throws", async function() {
+      const app = require("../server");
+      const body = {
+        memberShortId: "J7K5HYDQ",
+        amount: {
+          currency: "USD",
+          amount: 1.1
+        },
+        paymentPartType: "CAPE",
+        description: "One-time CAPE contribution",
+        plannedDatetime: new Date()
+      };
+      unioniseError = new Error("Error while posting payment request");
+      responseStub = { message: unioniseError };
+      nock("https://lab.unioni.se")
+        .post("/api/v1/paymentRequests")
+        .reply(500, { data: responseStub });
+      chai
+        .request(app)
+        .post("/api/unionise/oneTimePayment")
+        .set({ Authorization: "Bearer 12345" })
+        .send(body)
+        .end(function(err, res) {
+          expect(res.status).to.equal(500);
+          console.log("controllers_sf_spec > 1434");
+          console.log(res.error);
+          expect(res.error).to.equal(unioniseError);
+        });
     });
   });
 
@@ -1446,7 +1538,7 @@ suite("sf.ctrl.js", function() {
     });
   });
 
-  suite.only("sfCtrl > updateSFCAPE", function() {
+  suite("sfCtrl > updateSFCAPE", function() {
     suite("unioni.se event request", function() {
       beforeEach(function() {
         return new Promise(resolve => {
@@ -1704,7 +1796,9 @@ suite("sf.ctrl.js", function() {
             }
           });
           responseStub = [contactStub];
-          jsforceSObjectUpdateStub = sinon.stub().returns((null, contactStub));
+          jsforceSObjectUpdateStub = sinon
+            .stub()
+            .returns((null, [contactStub]));
           loginStub = sinon.stub();
           jsforceStub = {
             login: loginStub,
@@ -1721,7 +1815,6 @@ suite("sf.ctrl.js", function() {
       });
 
       test("updates a CAPE record", async function() {
-        responseStub = { message: "Updated payment Id successfully" };
         jsforceConnectionStub = sinon
           .stub(jsforce, "Connection")
           .returns(jsforceStub);
@@ -1729,7 +1822,9 @@ suite("sf.ctrl.js", function() {
           await sfCtrl.updateSFCAPE(req, res);
           assert.called(jsforceConnectionStub);
           assert.called(jsforceStub.login);
-          assert.calledWith(res.json, responseStub);
+          assert.calledWith(res.json, {
+            message: "Updated payment Id successfully"
+          });
         } catch (err) {
           console.log(err);
         }

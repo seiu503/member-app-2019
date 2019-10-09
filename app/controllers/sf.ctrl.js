@@ -581,30 +581,30 @@ exports.createSFCAPE = async (req, res, next) => {
  *  @returns  {Object}        Success OR error message.
  */
 exports.updateSFCAPE = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 584`);
-  console.log(req.body);
+  // console.log(`sf.ctrl.js > 584: updateSFCAPE`);
+  // console.log(req.body);
   let one_time_payment_id;
   // check if this is Body shape 1 (request from unioni.se)
   if (req.body && req.body.info) {
     one_time_payment_id = req.body.info.paymentId;
     if (!req.body.eventType) {
-      console.log("sf.ctrl.js > 591: !eventType");
+      // console.log("sf.ctrl.js > 591: !eventType");
       return res.status(422).json({ message: "No eventType submitted" });
     }
     // check if this is Body shape 2 (request from member app)
   } else if (req.body && req.body.One_Time_Payment_Id__c) {
     one_time_payment_id = req.body.One_Time_Payment_Id__c;
     if (!req.body.Id) {
-      console.log("sf.ctrl.js > 598: !sObjectId");
+      // console.log("sf.ctrl.js > 598: !sObjectId");
       return res.status(422).json({ message: "No CAPE__c Id submitted" });
     }
   }
   if (!one_time_payment_id) {
-    console.log("sf.ctrl.js > 603: !paymentId");
+    // console.log("sf.ctrl.js > 603: !paymentId");
     return res.status(422).json({ message: "No payment Id submitted" });
   }
 
-  console.log(`sf.ctrl.js > 588: one_time_payment_id: ${one_time_payment_id}`);
+  // console.log(`sf.ctrl.js > 588: one_time_payment_id: ${one_time_payment_id}`);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -630,22 +630,20 @@ exports.updateSFCAPE = async (req, res, next) => {
       // console.log('result of sobject.find');
       // console.log(capeResult);
 
-      console.log("sf.ctrl.js > 631: returning to client");
-      console.log(capeResult[0]);
+      // console.log("sf.ctrl.js > 631: returning to client");
+      let error;
+      // console.log(capeResult[0]);
 
       if (!capeResult[0] || !capeResult[0].success) {
-        console.log("sf.ctrl.js > 634");
-        console.log(capeResult.errors);
-        console.log(
-          `No matching record found for payment id ${one_time_payment_id}, ${
-            capeResult[0].errors[0]
-          }`
-        );
-        return res.status(404).json({
-          message: `No matching record found for payment id ${one_time_payment_id}, ${
-            capeResult[0].errors[0]
-          }`
-        });
+        error = `No matching record found for payment id ${one_time_payment_id}`;
+        // console.log("sf.ctrl.js > 634");
+        // console.log(capeResult[0].errors);
+        if (capeResult[0] && capeResult[0].errors) {
+          // console.log(capeResult[0].errors);
+          error += `, ${capeResult[0].errors[0]}`;
+          // console.log(error);
+        }
+        return res.status(404).json({ message: error });
       }
       // saving to res.locals to make id available for testing
       res.locals.sf_cape_id = capeResult.Id;
@@ -655,7 +653,7 @@ exports.updateSFCAPE = async (req, res, next) => {
     } catch (error) {
       const message =
         error.message || "There was an error updating the CAPE Record";
-      console.error(`sf.ctrl.js > 648: ${error}`);
+      // console.error(`sf.ctrl.js > 648: ${error}`);
       return res.status(404).json({ message });
     }
   } else if (req.body && req.body.One_Time_Payment_Id__c) {
@@ -668,21 +666,18 @@ exports.updateSFCAPE = async (req, res, next) => {
         One_Time_Payment_Id__c: req.body.One_Time_Payment_Id__c
       });
 
-      console.log("sf.ctrl.js > 662: returning to client");
-      console.log(capeResult);
-      if (!capeResult || !capeResult.success) {
-        console.log("sf.ctrl.js > 664");
-        console.log(capeResult.errors);
-        console.log(
-          `No matching record found for payment CAPE id ${req.body.Id}, ${
-            capeResult.errors[0]
-          }`
-        );
-        return res.status(404).json({
-          message: `No matching record found for CAPE id ${req.body.Id}, ${
-            capeResult.errors[0]
-          }`
-        });
+      // console.log("sf.ctrl.js > 662: returning to client");
+      let error;
+      if (!capeResult[0] || !capeResult[0].success) {
+        error = `No matching record found for payment id ${req.body.Id}`;
+        // console.log("sf.ctrl.js > 664");
+        if (capeResult[0] && capeResult[0].errors) {
+          // console.log(capeResult[0].errors);
+          error += `, ${capeResult[0].errors[0]}`;
+          // console.log(error);
+        }
+
+        return res.status(404).json({ message: error });
       }
       // saving to res.locals to make id available for testing
       res.locals.sf_cape_id = capeResult.Id;
@@ -692,7 +687,7 @@ exports.updateSFCAPE = async (req, res, next) => {
     } catch (error) {
       const message =
         error.message || "There was an error updating the CAPE Record";
-      console.error(`sf.ctrl.js > 668: ${error}`);
+      // console.error(`sf.ctrl.js > 668: ${error}`);
       return res.status(404).json({ message });
     }
   }
@@ -838,13 +833,12 @@ exports.getUnioniseToken = async (req, res, next) => {
  */
 
 exports.postPaymentRequest = async (req, res, next) => {
-  console.log("postPaymentRequest");
+  // console.log("postPaymentRequest");
 
   const data = { ...req.body };
 
-  console.log(data);
-  console.log(`####################`);
-  console.log(req.headers.authorization);
+  // console.log(data);
+  // console.log(req.headers.authorization);
   const url = "https://lab.unioni.se/api/v1/paymentRequests";
 
   const headers = {
@@ -854,8 +848,8 @@ exports.postPaymentRequest = async (req, res, next) => {
   axios
     .post(url, data, { headers })
     .then(response => {
-      console.log(`sf.ctrl.js > 720`);
-      console.log(response.data);
+      // console.log(`sf.ctrl.js > 720`);
+      // console.log(response.data);
       if (!response.data || !response.data.id) {
         return res
           .status(500)
