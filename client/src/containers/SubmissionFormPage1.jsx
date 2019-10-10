@@ -1077,7 +1077,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody() {
-    // console.log("generateCAPEBody");
+    console.log("generateCAPEBody");
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -1101,6 +1101,16 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
         : parseFloat(formValues.capeAmount);
+    console.log(`donationAmount: ${donationAmount}`);
+
+    if (!donationAmount) {
+      console.log("no donation amount chosen");
+      const newState = { ...this.state };
+      newState.displayCAPEPaymentFields = true;
+      return this.setState(newState, () => {
+        // console.log(this.state.displayCAPEPaymentFields);
+      });
+    }
 
     // generate body
     const body = {
@@ -1125,7 +1135,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: formValues.donationFrequency
       // member_short_id: this.props.submission.payment.memberShortId
     };
-    // console.log(body);
+    console.log(body);
     return body;
   }
 
@@ -1150,7 +1160,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    // console.log("handleCAPESubmit");
+    console.log("handleCAPESubmit");
     const { formValues } = this.props;
 
     if (standAlone) {
@@ -1158,7 +1168,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const score = await this.verifyRecaptchaScore();
       // console.log(score);
       if (!score || score <= 0.5) {
-        // console.log(`recaptcha failed: ${score}`);
+        console.log(`recaptcha failed: ${score}`);
         return handleError(
           "ReCaptcha validation failed, please reload the page and try again."
         );
@@ -1169,14 +1179,14 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      // console.log("No payment method added");
+      console.log("No payment method added");
       return handleError("Please click 'Add a Card' to add a payment method");
     }
     // if they clicked submit before the payment logic finished loading,
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      // console.log("no donation amount chosen");
+      console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
