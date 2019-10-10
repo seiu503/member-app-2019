@@ -248,14 +248,12 @@ let updateSFCAPEError = jest
     Promise.resolve({ type: "UPDATE_SF_CAPE_FAILURE" })
   );
 
-let postOneTimePaymentSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({
-      type: "POST_ONE_TIME_PAYMENT_SUCCESS",
-      payload: { access_token: 123 }
-    })
-  );
+let postOneTimePaymentSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+    payload: { access_token: 123 }
+  })
+);
 
 let postOneTimePaymentError = jest
   .fn()
@@ -2595,14 +2593,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       handleInputMock = jest.fn();
       handleErrorMock.mockClear();
       formElements.handleError = handleErrorMock;
-      getUnioniseTokenError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({
-            type: "GET_UNIONISE_TOKEN_FAILURE",
-            payload: { access_token: null }
-          })
-        );
+      getUnioniseTokenError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "GET_UNIONISE_TOKEN_FAILURE",
+          payload: { access_token: null }
+        })
+      );
       let props = {
         formValues: {
           directPayAuth: true,
@@ -3386,6 +3382,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       formElements.handleError = jest.fn();
 
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3416,6 +3415,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
         );
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3472,6 +3474,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
         );
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3530,6 +3535,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.resolve({ type: "CREATE_SF_CAPE_FAILURE" })
         );
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3591,6 +3599,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.reject({ type: "CREATE_SF_CAPE_FAILURE" })
         );
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3649,6 +3660,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.resolve({ type: "CREATE_CAPE_FAILURE" })
         );
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3706,6 +3720,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.reject({ type: "CREATE_CAPE_FAILURE" })
         );
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3714,11 +3731,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: "123",
           payment: {
             memberShortId: "123"
+          },
+          cape: {
+            id: undefined
           }
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
-          createSFCAPE: createSFCAPESuccess
+          createSFCAPE: createSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess
         },
         apiSubmission: {
           createCAPE: createCAPEError
@@ -3755,6 +3777,280 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
+    test("`handleCAPESubmit` handles error if postOneTimePayment prop throws", () => {
+      formElements.handleError = jest.fn();
+      postOneTimePaymentError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "POST_ONE_TIME_PAYMENT_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          capeAmount: 10
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: "123",
+          payment: {
+            memberShortId: "123"
+          },
+          cape: {
+            id: undefined
+          }
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess,
+          createSFCAPE: createSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentError
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn()
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper
+        .instance()
+        .handleCAPESubmit()
+        .then(async () => {
+          await wrapper
+            .instance()
+            .verifyRecaptchaScore()
+            .catch(err => {
+              console.log(err);
+            });
+          await createSFCAPESuccess;
+          await createCAPESuccess;
+          await postOneTimePaymentError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err);
+        });
+    });
+
+    test("`handleCAPESubmit` handles error if updateCAPE prop throws", () => {
+      formElements.handleError = jest.fn();
+      updateCAPEError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_CAPE_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          capeAmount: 10
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: "123",
+          payment: {
+            memberShortId: "123"
+          },
+          cape: {
+            id: undefined
+          }
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess,
+          createSFCAPE: createSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPEError
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn()
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper
+        .instance()
+        .handleCAPESubmit()
+        .then(async () => {
+          await wrapper
+            .instance()
+            .verifyRecaptchaScore()
+            .catch(err => {
+              console.log(err);
+            });
+          await createSFCAPESuccess;
+          await createCAPESuccess;
+          await postOneTimePaymentSuccess;
+          await updateCAPEError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err);
+        });
+    });
+
+    test("`handleCAPESubmit` handles error if updateSFCAPE prop throws", () => {
+      formElements.handleError = jest.fn();
+      updateSFCAPEError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SF_CAPE_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          capeAmount: 10
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: "123",
+          payment: {
+            memberShortId: "123"
+          },
+          cape: {
+            id: undefined
+          }
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess,
+          createSFCAPE: createSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess,
+          updateSFCAPE: updateSFCAPEError
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn()
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper
+        .instance()
+        .handleCAPESubmit()
+        .then(async () => {
+          await wrapper
+            .instance()
+            .verifyRecaptchaScore()
+            .catch(err => {
+              console.log(err);
+            });
+          await createSFCAPESuccess;
+          await createCAPESuccess;
+          await postOneTimePaymentSuccess;
+          await updateCAPESuccess;
+          await updateSFCAPEError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err);
+        });
+    });
+
+    test("`handleCAPESubmit` handles error if updateSFCAPE prop fails", () => {
+      formElements.handleError = jest.fn();
+      updateSFCAPEError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SF_CAPE_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          capeAmount: 10
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: "123",
+          payment: {
+            memberShortId: "123"
+          },
+          cape: {
+            id: undefined
+          }
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess,
+          createSFCAPE: createSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess,
+          updateSFCAPE: updateSFCAPEError
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn()
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper
+        .instance()
+        .handleCAPESubmit()
+        .then(async () => {
+          await wrapper
+            .instance()
+            .verifyRecaptchaScore()
+            .catch(err => {
+              console.log(err);
+            });
+          await createSFCAPESuccess;
+          await createCAPESuccess;
+          await postOneTimePaymentSuccess;
+          await updateCAPESuccess;
+          await updateSFCAPEError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err);
+        });
+    });
+
     test("`handleCAPESubmit` calls createCAPE if !capeid", () => {
       formElements.handleError = jest.fn();
       createCAPESuccess.mockRestore();
@@ -3778,7 +4074,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             memberShortId: null
           },
           cape: {
-            id: null,
+            id: undefined,
             memberShortId: "123"
           }
         },
@@ -3830,6 +4126,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`handleCAPESubmit` redirects to thankyou page if standalone", () => {
       formElements.handleError = jest.fn();
       let props = {
+        formValues: {
+          capeAmount: 10
+        },
         submission: {
           formPage1: {
             paymentRequired: true,
@@ -3838,14 +4137,21 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: "123",
           payment: {
             memberShortId: "123"
+          },
+          cape: {
+            id: "234"
           }
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
-          createSFCAPE: createSFCAPESuccess
+          createSFCAPE: createSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess,
+          updateSFCAPE: updateSFCAPESuccess
         },
         apiSubmission: {
-          createCAPE: createCAPESuccess
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
         },
         cape_legal: {
           current: {
@@ -3875,6 +4181,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             });
           await createSFCAPESuccess;
           await createCAPESuccess;
+          await updateCAPESuccess;
+          await updateSFCAPESuccess;
           expect(pushMock.mock.calls.length).toBe(1);
         })
         .catch(err => {

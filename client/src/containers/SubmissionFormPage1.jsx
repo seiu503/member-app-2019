@@ -1170,7 +1170,6 @@ export class SubmissionFormPage1Container extends React.Component {
         );
       }
     }
-
     if (
       (this.props.submission.formPage1.paymentRequired ||
         formValues.donationFrequency === "One-Time") &&
@@ -1179,12 +1178,11 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log("No payment method added");
       return handleError("Please click 'Add a Card' to add a payment method");
     }
-
     // if they clicked submit before the payment logic finished loading,
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      // console.log("no donation amount chosen");
+      console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
@@ -1194,7 +1192,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
     let cape_errors = "",
       cape_status = "Pending";
-
     const body = await this.generateCAPEBody();
     delete body.cape_status;
     body.member_short_id =
@@ -1205,12 +1202,11 @@ export class SubmissionFormPage1Container extends React.Component {
     const sfCapeResult = await this.props.apiSF
       .createSFCAPE(body)
       .catch(err => {
-        // console.log(err);
         cape_errors += err;
         cape_status = "Error";
         handleError(err);
       });
-    // console.log('1201');
+
     // console.log(sfCapeResult);
     let sf_cape_id;
 
@@ -1226,7 +1222,7 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_status = "Success";
       sf_cape_id = sfCapeResult.payload.sf_cape_id;
     }
-    // console.log('1217');
+
     const member_short_id =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
@@ -1235,19 +1231,18 @@ export class SubmissionFormPage1Container extends React.Component {
     // if initial cape was not already created
     // in the process of generating the iframe url,
     // (checkoff use case), create it now
+
     if (!this.props.submission.cape.id) {
       await this.createCAPE().catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
     }
-    // console.log('1232');
     // if one-time payment, send API request to unioni.se to process it
     await this.postOneTimePayment().catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
-    // console.log('1238');
     // collect updates to cape record (values returned from other API calls,
     // amount and frequency if not captured in initial iframe request)
     const { id, oneTimePaymentId } = this.props.submission.cape;
@@ -1266,11 +1261,10 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // update CAPE record in postgres
     await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
-      console.log(err);
+      // console.log(err);
       // return handleError(err); // don't return to client here
     });
     // console.log(capeResult);
-
     // update CAPE record in salesforce
     // generate body for this call
     const sfCapeBody = {
@@ -1282,7 +1276,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const sfCapeUpdateResult = await this.props.apiSF
       .updateSFCAPE(sfCapeBody)
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
 
@@ -1294,6 +1288,7 @@ export class SubmissionFormPage1Container extends React.Component {
       return handleError(this.props.submission.error);
     }
     this.props.reset("submissionPage1");
+
     if (!standAlone) {
       this.props.history.push(
         `/page2/?id=${this.props.submission.salesforceId}`
