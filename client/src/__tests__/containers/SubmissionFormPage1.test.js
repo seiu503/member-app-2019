@@ -3145,23 +3145,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
     });
 
-    test("`donationFrequencyOnChange` calls this.props.change and this.handleDonationFrequencyChange", () => {
-      const changeMock = jest.fn();
-      const props = {
-        change: changeMock
-      };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
-
-      const handleDonationFrequencyChangeMock = jest.fn();
-
-      wrapper.instance().handleDonationFrequencyChange = handleDonationFrequencyChangeMock;
-      wrapper.instance().donationFrequencyOnChange();
-      expect(changeMock).toHaveBeenCalled();
-      expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
-    });
-
     test("`setCAPEOptions` calls this.props.apiSubmission.setCAPEOptions", () => {
       const setCAPEOptionsMock = jest.fn();
       const props = {

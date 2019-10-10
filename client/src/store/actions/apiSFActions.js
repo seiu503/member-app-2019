@@ -428,8 +428,8 @@ export function createSFCAPE(body) {
 /* ++++++++++++++++++++++++++++++++ CAPE: POST +++++++++++++++++++++++++++++ */
 
 export const UPDATE_SF_CAPE_REQUEST = "UPDATE_SF_CAPE_REQUEST";
-export const UPDATE_SF_CAPE_SUCCESS = "UPDATE_SF_CAPE_FAILURE";
-export const UPDATE_SF_CAPE_FAILURE = "CREATE_SF_CAPE_FAILURE";
+export const UPDATE_SF_CAPE_SUCCESS = "UPDATE_SF_CAPE_SUCCESS";
+export const UPDATE_SF_CAPE_FAILURE = "UPDATE_SF_CAPE_FAILURE";
 
 /*
  * Function: updateSFCAPE -- update a SF CAPE record, either by record Id or by one-time payment Id

@@ -250,7 +250,7 @@ const getCAPEBySFId = (req, res, next) => {
       // console.log(`cape.ctrl.js > 251`);
       // console.log(CAPE);
       if (!CAPE || (CAPE && CAPE.message)) {
-        console.log("cape.ctrl.js > 254: no cape record found");
+        // console.log("cape.ctrl.js > 254: no cape record found");
         let message = "CAPE record not found";
         if (CAPE && CAPE.message) {
           message = CAPE.message;
