@@ -84,7 +84,6 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactById(id)
         .then(result => {
-          // console.log(result.payload);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -214,14 +213,12 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleDonationFrequencyChange(frequency) {
     const { formValues } = this.props;
-    console.log("handleDonationFrequencyChange");
     // render iframe if one-time donation and cape amount set
     const donationAmount =
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
         : parseFloat(formValues.capeAmount);
     if (frequency === "One-Time" && donationAmount) {
-      console.log("One-Time");
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });

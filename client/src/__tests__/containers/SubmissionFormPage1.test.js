@@ -191,14 +191,12 @@ let verifyRecaptchaScoreMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve(0.9));
 
-let createSFCAPESuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({
-      type: "CREATE_SF_CAPE_SUCCESS",
-      payload: { sf_cape_id: 123 }
-    })
-  );
+let createSFCAPESuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "CREATE_SF_CAPE_SUCCESS",
+    payload: { sf_cape_id: 123 }
+  })
+);
 
 let createSFCAPEError = jest
   .fn()
@@ -361,7 +359,7 @@ const setup = (props = {}) => {
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe.only("<SubmissionFormPage1Container /> unconnected", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -454,6 +452,44 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         })
         .catch(err => {
           // console.log(err)
+        });
+    });
+
+    test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactById", () => {
+      let props = {
+        location: {
+          search: "id=1"
+        },
+        apiSF: {
+          getSFContactById: getSFContactByIdSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        },
+        apiSubmission: {
+          setCAPEOptions: jest.fn()
+        },
+        submission: {
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          },
+          payment: {
+            currentCAPEFromSF: 0
+          }
+        }
+      };
+      store = storeFactory(initialState);
+      wrapper = wrapper = setup(props);
+
+      let handleOpenMock = jest.fn();
+      wrapper.instance().handleOpen = handleOpenMock;
+
+      wrapper.instance().componentDidMount();
+      return getSFContactByIdSuccess()
+        .then(() => {
+          expect(handleOpenMock).toHaveBeenCalled();
+        })
+        .catch(err => {
+          console.log(err);
         });
     });
   });
@@ -2203,10 +2239,80 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(wrapper.instance().state.open).toBe(true);
     });
 
+    test("`handleCAPEOpen` opens alert dialog", () => {
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().handleCAPEOpen();
+      expect(wrapper.instance().state.capeOpen).toBe(true);
+    });
+
     test("`handleClose` closes modal", () => {
       wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
       wrapper.instance().handleClose();
       expect(wrapper.instance().state.open).toBe(false);
+    });
+
+    test("`handleCAPEClose` closes alert dialog", () => {
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().handleCAPEClose();
+      expect(wrapper.instance().state.capeOpen).toBe(false);
+    });
+
+    test("`closeDialog` calls handleCAPEClose and this.props.history.push", () => {
+      const props = {
+        history: {
+          push: pushMock
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().closeDialog();
+      expect(wrapper.instance().state.capeOpen).toBe(false);
+      expect(pushMock).toHaveBeenCalled();
+    });
+
+    test("`mobilePhoneOnBlur` calls handleEmployerTypeChange", () => {
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      const handleEmployerTypeChangeMock = jest.fn();
+      wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
+      wrapper.instance().mobilePhoneOnBlur();
+      expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
+    });
+
+    test("`donationFrequencyOnChange` calls this.props.change and this.handleDonationFrequencyChange", () => {
+      const changeMock = jest.fn();
+      const props = {
+        change: changeMock
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      const handleDonationFrequencyChangeMock = jest.fn();
+
+      wrapper.instance().handleDonationFrequencyChange = handleDonationFrequencyChangeMock;
+      wrapper.instance().donationFrequencyOnChange();
+      expect(changeMock).toHaveBeenCalled();
+      expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
+    });
+
+    test("`setCAPEOptions` calls this.props.apiSubmission.setCAPEOptions", () => {
+      const setCAPEOptionsMock = jest.fn();
+      const props = {
+        apiSubmission: {
+          setCAPEOptions: setCAPEOptionsMock
+        },
+        submission: {
+          payment: {
+            currentCAPEFromSF: 20
+          }
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().setCAPEOptions();
+      expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
 
     test("`clearSignature` calls sigBox.clear", () => {
@@ -2304,6 +2410,53 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           });
         })
         .catch(err => console.log(err));
+    });
+  });
+
+  describe("handleDonationFrequencyChange", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    test("`handleDonationFrequencyChange` calls handleInput", () => {
+      const props = {
+        submission: {
+          formPage1: {
+            paymentRequired: false
+          }
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: 10
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().handleDonationFrequencyChange();
+      expect(handleInputMock).toHaveBeenCalled();
+    });
+    test("`handleDonationFrequencyChange` calls getIframeURL if frequency = 'One-Time'", async () => {
+      const props = {
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: 10,
+          donationFrequency: "One-Time"
+        }
+      };
+      const getIframeURLMock = jest.fn();
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().handleDonationFrequencyChange("One-Time");
+      await handleInputMock().then(() => {
+        expect(getIframeURLMock).toHaveBeenCalled();
+      });
     });
   });
 
