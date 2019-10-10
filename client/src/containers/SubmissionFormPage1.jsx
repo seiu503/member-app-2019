@@ -919,7 +919,7 @@ export class SubmissionFormPage1Container extends React.Component {
           : parseFloat(formValues.capeAmount);
     }
     if (!this.props.submission.salesforceId) {
-      console.log("lookup sf contact");
+      // console.log("lookup sf contact");
       await this.lookupSFContact();
     }
     if (!memberShortId && cape && this.props.submission.salesforceId) {
@@ -929,7 +929,7 @@ export class SubmissionFormPage1Container extends React.Component {
       memberShortId =
         this.props.submission.payment.memberShortId ||
         this.props.submission.cape.memberShortId;
-      console.log(`memberShortId: ${memberShortId}`);
+      // console.log(`memberShortId: ${memberShortId}`);
     }
     if (memberShortId) {
       // console.log("getting unionise auth token");
@@ -949,7 +949,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // if we don't have the memberShortId, then we need to create a new
     // unionise member record and return the cardAddingUrl
     return this.getIframeNew(cape, capeAmount).catch(err => {
-      console.log(err);
+      // console.log(err);
     });
   }
 
@@ -1046,15 +1046,16 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(body);
 
     const result = await this.props.apiSF.getUnioniseToken().catch(err => {
-      console.log(err);
+      // console.log(err);
       return handleError(err);
     });
+
     // console.log(`access_token: ${!!result.payload.access_token}`);
     // console.log(result.payload.access_token);
     const oneTimePaymentResult = await this.props.apiSF
       .postOneTimePayment(result.payload.access_token, body)
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
 
@@ -1062,13 +1063,13 @@ export class SubmissionFormPage1Container extends React.Component {
       oneTimePaymentResult.type !== "POST_ONE_TIME_PAYMENT_SUCCESS" ||
       this.props.submission.error
     ) {
-      console.log(this.props.submission.error);
+      // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
     }
   }
 
   async checkCAPEPaymentLogic() {
-    console.log("checkCAPEPaymentLogic");
+    // console.log("checkCAPEPaymentLogic");
     const { formValues } = this.props;
 
     await this.handleEmployerTypeChange(formValues.employerType);
@@ -1077,7 +1078,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.displayCAPEPaymentFields = true;
     this.setState(newState, () => {
-      console.log(this.state.displayCAPEPaymentFields);
+      // console.log(this.state.displayCAPEPaymentFields);
     });
   }
 

@@ -251,7 +251,10 @@ let updateSFCAPEError = jest
 let postOneTimePaymentSuccess = jest
   .fn()
   .mockImplementation(() =>
-    Promise.resolve({ type: "POST_ONE_TIME_PAYMENT_SUCCESS" })
+    Promise.resolve({
+      type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+      payload: { access_token: 123 }
+    })
   );
 
 let postOneTimePaymentError = jest
@@ -2375,9 +2378,393 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .getIframeURL()
+        .getIframeURL(true)
         .then(() => {
           expect(getCAPEBySFIdSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`getIframeURL` calls lookupSFContact if !salesforceId", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      const getCAPEBySFIdSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_CAPE_BY_SFID_SUCCESS" })
+        );
+      let lookupSFContactMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmount: 10
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          getCAPEBySFId: getCAPEBySFIdSuccess,
+          createCAPE: createCAPESuccess
+        },
+        submission: {
+          salesforceId: null,
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: null
+          },
+          error: "Error",
+          cape: {
+            id: "456"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_UNIONISE_TOKEN_SUCCESS" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().getCAPEBySFId = getCAPEBySFIdSuccess;
+      wrapper.instance().getSFDJRById = jest.fn();
+      wrapper.instance().lookupSFContact = lookupSFContactMock;
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL(true)
+        .then(() => {
+          expect(lookupSFContactMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`getIframeURL` handles error if getIframeNew throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      const getCAPEBySFIdSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_CAPE_BY_SFID_SUCCESS" })
+        );
+      let getIframeNewMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+      let props = {
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmount: 10
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          getCAPEBySFId: getCAPEBySFIdSuccess,
+          createCAPE: createCAPESuccess
+        },
+        submission: {
+          salesforceId: null,
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: null
+          },
+          error: "Error",
+          cape: {
+            id: "456"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_UNIONISE_TOKEN_SUCCESS" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().getCAPEBySFId = getCAPEBySFIdSuccess;
+      wrapper.instance().getSFDJRById = jest.fn();
+      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+  });
+
+  describe("postOneTimePayment", () => {
+    test("`postOneTimePayment` calls postOneTimePayment prop function", async function() {
+      handleInputMock = jest.fn();
+      getIframeNewSuccess.mockClear();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmount: "Other"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          createCAPE: createCAPESuccess
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          cape: {
+            id: "456"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: "string"
+          }
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .postOneTimePayment()
+        .then(async () => {
+          await getUnioniseTokenSuccess;
+          expect(postOneTimePaymentSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`postOneTimePayment` handles error if getUnioniseToken throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      getUnioniseTokenError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({
+            type: "GET_UNIONISE_TOKEN_FAILURE",
+            payload: { access_token: null }
+          })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmountOther: 10
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: null
+          },
+          error: "Error",
+          cape: {
+            id: "456",
+            memberShortId: "123"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenError,
+          postOneTimePayment: postOneTimePaymentSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .postOneTimePayment()
+        .then(async () => {
+          await getUnioniseTokenError;
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`postOneTimePayment` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      postOneTimePaymentError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "POST_ONE_TIME_PAYMENT_FAILURE", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error",
+          cape: {
+            id: "456"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .postOneTimePayment()
+        .then(async () => {
+          await getUnioniseTokenSuccess;
+          await postOneTimePaymentError;
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`postOneTimePayment` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      postOneTimePaymentError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "POST_ONE_TIME_PAYMENT_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: "1234"
+          },
+          error: "Error",
+          cape: {
+            id: "456"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewError,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .postOneTimePayment()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => {
           // console.log(err)
@@ -2798,6 +3185,31 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
 
+    test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {
+      const handleEmployerTypeChangeMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(""));
+      const handleDonationFrequencyChangeMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(""));
+      const props = {
+        formValues: {
+          employerType: "retired",
+          donationFrequency: "Monthly"
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
+      wrapper.instance().handleDonationFrequencyChange = handleDonationFrequencyChangeMock;
+      wrapper.update();
+      await wrapper.instance().checkCAPEPaymentLogic();
+      expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
+      expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
+      expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
+    });
+
     test("`clearSignature` calls sigBox.clear", () => {
       wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
       wrapper.instance().clearSignature();
@@ -2996,66 +3408,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("`handleCAPESubmit` (placeholder for other method)", () => {
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          capeAmount: 10
-        },
-        submission: {
-          formPage1: {
-            paymentRequired: true,
-            paymentMethodAdded: true
-          },
-          salesforceId: null,
-          payment: {
-            memberShortId: "123"
-          },
-          cape: {
-            id: "456"
-          }
-        },
-        apiSF: {
-          lookupSFContact: lookupSFContactSuccess,
-          createSFCAPE: createSFCAPESuccess,
-          updateSFCAPE: updateSFCAPESuccess,
-          getUnioniseToken: getUnioniseTokenSuccess,
-          postOneTimePayment: postOneTimePaymentSuccess
-        },
-        apiSubmission: {
-          createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPESuccess
-        },
-        cape_legal: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        reset: jest.fn()
-      };
-
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
-
-      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper
-        .instance()
-        .handleCAPESubmit()
-        .then(async () => {
-          await wrapper
-            .instance()
-            .verifyRecaptchaScore()
-            .catch(err => {
-              console.log(err);
-            });
-          // expect(lookupSFContactSuccess.mock.calls.length).toBe(1);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
-
     test("`handleCAPESubmit` handles error if lookupSFContact prop throws", () => {
       formElements.handleError = jest.fn();
       lookupSFContactError = jest
@@ -3207,7 +3559,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
-
+      let generateCAPEBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
         .instance()
@@ -3219,6 +3574,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             .catch(err => {
               console.log(err);
             });
+          await generateCAPEBodyMock;
           await createSFCAPEError;
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
@@ -3238,10 +3594,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            donationFrequency: "One-Time"
           },
           salesforceId: "123",
           payment: {
+            memberShortId: null
+          },
+          cape: {
             memberShortId: "123"
           }
         },
@@ -3263,18 +3623,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
-
+      let generateCAPEBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
       wrapper
         .instance()
         .handleCAPESubmit()
         .then(async () => {
-          await wrapper
-            .instance()
-            .verifyRecaptchaScore()
-            .catch(err => {
-              console.log(err);
-            });
+          await generateCAPEBodyMock;
           await createSFCAPEError;
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
@@ -3394,6 +3752,78 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         })
         .catch(err => {
           // console.log(err);
+        });
+    });
+
+    test("`handleCAPESubmit` calls createCAPE if !capeid", () => {
+      formElements.handleError = jest.fn();
+      createCAPESuccess.mockRestore();
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+      let props = {
+        formValues: {
+          capeAmount: 10,
+          donationFrequency: "One-Time"
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: null,
+          payment: {
+            memberShortId: null
+          },
+          cape: {
+            id: null,
+            memberShortId: "123"
+          }
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess,
+          createSFCAPE: createSFCAPESuccess,
+          updateSFCAPE: updateSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn()
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      let generateCAPEBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper
+        .instance()
+        .handleCAPESubmit()
+        .then(async () => {
+          await wrapper
+            .instance()
+            .verifyRecaptchaScore()
+            .catch(err => {
+              console.log(err);
+            });
+          await generateCAPEBodyMock;
+          expect(createCAPESuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          console.log(err);
         });
     });
 
