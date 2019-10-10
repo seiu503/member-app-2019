@@ -92,29 +92,36 @@ const createCAPE = async (req, res, next) => {
     });
   }
 
-  const createCAPEResult = await cape.createCAPE(
-    ip_address,
-    submission_date,
-    contact_id,
-    first_name,
-    last_name,
-    home_email,
-    cell_phone,
-    home_street,
-    home_city,
-    home_state,
-    home_zip,
-    job_title,
-    employer_id,
-    payment_method,
-    online_campaign_source,
-    cape_legal,
-    cape_amount,
-    donation_frequency,
-    member_short_id,
-    cape_status,
-    cape_errors
-  );
+  const createCAPEResult = await cape
+    .createCAPE(
+      ip_address,
+      submission_date,
+      contact_id,
+      first_name,
+      last_name,
+      home_email,
+      cell_phone,
+      home_street,
+      home_city,
+      home_state,
+      home_zip,
+      job_title,
+      employer_id,
+      payment_method,
+      online_campaign_source,
+      cape_legal,
+      cape_amount,
+      donation_frequency,
+      member_short_id,
+      cape_status,
+      cape_errors
+    )
+    .catch(err => {
+      console.log(`cape.ctrl.js > 118`);
+      console.log(err);
+      let message = `There was an error saving the CAPE record: ${err}`;
+      return res.status(500).json({ message });
+    });
 
   if (!createCAPEResult || !!createCAPEResult.message) {
     let message = "There was an error saving the CAPE record";
