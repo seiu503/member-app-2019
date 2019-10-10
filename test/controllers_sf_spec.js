@@ -374,7 +374,10 @@ suite("sf.ctrl.js", function() {
     });
 
     test("finds a single contact by first, last, email", async function() {
-      responseStub = { salesforce_id: "0035500000VFkjOAAT" };
+      responseStub = {
+        salesforce_id: "0035500000VFkjOAAT",
+        Current_CAPE__c: undefined
+      };
       try {
         await sfCtrl.lookupSFContactByFLE(req, res);
         assert.called(jsforceConnectionStub);
@@ -719,7 +722,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("gets all Employers", async function() {
-      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
+      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider') and Sub_Division__c != null)`;
       try {
         await sfCtrl.getAllEmployers(req, res);
         assert.called(jsforceConnectionStub);
@@ -1302,7 +1305,7 @@ suite("sf.ctrl.js", function() {
       const app = require("../server");
       responseStub = { cardAddingUrl: "http://www.url.com" };
       nock("https://lab.unioni.se")
-        .post("/v1/members/123ABC/generate-payment-method-iframe-url")
+        .post("/api/v1/members/123ABC/generate-payment-method-iframe-url")
         .reply(200, { data: responseStub });
       // chai
       //   .request(app)
@@ -1354,6 +1357,98 @@ suite("sf.ctrl.js", function() {
     });
   });
 
+  // suite("sfCtrl > postPaymentRequest", function() {
+  //   afterEach(() => {
+  //     nock.cleanAll();
+  //     sinon.restore();
+  //   });
+
+  // test("posts a one-time payment request to unionise", async function() {
+  //   const app = require("../server");
+  //   const body = {
+  //     memberShortId: "J7K5HYDQ",
+  //     amount: {
+  //       currency: "USD",
+  //       amount: 1.1
+  //     },
+  //     paymentPartType: "CAPE",
+  //     description: "One-time CAPE contribution",
+  //     plannedDatetime: new Date()
+  //   };
+  //   responseStub = { id: "a07dbd65-9f34-40e6-a203-5406302b8c75" };
+  //   nock("https://lab.unioni.se")
+  //     .post("/api/v1/paymentRequests")
+  //     .reply(200, { data: responseStub });
+  //   chai
+  //     .request(app)
+  //     .post("/api/unionise/oneTimePayment")
+  //     .set({ Authorization: "Bearer 12345" })
+  //     .send(body)
+  //     .end(function(err, res) {
+  //       expect(res.status).to.equal(200);
+  //       expect(res.data).to.equal(responseStub);
+  //     });
+  // });
+
+  // test("returns error if no access token in response", async function() {
+  //   const app = require("../server");
+  //   const body = {
+  //     memberShortId: "J7K5HYDQ",
+  //     amount: {
+  //       currency: "USD",
+  //       amount: 1.1
+  //     },
+  //     paymentPartType: "CAPE",
+  //     description: "One-time CAPE contribution",
+  //     plannedDatetime: new Date()
+  //   };
+  //   unioniseError = "Error while posting payment request";
+  //   responseStub = { message: unioniseError };
+  //   nock("https://lab.unioni.se")
+  //     .post("/api/v1/paymentRequests")
+  //     .reply(500, { ...responseStub });
+  //   chai
+  //     .request(app)
+  //     .post("/api/unionise/oneTimePayment")
+  //     .set({ Authorization: "Bearer 12345" })
+  //     .send(body)
+  //     .end(function(err, res) {
+  //       expect(res.status).to.equal(500);
+  //       expect(res.data).to.equal(responseStub);
+  //     });
+  // });
+
+  // test("returns error if unionise api call throws", async function() {
+  //   const app = require("../server");
+  //   const body = {
+  //     memberShortId: "J7K5HYDQ",
+  //     amount: {
+  //       currency: "USD",
+  //       amount: 1.1
+  //     },
+  //     paymentPartType: "CAPE",
+  //     description: "One-time CAPE contribution",
+  //     plannedDatetime: new Date()
+  //   };
+  //   unioniseError = new Error("Error while posting payment request");
+  //   responseStub = unioniseError;
+  //   nock("https://lab.unioni.se")
+  //     .post("/api/v1/paymentRequests")
+  //     .reply(500, responseStub);
+  //   chai
+  //     .request(app)
+  //     .post("/api/unionise/oneTimePayment")
+  //     .set({ Authorization: "Bearer 12345" })
+  //     .send(body)
+  //     .end(function(err, res) {
+  //       expect(res.status).to.equal(500);
+  //       console.log("controllers_sf_spec > 1434");
+  //       console.log(res.error);
+  //       expect(res.error).to.equal(unioniseError);
+  //     });
+  // });
+  // });
+
   suite("sfCtrl > createSFCAPE", function() {
     beforeEach(function() {
       return new Promise(resolve => {
@@ -1380,7 +1475,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("creates a CAPE record", async function() {
-      responseStub = { cape_id: "0035500000VFkjOAAT" };
+      responseStub = { sf_cape_id: "0035500000VFkjOAAT" };
       jsforceConnectionStub = sinon
         .stub(jsforce, "Connection")
         .returns(jsforceStub);
@@ -1440,6 +1535,387 @@ suite("sf.ctrl.js", function() {
       } catch (err) {
         console.log(err);
       }
+    });
+  });
+
+  suite("sfCtrl > updateSFCAPE", function() {
+    suite("unioni.se event request", function() {
+      beforeEach(function() {
+        return new Promise(resolve => {
+          req = mockReq({
+            body: {
+              info: {
+                paymentId: "123"
+              },
+              eventType: "finish"
+            }
+          });
+          responseStub = [contactStub];
+          jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+          loginStub = sinon.stub();
+          jsforceStub = {
+            login: loginStub,
+            sobject: sinon.stub().returns({
+              find: sinon.stub().returns({
+                update: jsforceSObjectUpdateStub
+              })
+            })
+          };
+          resolve();
+        });
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      test("updates a CAPE record", async function() {
+        responseStub = { message: "Updated payment status successfully" };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.json, responseStub);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if login fails", async function() {
+        loginError =
+          "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+        loginStub = sinon.stub().throws(new Error(loginError));
+        jsforceStub.login = loginStub;
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.status, 500);
+          assert.calledWith(res.json, { message: loginError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update fails", async function() {
+        sobjectError =
+          "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+        jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentId: "123"
+            },
+            eventType: "finish"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if body has info key but no eventType", async function() {
+        sobjectError = "No eventType submitted";
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns({ message: sobjectError });
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentId: "123"
+            },
+            eventType: null
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.notCalled(jsforceConnectionStub);
+          assert.notCalled(jsforceStub.login);
+          assert.calledWith(res.status, 422);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if body has One_Time_Payment_Id__c key but no Id", async function() {
+        sobjectError = "No CAPE__c Id submitted";
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns({ message: sobjectError });
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            One_Time_Payment_Id__c: "123"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.notCalled(jsforceConnectionStub);
+          assert.notCalled(jsforceStub.login);
+          assert.calledWith(res.status, 422);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if no payment id in body", async function() {
+        sobjectError = "No payment Id submitted";
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns({ message: sobjectError });
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.notCalled(jsforceConnectionStub);
+          assert.notCalled(jsforceStub.login);
+          assert.calledWith(res.status, 422);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject find returns no record", async function() {
+        sobjectError = `No matching record found for payment id 123, Error0`;
+        const contactErrorStub = { ...contactStub };
+        contactErrorStub.errors = ["Error0"];
+        contactErrorStub.success = false;
+        responseStub = [contactErrorStub];
+        jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentId: "123"
+            },
+            eventType: "finish"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    });
+    suite("member app request", function() {
+      beforeEach(function() {
+        return new Promise(resolve => {
+          req = mockReq({
+            body: {
+              Id: "123",
+              One_Time_Payment_Id__c: "456"
+            }
+          });
+          responseStub = [contactStub];
+          jsforceSObjectUpdateStub = sinon
+            .stub()
+            .returns((null, [contactStub]));
+          loginStub = sinon.stub();
+          jsforceStub = {
+            login: loginStub,
+            sobject: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          };
+          resolve();
+        });
+      });
+
+      afterEach(() => {
+        sinon.restore();
+      });
+
+      test("updates a CAPE record", async function() {
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.json, {
+            message: "Updated payment Id successfully"
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if login fails", async function() {
+        loginError =
+          "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+        loginStub = sinon.stub().throws(new Error(loginError));
+        jsforceStub.login = loginStub;
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(res.status, 500);
+          assert.calledWith(res.json, { message: loginError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update fails", async function() {
+        sobjectError =
+          "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+        jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({ update: jsforceSObjectUpdateStub })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123",
+            One_Time_Payment_Id__c: "456"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update returns no record", async function() {
+        sobjectError = `No matching record found for payment id 123, Error0`;
+        const contactErrorStub = { ...contactStub };
+        contactErrorStub.errors = ["Error0"];
+        contactErrorStub.success = false;
+        responseStub = [contactErrorStub];
+        jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            update: jsforceSObjectUpdateStub
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123",
+            One_Time_Payment_Id__c: "456"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
     });
   });
 });

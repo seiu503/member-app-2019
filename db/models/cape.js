@@ -107,7 +107,7 @@ const getAllCAPE = () => {
   return db(TABLES.CAPE).returning("*");
 };
 
-/** Find CAPE by id
+/** Find CAPE by Postgres id
  *  @param    {String}   id   The id of the CAPE object
  *  @returns  {Object}        CAPE Object.
  */
@@ -119,13 +119,24 @@ const getCAPEById = id => {
     .returning("*");
 };
 
+/** Find CAPE by Salesforce Contact id
+ *  @param    {String}   id   The SF ContactId of the CAPE object
+ *  @returns  {Object}        CAPE Object.
+ */
+
+const getCAPEBySFId = id => {
+  return db(TABLES.CAPE)
+    .where({ contact_id: id })
+    .first()
+    .returning("*");
+};
+
 /** Delete CAPE
  *  @param    {String}   id   The id of the CAPE record to delete.
  *  @returns  success message
  */
 
 const deleteCAPE = id => {
-  console.log(`models/cape.js > 128: ${id}`);
   return db(TABLES.CAPE)
     .where({ id })
     .del()
@@ -135,12 +146,29 @@ const deleteCAPE = id => {
     });
 };
 
+/** Update a CAPE record by one_time_payment_id
+ *  @param    {String}   one_time_payment_id    One-time payment id.
+ *  @param    {Object}   updates        Key/value pairs of fields to update.
+ *              •   one_time_payment_status   : string ('finish' || 'fail')
+ *  @returns  {Object}      Success or error message.
+ */
+const updateCAPEByPaymentId = (one_time_payment_id, updates) => {
+  return db(TABLES.CAPE)
+    .where({ one_time_payment_id })
+    .first()
+    .update(updates)
+    .update("updated_at", db.fn.now())
+    .returning("*");
+};
+
 /* ================================ exports ================================ */
 
 module.exports = {
   createCAPE,
   updateCAPE,
   getCAPEById,
+  getCAPEBySFId,
   getAllCAPE,
-  deleteCAPE
+  deleteCAPE,
+  updateCAPEByPaymentId
 };

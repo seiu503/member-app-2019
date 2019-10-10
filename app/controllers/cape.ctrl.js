@@ -36,6 +36,7 @@ const cape = require("../../db/models/cape");
  */
 const createCAPE = async (req, res, next) => {
   // console.log("cape.ctrl.js > 38: createCAPE");
+  // console.log(req.body);
   let {
     ip_address,
     submission_date,
@@ -115,15 +116,12 @@ const createCAPE = async (req, res, next) => {
     cape_errors
   );
 
-  if (!createCAPEResult || createCAPEResult.message) {
-    console.log(
-      `cape.ctrl.js > 118: ${createCAPEResult.message ||
-        "There was an error saving the CAPE record"}`
-    );
-    return res.status(500).json({
-      message:
-        createCAPEResult.message || "There was an error saving the CAPE record"
-    });
+  if (!createCAPEResult || !!createCAPEResult.message) {
+    let message = "There was an error saving the CAPE record";
+    if (createCAPEResult && createCAPEResult.message) {
+      message += `, ${createCAPEResult.message}`;
+    }
+    return res.status(500).json({ message });
   } else {
     res.locals.cape_id = createCAPEResult[0].id;
     res.locals.currentCAPE = createCAPEResult[0];
@@ -162,18 +160,18 @@ const updateCAPE = async (req, res, next) => {
 
     if (
       !updateCAPEResult ||
-      updateCAPEResult.message ||
+      !!updateCAPEResult.message ||
       updateCAPEResult.length === 0
     ) {
-      const errmsg =
-        updateCAPEResult.message ||
-        "There was an error updating the CAPE Record";
-      console.error(`cape.ctrl.js > 205: ${errmsg}`);
-      return res.status(500).json({
-        message: errmsg
-      });
+      let message = "There was an error updating the CAPE Record";
+      if (updateCAPEResult && updateCAPEResult.message) {
+        message = updateCAPEResult.message;
+      }
+
+      // console.error(`cape.ctrl.js > 205: ${message}`);
+      return res.status(500).json({ message });
     } else {
-      // console.log("cape.ctrl.js > 201: returning to client");
+      // console.log("cape.ctrl.js > 174: returning to client");
       // console.log(updateCAPEResult[0].id);
       // saving to res.locals to make id available for testing
       res.locals.cape_id = updateCAPEResult[0].id;
@@ -219,17 +217,19 @@ const getAllCAPE = (req, res, next) => {
 };
 
 /** Get one CAPE record by id
- *  @param    {String}   id   Id of the requested CAPE.
+ *  @param    {String}   id   Postgres id of the requested CAPE record.
  *  @returns  {Object}        CAPE object OR error message.
  */
 const getCAPEById = (req, res, next) => {
   return cape
     .getCAPEById(req.params.id)
     .then(CAPE => {
-      if (!CAPE || CAPE.message) {
-        return res
-          .status(404)
-          .json({ message: CAPE.message || "CAPE not found" });
+      if (!CAPE || (CAPE && CAPE.message)) {
+        let message = "CAPE record not found";
+        if (CAPE && CAPE.message) {
+          message = CAPE.message;
+        }
+        return res.status(404).json({ message });
       } else {
         // for testing
         res.locals.testData = CAPE;
@@ -239,6 +239,32 @@ const getCAPEById = (req, res, next) => {
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
+/** Get one CAPE record by SF Contact id
+ *  @param    {String}   id   SF Contact Id of the requested CAPE record.
+ *  @returns  {Object}        CAPE object OR error message.
+ */
+const getCAPEBySFId = (req, res, next) => {
+  return cape
+    .getCAPEBySFId(req.params.id)
+    .then(CAPE => {
+      // console.log(`cape.ctrl.js > 251`);
+      // console.log(CAPE);
+      if (!CAPE || (CAPE && CAPE.message)) {
+        console.log("cape.ctrl.js > 254: no cape record found");
+        let message = "CAPE record not found";
+        if (CAPE && CAPE.message) {
+          message = CAPE.message;
+        }
+        return res.status(404).json({ message });
+      } else {
+        // for testing
+        res.locals.testData = CAPE;
+        return res.status(200).json(CAPE);
+      }
+    })
+    .catch(err => res.status(500).json({ message: err.message }));
+};
+
 /* ================================ EXPORT ================================= */
 
 module.exports = {
@@ -246,5 +272,6 @@ module.exports = {
   updateCAPE,
   deleteCAPE,
   getCAPEById,
+  getCAPEBySFId,
   getAllCAPE
 };

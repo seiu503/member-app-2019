@@ -425,6 +425,56 @@ export function createSFCAPE(body) {
   };
 }
 
+/* ++++++++++++++++++++++++++++++++ CAPE: POST +++++++++++++++++++++++++++++ */
+
+export const UPDATE_SF_CAPE_REQUEST = "UPDATE_SF_CAPE_REQUEST";
+export const UPDATE_SF_CAPE_SUCCESS = "UPDATE_SF_CAPE_FAILURE";
+export const UPDATE_SF_CAPE_FAILURE = "CREATE_SF_CAPE_FAILURE";
+
+/*
+ * Function: updateSFCAPE -- update a SF CAPE record, either by record Id or by one-time payment Id
+ * @param {object} body
+ *        (body must include both id and updates --
+ *        id not passed separately for this controller)
+ * This action dispatches additional actions as it executes:
+ *   UPDATE_SF_CAPE_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   UPDATE_SF_CAPE_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   UPDATE_SF_CAPE_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function updateSFCAPE(body) {
+  // console.log(body);
+  // console.log(JSON.stringify(body));
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfCAPE`,
+      method: "PUT",
+      types: [
+        UPDATE_SF_CAPE_REQUEST,
+        UPDATE_SF_CAPE_SUCCESS,
+        {
+          type: UPDATE_SF_CAPE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
 /* ================================ ACCOUNTS =============================== */
 
 /* +++++++++++++++++++++++++++++ ACCOUNTS: GET +++++++++++++++++++++++++++++ */
@@ -629,6 +679,58 @@ export function getIframeExisting(token, memberShortId) {
         }
       ],
       body: body,
+      headers: headers
+    }
+  };
+}
+
+/* ++++++++++++++++++++ ONE-TIME PAYMENT REQUEST: POST ++++++++++++++++++++ */
+
+export const POST_ONE_TIME_PAYMENT_REQUEST = "POST_ONE_TIME_PAYMENT_REQUEST";
+export const POST_ONE_TIME_PAYMENT_SUCCESS = "POST_ONE_TIME_PAYMENT_SUCCESS";
+export const POST_ONE_TIME_PAYMENT_FAILURE = "POST_ONE_TIME_PAYMENT_FAILURE";
+
+/*
+ * Function: postOneTimePayment -- post a request to unioni.se to process a
+ * one-time CAPE contribution
+ *
+ * This action dispatches additional actions as it executes:
+ *   POST_ONE_TIME_PAYMENT_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   POST_ONE_TIME_PAYMENT_SUCCESS:
+ *     If payment id successfully retrieved, hides spinner
+ *   POST_ONE_TIME_PAYMENT_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function postOneTimePayment(token, body) {
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`
+  };
+  console.log(headers);
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/unionise/oneTimePayment`,
+      // ^^ this is the staging endpoint
+      // will need to be switched over to production later on
+      method: "POST",
+      types: [
+        POST_ONE_TIME_PAYMENT_REQUEST,
+        POST_ONE_TIME_PAYMENT_SUCCESS,
+        {
+          type: POST_ONE_TIME_PAYMENT_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      body: JSON.stringify(body),
       headers: headers
     }
   };

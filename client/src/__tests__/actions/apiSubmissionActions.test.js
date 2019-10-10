@@ -8,11 +8,15 @@ import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiSubmissionActions";
 import * as submissiomReducer from "../../store/reducers/submission";
 import BASE_URL from "../../store/actions/apiConfig.js";
-import { generateSampleSubmission } from "../../../../app/utils/fieldConfigs.js";
+import {
+  generateSampleSubmission,
+  generateCAPEValidateFrontEnd
+} from "../../../../app/utils/fieldConfigs.js";
 
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
+const capeBody = generateCAPEValidateFrontEnd();
 const token = "1234";
 
 describe("apiSubmissionActions", () => {
@@ -22,6 +26,24 @@ describe("apiSubmissionActions", () => {
       nock.enableNetConnect();
       // expect at least one expect in async code:
       expect.hasAssertions();
+    });
+
+    it("HANDLE_INPUT: handles form input", () => {
+      const e = { target: { name: "name", value: "value" } };
+      const expectedAction = {
+        type: "HANDLE_INPUT",
+        payload: { name: "name", value: "value" }
+      };
+      expect(actions.handleInput(e)).toEqual(expectedAction);
+    });
+
+    it("SET_CAPE_OPTIONS: sets CAPE options", () => {
+      const e = { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] };
+      const expectedAction = {
+        type: "SET_CAPE_OPTIONS",
+        payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
+      };
+      expect(actions.setCAPEOptions(e)).toEqual(expectedAction);
     });
 
     it("ADD_SUBMISSION: Dispatches success action after successful POST", async () => {
@@ -182,6 +204,114 @@ describe("apiSubmissionActions", () => {
       const expectedResult = {
         payload: { salesforceId: "123456" },
         type: "SAVE_SALESFORCEID",
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("CREATE_CAPE: Dispatches success action after successful POST", async () => {
+      nock(`${BASE_URL}`)
+        .post("/api/cape/", capeBody)
+        .reply(200, capeBody);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "CREATE_CAPE_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.createCAPE(capeBody));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("CREATE_CAPE: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "There was an error saving the CAPE record"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error saving the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.createCAPE(capeBody));
+      const expectedResult = {
+        payload: { message: "There was an error saving the CAPE record" },
+        type: "CREATE_CAPE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_CAPE: Dispatches success action after successful PUT", async () => {
+      nock(`${BASE_URL}`)
+        .put("/api/cape/12345678", capeBody)
+        .reply(200, capeBody);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "UPDATE_CAPE_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.updateCAPE(capeBody));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_CAPE: Dispatches failure action after failed PUT", async () => {
+      const body = JSON.stringify({
+        message: "There was an error saving the CAPE record"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error saving the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.updateCAPE(capeBody));
+      const expectedResult = {
+        payload: { message: "There was an error saving the CAPE record" },
+        type: "UPDATE_CAPE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_CAPE_BY_SFID: Dispatches success action after successful GET", async () => {
+      nock(`${BASE_URL}`)
+        .get("/api/capeBySF")
+        .reply(200, [capeBody]);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_CAPE_BY_SFID_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.getCAPEBySFId());
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_CAPE_BY_SFID: Dispatches failure action after failed GET", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the CAPE record"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getCAPEBySFId());
+      const expectedResult = {
+        payload: { message: "There was an error fetching the CAPE record" },
+        type: "GET_CAPE_BY_SFID_FAILURE",
+        error: true,
         meta: undefined
       };
       expect(result).toEqual(expectedResult);
