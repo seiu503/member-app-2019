@@ -1796,9 +1796,7 @@ suite("sf.ctrl.js", function() {
             }
           });
           responseStub = [contactStub];
-          jsforceSObjectUpdateStub = sinon
-            .stub()
-            .returns((null, [contactStub]));
+          jsforceSObjectUpdateStub = sinon.stub().returns((null, contactStub));
           loginStub = sinon.stub();
           jsforceStub = {
             login: loginStub,
@@ -1886,8 +1884,9 @@ suite("sf.ctrl.js", function() {
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;
-        responseStub = [contactErrorStub];
-        jsforceSObjectUpdateStub = sinon.stub().returns((null, responseStub));
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns((null, contactErrorStub));
         jsforceStub = {
           login: loginStub,
           sobject: sinon.stub().returns({

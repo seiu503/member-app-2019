@@ -631,16 +631,16 @@ exports.updateSFCAPE = async (req, res, next) => {
       // console.log(capeResult);
 
       // console.log("sf.ctrl.js > 631: returning to client");
-      let error;
       // console.log(capeResult[0]);
+      let error;
 
       if (!capeResult[0] || !capeResult[0].success) {
         error = `No matching record found for payment id ${one_time_payment_id}`;
         // console.log("sf.ctrl.js > 634");
         // console.log(capeResult[0].errors);
         if (capeResult[0] && capeResult[0].errors) {
-          // console.log(capeResult[0].errors);
           error += `, ${capeResult[0].errors[0]}`;
+          // console.log(capeResult[0].errors);
           // console.log(error);
         }
         return res.status(404).json({ message: error });
@@ -666,21 +666,25 @@ exports.updateSFCAPE = async (req, res, next) => {
         One_Time_Payment_Id__c: req.body.One_Time_Payment_Id__c
       });
 
+      // capeResult is a single object here, not an array.
       // console.log("sf.ctrl.js > 662: returning to client");
+      // console.log(capeResult);
+
       let error;
-      if (!capeResult[0] || !capeResult[0].success) {
+      if (!capeResult || !capeResult.success) {
         error = `No matching record found for payment id ${req.body.Id}`;
-        // console.log("sf.ctrl.js > 664");
-        if (capeResult[0] && capeResult[0].errors) {
-          // console.log(capeResult[0].errors);
-          error += `, ${capeResult[0].errors[0]}`;
+        if (capeResult && capeResult.errors) {
+          error += `, ${capeResult.errors[0]}`;
+          // console.log(capeResult.errors);
           // console.log(error);
         }
 
         return res.status(404).json({ message: error });
       }
       // saving to res.locals to make id available for testing
-      res.locals.sf_cape_id = capeResult.Id;
+      res.locals.sf_cape_id = capeResult.id || capeResult.Id;
+      // console.log('sf.ctrl.js > 688');
+      // console.log(res.locals.sf_cape_id);
       return res
         .status(200)
         .json({ message: "Updated payment Id successfully" });

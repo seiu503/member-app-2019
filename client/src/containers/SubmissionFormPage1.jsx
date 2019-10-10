@@ -72,7 +72,6 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleCAPEClose = this.handleCAPEClose.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
     this.mobilePhoneOnBlur = this.mobilePhoneOnBlur.bind(this);
-    this.donationFrequencyOnChange = this.donationFrequencyOnChange.bind(this);
   }
 
   componentDidMount() {
@@ -133,11 +132,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
   mobilePhoneOnBlur() {
     this.handleEmployerTypeChange(this.props.formValues.employerType);
-  }
-
-  donationFrequencyOnChange(event, value) {
-    this.props.change("donationFrequency", value);
-    this.handleDonationFrequencyChange(value);
   }
 
   handleUpload(firstName, lastName) {
@@ -1182,7 +1176,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
@@ -1207,7 +1201,6 @@ export class SubmissionFormPage1Container extends React.Component {
         handleError(err);
       });
 
-    // console.log(sfCapeResult);
     let sf_cape_id;
 
     if (
@@ -1239,10 +1232,13 @@ export class SubmissionFormPage1Container extends React.Component {
       });
     }
     // if one-time payment, send API request to unioni.se to process it
-    await this.postOneTimePayment().catch(err => {
-      // console.log(err);
-      return handleError(err);
-    });
+    if (formValues.donationFrequency === "One-Time") {
+      await this.postOneTimePayment().catch(err => {
+        // console.log(err);
+        return handleError(err);
+      });
+    }
+
     // collect updates to cape record (values returned from other API calls,
     // amount and frequency if not captured in initial iframe request)
     const { id, oneTimePaymentId } = this.props.submission.cape;
@@ -1271,7 +1267,6 @@ export class SubmissionFormPage1Container extends React.Component {
       Id: sf_cape_id,
       One_Time_Payment_Id__c: oneTimePaymentId
     };
-    // console.log(sfCapeBody);
 
     const sfCapeUpdateResult = await this.props.apiSF
       .updateSFCAPE(sfCapeBody)
@@ -1530,7 +1525,6 @@ export class SubmissionFormPage1Container extends React.Component {
           capeOpen={this.state.capeOpen}
           closeDialog={this.closeDialog}
           mobilePhoneOnBlur={this.mobilePhoneOnBlur}
-          donationFrequencyOnChange={this.donationFrequencyOnChange}
         />
       </div>
     );
