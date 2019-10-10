@@ -77,6 +77,10 @@ let createSFContactError = jest
     Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
   );
 
+let createSFOMAError = jest
+  .fn()
+  .mockImplementation(() => Promise.reject({ type: "CREATE_SF_OMA_FAILURE" }));
+
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "GET_SF_CONTACT_SUCCESS",
@@ -92,6 +96,18 @@ let getSFContactByIdError = jest
   .fn()
   .mockImplementation(() =>
     Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
+  );
+
+let addSubmissionSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+  );
+
+let addSubmissionError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
   );
 
 let createSubmissionSuccess = jest
@@ -359,7 +375,7 @@ const setup = (props = {}) => {
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
 
-describe.only("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<SubmissionFormPage1Container /> unconnected", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -819,6 +835,300 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.instance().trimSignature = trimSignatureMock;
       await wrapper.instance().handleUpload("firstname", "lastname");
       expect(formElements.handleError.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("createSubmission", () => {
+    test("`createSubmission` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      formElements.handleError = jest.fn();
+      addSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "ADD_SUBMISSION_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionError
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            legalLanguage: "jjj"
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      let generateSubmissionBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission()
+        .then(async () => {
+          await generateSubmissionBodyMock;
+          await addSubmissionError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`createSubmission` calls saveSubmissionErrors if !paymentRequired and createSFOMA throws", async function() {
+      handleInputMock = jest.fn();
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionSuccess
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            paymentRequired: false
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: createSFOMAError
+        }
+      };
+      let saveSubmissionErrorsMock = jest.fn();
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().saveSubmissionErrors = saveSubmissionErrorsMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission()
+        .then(async () => {
+          await createSFOMAError;
+          expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`createSubmission` calls saveSubmissionErrors if !paymentRequired and createSFOMA fails", async function() {
+      handleInputMock = jest.fn();
+      formElements.handleError = jest.fn();
+      createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionSuccess
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            paymentRequired: false
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: createSFOMAError
+        }
+      };
+      let saveSubmissionErrorsMock = jest.fn();
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().saveSubmissionErrors = saveSubmissionErrorsMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission()
+        .then(async () => {
+          await createSFOMAError;
+          expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+  });
+
+  describe("lookupSFContact", () => {
+    test("`lookupSFContact` calls lookupSFContact prop if required fields populated", async function() {
+      let props = {
+        formValues: {
+          firstName: "string",
+          lastName: "string",
+          employerName: "homecare",
+          homeEmail: "test@test.com"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: null
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().setCAPEOptions = jest.fn();
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .lookupSFContact()
+        .then(() => {
+          expect(lookupSFContactSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      let props = {
+        formValues: {
+          firstName: "string",
+          lastName: "string",
+          employerName: "homecare",
+          homeEmail: "test@test.com"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: null
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactError,
+          createSFContact: createSFContactSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().setCAPEOptions = jest.fn();
+
+      // wrapper.update();
+      wrapper
+        .instance()
+        .lookupSFContact()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`lookupSFContact` calls createSFContact if lookupSFContact finds no match", async function() {
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          firstName: "string",
+          lastName: "string",
+          employerName: "homecare",
+          homeEmail: "test@test.com"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: null
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      let createSFContactMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().setCAPEOptions = jest.fn();
+      wrapper.instance().createSFContact = createSFContactMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .lookupSFContact()
+        .then(async () => {
+          await lookupSFContactSuccess;
+          expect(createSFContactMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`lookupSFContact` handles error if createSFContact throws", async function() {
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          firstName: "string",
+          lastName: "string",
+          employerName: "homecare",
+          homeEmail: "test@test.com"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: null
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      let createSFContactMock = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(new Error()));
+      wrapper.instance().setCAPEOptions = jest.fn();
+      wrapper.instance().createSFContact = createSFContactMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .lookupSFContact()
+        .then(async () => {
+          await lookupSFContactSuccess;
+          await createSFContactMock;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
     });
   });
 
@@ -1350,6 +1660,97 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
     });
   });
 
+  describe("getCAPEBySFId", () => {
+    test("`getCAPEBySFId` calls getCAPEBySFId prop function", async function() {
+      const getCAPEBySFIdSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_CAPE_BY_SFID_SUCCESS" })
+        );
+      let props = {
+        submission: {
+          salesforceId: "123"
+        },
+        apiSubmission: {
+          getCAPEBySFId: getCAPEBySFIdSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getCAPEBySFId()
+        .then(() => {
+          expect(getCAPEBySFIdSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`getCAPEBySFId` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn();
+      formElements.handleError = jest.fn();
+      const getCAPEBySFIdError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_CAPE_BY_SFID_FAILURE" })
+        );
+      let props = {
+        submission: {
+          salesforceId: "123"
+        },
+        apiSubmission: {
+          getCAPEBySFId: getCAPEBySFIdError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getCAPEBySFId()
+        .then(() => {
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`getCAPEBySFId` handles error if prop function fails", async function() {
+      handleInputMock = jest.fn();
+      formElements.handleError = jest.fn();
+      const getCAPEBySFIdError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_CAPE_BY_SFID_FAILURE", payload: {} })
+        );
+      let props = {
+        submission: {
+          salesforceId: "123"
+        },
+        apiSubmission: {
+          getCAPEBySFId: getCAPEBySFIdError
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getCAPEBySFId()
+        .then(() => {
+          // this error is not returned to client
+          // expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+  });
+
   describe("getIframeExisting", () => {
     test("`getIframeExisting` calls getIframeExisting prop function", async function() {
       handleInputMock = jest.fn();
@@ -1713,7 +2114,10 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: "1234"
           },
-          error: "Error"
+          error: "Error",
+          cape: {
+            id: "456"
+          }
         },
         apiSF: {
           getIframeURL: getIframeNewError,
@@ -1768,7 +2172,10 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: "1234"
           },
-          error: "Error"
+          error: "Error",
+          cape: {
+            id: "456"
+          }
         },
         apiSF: {
           getIframeURL: getIframeNewError,
@@ -1820,7 +2227,10 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: "1234"
           },
-          error: "Error"
+          error: "Error",
+          cape: {
+            id: "456"
+          }
         },
         apiSF: {
           getIframeURL: getIframeNewError,
@@ -1873,7 +2283,10 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: null
           },
-          error: "Error"
+          error: "Error",
+          cape: {
+            id: "456"
+          }
         },
         apiSF: {
           getIframeURL: getIframeNewError,
@@ -1895,6 +2308,76 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
         .getIframeURL()
         .then(() => {
           expect(getIframeNewMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          // console.log(err)
+        });
+    });
+    test("`getIframeURL` calls getCAPEBySFId if cape & salesforceId & !memberShortId", async function() {
+      handleInputMock = jest.fn();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      const getCAPEBySFIdSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_CAPE_BY_SFID_SUCCESS" })
+        );
+      let getIframeNewMock = jest.fn();
+      let props = {
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmount: 10
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          getCAPEBySFId: getCAPEBySFIdSuccess,
+          createCAPE: createCAPESuccess
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            medicaidResidents: 1,
+            paymentType: "Card"
+          },
+          payment: {
+            memberShortId: null
+          },
+          error: "Error",
+          cape: {
+            id: "456"
+          }
+        },
+        apiSF: {
+          getIframeURL: getIframeNewSuccess,
+          getIframeExisting: getIframeExistingSuccess,
+          getUnioniseToken: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_UNIONISE_TOKEN_SUCCESS" })
+            )
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().getCAPEBySFId = getCAPEBySFIdSuccess;
+      wrapper.instance().getSFDJRById = jest.fn();
+      wrapper.update();
+      wrapper
+        .instance()
+        .getIframeURL()
+        .then(() => {
+          expect(getCAPEBySFIdSuccess.mock.calls.length).toBe(1);
         })
         .catch(err => {
           // console.log(err)
@@ -3370,11 +3853,7 @@ describe.only("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         apiSubmission: {
           handleInput,
-          addSubmission: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-            )
+          addSubmission: addSubmissionSuccess
         },
         apiSF: {
           getSFDJRById: getSFDJRSuccess

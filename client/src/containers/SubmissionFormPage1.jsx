@@ -189,7 +189,9 @@ export class SubmissionFormPage1Container extends React.Component {
         )) ||
       formValues.donationFrequency === "One-Time"
     ) {
-      this.getIframeNew(true, e.target.value);
+      this.getIframeNew(true, e.target.value).catch(err => {
+        console.log(err);
+      });
     }
   };
 
@@ -448,9 +450,12 @@ export class SubmissionFormPage1Container extends React.Component {
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
-      // .then(() => console.dir(this.props.submission.currentSubmission))
+      .then(() => {
+        // console.log('453');
+      })
       .catch(err => {
-        console.log(err);
+        // console.log('456');
+        // console.log(err);
         return handleError(err);
       });
 
@@ -494,7 +499,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact() {
-    // console.log("lookupSFContact");
     const { formValues } = this.props;
     if (
       formValues.firstName &&
@@ -503,7 +507,6 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.employerName &&
       !this.props.submission.salesforceId
     ) {
-      console.log("looking up sfid");
       // lookup contact by first/last/email
       const lookupBody = {
         first_name: formValues.firstName,
@@ -514,7 +517,6 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSF
         .lookupSFContact(lookupBody)
         .then(() => {
-          console.log(this.props.submission.payment.currentCAPEFromSF);
           this.setCAPEOptions();
         })
         .catch(err => {
@@ -628,20 +630,17 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getCAPEBySFId() {
-    console.log("getCAPEBySFId");
     const id = this.props.submission.salesforceId;
-    console.log(id);
     if (id) {
       return new Promise(resolve => {
         this.props.apiSubmission
           .getCAPEBySFId(id)
           .then(result => {
-            console.log(result);
             if (
               result.type === "GET_CAPE_BY_SFID_FAILURE" ||
               this.props.submission.error
             ) {
-              console.log(this.props.submission.error);
+              // console.log(this.props.submission.error);
               // don't return this error to client
               // it's confusing if it's just 'no record found'...
               resolve(console.log(this.props.submission.error));
@@ -649,12 +648,10 @@ export class SubmissionFormPage1Container extends React.Component {
             resolve(result);
           })
           .catch(err => {
-            console.log(err);
+            // console.log(err);
             resolve(handleError(err));
           });
       });
-    } else {
-      console.log("no id");
     }
   }
 
@@ -951,7 +948,9 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // if we don't have the memberShortId, then we need to create a new
     // unionise member record and return the cardAddingUrl
-    return this.getIframeNew(cape, capeAmount);
+    return this.getIframeNew(cape, capeAmount).catch(err => {
+      console.log(err);
+    });
   }
 
   async saveLegalLanguage() {
