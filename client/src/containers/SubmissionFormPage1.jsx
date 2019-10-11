@@ -781,9 +781,9 @@ export class SubmissionFormPage1Container extends React.Component {
       });
   }
 
-  async getIframeNew(cape, capeAmount) {
+  async getIframeNew(cape, capeAmount, capeAmountOther) {
     // console.log("getIframeNew");
-    console.log(capeAmount);
+    console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     let birthdate;
@@ -811,7 +811,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.submissionId) {
       externalId = this.props.submission.submissionId;
     } else {
-      await this.createCAPE().catch(err => {
+      await this.createCAPE(capeAmount, capeAmountOther).catch(err => {
         console.log(err);
         return handleError(err);
       });
@@ -845,7 +845,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log("generating body for CAPE iFrame request");
       const donationAmount =
         capeAmount === "Other"
-          ? parseFloat(formValues.capeAmountOther)
+          ? parseFloat(capeAmountOther)
           : parseFloat(capeAmount);
       console.log(donationAmount);
       body.deductionType = "CAPE";
@@ -1084,7 +1084,7 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  async generateCAPEBody() {
+  async generateCAPEBody(capeAmount, capeAmountOther) {
     console.log("generateCAPEBody");
     const { formValues } = this.props;
 
@@ -1106,11 +1106,11 @@ export class SubmissionFormPage1Container extends React.Component {
     const checkoff = !this.props.submission.formPage1.paymentRequired;
     const paymentMethod = checkoff ? "Checkoff" : "Unionise";
     const donationAmount =
-      formValues.capeAmount === "Other"
-        ? parseFloat(formValues.capeAmountOther)
-        : parseFloat(formValues.capeAmount);
-    console.log(formValues.capeAmountOther);
-    console.log(formValues.capeAmount);
+      capeAmount === "Other"
+        ? parseFloat(capeAmountOther)
+        : parseFloat(capeAmount);
+    console.log(capeAmountOther);
+    console.log(capeAmount);
     console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount) {
@@ -1121,7 +1121,7 @@ export class SubmissionFormPage1Container extends React.Component {
         // console.log(this.state.displayCAPEPaymentFields);
       });
     }
-
+    console.log("1124");
     // generate body
     const body = {
       ip_address: localIpUrl(),
@@ -1151,21 +1151,25 @@ export class SubmissionFormPage1Container extends React.Component {
 
   // create an initial CAPE record in postgres to get returned ID
   // not finalized until payment method added and SFCAPE status updated
-  async createCAPE() {
-    const body = await this.generateCAPEBody();
-    const capeResult = await this.props.apiSubmission
-      .createCAPE(body)
-      .catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
+  async createCAPE(capeAmount, capeAmountOther) {
+    const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
+    if (body) {
+      const capeResult = await this.props.apiSubmission
+        .createCAPE(body)
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
 
-    if (
-      capeResult.type !== "CREATE_CAPE_SUCCESS" ||
-      this.props.submission.error
-    ) {
-      // console.log(this.props.submission.error);
-      return handleError(this.props.submission.error);
+      if (
+        capeResult.type !== "CREATE_CAPE_SUCCESS" ||
+        this.props.submission.error
+      ) {
+        // console.log(this.props.submission.error);
+        return handleError(this.props.submission.error);
+      }
+    } else {
+      console.log("no CAPE body generated");
     }
   }
 
@@ -1192,7 +1196,7 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log("No payment method added");
       return handleError("Please click 'Add a Card' to add a payment method");
     }
-    // if they clicked submit before the payment logic finished loading,
+    // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
@@ -1206,7 +1210,10 @@ export class SubmissionFormPage1Container extends React.Component {
 
     let cape_errors = "",
       cape_status = "Pending";
-    const body = await this.generateCAPEBody();
+    const body = await this.generateCAPEBody(
+      formValues.capeAmount,
+      formValues.capeAmountOther
+    );
     delete body.cape_status;
     body.member_short_id =
       this.props.submission.payment.memberShortId ||
@@ -1246,7 +1253,10 @@ export class SubmissionFormPage1Container extends React.Component {
     // (checkoff use case), create it now
 
     if (!this.props.submission.cape.id) {
-      await this.createCAPE().catch(err => {
+      await this.createCAPE(
+        formValues.capeAmount,
+        formValues.capeAmountOther
+      ).catch(err => {
         // console.log(err);
         return handleError(err);
       });

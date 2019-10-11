@@ -213,6 +213,7 @@ function Submission(state = INITIAL_STATE, action) {
           subDivision = action.payload.Account.Name;
         }
         const employerType = employerTypeMap[subDivision];
+
         // if employer attached to contact record is 'Employer' record type,
         // use Account Name. if it's 'Worksite' record type, use Parent Name
         let employerName = "";
@@ -221,6 +222,7 @@ function Submission(state = INITIAL_STATE, action) {
         } else if (action.payload.Account.CVRSOS__ParentName__c) {
           employerName = action.payload.Account.CVRSOS__ParentName__c;
         }
+
         // split ethinicity string, provide true value for each ethnicity returned
         let ethnicities = [""];
         if (action.payload.Ethnicity__c) {
