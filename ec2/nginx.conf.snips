@@ -1,0 +1,32 @@
+#    server {
+#      listen       80 default_server;
+#      listen       [::]:80 default_server;
+#      server_name  test.seiu503signup.org 50.112.148.213;
+#      return 301 https://$host$request_uri;
+#    }
+
+
+    server {
+      listen       80 default_server;
+            listen       [::]:80 default_server;
+            server_name  test.seiu503signup.org 50.112.148.213;
+            root         /home/ubuntu/seiu503Deployed/client/build;
+
+      location /api/ {
+           proxy_pass http://127.0.0.1:8080;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_cache_bypass $http_upgrade;
+      }
+
+      location / {
+           root /home/ubuntu/seiu503Deployed/client/build;
+           index index.html;
+           try_files $uri /index.html;
+           if (!-e $request_filename){
+              rewrite ^(.*)$ /index.html break;
+           }
+      }
+    }
