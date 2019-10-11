@@ -209,11 +209,17 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleDonationFrequencyChange(frequency) {
     const { formValues } = this.props;
+    if (!formValues.capeAmount && !formValues.capeAmountOther) {
+      return;
+    }
     // render iframe if one-time donation and cape amount set
     const donationAmount =
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
         : parseFloat(formValues.capeAmount);
+    console.log(`donationAmount: ${donationAmount}`);
+    console.log(formValues.capeAmount);
+    console.log(formValues.capeAmountOther);
     if (frequency === "One-Time" && donationAmount) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
@@ -777,6 +783,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async getIframeNew(cape, capeAmount) {
     // console.log("getIframeNew");
+    console.log(capeAmount);
     const { formValues } = this.props;
 
     let birthdate;
@@ -840,13 +847,14 @@ export class SubmissionFormPage1Container extends React.Component {
         capeAmount === "Other"
           ? parseFloat(formValues.capeAmountOther)
           : parseFloat(capeAmount);
+      console.log(donationAmount);
       body.deductionType = "CAPE";
       body.politicalType = "monthly";
       body.deductionAmount = donationAmount;
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    // console.log(JSON.stringify(body));
+    console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
@@ -1101,6 +1109,8 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
         : parseFloat(formValues.capeAmount);
+    console.log(formValues.capeAmountOther);
+    console.log(formValues.capeAmount);
     console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount) {

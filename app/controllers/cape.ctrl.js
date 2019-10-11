@@ -85,7 +85,7 @@ const createCAPE = async (req, res, next) => {
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (missingField) {
-    // console.log(`cape.ctrl.js > 86: missing ${missingField}`);
+    console.log(`cape.ctrl.js > 88: missing ${missingField}`);
     return res.status(422).json({
       reason: "ValidationError",
       message: `Missing required field ${missingField}`
