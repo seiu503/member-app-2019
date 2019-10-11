@@ -148,8 +148,8 @@ const createCAPE = async (req, res, next) => {
 const updateCAPE = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  // console.log(`cape.ctrl.js > 145 - id: ${id} (updates below)`);
-  // console.log(updates);
+  console.log(`cape.ctrl.js > 145 - id: ${id} (updates below)`);
+  console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
       // console.log('cape.ctrl.js > 149: !updates');
@@ -161,8 +161,8 @@ const updateCAPE = async (req, res, next) => {
     }
 
     const updateCAPEResult = await cape.updateCAPE(id, updates).catch(err => {
-      // console.log(`cape.ctrl.js > 160: err`)
-      // console.error(err);
+      console.log(`cape.ctrl.js > 160: err`);
+      console.error(err);
     });
 
     if (
@@ -175,17 +175,17 @@ const updateCAPE = async (req, res, next) => {
         message = updateCAPEResult.message;
       }
 
-      // console.error(`cape.ctrl.js > 205: ${message}`);
+      console.error(`cape.ctrl.js > 205: ${message}`);
       return res.status(500).json({ message });
     } else {
-      // console.log("cape.ctrl.js > 174: returning to client");
-      // console.log(updateCAPEResult[0].id);
+      console.log("cape.ctrl.js > 174: returning to client");
+      console.log(updateCAPEResult[0].id);
       // saving to res.locals to make id available for testing
       res.locals.cape_id = updateCAPEResult[0].id;
       return res.status(200).json({ cape_id: updateCAPEResult[0].id });
     }
   } catch (error) {
-    // console.error(`cape.ctrl.js > 217: ${error}`);
+    console.error(`cape.ctrl.js > 217: ${error}`);
     return res.status(404).json({ message: error.message });
   }
 };
