@@ -29,6 +29,7 @@ const updated_content2 = "http://example.com/redirect";
 
 const name = `firstname ${utils.randomText()}`;
 const email = "fakeemail@test.com";
+const adminType = "admin";
 const avatar_url = "http://example.com/avatar.png";
 const google_id = "1234";
 const google_token = "5678";
@@ -51,10 +52,23 @@ suite("routes : content", function() {
   // mock passport auth and stub returned user to test secured routes
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
-    const user = [{ name, email, avatar_url, google_token, google_id }];
+    const user = [
+      { name, email, avatar_url, google_id, google_token, type: adminType }
+    ];
     userStub = sinon.stub(users, "createUser").resolves(user);
     authenticateMock.yields(null, {
-      id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4"
+      id: "ac577dd6-0eb8-445c-a1f2-293bf3f9f7f4",
+      type: "admin",
+      // id: 'ba2bd722-04ef-41bb-9411-33096c4bf082',
+      //    name: 'Jordan Heffernan',
+      email: "heffernanj@seiu503.org",
+      //    avatar_url:
+      //     'https://lh5.googleusercontent.com/-5ZqUs34OFlw/AAAAAAAAAAI/AAAAAAAAAAA/ACHi3rcIMjeSlbk53JeFZeDrN-MqkDJuXQ/photo.jpg',
+      google_id: "111864084607117859693",
+      google_token:
+        "ya29.ImSbB5PFbBRPSROsp_-8dklBU9hAIIz5kyNVO6nR9sRAeLZPLeJB5MDPGx1X3VDkerqoimGepQnXvpxlTKplxOhFAT_2lY3rckK9HoSJyQu6vp-EHV-imU5UVqU9UunEAyorzoZc"
+      //    created_at: 2019-10-11T00:46:50.090Z,
+      //    updated_at: 2019-10-11T00:46:57.035Z,
     });
   });
 
@@ -70,7 +84,7 @@ suite("routes : content", function() {
       chai
         .request(app)
         .post("/api/content/")
-        .send({ content_type, content, userType: "admin" })
+        .send({ content_type, content, userType: adminType })
         .end(function(err, res) {
           id = res.body.id;
           assert.equal(res.status, 200);
@@ -92,7 +106,7 @@ suite("routes : content", function() {
     });
   });
 
-  suite("GET /api/content/:id", function() {
+  suite("GET /api/content/admin/:id", function() {
     const app = require("../server");
 
     test("gets one content record by id", function(done) {
@@ -114,7 +128,7 @@ suite("routes : content", function() {
     test("returns error if id is missing or malformed", function(done) {
       chai
         .request(app)
-        .get("/api/content/123456789")
+        .get("/api/content/admin/123456789")
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
@@ -147,7 +161,7 @@ suite("routes : content", function() {
     test("returns error if content type is missing or malformed", function(done) {
       chai
         .request(app)
-        .get("/api/content/undefined")
+        .get("/api/content/admin/undefined")
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
@@ -183,13 +197,12 @@ suite("routes : content", function() {
       const app = require("../server");
       const updates = {
         content_type: updatedContentType,
-        content: updated_content,
-        userType: admin
+        content: updated_content
       };
       chai
         .request(app)
         .put(`/api/content/${id}`)
-        .send(updates)
+        .send({ updates, userType: adminType })
         .end(function(err, res) {
           assert.equal(res.status, 200);
           assert.isNull(err);
@@ -205,13 +218,12 @@ suite("routes : content", function() {
       const app = require("../server");
       const updates = {
         content_type: updatedContentType,
-        content: updated_content,
-        userType: admin
+        content: updated_content
       };
       chai
         .request(app)
         .put("/api/content/bad")
-        .send(updates)
+        .send({ updates, userType: adminType })
         .end(function(err, res) {
           // console.log(res.body);
           assert.equal(res.status, 500);
@@ -225,7 +237,7 @@ suite("routes : content", function() {
       chai
         .request(app)
         .put(`/api/content/${id}`)
-        .send({ name: undefined })
+        .send({ updates: { name: undefined }, userType: adminType })
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");
@@ -251,7 +263,7 @@ suite("routes : content", function() {
       const app = require("../server");
       chai
         .request(app)
-        .delete("/api/content/bad")
+        .delete("/api/content/admin/bad")
         .end(function(err, res) {
           assert.equal(res.status, 404);
           assert.equal(res.type, "application/json");

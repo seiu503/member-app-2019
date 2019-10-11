@@ -16,6 +16,7 @@ const knexCleaner = require("knex-cleaner");
 const name = `firstname lastname`;
 const name2 = `firstname2 ${utils.randomText()}`;
 const email = "fakeemail@test.com";
+const type = "admin";
 const avatar_url = "http://example.com/avatar.png";
 
 const updatedName = `updatedFirstName ${utils.randomText()}`;
@@ -42,13 +43,14 @@ describe("user model tests", () => {
 
   it("POST creates a new user", () => {
     return users
-      .createUser(name, email, avatar_url, google_id, google_token)
+      .createUser(name, email, avatar_url, google_id, google_token, type)
       .then(result => {
         assert.deepEqual(result[0].name, name);
         assert.deepEqual(result[0].email, email);
         assert.deepEqual(result[0].avatar_url, avatar_url);
         assert.deepEqual(result[0].google_id, google_id);
         assert.deepEqual(result[0].google_token, google_token);
+        assert.deepEqual(result[0].type, type);
         return db.select("*").from(TABLES.USERS);
       })
       .then(([result]) => {
@@ -57,6 +59,7 @@ describe("user model tests", () => {
         assert.equal(result.avatar_url, avatar_url);
         assert.equal(result.google_id, google_id);
         assert.equal(result.google_token, google_token);
+        assert.equal(result.type, type);
         userId = result.id;
       });
   });
@@ -65,12 +68,14 @@ describe("user model tests", () => {
     let userId;
 
     // seed with a user before each test
-    beforeEach(() => {
-      return users
-        .createUser(name, email, avatar_url, google_id, google_token)
-        .then(user => {
-          userId = user[0].id;
-        });
+    before(() => {
+      return knexCleaner.clean(db).then(() => {
+        return users
+          .createUser(name, email, avatar_url, google_id, google_token, type)
+          .then(user => {
+            userId = user[0].id;
+          });
+      });
     });
 
     it("PUT updates a user", () => {
@@ -85,6 +90,7 @@ describe("user model tests", () => {
         assert.equal(results[0].avatar_url, updatedAvatar_url);
         assert.equal(results[0].google_token, google_token);
         assert.equal(results[0].google_id, google_id);
+        assert.equal(results[0].type, type);
         assert.isAtLeast(results[0].updated_at, results[0].created_at);
       });
     });
@@ -93,20 +99,23 @@ describe("user model tests", () => {
       return users.getUsers().then(results => {
         const arrayOfKeys = key => results.map(obj => obj[key]);
         assert.equal(Array.isArray(results), true);
-        assert.include(arrayOfKeys("name"), name);
-        assert.include(arrayOfKeys("email"), email);
-        assert.include(arrayOfKeys("avatar_url"), avatar_url);
+        assert.include(arrayOfKeys("name"), updatedName);
+        assert.include(arrayOfKeys("email"), updatedEmail);
+        assert.include(arrayOfKeys("type"), type);
+        assert.include(arrayOfKeys("avatar_url"), updatedAvatar_url);
         assert.deepEqual(results[0].google_id, google_id);
         assert.deepEqual(results[0].google_token, google_token);
+        assert.deepEqual(results[0].type, type);
       });
     });
 
     it("GET gets one user by id", () => {
       return users.getUserById(userId).then(returnedUser => {
-        assert.equal(returnedUser.name, name);
-        assert.equal(returnedUser.email, email);
-        assert.equal(returnedUser.avatar_url, avatar_url);
+        assert.equal(returnedUser.name, updatedName);
+        assert.equal(returnedUser.email, updatedEmail);
+        assert.equal(returnedUser.avatar_url, updatedAvatar_url);
         assert.equal(returnedUser.google_token, google_token);
+        assert.equal(returnedUser.type, type);
       });
     });
 

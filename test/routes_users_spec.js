@@ -20,6 +20,9 @@ const knexCleaner = require("knex-cleaner");
 const name = `firstname ${utils.randomText()}`;
 const name2 = `firstname2 ${utils.randomText()}`;
 const email = "fakeemail@test.com";
+const adminType = "admin";
+const viewType = "view";
+const editType = "type";
 const avatar_url = "http://example.com/avatar.png";
 
 const updatedName = `updatedFirstName ${utils.randomText()}`;
@@ -67,10 +70,8 @@ suite("routes : user", function() {
         .send({
           name,
           email,
-          avatar_url,
-          google_id,
-          google_token,
-          requestingUserType: "admin"
+          type: "admin",
+          requestingUserType: adminType
         })
         .end(function(err, res) {
           userId = res.body.id;
@@ -218,13 +219,12 @@ suite("routes : user", function() {
         const updates = {
           email: updatedEmail,
           name: updatedName,
-          avatar_url: updatedAvatar_url,
-          requestingUserType: "admin"
+          avatar_url: updatedAvatar_url
         };
         chai
           .request(app)
           .put(`/api/user/${userId}`)
-          .send({ updates })
+          .send({ updates, requestingUserType: "admin" })
           .end(function(err, res) {
             assert.equal(res.status, 200);
             assert.isNull(err);
@@ -243,13 +243,12 @@ suite("routes : user", function() {
         const updates = {
           email: updatedEmail,
           name: updatedName,
-          avatar_url: updatedAvatar_url,
-          requestingUserType: "admin"
+          avatar_url: updatedAvatar_url
         };
         chai
           .request(app)
           .put("/api/user/123456789")
-          .send({ updates })
+          .send({ updates, requestingUserType: "admin" })
           .end(function(err, res) {
             assert.equal(res.status, 500);
             assert.equal(res.type, "application/json");
@@ -262,7 +261,7 @@ suite("routes : user", function() {
         chai
           .request(app)
           .put(`/api/user/${userId}`)
-          .send({ name: undefined })
+          .send({ updates: { name: undefined }, requestingUserType: "admin" })
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");
@@ -284,7 +283,7 @@ suite("routes : user", function() {
         chai
           .request(app)
           .put(`/api/user/${userId}`)
-          .send({ updates })
+          .send({ updates, requestingUserType: "admin" })
           .end(function(err, res) {
             assert.equal(res.status, 404);
             assert.equal(res.type, "application/json");
@@ -296,7 +295,9 @@ suite("routes : user", function() {
 
     suite("DELETE", function() {
       beforeEach(() => {
-        const user = [{ name, email, avatar_url, google_token, google_id }];
+        const user = [
+          { name, email, avatar_url, google_token, google_id, type: "admin" }
+        ];
         userStub = sinon.stub(users, "createUser").resolves(user);
         authenticateMock.yields(null, { id: 1 });
       });

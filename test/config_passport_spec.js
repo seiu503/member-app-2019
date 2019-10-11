@@ -28,6 +28,9 @@ const chai = require("chai"),
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMyN…zE1fQ.6y9mMYVXbffHa4Q-aFUd5B3GDyyRF10iBJ28qVlEApk",
   name = `firstname lastname}`,
   email = "fakeemail@test.com",
+  adminType = "admin",
+  viewType = "view",
+  editType = "type",
   avatar_url = "http://example.com/avatar.png",
   profile = {
     id,
@@ -43,6 +46,7 @@ const chai = require("chai"),
     name: "firstname lastname",
     email,
     avatar_url,
+    adminType,
     google_id: "1234",
     google_token: "5678",
     created_at: new Date(),
@@ -71,7 +75,7 @@ suite("routes : passport auth", function() {
 
   suite("Passport and Auth config", function() {
     const app = require("../server");
-    test("return 422 status when no user found", function(done) {
+    test("return 500 status when no user found", function(done) {
       const authenticateMockNoUser = sinon
         .stub(passport, "authenticate")
         .returns(() => {});
@@ -81,39 +85,41 @@ suite("routes : passport auth", function() {
         .post("/api/content/")
         .send({ content_type: "headline", content: "test" })
         .end(function(err, res) {
-          assert.equal(res.status, 422);
+          assert.equal(res.status, 500);
           assert.equal(
             res.body.message,
-            "Sorry, you must log in to view this page."
+            "You do not have permission to do this. Please Consult an administrator."
           );
           assert.isNull(err);
           sinon.restore();
           done();
         });
     });
-    test("return 422 status when no error thrown", function(done) {
-      const authenticateMockError = sinon
-        .stub(passport, "authenticate")
-        .returns(() => {});
-      authenticateMockError.yields({ message: "error message" }, null);
-      chai
-        .request(app)
-        .post("/api/content/")
-        .send({ content_type: "headline", content: "test" })
-        .end(function(err, res) {
-          assert.equal(res.status, 422);
-          assert.equal(res.body.message, "error message");
-          assert.isNull(err);
-          sinon.restore();
-          done();
-        });
-    });
+    // I took this test out because jwtCallback now checks for a user in the the req
+    // and returns the error above ^^. So we shouldn't really get here anymore.
+    // test("return 422 status when no error thrown", function (done) {
+    //   const authenticateMockError = sinon
+    //     .stub(passport, "authenticate")
+    //     .returns(() => { });
+    //   authenticateMockError.yields({ message: "error message" }, null);
+    //   chai
+    //     .request(app)
+    //     .post("/api/content/")
+    //     .send({ content_type: "headline", content: "test" })
+    //     .end(function (err, res) {
+    //       assert.equal(res.status, 422);
+    //       assert.equal(res.body.message, "error message");
+    //       assert.isNull(err);
+    //       sinon.restore();
+    //       done();
+    //     });
+    // });
     test("finds existing user", function(done) {
-      const getUserByGoogleIdStub = sinon
-        .stub(User, "getUserByGoogleId")
-        .returns(Promise.resolve({ name, email, avatar_url, id }));
+      const getUserByEmailStub = sinon
+        .stub(User, "getUserByEmail")
+        .returns(Promise.resolve({ name, email, avatar_url, id, adminType }));
       findUserByEmail({ email }, token, done).then(() => {
-        getUserByGoogleIdStub.should.have.been.calledOnce;
+        getUserByEmailStub.should.have.been.calledOnce;
         sinon.restore();
       });
     });
@@ -195,25 +201,23 @@ suite("routes : passport auth", function() {
             return knexCleaner.clean(db);
           });
       });
-      test("googleLogin calls createUser if no user in req", async () => {
+      test("googleLogin replies with error user not invited yet", function(done) {
         const req = mockReq();
-        const createUserStub = sinon.stub(User, "createUser").resolves(profile);
-        const saveNewUserStub = sinon
-          .stub(authConfig, "saveNewUser")
-          .resolves(() => {});
+        const getUserByEmailStub = sinon
+          .stub(User, "getUserByEmail")
+          .resolves(profile, accessToken, done);
+        // const saveNewUserStub = sinon
+        //   .stub(authConfig, "saveNewUser")
+        //   .resolves(() => { });
         googleLogin(req, accessToken, refreshToken, profile, done)
-          .then(() => {
-            return saveNewUserStub()
-              .then(() => {
-                expect(createUserStub).to.have.been.calledOnce;
-              })
-              .catch(err => {
-                // console.log('182');
-                // console.log(err)
-              });
+          .then(result => {
+            expect(getUserByEmailStub).to.have.been.calledOnce;
+            expect(result).to.deep.equal(
+              "You need an invitation from an administrator first"
+            );
           })
           .catch(err => {
-            console.log("187");
+            console.log("214");
             console.log(err);
           })
           .finally(() => {

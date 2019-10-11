@@ -221,9 +221,9 @@ describe("submissions model tests", () => {
     let userId;
 
     // seed with a user before each test
-    beforeEach(() => {
+    before(() => {
       return users
-        .createUser(name, email, avatar_url, google_id, google_token)
+        .createUser(name, email, avatar_url, google_id, google_token, "admin")
         .then(user => {
           userId = user[0].id;
         })
@@ -236,9 +236,9 @@ describe("submissions model tests", () => {
         });
     });
 
-    afterEach(() => {
-      passport.authenticate.restore();
-    });
+    // afterEach(() => {
+    //   passport.authenticate.restore();
+    // });
 
     it("GET gets all submissions", () => {
       return submissions.getSubmissions().then(results => {
