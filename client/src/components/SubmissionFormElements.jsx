@@ -259,7 +259,8 @@ export const employerTypeMap = {
   AFH: "Adult Foster Home",
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
-  "Community Members": "Community Member"
+  "Community Members": "Community Member",
+  "COMMUNITY MEMBERS": "Community Member"
 };
 
 // helper function for reverse lookup from above object
