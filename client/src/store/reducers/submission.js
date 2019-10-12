@@ -31,6 +31,9 @@ import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
   GET_SF_CONTACT_FAILURE,
+  GET_SF_CONTACT_DID_REQUEST,
+  GET_SF_CONTACT_DID_SUCCESS,
+  GET_SF_CONTACT_DID_FAILURE,
   CREATE_SF_CONTACT_REQUEST,
   CREATE_SF_CONTACT_SUCCESS,
   CREATE_SF_CONTACT_FAILURE,
@@ -174,6 +177,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
     case POST_ONE_TIME_PAYMENT_REQUEST:
+    case GET_SF_CONTACT_DID_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -195,6 +199,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_SF_CONTACT_SUCCESS:
+    case GET_SF_CONTACT_DID_SUCCESS:
       if (action.payload) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
@@ -241,9 +246,6 @@ function Submission(state = INITIAL_STATE, action) {
         return update(state, {
           salesforceId: { $set: action.payload.Id },
           formPage1: {
-            mm: { $set: moment(action.payload.Birthdate).format("MM") },
-            dd: { $set: moment(action.payload.Birthdate).format("DD") },
-            yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
             mobilePhone: { $set: action.payload.MobilePhone },
             employerName: { $set: employerName },
             employerType: { $set: employerType },
@@ -444,6 +446,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_FAILURE:
     case POST_ONE_TIME_PAYMENT_FAILURE:
+    case GET_SF_CONTACT_DID_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

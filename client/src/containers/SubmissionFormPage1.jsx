@@ -78,10 +78,10 @@ export class SubmissionFormPage1Container extends React.Component {
     // check for contact id in query string
     const params = queryString.parse(this.props.location.search);
     // if find contact id, call API to fetch contact info for prefill
-    if (params.id) {
-      const { id } = params;
+    if (params.cId && params.aId) {
+      const { cId, aId } = params;
       this.props.apiSF
-        .getSFContactById(id)
+        .getSFContactByDoubleId(cId, aId)
         .then(result => {
           // open warning/confirmation modal if prefill successfully loaded
           if (
