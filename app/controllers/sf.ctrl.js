@@ -21,6 +21,7 @@ let conn = new jsforce.Connection({ loginUrl });
 const user = process.env.SALESFORCE_USER;
 const password = process.env.SALESFORCE_PWD;
 const fieldList = generateSFContactFieldList();
+const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
 
 /* ================================ CONTACTS =============================== */
@@ -50,6 +51,44 @@ exports.getSFContactById = async (req, res, next) => {
     return res.status(200).json(contact.records[0]);
   } catch (err) {
     // console.error(`sf.ctrl.js > 50: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
+/** Fetch one contact from Salesforce, must match Contact ID and Account Id
+ *  for data security, do not fetch or prefill contact birthdate
+ *  @param    {String}   cId   Salesforce Contact ID
+ *  @param    {String}   aId   Salesforce Account ID
+ *  @returns  {Object}        Salesforce Contact object OR error message.
+ */
+exports.getSFContactByDoubleId = async (req, res, next) => {
+  console.log(`sf.ctrl.js > getSFContactByDoubleId`);
+  const { cId, aId } = req.params;
+  if (!cId || !aId) {
+    return res.status(422).json({ message: "Missing required fields" });
+  }
+  const query = `SELECT ${prefillFieldList.join(
+    ","
+  )}, Id FROM Contact WHERE Id = \'${cId}\' AND Account.Id = \'${aId}\'`;
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 75: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let contact;
+  try {
+    contact = await conn.query(query);
+    if (contact.totalSize === 0 || !contact) {
+      // if no contact found, return not found message to client
+      return res.status(200).json({
+        message: "No matching contact found."
+      });
+    }
+    return res.status(200).json(contact.records[0]);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 83: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -155,84 +194,6 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
     });
   } catch (err) {
     // console.error(`sf.ctrl.js > 149: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-};
-
-/** Lookup contact in Salesforce, by id if prefill,
- *  otherwise by Firstname, Lastname, & Email.
- *  If existing contact found, update with submission data, then pass id
- *  to next middleware.
- *  If no match found, create new contact and pass id
- *  to next middleware.
- *  @param    {Object}   body         Raw submission data, containing
- *                                    key/value pairs of fields to match/
- *                                    upsert. Minimum fields required to pass
- *                                    SF validation for lookup and potential
- *                                    new contact creation:
- *                                    first_name, last_name, email, employer_id
- *  @returns  {null||Object}          If successful, returns nothing to client
- *                                    but passes object with contact id to
- *                                    next middleware. If failed, returns
- *                                    object with error message to client.
- */
-
-exports.createOrUpdateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 173 > createOrUpdateSFContact`);
-
-  const { salesforce_id } = req.body;
-
-  // if contact id is sent in request body, then this is a prefill
-  // skip the lookup function and head straight to updateSFContact
-  if (salesforce_id) {
-    // save contact_id to res.locals to pass to next middleware
-    // (it was in the body already but updateSFContact
-    // doesn't know to look for it there)
-    res.locals.sf_contact_id = salesforce_id;
-    res.locals.next = true;
-
-    // console.log(`sf.ctrljs > 186 > found contact id (salesforce_id)`);
-    return exports.updateSFContact(req, res, next);
-  }
-
-  // otherwise, proceed with lookup:
-  const { first_name, last_name, home_email } = req.body;
-  // fuzzy match on first name AND exact match on last name
-  // AND exact match on either home OR work email
-  // limit one most recently updated record
-
-  const query = `SELECT Id, ${fieldList.join(
-    ","
-  )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
-
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 204: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-
-  let contact;
-  try {
-    contact = await conn.query(query);
-    if (contact.totalSize === 0 || !contact) {
-      // if no contact found, create new contact, then pass id to
-      // next middleware in res.locals
-      res.locals.next = true;
-      // console.log(`sf.ctrl.js > 215: creating new contact`);
-      return exports.createSFContact(req, res, next);
-    }
-    // if contact found, pass contact id to next middleware, which will
-    // update it with the submission data from res.body
-    if (contact) {
-      // console.log(`sf.ctrl.js > 221: found matching contact`);
-      res.locals.sf_contact_id = contact.records[0].Id;
-      res.locals.next = true;
-      return exports.updateSFContact(req, res, next);
-    }
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 227: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -709,7 +670,7 @@ exports.getAllEmployers = async (req, res, next) => {
   // console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id (does not
   // fit the query in any other way so has to be SELECTed for separately)
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider') and Sub_Division__c != null)`;
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

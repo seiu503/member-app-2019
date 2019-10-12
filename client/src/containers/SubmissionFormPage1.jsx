@@ -748,6 +748,7 @@ export class SubmissionFormPage1Container extends React.Component {
           "ReCaptcha validation failed, please reload the page and try again."
         );
       });
+    console.log(result.payload);
     // console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
   }
