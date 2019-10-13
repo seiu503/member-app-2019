@@ -46,6 +46,7 @@ suite("routes : static", function() {
       .request(app)
       .get("/")
       .end(function(err, res) {
+        console.log(res.status);
         assert.equal(res.status, 200);
         assert.isNull(err);
         done();

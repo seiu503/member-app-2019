@@ -149,9 +149,10 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
           "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
       });
     }
-    return res
-      .status(200)
-      .json({ salesforce_id: contact.records[0].Id || contact.records[0].id });
+    return res.status(200).json({
+      salesforce_id: contact.records[0].Id || contact.records[0].id,
+      Current_CAPE__c: contact.records[0].Current_CAPE__c
+    });
   } catch (err) {
     // console.error(`sf.ctrl.js > 149: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -544,19 +545,155 @@ exports.createSFCAPE = async (req, res, next) => {
     // convert datetime to yyyy-mm-dd format
     body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
 
-    console.log(`sf.ctrl.js > 547`);
-    console.log(body);
+    // console.log(`sf.ctrl.js > 547`);
+    // console.log(body);
 
     CAPE = await conn.sobject("CAPE__c").create({
       ...body
     });
 
     return res.status(200).json({
-      cape_id: CAPE.id || CAPE.Id
+      sf_cape_id: CAPE.id || CAPE.Id
     });
   } catch (err) {
-    console.error(`sf.ctrl.js > 558: ${err}`);
+    // console.error(`sf.ctrl.js > 558: ${err}`);
     return res.status(500).json({ message: err.message });
+  }
+};
+
+/* +++++++++++++++++++++++++++++++ CAPE: PUT ++++++++++++++++++++++++++++++ */
+
+/** Update SFCAPE record with one-time payment id (from app)
+    or status (from unioni.se)
+    handles two different request types, differentiated by shape of body
+ *  @param  {Body shape 1}   {
+ *            info {
+*               paymentId    : string   Unioni.se one-time payment id
+*             },
+*             eventType      : string   payment status ('finish' || 'fail')
+ *           }
+ *
+ *          {Body shape 2}   {
+ *             Id                      : string  sObject Id of CAPE__c object,
+ *             One_Time_Payment_Id__c  : string  Unioni.se one-time payment id
+ *            }
+ *
+ *  @returns  {Object}        Success OR error message.
+ */
+exports.updateSFCAPE = async (req, res, next) => {
+  // console.log(`sf.ctrl.js > 584: updateSFCAPE`);
+  // console.log(req.body);
+  let one_time_payment_id;
+  // check if this is Body shape 1 (request from unioni.se)
+  if (req.body && req.body.info) {
+    one_time_payment_id = req.body.info.paymentId;
+    if (!req.body.eventType) {
+      // console.log("sf.ctrl.js > 591: !eventType");
+      return res.status(422).json({ message: "No eventType submitted" });
+    }
+    // check if this is Body shape 2 (request from member app)
+  } else if (req.body && req.body.One_Time_Payment_Id__c) {
+    one_time_payment_id = req.body.One_Time_Payment_Id__c;
+    if (!req.body.Id) {
+      // console.log("sf.ctrl.js > 598: !sObjectId");
+      return res.status(422).json({ message: "No CAPE__c Id submitted" });
+    }
+  }
+  if (!one_time_payment_id) {
+    // console.log("sf.ctrl.js > 603: !paymentId");
+    return res.status(422).json({ message: "No payment Id submitted" });
+  }
+
+  // console.log(`sf.ctrl.js > 588: one_time_payment_id: ${one_time_payment_id}`);
+
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    // console.error(`sf.ctrl.js > 595: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+
+  let capeResult;
+  if (req.body && req.body.info) {
+    // this is a request from unioni.se.
+    // find the CAPE__c record with matching payment id,
+    // then update it with payment status
+    try {
+      capeResult = await conn
+        .sobject("CAPE__c")
+        .find({ One_Time_Payment_Id__c: one_time_payment_id })
+        .update({
+          One_Time_Payment_Status__c: req.body.eventType
+        });
+      // console.log(`########################`);
+      // console.log('result of sobject.find');
+      // console.log(capeResult);
+
+      // console.log("sf.ctrl.js > 631: returning to client");
+      // console.log(capeResult[0]);
+      let error;
+
+      if (!capeResult[0] || !capeResult[0].success) {
+        error = `No matching record found for payment id ${one_time_payment_id}`;
+        // console.log("sf.ctrl.js > 634");
+        // console.log(capeResult[0].errors);
+        if (capeResult[0] && capeResult[0].errors) {
+          error += `, ${capeResult[0].errors[0]}`;
+          // console.log(capeResult[0].errors);
+          // console.log(error);
+        }
+        return res.status(404).json({ message: error });
+      }
+      // saving to res.locals to make id available for testing
+      res.locals.sf_cape_id = capeResult.Id;
+      return res
+        .status(200)
+        .json({ message: "Updated payment status successfully" });
+    } catch (error) {
+      const message =
+        error.message || "There was an error updating the CAPE Record";
+      // console.error(`sf.ctrl.js > 648: ${error}`);
+      return res.status(404).json({ message });
+    }
+  } else if (req.body && req.body.One_Time_Payment_Id__c) {
+    // this is a request from the member app.
+    // find the CAPE__c record with matching sObject Id,
+    // then update it with unioni.se one time payment id
+    try {
+      capeResult = await conn.sobject("CAPE__c").update({
+        Id: req.body.Id,
+        One_Time_Payment_Id__c: req.body.One_Time_Payment_Id__c
+      });
+
+      // capeResult is a single object here, not an array.
+      // console.log("sf.ctrl.js > 662: returning to client");
+      // console.log(capeResult);
+
+      let error;
+      if (!capeResult || !capeResult.success) {
+        error = `No matching record found for payment id ${req.body.Id}`;
+        if (capeResult && capeResult.errors) {
+          error += `, ${capeResult.errors[0]}`;
+          // console.log(capeResult.errors);
+          // console.log(error);
+        }
+
+        return res.status(404).json({ message: error });
+      }
+      // saving to res.locals to make id available for testing
+      res.locals.sf_cape_id = capeResult.id || capeResult.Id;
+      // console.log('sf.ctrl.js > 688');
+      // console.log(res.locals.sf_cape_id);
+      return res
+        .status(200)
+        .json({ message: "Updated payment Id successfully" });
+    } catch (error) {
+      const message =
+        error.message || "There was an error updating the CAPE Record";
+      // console.error(`sf.ctrl.js > 668: ${error}`);
+      return res.status(404).json({ message });
+    }
   }
 };
 
@@ -570,12 +707,14 @@ exports.createSFCAPE = async (req, res, next) => {
  */
 exports.getAllEmployers = async (req, res, next) => {
   // console.log("getAllEmployers");
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider'))`;
+  // 0014N00001iFKWWQA4 = Community Members Account Id (does not
+  // fit the query in any other way so has to be SELECTed for separately)
+  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider') and Sub_Division__c != null)`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 521: ${err}`);
+    // console.error(`sf.ctrl.js > 718: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
@@ -587,7 +726,7 @@ exports.getAllEmployers = async (req, res, next) => {
     }
     return res.status(200).json(accounts.records);
   } catch (err) {
-    console.error(`sf.ctrl.js > 533: ${err}`);
+    // console.error(`sf.ctrl.js > 730: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -596,7 +735,7 @@ exports.getAllEmployers = async (req, res, next) => {
 
 /* +++++++++++++++++++++++++++++++ IFRAMEURL: GET +++++++++++++++++++++++++ */
 
-/** Get an iFrame URL for an existin unionise member by memberShortId
+/** Get an iFrame URL for an existing unionise member by memberShortId
  *  @param        String      memberShortId
  *  @param        String      token
  *  @returns  {String||Object}    cardAddingUrl OR error message.
@@ -675,6 +814,55 @@ exports.getUnioniseToken = async (req, res, next) => {
     })
     .catch(err => {
       // console.error(`sf.ctrl.js > 617: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
+};
+
+/* +++++++++++++++++++++++++++ ONE-TIME PAYMENT: POST +++++++++++++++++++++ */
+
+/** Post a request to process a one-time payment (CAPE contribution)
+ *  @param    {Object}   body
+ ****  memberShortId       : String
+ ****  amount: {
+ ****    currency          : String  // ('USD')
+ ****    amount            : Numeric // (1.1)
+ ****  },
+ ****  paymentPartType     : String  // ('CAPE')
+ ****  description         : String  // ('One-time CAPE contribution')
+ ****  plannedDatetime     : Timestamp // 2019-09-10T17:20:44.143+03:00
+ *  @returns  {Object}   payment request id or error message
+ *  {
+      id: String // ('a07dbd65-9f34-40e6-a203-5406302b8c75')
+    }
+ */
+
+exports.postPaymentRequest = async (req, res, next) => {
+  // console.log("postPaymentRequest");
+
+  const data = { ...req.body };
+
+  // console.log(data);
+  // console.log(req.headers.authorization);
+  const url = "https://lab.unioni.se/api/v1/paymentRequests";
+
+  const headers = {
+    "content-type": "application/json",
+    Authorization: req.headers.authorization
+  };
+  axios
+    .post(url, data, { headers })
+    .then(response => {
+      // console.log(`sf.ctrl.js > 851`);
+      // console.log(response);
+      if (!response.data || !response.data.id) {
+        return res
+          .status(500)
+          .json({ message: "Error while posting payment request" });
+      }
+      return res.status(200).json(response.data);
+    })
+    .catch(err => {
+      console.error(`sf.ctrl.js > 726: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };

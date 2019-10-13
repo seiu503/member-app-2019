@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
 import { generateCAPEValidateFrontEnd } from "../../../../app/utils/fieldConfigs";
-import { CAPE, CAPEForm } from "../../components/CAPE";
+import { CAPE, CAPEForm, CAPEConnected } from "../../components/CAPE";
 import * as formElements from "../../components/SubmissionFormElements";
 
 // variables
@@ -52,7 +52,11 @@ const defaultProps = {
   renderSelect: formElements.renderSelect,
   renderCheckbox: formElements.renderCheckbox,
   employerTypesList: ["test"],
-  employerList: ["test"]
+  employerList: ["test"],
+  formValues: {
+    donationFrequency: "Monthly"
+  },
+  checkoff: false
 };
 
 describe("<CAPE />", () => {
@@ -117,7 +121,12 @@ describe("<CAPE />", () => {
       },
       handleEmployerTypeChange: jest
         .fn()
-        .mockImplementation(() => Promise.resolve({}))
+        .mockImplementation(() => Promise.resolve({})),
+      capeObject: {
+        monthlyOptions: [1, 2, 3],
+        oneTimeOptions: [4, 5, 6]
+      },
+      checkoff: true
     };
 
     it("renders without error", () => {
@@ -148,7 +157,8 @@ describe("<CAPE />", () => {
       const suggestedAmountOnChangeMock = jest.fn();
 
       wrapper.setProps({
-        suggestedAmountOnChange: suggestedAmountOnChangeMock
+        suggestedAmountOnChange: suggestedAmountOnChangeMock,
+        displayCAPEPaymentFields: true
       });
 
       component = findByTestAttr(wrapper, "radio-cape-amount").first();
@@ -167,7 +177,8 @@ describe("<CAPE />", () => {
         change: changeMock,
         formValues: {
           capeAmount: "Other"
-        }
+        },
+        displayCAPEPaymentFields: true
       });
 
       component = findByTestAttr(wrapper, "field-other-amount").first();
@@ -219,14 +230,54 @@ describe("<CAPE />", () => {
     });
   });
   describe("conditional render", () => {
+    it("renders alert dialog if capeOpen = `true`", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        capeOpen: true,
+        handleSubmit: fn => fn
+      };
+      store = storeFactory(initialState);
+      wrapper = shallow(<CAPE {...defaultProps} {...props} store={store} />);
+      const component = findByTestAttr(wrapper, "component-alert-dialog");
+      expect(component.length).toBe(1);
+    });
+
+    it("renders current contribution copy if currentCAPEFromSF > 0", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          donationFrequency: "One-Time"
+        },
+        displayCAPEPaymentFields: true,
+        payment: {
+          currentCAPEFromSF: 5
+        },
+        capeObject: {
+          monthlyOptions: [1, 2, 3],
+          oneTimeOptions: [4, 5, 6]
+        },
+        handleSubmit: fn => fn
+      };
+      store = storeFactory(initialState);
+      wrapper = shallow(<CAPE {...defaultProps} {...props} store={store} />);
+      const component = findByTestAttr(wrapper, "current-contribution");
+      expect(component.length).toBe(1);
+    });
+
     it("renders card adding iframe if payment type = `Card`", () => {
       handleSubmit = fn => fn;
       const props = {
         formValues: {
-          employerType: "adult foster home",
-          paymentType: "Card"
+          paymentType: "Card",
+          donationFrequency: "One-Time"
         },
-        iFrameURL: "example.com"
+        checkoff: false,
+        iFrameURL: "example.com",
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6]
+        }
       };
       wrapper = setup(props);
       const component = findByTestAttr(wrapper, "component-iframe");
@@ -260,6 +311,11 @@ describe("<CAPE />", () => {
       const props = {
         formValues: {
           capeAmount: "Other"
+        },
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6]
         }
       };
       wrapper = setup(props);

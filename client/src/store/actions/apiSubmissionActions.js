@@ -10,6 +10,12 @@ export const DELETE_SUBMISSION_FAILURE = "DELETE_SUBMISSION_FAILURE";
 export const CREATE_CAPE_REQUEST = "CREATE_CAPE_REQUEST";
 export const CREATE_CAPE_SUCCESS = "CREATE_CAPE_SUCCESS";
 export const CREATE_CAPE_FAILURE = "CREATE_CAPE_FAILURE";
+export const UPDATE_CAPE_REQUEST = "UPDATE_CAPE_REQUEST";
+export const UPDATE_CAPE_SUCCESS = "UPDATE_CAPE_SUCCESS";
+export const UPDATE_CAPE_FAILURE = "UPDATE_CAPE_FAILURE";
+export const GET_CAPE_BY_SFID_REQUEST = "GET_CAPE_BY_SFID_REQUEST";
+export const GET_CAPE_BY_SFID_SUCCESS = "GET_CAPE_BY_SFID_SUCCESS";
+export const GET_CAPE_BY_SFID_FAILURE = "GET_CAPE_BY_SFID_FAILURE";
 export const SAVE_SALESFORCEID = "SAVE_SALESFORCEID";
 export const UPDATE_SUBMISSION_REQUEST = "UPDATE_SUBMISSION_REQUEST";
 export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
@@ -18,6 +24,7 @@ export const GET_ALL_SUBMISSIONS_REQUEST = "GET_ALL_SUBMISSIONS_REQUEST";
 export const GET_ALL_SUBMISSIONS_SUCCESS = "GET_ALL_SUBMISSIONS_SUCCESS";
 export const GET_ALL_SUBMISSIONS_FAILURE = "GET_ALL_SUBMISSIONS_FAILURE";
 export const HANDLE_INPUT = "HANDLE_INPUT";
+export const SET_CAPE_OPTIONS = "SET_CAPE_OPTIONS";
 export const VERIFY_REQUEST = "VERIFY_REQUEST";
 export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
 export const VERIFY_FAILURE = "VERIFY_FAILURE";
@@ -26,6 +33,13 @@ export function handleInput({ target: { name, value } }) {
   return {
     type: HANDLE_INPUT,
     payload: { name, value }
+  };
+}
+
+export function setCAPEOptions({ monthlyOptions, oneTimeOptions }) {
+  return {
+    type: SET_CAPE_OPTIONS,
+    payload: { monthlyOptions, oneTimeOptions }
   };
 }
 
@@ -178,6 +192,63 @@ export function createCAPE(body) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
+    }
+  };
+}
+
+export function updateCAPE(id, body) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/cape/${id}`,
+      method: "PUT",
+      types: [
+        UPDATE_CAPE_REQUEST,
+        UPDATE_CAPE_SUCCESS,
+        {
+          type: UPDATE_CAPE_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body)
+    }
+  };
+}
+
+export function getCAPEBySFId(id) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/capeBySF/${id}`,
+      method: "GET",
+      types: [
+        GET_CAPE_BY_SFID_REQUEST,
+        GET_CAPE_BY_SFID_SUCCESS,
+        {
+          type: GET_CAPE_BY_SFID_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
   };
 }

@@ -5,6 +5,7 @@ import Iframe from "react-iframe";
 import { ReCaptcha } from "react-recaptcha-v3";
 import { Translate } from "react-localize-redux";
 
+import AlertDialog from "./AlertDialog";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
 import * as formElements from "./SubmissionFormElements";
@@ -49,10 +50,19 @@ export const CAPE = props => {
     verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
-    handleEmployerTypeChange,
     employerList,
     cape_legal,
-    change
+    change,
+    lookupSFContact,
+    capeObject,
+    checkCAPEPaymentLogic,
+    displayCAPEPaymentFields,
+    handleCAPEOpen,
+    handleCAPEClose,
+    capeOpen,
+    closeDialog,
+    mobilePhoneOnBlur,
+    donationFrequencyOnChange
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -60,6 +70,18 @@ export const CAPE = props => {
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
+      {capeOpen && (
+        <AlertDialog
+          open={capeOpen}
+          handleClose={handleCAPEClose}
+          title="Skip to next tab"
+          content={`If you move to the next tab without clicking Submit, your CAPE contribution will not be processed.`}
+          danger={true}
+          action={closeDialog}
+          buttonText="Skip"
+          data-test="component-alert-dialog"
+        />
+      )}
       <form
         onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
         id="CAPE"
@@ -157,49 +179,6 @@ export const CAPE = props => {
             />
           </Card>
         </div>
-        <div className={classes.paymentCopy}>
-          <Typography component="h2" className={classes.head}>
-            <Translate id="capePaymentHead">
-              Make your contribution today
-            </Translate>
-          </Typography>
-          <div className={classes.suggestedAmounts}>
-            <div className={classes.suggestedAmountBoxes}>
-              <Field
-                data-test="radio-cape-amount"
-                label="Monthly donation amount"
-                name="capeAmount"
-                formControlName="capeAmount"
-                id="capeAmount"
-                direction="horiz"
-                className={classes.horizRadio}
-                classes={classes}
-                component={formElements.renderCAPERadioGroup}
-                options={[10, 13, 15, "Other"]}
-                onChange={(event, value) => {
-                  change("capeAmount", value);
-                  suggestedAmountOnChange(event);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-        {formValues.capeAmount === "Other" && (
-          <Field
-            data-test="field-other-amount"
-            label="Monthly Donation Amount"
-            name="capeAmountOther"
-            id="capeAmountOther"
-            type="number"
-            inputProps={{ min: 1 }}
-            classes={classes}
-            component={renderTextField}
-            onChange={(event, value) => {
-              change("capeAmountOther", value);
-            }}
-            additionalOnChange={suggestedAmountOnChange}
-          />
-        )}
         {standAlone && (
           <div data-test="form-contact-info">
             <FormGroup row classes={{ root: classes.formGroup2Col }}>
@@ -224,6 +203,46 @@ export const CAPE = props => {
                 component={renderTextField}
                 type="text"
               />
+            </FormGroup>
+            <FormGroup classes={{ root: classes.formGroupTopMargin }}>
+              <Field
+                label="Home Email"
+                name="homeEmail"
+                id="homeEmail"
+                type="email"
+                classes={classes}
+                component={renderTextField}
+              />
+            </FormGroup>
+            <FormHelperText className={classes.formHelperText}>
+              <Translate id="homeEmailHint" />
+            </FormHelperText>
+            <FormGroup>
+              <Field
+                data-test="select-employer-type"
+                label="Employer Type"
+                name="employerType"
+                id="employerType"
+                type="select"
+                classes={classes}
+                component={renderSelect}
+                options={employerTypesList}
+                onChange={updateEmployersPicklist}
+                labelWidth={100}
+              />
+              {formValues.employerType !== "" && (
+                <Field
+                  labelWidth={104}
+                  label="Employer Name"
+                  name="employerName"
+                  id="employerName"
+                  type="select"
+                  classes={classes}
+                  component={renderSelect}
+                  options={employerList}
+                  onBlur={lookupSFContact}
+                />
+              )}
             </FormGroup>
 
             <FormLabel className={classes.formLabel} component="legend">
@@ -320,18 +339,6 @@ export const CAPE = props => {
               />
             </FormGroup>
 
-            <Field
-              label="Home Email"
-              name="homeEmail"
-              id="homeEmail"
-              type="email"
-              classes={classes}
-              component={renderTextField}
-            />
-
-            <FormHelperText className={classes.formHelperText}>
-              <Translate id="homeEmailHint" />
-            </FormHelperText>
             <FormGroup>
               <Field
                 label="Mobile Phone†"
@@ -340,6 +347,7 @@ export const CAPE = props => {
                 type="tel"
                 classes={classes}
                 component={renderTextField}
+                onBlur={mobilePhoneOnBlur}
               />
 
               <FormHelperText className={classes.formHelperText}>
@@ -356,36 +364,6 @@ export const CAPE = props => {
                 component={renderCheckbox}
               />
             </FormGroup>
-
-            <Field
-              data-test="select-employer-type"
-              label="Employer Type"
-              name="employerType"
-              id="employerType"
-              type="select"
-              classes={classes}
-              component={renderSelect}
-              options={employerTypesList}
-              onChange={e => {
-                updateEmployersPicklist(e);
-                handleEmployerTypeChange(e.target.value).then(() => {
-                  // console.log(`checkoff: ${checkoff}`);
-                });
-              }}
-              labelWidth={100}
-            />
-            {formValues.employerType !== "" && (
-              <Field
-                labelWidth={104}
-                label="Employer Name"
-                name="employerName"
-                id="employerName"
-                type="select"
-                classes={classes}
-                component={renderSelect}
-                options={employerList}
-              />
-            )}
           </div>
         )}
         <Field
@@ -395,50 +373,138 @@ export const CAPE = props => {
           type="text"
           classes={classes}
           component={renderTextField}
+          onBlur={checkCAPEPaymentLogic}
         />
-        {formPage1.paymentRequired &&
-          formPage1.paymentType === "Card" &&
-          validMethod && (
-            <div data-test="component-choose-card">
-              <Typography component="p" className={classes.body}>
-                <Translate id="existingPaymentMethod">
-                  Your existing payment method on file is the card ending in
-                </Translate>{" "}
-                {payment.activeMethodLast4}.
+        {displayCAPEPaymentFields && (
+          <div data-test="component-cape-payment-fields">
+            <div className={classes.paymentCopy}>
+              <Typography component="h2" className={classes.head}>
+                <Translate id="capePaymentHead">
+                  Make your contribution today
+                </Translate>
               </Typography>
+              {payment.currentCAPEFromSF > 1 && (
+                <Typography
+                  component="p"
+                  className={classes.body}
+                  data-test="current-contribution"
+                >
+                  <Translate id="currentContribution1">
+                    You are currently signed up to contribute
+                  </Translate>
+                  {` $${payment.currentCAPEFromSF} `}
+                  <Translate id="currentContribution2">
+                    per month. Would you like to increase your monthly
+                    contribution?
+                  </Translate>
+                </Typography>
+              )}
+              <div className={classes.suggestedAmounts}>
+                <div className={classes.suggestedAmountBoxes}>
+                  <Field
+                    data-test="radio-cape-amount"
+                    label="Donation amount"
+                    name="capeAmount"
+                    formControlName="capeAmount"
+                    id={
+                      formValues.donationFrequency === "Monthly"
+                        ? "capeAmountMonthly"
+                        : "capeAmountOneTime"
+                    }
+                    direction="horiz"
+                    className={classes.horizRadio}
+                    classes={classes}
+                    component={formElements.renderCAPERadioGroup}
+                    options={
+                      formValues.donationFrequency === "Monthly"
+                        ? capeObject.monthlyOptions
+                        : capeObject.oneTimeOptions
+                    }
+                    onChange={(event, value) => {
+                      change("capeAmount", value);
+                      suggestedAmountOnChange(event);
+                    }}
+                  />
+                </div>
+              </div>
+              {formValues.capeAmount === "Other" && (
+                <Field
+                  data-test="field-other-amount"
+                  label="Monthly Donation Amount"
+                  name="capeAmountOther"
+                  id="capeAmountOther"
+                  type="number"
+                  inputProps={{ min: 1 }}
+                  classes={classes}
+                  component={renderTextField}
+                  onChange={(event, value) => {
+                    change("capeAmountOther", value);
+                  }}
+                  additionalOnChange={suggestedAmountOnChange}
+                />
+              )}
               <Field
-                data-test="radio-which-card"
-                label="Do you want to use the existing card or add a new one?"
-                name="whichCard"
-                formControlName="whichCard"
-                id="whichCard"
+                data-test="radio-donation-frequency"
+                label="Monthly or One-Time Donation?"
+                name="donationFrequency"
+                formControlName="donationFrequency"
+                id="donationFrequency"
                 direction="horiz"
-                className={classes.horizRadio}
+                className={classes.horizRadioCenter}
                 legendClass={classes.horizRadioBold}
                 classes={classes}
-                defaultItem="Use existing"
-                additionalOnChange={toggleCardAddingFrame}
+                defaultItem="Monthly"
                 component={formElements.renderRadioGroup}
-                options={["Use existing", "Add new card"]}
+                options={["Monthly", "One-Time"]}
+                onChange={donationFrequencyOnChange}
               />
             </div>
-          )}
-        {!checkoff && iFrameURL && (
-          <div data-test="component-iframe">
-            <Typography component="h2" className={classes.head}>
-              <Translate id="addPayment">Add a payment method</Translate>
-            </Typography>
-            <div className={classes.iframeWrap}>
-              <Iframe
-                url={iFrameURL}
-                width="100%"
-                height="100px"
-                id="iFrame"
-                className={classes.iframe}
-                display="initial"
-                position="relative"
-              />
-            </div>
+            {formPage1.paymentRequired &&
+              formPage1.paymentType === "Card" &&
+              validMethod && (
+                <div data-test="component-choose-card">
+                  <Typography component="p" className={classes.body}>
+                    <Translate id="existingPaymentMethod">
+                      Your existing payment method on file is the card ending in
+                    </Translate>{" "}
+                    {payment.activeMethodLast4}.
+                  </Typography>
+                  <Field
+                    data-test="radio-which-card"
+                    label="Do you want to use the existing card or add a new one?"
+                    name="whichCard"
+                    formControlName="whichCard"
+                    id="whichCard"
+                    direction="horiz"
+                    className={classes.horizRadio}
+                    legendClass={classes.horizRadioBold}
+                    classes={classes}
+                    defaultItem="Use existing"
+                    additionalOnChange={toggleCardAddingFrame}
+                    component={formElements.renderRadioGroup}
+                    options={["Use existing", "Add new card"]}
+                  />
+                </div>
+              )}
+            {iFrameURL &&
+              (!checkoff || formValues.donationFrequency === "One-Time") && (
+                <div data-test="component-iframe">
+                  <Typography component="h2" className={classes.head}>
+                    <Translate id="addPayment">Add a payment method</Translate>
+                  </Typography>
+                  <div className={classes.iframeWrap}>
+                    <Iframe
+                      url={iFrameURL}
+                      width="100%"
+                      height="100px"
+                      id="iFrame"
+                      className={classes.iframe}
+                      display="initial"
+                      position="relative"
+                    />
+                  </div>
+                </div>
+              )}
           </div>
         )}
         <div className={classes.legalCopy} ref={cape_legal}>
@@ -470,20 +536,6 @@ export const CAPE = props => {
             verifyCallback={verifyCallback}
           />
         )}
-        {!standAlone && (
-          <div className={classes.buttonWrapTab3}>
-            <Button
-              type="button"
-              data-test="button-back"
-              onClick={() => back(1)}
-              color="primary"
-              className={classes.back}
-              variant="contained"
-            >
-              <Translate id="back">Back</Translate>
-            </Button>
-          </div>
-        )}
         <ButtonWithSpinner
           type="submit"
           color="primary"
@@ -493,6 +545,30 @@ export const CAPE = props => {
         >
           <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>
+        {!standAlone && (
+          <div className={classes.buttonWrapCAPE}>
+            <Button
+              type="button"
+              data-test="button-back"
+              onClick={() => back(1)}
+              color="primary"
+              className={classes.backSmall}
+              variant="contained"
+            >
+              <Translate id="back">Back</Translate>
+            </Button>
+            <Button
+              type="button"
+              data-test="button-next"
+              onClick={handleCAPEOpen}
+              color="primary"
+              className={classes.nextSmall}
+              variant="contained"
+            >
+              Next
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );

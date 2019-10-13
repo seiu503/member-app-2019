@@ -21,9 +21,7 @@ let wrapper,
   apiSF = {},
   handleSubmitMock,
   handleErrorMock,
-  addSubmission,
   addSubmissionSuccess,
-  addSubmissionError,
   updateSubmissionSuccess,
   updateSubmissionError,
   createSFDJRSuccess,
@@ -32,12 +30,9 @@ let wrapper,
   testData,
   tab,
   sfEmployerLookupSuccess,
-  sfEmployerLookupFailure,
   handleUpload,
   loadEmployersPicklistMock,
-  verifySuccess,
-  verifyError,
-  handleInputMock = jest.fn();
+  verifySuccess;
 
 let resetMock = jest.fn();
 
@@ -153,7 +148,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     };
     apiSF = {
       getSFEmployers: jest.fn(),
-      createSFOMA: jest.fn(),
       createSFDJR: createSFDJRSuccess,
       createSFOMA: createSFOMASuccess
     };
@@ -289,7 +283,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  // testing that we are triggering expected behavior for submit success and failure
   describe("submit functionality", () => {
     beforeEach(done => {
       props = {
@@ -359,42 +352,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           console.log(err);
         });
     });
-    // reset no longer called after tab2 submit; rewrite this test to check for reset after CAPE submit
-    // it("calls reset after successful CAPE submit", async function() {
-    //   // imported function that creates dummy data for form
-    //   testData = generateSampleValidate();
-    //   // test function that will count calls as well as return success object
-    //   updateSubmissionSuccess = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-    //     );
-    //   // creating wrapper
-    //   wrapper = unconnectedSetup(props);
-    //   wrapper.setProps({ tab: 2 });
-    //   wrapper.update();
-
-    //   // simulate submit with dummy data
-    //    wrapper
-    //     .instance()
-    //     .handleSubmit(generateSampleValidate())
-    //     .then(() => {
-    //       expect(updateSubmissionSuccess.mock.calls.length).toBe(1);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-
-    //   // testing that reset is called when handleSubmit receives success message
-    //   try {
-    //     await updateSubmissionSuccess();
-    //     await createSFDJRSuccess();
-    //     await createSFOMASuccess();
-    //     expect(resetMock.mock.calls.length).toBe(1);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
 
     it("errors if there is no signature", async function() {
       updateSubmissionError = jest
@@ -476,16 +433,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       } catch (err) {
         console.log(err);
       }
-    });
-    it("provides error feedback after promise rejected", () => {
-      // imported function that creates dummy data for form
-      testData = generateSampleValidate();
-      // test function that will count calls as well as return error object
-      addSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_FAILURE" })
-        );
     });
   });
 
@@ -857,5 +804,19 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         target: { name: "paymentMethodAdded", value: true }
       });
     });
+  });
+
+  test("`donationFrequencyOnChange` calls this.props.change and this.handleDonationFrequencyChange", () => {
+    const changeMock = jest.fn();
+    const handleDonationFrequencyChangeMock = jest.fn();
+    const props = {
+      change: changeMock,
+      handleDonationFrequencyChange: handleDonationFrequencyChangeMock
+    };
+    wrapper = unconnectedSetup(props);
+
+    wrapper.instance().donationFrequencyOnChange();
+    expect(changeMock).toHaveBeenCalled();
+    expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
   });
 });

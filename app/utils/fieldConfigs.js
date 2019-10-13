@@ -582,6 +582,15 @@ const contactsTableFields = {
     SFDataType: "Formula(text)",
     SQLDataType: "VARCHAR(255)",
     testingSample: "Not a Member"
+  },
+  Current_CAPE__c: {
+    clientFieldName: "currentCAPEFromSF",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Current CAPE",
+    SFAPIName: "Current_CAPE__c",
+    SFDataType: "Formula(currency)",
+    SQLDataType: "Number(3,2)",
+    testingSample: 10
   }
 };
 
@@ -1031,7 +1040,7 @@ const capeTableFields = {
   employer_name: {
     oldFormPage: "none",
     newFormTab: 0,
-    req: "Y",
+    req: "F",
     CAPEreq: true,
     postgresFieldName: "employer_name",
     clientFieldName: "employerName",
@@ -1047,7 +1056,7 @@ const capeTableFields = {
   employer_type: {
     oldFormPage: "none",
     newFormTab: 0,
-    req: "Y",
+    req: "F",
     CAPEreq: true,
     postgresFieldName: "employer_type",
     clientFieldName: "employerType",
@@ -1290,6 +1299,18 @@ const capeTableFields = {
     req: "Y",
     postgresFieldName: "cape_status",
     testingSample: "Success"
+  },
+  one_time_payment_id: {
+    SFTable: "CAPE__c",
+    SFFieldLabel: "One-Time Payment Id",
+    SFAPIName: "One_Time_Payment_Id__c",
+    SFDataType: "Text"
+  },
+  one_time_payment_status: {
+    SFTable: "CAPE__c",
+    SFFieldLabel: "One-Time Payment Status",
+    SFAPIName: "One_Time_Payment_Status__c",
+    SFDataType: "Text"
   }
 };
 
@@ -1664,7 +1685,7 @@ const generateCAPEValidateBackEnd = () => {
 const generateCAPEValidateFrontEnd = () => {
   const sampleData = {};
   Object.keys(capeTableFields).map(function(key, index) {
-    if (capeTableFields[key].req === "Y") {
+    if (capeTableFields[key].req === "Y" || capeTableFields[key].req === "F") {
       let clientFieldName = capeTableFields[key].clientFieldName;
       sampleData[clientFieldName] = capeTableFields[key].testingSample;
     }

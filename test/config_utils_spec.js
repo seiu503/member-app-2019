@@ -8,6 +8,7 @@ const {
   generateSampleValidate,
   generatePage2Validate,
   generateCAPEValidateBackEnd,
+  generateCAPEValidateFrontEnd,
   formatDate
 } = require("../app/utils/fieldConfigs");
 const utils = require("../app/utils/index");
@@ -27,6 +28,11 @@ suite("fieldConfig.js / utils.js", function() {
   test("generates sample CAPE validate", () => {
     const result = generateCAPEValidateBackEnd();
     assert.equal(result.employer_id, "employer_id");
+  });
+
+  test("generates sample CAPE validate for Front End", () => {
+    const result = generateCAPEValidateFrontEnd();
+    assert.equal(result.employerId, "employer_id");
   });
 
   test("formats date as YYYY-MM-DD for salesforce", () => {

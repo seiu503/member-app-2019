@@ -16,8 +16,15 @@ import {
   CREATE_CAPE_REQUEST,
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
+  UPDATE_CAPE_REQUEST,
+  UPDATE_CAPE_SUCCESS,
+  UPDATE_CAPE_FAILURE,
+  GET_CAPE_BY_SFID_REQUEST,
+  GET_CAPE_BY_SFID_SUCCESS,
+  GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
-  HANDLE_INPUT
+  HANDLE_INPUT,
+  SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -57,6 +64,9 @@ import {
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
   GET_UNIONISE_TOKEN_FAILURE,
+  POST_ONE_TIME_PAYMENT_REQUEST,
+  POST_ONE_TIME_PAYMENT_SUCCESS,
+  POST_ONE_TIME_PAYMENT_FAILURE,
   CREATE_SF_CAPE_REQUEST,
   CREATE_SF_CAPE_SUCCESS,
   CREATE_SF_CAPE_FAILURE
@@ -85,7 +95,8 @@ export const INITIAL_STATE = {
     afhDuesRate: 0,
     newCardNeeded: false,
     whichCard: "Use existing",
-    capeAmount: ""
+    capeAmount: "",
+    donationFrequency: "Monthly"
   },
   formPage2: {
     gender: ""
@@ -100,12 +111,23 @@ export const INITIAL_STATE = {
     paymentErrorHold: false,
     unioniseToken: "",
     unioniseRefreshToken: "",
-    djrEmployerId: ""
+    djrEmployerId: "",
+    currentCAPEFromSF: 0
   },
   allSubmissions: [],
   currentSubmission: {},
   cape: {
-    id: ""
+    id: "",
+    memberShortId: "",
+    donationAmount: 0,
+    paymentMethod: "",
+    donationFrequency: "Monthly",
+    activeMethodLast4: "",
+    paymentErrorHold: false,
+    monthlyOptions: [10, 13, 15, "Other"],
+    oneTimeOptions: [15, 20, 25, "Other"],
+    oneTimePaymentId: "",
+    oneTimePaymentStatus: ""
   },
   currentCAPE: {},
   allCAPE: []
@@ -119,6 +141,14 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         formPage1: {
           [action.payload.name]: { $set: action.payload.value }
+        }
+      });
+
+    case SET_CAPE_OPTIONS:
+      return update(state, {
+        cape: {
+          monthlyOptions: { $set: action.payload.monthlyOptions },
+          oneTimeOptions: { $set: action.payload.oneTimeOptions }
         }
       });
 
@@ -141,6 +171,9 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
     case CREATE_SF_CAPE_SUCCESS:
+    case GET_CAPE_BY_SFID_REQUEST:
+    case UPDATE_CAPE_REQUEST:
+    case POST_ONE_TIME_PAYMENT_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -180,6 +213,7 @@ function Submission(state = INITIAL_STATE, action) {
           subDivision = action.payload.Account.Name;
         }
         const employerType = employerTypeMap[subDivision];
+
         // if employer attached to contact record is 'Employer' record type,
         // use Account Name. if it's 'Worksite' record type, use Parent Name
         let employerName = "";
@@ -188,6 +222,7 @@ function Submission(state = INITIAL_STATE, action) {
         } else if (action.payload.Account.CVRSOS__ParentName__c) {
           employerName = action.payload.Account.CVRSOS__ParentName__c;
         }
+
         // split ethinicity string, provide true value for each ethnicity returned
         let ethnicities = [""];
         if (action.payload.Ethnicity__c) {
@@ -277,6 +312,9 @@ function Submission(state = INITIAL_STATE, action) {
             workPhone: { $set: action.payload.Work_Phone__c },
             hireDate: { $set: action.payload.Hire_Date__c }
           },
+          payment: {
+            currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
+          },
           error: { $set: null }
         });
       } else {
@@ -295,6 +333,18 @@ function Submission(state = INITIAL_STATE, action) {
       });
     }
 
+    case GET_CAPE_BY_SFID_SUCCESS: {
+      return update(state, {
+        cape: {
+          id: { $set: action.payload.Id || action.payload.id },
+          memberShortId: { $set: action.payload.member_short_id },
+          donationAmount: { $set: action.payload.cape_amount },
+          paymentMethod: { $set: action.payload.payment_method },
+          donationFrequency: { $set: action.payload.donation_frequency }
+        }
+      });
+    }
+
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
@@ -304,11 +354,20 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case CREATE_CAPE_SUCCESS:
+    case UPDATE_CAPE_SUCCESS:
       return update(state, {
         cape: {
           id: { $set: action.payload.cape_id }
         },
         currentCAPE: { $set: action.payload.currentCAPE },
+        error: { $set: null }
+      });
+
+    case POST_ONE_TIME_PAYMENT_SUCCESS:
+      return update(state, {
+        cape: {
+          oneTimePaymentId: { $set: action.payload.id }
+        },
         error: { $set: null }
       });
 
@@ -325,12 +384,20 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case LOOKUP_SF_CONTACT_SUCCESS:
+      return update(state, {
+        salesforceId: { $set: action.payload.salesforce_id },
+        payment: {
+          currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
+        },
+        error: { $set: null },
+        redirect: { $set: true }
+      });
+
     case CREATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
-        error: { $set: null },
-        redirect: { $set: true }
+        error: { $set: null }
       });
 
     case GET_IFRAME_URL_SUCCESS:
@@ -374,6 +441,9 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_ALL_SUBMISSIONS_FAILURE:
     case CREATE_SF_CAPE_FAILURE:
     case CREATE_CAPE_FAILURE:
+    case GET_CAPE_BY_SFID_FAILURE:
+    case UPDATE_CAPE_FAILURE:
+    case POST_ONE_TIME_PAYMENT_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

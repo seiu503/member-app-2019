@@ -60,6 +60,7 @@ export const tableIcons = {
 };
 
 export const handleError = err => {
+  // console.log(err);
   return openSnackbar(
     "error",
     err || "Sorry, something went wrong. Please try again."
@@ -143,6 +144,7 @@ export const languageOptions = [
   "Cantonese AND Mandarin",
   "Mandarin",
   "Russian",
+  "Somali",
   "Spanish",
   "Vietnamese",
   "Amharic",
@@ -157,6 +159,48 @@ export const genderPronounOptions = [
   "They/Them/Their(s)",
   "Other"
 ];
+// set suggested donation amounts dynamically
+// based on member's existing donation level
+export const generateCAPEOptions = existingCAPE => {
+  const optionSteps = [10, 13, 15, 18, 20, 23, 25, 28, 30, 33, 35, 38, 40, 50];
+  const oneTimeSteps = [15, 20, 25, 30, 40, 50, 100];
+  const monthlyOptions = [];
+  const oneTimeOptions = [];
+  if (existingCAPE) {
+    // if the member has an existing monthly CAPE contribution,
+    // start at the next highest amount and then
+    // suggest two higher amounts as possible options
+    const nextHighestOption = optionSteps.find(option => option > existingCAPE);
+    const optionIndex = optionSteps.indexOf(nextHighestOption);
+    monthlyOptions.push(
+      optionSteps[optionIndex],
+      optionSteps[optionIndex + 1],
+      optionSteps[optionIndex + 2],
+      "Other"
+    );
+    // console.log(monthlyOptions);
+    const nextHighestOptionOneTime = oneTimeSteps.find(
+      option => option > existingCAPE
+    );
+    const oneTimeIndex = oneTimeSteps.indexOf(nextHighestOptionOneTime);
+    oneTimeOptions.push(
+      oneTimeSteps[oneTimeIndex],
+      oneTimeSteps[oneTimeIndex + 1],
+      oneTimeSteps[oneTimeIndex + 2],
+      "Other"
+    );
+    return {
+      monthlyOptions,
+      oneTimeOptions
+    };
+  } else {
+    // if no existing contribution on file, then return the default amounts
+    return {
+      monthlyOptions: [10, 13, 15, "Other"],
+      oneTimeOptions: [15, 20, 25, "Other"]
+    };
+  }
+};
 
 // switch helper for dateOptions
 export const getMaxDay = month => {
@@ -215,7 +259,8 @@ export const employerTypeMap = {
   AFH: "Adult Foster Home",
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
-  "Community Members": "Community Member"
+  "Community Members": "Community Member",
+  "COMMUNITY MEMBERS": "Community Member"
 };
 
 // helper function for reverse lookup from above object
@@ -308,11 +353,35 @@ export const stylesPage1 = theme => ({
     display: "flex",
     justifyContent: "flex-start"
   },
+  buttonWrapCAPE: {
+    width: "100%",
+    padding: "0 20px 40px 0",
+    display: "flex",
+    justifyContent: "space-between"
+  },
   next: {
     textTransform: "none",
     fontSize: "1.3rem",
     padding: "6px 20px",
     color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  nextSmall: {
+    textTransform: "none",
+    fontSize: ".8rem",
+    padding: "3px 10px",
+    color: theme.palette.secondary.light,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  backSmall: {
+    textTransform: "none",
+    fontSize: ".8rem",
+    padding: "3px 10px",
+    color: theme.palette.secondary.light,
     "&:hover": {
       backgroundColor: theme.palette.primary.light
     }
@@ -325,7 +394,8 @@ export const stylesPage1 = theme => ({
   horizGroup: {
     width: "100%",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "center"
   },
   back: {
     textTransform: "none",
@@ -416,6 +486,9 @@ export const stylesPage1 = theme => ({
     justifyContent: "space-between",
     width: 280
   },
+  formGroupTopMargin: {
+    marginTop: 30
+  },
   input: {
     width: "100%",
     margin: "0 0 30px 0"
@@ -456,6 +529,13 @@ export const stylesPage1 = theme => ({
   horizRadio: {
     display: "flex",
     flexDirection: "row"
+  },
+  horizRadioCenter: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    margin: "auto",
+    textAlign: "center"
   },
   horizRadioBold: {
     fontWeight: 700
@@ -578,6 +658,9 @@ export const stylesPage1 = theme => ({
   boxAmount: {
     position: "relative",
     left: -10
+  },
+  radioLabel: {
+    textAlign: "center"
   },
   capeRadioLabel: {
     fontSize: "1.2em",

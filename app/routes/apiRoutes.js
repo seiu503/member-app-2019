@@ -384,6 +384,33 @@ router.delete(
 //
 router.post("/cape", capeCtrl.createCAPE);
 
+// UPDATE A CAPE RECORD
+//   Example: PUT >> /api/cape/:id
+//   Secured: no
+//   Expects:
+//     request params: {
+//        id: String
+//     }
+//     request body properties : {
+//        cape_status            : String ('Pending' || 'Success' || 'Error')
+//        cape_errors            : String
+//        memberShortId          : String
+//        }
+//   Returns: JSON new CAPE object on success.
+//
+router.put("/cape/:id", capeCtrl.updateCAPE);
+
+// GET A CAPE RECORD BY SF CONTACT ID
+//   Example: GET >> /api/capeBySF/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON CAPE object on success.
+//
+router.get("/capeBySF/:id", capeCtrl.getCAPEBySFId);
+
 /* =========================== SALESFORCE ROUTES =========================== */
 
 /* =============================== CONTACTS ================================ */
@@ -546,6 +573,20 @@ router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 //
 router.post("/sfCAPE", sfCtrl.createSFCAPE);
 
+// UPDATE SF CAPE RECORD WITH PAYMENT STATUS BY ONE-TIME PAYMENT ID
+//   Example: PUT >> /api/capepayment
+//   Secured: no
+//   Expects:
+//     request body properties : {
+//        eventType       : String ('finish' || 'fail')
+//        info: {
+//            paymentId:  : String  ('809cc718-2075-4f5c-b3cd-1203fc3ae390'),
+//        },
+//      }
+//   Returns: JSON success or error message.
+//
+router.put("/sfCAPE", sfCtrl.updateSFCAPE);
+
 /* =============================== ACCOUNTS ================================ */
 
 // GET ALL ACTIVE EMPLOYER NAMES
@@ -626,6 +667,26 @@ router.post("/unionise/iframe", sfCtrl.getIframeExisting);
 //   Returns: { access_token } or error message.
 //
 router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
+
+/* ===================== POST ONE-TIME PAYMENT REQUEST ===================== */
+
+// POST ONE-TIME PAYMENT REQUEST
+//   Example: POST >> /api/unionise/oneTimePayment
+//   Secured: no
+//   Expects: request body: {
+//     Object {
+//       memberShortId       : String  // ('J7K5HYDQ')
+//       amount: {
+//         currency          : String  // ('USD')
+//         amount            : Numeric // (1.1)
+//       },
+//       paymentPartType     : String  // ('CAPE')
+//       description         : String  // ('One-time CAPE contribution')
+//       plannedDatetime     : Timestamp // 2019-09-10T17:20:44.143+03:00
+//   }
+//   Returns: { id } or error message.
+//
+router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
 
 /* ================================ EXPORT ================================= */
 

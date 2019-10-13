@@ -23,6 +23,7 @@ export class SubmissionFormPage1Component extends React.Component {
       signatureType: "draw"
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.donationFrequencyOnChange = this.donationFrequencyOnChange.bind(this);
   }
   sigBox = {};
   componentDidMount() {
@@ -77,7 +78,10 @@ export class SubmissionFormPage1Component extends React.Component {
     // from redux store to replace with more user-friendly names
     const employerTypesListRaw = this.props.submission.employerObjects
       ? this.props.submission.employerObjects.map(employer => {
-          if (employer.Name === "Community Members") {
+          if (
+            employer.Name &&
+            employer.Name.toLowerCase() === "community members"
+          ) {
             return "Community Members";
           } else {
             return employer.Sub_Division__c;
@@ -155,6 +159,11 @@ export class SubmissionFormPage1Component extends React.Component {
       return employerList;
     }
   };
+
+  donationFrequencyOnChange(event, value) {
+    this.props.change("donationFrequency", value);
+    this.props.handleDonationFrequencyChange(value);
+  }
 
   async updateSubmission() {
     // console.log("updateSubmission");
@@ -415,6 +424,8 @@ export class SubmissionFormPage1Component extends React.Component {
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
             checkoff={checkoff}
+            capeObject={this.props.submission.cape}
+            donationFrequencyOnChange={this.donationFrequencyOnChange}
           />
         ) : (
           <React.Fragment>
@@ -500,6 +511,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
+                    capeObject={this.props.submission.cape}
+                    donationFrequencyOnChange={this.donationFrequencyOnChange}
                   />
                 )}
               </div>

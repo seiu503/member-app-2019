@@ -1,13 +1,6 @@
 import moment from "moment";
 import reducer, { INITIAL_STATE } from "../../store/reducers/submission";
-import {
-  contactsTableFields,
-  generateSFContactFieldList
-} from "../../../../app/utils/fieldConfigs.js";
 
-// this is a hack to allow the SubmissionFormPageComponent to import
-// this object even though it is stored outside the /src directory
-export const contactsTableFieldsExport = { ...contactsTableFields };
 describe("submission reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
@@ -53,6 +46,21 @@ describe("submission reducer", () => {
       formPage1: {
         ...INITIAL_STATE.formPage1,
         firstName: "New Name"
+      }
+    });
+  });
+  it("should handle `setCAPEOptions`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_CAPE_OPTIONS",
+        payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      cape: {
+        ...INITIAL_STATE.cape,
+        monthlyOptions: [1, 2, 3],
+        oneTimeOptions: [4, 5, 6]
       }
     });
   });
@@ -162,7 +170,8 @@ describe("submission reducer", () => {
         Worksite_manual_entry_from_webform__c: "string",
         Work_Email__c: "string@string.com",
         Work_Phone__c: "123-456-7890",
-        Binary_Membership__c: "Not a Member"
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
       };
       const action = {
         type: "GET_SF_CONTACT_SUCCESS",
@@ -198,7 +207,8 @@ describe("submission reducer", () => {
           medicaidResidents: 0,
           paymentMethodAdded: false,
           afhDuesRate: 0,
-          capeAmount: ""
+          capeAmount: "",
+          donationFrequency: "Monthly"
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -293,7 +303,8 @@ describe("submission reducer", () => {
           djrEmployerId: "emloyerId",
           cardAddingUrl: "",
           unioniseRefreshToken: "",
-          unioniseToken: ""
+          unioniseToken: "",
+          currentCAPEFromSF: 0
         },
         djrId: "theDjrId"
       };
@@ -317,7 +328,8 @@ describe("submission reducer", () => {
           cardAddingUrl: "",
           djrEmployerId: "",
           memberShortId: "",
-          paymentErrorHold: false
+          paymentErrorHold: false,
+          currentCAPEFromSF: 0
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -354,7 +366,8 @@ describe("submission reducer", () => {
           unioniseToken: "",
           unioniseRefreshToken: "",
           cardAddingUrl: "url",
-          memberShortId: "string"
+          memberShortId: "string",
+          currentCAPEFromSF: 0
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -409,7 +422,8 @@ describe("submission reducer", () => {
       const action = {
         type: "LOOKUP_SF_CONTACT_SUCCESS",
         payload: {
-          salesforce_id: "string"
+          salesforce_id: "string",
+          Current_CAPE__c: 0
         }
       };
       const expectedState = {
@@ -417,6 +431,80 @@ describe("submission reducer", () => {
         salesforceId: "string",
         error: null,
         redirect: true
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getCAPEBySFId", () => {
+      const action = {
+        type: "GET_CAPE_BY_SFID_SUCCESS",
+        payload: {
+          Id: "123",
+          member_short_id: "456",
+          cape_amount: 5,
+          payment_method: "Unionise",
+          donation_frequency: "Monthly"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          id: "123",
+          memberShortId: "456",
+          donationAmount: 5,
+          paymentMethod: "Unionise",
+          donationFrequency: "Monthly"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createCAPE", () => {
+      const action = {
+        type: "CREATE_CAPE_SUCCESS",
+        payload: {
+          cape_id: "123",
+          currentCAPE: 5
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          id: "123"
+        },
+        currentCAPE: 5,
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("postOneTimePayment", () => {
+      const action = {
+        type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+        payload: {
+          id: "123"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          oneTimePaymentId: "123"
+        },
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createSFContact", () => {
+      const action = {
+        type: "CREATE_SF_CONTACT_SUCCESS",
+        payload: {
+          salesforce_id: "123"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        salesforceId: "123",
+        error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

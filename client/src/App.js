@@ -253,7 +253,7 @@ export class AppUnconnected extends Component {
   }
 
   async refreshRecaptcha() {
-    // console.log('refreshRecaptcha')
+    // console.log("refreshRecaptcha");
     this.recaptcha_ref.current.execute();
   }
 

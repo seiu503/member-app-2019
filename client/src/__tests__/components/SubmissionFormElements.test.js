@@ -3,6 +3,7 @@ import { shallow, mount } from "enzyme";
 import checkPropTypes from "check-prop-types";
 
 import * as formElements from "../../components/SubmissionFormElements";
+import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";
 
 const {
@@ -109,6 +110,39 @@ describe("Helper Functions", () => {
       );
       expect(typeof employerObjectsTest).toBe("object");
       expect(employerObjectsTest).toEqual(employerObjects[1]);
+    });
+  });
+
+  describe("handleError", () => {
+    const openSnackbarMock = jest.fn();
+    Notifier.openSnackbar = openSnackbarMock;
+    formElements.handleError("Error");
+    // expect(openSnackbarMock.mock.calls.length).toBe(1);
+  });
+
+  describe("formatBirthdate", () => {
+    const result = formElements.formatBirthdate({
+      mm: "01",
+      dd: "01",
+      yyyy: "2000"
+    });
+    expect(result).toBe("2000-01-01");
+  });
+
+  describe("generateCAPEOptions", () => {
+    it("returns correct options when currentCAPE is passed", () => {
+      const result = formElements.generateCAPEOptions(20);
+      expect(result).toEqual({
+        monthlyOptions: [23, 25, 28, "Other"],
+        oneTimeOptions: [25, 30, 40, "Other"]
+      });
+    });
+    it("returns correct options when no currentCAPE is passed", () => {
+      const result = formElements.generateCAPEOptions();
+      expect(result).toEqual({
+        monthlyOptions: [10, 13, 15, "Other"],
+        oneTimeOptions: [15, 20, 25, "Other"]
+      });
     });
   });
 });
