@@ -82,7 +82,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
     contact = await conn.query(query);
     if (contact.totalSize === 0 || !contact) {
       // if no contact found, return not found message to client
-      return res.status(200).json({
+      return res.status(404).json({
         message: "No matching contact found."
       });
     }
@@ -183,7 +183,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
     contact = await conn.query(query);
     if (contact.totalSize === 0 || !contact) {
       // if no contact found, return error message to client
-      return res.status(200).json({
+      return res.status(404).json({
         message:
           "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
       });

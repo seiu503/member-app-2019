@@ -1303,26 +1303,30 @@ export class SubmissionFormPage1Container extends React.Component {
       // return handleError(err); // don't return to client here
     });
     // console.log(capeResult);
-    // update CAPE record in salesforce
-    // generate body for this call
-    const sfCapeBody = {
-      Id: sf_cape_id,
-      One_Time_Payment_Id__c: oneTimePaymentId
-    };
 
-    const sfCapeUpdateResult = await this.props.apiSF
-      .updateSFCAPE(sfCapeBody)
-      .catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
+    // if this is a one-time CAPE payment
+    // then update the payment id in SF
+    if (formValues.donationFrequency === "One-Time" && oneTimePaymentId) {
+      // generate body for this call
+      const sfCapeBody = {
+        Id: sf_cape_id,
+        One_Time_Payment_Id__c: oneTimePaymentId
+      };
 
-    if (
-      sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
-      this.props.submission.error
-    ) {
-      // console.log(this.props.submission.error);
-      return handleError(this.props.submission.error);
+      const sfCapeUpdateResult = await this.props.apiSF
+        .updateSFCAPE(sfCapeBody)
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
+
+      if (
+        sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
+        this.props.submission.error
+      ) {
+        // console.log(this.props.submission.error);
+        return handleError(this.props.submission.error);
+      }
     }
 
     if (!standAlone) {

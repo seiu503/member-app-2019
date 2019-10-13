@@ -35,8 +35,9 @@ export class SubmissionFormPage1Component extends React.Component {
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        // console.log(err);
-        this.props.handleError(err);
+        console.log(err);
+        // don't return this error to client, it's a background api call
+        // this.props.handleError(err);
       });
     // add event listener to listen for iframe message
     // to confirm payment method added
