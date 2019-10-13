@@ -1,5 +1,4 @@
 import update from "immutability-helper";
-import moment from "moment";
 import * as formElements from "../../components/SubmissionFormElements";
 import * as utils from "../../utils";
 
@@ -24,6 +23,7 @@ import {
   GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
   HANDLE_INPUT,
+  CLEAR_FORM,
   SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
 
@@ -146,6 +146,9 @@ function Submission(state = INITIAL_STATE, action) {
           [action.payload.name]: { $set: action.payload.value }
         }
       });
+
+    case CLEAR_FORM:
+      return INITIAL_STATE;
 
     case SET_CAPE_OPTIONS:
       return update(state, {

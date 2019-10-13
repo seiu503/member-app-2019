@@ -49,7 +49,7 @@ function Modal(props) {
       <Dialog
         data-test="component-modal"
         open={props.open}
-        onClose={props.handleClose}
+        onClose={props.handleCloseAndClear}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -64,12 +64,11 @@ function Modal(props) {
         <DialogActions className={classes.dialogActionsOverride}>
           <Button
             data-test="button-link-request"
-            onClick={() => props.history.push("/linkrequest")}
+            onClick={props.handleCloseAndClear}
             className={classes.modalButtonRed}
           >
             <Translate id="modalErrorButtonPreName" />
             {`${props.fullName}`}
-            <Translate id="modalErrorButtonPostName" />
           </Button>
           <Button
             onClick={props.handleClose}

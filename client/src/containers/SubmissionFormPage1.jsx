@@ -72,12 +72,13 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleCAPEClose = this.handleCAPEClose.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
     this.mobilePhoneOnBlur = this.mobilePhoneOnBlur.bind(this);
+    this.handleCloseAndClear = this.handleCloseAndClear.bind(this);
   }
 
   componentDidMount() {
-    // check for contact id in query string
+    // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
-    // if find contact id, call API to fetch contact info for prefill
+    // if find both ids, call API to fetch contact info for prefill
     if (params.cId && params.aId) {
       const { cId, aId } = params;
       this.props.apiSF
@@ -118,6 +119,16 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
+  }
+
+  handleCloseAndClear() {
+    console.log("closeAndClear");
+    const newState = { ...this.state };
+    newState.open = false;
+    this.setState({ ...newState });
+    this.props.apiSubmission.clearForm();
+    // remove cId & aId from route params if no match
+    window.history.replaceState(null, null, `${window.location.origin}/`);
   }
 
   handleCAPEClose() {
@@ -1313,7 +1324,6 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
     }
-    this.props.reset("submissionPage1");
 
     if (!standAlone) {
       this.props.history.push(
@@ -1524,6 +1534,7 @@ export class SubmissionFormPage1Container extends React.Component {
             fullName.length &&
             !this.props.submission.redirect
           }
+          handleCloseAndClear={this.handleCloseAndClear}
           handleClose={this.handleClose}
           fullName={fullName}
           history={this.props.history}

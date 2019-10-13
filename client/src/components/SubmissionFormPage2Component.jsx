@@ -1,7 +1,6 @@
 import React from "react";
-import { Field } from "redux-form";
 import PropTypes from "prop-types";
-import { reduxForm } from "redux-form";
+import { reduxForm, Field } from "redux-form";
 import { Translate } from "react-localize-redux";
 import queryString from "query-string";
 
@@ -156,7 +155,6 @@ export class SubmissionFormPage2Component extends React.Component {
             result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
             !this.props.submission.error
           ) {
-            this.props.reset("submissionPage2");
             openSnackbar("success", "Your information was updated!");
             this.props.history.push(`/thankyou`);
           } else {
