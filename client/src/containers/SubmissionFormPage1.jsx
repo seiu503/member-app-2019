@@ -1157,7 +1157,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: formValues.donationFrequency
       // member_short_id: this.props.submission.payment.memberShortId
     };
-    console.log(body);
+    // console.log(body);
     return body;
   }
 

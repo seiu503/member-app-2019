@@ -116,53 +116,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
 
   // testing that we are triggering expected behavior for submit success and failure
   describe("submit functionality", () => {
-    it("calls reset after successful Submit", async function() {
-      let resetMock = jest.fn();
-      const props = {
-        reset: resetMock
-      };
-      // imported function that creates dummy data for form
-      testData = generatePage2Validate();
-      // test function that will count calls as well as return success object
-      handleSubmitSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-        );
-
-      updateSFContactSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS" })
-        );
-
-      // creating wrapper
-      wrapper = unconnectedSetup(props);
-
-      wrapper.instance().props.apiSubmission.updateSubmission = handleSubmitSuccess;
-      wrapper.instance().props.apiSF.updateSFContact = updateSFContactSuccess;
-
-      wrapper.update();
-
-      // simulate submit with dummy data
-      await wrapper.find("form").simulate("submit", { testData });
-      // testing that submit was called
-      expect(handleSubmitSuccess.mock.calls.length).toBe(1);
-
-      // testing that reset is called when handleSubmit receives success message
-      try {
-        await handleSubmitSuccess();
-        await updateSFContactSuccess();
-        expect(resetMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
     it("provides error feedback after failed Submit", async function() {
-      let resetMock = jest
-        .fn()
-        .mockImplementation(() => console.log("reset mock"));
       // imported function that creates dummy data for form
       testData = generatePage2Validate();
       // test function that will count calls as well as return error object

@@ -92,10 +92,26 @@ let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_CONTACT_DID_SUCCESS",
+    payload: {
+      firstName: "test",
+      lastName: "test"
+    }
+  })
+);
+
 let getSFContactByIdError = jest
   .fn()
   .mockImplementation(() =>
     Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
+  );
+
+let getSFContactByDoubleIdError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE", payload: {} })
   );
 
 let addSubmissionSuccess = jest
@@ -327,6 +343,7 @@ const defaultProps = {
   apiSF: {
     getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
     getSFContactById: getSFContactByIdSuccess,
+    getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
@@ -412,13 +429,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("componentDidMount", () => {
-    test("calls `getSFContactById` on componentDidMount if id in query", () => {
+    test("calls `getSFContactByDoubleId` on componentDidMount if id in query", () => {
       let props = {
         location: {
-          search: "id=1"
+          search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactById: getSFContactByIdSuccess,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         },
         submission: {
@@ -429,7 +446,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       store = storeFactory(initialState);
-      const dispatchSpy = jest.spyOn(apiSForce, "getSFContactById");
+      const dispatchSpy = jest.spyOn(apiSForce, "getSFContactByDoubleId");
       wrapper = mount(
         <Provider store={store}>
           <SubmissionFormPage1Connected {...defaultProps} {...props} />
@@ -438,7 +455,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const spyCall = dispatchSpy.mock.calls[0][0];
       expect(spyCall).toEqual("1");
       wrapper.instance().componentDidMount();
-      return getSFContactByIdSuccess()
+      return getSFContactByDoubleIdSuccess()
         .then(() => {
           expect(wrapper.instance().handleOpen).toHaveBeenCalled();
         })
@@ -447,14 +464,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("handles error if `getSFContactById` fails", () => {
+    test("handles error if `getSFContactByDoubleId` fails", () => {
       formElements.handleError = jest.fn();
       let props = {
         location: {
-          search: "id=1"
+          search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactById: getSFContactByIdError,
+          getSFContactByDoubleId: getSFContactByDoubleIdError,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
@@ -463,7 +480,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = setup(props);
 
       wrapper.instance().componentDidMount();
-      return getSFContactByIdError()
+      return getSFContactByDoubleIdError()
         .then(() => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
@@ -472,13 +489,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactById", () => {
+    test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactByDoubleId", () => {
       let props = {
         location: {
-          search: "id=1"
+          search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactById: getSFContactByIdSuccess,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         },
         apiSubmission: {
@@ -501,7 +518,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.instance().handleOpen = handleOpenMock;
 
       wrapper.instance().componentDidMount();
-      return getSFContactByIdSuccess()
+      return getSFContactByDoubleIdSuccess()
         .then(() => {
           expect(handleOpenMock).toHaveBeenCalled();
         })

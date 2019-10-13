@@ -180,9 +180,7 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         formPage1: {
-          mm: "01",
-          dd: "01",
-          yyyy: "1999",
+          mm: "",
           mobilePhone: "123-456-7890",
           employerName: "string",
           employerId: "",
