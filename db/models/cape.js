@@ -33,7 +33,7 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @returns  {Array}    Array of 1 newly-created CAPE Object.
  */
 
-const createCAPE = (
+const createCAPE = async (
   ip_address,
   submission_date,
   contact_id,

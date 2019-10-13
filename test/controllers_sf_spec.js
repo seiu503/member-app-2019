@@ -399,7 +399,7 @@ suite("sf.ctrl.js", function() {
         await sfCtrl.lookupSFContactByFLE(req, res);
         assert.called(jsforceConnectionStub);
         assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 200);
+        assert.calledWith(res.status, 404);
         assert.calledWith(jsforceStub.query, query);
         assert.calledWith(res.json, { message });
       } catch (err) {
@@ -582,7 +582,8 @@ suite("sf.ctrl.js", function() {
     });
 
     test("gets all Employers", async function() {
-      query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' and Division__c IN ('Retirees', 'Public', 'Care Provider') and Sub_Division__c != null)`;
+      query =
+        "SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)";
       try {
         await sfCtrl.getAllEmployers(req, res);
         assert.called(jsforceConnectionStub);
