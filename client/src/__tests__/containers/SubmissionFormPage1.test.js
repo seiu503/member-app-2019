@@ -25,6 +25,7 @@ let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn(),
+  clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn();
 
 let updateSFContactSuccess = jest
@@ -356,6 +357,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    clearForm: clearFormMock,
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
@@ -394,6 +396,9 @@ const setup = (props = {}) => {
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
+  beforeEach(() => {
+    // console.log = jest.fn();
+  });
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -3055,6 +3060,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
     test("`handleTab1` navigates to tab 1 if salesforceId found in state", async function() {
       handleInputMock = jest.fn();
+      clearFormMock = jest.fn();
       updateSFContactSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -3071,6 +3077,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSubmission: {
           handleInput: handleInputMock,
+          clearForm: clearFormMock,
           verify: () =>
             Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
         },
@@ -3132,6 +3139,20 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
       wrapper.instance().handleClose();
       expect(wrapper.instance().state.open).toBe(false);
+    });
+
+    test("`handleCloseAndClear` closes modal, clears form, resets window.location", async () => {
+      let originalReplaceState = window.history.replaceState;
+      let replaceStateMock = jest.fn();
+      clearFormMock = jest.fn();
+      window.history.replaceState = replaceStateMock;
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().props.apiSubmission.clearForm = clearFormMock;
+      await wrapper.instance().handleCloseAndClear();
+      expect(wrapper.instance().state.open).toBe(false);
+      expect(clearFormMock.mock.calls.length).toBe(1);
+
+      window.history.replaceState = originalReplaceState;
     });
 
     test("`handleCAPEClose` closes alert dialog", () => {
@@ -3925,14 +3946,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            donationFrequency: "One-Time"
           },
           salesforceId: "123",
           payment: {
             memberShortId: "123"
           },
           cape: {
-            id: undefined
+            id: undefined,
+            oneTimePaymentId: "123"
           }
         },
         apiSF: {

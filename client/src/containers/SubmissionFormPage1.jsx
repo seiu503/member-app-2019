@@ -122,7 +122,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleCloseAndClear() {
-    console.log("closeAndClear");
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
@@ -228,9 +227,9 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
         : parseFloat(formValues.capeAmount);
-    console.log(`donationAmount: ${donationAmount}`);
-    console.log(formValues.capeAmount);
-    console.log(formValues.capeAmountOther);
+    // console.log(`donationAmount: ${donationAmount}`);
+    // console.log(formValues.capeAmount);
+    // console.log(formValues.capeAmountOther);
     if (frequency === "One-Time" && donationAmount) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
@@ -759,7 +758,7 @@ export class SubmissionFormPage1Container extends React.Component {
           "ReCaptcha validation failed, please reload the page and try again."
         );
       });
-    console.log(result.payload);
+
     // console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
   }
@@ -795,7 +794,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async getIframeNew(cape, capeAmount, capeAmountOther) {
     // console.log("getIframeNew");
-    console.log(capeAmount, capeAmountOther);
+    // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     let birthdate;
@@ -859,14 +858,14 @@ export class SubmissionFormPage1Container extends React.Component {
         capeAmount === "Other"
           ? parseFloat(capeAmountOther)
           : parseFloat(capeAmount);
-      console.log(donationAmount);
+      // console.log(donationAmount);
       body.deductionType = "CAPE";
       body.politicalType = "monthly";
       body.deductionAmount = donationAmount;
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
@@ -1097,7 +1096,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
+    // console.log("generateCAPEBody");
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -1121,19 +1120,18 @@ export class SubmissionFormPage1Container extends React.Component {
       capeAmount === "Other"
         ? parseFloat(capeAmountOther)
         : parseFloat(capeAmount);
-    console.log(capeAmountOther);
-    console.log(capeAmount);
-    console.log(`donationAmount: ${donationAmount}`);
+    // console.log(capeAmountOther);
+    // console.log(capeAmount);
+    // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount) {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
         // console.log(this.state.displayCAPEPaymentFields);
       });
     }
-    console.log("1124");
     // generate body
     const body = {
       ip_address: localIpUrl(),
@@ -1181,12 +1179,12 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(this.props.submission.error);
       }
     } else {
-      console.log("no CAPE body generated");
+      // console.log("no CAPE body generated");
     }
   }
 
   async handleCAPESubmit(standAlone) {
-    console.log("handleCAPESubmit");
+    // console.log("handleCAPESubmit");
     const { formValues } = this.props;
 
     if (standAlone) {
@@ -1194,7 +1192,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const score = await this.verifyRecaptchaScore();
       // console.log(score);
       if (!score || score <= 0.5) {
-        console.log(`recaptcha failed: ${score}`);
+        // console.log(`recaptcha failed: ${score}`);
         return handleError(
           "ReCaptcha validation failed, please reload the page and try again."
         );
@@ -1205,7 +1203,7 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      console.log("No payment method added");
+      // console.log("No payment method added");
       return handleError("Please click 'Add a Card' to add a payment method");
     }
     // if user clicks submit before the payment logic finishes loading,
