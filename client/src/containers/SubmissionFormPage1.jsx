@@ -48,7 +48,8 @@ export class SubmissionFormPage1Container extends React.Component {
       legalLanguage: "",
       signatureType: "draw",
       howManyTabs: 3,
-      displayCAPEPaymentFields: false
+      displayCAPEPaymentFields: false,
+      prefillEmployerChanged: false
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -63,6 +64,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
     this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
+    this.handleEmployerChange = this.handleEmployerChange.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
     this.handleDonationFrequencyChange = this.handleDonationFrequencyChange.bind(
       this
@@ -217,6 +219,15 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  handleEmployerChange() {
+    console.log("handleEmployerChange");
+    // track that employer has been manually changed after prefill
+    // to send the prefilled value back to SF on submit if no change
+    const newState = { ...this.state };
+    newState.prefillEmployerChanged = true;
+    this.setState({ ...newState });
+  }
+
   async handleDonationFrequencyChange(frequency) {
     const { formValues } = this.props;
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
@@ -338,7 +349,31 @@ export class SubmissionFormPage1Container extends React.Component {
         values.employerName
       );
       returnValues.agencyNumber = employerObject.Agency_Number__c;
-      returnValues.employerId = employerObject.Id;
+
+      if (this.props.submission.formPage1.prefillEmployerId) {
+        console.log("found prefillEmployerId in state");
+        if (!this.state.prefillEmployerChanged) {
+          console.log(
+            "prefillEmployerChanged -- populating with prefillEmployerId"
+          );
+          // if this is a prefill and employer has not been changed manually,
+          // return original prefilled employer Id
+          // this will be a worksite-level account id in most cases
+          returnValues.employerId = this.props.submission.formPage1.prefillEmployerId;
+        } else {
+          console.log("populating with employerObject.Id");
+          // if employer has been manually changed since prefill, or if
+          // this is a blank-slate form, find id in employer object
+          // this will be an agency-level employer Id
+          returnValues.employerId = employerObject.Id;
+        }
+      } else {
+        console.log("populating with employerObject.Id");
+        // if employer has been manually changed since prefill, or if
+        // this is a blank-slate form, find id in employer object
+        // this will be an agency-level employer Id
+        returnValues.employerId = employerObject.Id;
+      }
 
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
@@ -1560,6 +1595,7 @@ export class SubmissionFormPage1Container extends React.Component {
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           saveSubmissionErrors={this.saveSubmissionErrors}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
+          handleEmployerChange={this.handleEmployerChange}
           lookupSFContact={this.lookupSFContact}
           handleDonationFrequencyChange={this.handleDonationFrequencyChange}
           checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}

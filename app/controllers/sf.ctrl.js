@@ -670,7 +670,7 @@ exports.getAllEmployers = async (req, res, next) => {
   // console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id (does not
   // fit the query in any other way so has to be SELECTed for separately)
-  const query = `SELECT Id, Name, Sub_Division__c, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
+  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

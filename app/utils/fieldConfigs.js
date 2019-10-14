@@ -90,6 +90,15 @@ const contactsTableFields = {
     SFAPIName: "Account.Sub_Division__c",
     testingSample: "Nursing Homes"
   },
+  account_parent_id: {
+    clientFieldName: "accountParentId",
+    SFTable: "Worker (Contact)", // Account field
+    SFAPIName: "Account.Parent.Id",
+    testingSample: "Nursing Homes",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "0016100000Pw3eMAAR"
+  },
   agency_number: {
     oldFormPage: "none",
     req: "Y",
