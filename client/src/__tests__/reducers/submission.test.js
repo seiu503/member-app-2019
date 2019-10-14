@@ -135,7 +135,10 @@ describe("submission reducer", () => {
           Name: "string",
           Id: "string",
           WS_Subdivision_from_Agency__c: "string",
-          RecordTypeId: "string"
+          RecordTypeId: "string",
+          Parent: {
+            Id: "string"
+          }
         },
         OtherCity: "string",
         OtherState: "or",
@@ -185,6 +188,8 @@ describe("submission reducer", () => {
           employerName: "string",
           employerId: "",
           employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
           firstName: "string",
           lastName: "string",
           homeStreet: "string",

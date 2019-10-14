@@ -1055,7 +1055,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {
+            prefillEmployerId: "123"
+          }
         },
         apiSF: {
           lookupSFContact: lookupSFContactError,
@@ -1089,7 +1092,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {
+            prefillEmployerId: null
+          }
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess
@@ -1127,7 +1133,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {
+            prefillEmployerId: "123"
+          }
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess
@@ -1172,7 +1181,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
         },
         apiSF: {
           createSFContact: createSFContactError,
@@ -1210,7 +1222,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          }
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,
@@ -1247,7 +1262,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
         },
         apiSF: {
           updateSFContact: updateSFContactError,
@@ -3139,6 +3157,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
       wrapper.instance().handleClose();
       expect(wrapper.instance().state.open).toBe(false);
+    });
+
+    test("`handleEmployerChange` sets prefillEmployerChanged state to true", () => {
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().handleEmployerChange();
+      expect(wrapper.instance().state.prefillEmployerChanged).toBe(true);
     });
 
     test("`handleCloseAndClear` closes modal, clears form, resets window.location", async () => {
