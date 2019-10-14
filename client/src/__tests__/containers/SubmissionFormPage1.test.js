@@ -25,6 +25,7 @@ let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn(),
+  clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn();
 
 let updateSFContactSuccess = jest
@@ -92,10 +93,26 @@ let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_CONTACT_DID_SUCCESS",
+    payload: {
+      firstName: "test",
+      lastName: "test"
+    }
+  })
+);
+
 let getSFContactByIdError = jest
   .fn()
   .mockImplementation(() =>
     Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
+  );
+
+let getSFContactByDoubleIdError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE", payload: {} })
   );
 
 let addSubmissionSuccess = jest
@@ -327,6 +344,7 @@ const defaultProps = {
   apiSF: {
     getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
     getSFContactById: getSFContactByIdSuccess,
+    getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
@@ -339,6 +357,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    clearForm: clearFormMock,
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
@@ -377,6 +396,9 @@ const setup = (props = {}) => {
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
+  beforeEach(() => {
+    // console.log = jest.fn();
+  });
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -412,13 +434,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("componentDidMount", () => {
-    test("calls `getSFContactById` on componentDidMount if id in query", () => {
+    test("calls `getSFContactByDoubleId` on componentDidMount if id in query", () => {
       let props = {
         location: {
-          search: "id=1"
+          search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactById: getSFContactByIdSuccess,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         },
         submission: {
@@ -429,7 +451,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       store = storeFactory(initialState);
-      const dispatchSpy = jest.spyOn(apiSForce, "getSFContactById");
+      const dispatchSpy = jest.spyOn(apiSForce, "getSFContactByDoubleId");
       wrapper = mount(
         <Provider store={store}>
           <SubmissionFormPage1Connected {...defaultProps} {...props} />
@@ -438,7 +460,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const spyCall = dispatchSpy.mock.calls[0][0];
       expect(spyCall).toEqual("1");
       wrapper.instance().componentDidMount();
-      return getSFContactByIdSuccess()
+      return getSFContactByDoubleIdSuccess()
         .then(() => {
           expect(wrapper.instance().handleOpen).toHaveBeenCalled();
         })
@@ -447,14 +469,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("handles error if `getSFContactById` fails", () => {
+    test("handles error if `getSFContactByDoubleId` fails", () => {
       formElements.handleError = jest.fn();
       let props = {
         location: {
-          search: "id=1"
+          search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactById: getSFContactByIdError,
+          getSFContactByDoubleId: getSFContactByDoubleIdError,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
@@ -463,7 +485,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = setup(props);
 
       wrapper.instance().componentDidMount();
-      return getSFContactByIdError()
+      return getSFContactByDoubleIdError()
         .then(() => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
@@ -472,13 +494,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactById", () => {
+    test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactByDoubleId", () => {
       let props = {
         location: {
-          search: "id=1"
+          search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactById: getSFContactByIdSuccess,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         },
         apiSubmission: {
@@ -501,7 +523,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.instance().handleOpen = handleOpenMock;
 
       wrapper.instance().componentDidMount();
-      return getSFContactByIdSuccess()
+      return getSFContactByDoubleIdSuccess()
         .then(() => {
           expect(handleOpenMock).toHaveBeenCalled();
         })
@@ -1033,7 +1055,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {
+            prefillEmployerId: "123"
+          }
         },
         apiSF: {
           lookupSFContact: lookupSFContactError,
@@ -1067,7 +1092,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {
+            prefillEmployerId: null
+          }
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess
@@ -1105,7 +1133,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {
+            prefillEmployerId: "123"
+          }
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess
@@ -1150,7 +1181,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
         },
         apiSF: {
           createSFContact: createSFContactError,
@@ -1188,7 +1222,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          }
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,
@@ -1225,7 +1262,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
         },
         apiSF: {
           updateSFContact: updateSFContactError,
@@ -3038,6 +3078,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
     test("`handleTab1` navigates to tab 1 if salesforceId found in state", async function() {
       handleInputMock = jest.fn();
+      clearFormMock = jest.fn();
       updateSFContactSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -3054,6 +3095,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSubmission: {
           handleInput: handleInputMock,
+          clearForm: clearFormMock,
           verify: () =>
             Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
         },
@@ -3115,6 +3157,26 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
       wrapper.instance().handleClose();
       expect(wrapper.instance().state.open).toBe(false);
+    });
+
+    test("`handleEmployerChange` sets prefillEmployerChanged state to true", () => {
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().handleEmployerChange();
+      expect(wrapper.instance().state.prefillEmployerChanged).toBe(true);
+    });
+
+    test("`handleCloseAndClear` closes modal, clears form, resets window.location", async () => {
+      let originalReplaceState = window.history.replaceState;
+      let replaceStateMock = jest.fn();
+      clearFormMock = jest.fn();
+      window.history.replaceState = replaceStateMock;
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper.instance().props.apiSubmission.clearForm = clearFormMock;
+      await wrapper.instance().handleCloseAndClear();
+      expect(wrapper.instance().state.open).toBe(false);
+      expect(clearFormMock.mock.calls.length).toBe(1);
+
+      window.history.replaceState = originalReplaceState;
     });
 
     test("`handleCAPEClose` closes alert dialog", () => {
@@ -3908,14 +3970,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            donationFrequency: "One-Time"
           },
           salesforceId: "123",
           payment: {
             memberShortId: "123"
           },
           cape: {
-            id: undefined
+            id: undefined,
+            oneTimePaymentId: "123"
           }
         },
         apiSF: {

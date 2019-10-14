@@ -148,8 +148,8 @@ const createCAPE = async (req, res, next) => {
 const updateCAPE = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  console.log(`cape.ctrl.js > 145 - id: ${id} (updates below)`);
-  console.log(updates);
+  console.log(`cape.ctrl.js > 145 - id: ${id}`);
+  // console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
       // console.log('cape.ctrl.js > 149: !updates');

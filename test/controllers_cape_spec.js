@@ -30,15 +30,27 @@ let responseStub,
   req = mockReq();
 
 suite("cape.ctrl.js", function() {
+  const originalLogFunction = console.log;
+  let output;
   after(() => {
     return knexCleaner.clean(db);
   });
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+    // silence console.logs during tests
+    // output = '';
+    // console.log = (msg) => {
+    //   output += msg + '\n';
+    // };
   });
   afterEach(function() {
     authenticateMock.restore();
     sinon.restore();
+    // console.log = originalLogFunction; // undo dummy log function
+    // if (this.currentTest.state === 'failed') {
+    //   console.log('FAILED TEST OUTPUT HERE: ##############');
+    //   console.log(output);
+    // }
   });
 
   suite("capeCtrl > createCAPE", function() {
@@ -92,7 +104,9 @@ suite("cape.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error saving the CAPE record";
-      capeModelStub = sinon.stub(cape, "createCAPE").returns(null);
+      capeModelStub = sinon
+        .stub(cape, "createCAPE")
+        .returns(Promise.resolve(null));
 
       try {
         await capeCtrl.createCAPE(req, res);

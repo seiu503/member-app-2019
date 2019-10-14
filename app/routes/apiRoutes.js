@@ -57,7 +57,7 @@ router.get(
 //              ip_address    : String
 //              token         : String
 //             }
-//   Returns: { cardAddingUrl } or error message.
+//   Returns: { score } or error message.
 //
 router.post("/verify", submissionCtrl.verifyHumanity);
 
@@ -217,7 +217,7 @@ router.post("/image/single", imageCtrl.singleImgUpload);
 // router.post("/image/single", authCtrl.requireAuth, imageCtrl.singleImgUpload);
 
 // DELETE AN IMAGE FROM S3 BUCKET
-// (this route is hit after the content is delete from the postgres database)
+// (after content is deleted from the postgres database)
 //   Example: DELETE >> /api/image/
 //   Secured: yes
 //   Expects:
@@ -399,6 +399,18 @@ router.get("/capeBySF/:id", capeCtrl.getCAPEBySFId);
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
+
+// GET ONE SALESFORCE CONTACT RECORD BY DOUBLE ID
+//   Example: GET >> /api/sfdid/0036100001gYL0HAAW/0016100000Kdn9yAAB
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          cId : String,
+//          aId : String
+//        }
+//   Returns: JSON selected fields from salesforce contact object on success.
+//
+router.get("/sfdid/:cId/:aId", sfCtrl.getSFContactByDoubleId);
 
 // GET ONE SALESFORCE CONTACT RECORD BY FIRST, LAST, EMAIL
 //   Example: GET >> /api/sflookup

@@ -64,6 +64,9 @@ import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
   GET_SF_CONTACT_FAILURE,
+  GET_SF_CONTACT_DID_REQUEST,
+  GET_SF_CONTACT_DID_SUCCESS,
+  GET_SF_CONTACT_DID_FAILURE,
   GET_SF_EMPLOYERS_REQUEST,
   GET_SF_EMPLOYERS_SUCCESS,
   GET_SF_EMPLOYERS_FAILURE,
@@ -177,6 +180,7 @@ function appState(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
     case POST_ONE_TIME_PAYMENT_REQUEST:
+    case GET_SF_CONTACT_DID_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -238,6 +242,8 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_CAPE_FAILURE:
     case POST_ONE_TIME_PAYMENT_SUCCESS:
     case POST_ONE_TIME_PAYMENT_FAILURE:
+    case GET_SF_CONTACT_DID_SUCCESS:
+    case GET_SF_CONTACT_DID_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

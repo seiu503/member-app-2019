@@ -48,7 +48,8 @@ export class SubmissionFormPage1Container extends React.Component {
       legalLanguage: "",
       signatureType: "draw",
       howManyTabs: 3,
-      displayCAPEPaymentFields: false
+      displayCAPEPaymentFields: false,
+      prefillEmployerChanged: false
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -63,6 +64,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
     this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
+    this.handleEmployerChange = this.handleEmployerChange.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
     this.handleDonationFrequencyChange = this.handleDonationFrequencyChange.bind(
       this
@@ -72,16 +74,17 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleCAPEClose = this.handleCAPEClose.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
     this.mobilePhoneOnBlur = this.mobilePhoneOnBlur.bind(this);
+    this.handleCloseAndClear = this.handleCloseAndClear.bind(this);
   }
 
   componentDidMount() {
-    // check for contact id in query string
+    // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
-    // if find contact id, call API to fetch contact info for prefill
-    if (params.id) {
-      const { id } = params;
+    // if find both ids, call API to fetch contact info for prefill
+    if (params.cId && params.aId) {
+      const { cId, aId } = params;
       this.props.apiSF
-        .getSFContactById(id)
+        .getSFContactByDoubleId(cId, aId)
         .then(result => {
           // open warning/confirmation modal if prefill successfully loaded
           if (
@@ -118,6 +121,15 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
+  }
+
+  handleCloseAndClear() {
+    const newState = { ...this.state };
+    newState.open = false;
+    this.setState({ ...newState });
+    this.props.apiSubmission.clearForm();
+    // remove cId & aId from route params if no match
+    window.history.replaceState(null, null, `${window.location.origin}/`);
   }
 
   handleCAPEClose() {
@@ -207,6 +219,15 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  handleEmployerChange() {
+    console.log("handleEmployerChange");
+    // track that employer has been manually changed after prefill
+    // to send the prefilled value back to SF on submit if no change
+    const newState = { ...this.state };
+    newState.prefillEmployerChanged = true;
+    this.setState({ ...newState });
+  }
+
   async handleDonationFrequencyChange(frequency) {
     const { formValues } = this.props;
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
@@ -217,9 +238,9 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
         : parseFloat(formValues.capeAmount);
-    console.log(`donationAmount: ${donationAmount}`);
-    console.log(formValues.capeAmount);
-    console.log(formValues.capeAmountOther);
+    // console.log(`donationAmount: ${donationAmount}`);
+    // console.log(formValues.capeAmount);
+    // console.log(formValues.capeAmountOther);
     if (frequency === "One-Time" && donationAmount) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
@@ -328,7 +349,31 @@ export class SubmissionFormPage1Container extends React.Component {
         values.employerName
       );
       returnValues.agencyNumber = employerObject.Agency_Number__c;
-      returnValues.employerId = employerObject.Id;
+
+      if (this.props.submission.formPage1.prefillEmployerId) {
+        console.log("found prefillEmployerId in state");
+        if (!this.state.prefillEmployerChanged) {
+          console.log(
+            "prefillEmployerChanged -- populating with prefillEmployerId"
+          );
+          // if this is a prefill and employer has not been changed manually,
+          // return original prefilled employer Id
+          // this will be a worksite-level account id in most cases
+          returnValues.employerId = this.props.submission.formPage1.prefillEmployerId;
+        } else {
+          console.log("populating with employerObject.Id");
+          // if employer has been manually changed since prefill, or if
+          // this is a blank-slate form, find id in employer object
+          // this will be an agency-level employer Id
+          returnValues.employerId = employerObject.Id;
+        }
+      } else {
+        console.log("populating with employerObject.Id");
+        // if employer has been manually changed since prefill, or if
+        // this is a blank-slate form, find id in employer object
+        // this will be an agency-level employer Id
+        returnValues.employerId = employerObject.Id;
+      }
 
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
@@ -748,6 +793,7 @@ export class SubmissionFormPage1Container extends React.Component {
           "ReCaptcha validation failed, please reload the page and try again."
         );
       });
+
     // console.log(`recaptcha score: ${result.payload.score}`);
     return result.payload.score;
   }
@@ -783,7 +829,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async getIframeNew(cape, capeAmount, capeAmountOther) {
     // console.log("getIframeNew");
-    console.log(capeAmount, capeAmountOther);
+    // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     let birthdate;
@@ -847,14 +893,14 @@ export class SubmissionFormPage1Container extends React.Component {
         capeAmount === "Other"
           ? parseFloat(capeAmountOther)
           : parseFloat(capeAmount);
-      console.log(donationAmount);
+      // console.log(donationAmount);
       body.deductionType = "CAPE";
       body.politicalType = "monthly";
       body.deductionAmount = donationAmount;
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
@@ -1085,7 +1131,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
+    // console.log("generateCAPEBody");
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -1109,19 +1155,18 @@ export class SubmissionFormPage1Container extends React.Component {
       capeAmount === "Other"
         ? parseFloat(capeAmountOther)
         : parseFloat(capeAmount);
-    console.log(capeAmountOther);
-    console.log(capeAmount);
-    console.log(`donationAmount: ${donationAmount}`);
+    // console.log(capeAmountOther);
+    // console.log(capeAmount);
+    // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount) {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
         // console.log(this.state.displayCAPEPaymentFields);
       });
     }
-    console.log("1124");
     // generate body
     const body = {
       ip_address: localIpUrl(),
@@ -1145,7 +1190,7 @@ export class SubmissionFormPage1Container extends React.Component {
       donation_frequency: formValues.donationFrequency
       // member_short_id: this.props.submission.payment.memberShortId
     };
-    console.log(body);
+    // console.log(body);
     return body;
   }
 
@@ -1169,12 +1214,12 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(this.props.submission.error);
       }
     } else {
-      console.log("no CAPE body generated");
+      // console.log("no CAPE body generated");
     }
   }
 
   async handleCAPESubmit(standAlone) {
-    console.log("handleCAPESubmit");
+    // console.log("handleCAPESubmit");
     const { formValues } = this.props;
 
     if (standAlone) {
@@ -1182,7 +1227,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const score = await this.verifyRecaptchaScore();
       // console.log(score);
       if (!score || score <= 0.5) {
-        console.log(`recaptcha failed: ${score}`);
+        // console.log(`recaptcha failed: ${score}`);
         return handleError(
           "ReCaptcha validation failed, please reload the page and try again."
         );
@@ -1193,7 +1238,7 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      console.log("No payment method added");
+      // console.log("No payment method added");
       return handleError("Please click 'Add a Card' to add a payment method");
     }
     // if user clicks submit before the payment logic finishes loading,
@@ -1291,28 +1336,31 @@ export class SubmissionFormPage1Container extends React.Component {
       // return handleError(err); // don't return to client here
     });
     // console.log(capeResult);
-    // update CAPE record in salesforce
-    // generate body for this call
-    const sfCapeBody = {
-      Id: sf_cape_id,
-      One_Time_Payment_Id__c: oneTimePaymentId
-    };
 
-    const sfCapeUpdateResult = await this.props.apiSF
-      .updateSFCAPE(sfCapeBody)
-      .catch(err => {
-        // console.log(err);
-        return handleError(err);
-      });
+    // if this is a one-time CAPE payment
+    // then update the payment id in SF
+    if (formValues.donationFrequency === "One-Time" && oneTimePaymentId) {
+      // generate body for this call
+      const sfCapeBody = {
+        Id: sf_cape_id,
+        One_Time_Payment_Id__c: oneTimePaymentId
+      };
 
-    if (
-      sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
-      this.props.submission.error
-    ) {
-      // console.log(this.props.submission.error);
-      return handleError(this.props.submission.error);
+      const sfCapeUpdateResult = await this.props.apiSF
+        .updateSFCAPE(sfCapeBody)
+        .catch(err => {
+          // console.log(err);
+          return handleError(err);
+        });
+
+      if (
+        sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
+        this.props.submission.error
+      ) {
+        // console.log(this.props.submission.error);
+        return handleError(this.props.submission.error);
+      }
     }
-    this.props.reset("submissionPage1");
 
     if (!standAlone) {
       this.props.history.push(
@@ -1523,6 +1571,7 @@ export class SubmissionFormPage1Container extends React.Component {
             fullName.length &&
             !this.props.submission.redirect
           }
+          handleCloseAndClear={this.handleCloseAndClear}
           handleClose={this.handleClose}
           fullName={fullName}
           history={this.props.history}
@@ -1546,6 +1595,7 @@ export class SubmissionFormPage1Container extends React.Component {
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           saveSubmissionErrors={this.saveSubmissionErrors}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
+          handleEmployerChange={this.handleEmployerChange}
           lookupSFContact={this.lookupSFContact}
           handleDonationFrequencyChange={this.handleDonationFrequencyChange}
           checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}

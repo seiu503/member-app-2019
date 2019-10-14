@@ -1,5 +1,4 @@
 import update from "immutability-helper";
-import moment from "moment";
 import * as formElements from "../../components/SubmissionFormElements";
 import * as utils from "../../utils";
 
@@ -24,6 +23,7 @@ import {
   GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
   HANDLE_INPUT,
+  CLEAR_FORM,
   SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
 
@@ -31,6 +31,9 @@ import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
   GET_SF_CONTACT_FAILURE,
+  GET_SF_CONTACT_DID_REQUEST,
+  GET_SF_CONTACT_DID_SUCCESS,
+  GET_SF_CONTACT_DID_FAILURE,
   CREATE_SF_CONTACT_REQUEST,
   CREATE_SF_CONTACT_SUCCESS,
   CREATE_SF_CONTACT_FAILURE,
@@ -83,6 +86,8 @@ export const INITIAL_STATE = {
     preferredLanguage: "English",
     employerType: "",
     employerId: "",
+    prefillEmployerId: "",
+    prefillEmployerParentId: "",
     firstName: "",
     lastName: "",
     homeEmail: "",
@@ -144,6 +149,9 @@ function Submission(state = INITIAL_STATE, action) {
         }
       });
 
+    case CLEAR_FORM:
+      return INITIAL_STATE;
+
     case SET_CAPE_OPTIONS:
       return update(state, {
         cape: {
@@ -174,6 +182,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
     case POST_ONE_TIME_PAYMENT_REQUEST:
+    case GET_SF_CONTACT_DID_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -195,7 +204,8 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_SF_CONTACT_SUCCESS:
-      if (action.payload) {
+    case GET_SF_CONTACT_DID_SUCCESS:
+      if (action.payload && action.payload.Account) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
         // attached account/employer type is "Parent Employer" or "Agency"
@@ -241,12 +251,11 @@ function Submission(state = INITIAL_STATE, action) {
         return update(state, {
           salesforceId: { $set: action.payload.Id },
           formPage1: {
-            mm: { $set: moment(action.payload.Birthdate).format("MM") },
-            dd: { $set: moment(action.payload.Birthdate).format("DD") },
-            yyyy: { $set: moment(action.payload.Birthdate).format("YYYY") },
             mobilePhone: { $set: action.payload.MobilePhone },
             employerName: { $set: employerName },
             employerType: { $set: employerType },
+            prefillEmployerId: { $set: action.payload.Account.Id },
+            prefillEmployerParentId: { $set: action.payload.Account.Parent.Id },
             firstName: { $set: action.payload.FirstName },
             lastName: { $set: action.payload.LastName },
             homeStreet: { $set: action.payload.MailingStreet },
@@ -444,6 +453,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_FAILURE:
     case POST_ONE_TIME_PAYMENT_FAILURE:
+    case GET_SF_CONTACT_DID_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
       } else {

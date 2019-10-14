@@ -135,7 +135,10 @@ describe("submission reducer", () => {
           Name: "string",
           Id: "string",
           WS_Subdivision_from_Agency__c: "string",
-          RecordTypeId: "string"
+          RecordTypeId: "string",
+          Parent: {
+            Id: "string"
+          }
         },
         OtherCity: "string",
         OtherState: "or",
@@ -180,13 +183,13 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         formPage1: {
-          mm: "01",
-          dd: "01",
-          yyyy: "1999",
+          mm: "",
           mobilePhone: "123-456-7890",
           employerName: "string",
           employerId: "",
           employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
           firstName: "string",
           lastName: "string",
           homeStreet: "string",
