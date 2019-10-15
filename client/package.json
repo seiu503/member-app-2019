@@ -8,6 +8,7 @@
     "autoprefixer": "^9.5.1",
     "chokidar-cli": "^1.2.2",
     "classnames": "^2.2.6",
+    "env-cmd": "^10.0.1",
     "immutability-helper": "^3.0.0",
     "iso-language-converter": "^1.1.0",
     "material-table": "^1.50.0",
@@ -63,6 +64,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:staging": "env-cmd -f .env.staging yarn node node_modules/react-scripts/scripts/build.js",
     "test": "react-scripts test",
     "test-cov": "react-scripts test --coverage --watchAll=false --coverageDirectory=output/coverage/jest",
     "eject": "react-scripts eject",

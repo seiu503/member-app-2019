@@ -1,5 +1,5 @@
 import { RSAA } from "redux-api-middleware";
-import BASE_URL from "./apiConfig.js";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const ADD_SUBMISSION_REQUEST = "ADD_SUBMISSION_REQUEST";
 export const ADD_SUBMISSION_SUCCESS = "ADD_SUBMISSION_SUCCESS";
@@ -23,6 +23,8 @@ export const GET_ALL_SUBMISSIONS_FAILURE = "GET_ALL_SUBMISSIONS_FAILURE";
 export const HANDLE_INPUT = "HANDLE_INPUT";
 export const CLEAR_FORM = "CLEAR_FORM";
 export const SET_CAPE_OPTIONS = "SET_CAPE_OPTIONS";
+export const SET_PAYMENT_DETAILS_CAPE = "SET_PAYMENT_DETAILS_CAPE";
+export const SET_PAYMENT_DETAILS_DUES = "SET_PAYMENT_DETAILS_DUES";
 export const VERIFY_REQUEST = "VERIFY_REQUEST";
 export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
 export const VERIFY_FAILURE = "VERIFY_FAILURE";
@@ -44,6 +46,20 @@ export function setCAPEOptions({ monthlyOptions, oneTimeOptions }) {
   return {
     type: SET_CAPE_OPTIONS,
     payload: { monthlyOptions, oneTimeOptions }
+  };
+}
+
+export function setPaymentDetailsCAPE({ paymentAdded, cardBrand, cardLast4 }) {
+  return {
+    type: SET_PAYMENT_DETAILS_CAPE,
+    payload: { paymentAdded, cardBrand, cardLast4 }
+  };
+}
+
+export function setPaymentDetailsDues({ paymentAdded, cardBrand, cardLast4 }) {
+  return {
+    type: SET_PAYMENT_DETAILS_DUES,
+    payload: { paymentAdded, cardBrand, cardLast4 }
   };
 }
 

@@ -24,7 +24,9 @@ import {
   SAVE_SALESFORCEID,
   HANDLE_INPUT,
   CLEAR_FORM,
-  SET_CAPE_OPTIONS
+  SET_CAPE_OPTIONS,
+  SET_PAYMENT_DETAILS_CAPE,
+  SET_PAYMENT_DETAILS_DUES
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -113,6 +115,7 @@ export const INITIAL_STATE = {
     cardAddingUrl: "",
     memberShortId: "",
     activeMethodLast4: "",
+    cardBrand: "",
     paymentErrorHold: false,
     unioniseToken: "",
     unioniseRefreshToken: "",
@@ -128,6 +131,7 @@ export const INITIAL_STATE = {
     paymentMethod: "",
     donationFrequency: "Monthly",
     activeMethodLast4: "",
+    cardBrand: "",
     paymentErrorHold: false,
     monthlyOptions: [10, 13, 15, "Other"],
     oneTimeOptions: [15, 20, 25, "Other"],
@@ -157,6 +161,28 @@ function Submission(state = INITIAL_STATE, action) {
         cape: {
           monthlyOptions: { $set: action.payload.monthlyOptions },
           oneTimeOptions: { $set: action.payload.oneTimeOptions }
+        }
+      });
+
+    case SET_PAYMENT_DETAILS_CAPE:
+      return update(state, {
+        cape: {
+          activeMethodLast4: { $set: action.payload.cardLast4 },
+          cardBrand: { $set: action.payload.cardBrand }
+        },
+        formPage1: {
+          paymentMethodAdded: { $set: true }
+        }
+      });
+
+    case SET_PAYMENT_DETAILS_DUES:
+      return update(state, {
+        payment: {
+          activeMethodLast4: { $set: action.payload.cardLast4 },
+          cardBrand: { $set: action.payload.cardBrand }
+        },
+        formPage1: {
+          paymentMethodAdded: { $set: true }
         }
       });
 

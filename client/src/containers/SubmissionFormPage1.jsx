@@ -871,6 +871,9 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.employerName
     );
     console.log(`Agency #: ${employerObject.Agency_Number__c}`);
+    const employerExternalId = employerObject.Agency_Number__c
+      ? employerObject.Agency_Number__c.toString()
+      : "SW001";
 
     const body = {
       firstName: formValues.firstName,
@@ -884,7 +887,7 @@ export class SubmissionFormPage1Container extends React.Component {
       email: formValues.homeEmail,
       cellPhone: formValues.mobilePhone,
       birthDate: birthdate,
-      employerExternalId: employerObject.Agency_Number__c.toString(),
+      employerExternalId: employerExternalId,
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };

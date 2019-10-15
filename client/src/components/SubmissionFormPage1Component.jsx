@@ -56,19 +56,39 @@ export class SubmissionFormPage1Component extends React.Component {
   // check for messages from iframe
   receiveMessage = event => {
     // Do we trust the sender of this message?
-    // ******* change to unioni.se prod url in production **********
-    // MAKE THIS DYNAMIC
-    if (event.origin !== "https://lab.unioni.se") {
+    const unioniseEndpoint = process.env.REACT_APP_UNIONISE_ENDPOINT;
+    if (event.origin !== unioniseEndpoint || !event.data.notification) {
       return;
     }
+    // event.data shape:
+    // notification: {
+    //    cardBrand: "Visa",
+    //    cardLast4: "4242",
+    //    message: "Card successfully added.",
+    //    type: "success"
+    //  }
 
-    if (event.data.notification.type === "success") {
-      console.log("looking for active method last 4");
-      console.log(event);
+    const { type, cardBrand, cardLast4 } = event.data.notification;
+    if (type === "success") {
       // console.log("success");
-      this.props.apiSubmission.handleInput({
-        target: { name: "paymentMethodAdded", value: true }
-      });
+      if (
+        this.props.formValues.capeAmount &&
+        this.props.formValues.donationFrequency
+      ) {
+        console.log("this iframe is for CAPE; setting CAPE details");
+        return this.props.apiSubmission.setPaymentDetailsCAPE(
+          true,
+          cardBrand,
+          cardLast4
+        );
+      } else {
+        console.log("this iframe is for dues; setting dues payment details");
+        return this.props.apiSubmission.setPaymentDetailsDues(
+          true,
+          cardBrand,
+          cardLast4
+        );
+      }
     }
   };
 

@@ -7,9 +7,8 @@ import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiSFActions";
 import * as submissiomReducer from "../../store/reducers/submission";
-import BASE_URL from "../../store/actions/apiConfig.js";
 import { generateSampleSubmission } from "../../../../app/utils/fieldConfigs.js";
-
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();

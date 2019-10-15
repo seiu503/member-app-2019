@@ -1,5 +1,5 @@
 import { RSAA } from "redux-api-middleware";
-import BASE_URL from "./apiConfig.js";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 /* =============================== CONTACTS ================================ */
 

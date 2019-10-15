@@ -301,6 +301,7 @@ describe("submission reducer", () => {
         ...INITIAL_STATE,
         payment: {
           activeMethodLast4: "1234",
+          cardBrand: "",
           paymentErrorHold: false,
           memberShortId: "5678",
           djrEmployerId: "emloyerId",
@@ -328,6 +329,7 @@ describe("submission reducer", () => {
           unioniseToken: "1234",
           unioniseRefreshToken: "5678",
           activeMethodLast4: "",
+          cardBrand: "",
           cardAddingUrl: "",
           djrEmployerId: "",
           memberShortId: "",
@@ -364,6 +366,7 @@ describe("submission reducer", () => {
         ...INITIAL_STATE,
         payment: {
           activeMethodLast4: "",
+          cardBrand: "",
           djrEmployerId: "",
           paymentErrorHold: false,
           unioniseToken: "",

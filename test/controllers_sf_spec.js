@@ -1528,7 +1528,8 @@ suite("sf.ctrl.js", function() {
               info: {
                 paymentId: "123"
               },
-              eventType: "finish"
+              eventType: "finish",
+              category: "payment"
             }
           });
           responseStub = [contactStub];
@@ -1607,7 +1608,8 @@ suite("sf.ctrl.js", function() {
             info: {
               paymentId: "123"
             },
-            eventType: "finish"
+            eventType: "finish",
+            category: "payment"
           }
         });
         try {
@@ -1645,7 +1647,8 @@ suite("sf.ctrl.js", function() {
             info: {
               paymentId: "123"
             },
-            eventType: null
+            eventType: null,
+            category: "payment"
           }
         });
         try {
@@ -1752,7 +1755,8 @@ suite("sf.ctrl.js", function() {
             info: {
               paymentId: "123"
             },
-            eventType: "finish"
+            eventType: "finish",
+            category: "payment"
           }
         });
         try {
