@@ -552,6 +552,13 @@ exports.updateSFCAPE = async (req, res, next) => {
       // console.log("sf.ctrl.js > 591: !eventType");
       return res.status(422).json({ message: "No eventType submitted" });
     }
+    // for unioni.se event types other than 'paymenet', return 200 and
+    // skip updating SF CAPE record
+    if (req.body.category !== "payment") {
+      return res
+        .status(200)
+        .json({ message: "Ignoring non-payment event type" });
+    }
     // check if this is Body shape 2 (request from member app)
   } else if (req.body && req.body.One_Time_Payment_Id__c) {
     one_time_payment_id = req.body.One_Time_Payment_Id__c;
@@ -580,12 +587,16 @@ exports.updateSFCAPE = async (req, res, next) => {
     // this is a request from unioni.se.
     // find the CAPE__c record with matching payment id,
     // then update it with payment status
+    const errors = req.body.errorMessage
+      ? JSON.stringify(req.body.errorMessage)
+      : "";
     try {
       capeResult = await conn
         .sobject("CAPE__c")
         .find({ One_Time_Payment_Id__c: one_time_payment_id })
         .update({
-          One_Time_Payment_Status__c: req.body.eventType
+          One_Time_Payment_Status__c: req.body.eventType,
+          One_Time_Payment_Errors__c: errors
         });
       // console.log(`########################`);
       // console.log('result of sobject.find');

@@ -57,11 +57,14 @@ export class SubmissionFormPage1Component extends React.Component {
   receiveMessage = event => {
     // Do we trust the sender of this message?
     // ******* change to unioni.se prod url in production **********
+    // MAKE THIS DYNAMIC
     if (event.origin !== "https://lab.unioni.se") {
       return;
     }
 
     if (event.data.notification.type === "success") {
+      console.log("looking for active method last 4");
+      console.log(event);
       // console.log("success");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }

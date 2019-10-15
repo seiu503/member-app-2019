@@ -863,8 +863,15 @@ export class SubmissionFormPage1Container extends React.Component {
       });
       externalId = this.props.submission.cape.id;
     }
-
     // console.log(`externalId: ${externalId}`);
+
+    // find employer object
+    const employerObject = findEmployerObject(
+      this.props.submission.employerObjects,
+      formValues.employerName
+    );
+    console.log(`Agency #: ${employerObject.Agency_Number__c}`);
+
     const body = {
       firstName: formValues.firstName,
       lastName: formValues.lastName,
@@ -877,13 +884,11 @@ export class SubmissionFormPage1Container extends React.Component {
       email: formValues.homeEmail,
       cellPhone: formValues.mobilePhone,
       birthDate: birthdate,
-      employerExternalId: "SW001",
-      // ^^ fixed value for dev / staging
-      // this will be Agency number in production
+      employerExternalId: employerObject.Agency_Number__c.toString(),
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };
-    // console.log(body);
+    console.log(body);
 
     if (!cape) {
       body.language = language;
