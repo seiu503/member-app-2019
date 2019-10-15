@@ -362,12 +362,14 @@ function Submission(state = INITIAL_STATE, action) {
       }
 
     case GET_SF_DJR_SUCCESS: {
+      console.log(action.payload);
       return update(state, {
         payment: {
           activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
           paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
           memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
-          djrEmployerId: { $set: action.payload.Employer__c }
+          djrEmployerId: { $set: action.payload.Employer__c },
+          cardBrand: { $set: action.payload.Card_Brand__c }
         },
         djrId: { $set: action.payload.Id || action.payload.id }
       });
@@ -380,7 +382,9 @@ function Submission(state = INITIAL_STATE, action) {
           memberShortId: { $set: action.payload.member_short_id },
           donationAmount: { $set: action.payload.cape_amount },
           paymentMethod: { $set: action.payload.payment_method },
-          donationFrequency: { $set: action.payload.donation_frequency }
+          donationFrequency: { $set: action.payload.donation_frequency },
+          activeMethodLast4: { $set: action.paylad.active_method_last_four },
+          cardBrand: { $set: action.payload.card_brand }
         }
       });
     }

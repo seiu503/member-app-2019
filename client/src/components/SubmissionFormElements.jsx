@@ -662,6 +662,10 @@ export const stylesPage1 = theme => ({
   radioLabel: {
     textAlign: "center"
   },
+  bodyCenter: {
+    width: "100%",
+    textAlign: "center"
+  },
   capeRadioLabel: {
     fontSize: "1.2em",
     color: theme.palette.primary.light,
@@ -1074,17 +1078,6 @@ export const renderCAPERadioGroup = ({
 
 export const blankSig =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
-
-export const retireeDuesCopy =
-  "Monthly dues are $5 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
-
-export const afhDuesCopy = afhDuesRate =>
-  `Monthly dues are $${afhDuesRate.toFixed(
-    2
-  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted on the 10th day of each month from the payment method you provide below.`;
-
-export const commDuesCopy =
-  "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
 
 export const submTableFieldList = [
   { title: "Submission Status", field: "submission_status", hidden: false },

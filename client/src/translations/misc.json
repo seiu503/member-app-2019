@@ -20,12 +20,19 @@
 	"Nhấp vào đây để gõ chữ ký của quý vị",
 	"单击此处键入您的签名"
 ],
-"existingPaymentMethod": [
-	"Your existing payment method on file is the card ending in",
-	"La forma de pago existente registrada es la tarjeta que termina en",
-	"Ваш текущий зарегистрированный способ оплаты — карта с последними цифрами",
-	"Phương thức thanh toán hiện tại trên hồ sơ của quý vị là thẻ với số đuôi",
-	"您登记在案的现有付款方式是用卡支付"
+"existingPaymentMethod1": [
+	"Your existing payment method on file is the",
+	"La forma de pago existente registrada es la",
+	"Ваш существующий способ оплаты в файле",
+	"Phương thức thanh toán hiện tại của bạn trong hồ sơ là",
+	"您现有的付款方式是"
+],
+"existingPaymentMethod2": [
+	"ending in",
+	"que termina en",
+	"кончающийся на",
+	"kết thúc bằng",
+	"结束于"
 ],
 "addPayment": [
 	"Add a payment method",

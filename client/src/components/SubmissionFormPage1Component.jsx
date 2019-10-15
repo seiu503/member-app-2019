@@ -277,7 +277,8 @@ export class SubmissionFormPage1Component extends React.Component {
       Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
       Unioni_se_MemberID__c: payment.memberShortId,
-      Active_Account_Last_4__c: payment.activeMethodLast4
+      Active_Account_Last_4__c: payment.activeMethodLast4,
+      Card_Brand__c: payment.cardBrand
     };
 
     // create a new record if one doesn't exist, OR
@@ -318,11 +319,11 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     // if id exists and employer matches, update existing DJR record
-    // console.log("updateSFDJR");
+    console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
     // console.log("updateSFDJR");
-    // console.log(body);
+    console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {

@@ -463,10 +463,12 @@ export const CAPE = props => {
               formPage1.paymentType === "Card" &&
               validMethod && (
                 <div data-test="component-choose-card">
-                  <Typography component="p" className={classes.body}>
-                    <Translate id="existingPaymentMethod">
-                      Your existing payment method on file is the card ending in
+                  <Typography component="p" className={classes.bodyCenter}>
+                    <Translate id="existingPaymentMethod1">
+                      Your existing payment method on file is the
                     </Translate>{" "}
+                    {payment.cardBrand}{" "}
+                    <Translate id="existingPaymentMethod2">ending in</Translate>{" "}
                     {payment.activeMethodLast4}.
                   </Typography>
                   <Field

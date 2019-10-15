@@ -375,10 +375,12 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
 exports.getSFDJRById = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFDJRById`);
   const { id } = req.params;
-
+  console.log(`sf.ctrl.js > ############# getSFDJRById`);
+  console.log(paymentFieldList);
+  console.log(id);
   const query = `SELECT ${paymentFieldList.join(
     ","
-  )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
+  )}, LastModifiedDate, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\' ORDER BY LastModifiedDate DESC LIMIT 1`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -392,7 +394,7 @@ exports.getSFDJRById = async (req, res, next) => {
     const result = djr.records[0] || {};
     return res.status(200).json(result);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 424: ${err}`);
+    console.error(`sf.ctrl.js > 424: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

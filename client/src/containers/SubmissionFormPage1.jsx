@@ -82,9 +82,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const params = queryString.parse(this.props.location.search);
     // if find both ids, call API to fetch contact info for prefill
     if (params.cId && params.aId) {
-      console.log("found cId & aId");
       const { cId, aId } = params;
-      console.log(cId, aId);
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
         .then(result => {
@@ -354,24 +352,18 @@ export class SubmissionFormPage1Container extends React.Component {
       returnValues.agencyNumber = employerObject.Agency_Number__c;
 
       if (this.props.submission.formPage1.prefillEmployerId) {
-        console.log("found prefillEmployerId in state");
         if (!this.state.prefillEmployerChanged) {
-          console.log(
-            "prefillEmployerChanged -- populating with prefillEmployerId"
-          );
           // if this is a prefill and employer has not been changed manually,
           // return original prefilled employer Id
           // this will be a worksite-level account id in most cases
           returnValues.employerId = this.props.submission.formPage1.prefillEmployerId;
         } else {
-          console.log("populating with employerObject.Id");
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
           // this will be an agency-level employer Id
           returnValues.employerId = employerObject.Id;
         }
       } else {
-        console.log("populating with employerObject.Id");
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
         // this will be an agency-level employer Id
@@ -763,6 +755,7 @@ export class SubmissionFormPage1Container extends React.Component {
       Active_Account_Last_4__c: this.props.submission.payment.activeMethodLast4,
       Card_Brand__c: this.props.submission.payment.cardBrand
     };
+    console.log("is Card_Brand__c populated here?");
     console.log(updates);
     this.props.apiSF
       .updateSFDJR(id, updates)
@@ -1425,8 +1418,8 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
           // console.log(result.type);
-          // console.log('SFDJR record: existing')
-          // console.log(result.payload);
+          console.log("SFDJR record: existing");
+          console.log(result.payload);
 
           const newCardNeeded =
             !result.payload.Active_Account_Last_4__c ||
