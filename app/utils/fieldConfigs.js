@@ -1274,6 +1274,18 @@ const capeTableFields = {
     unioniseFieldName: "activeMethod.last4",
     testingSample: "1234"
   },
+  card_brand: {
+    req: "N",
+    postgresFieldName: "card_brand",
+    clientFieldName: "cardBrand",
+    SFTable: "CAPE__c",
+    SFFieldLabel: "Card Brand",
+    SFAPIName: "Card_Brand__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "Text",
+    unioniseFieldName: "cardBrand",
+    testingSample: "VISA"
+  },
   member_short_id: {
     req: "N",
     postgresFieldName: "member_short_id",
@@ -1354,6 +1366,18 @@ const paymentFields = {
     SQLDataType: "Text",
     unioniseFieldName: "activeMethod.last4",
     testingSample: "1234"
+  },
+  card_brand: {
+    req: "N",
+    postgresFieldName: "card_brand",
+    clientFieldName: "cardBrand",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Card Brand",
+    SFAPIName: "Card_Brand__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "Text",
+    unioniseFieldName: "cardBrand",
+    testingSample: "VISA"
   },
   memberShortId: {
     req: "N",

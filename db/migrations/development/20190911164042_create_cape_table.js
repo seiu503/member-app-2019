@@ -21,6 +21,8 @@ exports.up = function(knex) {
       table.string("donation_frequency"); // optional for initial record generation
       table.string("member_short_id");
       table.decimal("cape_amount"); // optional for initial record generation
+      table.string("card_brand");
+      table.string("active_method_last_four");
       table.string("one_time_payment_id");
       table.string("one_time_payment_status");
       table.string("cape_status");
