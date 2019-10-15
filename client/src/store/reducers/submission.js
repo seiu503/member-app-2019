@@ -165,6 +165,8 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case SET_PAYMENT_DETAILS_CAPE:
+      console.log("SET_PAYMENT_DETAILS_CAPE");
+      console.log(action.payload);
       return update(state, {
         cape: {
           activeMethodLast4: { $set: action.payload.cardLast4 },
@@ -176,6 +178,8 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case SET_PAYMENT_DETAILS_DUES:
+      console.log("SET_PAYMENT_DETAILS_DUES");
+      console.log(action.payload);
       return update(state, {
         payment: {
           activeMethodLast4: { $set: action.payload.cardLast4 },
@@ -231,6 +235,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_DID_SUCCESS:
+      console.log(action.payload);
       if (action.payload && action.payload.Account) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the

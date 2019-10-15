@@ -70,12 +70,13 @@ export class SubmissionFormPage1Component extends React.Component {
 
     const { type, cardBrand, cardLast4 } = event.data.notification;
     if (type === "success") {
-      // console.log("success");
+      console.log("success");
       if (
         this.props.formValues.capeAmount &&
         this.props.formValues.donationFrequency
       ) {
         console.log("this iframe is for CAPE; setting CAPE details");
+        console.log(event.data.notification);
         return this.props.apiSubmission.setPaymentDetailsCAPE(
           true,
           cardBrand,
@@ -83,6 +84,8 @@ export class SubmissionFormPage1Component extends React.Component {
         );
       } else {
         console.log("this iframe is for dues; setting dues payment details");
+        console.log(event.data.notification);
+        console.log(cardBrand, cardLast4);
         return this.props.apiSubmission.setPaymentDetailsDues(
           true,
           cardBrand,
@@ -201,9 +204,11 @@ export class SubmissionFormPage1Component extends React.Component {
       card_adding_url: payment.cardAddingUrl,
       member_id: payment.memberId,
       stripe_customer_id: payment.stripeCustomerId,
-      member_short_id: payment.memberShortId
+      member_short_id: payment.memberShortId,
+      active_method_last_four: payment.activeMethodLast4,
+      card_brand: payment.cardBrand
     };
-    // console.log(updates);
+    console.log(updates);
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {

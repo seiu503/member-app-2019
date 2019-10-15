@@ -49,14 +49,14 @@ export function setCAPEOptions({ monthlyOptions, oneTimeOptions }) {
   };
 }
 
-export function setPaymentDetailsCAPE({ paymentAdded, cardBrand, cardLast4 }) {
+export function setPaymentDetailsCAPE(paymentAdded, cardBrand, cardLast4) {
   return {
     type: SET_PAYMENT_DETAILS_CAPE,
     payload: { paymentAdded, cardBrand, cardLast4 }
   };
 }
 
-export function setPaymentDetailsDues({ paymentAdded, cardBrand, cardLast4 }) {
+export function setPaymentDetailsDues(paymentAdded, cardBrand, cardLast4) {
   return {
     type: SET_PAYMENT_DETAILS_DUES,
     payload: { paymentAdded, cardBrand, cardLast4 }

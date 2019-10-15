@@ -82,10 +82,13 @@ export class SubmissionFormPage1Container extends React.Component {
     const params = queryString.parse(this.props.location.search);
     // if find both ids, call API to fetch contact info for prefill
     if (params.cId && params.aId) {
+      console.log("found cId & aId");
       const { cId, aId } = params;
+      console.log(cId, aId);
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
         .then(result => {
+          console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -756,8 +759,11 @@ export class SubmissionFormPage1Container extends React.Component {
     const updates = {
       Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
       Payment_Method__c: this.props.submission.formPage1.paymentType,
-      AFH_Number_of_Residents__c: medicaidResidents
+      AFH_Number_of_Residents__c: medicaidResidents,
+      Active_Account_Last_4__c: this.props.submission.payment.activeMethodLast4,
+      Card_Brand__c: this.props.submission.payment.cardBrand
     };
+    console.log(updates);
     this.props.apiSF
       .updateSFDJR(id, updates)
       .then(result => {
@@ -1335,7 +1341,9 @@ export class SubmissionFormPage1Container extends React.Component {
       member_short_id,
       one_time_payment_id: oneTimePaymentId,
       cape_amount: donationAmount,
-      donation_frequency: formValues.donationFrequency
+      donation_frequency: formValues.donationFrequency,
+      active_method_last_four: this.props.submission.cape.activeMethodLast4,
+      card_brand: this.props.submission.cape.cardBrand
     };
 
     // update CAPE record in postgres
@@ -1351,8 +1359,13 @@ export class SubmissionFormPage1Container extends React.Component {
       // generate body for this call
       const sfCapeBody = {
         Id: sf_cape_id,
-        One_Time_Payment_Id__c: oneTimePaymentId
+        One_Time_Payment_Id__c: oneTimePaymentId,
+        Active_Account_Last_4__c: this.props.submission.payment
+          .activeMethodLast4,
+        Card_Brand__c: this.props.submission.payment.cardBrand
       };
+
+      console.log(sfCapeBody);
 
       const sfCapeUpdateResult = await this.props.apiSF
         .updateSFCAPE(sfCapeBody)

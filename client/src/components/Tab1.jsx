@@ -36,6 +36,7 @@ export const Tab1 = props => {
     employerTypesList,
     employerList,
     updateEmployersPicklist,
+    handleEmployerChange,
     renderSelect,
     renderTextField,
     renderCheckbox,
@@ -43,6 +44,15 @@ export const Tab1 = props => {
     width,
     verifyCallback
   } = props;
+
+  const employerNameOnChange = () => {
+    handleEmployerChange();
+  };
+
+  const employerTypeOnChange = () => {
+    updateEmployersPicklist();
+    handleEmployerChange();
+  };
 
   return (
     <div data-test="component-tab1" className={classes.sectionContainer}>
@@ -61,7 +71,7 @@ export const Tab1 = props => {
             classes={classes}
             component={renderSelect}
             options={employerTypesList}
-            onChange={updateEmployersPicklist}
+            onChange={employerTypeOnChange}
             labelWidth={100}
           />
           {formValues.employerType !== "" && (
@@ -74,7 +84,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               options={employerList}
-              onChange={props.handleEmployerChange}
+              onChange={employerNameOnChange}
             />
           )}
           {formValues.employerType &&
