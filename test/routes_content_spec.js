@@ -239,7 +239,7 @@ suite("routes : content", function() {
         .put(`/api/content/${id}`)
         .send({ updates: { name: undefined }, userType: adminType })
         .end(function(err, res) {
-          assert.equal(res.status, 404);
+          assert.equal(res.status, 422);
           assert.equal(res.type, "application/json");
           assert.isNotNull(res.body.message);
           done();

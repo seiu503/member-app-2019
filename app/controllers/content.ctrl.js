@@ -24,22 +24,20 @@ const createContent = (req, res, next) => {
         "You do not have permission to do this. Please Consult an administrator."
     });
   }
-  if (content_type && content) {
-    return contentModel
-      .newContent(content_type, content)
-      .then(records => {
-        const record = records[0];
-        res.status(200).json(record);
-      })
-      .catch(err => {
-        // console.log(`content.ctrl.js > 28: ${err}`);
-        res.status(500).json({ message: err.message });
-      });
-  } else {
-    return res
-      .status(500)
-      .json({ message: "There was an error creating the content" });
+  if (!content_type || !content) {
+    return res.status(422).json({ message: "Missing required field." });
   }
+  return contentModel
+    .newContent(content_type, content)
+    .then(records => {
+      const record = records[0];
+      res.locals.testData = record;
+      res.status(200).json(record);
+    })
+    .catch(err => {
+      // console.log(`content.ctrl.js > 28: ${err}`);
+      res.status(500).json({ message: err.message });
+    });
 };
 
 /** Update an existing content record
@@ -57,10 +55,12 @@ const updateContent = (req, res, next) => {
         "You do not have permission to do this. Please Consult an administrator."
     });
   }
-  if (!updates || !Object.keys(updates).length) {
-    return res.status(404).json({ message: "No updates submitted" });
+  if (!id) {
+    return res.status(422).json({ message: "No Id Provided in URL" });
   }
-
+  if (!updates || !Object.keys(updates).length) {
+    return res.status(422).json({ message: "No updates submitted" });
+  }
   return contentModel
     .updateContent(id, updates)
     .then(record => {
@@ -71,6 +71,7 @@ const updateContent = (req, res, next) => {
             "An error occurred while trying to update this content"
         });
       } else {
+        res.locals.testData = record[0];
         return res.status(200).json(record);
       }
     })
@@ -120,7 +121,10 @@ const getContent = (req, res, next) => {
   }
   return contentModel
     .getContent()
-    .then(records => res.status(200).json(records))
+    .then(records => {
+      res.locals.testData = records;
+      return res.status(200).json(records);
+    })
     .catch(err => res.status(404).json({ message: err.message }));
 };
 
@@ -144,7 +148,8 @@ const getContentById = (req, res, next) => {
           .status(404)
           .json({ message: record.message || "Content not found" });
       } else {
-        res.status(200).json(record);
+        res.locals.testData = record;
+        return res.status(200).json(record);
       }
     })
     .catch(err => res.status(404).json({ message: err.message }));
@@ -171,7 +176,8 @@ const getContentByType = (req, res, next) => {
           .status(404)
           .json({ message: records.message || "Content not found" });
       } else {
-        res.status(200).json(records);
+        res.locals.testData = records;
+        return res.status(200).json(records);
       }
     })
     .catch(err => res.status(404).json({ message: err.message }));

@@ -249,7 +249,7 @@ const deleteSubmission = async (req, res, next) => {
  */
 const getSubmissions = (req, res, next) => {
   const userType = req.params.user_type;
-  if (!userType) {
+  if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
       message:
         "You do not have permission to access this content. Please consult an administrator."
@@ -271,7 +271,7 @@ const getSubmissions = (req, res, next) => {
  */
 const getSubmissionById = (req, res, next) => {
   const userType = req.params.user_type;
-  if (!userType) {
+  if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
       message:
         "You do not have permission to do this. Please Consult an administrator."

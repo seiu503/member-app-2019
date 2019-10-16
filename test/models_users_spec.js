@@ -65,7 +65,7 @@ describe("user model tests", () => {
   });
 
   describe("secured routes", () => {
-    let userId;
+    let userId, test_google_id, test_email;
 
     // seed with a user before each test
     before(() => {
@@ -74,6 +74,7 @@ describe("user model tests", () => {
           .createUser(name, email, avatar_url, google_id, google_token, type)
           .then(user => {
             userId = user[0].id;
+            test_google_id = user[0].google_id;
           });
       });
     });
@@ -85,6 +86,7 @@ describe("user model tests", () => {
         avatar_url: updatedAvatar_url
       };
       return users.updateUser(userId, updates).then(results => {
+        test_email = results[0].email;
         assert.equal(results[0].email, updatedEmail);
         assert.equal(results[0].name, updatedName);
         assert.equal(results[0].avatar_url, updatedAvatar_url);
@@ -111,6 +113,27 @@ describe("user model tests", () => {
 
     it("GET gets one user by id", () => {
       return users.getUserById(userId).then(returnedUser => {
+        assert.equal(returnedUser.name, updatedName);
+        assert.equal(returnedUser.email, updatedEmail);
+        assert.equal(returnedUser.avatar_url, updatedAvatar_url);
+        assert.equal(returnedUser.google_token, google_token);
+        assert.equal(returnedUser.type, type);
+      });
+    });
+
+    it("GET gets one user by email", () => {
+      return users.getUserByEmail(test_email).then(returnedUser => {
+        console.log(returnedUser);
+        assert.equal(returnedUser.name, updatedName);
+        assert.equal(returnedUser.email, updatedEmail);
+        assert.equal(returnedUser.avatar_url, updatedAvatar_url);
+        assert.equal(returnedUser.google_token, google_token);
+        assert.equal(returnedUser.type, type);
+      });
+    });
+
+    it("GET gets one user by email", () => {
+      return users.getUserByGoogleId(test_google_id).then(returnedUser => {
         assert.equal(returnedUser.name, updatedName);
         assert.equal(returnedUser.email, updatedEmail);
         assert.equal(returnedUser.avatar_url, updatedAvatar_url);
