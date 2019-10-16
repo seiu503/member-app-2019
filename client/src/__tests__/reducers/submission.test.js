@@ -291,7 +291,8 @@ describe("submission reducer", () => {
         Payment_Error_Hold__c: false,
         Unioni_se_MemberID__c: "5678",
         Employer__c: "emloyerId",
-        Id: "theDjrId"
+        Id: "theDjrId",
+        Card_Brand__c: "Visa"
       };
       const action = {
         type: "GET_SF_DJR_SUCCESS",
@@ -301,7 +302,7 @@ describe("submission reducer", () => {
         ...INITIAL_STATE,
         payment: {
           activeMethodLast4: "1234",
-          cardBrand: "",
+          cardBrand: "Visa",
           paymentErrorHold: false,
           memberShortId: "5678",
           djrEmployerId: "emloyerId",
@@ -448,7 +449,9 @@ describe("submission reducer", () => {
           member_short_id: "456",
           cape_amount: 5,
           payment_method: "Unionise",
-          donation_frequency: "Monthly"
+          donation_frequency: "Monthly",
+          active_method_last_four: "1234",
+          card_brand: "Visa"
         }
       };
       const expectedState = {
@@ -459,7 +462,9 @@ describe("submission reducer", () => {
           memberShortId: "456",
           donationAmount: 5,
           paymentMethod: "Unionise",
-          donationFrequency: "Monthly"
+          donationFrequency: "Monthly",
+          activeMethodLast4: "1234",
+          cardBrand: "Visa"
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);

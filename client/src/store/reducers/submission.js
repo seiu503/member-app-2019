@@ -165,8 +165,8 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case SET_PAYMENT_DETAILS_CAPE:
-      console.log("SET_PAYMENT_DETAILS_CAPE");
-      console.log(action.payload);
+      // console.log("SET_PAYMENT_DETAILS_CAPE");
+      // console.log(action.payload);
       return update(state, {
         cape: {
           activeMethodLast4: { $set: action.payload.cardLast4 },
@@ -178,8 +178,8 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case SET_PAYMENT_DETAILS_DUES:
-      console.log("SET_PAYMENT_DETAILS_DUES");
-      console.log(action.payload);
+      // console.log("SET_PAYMENT_DETAILS_DUES");
+      // console.log(action.payload);
       return update(state, {
         payment: {
           activeMethodLast4: { $set: action.payload.cardLast4 },
@@ -235,7 +235,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_DID_SUCCESS:
-      console.log(action.payload);
+      // console.log(action.payload);
       if (action.payload && action.payload.Account) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
@@ -365,8 +365,7 @@ function Submission(state = INITIAL_STATE, action) {
       }
 
     case GET_SF_DJR_SUCCESS: {
-      console.log("is sf djr id beeing saved to state here??? Id or id?");
-      console.log(action.payload);
+      // console.log(action.payload);
       return update(state, {
         payment: {
           activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
@@ -387,7 +386,7 @@ function Submission(state = INITIAL_STATE, action) {
           donationAmount: { $set: action.payload.cape_amount },
           paymentMethod: { $set: action.payload.payment_method },
           donationFrequency: { $set: action.payload.donation_frequency },
-          activeMethodLast4: { $set: action.paylad.active_method_last_four },
+          activeMethodLast4: { $set: action.payload.active_method_last_four },
           cardBrand: { $set: action.payload.card_brand }
         }
       });

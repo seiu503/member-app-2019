@@ -86,7 +86,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
         .then(result => {
-          console.log(result);
+          // console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -221,7 +221,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleEmployerChange() {
-    console.log("handleEmployerChange");
+    // console.log("handleEmployerChange");
     // track that employer has been manually changed after prefill
     // to send the prefilled value back to SF on submit if no change
     const newState = { ...this.state };
@@ -755,8 +755,8 @@ export class SubmissionFormPage1Container extends React.Component {
       Active_Account_Last_4__c: this.props.submission.payment.activeMethodLast4,
       Card_Brand__c: this.props.submission.payment.cardBrand
     };
-    console.log("is Card_Brand__c populated here?");
-    console.log(updates);
+    // console.log("is Card_Brand__c populated here?");
+    // console.log(updates);
     this.props.apiSF
       .updateSFDJR(id, updates)
       .then(result => {
@@ -869,7 +869,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       formValues.employerName
     );
-    console.log(`Agency #: ${employerObject.Agency_Number__c}`);
+    // console.log(`Agency #: ${employerObject.Agency_Number__c}`);
     const employerExternalId = employerObject.Agency_Number__c
       ? employerObject.Agency_Number__c.toString()
       : "SW001";
@@ -890,7 +890,7 @@ export class SubmissionFormPage1Container extends React.Component {
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };
-    console.log(body);
+    // console.log(body);
 
     if (!cape) {
       body.language = language;
@@ -1040,25 +1040,23 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
-    console.log("toggleCardAddingFrame");
-    console.log(value);
+    // console.log("toggleCardAddingFrame");
+    // console.log(value);
     if (value === "Add new card") {
-      console.log("1045");
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))
         .catch(err => {
           // console.log(err);
           return handleError(err);
         });
-      console.log("1053");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: false }
       });
-      console.log(
-        `paymentMethodAdded 1058: ${
-          this.props.submission.formPage1.paymentMethodAdded
-        }`
-      );
+      // console.log(
+      //   `paymentMethodAdded 1058: ${
+      //     this.props.submission.formPage1.paymentMethodAdded
+      //   }`
+      // );
       return this.props.apiSubmission.handleInput({
         target: { name: "newCardNeeded", value: true }
       });
@@ -1255,18 +1253,18 @@ export class SubmissionFormPage1Container extends React.Component {
         );
       }
     }
-    console.log(
-      `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
-    );
-    console.log(
-      `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
-    );
-    console.log(`donationFrequency: ${formValues.donationFrequency}`);
-    console.log(
-      `paymentMethodAdded: ${
-        this.props.submission.formPage1.paymentMethodAdded
-      }`
-    );
+    // console.log(
+    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    // );
+    // console.log(
+    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    // );
+    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    // console.log(
+    //   `paymentMethodAdded: ${
+    //     this.props.submission.formPage1.paymentMethodAdded
+    //   }`
+    // );
     if (
       (this.props.submission.formPage1.paymentRequired ||
         this.props.submission.formPage1.newCardNeeded ||
@@ -1446,8 +1444,8 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.getSFDJRById(this.props.submission.salesforceId)
         .then(result => {
           // console.log(result.type);
-          console.log("SFDJR record: existing");
-          console.log(result.payload);
+          // console.log("SFDJR record: existing");
+          // console.log(result.payload);
 
           const newCardNeeded =
             !result.payload.Active_Account_Last_4__c ||

@@ -70,22 +70,22 @@ export class SubmissionFormPage1Component extends React.Component {
 
     const { type, cardBrand, cardLast4 } = event.data.notification;
     if (type === "success") {
-      console.log("success");
+      // console.log("success");
       if (
         this.props.formValues.capeAmount &&
         this.props.formValues.donationFrequency
       ) {
-        console.log("this iframe is for CAPE; setting CAPE details");
-        console.log(event.data.notification);
+        // console.log("this iframe is for CAPE; setting CAPE details");
+        // console.log(event.data.notification);
         return this.props.apiSubmission.setPaymentDetailsCAPE(
           true,
           cardBrand,
           cardLast4
         );
       } else {
-        console.log("this iframe is for dues; setting dues payment details");
-        console.log(event.data.notification);
-        console.log(cardBrand, cardLast4);
+        // console.log("this iframe is for dues; setting dues payment details");
+        // console.log(event.data.notification);
+        // console.log(cardBrand, cardLast4);
         return this.props.apiSubmission.setPaymentDetailsDues(
           true,
           cardBrand,
@@ -208,7 +208,7 @@ export class SubmissionFormPage1Component extends React.Component {
       active_method_last_four: payment.activeMethodLast4,
       card_brand: payment.cardBrand
     };
-    console.log(updates);
+    // console.log(updates);
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
@@ -264,12 +264,12 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async createOrUpdateSFDJR() {
     this.props.actions.setSpinner();
-    console.log("createOrUpdateSFDJR");
+    // console.log("createOrUpdateSFDJR");
 
     const { formPage1, payment } = this.props.submission;
 
     const id = this.props.submission.djrId;
-    console.log(`djrId: ${id}`);
+    // console.log(`djrId: ${id}`);
 
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
@@ -290,8 +290,8 @@ export class SubmissionFormPage1Component extends React.Component {
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
-      console.log("createSFDJR");
-      console.log(body);
+      // console.log("createSFDJR");
+      // console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
@@ -321,11 +321,11 @@ export class SubmissionFormPage1Component extends React.Component {
     }
 
     // if id exists and employer matches, update existing DJR record
-    console.log("updateSFDJR");
+    // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
-    console.log("updateSFDJR");
-    console.log(body);
+    // console.log("updateSFDJR");
+    // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
       .then(result => {
@@ -381,18 +381,18 @@ export class SubmissionFormPage1Component extends React.Component {
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    console.log(
-      `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
-    );
-    console.log(
-      `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
-    );
-    console.log(`donationFrequency: ${formValues.donationFrequency}`);
-    console.log(
-      `paymentMethodAdded: ${
-        this.props.submission.formPage1.paymentMethodAdded
-      }`
-    );
+    // console.log(
+    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    // );
+    // console.log(
+    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    // );
+    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    // console.log(
+    //   `paymentMethodAdded: ${
+    //     this.props.submission.formPage1.paymentMethodAdded
+    //   }`
+    // );
     if (
       ((this.props.submission.formPage1.paymentRequired &&
         this.props.submission.formPage1.paymentType === "Card") ||
