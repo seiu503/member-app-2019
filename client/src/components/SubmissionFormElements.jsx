@@ -975,8 +975,11 @@ export const renderRadioGroup = ({
             direction === "vert" ? classes.verticalGroup : classes.horizGroup
           }
           onChange={(event, value) => {
+            console.log(value);
+            console.log(event.target.value);
             input.onChange(value);
             if (additionalOnChange) {
+              console.log("additionalOnChange > 980");
               additionalOnChange(value);
             }
           }}

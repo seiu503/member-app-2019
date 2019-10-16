@@ -31,8 +31,9 @@ export const Tab3 = props => {
   if (payment.cardBrand) {
     console.log(payment.cardBrand);
   }
-  const whichCardOnChange = async () => {
-    await toggleCardAddingFrame();
+  const whichCardOnChange = async value => {
+    console.log(value);
+    await toggleCardAddingFrame(value);
     console.log(`Tab3 36: paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
   };
   if (formValues.employerType) {

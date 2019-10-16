@@ -1041,18 +1041,21 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async toggleCardAddingFrame(value) {
     console.log("toggleCardAddingFrame");
+    console.log(value);
     if (value === "Add new card") {
+      console.log("1045");
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))
         .catch(err => {
           // console.log(err);
           return handleError(err);
         });
+      console.log("1053");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: false }
       });
       console.log(
-        `paymentMethodAdded 1054: ${
+        `paymentMethodAdded 1058: ${
           this.props.submission.formPage1.paymentMethodAdded
         }`
       );

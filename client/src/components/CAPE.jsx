@@ -67,6 +67,11 @@ export const CAPE = props => {
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
   // console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
+  const whichCardOnChange = async value => {
+    console.log(value);
+    await toggleCardAddingFrame(value);
+    console.log(`CAPE 72: paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
+  };
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -482,15 +487,15 @@ export const CAPE = props => {
                     legendClass={classes.horizRadioBold}
                     classes={classes}
                     defaultItem="Use existing"
-                    additionalOnChange={toggleCardAddingFrame}
+                    additionalOnChange={whichCardOnChange}
                     component={formElements.renderRadioGroup}
                     options={["Use existing", "Add new card"]}
                   />
                 </div>
               )}
             {iFrameURL &&
-              ((!checkoff && formPage1.newCardNeeded) ||
-                formValues.donationFrequency === "One-Time") && (
+              ((!checkoff || formValues.donationFrequency === "One-Time") &&
+                formPage1.newCardNeeded) && (
                 <div data-test="component-iframe">
                   <Typography component="h2" className={classes.head}>
                     <Translate id="addPayment">Add a payment method</Translate>
