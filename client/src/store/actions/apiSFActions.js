@@ -48,6 +48,50 @@ export function getSFContactById(id) {
   };
 }
 
+export const GET_SF_CONTACT_DID_REQUEST = "GET_SF_CONTACT_DID_REQUEST";
+export const GET_SF_CONTACT_DID_SUCCESS = "GET_SF_CONTACT_DID_SUCCESS";
+export const GET_SF_CONTACT_DID_FAILURE = "GET_SF_CONTACT_DID_FAILURE";
+
+/*
+ * Function: getSFContactByDoubleId -- get a SF Contact by contactId & accountId
+ * @param {string} cId = Salesforce Contact Id
+ * @param {string} aId = Salesforce Account Id
+ * This action dispatches additional actions as it executes:
+ *   GET_SF_CONTACT_DID_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   GET_SF_CONTACT_DID_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   GET_SF_CONTACT_DID_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+export function getSFContactByDoubleId(cId, aId) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfdid/${cId}/${aId}`,
+      method: "GET",
+      types: [
+        GET_SF_CONTACT_DID_REQUEST,
+        GET_SF_CONTACT_DID_SUCCESS,
+        {
+          type: GET_SF_CONTACT_DID_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  };
+}
+
 /* +++++++++++++++++++++++++++++ CONTACTS: POST ++++++++++++++++++++++++++++ */
 
 export const CREATE_SF_CONTACT_REQUEST = "CREATE_SF_CONTACT_REQUEST";

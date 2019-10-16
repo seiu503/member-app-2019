@@ -61,7 +61,7 @@ export const Tab1 = props => {
             classes={classes}
             component={renderSelect}
             options={employerTypesList}
-            onChange={e => updateEmployersPicklist(e)}
+            onChange={updateEmployersPicklist}
             labelWidth={100}
           />
           {formValues.employerType !== "" && (
@@ -74,6 +74,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               options={employerList}
+              onChange={props.handleEmployerChange}
             />
           )}
           {formValues.employerType &&

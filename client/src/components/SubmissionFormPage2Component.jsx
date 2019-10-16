@@ -1,7 +1,6 @@
 import React from "react";
-import { Field } from "redux-form";
 import PropTypes from "prop-types";
-import { reduxForm } from "redux-form";
+import { reduxForm, Field } from "redux-form";
 import { Translate } from "react-localize-redux";
 import queryString from "query-string";
 
@@ -16,7 +15,6 @@ import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import { validate } from "../utils/validators";
 
-// helper functions these MAY NEED TO BE UPDATED with localization package
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
@@ -135,43 +133,40 @@ export class SubmissionFormPage2Component extends React.Component {
     // console.log("CLEANBODY", cleanBody);
 
     let id = this.props.submission.submissionId;
-    try {
-      const result = await this.props.apiSubmission
-        .updateSubmission(id, cleanBody)
-        .catch(err => {
-          // console.log(err);
-          return formElements.handleError(err);
-        });
-      if (
-        result.type === "UPDATE_SUBMISSION_FAILURE" ||
-        this.props.submission.error
-      ) {
-        // console.log(this.props.submission.error);
-        return formElements.handleError(this.props.submission.error);
-      }
-      this.props.apiSF
-        .updateSFContact(salesforceId, cleanBody)
-        .then(result => {
-          if (
-            result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
-            !this.props.submission.error
-          ) {
-            this.props.reset("submissionPage2");
-            openSnackbar("success", "Your information was updated!");
-            this.props.history.push(`/thankyou`);
-          } else {
-            // console.log(this.props.submission.error);
-            return formElements.handleError(this.props.submission.error);
-          }
-        })
-        .catch(err => {
-          // console.log(err);
-          return formElements.handleError(err);
-        });
-    } catch (err) {
-      // console.log(err);
-      return formElements.handleError(err);
+
+    const result = await this.props.apiSubmission
+      .updateSubmission(id, cleanBody)
+      .catch(err => {
+        // console.log(err);
+        return formElements.handleError(err);
+      });
+
+    if (
+      (result && result.type && result.type === "UPDATE_SUBMISSION_FAILURE") ||
+      this.props.submission.error
+    ) {
+      // console.log(this.props.submission.error);
+      return formElements.handleError(this.props.submission.error);
     }
+
+    this.props.apiSF
+      .updateSFContact(salesforceId, cleanBody)
+      .then(result => {
+        if (
+          result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
+          !this.props.submission.error
+        ) {
+          openSnackbar("success", "Your information was updated!");
+          this.props.history.push(`/thankyou`);
+        } else {
+          // console.log(this.props.submission.error);
+          return formElements.handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        return formElements.handleError(err);
+      });
   };
 
   render() {
@@ -278,7 +273,7 @@ export class SubmissionFormPage2Component extends React.Component {
           </FormGroup>
 
           <FormLabel className={this.classes.formLabel} component="legend">
-            <Translate id="otherSocailIdentities" />
+            <Translate id="otherSocialIdentities" />
           </FormLabel>
           <FormGroup className={this.classes.formGroup}>
             <Field

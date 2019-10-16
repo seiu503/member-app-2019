@@ -3,3 +3,8 @@ os: linux
 files:
   - source: ./
     destination: /home/ubuntu/seiu503Deployed
+hooks:
+  AfterInstall:
+    - location: ec2/scripts/postInstall.sh
+      timeout: 180
+      runas: root
