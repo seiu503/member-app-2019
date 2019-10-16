@@ -1762,7 +1762,7 @@ const generateSFDJRFieldList = () => {
       fieldList.push(paymentFields[key].SFAPIName);
     }
   });
-  console.log(`paymentFieldList: ${fieldList}`);
+  // console.log(`paymentFieldList: ${fieldList}`);
   return fieldList;
 };
 

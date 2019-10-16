@@ -62,7 +62,7 @@ exports.getSFContactById = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact object OR error message.
  */
 exports.getSFContactByDoubleId = async (req, res, next) => {
-  console.log(`sf.ctrl.js > getSFContactByDoubleId`);
+  // console.log(`sf.ctrl.js > getSFContactByDoubleId`);
   const { cId, aId } = req.params;
   if (!cId || !aId) {
     return res.status(422).json({ message: "Missing required fields" });
@@ -74,7 +74,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 75: ${err}`);
+    // console.error(`sf.ctrl.js > 77: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
@@ -88,7 +88,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
     }
     return res.status(200).json(contact.records[0]);
   } catch (err) {
-    console.error(`sf.ctrl.js > 83: ${err}`);
+    // console.error(`sf.ctrl.js > 91: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -375,9 +375,9 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
 exports.getSFDJRById = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFDJRById`);
   const { id } = req.params;
-  console.log(`sf.ctrl.js > ############# getSFDJRById`);
-  console.log(paymentFieldList);
-  console.log(id);
+  // console.log(`sf.ctrl.js > ############# getSFDJRById`);
+  // console.log(paymentFieldList);
+  // console.log(id);
   const query = `SELECT ${paymentFieldList.join(
     ","
   )}, LastModifiedDate, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\' ORDER BY LastModifiedDate DESC LIMIT 1`;

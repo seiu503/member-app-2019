@@ -148,15 +148,15 @@ const createCAPE = async (req, res, next) => {
 const updateCAPE = async (req, res, next) => {
   const updates = req.body;
   const { id } = req.params;
-  console.log(`cape.ctrl.js > 145 - id: ${id}`);
+  // console.log(`cape.ctrl.js > 145 - id: ${id}`);
   // console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
-      // console.log('cape.ctrl.js > 149: !updates');
+      console.log("cape.ctrl.js > 149: !updates");
       return res.status(422).json({ message: "No updates submitted" });
     }
     if (!id) {
-      // console.log('cape.ctrl.js > 153: !id');
+      console.log("cape.ctrl.js > 153: !id");
       return res.status(422).json({ message: "No Id Provided in URL" });
     }
 
@@ -178,8 +178,8 @@ const updateCAPE = async (req, res, next) => {
       console.error(`cape.ctrl.js > 205: ${message}`);
       return res.status(500).json({ message });
     } else {
-      console.log("cape.ctrl.js > 174: returning to client");
-      console.log(updateCAPEResult[0].id);
+      // console.log("cape.ctrl.js > 174: returning to client");
+      // console.log(updateCAPEResult[0].id);
       // saving to res.locals to make id available for testing
       res.locals.cape_id = updateCAPEResult[0].id;
       return res.status(200).json({ cape_id: updateCAPEResult[0].id });
