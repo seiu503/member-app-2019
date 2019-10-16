@@ -31,6 +31,10 @@ export const Tab3 = props => {
   if (payment.cardBrand) {
     console.log(payment.cardBrand);
   }
+  const whichCardOnChange = async () => {
+    await toggleCardAddingFrame();
+    console.log(`Tab3 36: paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
+  };
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
@@ -120,7 +124,7 @@ export const Tab3 = props => {
                 legendClass={classes.horizRadioBold}
                 classes={classes}
                 defaultItem="Use existing"
-                additionalOnChange={toggleCardAddingFrame}
+                additionalOnChange={whichCardOnChange}
                 component={formElements.renderRadioGroup}
                 options={["Use existing", "Add new card"]}
               />

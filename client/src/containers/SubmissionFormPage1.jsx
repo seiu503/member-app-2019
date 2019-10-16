@@ -1040,6 +1040,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
+    console.log("toggleCardAddingFrame");
     if (value === "Add new card") {
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))
@@ -1047,10 +1048,21 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log(err);
           return handleError(err);
         });
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentMethodAdded", value: false }
+      });
+      console.log(
+        `paymentMethodAdded 1054: ${
+          this.props.submission.formPage1.paymentMethodAdded
+        }`
+      );
       return this.props.apiSubmission.handleInput({
         target: { name: "newCardNeeded", value: true }
       });
     }
+    this.props.apiSubmission.handleInput({
+      target: { name: "paymentMethodAdded", value: true }
+    });
     return this.props.apiSubmission.handleInput({
       target: { name: "newCardNeeded", value: false }
     });
@@ -1240,8 +1252,21 @@ export class SubmissionFormPage1Container extends React.Component {
         );
       }
     }
+    console.log(
+      `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    );
+    console.log(
+      `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    );
+    console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    console.log(
+      `paymentMethodAdded: ${
+        this.props.submission.formPage1.paymentMethodAdded
+      }`
+    );
     if (
       (this.props.submission.formPage1.paymentRequired ||
+        this.props.submission.formPage1.newCardNeeded ||
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {

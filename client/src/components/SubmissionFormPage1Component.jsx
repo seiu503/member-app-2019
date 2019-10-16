@@ -381,10 +381,22 @@ export class SubmissionFormPage1Component extends React.Component {
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-
+    console.log(
+      `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    );
+    console.log(
+      `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    );
+    console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    console.log(
+      `paymentMethodAdded: ${
+        this.props.submission.formPage1.paymentMethodAdded
+      }`
+    );
     if (
-      this.props.submission.formPage1.paymentRequired &&
-      this.props.submission.formPage1.paymentType === "Card" &&
+      ((this.props.submission.formPage1.paymentRequired &&
+        this.props.submission.formPage1.paymentType === "Card") ||
+        this.props.submission.formPage1.newCardNeeded) &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
       // console.log("No payment method added");

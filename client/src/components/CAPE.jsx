@@ -489,7 +489,8 @@ export const CAPE = props => {
                 </div>
               )}
             {iFrameURL &&
-              (!checkoff || formValues.donationFrequency === "One-Time") && (
+              ((!checkoff && formPage1.newCardNeeded) ||
+                formValues.donationFrequency === "One-Time") && (
                 <div data-test="component-iframe">
                   <Typography component="h2" className={classes.head}>
                     <Translate id="addPayment">Add a payment method</Translate>
