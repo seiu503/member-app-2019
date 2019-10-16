@@ -264,11 +264,12 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async createOrUpdateSFDJR() {
     this.props.actions.setSpinner();
-    // console.log("createOrUpdateSFDJR");
+    console.log("createOrUpdateSFDJR");
 
     const { formPage1, payment } = this.props.submission;
 
     const id = this.props.submission.djrId;
+    console.log(`djrId: ${id}`);
 
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
@@ -278,7 +279,8 @@ export class SubmissionFormPage1Component extends React.Component {
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
       Unioni_se_MemberID__c: payment.memberShortId,
       Active_Account_Last_4__c: payment.activeMethodLast4,
-      Card_Brand__c: payment.cardBrand
+      Card_Brand__c: payment.cardBrand,
+      Employer__c: formPage1.employerId
     };
 
     // create a new record if one doesn't exist, OR
@@ -288,8 +290,8 @@ export class SubmissionFormPage1Component extends React.Component {
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
-      // console.log("createSFDJR");
-      // console.log(body);
+      console.log("createSFDJR");
+      console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
@@ -322,7 +324,7 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
-    // console.log("updateSFDJR");
+    console.log("updateSFDJR");
     console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)

@@ -278,6 +278,9 @@ function Submission(state = INITIAL_STATE, action) {
           }
           return null;
         });
+        const zip = action.payload.MailingPostalCode
+          ? action.payload.MailingPostalCode.slice(0, 5)
+          : "";
         const paymentRequired = utils.isPaymentRequired(employerType);
         return update(state, {
           salesforceId: { $set: action.payload.Id },
@@ -292,7 +295,7 @@ function Submission(state = INITIAL_STATE, action) {
             homeStreet: { $set: action.payload.MailingStreet },
             homeCity: { $set: action.payload.MailingCity },
             homeState: { $set: action.payload.MailingState },
-            homeZip: { $set: action.payload.MailingPostalCode },
+            homeZip: { $set: zip },
             homeEmail: { $set: action.payload.Home_Email__c },
             preferredLanguage: { $set: action.payload.Preferred_Language__c },
             termsAgree: { $set: false },
@@ -362,6 +365,7 @@ function Submission(state = INITIAL_STATE, action) {
       }
 
     case GET_SF_DJR_SUCCESS: {
+      console.log("is sf djr id beeing saved to state here??? Id or id?");
       console.log(action.payload);
       return update(state, {
         payment: {
