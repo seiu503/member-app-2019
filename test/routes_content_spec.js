@@ -43,7 +43,7 @@ chai.use(chaiHttp);
 let authenticateMock;
 let userStub;
 
-suite("routes : content", function() {
+suite.skip("routes : content", function() {
   after(() => {
     return knexCleaner.clean(db);
   });

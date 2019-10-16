@@ -95,25 +95,24 @@ suite("routes : passport auth", function() {
           done();
         });
     });
-    // I took this test out because jwtCallback now checks for a user in the the req
-    // and returns the error above ^^. So we shouldn't really get here anymore.
-    // test("return 422 status when no error thrown", function (done) {
-    //   const authenticateMockError = sinon
-    //     .stub(passport, "authenticate")
-    //     .returns(() => { });
-    //   authenticateMockError.yields({ message: "error message" }, null);
-    //   chai
-    //     .request(app)
-    //     .post("/api/content/")
-    //     .send({ content_type: "headline", content: "test" })
-    //     .end(function (err, res) {
-    //       assert.equal(res.status, 422);
-    //       assert.equal(res.body.message, "error message");
-    //       assert.isNull(err);
-    //       sinon.restore();
-    //       done();
-    //     });
-    // });
+
+    test("return 422 status when no error thrown", function(done) {
+      const authenticateMockError = sinon
+        .stub(passport, "authenticate")
+        .returns(() => {});
+      authenticateMockError.yields({ message: "error message" }, null);
+      chai
+        .request(app)
+        .post("/api/content/")
+        .send({ content_type: "headline", content: "test" })
+        .end(function(err, res) {
+          assert.equal(res.status, 422);
+          assert.equal(res.body.message, "error message");
+          assert.isNull(err);
+          sinon.restore();
+          done();
+        });
+    });
     test("finds existing user", function(done) {
       const getUserByEmailStub = sinon
         .stub(User, "getUserByEmail")

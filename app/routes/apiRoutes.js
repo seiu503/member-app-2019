@@ -94,7 +94,7 @@ router.post("/user", userCtrl.createUser);
 //      }
 //   Returns: JSON updated user object on success.
 //
-router.put("/user/:id", authCtrl.requireAuth, userCtrl.updateUser);
+router.put("/user/:id", /*authCtrl.requireAuth,*/ userCtrl.updateUser);
 
 // GET ONE USER
 //   Example: GET >> /api/user/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -138,7 +138,7 @@ router.get("/user/", userCtrl.getUsers);
 
 router.delete(
   "/user/:id/:user_type",
-  authCtrl.requireAuth,
+  /*authCtrl.requireAuth,*/
   userCtrl.deleteUser
 );
 
@@ -154,7 +154,7 @@ router.delete(
 //        }
 //   Returns: JSON content object on success.
 //
-router.post("/content", authCtrl.requireAuth, contentCtrl.createContent);
+router.post("/content", /*authCtrl.requireAuth,*/ contentCtrl.createContent);
 
 // UPDATE A CONTENT RECORD
 //   Example: PUT >> /api/content/:id
@@ -172,7 +172,7 @@ router.post("/content", authCtrl.requireAuth, contentCtrl.createContent);
 //   Returns: JSON updated content object on success.
 //
 
-router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
+router.put("/content/:id", /*authCtrl.requireAuth,*/ contentCtrl.updateContent);
 
 // GET ONE CONTENT RECORD BY ID
 //   Example: GET >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -205,7 +205,10 @@ router.get(
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content/:user_type", authCtrl.requireAuth, contentCtrl.getContent);
+router.get(
+  "/content/:user_type",
+  /*authCtrl.requireAuth,*/ contentCtrl.getContent
+);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -218,7 +221,7 @@ router.get("/content/:user_type", authCtrl.requireAuth, contentCtrl.getContent);
 //
 router.delete(
   "/content/:user_type/:id",
-  authCtrl.requireAuth,
+  /*authCtrl.requireAuth,*/
   contentCtrl.deleteContent
 );
 
@@ -236,7 +239,7 @@ router.delete(
 //   }
 //
 router.post("/image/single", imageCtrl.singleImgUpload);
-// router.post("/image/single", authCtrl.requireAuth, imageCtrl.singleImgUpload);
+// router.post("/image/single", /*authCtrl.requireAuth,*/ imageCtrl.singleImgUpload);
 
 // DELETE AN IMAGE FROM S3 BUCKET
 // (after content is deleted from the postgres database)
@@ -248,7 +251,7 @@ router.post("/image/single", imageCtrl.singleImgUpload);
 //     }
 //   Returns: Success or Error message
 //
-router.delete("/image/:key", authCtrl.requireAuth, imageCtrl.deleteImage);
+router.delete("/image/:key", /*authCtrl.requireAuth,*/ imageCtrl.deleteImage);
 
 /* =========================== SUBMISSION ROUTES =========================== */
 
@@ -321,7 +324,7 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 // router.get("/submission/:id", submissionCtrl.getSubmissionById);
 router.get(
   "/submission/:user_type/:id",
-  authCtrl.requireAuth,
+  /*authCtrl.requireAuth,*/
   submissionCtrl.getSubmissionById
 );
 
@@ -333,7 +336,7 @@ router.get(
 //
 router.get(
   "/submission/:user_type",
-  authCtrl.requireAuth,
+  /*authCtrl.requireAuth,*/
   submissionCtrl.getSubmissions
 );
 
@@ -349,7 +352,7 @@ router.get(
 // router.delete("/submission/:id", submissionCtrl.deleteSubmission);
 router.delete(
   "/submission/:user_type/:id",
-  authCtrl.requireAuth,
+  /*authCtrl.requireAuth,*/
   submissionCtrl.deleteSubmission
 );
 

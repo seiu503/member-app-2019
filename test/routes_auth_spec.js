@@ -47,7 +47,7 @@ describe("routes : auth", () => {
         sinon.assert.calledWith(res.status, 401);
         sinon.assert.calledWith(res.json, responseStub);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     });
 
@@ -79,8 +79,9 @@ describe("routes : auth", () => {
       const res = mockRes();
       try {
         await authCtrl.googleCallback(req, res);
+        console.log(res);
+        sinon.assert.calledWith(res.redirect, "http://localhost:3000/login");
         sinon.assert.calledWith(res.status, 422);
-        sinon.assert.calledWith(res.redirect, "/login");
       } catch (err) {
         console.log(err);
       }
