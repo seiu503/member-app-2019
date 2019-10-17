@@ -854,15 +854,22 @@ export class SubmissionFormPage1Container extends React.Component {
     let externalId;
     // console.log(`submissionId: ${this.props.submission.submissionId}`);
     if (this.props.submission.submissionId) {
+      console.log("found submission id");
       externalId = this.props.submission.submissionId;
     } else {
-      await this.createCAPE(capeAmount, capeAmountOther).catch(err => {
-        console.log(err);
-        return handleError(err);
-      });
-      externalId = this.props.submission.cape.id;
+      await this.createCAPE(capeAmount, capeAmountOther)
+        .then(result => {
+          console.log("is capeID here? #########");
+          console.log(result);
+          externalId = this.props.submission.cape.id;
+          console.log(`capeId: ${this.props.submission.cape.id}`);
+        })
+        .catch(err => {
+          console.log(err);
+          return handleError(err);
+        });
     }
-    // console.log(`externalId: ${externalId}`);
+    console.log(`externalId: ${externalId}`);
 
     // find employer object
     const employerObject = findEmployerObject(
@@ -890,7 +897,7 @@ export class SubmissionFormPage1Container extends React.Component {
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };
-    // console.log(body);
+    console.log(body);
 
     if (!cape) {
       body.language = language;
@@ -912,13 +919,13 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        // console.log(result.payload);
+        console.log(result.payload);
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
           result.type === "GET_IFRAME_URL_FAILURE"
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -927,7 +934,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
         return handleError(err);
       });
   }
@@ -998,7 +1005,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // then get the card adding url for the existing account
       return this.getIframeExisting(access_token, memberShortId);
     } else {
-      // console.log("no memberShortId found");
+      console.log("no memberShortId found");
     }
 
     // if we don't have the memberShortId, then we need to create a new
@@ -1151,7 +1158,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    // console.log("generateCAPEBody");
+    console.log("generateCAPEBody");
+    console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -1180,12 +1188,28 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount) {
-      // console.log("no donation amount chosen");
+      console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
-      return this.setState(newState, () => {
-        // console.log(this.state.displayCAPEPaymentFields);
-      });
+
+      // if no id is available to generate the unionise account, need to
+      // proceed with creating an initial/partial cape record
+      // so we can use the returned id to fetch the iframe url
+      if (
+        !this.props.submission.submissionId &&
+        !this.props.submission.cape.id
+      ) {
+        // set state and then proceed with creating cape record
+        this.setState(newState, () => {
+          console.log(this.state.displayCAPEPaymentFields);
+        });
+      } else {
+        // otherwise, return out of this function and don't create the cape
+        // record, wait until user chooses donation amount and frequency
+        return this.setState(newState, () => {
+          console.log(this.state.displayCAPEPaymentFields);
+        });
+      }
     }
     // generate body
     const body = {
@@ -1217,12 +1241,14 @@ export class SubmissionFormPage1Container extends React.Component {
   // create an initial CAPE record in postgres to get returned ID
   // not finalized until payment method added and SFCAPE status updated
   async createCAPE(capeAmount, capeAmountOther) {
+    console.log("createCAPE");
     const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
+    console.log(body);
     if (body) {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)
         .catch(err => {
-          // console.log(err);
+          console.log(err);
           return handleError(err);
         });
 
@@ -1230,11 +1256,11 @@ export class SubmissionFormPage1Container extends React.Component {
         capeResult.type !== "CREATE_CAPE_SUCCESS" ||
         this.props.submission.error
       ) {
-        // console.log(this.props.submission.error);
+        console.log(this.props.submission.error);
         return handleError(this.props.submission.error);
       }
     } else {
-      // console.log("no CAPE body generated");
+      console.log("no CAPE body generated");
     }
   }
 

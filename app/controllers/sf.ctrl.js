@@ -531,7 +531,10 @@ exports.createSFCAPE = async (req, res, next) => {
     handles two different request types, differentiated by shape of body
  *  @param  {Body shape 1}   {
  *            info {
-*               paymentId    : string   Unioni.se one-time payment id
+*               paymentId    : string   Unioni.se one-time payment id,
+*               errorCode    : string   ('InvalidCard', 'CardDeclined',
+*                                         'AccountNotFound',
+*                                         'InsufficientBalance', 'Unknown')
 *             },
 *             eventType      : string   payment status ('finish' || 'fail')
  *           }
