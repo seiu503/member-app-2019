@@ -56,7 +56,12 @@ const defaultProps = {
   formValues: {
     donationFrequency: "Monthly"
   },
-  checkoff: false
+  checkoff: false,
+  displayCAPEPaymentFields: true,
+  capeObject: {
+    monthlyOptions: [""],
+    oneTimeOptions: [""]
+  }
 };
 
 describe("<CAPE />", () => {
@@ -228,6 +233,34 @@ describe("<CAPE />", () => {
       component.simulate("click");
       expect(backMock.mock.calls.length).toBe(1);
     });
+
+    it("calls `whichCardOnChange` on which card radio change", () => {
+      wrapper = shallow(<CAPE {...props} />);
+
+      let toggleCardAddingFrameMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(""));
+
+      wrapper.setProps({
+        toggleCardAddingFrame: toggleCardAddingFrameMock,
+        iFrameURL: "http://test.com",
+        formValues: {
+          donationFrequency: "One-Time"
+        },
+        formPage1: {
+          paymentRequired: true,
+          paymentType: "Card"
+        },
+        payment: {
+          activeMethodLast4: "1234"
+        },
+        displayCAPEPaymentFields: true
+      });
+      wrapper.update();
+      component = findByTestAttr(wrapper, "radio-which-card");
+      component.simulate("change", "Add new card");
+      // expect(toggleCardAddingFrameMock.mock.calls.length).toBe(1);
+    });
   });
   describe("conditional render", () => {
     it("renders alert dialog if capeOpen = `true`", () => {
@@ -288,7 +321,8 @@ describe("<CAPE />", () => {
       handleSubmit = fn => fn;
       const props = {
         formValues: {
-          employerType: "state homecare or personal support"
+          employerType: "state homecare or personal support",
+          donationFrequency: "Monthly"
         }
       };
       wrapper = setup(props);
@@ -316,7 +350,25 @@ describe("<CAPE />", () => {
         capeObject: {
           oneTimeOptions: [1, 2, 3],
           monthlyOptions: [4, 5, 6]
-        }
+        },
+        donationFrequency: "One-Time"
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "field-other-amount").first();
+      expect(component.length).toBe(1);
+    });
+
+    it("renders iframe if donationFrequency === 'One-Time'", () => {
+      const props = {
+        formValues: {
+          capeAmount: "Other"
+        },
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6]
+        },
+        donationFrequency: "One-Time"
       };
       wrapper = setup(props);
       const component = findByTestAttr(wrapper, "field-other-amount").first();

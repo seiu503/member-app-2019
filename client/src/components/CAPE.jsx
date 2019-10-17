@@ -66,11 +66,11 @@ export const CAPE = props => {
   } = props;
 
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  // console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
+  // console.log(`paymentRequired: ${formPage1.paymentRequired}`);
+  // console.log(`validMethod: ${validMethod}`);
+  // console.log(`paymentType: ${formPage1.paymentType}`);
   const whichCardOnChange = async value => {
-    console.log(value);
     await toggleCardAddingFrame(value);
-    console.log(`CAPE 72: paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
   };
 
   return (
@@ -487,7 +487,7 @@ export const CAPE = props => {
                     legendClass={classes.horizRadioBold}
                     classes={classes}
                     defaultItem="Use existing"
-                    additionalOnChange={whichCardOnChange}
+                    additionalOnChange={toggleCardAddingFrame}
                     component={formElements.renderRadioGroup}
                     options={["Use existing", "Add new card"]}
                   />
