@@ -101,9 +101,11 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log(err);
           return handleError(err);
         });
-    } else {
-      // console.log("no id found, no prefill");
-      return;
+    }
+    if (params.cape) {
+      return this.props.apiSubmission.handleInput({
+        target: { name: "newCardNeeded", value: true }
+      });
     }
   }
 
