@@ -78,44 +78,6 @@ const updateUser = async (profile, token, userId, done) => {
     });
 };
 
-// const findExistingUser = async (profile, token, done) => {
-//   const google_id = profile.id;
-//   User.getUserByGoogleId(google_id)
-//     .then(user => {
-//       if (!user) {
-//         return saveNewUser(profile, token, done).catch(err => {
-//           // console.log(`config/auth.js > 45`);
-//           // console.log(err);
-//         });
-//       } else {
-//         return done(null, user);
-//       }
-//     })
-//     .catch(err => {
-//       done(err, null);
-//     });
-// };
-
-// save new user
-
-// const saveNewUser = async (profile, token, done) => {
-//   const google_id = profile.id;
-//   const google_token = token;
-//   const email = profile.emails ? profile.emails[0] : "";
-//   const name = `${profile.name.givenName} ${profile.name.familyName}`;
-//   const avatar_url = profile.picture;
-
-//   // save new user to database
-//   User.createUser(name, email, avatar_url, google_id, google_token)
-//     .then(user => {
-//       return done(null, user);
-//     })
-//     .catch(err => {
-//       console.log(err);
-//       return done(err, null);
-//     });
-// };
-
 // JWT strategy options
 const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -172,8 +134,6 @@ const googleStrategy = new GoogleStrategy(googleOptions, googleLogin);
 module.exports = {
   user,
   googleAuth,
-  // findExistingUser,
-  // saveNewUser,
   findUserByEmail,
   updateUser,
   jwtOptions,
