@@ -37,6 +37,7 @@ import {
   generateCAPEOptions
 } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
+const uuid = require("uuid");
 
 export class SubmissionFormPage1Container extends React.Component {
   constructor(props) {
@@ -182,13 +183,22 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   suggestedAmountOnChange = e => {
-    // call getIframeNew for standalone CAPE when donation amount is set
+    // call getIframeURL for
+    // standalone CAPE when donation amount is set and
+    // member shortId does not yet exist
     // console.log("suggestedAmountOnChange");
     const { formValues } = this.props;
     if (e.target.value === "Other") {
       return;
     }
     const params = queryString.parse(this.props.location.search);
+    const memberShortId =
+      this.props.submission.payment.memberShortId ||
+      this.props.submission.cape.memberShortId;
+    console.log(
+      `is there a memberShortId on suggestedAmountOnChange? ${memberShortId}`
+    );
+
     if (
       (params.cape &&
         utils.isPaymentRequired(
@@ -196,7 +206,7 @@ export class SubmissionFormPage1Container extends React.Component {
         )) ||
       formValues.donationFrequency === "One-Time"
     ) {
-      this.getIframeNew(true, e.target.value).catch(err => {
+      this.getIframeURL(params.cape).catch(err => {
         console.log(err);
       });
     }
@@ -856,20 +866,14 @@ export class SubmissionFormPage1Container extends React.Component {
     if (this.props.submission.submissionId) {
       console.log("found submission id");
       externalId = this.props.submission.submissionId;
+    } else if (this.props.submission.cape.id) {
+      console.log("found cape id");
+      externalId = this.props.submission.cape.id;
     } else {
-      await this.createCAPE(capeAmount, capeAmountOther)
-        .then(result => {
-          console.log("is capeID here? #########");
-          console.log(result);
-          externalId = this.props.submission.cape.id;
-          console.log(`capeId: ${this.props.submission.cape.id}`);
-        })
-        .catch(err => {
-          console.log(err);
-          return handleError(err);
-        });
+      externalId = uuid();
     }
-    console.log(`externalId: ${externalId}`);
+
+    console.log(`################### externalId: ${externalId}`);
 
     // find employer object
     const employerObject = findEmployerObject(
@@ -902,7 +906,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (!cape) {
       body.language = language;
     } else {
-      // console.log("generating body for CAPE iFrame request");
+      console.log("generating body for CAPE iFrame request");
       const donationAmount =
         capeAmount === "Other"
           ? parseFloat(capeAmountOther)
@@ -914,12 +918,17 @@ export class SubmissionFormPage1Container extends React.Component {
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    // console.log(JSON.stringify(body));
+    console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
       .then(result => {
-        console.log(result.payload);
+        // if unionise memberShortId already exists, then try again
+        // and get existing
+        // if (result.payload && result.payload.message.includes("Member with employeeExternalId")) {
+        //   console.log('unionise acct already exists, trying again to fetch new');
+        //   return this.getIframeURL(cape);
+        // }
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -971,7 +980,10 @@ export class SubmissionFormPage1Container extends React.Component {
     // first check if we have an existing unionise id
     // if so, we don't need to create a unionise member account; just fetch a
     // cardAddingURL from existing account
-    let memberShortId = this.props.submission.payment.memberShortId;
+    let memberShortId =
+      this.props.submission.payment.memberShortId ||
+      this.props.submission.cape.memberShortId;
+    console.log(`memberShortId: ${memberShortId}`);
     const { formValues } = this.props;
     let capeAmount;
     if (cape) {
@@ -991,10 +1003,10 @@ export class SubmissionFormPage1Container extends React.Component {
       memberShortId =
         this.props.submission.payment.memberShortId ||
         this.props.submission.cape.memberShortId;
-      // console.log(`memberShortId: ${memberShortId}`);
+      console.log(`memberShortId: ${memberShortId}`);
     }
     if (memberShortId) {
-      // console.log("getting unionise auth token");
+      console.log("found memberShortId, getting unionise auth token");
       // first fetch an auth token to access secured unionise routes
       const access_token = await this.props.apiSF
         .getUnioniseToken()
@@ -1005,7 +1017,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // then get the card adding url for the existing account
       return this.getIframeExisting(access_token, memberShortId);
     } else {
-      console.log("no memberShortId found");
+      console.log("########  no memberShortId found");
     }
 
     // if we don't have the memberShortId, then we need to create a new
@@ -1158,8 +1170,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
-    console.log(capeAmount, capeAmountOther);
+    // console.log("generateCAPEBody");
+    // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -1179,7 +1191,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // set body fields
     const checkoff = !this.props.submission.formPage1.paymentRequired;
     const paymentMethod = checkoff ? "Checkoff" : "Unionise";
-    const donationAmount =
+    let donationAmount =
       capeAmount === "Other"
         ? parseFloat(capeAmountOther)
         : parseFloat(capeAmount);
@@ -1187,29 +1199,14 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(capeAmount);
     // console.log(`donationAmount: ${donationAmount}`);
 
-    if (!donationAmount) {
+    if (!donationAmount || typeof donationAmount !== "number") {
       console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
 
-      // if no id is available to generate the unionise account, need to
-      // proceed with creating an initial/partial cape record
-      // so we can use the returned id to fetch the iframe url
-      if (
-        !this.props.submission.submissionId &&
-        !this.props.submission.cape.id
-      ) {
-        // set state and then proceed with creating cape record
-        this.setState(newState, () => {
-          console.log(this.state.displayCAPEPaymentFields);
-        });
-      } else {
-        // otherwise, return out of this function and don't create the cape
-        // record, wait until user chooses donation amount and frequency
-        return this.setState(newState, () => {
-          console.log(this.state.displayCAPEPaymentFields);
-        });
-      }
+      return this.setState(newState, () => {
+        console.log(this.state.displayCAPEPaymentFields);
+      });
     }
     // generate body
     const body = {
@@ -1231,7 +1228,7 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_legal: this.props.cape_legal.current.innerHTML,
       cape_amount: donationAmount,
       cape_status: "Incomplete",
-      donation_frequency: formValues.donationFrequency
+      donation_frequency: formValues.donationFrequency || "Monthly"
       // member_short_id: this.props.submission.payment.memberShortId
     };
     // console.log(body);
@@ -1241,9 +1238,9 @@ export class SubmissionFormPage1Container extends React.Component {
   // create an initial CAPE record in postgres to get returned ID
   // not finalized until payment method added and SFCAPE status updated
   async createCAPE(capeAmount, capeAmountOther) {
-    console.log("createCAPE");
+    // console.log("createCAPE");
     const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
-    console.log(body);
+    // console.log(body);
     if (body) {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)

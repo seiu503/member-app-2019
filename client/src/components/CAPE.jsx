@@ -69,6 +69,12 @@ export const CAPE = props => {
   // console.log(`paymentRequired: ${formPage1.paymentRequired}`);
   // console.log(`validMethod: ${validMethod}`);
   // console.log(`paymentType: ${formPage1.paymentType}`);
+  // console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
+  // console.log(`iFrameURL && ((!checkoff || formValues.donationFrequency === "One-Time") && formPage1.newCardNeeded)`);
+  // console.log(`iFrameURL: ${iFrameURL}`);
+  // console.log(`checkoff: ${checkoff}`);
+  // console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
+  // console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
   const whichCardOnChange = async value => {
     await toggleCardAddingFrame(value);
   };
