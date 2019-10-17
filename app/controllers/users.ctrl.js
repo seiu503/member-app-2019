@@ -162,13 +162,6 @@ const getUsers = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getUserById = (req, res, next) => {
-  const userType = req.params.user_type;
-  if (!userType || userType !== "admin") {
-    return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an administrator."
-    });
-  }
   return users
     .getUserById(req.params.id)
     .then(user => {

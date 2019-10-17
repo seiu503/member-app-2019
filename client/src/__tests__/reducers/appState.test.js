@@ -24,7 +24,7 @@ describe("appState reducer", () => {
       authToken: "1234",
       loading: false,
       redirect: "",
-      userType: ""
+      userType: undefined
     });
   });
   it("should handle GET_PROFILE_SUCCESS", () => {
@@ -34,11 +34,11 @@ describe("appState reducer", () => {
         payload: { token: "1234" }
       })
     ).toEqual({
-      loggedIn: false,
+      loggedIn: true,
       authToken: "",
       loading: false,
       redirect: "",
-      userType: ""
+      userType: undefined
     });
   });
   it("should handle VALIDATE_TOKEN_FAILURE", () => {
@@ -79,7 +79,7 @@ describe("appState reducer", () => {
       authToken: "",
       loading: false,
       redirect: "",
-      userType: ""
+      userType: undefined
     });
   });
 });

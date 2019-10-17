@@ -265,7 +265,7 @@ export class AppUnconnected extends Component {
     const { loggedIn, userType, loading } = this.props.appState;
     // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
-      <div data- test="component-app" className={classes.appRoot}>
+      <div data-test="component-app" className={classes.appRoot}>
         <ReCaptcha
           ref={this.recaptcha_ref}
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"

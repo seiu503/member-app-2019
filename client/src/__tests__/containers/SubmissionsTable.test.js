@@ -55,7 +55,8 @@ const initialState = {
 const defaultProps = {
   appState: {
     loggedIn: true,
-    authToken: "12345"
+    authToken: "12345",
+    userType: "admin"
   },
   submission: {
     filteredList: [],

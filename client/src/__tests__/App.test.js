@@ -30,7 +30,29 @@ let wrapper;
 const initialState = {
   appState: {
     loggedIn: false,
-    authToken: ""
+    authToken: "",
+    userType: ""
+  },
+  content: {
+    form: {
+      content_type: "",
+      content: ""
+    },
+    loading: false,
+    error: ""
+  }
+};
+
+const initialStateLoggedIn = {
+  appState: {
+    loggedIn: true,
+    authToken: "1234",
+    userType: "admin"
+  },
+  profile: {
+    profile: {
+      id: "1"
+    }
   },
   content: {
     form: {
@@ -43,7 +65,11 @@ const initialState = {
 };
 
 const defaultProps = {
-  appState: { loggedIn: true, authToken: "12345" },
+  appState: {
+    loggedIn: true,
+    authToken: "12345",
+    userType: "admin"
+  },
   profile: {
     profile: {
       id: "12345",
@@ -177,7 +203,7 @@ describe("<App />", () => {
     );
   });
 
-  describe("route tests", () => {
+  describe("Unprotected route tests", () => {
     beforeEach(() => {
       store = storeFactory(initialState);
     });
@@ -189,6 +215,36 @@ describe("<App />", () => {
     test(' "/" path should render SubmissionForm component', () => {
       wrapper = routeSetup("/");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(1);
+    });
+    test(' "/thankyou" path should render ThankYou component', () => {
+      wrapper = routeSetup("/thankyou");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(FormThankYou)).toHaveLength(1);
+    });
+    test(' "/linkrequest" path should render LinkRequest component', () => {
+      wrapper = routeSetup("/linkrequest");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(LinkRequest)).toHaveLength(1);
+    });
+    test(' "/page2?id={id}" path should render SubmissionFormPage2 component', () => {
+      wrapper = routeSetup("/page2?id=12345678");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(SubmissionFormPage2)).toHaveLength(1);
+    });
+    test(' "/page2" path should not render SubmissionFormPage2 component without an id in route parameters', () => {
+      wrapper = routeSetup("/page2");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(1);
+      expect(wrapper.find(SubmissionFormPage2)).toHaveLength(0);
+    });
+    // test(' "/logout" path should render Logout component', () => {
+    //   wrapper = routeSetup('/logout');
+    //   expect(wrapper.find(SubmissionForm)).toHaveLength(0);
+    //   expect(wrapper.find(Logout)).toHaveLength(1);
+    // });
+  });
+  describe("Protected route tests", () => {
+    beforeEach(() => {
+      store = storeFactory(initialStateLoggedIn);
     });
     test(' "/admin" path should render Dashboard component', () => {
       wrapper = routeSetup("/admin");
@@ -212,30 +268,10 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
     });
-    test(' "/thankyou" path should render ThankYou component', () => {
-      wrapper = routeSetup("/thankyou");
-      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
-      expect(wrapper.find(FormThankYou)).toHaveLength(1);
-    });
-    test(' "/linkrequest" path should render LinkRequest component', () => {
-      wrapper = routeSetup("/linkrequest");
-      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
-      expect(wrapper.find(LinkRequest)).toHaveLength(1);
-    });
     test(' "/edit" path should render TextInputForm component', () => {
       wrapper = routeSetup("/edit/1234");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
-    });
-    test(' "/page2?id={id}" path should render SubmissionFormPage2 component', () => {
-      wrapper = routeSetup("/page2?id=12345678");
-      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
-      expect(wrapper.find(SubmissionFormPage2)).toHaveLength(1);
-    });
-    test(' "/page2" path should not render SubmissionFormPage2 component without an id in route parameters', () => {
-      wrapper = routeSetup("/page2");
-      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(1);
-      expect(wrapper.find(SubmissionFormPage2)).toHaveLength(0);
     });
     // test(' "/logout" path should render Logout component', () => {
     //   wrapper = routeSetup('/logout');
