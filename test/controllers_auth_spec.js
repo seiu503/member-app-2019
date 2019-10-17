@@ -53,7 +53,7 @@ let responseStub,
   res = mockRes(),
   req = mockReq();
 
-suite.only("auth.ctrl.js", function() {
+suite("auth.ctrl.js", function() {
   after(() => {
     return knexCleaner.clean(db);
   });

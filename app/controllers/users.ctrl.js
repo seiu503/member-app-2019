@@ -28,13 +28,12 @@ const createUser = (req, res, next) => {
     google_token,
     requestingUserType
   } = req.body;
-  // console.log(`users.ctrl.js > 31`);
   // console.log(req.body);
   if (requestingUserType != "admin" || !requestingUserType) {
     // console.log(`users.ctrl.js > 34`);
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please consult an administrator."
     });
   }
   if (name && email && type) {
@@ -58,6 +57,7 @@ const createUser = (req, res, next) => {
         res.status(500).json({ message });
       });
   } else {
+    console.log(`users.ctrl.js > 61`);
     return res
       .status(500)
       .json({ message: "There was an error creating the user account" });
@@ -80,7 +80,7 @@ const updateUser = (req, res, next) => {
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please consult an administrator."
     });
   }
   if (!id) {
@@ -92,6 +92,7 @@ const updateUser = (req, res, next) => {
   return users
     .updateUser(id, updates)
     .then(user => {
+      // console.log(user);
       if (user.message || !user) {
         return res.status(404).json({
           message:
@@ -102,7 +103,10 @@ const updateUser = (req, res, next) => {
         return res.status(200).json(user);
       }
     })
-    .catch(err => res.status(500).json({ message: err.message }));
+    .catch(err => {
+      console.log(`users.ctrl.js > 107: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
 };
 
 /** Delete user
@@ -114,23 +118,24 @@ const deleteUser = (req, res, next) => {
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please consult an administrator."
     });
   }
   return users
     .deleteUser(req.params.id)
     .then(result => {
       if (result.message === "User deleted successfully") {
-        // console.log(result.message, "119");
         return res.status(200).json({ message: result.message });
       } else {
-        console.log(result.message, "122");
         return res.status(404).json({
           message: "An error occurred and the user was not deleted."
         });
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      console.log(`users.ctrl.js > 139: ${err}`);
+      return res.status(404).json({ message: err.message });
+    });
 };
 
 /** Get all users
@@ -141,12 +146,13 @@ const getUsers = (req, res, next) => {
   if (!userType || userType !== "admin") {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please consult an administrator."
     });
   }
   return users
     .getUsers()
     .then(result => {
+      // console.log(result);
       if (!result || result.message) {
         return res.status(404).json({ message: result.message });
       } else {
@@ -154,7 +160,10 @@ const getUsers = (req, res, next) => {
         return res.status(200).json(result);
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      console.log(`users.ctrl.js > 168: ${err}`);
+      return res.status(404).json({ message: err.message });
+    });
 };
 
 /** Get one user
@@ -166,23 +175,27 @@ const getUserById = (req, res, next) => {
   if (!userType || userType !== "admin") {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please consult an administrator."
     });
   }
   return users
     .getUserById(req.params.id)
     .then(user => {
       if (!user || user.message) {
-        // console.log(user.message);
-        return res
-          .status(404)
-          .json({ message: user.message || "User not found" });
+        let message = "User not found";
+        if (user && user.message) {
+          message = user.message;
+        }
+        return res.status(404).json({ message });
       } else {
         res.locals.testData = user;
         return res.status(200).json(user);
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      console.log(`users.ctrl.js > 196: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
 };
 
 /** Get one user
@@ -194,7 +207,7 @@ const getUserByEmail = (req, res, next) => {
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to do this. Please consult an administrator."
     });
   }
   return users
@@ -207,7 +220,7 @@ const getUserByEmail = (req, res, next) => {
         return res.status(200).json(user);
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => res.status(500).json({ message: err.message }));
 };
 /* ================================ EXPORT ================================= */
 

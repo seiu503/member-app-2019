@@ -9,23 +9,37 @@ const userCtrl = require("../app/controllers/users.ctrl.js");
 const users = require("../db/models/users");
 const { db } = require("../app/config/knex");
 require("../app/config/passport")(passport);
-
-let userBody = {
-  name: `firstname lastname`,
-  email: "fakeemail@test.com",
-  avatar_url: "http://example.com/avatar.png",
-  google_id: 1,
-  google_token: 123,
-  type: "view"
-};
+let email = "fakeemail@test.com",
+  id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e",
+  name = `firstname lastname`,
+  avatar_url = "http://example.com/avatar.png",
+  userBody = {
+    name,
+    email,
+    avatar_url,
+    google_id: 1,
+    google_token: 123,
+    type: "view"
+  },
+  returnedUser = {
+    id,
+    name,
+    email,
+    avatar_url,
+    type: "admin",
+    google_id: "1234",
+    google_token: "5678",
+    created_at: new Date(),
+    updated_at: new Date()
+  };
 let requestingUserType = "admin";
 let responseStub,
-  id,
   next,
   errorMsg,
   dbMethodStub,
   dbMethods = {},
   authenticateMock,
+  userModelStub,
   res = mockRes(),
   req = mockReq();
 
@@ -35,6 +49,14 @@ suite("users.ctrl.js", function() {
   });
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
+    userBody = {
+      name,
+      email,
+      avatar_url,
+      google_id: 1,
+      google_token: 123,
+      type: "view"
+    };
   });
   afterEach(function() {
     authenticateMock.restore();
@@ -72,7 +94,7 @@ suite("users.ctrl.js", function() {
         chai.assert.property(res.locals.testData, "google_id");
         chai.assert.property(res.locals.testData, "google_token");
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -82,14 +104,14 @@ suite("users.ctrl.js", function() {
       });
       responseStub = {
         message:
-          "You do not have permission to do this. Please Consult an administrator."
+          "You do not have permission to do this. Please consult an administrator."
       };
       try {
         await userCtrl.createUser(req, res, next);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -106,23 +128,42 @@ suite("users.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error creating the user";
       dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "createUser").returns(dbMethodStub);
+      userModelStub = sinon.stub(users, "createUser").throws(dbMethodStub);
 
       try {
         await userCtrl.createUser(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.called(dbMethods.createUser);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
         // console.log(err);
+      }
+    });
+
+    test("returns 500 if db model method throws", async function() {
+      errorMsg = `A user with email fakeemail@test.com already exists.`;
+      userModelStub = sinon
+        .stub(users, "createUser")
+        .rejects({
+          message:
+            'duplicate key value violates unique constraint "users_email_unique"'
+        });
+
+      try {
+        await userCtrl.createUser(req, res);
+        assert.called(userModelStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
       }
     });
   });
@@ -154,6 +195,9 @@ suite("users.ctrl.js", function() {
     });
 
     test("updates a user record and returns user to client", async function() {
+      const updateUserStub = sinon
+        .stub(users, "updateUser")
+        .resolves([returnedUser]);
       try {
         await userCtrl.updateUser(req, res, next);
         chai.assert(res.locals.testData.id);
@@ -168,7 +212,7 @@ suite("users.ctrl.js", function() {
         chai.assert.property(res.locals.testData, "created_at");
         chai.assert.property(res.locals.testData, "updated_at");
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -187,7 +231,7 @@ suite("users.ctrl.js", function() {
         assert.calledWith(res.status, 422);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -203,7 +247,7 @@ suite("users.ctrl.js", function() {
         assert.calledWith(res.status, 422);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -213,14 +257,36 @@ suite("users.ctrl.js", function() {
       });
       responseStub = {
         message:
-          "You do not have permission to do this. Please Consult an administrator."
+          "You do not have permission to do this. Please consult an administrator."
       };
       try {
         await userCtrl.updateUser(req, res, next);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
+      }
+    });
+
+    test("returns 404 if no user found", async function() {
+      req = mockReq({
+        body: { updates: userBody, requestingUserType },
+        params: {
+          id
+        }
+      });
+      errorMsg = "An error occurred while trying to update this user";
+      userModelStub = sinon
+        .stub(users, "updateUser")
+        .resolves({ message: errorMsg });
+
+      try {
+        await userCtrl.updateUser(req, res);
+        assert.called(userModelStub);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
       }
     });
 
@@ -232,17 +298,17 @@ suite("users.ctrl.js", function() {
         }
       });
       errorMsg = "An error occurred while trying to update this user";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "updateUser").returns(dbMethodStub);
+      userModelStub = sinon
+        .stub(users, "updateUser")
+        .rejects({ message: errorMsg });
 
       try {
         await userCtrl.updateUser(req, res);
-        assert.called(userModelsStub);
-        assert.called(dbMethods.updateSubmission);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -262,13 +328,10 @@ suite("users.ctrl.js", function() {
       res = mockRes();
     });
 
-    test("gets all user and returns 200", async function() {
-      userBody.name = `other name`;
-      userBody.email = "fakeemail@test.com";
-      userBody.avatar_url = "http://example.com/avatar.png";
-      userBody.google_id = 1;
-      userBody.google_token = 123;
-      userBody.type = "view";
+    test("gets all users and returns 200", async function() {
+      const getUsersStub = sinon
+        .stub(users, "getUsers")
+        .resolves([returnedUser]);
       try {
         await userCtrl.getUsers(req, res);
         assert.calledWith(res.status, 200);
@@ -280,22 +343,23 @@ suite("users.ctrl.js", function() {
           chai.assert.property(result, key);
         });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if user not found", async function() {
       errorMsg = "User not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "getUsers").returns(dbMethodStub);
+      const userModelStub = sinon
+        .stub(users, "getUsers")
+        .resolves({ message: errorMsg });
 
       try {
         await userCtrl.getUsers(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -305,28 +369,29 @@ suite("users.ctrl.js", function() {
       });
       responseStub = {
         message:
-          "You do not have permission to do this. Please Consult an administrator."
+          "You do not have permission to do this. Please consult an administrator."
       };
       try {
         await userCtrl.getUsers(req, res, next);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
-    test("returns 500 if server error", async function() {
+    test("returns 404 if db model method throws", async function() {
       errorMsg = "No User Found";
-      // dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      userModelStub = sinon.stub(users, "getUsers").returns(dbMethodStub);
+      userModelStub = sinon
+        .stub(users, "getUsers")
+        .rejects({ message: errorMsg });
       try {
         await userCtrl.getUsers(req, res);
         assert.called(userModelStub);
-        assert.calledWith(res.status, 500);
+        assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -358,22 +423,23 @@ suite("users.ctrl.js", function() {
           chai.assert.property(result, key);
         });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if user not found", async function() {
       errorMsg = "User not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "getUserById").returns(dbMethodStub);
+      userModelStub = sinon
+        .stub(users, "getUserById")
+        .resolves({ message: errorMsg });
 
       try {
         await userCtrl.getUserById(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -383,30 +449,30 @@ suite("users.ctrl.js", function() {
       });
       responseStub = {
         message:
-          "You do not have permission to do this. Please Consult an administrator."
+          "You do not have permission to do this. Please consult an administrator."
       };
       try {
         await userCtrl.getUserById(req, res);
-        assert.called(userModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "User not found";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "getUserById").returns(dbMethodStub);
+      userModelStub = sinon
+        .stub(users, "getUserById")
+        .rejects({ message: errorMsg });
 
       try {
         await userCtrl.getUserById(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -416,7 +482,7 @@ suite("users.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            email: userBody.email,
+            email,
             user_type: "admin"
           }
         });
@@ -438,60 +504,54 @@ suite("users.ctrl.js", function() {
           chai.assert.property(result, key);
         });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if user not found", async function() {
       errorMsg = "User not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
-      userModelsStub = sinon
-        .stub(users, "getUserByEmail")
-        .returns(dbMethodStub);
+      userModelStub = sinon.stub(users, "getUserByEmail").resolves(null);
 
       try {
         await userCtrl.getUserByEmail(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        user_type: userBody.user_type,
-        params: { userType: "view" }
+        params: { user_type: "view" }
       });
       responseStub = {
         message:
-          "You do not have permission to do this. Please Consult an administrator."
+          "You do not have permission to do this. Please consult an administrator."
       };
       try {
         await userCtrl.getUserByEmail(req, res);
-        assert.called(userModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "User not found";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      userModelsStub = sinon
+      userModelStub = sinon
         .stub(users, "getUserByEmail")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await userCtrl.getUserByEmail(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -522,15 +582,14 @@ suite("users.ctrl.js", function() {
       });
       responseStub = {
         message:
-          "You do not have permission to do this. Please Consult an administrator."
+          "You do not have permission to do this. Please consult an administrator."
       };
       try {
         await userCtrl.deleteUser(req, res, next);
-        assert.called(userModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -542,52 +601,38 @@ suite("users.ctrl.js", function() {
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if user not found", async function() {
-      errorMsg = "User not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "deleteUser").returns(dbMethodStub);
+      errorMsg = "An error occurred and the user was not deleted.";
+      userModelStub = sinon
+        .stub(users, "deleteUser")
+        .resolves({ message: errorMsg });
 
       try {
         await userCtrl.deleteUser(req, res);
-        assert.called(userModelsStub);
+        assert.called(userModelStub);
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
-    test("returns 500 if db model method error", async function() {
+    test("returns 404 if db model method error", async function() {
       errorMsg = "An error occurred and the user was not deleted.";
-      dbMethodStub = sinon.stub().returns(errorMsg);
-      userModelsStub = sinon.stub(users, "deleteUser").returns(dbMethodStub);
+      userModelStub = sinon
+        .stub(users, "deleteUser")
+        .rejects({ message: errorMsg });
       try {
         await userCtrl.deleteUser(req, res, next);
-        assert.called(userModelsStub);
-        assert.calledWith(res.status, 500);
+        assert.called(userModelStub);
+        assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
-      }
-    });
-
-    test("returns 500 if server error", async function() {
-      errorMsg = "An error occurred and the user was not deleted.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      userModelsStub = sinon.stub(users, "deleteUser").returns(dbMethodStub);
-
-      try {
-        await userCtrl.deleteUser(req, res);
-        assert.called(userModelsStub);
-        assert.called(dbMethods.deleteUser);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: errorMsg });
-      } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
