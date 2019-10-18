@@ -3,7 +3,7 @@ import { shallow, mount } from "enzyme";
 import { Provider } from "react-redux";
 
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
-import * as utils from "../../utils/index";
+// import * as utils from "../../utils/index";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import { Tab3, Tab3Form } from "../../components/Tab3";
 
@@ -50,18 +50,10 @@ const defaultProps = {
 
 describe("<Tab3 />", () => {
   // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function
-  // gain access to touched and error to test validation
-  // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
     handleSubmit = fn => fn;
   });
 
-  // create wrapper with default props and assigned values from above as props
-  // const unconnectedSetup = props => {
-  //   const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-  //   return shallow(<Tab3Form {...setUpProps} {...props} />);
-  // };
-  //
   const initialState = {};
 
   store = storeFactory(initialState);
@@ -133,6 +125,32 @@ describe("<Tab3 />", () => {
       component = findByTestAttr(wrapper, "button-back");
       component.simulate("click");
       expect(backMock.mock.calls.length).toBe(1);
+    });
+
+    it("calls `whichCardOnChange` on which card radio change", async () => {
+      wrapper = setup(props);
+
+      let toggleCardAddingFrameMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(""));
+
+      wrapper.setProps({
+        toggleCardAddingFrame: toggleCardAddingFrameMock,
+        iFrameURL: "http://test.com",
+        formValues: {},
+        formPage1: {
+          paymentRequired: true,
+          paymentType: "Card"
+        },
+        payment: {
+          activeMethodLast4: "1234",
+          cardBrand: "Visa"
+        }
+      });
+      wrapper.update();
+      component = findByTestAttr(wrapper, "radio-which-card").first();
+      component.simulate("change", "Add new card");
+      // expect(toggleCardAddingFrameMock.mock.calls.length).toBe(1);
     });
   });
   describe("conditional render", () => {

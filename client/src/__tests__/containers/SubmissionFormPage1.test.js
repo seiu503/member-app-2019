@@ -582,7 +582,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       jest.restoreAllMocks();
     });
     test("`suggestedAmountOnChange` calls getIframeNew if cape && paymentRequired", () => {
-      let getIframeNewMock = jest
+      let getIframeURLMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve({}));
       let props = {
@@ -592,6 +592,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             employerType: "retired"
+          },
+          payment: {
+            memberShortId: "123"
           }
         }
       };
@@ -605,9 +608,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
 
-      wrapper.instance().getIframeNew = getIframeNewMock;
+      wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().suggestedAmountOnChange(fakeEvent);
-      expect(getIframeNewMock.mock.calls.length).toBe(1);
+      expect(getIframeURLMock.mock.calls.length).toBe(1);
     });
 
     test("`suggestedAmountOnChange` does not call getIframeNew if capeAmount ==='Other'", () => {

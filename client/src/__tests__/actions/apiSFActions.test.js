@@ -112,18 +112,18 @@ describe("apiSFActions", () => {
 
     it("GET_IFRAME_URL: Dispatches failure action after failed POST", async () => {
       const body = JSON.stringify({
-        message: "There was an error fetching the contact"
+        message: "Sorry, something went wrong :("
       });
       const init = {
         status: 500,
-        statusText: "There was an error fetching the contact"
+        statusText: "Sorry, something went wrong :("
       };
 
       fetch.mockResponseOnce(body, init);
 
       const result = await store.dispatch(actions.getIframeURL(submissionBody));
       const expectedResult = {
-        payload: { message: "There was an error fetching the contact" },
+        payload: { message: "Sorry, something went wrong :(" },
         type: "GET_IFRAME_URL_FAILURE",
         error: true,
         meta: undefined

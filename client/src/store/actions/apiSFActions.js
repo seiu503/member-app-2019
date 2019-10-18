@@ -662,8 +662,10 @@ export function getIframeURL(body) {
             return res.json().then(data => {
               console.log(data);
               if (
+                data &&
+                data.errors &&
                 data.errors[0].code ===
-                "MemberWithEmployeeExternalIdAlreadyExists"
+                  "MemberWithEmployeeExternalIdAlreadyExists"
               ) {
                 console.log("dup external id in unionise");
                 console.log(data.errors[0].message);

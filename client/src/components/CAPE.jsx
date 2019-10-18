@@ -75,9 +75,6 @@ export const CAPE = props => {
   // console.log(`checkoff: ${checkoff}`);
   // console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
   // console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
-  const whichCardOnChange = async value => {
-    await toggleCardAddingFrame(value);
-  };
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>

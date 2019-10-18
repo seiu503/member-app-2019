@@ -193,10 +193,12 @@ export class SubmissionFormPage1Container extends React.Component {
     if (e.target.value === "Other") {
       return;
     }
+    console.log("196");
     const params = queryString.parse(this.props.location.search);
     const memberShortId =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
+    console.log("201");
     console.log(
       `is there a memberShortId on suggestedAmountOnChange? ${memberShortId}`
     );
@@ -208,6 +210,7 @@ export class SubmissionFormPage1Container extends React.Component {
         )) ||
       formValues.donationFrequency === "One-Time"
     ) {
+      console.log("213");
       this.getIframeURL(params.cape).catch(err => {
         console.log(err);
       });
