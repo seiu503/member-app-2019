@@ -211,6 +211,10 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.donationFrequency === "One-Time"
     ) {
       console.log("213");
+      this.props.apiSubmission.handleInput({
+        target: "paymentRequired",
+        value: true
+      });
       this.getIframeURL(params.cape).catch(err => {
         console.log(err);
       });
@@ -246,6 +250,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleDonationFrequencyChange(frequency) {
     const { formValues } = this.props;
+    const { payment, cape } = this.props.submission;
+    const activeMethodLast4 =
+      payment.activeMethodLast4 || cape.activeMethodLast4;
+    const paymentErrorHold = payment.paymentErrorHold || cape.paymentErrorHold;
+    const validMethod = !!activeMethodLast4 && !paymentErrorHold;
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
       return;
     }
@@ -257,11 +266,19 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(`donationAmount: ${donationAmount}`);
     // console.log(formValues.capeAmount);
     // console.log(formValues.capeAmountOther);
-    if (frequency === "One-Time" && donationAmount) {
+
+    if (!validMethod) {
+      await this.props.apiSubmission.handleInput({
+        target: { name: "newCardNeeded", value: true }
+      });
+    }
+    if (frequency === "One-Time") {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      return this.getIframeURL(true);
+      if (donationAmount) {
+        return this.getIframeURL(true);
+      }
     } else {
       const checkoff = !this.props.submission.formPage1.paymentRequired;
       if (checkoff) {
