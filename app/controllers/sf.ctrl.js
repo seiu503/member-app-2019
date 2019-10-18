@@ -592,16 +592,14 @@ exports.updateSFCAPE = async (req, res, next) => {
     // this is a request from unioni.se.
     // find the CAPE__c record with matching payment id,
     // then update it with payment status
-    const errors = req.body.errorMessage
-      ? JSON.stringify(req.body.errorMessage)
-      : "";
+    const errorCode = req.body.info.errorCode || "";
     try {
       capeResult = await conn
         .sobject("CAPE__c")
         .find({ One_Time_Payment_Id__c: one_time_payment_id })
         .update({
           One_Time_Payment_Status__c: req.body.eventType,
-          One_Time_Payment_Errors__c: errors
+          One_Time_Payment_Errors__c: errorCode
         });
       // console.log(`########################`);
       // console.log('result of sobject.find');

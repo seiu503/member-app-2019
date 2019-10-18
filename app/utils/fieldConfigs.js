@@ -1332,6 +1332,12 @@ const capeTableFields = {
     SFFieldLabel: "One-Time Payment Status",
     SFAPIName: "One_Time_Payment_Status__c",
     SFDataType: "Text"
+  },
+  one_time_payment_errors: {
+    SFTable: "CAPE__c",
+    SFFieldLabel: "One-Time Payment Status",
+    SFAPIName: "One_Time_Payment_Errors__c",
+    SFDataType: "Text"
   }
 };
 

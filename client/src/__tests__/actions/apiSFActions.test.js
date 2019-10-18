@@ -7,11 +7,15 @@ import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiSFActions";
 import * as submissiomReducer from "../../store/reducers/submission";
-import { generateSampleSubmission } from "../../../../app/utils/fieldConfigs.js";
+import {
+  generateSampleSubmission,
+  generateCAPEValidateFrontEnd
+} from "../../../../app/utils/fieldConfigs.js";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
+const capeBody = generateCAPEValidateFrontEnd();
 const id = "0036100001bqfvxAAA";
 
 describe("apiSFActions", () => {
@@ -475,6 +479,78 @@ describe("apiSFActions", () => {
       const expectedResult = {
         payload: { message: "There was an error saving the submission" },
         type: "LOOKUP_SF_CONTACT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("CREATE_SF_CAPE: Dispatches success action after successful POST", async () => {
+      nock(`${BASE_URL}`)
+        .post(`/api/sfCAPE/`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "CREATE_SF_CAPE_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.createSFCAPE(capeBody));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("CREATE_SF_CAPE: Dispatches failure action after failed POST", async () => {
+      const body = JSON.stringify({
+        message: "There was an error creating the CAPE record"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error creating the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.createSFCAPE(capeBody));
+      const expectedResult = {
+        payload: { message: "There was an error creating the CAPE record" },
+        type: "CREATE_SF_CAPE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_SF_CAPE: Dispatches success action after successful PUT", async () => {
+      nock(`${BASE_URL}`)
+        .put(`/api/sfCAPE/`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "UPDATE_SF_CAPE_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(actions.updateSFCAPE(id, capeBody));
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_SF_CAPE: Dispatches failure action after failed PUT", async () => {
+      const body = JSON.stringify({
+        message: "There was an error updating the CAPE record"
+      });
+      const init = {
+        status: 500,
+        statusText: "There was an error updating the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.updateSFCAPE(id, capeBody));
+      const expectedResult = {
+        payload: { message: "There was an error updating the CAPE record" },
+        type: "UPDATE_SF_CAPE_FAILURE",
         error: true,
         meta: undefined
       };

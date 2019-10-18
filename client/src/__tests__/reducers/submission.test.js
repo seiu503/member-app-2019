@@ -64,6 +64,51 @@ describe("submission reducer", () => {
       }
     });
   });
+  it("should handle `setPaymentDetailsCAPE`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_PAYMENT_DETAILS_CAPE",
+        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      cape: {
+        ...INITIAL_STATE.cape,
+        activeMethodLast4: "1234",
+        cardBrand: "Visa"
+      },
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        paymentMethodAdded: true
+      }
+    });
+  });
+  it("should handle `setPaymentDetailsDues`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_PAYMENT_DETAILS_DUES",
+        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      payment: {
+        ...INITIAL_STATE.payment,
+        activeMethodLast4: "1234",
+        cardBrand: "Visa"
+      },
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        paymentMethodAdded: true
+      }
+    });
+  });
+  it("should handle `clearForm`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "CLEAR_FORM"
+      })
+    ).toEqual(INITIAL_STATE);
+  });
 
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {
@@ -160,6 +205,245 @@ describe("submission reducer", () => {
         Online_Campaign_Source__c: "string",
         Signed_Card__c: "string",
         Ethnicity__c: "declined",
+        LGBTQ_ID__c: false,
+        Trans_ID__c: false,
+        Disability_ID__c: false,
+        Deaf_or_hearing_impaired__c: false,
+        Blind_or_visually_impaired__c: false,
+        Gender__c: "female",
+        Gender_Other_Description__c: "",
+        Prounoun__c: "other",
+        Title: "",
+        Hire_Date__c: "2019-11-11",
+        Worksite_manual_entry_from_webform__c: "string",
+        Work_Email__c: "string@string.com",
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
+      };
+      const action = {
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        formPage1: {
+          mm: "",
+          mobilePhone: "123-456-7890",
+          employerName: "string",
+          employerId: "",
+          employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
+          firstName: "string",
+          lastName: "string",
+          homeStreet: "string",
+          homeCity: "string",
+          homeState: "or",
+          homeZip: "12345",
+          immediatePastMemberStatus: "Not a Member",
+          homeEmail: "string@string.com",
+          preferredLanguage: "string",
+          paymentRequired: false,
+          newCardNeeded: false,
+          termsAgree: false,
+          signature: null,
+          textAuthOptOut: false,
+          legalLanguage: "",
+          paymentType: "Card",
+          whichCard: "Use existing",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly"
+        },
+        formPage2: {
+          africanOrAfricanAmerican: false,
+          arabAmericanMiddleEasternOrNorthAfrican: false,
+          asianOrAsianAmerican: false,
+          hispanicOrLatinx: false,
+          nativeAmericanOrIndigenous: false,
+          nativeHawaiianOrOtherPacificIslander: false,
+          white: false,
+          other: false,
+          declined: true,
+          mailToCity: "string",
+          mailToState: "or",
+          mailToStreet: "string",
+          mailToZip: "12345",
+          lgbtqId: false,
+          transId: false,
+          disabilityId: false,
+          deafOrHardOfHearing: false,
+          blindOrVisuallyImpaired: false,
+          gender: "female",
+          genderOtherDescription: "",
+          genderPronoun: "other",
+          jobTitle: "",
+          worksite: "string",
+          workEmail: "string@string.com",
+          workPhone: "123-456-7890",
+          hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFContact edge cases", () => {
+      const payload = {
+        Id: "123",
+        Display_Name_for_forms__c: "string",
+        Account: {
+          CVRSOS__ParentName__c: "string",
+          Name: "string",
+          Id: "string",
+          Sub_Division__c: "string",
+          RecordTypeId: "01261000000ksTuAAI",
+          Parent: {
+            Id: "string"
+          }
+        },
+        OtherCity: "string",
+        OtherState: "or",
+        OtherStreet: "string",
+        OtherPostalCode: "12345",
+        FirstName: "string",
+        LastName: "string",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
+        Preferred_Language__c: "string",
+        MailingStreet: "string",
+        MailingPostalCode: "12345",
+        MailingState: "or",
+        MailingCity: "string",
+        Home_Email__c: "string@string.com",
+        MobilePhone: "123-456-7890",
+        Text_Authorization_Opt_Out__c: false,
+        termsagree__c: true,
+        Signature__c: "string",
+        Online_Campaign_Source__c: "string",
+        Signed_Card__c: "string",
+        Ethnicity__c: "declined",
+        LGBTQ_ID__c: false,
+        Trans_ID__c: false,
+        Disability_ID__c: false,
+        Deaf_or_hearing_impaired__c: false,
+        Blind_or_visually_impaired__c: false,
+        Gender__c: "female",
+        Gender_Other_Description__c: "",
+        Prounoun__c: "other",
+        Title: "",
+        Hire_Date__c: "2019-11-11",
+        Worksite_manual_entry_from_webform__c: "string",
+        Work_Email__c: "string@string.com",
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
+      };
+      const action = {
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        formPage1: {
+          mm: "",
+          mobilePhone: "123-456-7890",
+          employerName: "string",
+          employerId: "",
+          employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
+          firstName: "string",
+          lastName: "string",
+          homeStreet: "string",
+          homeCity: "string",
+          homeState: "or",
+          homeZip: "12345",
+          immediatePastMemberStatus: "Not a Member",
+          homeEmail: "string@string.com",
+          preferredLanguage: "string",
+          paymentRequired: false,
+          newCardNeeded: false,
+          termsAgree: false,
+          signature: null,
+          textAuthOptOut: false,
+          legalLanguage: "",
+          paymentType: "Card",
+          whichCard: "Use existing",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly"
+        },
+        formPage2: {
+          africanOrAfricanAmerican: false,
+          arabAmericanMiddleEasternOrNorthAfrican: false,
+          asianOrAsianAmerican: false,
+          hispanicOrLatinx: false,
+          nativeAmericanOrIndigenous: false,
+          nativeHawaiianOrOtherPacificIslander: false,
+          white: false,
+          other: false,
+          declined: true,
+          mailToCity: "string",
+          mailToState: "or",
+          mailToStreet: "string",
+          mailToZip: "12345",
+          lgbtqId: false,
+          transId: false,
+          disabilityId: false,
+          deafOrHardOfHearing: false,
+          blindOrVisuallyImpaired: false,
+          gender: "female",
+          genderOtherDescription: "",
+          genderPronoun: "other",
+          jobTitle: "",
+          worksite: "string",
+          workEmail: "string@string.com",
+          workPhone: "123-456-7890",
+          hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFContact edge cases 2", () => {
+      const payload = {
+        Id: "123",
+        Display_Name_for_forms__c: "string",
+        Account: {
+          CVRSOS__ParentName__c: "string",
+          Name: "string",
+          Id: "string",
+          RecordTypeId: "01261000000ksTuAAI",
+          Parent: {
+            Id: "string"
+          }
+        },
+        OtherCity: "string",
+        OtherState: "or",
+        OtherStreet: "string",
+        OtherPostalCode: "12345",
+        FirstName: "string",
+        LastName: "string",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
+        Preferred_Language__c: "string",
+        MailingStreet: "string",
+        MailingPostalCode: "12345",
+        MailingState: "or",
+        MailingCity: "string",
+        Home_Email__c: "string@string.com",
+        MobilePhone: "123-456-7890",
+        Text_Authorization_Opt_Out__c: false,
+        termsagree__c: true,
+        Signature__c: "string",
+        Online_Campaign_Source__c: "string",
+        Signed_Card__c: "string",
+        Ethnicity__c: "Declined",
         LGBTQ_ID__c: false,
         Trans_ID__c: false,
         Disability_ID__c: false,
