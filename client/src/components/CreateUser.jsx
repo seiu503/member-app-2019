@@ -100,7 +100,7 @@ export class CreateUserFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container} data-test="create-user-form">
+      <div className={classes.container} data-test="component-create-user-form">
         <Typography
           variant="h2"
           align="center"
