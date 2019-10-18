@@ -97,7 +97,7 @@ function User(state = INITIAL_STATE, action) {
           name: { $set: action.payload.name },
           type: { $set: action.payload.type }
         },
-        dialogOpen: { $set: false },
+        deleteDialogOpen: { $set: false },
         error: { $set: null }
       });
 
@@ -109,7 +109,7 @@ function User(state = INITIAL_STATE, action) {
           type: { $set: action.payload.type }
         },
         currentUser: { $set: action.payload },
-        dialogOpen: { $set: false },
+        deleteDialogOpen: { $set: false },
         error: { $set: null }
       });
 
