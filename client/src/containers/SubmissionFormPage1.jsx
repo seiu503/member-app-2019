@@ -1066,7 +1066,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async toggleCardAddingFrame(value) {
     // console.log("toggleCardAddingFrame");
     // console.log(value);
-    if (value === "Add new card") {
+    if (value === "Add new card" || value === "Card") {
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))
         .catch(err => {
@@ -1088,6 +1088,11 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSubmission.handleInput({
       target: { name: "paymentMethodAdded", value: true }
     });
+    if (value === "Card" || value === "Check") {
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentType", value }
+      });
+    }
     return this.props.apiSubmission.handleInput({
       target: { name: "newCardNeeded", value: false }
     });

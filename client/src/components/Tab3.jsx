@@ -96,6 +96,7 @@ export const Tab3 = props => {
               classes={classes}
               component={formElements.renderRadioGroup}
               options={formElements.paymentTypes}
+              additionalOnChange={toggleCardAddingFrame}
             />
           )}
         {formPage1.paymentRequired &&
@@ -155,10 +156,9 @@ export const Tab3 = props => {
             </Typography>
             <Typography component="p" className={classes.body}>
               <Translate id="payByCheck2">
-                Please mail your payment of $5 (monthly) or $60 (annually) to
-                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
-                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
-                bylaws.
+                {
+                  "Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write \u2018Retiree Dues\u2019 on your check. Dues are set by the SEIU Local 503 bylaws."
+                }
               </Translate>
             </Typography>
           </div>

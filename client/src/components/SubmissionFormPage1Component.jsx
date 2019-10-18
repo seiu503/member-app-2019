@@ -411,6 +411,26 @@ export class SubmissionFormPage1Component extends React.Component {
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
+        // if retiree selected pay by check in dues tab
+        // need to reset paymentMethodAdded and paymentType
+        // bc 'check' is not an option for CAPE
+
+        if (
+          this.props.submission.formPage1.employerType.toLowerCase() ===
+            "retired" &&
+          this.props.submission.formPage1.paymentType === "Check"
+        ) {
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentMethodAdded", value: false }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentType", value: "Card" }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "newCardNeeded", value: true }
+          });
+        }
+
         // redirect to CAPE tab
         if (!this.props.submission.error) {
           this.props.handleTab(this.props.howManyTabs - 1);
