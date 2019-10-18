@@ -14,6 +14,7 @@ export const GET_CAPE_BY_SFID_REQUEST = "GET_CAPE_BY_SFID_REQUEST";
 export const GET_CAPE_BY_SFID_SUCCESS = "GET_CAPE_BY_SFID_SUCCESS";
 export const GET_CAPE_BY_SFID_FAILURE = "GET_CAPE_BY_SFID_FAILURE";
 export const SAVE_SALESFORCEID = "SAVE_SALESFORCEID";
+export const SAVE_SUBMISSIONID = "SAVE_SUBMISSIONID";
 export const UPDATE_SUBMISSION_REQUEST = "UPDATE_SUBMISSION_REQUEST";
 export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
 export const UPDATE_SUBMISSION_FAILURE = "UPDATE_SUBMISSION_FAILURE";
@@ -154,6 +155,13 @@ export function saveSalesforceId(id) {
   return {
     type: SAVE_SALESFORCEID,
     payload: { salesforceId: id }
+  };
+}
+
+export function saveSubmissionId(id) {
+  return {
+    type: SAVE_SUBMISSIONID,
+    payload: { submissionId: id }
   };
 }
 

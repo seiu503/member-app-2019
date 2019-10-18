@@ -1437,7 +1437,9 @@ export class SubmissionFormPage1Container extends React.Component {
 
     if (!standAlone) {
       this.props.history.push(
-        `/page2/?id=${this.props.submission.salesforceId}`
+        `/page2/?cId=${this.props.submission.salesforceId}&sId=${
+          this.props.submission.submissionId
+        }`
       );
     } else {
       openSnackbar(

@@ -22,6 +22,7 @@ import {
   GET_CAPE_BY_SFID_SUCCESS,
   GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
+  SAVE_SUBMISSIONID,
   HANDLE_INPUT,
   CLEAR_FORM,
   SET_CAPE_OPTIONS,
@@ -504,6 +505,11 @@ function Submission(state = INITIAL_STATE, action) {
     case SAVE_SALESFORCEID:
       return update(state, {
         salesforceId: { $set: action.payload.salesforceId }
+      });
+
+    case SAVE_SUBMISSIONID:
+      return update(state, {
+        submissionId: { $set: action.payload.submissionId }
       });
 
     default:

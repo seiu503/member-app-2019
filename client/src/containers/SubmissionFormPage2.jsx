@@ -17,20 +17,24 @@ export class SubmissionFormPage2Container extends React.Component {
   classes = this.props.classes;
 
   componentDidMount() {
-    // check state for contact id from page1
-    let id = this.props.submission.salesforceId;
-    if (!id) {
-      // check for contact id in query string
-      const params = queryString.parse(this.props.location.search);
-      if (params.id) {
-        id = params.id;
-      }
+    // check state for ids from page1
+    let cId = this.props.submission.salesforceId,
+      sId = this.props.submission.submissionId;
+    // check for ids in query string
+    const params = queryString.parse(this.props.location.search);
+    if (!cId && params.cId) {
+      cId = params.cId;
+      this.props.apiSubmission.saveSalesforceId(cId);
+    }
+    if (!sId && params.sId) {
+      sId = params.sId;
+      this.props.apiSubmission.saveSubmissionId(sId);
     }
 
-    // if find contact id, call API to fetch contact info for prefill
-    if (id) {
+    // if find cId, call API to fetch contact info for prefill
+    if (cId) {
       this.props.apiSF
-        .getSFContactById(id)
+        .getSFContactById(cId)
         .then(result => {
           // console.log("result.payload", result.payload);
         })
