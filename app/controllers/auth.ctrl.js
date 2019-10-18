@@ -55,19 +55,19 @@ exports.googleCallback = (req, res) => {
   }
 };
 
-const jwtCallback = (req, res, next) => {
+exports.jwtCallback = (req, res, next) => {
   // console.log("auth.ctrl.js > 59: jwtCallback");
   if (req.authError) {
     console.log(`auth.ctrl.js > 61: ${req.authError}`);
-    res.status(422).json({
+    return res.status(422).json({
       success: false,
-      message: `jwt auth failed: {req.authError}`,
+      message: `jwt auth failed: ${req.authError}`,
       error: req.authError
     });
   }
   if (req.user && req.user.err) {
     console.log(`auth.ctrl.js > 69: ${req.user.err}`);
-    res.status(422).json({
+    return res.status(422).json({
       success: false,
       message: `jwt auth failed: ${req.user.err}`,
       error: req.user.err
@@ -75,7 +75,7 @@ const jwtCallback = (req, res, next) => {
   }
   if (!req.user) {
     console.log(`auth.ctrl.js > 77: no user found`);
-    return res.status(422).send({
+    return res.status(422).json({
       success: false,
       message: "Sorry, you must log in to view this page."
     });
@@ -94,7 +94,7 @@ const jwtCallback = (req, res, next) => {
 };
 
 exports.requireAuth = async (req, res, next) => {
-  // console.log(`auth.ctrl.js > 97: requireAuth`);
+  console.log(`auth.ctrl.js > 97: requireAuth`);
   await passport.authenticate("jwt", { session: false }, (token, done) =>
     jwtCallback(req, res, next)
   )(req, res, next);
