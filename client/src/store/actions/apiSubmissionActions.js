@@ -29,6 +29,9 @@ export const SET_PAYMENT_DETAILS_DUES = "SET_PAYMENT_DETAILS_DUES";
 export const VERIFY_REQUEST = "VERIFY_REQUEST";
 export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
 export const VERIFY_FAILURE = "VERIFY_FAILURE";
+export const LOAD_RECAPTCHA_REQUEST = "LOAD_RECAPTCHA_REQUEST";
+export const LOAD_RECAPTCHA_SUCCESS = "LOAD_RECAPTCHA_SUCCESS";
+export const LOAD_RECAPTCHA_FAILURE = "LOAD_RECAPTCHA_FAILURE";
 
 export function handleInput({ target: { name, value } }) {
   return {
@@ -190,6 +193,34 @@ export function verify(token, ip_address) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ token, ip_address })
+    }
+  };
+}
+
+export function loadRecaptchaScript() {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/recaptcha`,
+      method: "GET",
+      types: [
+        LOAD_RECAPTCHA_REQUEST,
+        LOAD_RECAPTCHA_SUCCESS,
+        {
+          type: LOAD_RECAPTCHA_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
   };
 }

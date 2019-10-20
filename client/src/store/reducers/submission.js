@@ -282,6 +282,9 @@ function Submission(state = INITIAL_STATE, action) {
         const zip = action.payload.MailingPostalCode
           ? action.payload.MailingPostalCode.slice(0, 5)
           : "";
+        const parentId = action.payload.Account.Parent
+          ? action.payload.Account.Parent.Id
+          : null;
         const paymentRequired = utils.isPaymentRequired(employerType);
         return update(state, {
           salesforceId: { $set: action.payload.Id },
@@ -290,7 +293,7 @@ function Submission(state = INITIAL_STATE, action) {
             employerName: { $set: employerName },
             employerType: { $set: employerType },
             prefillEmployerId: { $set: action.payload.Account.Id },
-            prefillEmployerParentId: { $set: action.payload.Account.Parent.Id },
+            prefillEmployerParentId: { $set: parentId },
             firstName: { $set: action.payload.FirstName },
             lastName: { $set: action.payload.LastName },
             homeStreet: { $set: action.payload.MailingStreet },

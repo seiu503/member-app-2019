@@ -102,11 +102,6 @@ export class SubmissionFormPage1Container extends React.Component {
           return handleError(err);
         });
     }
-    if (params.cape) {
-      return this.props.apiSubmission.handleInput({
-        target: { name: "newCardNeeded", value: true }
-      });
-    }
   }
 
   handleOpen() {
@@ -193,15 +188,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (e.target.value === "Other") {
       return;
     }
-    console.log("196");
     const params = queryString.parse(this.props.location.search);
-    const memberShortId =
-      this.props.submission.payment.memberShortId ||
-      this.props.submission.cape.memberShortId;
-    console.log("201");
-    console.log(
-      `is there a memberShortId on suggestedAmountOnChange? ${memberShortId}`
-    );
 
     if (
       (params.cape &&
@@ -210,13 +197,17 @@ export class SubmissionFormPage1Container extends React.Component {
         )) ||
       formValues.donationFrequency === "One-Time"
     ) {
-      console.log("213");
       this.props.apiSubmission.handleInput({
         target: "paymentRequired",
         value: true
       });
       this.getIframeURL(params.cape).catch(err => {
         console.log(err);
+      });
+    } else {
+      this.props.apiSubmission.handleInput({
+        target: "paymentRequired",
+        value: false
       });
     }
   };
@@ -235,6 +226,9 @@ export class SubmissionFormPage1Container extends React.Component {
       // hide iframe if already rendered if change to checkoff
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: false }
+      });
+      await this.props.apiSubmission.handleInput({
+        target: { name: "newCardNeeded", value: false }
       });
     }
   }
@@ -809,24 +803,34 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async verifyRecaptchaScore() {
     // refresh token
-    await this.props.refreshRecaptcha();
-    // window.grecaptcha.reset();
+    await this.props.recaptcha.execute();
 
     // then verify
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
-    const result = await this.props.apiSubmission
-      .verify(token, ip_address)
-      .catch(err => {
-        // console.log("recaptcha failed");
-        // console.log(err);
-        return handleError(
-          "ReCaptcha validation failed, please reload the page and try again."
-        );
-      });
-
-    // console.log(`recaptcha score: ${result.payload.score}`);
-    return result.payload.score;
+    console.log(token);
+    (async () => {
+      console.log("waiting for token");
+      while (!token) {
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+    })();
+    let result;
+    if (token) {
+      result = await this.props.apiSubmission
+        .verify(token, ip_address)
+        .catch(err => {
+          // console.log("recaptcha failed");
+          // console.log(err);
+          return handleError(
+            "ReCaptcha verification failed, please reload the page and try again."
+          );
+        });
+      console.log(`832 recaptcha score: ${result.payload.score}`);
+      return result.payload.score;
+    } else {
+      console.log("no token");
+    }
   }
 
   async getIframeExisting() {
@@ -1294,14 +1298,19 @@ export class SubmissionFormPage1Container extends React.Component {
 
     if (standAlone) {
       // verify recaptcha score
-      const score = await this.verifyRecaptchaScore();
-      // console.log(score);
-      if (!score || score <= 0.5) {
-        // console.log(`recaptcha failed: ${score}`);
-        return handleError(
-          "ReCaptcha validation failed, please reload the page and try again."
-        );
-      }
+      await this.verifyRecaptchaScore()
+        .then(score => {
+          // console.log(`score: ${score}`);
+          if (!score || score <= 0.5) {
+            // console.log(`recaptcha failed: ${score}`);
+            return this.props.handleError(
+              "Sorry, your session timed out, please reload the page and try again."
+            );
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
     // console.log(
     //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`

@@ -36,10 +36,10 @@ export class SubmissionFormPage2Container extends React.Component {
       this.props.apiSF
         .getSFContactById(cId)
         .then(result => {
-          // console.log("result.payload", result.payload);
+          console.log("result.payload", result.payload);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
           handleError(err);
         });
     } else {

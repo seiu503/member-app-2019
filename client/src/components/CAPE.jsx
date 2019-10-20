@@ -2,7 +2,7 @@ import React from "react";
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
-import { ReCaptcha } from "react-recaptcha-v3";
+// import { ReCaptcha } from "react-recaptcha-v3";
 import { Translate } from "react-localize-redux";
 
 import AlertDialog from "./AlertDialog";
@@ -540,19 +540,18 @@ export const CAPE = props => {
             <Translate id="capeLegal6" />
           </p>
         </div>
-        {standAlone && (
-          <ReCaptcha
-            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-            action="standalone_cape_submit"
-            verifyCallback={verifyCallback}
-          />
-        )}
         <ButtonWithSpinner
           type="submit"
           color="primary"
-          className={classes.formButton}
+          className={
+            standAlone
+              ? `${classes.formButton} g-recaptcha`
+              : classes.formButton
+          }
           variant="contained"
           loading={loading}
+          data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+          data-callback={verifyCallback}
         >
           <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>
