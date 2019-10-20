@@ -10,7 +10,6 @@ import {
   reset,
   change
 } from "redux-form";
-// import { loadReCaptcha } from "react-recaptcha-v3";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -802,15 +801,15 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    // refresh token
+    // fetch token
     await this.props.recaptcha.execute();
 
     // then verify
     const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
-    console.log(token);
+
+    // check for token every 200ms until returned to avoid race condition
     (async () => {
-      console.log("waiting for token");
       while (!token) {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
@@ -826,10 +825,8 @@ export class SubmissionFormPage1Container extends React.Component {
             "ReCaptcha verification failed, please reload the page and try again."
           );
         });
-      console.log(`832 recaptcha score: ${result.payload.score}`);
+      // console.log(`recaptcha score: ${result.payload.score}`);
       return result.payload.score;
-    } else {
-      console.log("no token");
     }
   }
 
@@ -1568,12 +1565,6 @@ export class SubmissionFormPage1Container extends React.Component {
       const newState = { ...this.state };
       newState.howManyTabs = 3;
       this.setState(newState);
-    }
-
-    // submit validation: recaptcha
-    const reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
-    if (!reCaptchaValue) {
-      // console.log("no reCaptcha value");
     }
 
     // check if SF contact id already exists (prefill case)

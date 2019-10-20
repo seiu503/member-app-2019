@@ -5,7 +5,6 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
-// import { loadReCaptcha, ReCaptcha } from "react-recaptcha-v3";
 import Recaptcha from "react-google-invisible-recaptcha";
 
 import CssBaseline from "@material-ui/core/CssBaseline";

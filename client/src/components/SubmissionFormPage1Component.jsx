@@ -365,7 +365,7 @@ export class SubmissionFormPage1Component extends React.Component {
         if (!score || score <= 0.5) {
           // console.log(`recaptcha failed: ${score}`);
           return this.props.handleError(
-            "Sorry, your session timed out, please reload the page and try again."
+            "ReCaptcha validation failed, please reload the page and try again."
           );
         }
       })
