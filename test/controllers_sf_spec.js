@@ -246,100 +246,6 @@ suite("sf.ctrl.js", function() {
     });
   });
 
-  suite("sfCtrl > deleteSFContactById", function() {
-    beforeEach(function() {
-      return new Promise(resolve => {
-        req = mockReq({
-          params: {
-            id: "123456789"
-          }
-        });
-        responseStub = { message: "Successfully deleted contact" };
-        jsforceSObjectDestroyStub = sinon.stub();
-        loginStub = sinon.stub();
-        jsforceStub = {
-          login: loginStub,
-          sobject: sinon.stub().returns({
-            destroy: jsforceSObjectDestroyStub
-          })
-        };
-        resolve();
-      });
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    test("deletes a single contact by Id", async function() {
-      responseStub = { message: "Successfully deleted contact" };
-      jsforceSObjectDestroyStub = sinon.stub();
-      loginStub = sinon.stub();
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({
-          destroy: jsforceSObjectDestroyStub
-        })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
-      loginStub = sinon.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if sobject destroy fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
-      jsforceSObjectDestroyStub = sinon.stub().throws(new Error(sobjectError));
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({ destroy: jsforceSObjectDestroyStub })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.sobject, "Contact");
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: sobjectError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
   suite("sfCtrl > createSFContact", function() {
     beforeEach(function() {
       return new Promise(resolve => {
@@ -511,8 +417,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("returns a message if matching contact not found", async function() {
-      let message =
-        "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help.";
+      let message = "No matching record found.";
       queryStub = sinon.stub().returns({ totalSize: 0 });
       jsforceStub.query = queryStub;
       try {
@@ -846,100 +751,6 @@ suite("sf.ctrl.js", function() {
 
       try {
         await sfCtrl.createSFOnlineMemberApp(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.sobject, "OnlineMemberApp__c");
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: sobjectError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
-  suite("sfCtrl > deleteSFOnlineMemberApp", function() {
-    beforeEach(function() {
-      return new Promise(resolve => {
-        req = mockReq({
-          params: {
-            id: "123456789"
-          }
-        });
-        responseStub = { message: "Successfully deleted contact" };
-        jsforceSObjectDestroyStub = sinon.stub();
-        loginStub = sinon.stub();
-        jsforceStub = {
-          login: loginStub,
-          sobject: sinon.stub().returns({
-            destroy: jsforceSObjectDestroyStub
-          })
-        };
-        resolve();
-      });
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    test("deletes an OMA by Id", async function() {
-      responseStub = { message: "Successfully deleted Online Member App" };
-      jsforceSObjectDestroyStub = sinon.stub();
-      loginStub = sinon.stub();
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({
-          destroy: jsforceSObjectDestroyStub
-        })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFOnlineMemberApp(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
-      loginStub = sinon.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFOnlineMemberApp(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if sobject destroy fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
-      jsforceSObjectDestroyStub = sinon.stub().throws(new Error(sobjectError));
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({ destroy: jsforceSObjectDestroyStub })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFOnlineMemberApp(req, res);
         assert.called(jsforceConnectionStub);
         assert.called(jsforceStub.login);
         assert.calledWith(jsforceStub.sobject, "OnlineMemberApp__c");

@@ -562,7 +562,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`saveSignature` handles error if handleUpload fails", async function() {
       handleUploadMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error("Error")));
+        .mockImplementation(() => Promise.reject("Error"));
 
       formElements.handleError = jest.fn();
 
@@ -1031,6 +1031,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: null
         },
         apiSF: {
+          createSFContact: createSFContactSuccess,
           lookupSFContact: lookupSFContactSuccess
         }
       };
@@ -1068,6 +1069,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         apiSF: {
+          createSFContact: createSFContactSuccess,
           lookupSFContact: lookupSFContactError,
           createSFContact: createSFContactSuccess
         }
@@ -1105,6 +1107,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         apiSF: {
+          createSFContact: createSFContactSuccess,
           lookupSFContact: lookupSFContactSuccess
         }
       };
@@ -1146,6 +1149,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         apiSF: {
+          createSFContact: createSFContactSuccess,
           lookupSFContact: lookupSFContactSuccess
         }
       };
@@ -1154,7 +1158,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       );
       let createSFContactMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       wrapper.instance().setCAPEOptions = jest.fn();
       wrapper.instance().createSFContact = createSFContactMock;
 
@@ -2573,7 +2577,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         );
       let getIframeNewMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       let props = {
         cape_legal: {
           current: {
@@ -2897,7 +2901,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`toggleCardAddingFrame` handles error if getIframeURL fails", () => {
       let getIframeURLError = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
       wrapper.instance().getIframeURL = getIframeURLError;
       wrapper.instance().toggleCardAddingFrame("Add new card");
@@ -3078,6 +3082,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSF: {
           updateSFContact: updateSFContactError,
+          createSFContact: createSFContactSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
@@ -3121,6 +3126,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: null
         },
         apiSF: {
+          createSFContact: createSFContactSuccess,
           updateSFContact: updateSFContactSuccess,
           lookupSFContact: lookupSFContactError,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
@@ -3176,6 +3182,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         apiSF: {
+          createSFContact: createSFContactSuccess,
           updateSFContact: updateSFContactSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         },
@@ -4403,7 +4410,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() => Promise.resolve(sigUrl));
       const saveSignatureMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       formElements.handleError = jest.fn();
       let props = {
         apiSubmission: {
@@ -4453,7 +4460,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() => Promise.resolve(sigUrl));
       const getIframeURLMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       formElements.handleError = jest.fn();
       let props = {
         apiSubmission: {
@@ -4645,7 +4652,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() => Promise.resolve(sigUrl));
       const getSFDJRByIdMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       let props = {
         apiSubmission: {
           handleInput,
@@ -4714,7 +4721,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       formElements.handleError = jest.fn();
       const getIframeURLMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       const getSFDJRByIdMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve({ payload: {} }));
@@ -4792,7 +4799,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() => Promise.resolve({ payload: {} }));
       const createSubmissionMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       let props = {
         apiSubmission: {
           handleInput,
@@ -5029,7 +5036,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`handleTab` handles error if handleTab1 fails", () => {
       const handleTab1Mock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       let props = {
         apiSubmission: { handleInput, addSubmission: addSubmissionMock },
         apiSF: {
@@ -5084,7 +5091,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`handleTab` handles error if handleTab2 fails", () => {
       const handleTab2Mock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
       let props = {
         apiSubmission: { handleInput, addSubmission: addSubmissionMock },
         apiSF: {

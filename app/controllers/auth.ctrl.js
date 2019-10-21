@@ -21,6 +21,7 @@ const SERVER_URL =
 exports.googleCallback = (req, res) => {
   // console.log("################# google callback");
   if (req.user && req.user.err) {
+    console.error(`auth.ctrl.js > 46: ${req.user.err}`);
     res.status(401).json({
       success: false,
       message: `google auth failed: ${req.user.err}`,
@@ -43,6 +44,7 @@ exports.googleCallback = (req, res) => {
 
       return res.status(200).redirect(redirect);
     } else {
+      console.error(`auth.ctrl.js > 46: !user`);
       return res.status(422).redirect("/login");
     }
   }
@@ -51,11 +53,11 @@ exports.googleCallback = (req, res) => {
 exports.requireAuth = (req, res, next) => {
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
     if (err) {
-      // console.log(`auth.ctrl.js > 53: ${err}`);
+      console.error(`auth.ctrl.js > 56: ${err}`);
       return res.status(422).send({ success: false, message: err.message });
     }
     if (!user) {
-      // console.log(`auth.ctrl.js > 57: no user found`);
+      console.error(`auth.ctrl.js > 60: no user found`);
       return res.status(422).send({
         success: false,
         message: "Sorry, you must log in to view this page."
@@ -64,6 +66,7 @@ exports.requireAuth = (req, res, next) => {
     if (user) {
       req.login(user, loginErr => {
         if (loginErr) {
+          console.error(`auth.ctrl.js > 69: ${loginErr}`);
           return next(loginErr);
         } else {
           return next(null, user);

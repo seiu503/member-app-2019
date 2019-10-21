@@ -490,18 +490,6 @@ router.post("/sf", sfCtrl.createSFContact);
 //
 router.put("/sf/:id", sfCtrl.updateSFContact);
 
-// DELETE ONE SALESFORCE CONTACT RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sf/:id", sfCtrl.deleteSFContactById);
-
 /* ========================== ONLINE MEMBER APPS =========================== */
 
 // CREATE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
@@ -515,18 +503,6 @@ router.delete("/sf/:id", sfCtrl.deleteSFContactById);
 //   Returns: OMA object or error message.
 //
 router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
-
-// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sfOMA/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 
 /* ============================== CAPE ROUTES =========================== */
 

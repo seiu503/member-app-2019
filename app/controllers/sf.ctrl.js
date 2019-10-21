@@ -10,16 +10,59 @@ const {
   formatDate
 } = require("../utils/fieldConfigs");
 
-// setup for sandbox in both dev and prod for now
-// switch to production on launch
-let loginUrl =
+// staging setup for with prod URL/user/pwd for now
+// switch to dev when prod deployed
+const loginUrl =
   process.env.NODE_ENV === "production"
-    ? "https://test.salesforce.com"
-    : "https://test.salesforce.com";
+    ? process.env.SALESFORCE_PROD_URL
+    : process.env.NODE_ENV === "staging"
+    ? process.env.SALESFORCE_PROD_URL
+    : process.env.SALESFORCE_DEV_URL;
 
 let conn = new jsforce.Connection({ loginUrl });
-const user = process.env.SALESFORCE_USER;
-const password = process.env.SALESFORCE_PWD;
+
+const user =
+  process.env.NODE_ENV === "production"
+    ? process.env.SALESFORCE_PROD_USER
+    : process.env.NODE_ENV === "staging"
+    ? process.env.SALESFORCE_PROD_USER
+    : process.env.SALESFORCE_USER;
+
+const password =
+  process.env.NODE_ENV === "production"
+    ? process.env.SALESFORCE_PROD_PWD
+    : process.env.NODE_ENV === "staging"
+    ? process.env.SALESFORCE_PROD_PWD
+    : process.env.SALESFORCE_PWD;
+
+const unioniseEndpoint =
+  process.env.NODE_ENV === "production"
+    ? process.env.UNIONISE_PROD_ENDPOINT
+    : process.env.NODE_ENV === "staging"
+    ? process.env.UNIONISE_PROD_ENDPOINT
+    : process.env.UNIONISE_ENDPOINT;
+
+const unioniseAuthEndpoint =
+  process.env.NODE_ENV === "production"
+    ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
+    : process.env.NODE_ENV === "staging"
+    ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
+    : process.env.UNIONISE_AUTH_ENDPOINT;
+
+const unionisePassword =
+  process.env.NODE_ENV === "production"
+    ? process.env.UNIONISE_PROD_PASSWORD
+    : process.env.NODE_ENV === "staging"
+    ? process.env.UNIONISE_PROD_PASSWORD
+    : process.env.UNIONISE_PASSWORD;
+
+const unioniseClientSecret =
+  process.env.NODE_ENV === "production"
+    ? process.env.UNIONISE_PROD_CLIENT_SECRET
+    : process.env.NODE_ENV === "staging"
+    ? process.env.UNIONISE_PROD_CLIENT_SECRET
+    : process.env.UNIONISE_CLIENT_SECRET;
+
 const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
@@ -42,7 +85,7 @@ exports.getSFContactById = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 42: ${err}`);
+    console.error(`sf.ctrl.js > 88: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
@@ -50,7 +93,7 @@ exports.getSFContactById = async (req, res, next) => {
     contact = await conn.query(query);
     return res.status(200).json(contact.records[0]);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 50: ${err}`);
+    console.error(`sf.ctrl.js > 96: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -65,6 +108,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFContactByDoubleId`);
   const { cId, aId } = req.params;
   if (!cId || !aId) {
+    console.error(`sf.ctrl.js > 111: "Missing required fields"`);
     return res.status(422).json({ message: "Missing required fields" });
   }
   const query = `SELECT ${prefillFieldList.join(
@@ -74,21 +118,21 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 77: ${err}`);
+    console.error(`sf.ctrl.js > 121: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
   try {
     contact = await conn.query(query);
     if (contact.totalSize === 0 || !contact) {
-      // if no contact found, return not found message to client
+      console.error(`sf.ctrl.js > 135: No matching contact found.`);
       return res.status(404).json({
         message: "No matching contact found."
       });
     }
     return res.status(200).json(contact.records[0]);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 91: ${err}`);
+    console.error(`sf.ctrl.js > 135: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -125,7 +169,7 @@ exports.createSFContact = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 82: ${err}`);
+    console.error(`sf.ctrl.js > 172: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -133,14 +177,12 @@ exports.createSFContact = async (req, res, next) => {
   try {
     contact = await conn.sobject("Contact").create({ ...body });
     if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 90: returning next`);
       res.locals.sf_contact_id = contact.Id || contact.id;
       return next();
     }
-    // console.log(`sf.ctrl.js > 94: returning to client`);
     return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 97: ${err}`);
+    console.error(`sf.ctrl.js > 185: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -161,6 +203,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
   // limit one most recently updated record
 
   if (!first_name || !last_name || !home_email) {
+    console.error(`sf.ctrl.js > 206: Missing required fields`);
     return res
       .status(500)
       .json({ message: "Please complete all required fields." });
@@ -174,7 +217,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 131: ${err}`);
+    console.error(`sf.ctrl.js > 220: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -183,9 +226,9 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
     contact = await conn.query(query);
     if (contact.totalSize === 0 || !contact) {
       // if no contact found, return error message to client
+      console.error(`sf.ctrl.js > 97: No matching record found.`);
       return res.status(404).json({
-        message:
-          "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help."
+        message: "No matching record found."
       });
     }
     return res.status(200).json({
@@ -193,7 +236,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
       Current_CAPE__c: contact.records[0].Current_CAPE__c
     });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 149: ${err}`);
+    console.error(`sf.ctrl.js > 239: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -230,7 +273,7 @@ exports.updateSFContact = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 263: ${err}`);
+    console.error(`sf.ctrl.js > 276: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
@@ -252,34 +295,9 @@ exports.updateSFContact = async (req, res, next) => {
     }
     // console.log(response);
 
-    // console.log(`sf.ctrl.js > 285: returning to client`);
     return res.status(200).json(response);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 288: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-};
-
-/* +++++++++++++++++++++++++++++ CONTACTS: DELETE ++++++++++++++++++++++++++ */
-
-/** Delete one contact from Salesforce by Salesforce Contact ID
- *  @param    {String}   id   Salesforce Contact ID
- *  @returns  {Object}        Success or error message.
- */
-exports.deleteSFContactById = async (req, res, next) => {
-  const { id } = req.params;
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 305: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-  try {
-    let result = await conn.sobject("Contact").destroy(id);
-    return res.status(200).json({ message: "Successfully deleted contact" });
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 312: ${err}`);
+    console.error(`sf.ctrl.js > 300: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -298,7 +316,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 331: ${err}`);
+    console.error(`sf.ctrl.js > 319: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -331,35 +349,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       sf_OMA_id: OMA.id || OMA.Id
     });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 365: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-};
-
-/* +++++++++++++++++++++++++++++ OMA: DELETE +++++++++++++++++++++++++++++++ */
-
-/** Delete OnlineMemberApp by Id
- *  @param    {String}   Id         OMA Id
- *  @returns  {Object}   Success or error message
- */
-
-exports.deleteSFOnlineMemberApp = async (req, res, next) => {
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 382: ${err}`);
-    return res.status(500).json({ message: err.message });
-  }
-
-  try {
-    const { id } = req.params;
-    await conn.sobject("OnlineMemberApp__c").destroy(id);
-    return res
-      .status(200)
-      .json({ message: "Successfully deleted Online Member App" });
-  } catch (err) {
-    // console.error(`sf.ctrl.js > 393: ${err}`);
+    console.error(`sf.ctrl.js > 352: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -385,7 +375,7 @@ exports.getSFDJRById = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 416: ${err}`);
+    console.error(`sf.ctrl.js > 378: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let djr;
@@ -394,7 +384,7 @@ exports.getSFDJRById = async (req, res, next) => {
     const result = djr.records[0] || {};
     return res.status(200).json(result);
   } catch (err) {
-    console.error(`sf.ctrl.js > 424: ${err}`);
+    console.error(`sf.ctrl.js > 387: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -418,7 +408,7 @@ exports.createSFDJR = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 449: ${err}`);
+    console.error(`sf.ctrl.js > 411: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -428,7 +418,7 @@ exports.createSFDJR = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 470: returning to client`);
     return res.status(200).json({ sf_djr_id: djr.Id || djr.id });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 473: ${err}`);
+    console.error(`sf.ctrl.js > 421: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -452,7 +442,7 @@ exports.updateSFDJR = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 497: ${err}`);
+    console.error(`sf.ctrl.js > 445: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let djr;
@@ -471,7 +461,7 @@ exports.updateSFDJR = async (req, res, next) => {
     // console.log(`sf.ctrl.js > 346: returning to client`);
     return res.status(200).json(response);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 516: ${err}`);
+    console.error(`sf.ctrl.js > 464: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -490,7 +480,7 @@ exports.createSFCAPE = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 528: ${err}`);
+    console.error(`sf.ctrl.js > 483: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -519,7 +509,7 @@ exports.createSFCAPE = async (req, res, next) => {
       sf_cape_id: CAPE.id || CAPE.Id
     });
   } catch (err) {
-    // console.error(`sf.ctrl.js > 558: ${err}`);
+    console.error(`sf.ctrl.js > 512: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -531,12 +521,12 @@ exports.createSFCAPE = async (req, res, next) => {
     handles two different request types, differentiated by shape of body
  *  @param  {Body shape 1}   {
  *            info {
-*               paymentId    : string   Unioni.se one-time payment id,
-*               errorCode    : string   ('InvalidCard', 'CardDeclined',
-*                                         'AccountNotFound',
-*                                         'InsufficientBalance', 'Unknown')
-*             },
-*             eventType      : string   payment status ('finish' || 'fail')
+ *              paymentId    : string   Unioni.se one-time payment id,
+ *              errorCode    : string   ('InvalidCard', 'CardDeclined',
+ *                                        'AccountNotFound',
+ *                                        'InsufficientBalance', 'Unknown')
+ *            },
+ *            eventType      : string   payment status ('finish' || 'fail')
  *           }
  *
  *          {Body shape 2}   {
@@ -554,7 +544,7 @@ exports.updateSFCAPE = async (req, res, next) => {
   if (req.body && req.body.info) {
     one_time_payment_id = req.body.info.paymentId;
     if (!req.body.eventType) {
-      // console.log("sf.ctrl.js > 591: !eventType");
+      console.error("sf.ctrl.js > 547: !eventType");
       return res.status(422).json({ message: "No eventType submitted" });
     }
     // for unioni.se event types other than 'paymenet', return 200 and
@@ -568,12 +558,12 @@ exports.updateSFCAPE = async (req, res, next) => {
   } else if (req.body && req.body.One_Time_Payment_Id__c) {
     one_time_payment_id = req.body.One_Time_Payment_Id__c;
     if (!req.body.Id) {
-      // console.log("sf.ctrl.js > 598: !sObjectId");
+      console.error("sf.ctrl.js > 561: !CAPE__c.Id");
       return res.status(422).json({ message: "No CAPE__c Id submitted" });
     }
   }
   if (!one_time_payment_id) {
-    // console.log("sf.ctrl.js > 603: !paymentId");
+    console.error("sf.ctrl.js > 566: !paymentId");
     return res.status(422).json({ message: "No payment Id submitted" });
   }
 
@@ -583,7 +573,7 @@ exports.updateSFCAPE = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 595: ${err}`);
+    console.error(`sf.ctrl.js > 576: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -601,9 +591,6 @@ exports.updateSFCAPE = async (req, res, next) => {
           One_Time_Payment_Status__c: req.body.eventType,
           One_Time_Payment_Errors__c: errorCode
         });
-      // console.log(`########################`);
-      // console.log('result of sobject.find');
-      // console.log(capeResult);
 
       // console.log("sf.ctrl.js > 631: returning to client");
       // console.log(capeResult[0]);
@@ -611,12 +598,9 @@ exports.updateSFCAPE = async (req, res, next) => {
 
       if (!capeResult[0] || !capeResult[0].success) {
         error = `No matching record found for payment id ${one_time_payment_id}`;
-        // console.log("sf.ctrl.js > 634");
-        // console.log(capeResult[0].errors);
+        console.error(`sf.ctrl.js > 601: ${capeResult[0].errors}`);
         if (capeResult[0] && capeResult[0].errors) {
           error += `, ${capeResult[0].errors[0]}`;
-          // console.log(capeResult[0].errors);
-          // console.log(error);
         }
         return res.status(404).json({ message: error });
       }
@@ -628,7 +612,7 @@ exports.updateSFCAPE = async (req, res, next) => {
     } catch (error) {
       const message =
         error.message || "There was an error updating the CAPE Record";
-      // console.error(`sf.ctrl.js > 648: ${error}`);
+      console.error(`sf.ctrl.js > 615: ${error}`);
       return res.status(404).json({ message });
     }
   } else if (req.body && req.body.One_Time_Payment_Id__c) {
@@ -641,17 +625,12 @@ exports.updateSFCAPE = async (req, res, next) => {
         One_Time_Payment_Id__c: req.body.One_Time_Payment_Id__c
       });
 
-      // capeResult is a single object here, not an array.
-      // console.log("sf.ctrl.js > 662: returning to client");
-      // console.log(capeResult);
-
       let error;
       if (!capeResult || !capeResult.success) {
         error = `No matching record found for payment id ${req.body.Id}`;
         if (capeResult && capeResult.errors) {
           error += `, ${capeResult.errors[0]}`;
-          // console.log(capeResult.errors);
-          // console.log(error);
+          console.error(`sf.ctrl.js > 633: ${error}`);
         }
 
         return res.status(404).json({ message: error });
@@ -666,7 +645,7 @@ exports.updateSFCAPE = async (req, res, next) => {
     } catch (error) {
       const message =
         error.message || "There was an error updating the CAPE Record";
-      // console.error(`sf.ctrl.js > 668: ${error}`);
+      console.error(`sf.ctrl.js > 648: ${error}`);
       return res.status(404).json({ message });
     }
   }
@@ -689,7 +668,7 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 718: ${err}`);
+    console.error(`sf.ctrl.js > 671: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
@@ -701,7 +680,7 @@ exports.getAllEmployers = async (req, res, next) => {
     }
     return res.status(200).json(accounts.records);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 730: ${err}`);
+    console.error(`sf.ctrl.js > 683: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -720,7 +699,7 @@ exports.getIframeExisting = async (req, res, next) => {
   // console.log("getIframeExisting");
   const { memberShortId } = req.body;
 
-  const url = `https://lab.unioni.se/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
+  const url = `${unioniseEndpoint}/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
   const data = {};
 
   const headers = {
@@ -761,9 +740,9 @@ exports.getUnioniseToken = async (req, res, next) => {
   const params = {
     grant_type: "password",
     username: "seiu503",
-    password: process.env.UNIONISE_PASSWORD,
+    password: unionisePassword,
     client_id: "unioni.se",
-    client_secret: process.env.UNIONISE_CLIENT_SECRET
+    client_secret: unioniseClientSecret
   };
 
   const data = Object.entries(params)
@@ -771,8 +750,7 @@ exports.getUnioniseToken = async (req, res, next) => {
     .join("&");
 
   // console.log(data);
-  const url =
-    "https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token";
+  const url = unioniseAuthEndpoint;
 
   const headers = { "content-type": "application/x-www-form-urlencoded" };
   axios
@@ -788,7 +766,7 @@ exports.getUnioniseToken = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      // console.error(`sf.ctrl.js > 617: ${err}`);
+      console.error(`sf.ctrl.js > 769: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
@@ -818,7 +796,7 @@ exports.postPaymentRequest = async (req, res, next) => {
 
   // console.log(data);
   // console.log(req.headers.authorization);
-  const url = "https://lab.unioni.se/api/v1/paymentRequests";
+  const url = `${unioniseEndpoint}/api/v1/paymentRequests`;
 
   const headers = {
     "content-type": "application/json",
@@ -830,6 +808,8 @@ exports.postPaymentRequest = async (req, res, next) => {
       // console.log(`sf.ctrl.js > 851`);
       // console.log(response);
       if (!response.data || !response.data.id) {
+        console.error(`sf.ctrl.js > 811:`);
+        console.error(response);
         return res
           .status(500)
           .json({ message: "Error while posting payment request" });
@@ -837,7 +817,7 @@ exports.postPaymentRequest = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      console.error(`sf.ctrl.js > 726: ${err}`);
+      console.error(`sf.ctrl.js > 820: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };

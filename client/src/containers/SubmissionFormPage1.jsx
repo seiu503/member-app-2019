@@ -97,7 +97,7 @@ export class SubmissionFormPage1Container extends React.Component {
           }
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
     }
@@ -172,7 +172,7 @@ export class SubmissionFormPage1Container extends React.Component {
           }
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           resolve(handleError(err));
         });
     });
@@ -352,7 +352,7 @@ export class SubmissionFormPage1Container extends React.Component {
         // console.log(result.type);
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
   }
@@ -376,7 +376,10 @@ export class SubmissionFormPage1Container extends React.Component {
       );
       returnValues.agencyNumber = employerObject.Agency_Number__c;
 
-      if (this.props.submission.formPage1.prefillEmployerId) {
+      if (
+        this.props.submission.formPage1 &&
+        this.props.submission.formPage1.prefillEmployerId
+      ) {
         if (!this.state.prefillEmployerChanged) {
           // if this is a prefill and employer has not been changed manually,
           // return original prefilled employer Id
@@ -519,8 +522,7 @@ export class SubmissionFormPage1Container extends React.Component {
         // console.log('453');
       })
       .catch(err => {
-        // console.log('456');
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
 
@@ -554,7 +556,7 @@ export class SubmissionFormPage1Container extends React.Component {
             "createSFOMA",
             err
           );
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
     }
@@ -585,7 +587,7 @@ export class SubmissionFormPage1Container extends React.Component {
           this.setCAPEOptions();
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
 
@@ -596,7 +598,7 @@ export class SubmissionFormPage1Container extends React.Component {
             // console.log(this.props.submission.salesforceId);
           })
           .catch(err => {
-            // console.log(err);
+            console.error(err);
             return handleError(err);
           });
       }
@@ -643,7 +645,7 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     await this.props.apiSF.createSFContact(body).catch(err => {
-      // console.log(err);
+      console.error(err);
       return handleError(err);
     });
   }
@@ -689,7 +691,7 @@ export class SubmissionFormPage1Container extends React.Component {
     };
 
     await this.props.apiSF.updateSFContact(id, body).catch(err => {
-      // console.log(err);
+      console.error(err);
       return handleError(err);
     });
   }
@@ -713,7 +715,7 @@ export class SubmissionFormPage1Container extends React.Component {
             resolve(result);
           })
           .catch(err => {
-            // console.log(err);
+            console.error(err);
             resolve(handleError(err));
           });
       });
@@ -737,7 +739,7 @@ export class SubmissionFormPage1Container extends React.Component {
           resolve(result);
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           resolve(handleError(err));
         });
     });
@@ -764,7 +766,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
   }
@@ -795,7 +797,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
   }
@@ -818,8 +820,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const result = await this.props.apiSubmission
         .verify(token, ip_address)
         .catch(err => {
-          // console.log("recaptcha failed");
-          // console.log(err);
+          console.error(err);
           return handleError(
             "ReCaptcha verification failed, please reload the page and try again."
           );
@@ -856,7 +857,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
   }
@@ -966,7 +967,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
   }
@@ -993,7 +994,7 @@ export class SubmissionFormPage1Container extends React.Component {
         return result.payload.access_token;
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
   }
@@ -1034,7 +1035,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const access_token = await this.props.apiSF
         .getUnioniseToken()
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
       // then get the card adding url for the existing account
@@ -1046,7 +1047,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // if we don't have the memberShortId, then we need to create a new
     // unionise member record and return the cardAddingUrl
     return this.getIframeNew(cape, capeAmount).catch(err => {
-      // console.log(err);
+      console.error(err);
     });
   }
 
@@ -1088,7 +1089,7 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.getIframeURL()
         // .then(() => console.log("got iFrameURL"))
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
       this.props.apiSubmission.handleInput({
@@ -1126,7 +1127,7 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.firstName,
         formValues.lastName
       ).catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
       // console.log(`748: ${sigUrl}`);
@@ -1161,7 +1162,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(body);
 
     const result = await this.props.apiSF.getUnioniseToken().catch(err => {
-      // console.log(err);
+      console.error(err);
       return handleError(err);
     });
 
@@ -1170,7 +1171,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const oneTimePaymentResult = await this.props.apiSF
       .postOneTimePayment(result.payload.access_token, body)
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
 
@@ -1273,12 +1274,12 @@ export class SubmissionFormPage1Container extends React.Component {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
 
       if (
-        capeResult.type !== "CREATE_CAPE_SUCCESS" ||
+        (capeResult && capeResult.type !== "CREATE_CAPE_SUCCESS") ||
         this.props.submission.error
       ) {
         console.log(this.props.submission.error);
@@ -1306,7 +1307,7 @@ export class SubmissionFormPage1Container extends React.Component {
           }
         })
         .catch(err => {
-          console.log(err);
+          console.error(err);
         });
     }
     // console.log(
@@ -1359,6 +1360,7 @@ export class SubmissionFormPage1Container extends React.Component {
       .catch(err => {
         cape_errors += err;
         cape_status = "Error";
+        console.error(err);
         handleError(err);
       });
 
@@ -1391,14 +1393,14 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.capeAmount,
         formValues.capeAmountOther
       ).catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
     }
     // if one-time payment, send API request to unioni.se to process it
     if (formValues.donationFrequency === "One-Time") {
       await this.postOneTimePayment().catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
     }
@@ -1423,7 +1425,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // update CAPE record in postgres
     await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
-      // console.log(err);
+      console.error(err);
       // return handleError(err); // don't return to client here
     });
     // console.log(capeResult);
@@ -1440,12 +1442,12 @@ export class SubmissionFormPage1Container extends React.Component {
         Card_Brand__c: this.props.submission.payment.cardBrand
       };
 
-      console.log(sfCapeBody);
+      // console.log(sfCapeBody);
 
       const sfCapeUpdateResult = await this.props.apiSF
         .updateSFCAPE(sfCapeBody)
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
 
@@ -1493,7 +1495,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // save partial submission (need to do this before generating iframe URL)
     await this.createSubmission().catch(err => {
-      // console.log(err);
+      console.error(err);
       return handleError(err);
     });
 
@@ -1524,13 +1526,13 @@ export class SubmissionFormPage1Container extends React.Component {
             newCardNeeded
           ) {
             this.getIframeURL().catch(err => {
-              // console.log(err);
+              console.error(err);
               return handleError(err);
             });
           }
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           return handleError(err);
         });
     }
@@ -1541,7 +1543,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab1() {
     const { formValues } = this.props;
-    console.log("1542");
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
@@ -1550,7 +1551,6 @@ export class SubmissionFormPage1Container extends React.Component {
         "ReCaptcha validation failed, please reload the page and try again."
       );
     }
-    console.log("1551");
     // handle moving from tab 1 to tab 2:
 
     // check if payment is required and store this in redux store for later
@@ -1558,12 +1558,10 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      console.log("1559");
       const newState = { ...this.state };
       newState.howManyTabs = 4;
       this.setState(newState);
     } else {
-      console.log("1564");
       const newState = { ...this.state };
       newState.howManyTabs = 3;
       this.setState(newState);
@@ -1571,27 +1569,23 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
-      console.log("1572");
       // update existing contact, move to next tab
       await this.updateSFContact().catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
-      console.log("1578");
       return this.changeTab(1);
     }
 
     // otherwise, lookup contact by first/last/email
     await this.lookupSFContact().catch(err => {
-      // console.log(err);
+      console.error(err);
       return handleError(err);
     });
-    console.log("1584");
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
-      console.log("1587");
       await this.updateSFContact().catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
       return this.changeTab(1);
@@ -1600,23 +1594,22 @@ export class SubmissionFormPage1Container extends React.Component {
     // otherwise, create new contact with submission data,
     // then move to next tab
     await this.createSFContact().catch(err => {
-      // console.log(err);
+      console.error(err);
       return handleError(err);
     });
-    console.log("1601");
     return this.changeTab(1);
   }
 
   handleTab(newValue) {
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
     }
     if (newValue === 2) {
       return this.handleTab2().catch(err => {
-        // console.log(err);
+        console.error(err);
         return handleError(err);
       });
     } else {
