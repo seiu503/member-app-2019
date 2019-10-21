@@ -3365,11 +3365,6 @@ commander@^2.11.0, commander@^2.19.0, commander@^2.20.0, commander@~2.20.0:
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.0.tgz#d58bb2b5c1ee8f87b0d340027e9e94e222c5a422"
   integrity sha512-7j2y+40w61zy6YC2iRNpUe/NwhNyoXrYpHMrSunaMG64nRnaf96zO/KMQR4OyN/UnE5KLyEBnKHd4aG3rskjpQ==
 
-commander@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
-  integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
-
 commander@~2.19.0:
   version "2.19.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.19.0.tgz#f6198aa84e5b83c46054b94ddedbfed5ee9ff12a"
@@ -4286,12 +4281,12 @@ dot-prop@^4.1.1:
   dependencies:
     is-obj "^1.0.0"
 
-dotenv-expand@4.2.0:
+dotenv-expand@4.2.0, dotenv-expand@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-4.2.0.tgz#def1f1ca5d6059d24a766e587942c21106ce1275"
   integrity sha1-3vHxyl1gWdJKdm5YeULCEQbOEnU=
 
-dotenv@6.2.0:
+dotenv@6.2.0, dotenv@^6.0.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-6.2.0.tgz#941c0410535d942c8becf28d3f357dbd9d476064"
   integrity sha512-HygQCKUBSFl8wKQZBSemMywRWcEDNidvNbjGVyZu3nbZ8qq9ubiPoGLMdRDpfSrpkkm9BXYFkpKxxFX38o/76w==
@@ -4395,13 +4390,13 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.0.0.tgz#68d6084cab1b079767540d80e56a39b423e4abf4"
   integrity sha512-D9f7V0JSRwIxlRI2mjMqufDrRDnx8p+eEOz7aUM9SuvF8gsBzra0/6tbjl1m8eQHrZlYj6PxqE00hZ1SAIKPLw==
 
-env-cmd@^10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/env-cmd/-/env-cmd-10.0.1.tgz#bcaedad78a0172c62113890dd4efec36d2ba0775"
-  integrity sha512-vaV0BRwj+6+fd8NmcvSoRhrTxQl07fS3jxIdPYe7d+NlJj4hV/FSMmWcKau/qpbe5jeFdDI757//ToJW70ad2Q==
+env-path@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/env-path/-/env-path-1.0.7.tgz#55c70d7eddfc2605de15d3b8db6c93701ed998cf"
+  integrity sha512-+3PssGioyRGZzlNY9UqspsCkNXOmDdQf9w34Jzvv7Iv9CfU4LCDxkI0onQnfhdilRYDEdtOwFWg9Bhrbev+27Q==
   dependencies:
-    commander "^3.0.0"
-    cross-spawn "^6.0.0"
+    dotenv "^6.0.0"
+    dotenv-expand "^4.2.0"
 
 enzyme-adapter-react-16@^1.13.1:
   version "1.14.0"
