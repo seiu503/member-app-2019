@@ -197,34 +197,6 @@ export function verify(token, ip_address) {
   };
 }
 
-export function loadRecaptchaScript() {
-  return {
-    [RSAA]: {
-      endpoint: `${BASE_URL}/api/recaptcha`,
-      method: "GET",
-      types: [
-        LOAD_RECAPTCHA_REQUEST,
-        LOAD_RECAPTCHA_SUCCESS,
-        {
-          type: LOAD_RECAPTCHA_FAILURE,
-          payload: (action, state, res) => {
-            return res.json().then(data => {
-              let message = "Sorry, something went wrong :(";
-              if (data && data.message) {
-                message = data.message;
-              }
-              return { message };
-            });
-          }
-        }
-      ],
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }
-  };
-}
-
 export function createCAPE(body) {
   return {
     [RSAA]: {

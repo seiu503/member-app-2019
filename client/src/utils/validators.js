@@ -186,7 +186,7 @@ export const capeValidate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = "Invalid phone number (e.g. 555-123-456)";
+    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
   }
   if (values.homeZip && values.homeZip.length !== 5) {
     errors.homeZip = `Must be at exactly 5 characters long`;

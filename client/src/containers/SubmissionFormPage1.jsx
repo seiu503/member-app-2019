@@ -814,9 +814,8 @@ export class SubmissionFormPage1Container extends React.Component {
         await new Promise(resolve => setTimeout(resolve, 200));
       }
     })();
-    let result;
     if (token) {
-      result = await this.props.apiSubmission
+      const result = await this.props.apiSubmission
         .verify(token, ip_address)
         .catch(err => {
           // console.log("recaptcha failed");
@@ -825,8 +824,11 @@ export class SubmissionFormPage1Container extends React.Component {
             "ReCaptcha verification failed, please reload the page and try again."
           );
         });
-      // console.log(`recaptcha score: ${result.payload.score}`);
-      return result.payload.score;
+
+      if (result) {
+        // console.log(`recaptcha score: ${result.payload.score}`);
+        return result.payload.score;
+      }
     }
   }
 
@@ -887,16 +889,14 @@ export class SubmissionFormPage1Container extends React.Component {
     let externalId;
     // console.log(`submissionId: ${this.props.submission.submissionId}`);
     if (this.props.submission.submissionId) {
-      console.log("found submission id");
+      // console.log("found submission id");
       externalId = this.props.submission.submissionId;
     } else if (this.props.submission.cape.id) {
-      console.log("found cape id");
+      // console.log("found cape id");
       externalId = this.props.submission.cape.id;
     } else {
       externalId = uuid();
     }
-
-    console.log(`################### externalId: ${externalId}`);
 
     // find employer object
     const employerObject = findEmployerObject(
@@ -924,12 +924,12 @@ export class SubmissionFormPage1Container extends React.Component {
       agreesToMessages: !formValues.textAuthOptOut,
       employeeExternalId: externalId
     };
-    console.log(body);
+    // console.log(body);
 
     if (!cape) {
       body.language = language;
     } else {
-      console.log("generating body for CAPE iFrame request");
+      // console.log("generating body for CAPE iFrame request");
       const donationAmount =
         capeAmount === "Other"
           ? parseFloat(capeAmountOther)
@@ -941,7 +941,7 @@ export class SubmissionFormPage1Container extends React.Component {
       body.deductionCurrency = "USD";
       body.deductionDayOfMonth = 10;
     }
-    console.log(JSON.stringify(body));
+    // console.log(JSON.stringify(body));
 
     this.props.apiSF
       .getIframeURL(body)
@@ -957,7 +957,7 @@ export class SubmissionFormPage1Container extends React.Component {
           result.payload.message ||
           result.type === "GET_IFRAME_URL_FAILURE"
         ) {
-          console.log(this.props.submission.error);
+          // console.log(this.props.submission.error);
           return handleError(
             result.payload.message ||
               this.props.submission.error ||
@@ -966,7 +966,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         return handleError(err);
       });
   }
@@ -1006,7 +1006,7 @@ export class SubmissionFormPage1Container extends React.Component {
     let memberShortId =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
-    console.log(`memberShortId: ${memberShortId}`);
+    // console.log(`memberShortId: ${memberShortId}`);
     const { formValues } = this.props;
     let capeAmount;
     if (cape) {
@@ -1026,10 +1026,10 @@ export class SubmissionFormPage1Container extends React.Component {
       memberShortId =
         this.props.submission.payment.memberShortId ||
         this.props.submission.cape.memberShortId;
-      console.log(`memberShortId: ${memberShortId}`);
+      // console.log(`memberShortId: ${memberShortId}`);
     }
     if (memberShortId) {
-      console.log("found memberShortId, getting unionise auth token");
+      // console.log("found memberShortId, getting unionise auth token");
       // first fetch an auth token to access secured unionise routes
       const access_token = await this.props.apiSF
         .getUnioniseToken()
@@ -1040,7 +1040,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // then get the card adding url for the existing account
       return this.getIframeExisting(access_token, memberShortId);
     } else {
-      console.log("########  no memberShortId found");
+      // console.log("########  no memberShortId found");
     }
 
     // if we don't have the memberShortId, then we need to create a new
@@ -1273,7 +1273,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)
         .catch(err => {
-          console.log(err);
+          // console.log(err);
           return handleError(err);
         });
 
@@ -1300,7 +1300,7 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log(`score: ${score}`);
           if (!score || score <= 0.5) {
             // console.log(`recaptcha failed: ${score}`);
-            return this.props.handleError(
+            return handleError(
               "Sorry, your session timed out, please reload the page and try again."
             );
           }
@@ -1334,7 +1334,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
@@ -1541,7 +1541,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab1() {
     const { formValues } = this.props;
-
+    console.log("1542");
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
@@ -1550,7 +1550,7 @@ export class SubmissionFormPage1Container extends React.Component {
         "ReCaptcha validation failed, please reload the page and try again."
       );
     }
-
+    console.log("1551");
     // handle moving from tab 1 to tab 2:
 
     // check if payment is required and store this in redux store for later
@@ -1558,10 +1558,12 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
+      console.log("1559");
       const newState = { ...this.state };
       newState.howManyTabs = 4;
       this.setState(newState);
     } else {
+      console.log("1564");
       const newState = { ...this.state };
       newState.howManyTabs = 3;
       this.setState(newState);
@@ -1569,19 +1571,25 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
+      console.log("1572");
       // update existing contact, move to next tab
       await this.updateSFContact().catch(err => {
         // console.log(err);
         return handleError(err);
       });
+      console.log("1578");
       return this.changeTab(1);
     }
 
     // otherwise, lookup contact by first/last/email
-    await this.lookupSFContact();
-
+    await this.lookupSFContact().catch(err => {
+      // console.log(err);
+      return handleError(err);
+    });
+    console.log("1584");
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
+      console.log("1587");
       await this.updateSFContact().catch(err => {
         // console.log(err);
         return handleError(err);
@@ -1595,6 +1603,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log(err);
       return handleError(err);
     });
+    console.log("1601");
     return this.changeTab(1);
   }
 

@@ -26,7 +26,8 @@ let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
 let pushMock = jest.fn(),
   handleInputMock = jest.fn(),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  handleErrorMock = jest.fn();
+  handleErrorMock = jest.fn(),
+  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
   .fn()
@@ -285,12 +286,6 @@ const flushPromises = () => new Promise(setImmediate);
 const clearSigBoxMock = jest.fn();
 const toDataURLMock = jest.fn();
 
-const reCaptchaRef = {
-  current: {
-    getValue: jest.fn()
-  }
-};
-
 const sigBox = {
   current: {
     toDataURL: toDataURLMock,
@@ -330,7 +325,9 @@ const defaultProps = {
     loading: false,
     formPage1: {
       signature: ""
-    }
+    },
+    cape: {},
+    payment: {}
   },
   initialValues: {
     mm: "",
@@ -358,12 +355,15 @@ const defaultProps = {
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
+    setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
   },
-  reCaptchaRef: { ...reCaptchaRef },
+  recaptcha: {
+    execute: executeMock
+  },
   refreshRecaptcha: refreshRecaptchaMock,
   sigBox: { ...sigBox },
   content: {
@@ -447,7 +447,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           formPage1: {
             firstName: "test",
             lastName: "test"
-          }
+          },
+          cape: {},
+          payment: {}
         }
       };
       store = storeFactory(initialState);
@@ -513,7 +515,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           },
           payment: {
             currentCAPEFromSF: 0
-          }
+          },
+          cape: {}
         }
       };
       store = storeFactory(initialState);
@@ -595,7 +598,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           },
           payment: {
             memberShortId: "123"
-          }
+          },
+          cape: {}
         }
       };
       const fakeEvent = {
@@ -1792,6 +1796,64 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           // expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
+    });
+  });
+
+  describe("verifyRecaptchaScore", () => {
+    test("verifyRecaptchaScore calls `recaptcha.execute`", async function() {
+      const props = {
+        recaptcha: {
+          execute: executeMock
+        }
+      };
+      wrapper = setup(props);
+      await wrapper.instance().verifyRecaptchaScore();
+      expect(executeMock.mock.calls.length).toBe(1);
+    });
+    test("verifyRecaptchaScore calls `apiSubmission.verify`", async function() {
+      const verifySuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
+        );
+      const props = {
+        recaptcha: {
+          execute: executeMock
+        },
+        submission: {
+          formPage1: {
+            reCaptchaValue: 123
+          }
+        },
+        apiSubmission: {
+          verify: verifySuccess
+        }
+      };
+      wrapper = setup(props);
+      await wrapper.instance().verifyRecaptchaScore();
+      expect(verifySuccess.mock.calls.length).toBe(1);
+    });
+    test("verifyRecaptchaScore handles error if `apiSubmission.verify` throws", async function() {
+      const verifyError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject({ type: "VERIFY_FAILURE" }));
+      const props = {
+        recaptcha: {
+          execute: executeMock
+        },
+        submission: {
+          formPage1: {
+            reCaptchaValue: 123
+          }
+        },
+        apiSubmission: {
+          verify: verifyError
+        }
+      };
+      wrapper = setup(props);
+      await wrapper.instance().verifyRecaptchaScore();
+      await verifyError;
+      expect(handleErrorMock.mock.calls.length).toBe(1);
     });
   });
 
@@ -3022,18 +3084,21 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
 
       wrapper.update();
       wrapper
         .instance()
         .handleTab1()
-        .then(() => {
+        .then(async () => {
+          await verifyRecaptchaScoreMock();
+          await handleInputMock();
           return updateSFContactError().then(() => {
             expect(formElements.handleError.mock.calls.length).toBe(1);
           });
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
@@ -3056,7 +3121,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: null
         },
         apiSF: {
-          updateSFContact: updateSFContactError,
+          updateSFContact: updateSFContactSuccess,
           lookupSFContact: lookupSFContactError,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
@@ -3064,18 +3129,20 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = shallow(
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
-
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper.update();
       wrapper
         .instance()
         .handleTab1()
-        .then(() => {
+        .then(async () => {
+          await verifyRecaptchaScoreMock();
+          await handleInputMock();
           return lookupSFContactError().then(() => {
             expect(formElements.handleError.mock.calls.length).toBe(1);
           });
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
@@ -3112,22 +3179,23 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           updateSFContact: updateSFContactSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         },
-        reCaptchaRef: {
-          current: {
-            getValue: jest.fn().mockImplementation(() => "ref value")
-          }
+        recaptcha: {
+          execute: jest.fn()
         }
       };
       wrapper = shallow(
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       const changeTabMock = jest.fn();
       wrapper.instance().changeTab = changeTabMock;
       wrapper.update();
       wrapper
         .instance()
         .handleTab1()
-        .then(() => {
+        .then(async () => {
+          await verifyRecaptchaScoreMock();
+          await handleInputMock();
           return updateSFContactSuccess().then(() => {
             expect(changeTabMock.mock.calls.length).toBe(1);
           });
@@ -3350,17 +3418,57 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         })
         .catch(err => console.log(err));
     });
+
+    test("`generateCAPEBody` displays CAPE Payment fields if no donation amount chosen", async () => {
+      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      await wrapper.instance().generateCAPEBody(null, null);
+      expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
+    });
   });
 
   describe("handleDonationFrequencyChange", () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
-    test("`handleDonationFrequencyChange` calls handleInput", () => {
+    test("`handleDonationFrequencyChange` returns without calling anything if !capeAmount && !capeAmountOther", () => {
       const props = {
         submission: {
           formPage1: {
             paymentRequired: false
+          },
+          payment: {
+            activeMethodLast4: null
+          },
+          cape: {
+            activeMethodLast4: "1234"
+          }
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: null,
+          capeAmountOther: null
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      wrapper.instance().handleDonationFrequencyChange();
+      expect(handleInputMock).not.toHaveBeenCalled();
+    });
+    test("`handleDonationFrequencyChange` calls handleInput to set newCardNeeded to `true` if !validMethod", () => {
+      const props = {
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          },
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: true
+          },
+          cape: {
+            activeMethodLast4: null
           }
         },
         apiSubmission: {
@@ -3374,27 +3482,74 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
       wrapper.instance().handleDonationFrequencyChange();
-      expect(handleInputMock).toHaveBeenCalled();
+      expect(handleInputMock).toHaveBeenCalledWith({
+        target: { name: "newCardNeeded", value: true }
+      });
     });
-    test("`handleDonationFrequencyChange` calls getIframeURL if frequency = 'One-Time'", async () => {
+    test("`handleDonationFrequencyChange` calls handleInput to set paymentRequired to `true` if donationFrequency === 'One-Time'", async () => {
       const props = {
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            donationFrequency: "One-Time"
+          },
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: false
+          },
+          cape: {
+            activeMethodLast4: null
+          }
+        },
         apiSubmission: {
           handleInput: handleInputMock
         },
         formValues: {
-          capeAmount: 10,
-          donationFrequency: "One-Time"
+          capeAmount: 10
         }
       };
-      const getIframeURLMock = jest.fn();
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       wrapper = shallow(
         <SubmissionFormPage1Container {...defaultProps} {...props} />
       );
+      const getIframeURLMock = jest.fn();
       wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().handleDonationFrequencyChange("One-Time");
-      await handleInputMock().then(() => {
-        expect(getIframeURLMock).toHaveBeenCalled();
+      expect(handleInputMock.mock.calls[1][0]).toEqual({
+        target: { name: "paymentRequired", value: true }
+      });
+      await handleInputMock();
+      expect(getIframeURLMock).toHaveBeenCalled();
+    });
+    test("`handleDonationFrequencyChange` calls handleInput to set paymentRequired to `false` if dFrequency === 'Monthly' && checkoff", async () => {
+      handleInputMock = jest.fn();
+      const props = {
+        submission: {
+          formPage1: {
+            paymentRequired: false,
+            donationFrequency: "Monthly"
+          },
+          payment: {
+            activeMethodLast4: "1234"
+          },
+          cape: {
+            activeMethodLast4: null
+          }
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: 10
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+      const getIframeURLMock = jest.fn();
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().handleDonationFrequencyChange("Monthly");
+      expect(handleInputMock.mock.calls[0][0]).toEqual({
+        target: { name: "paymentRequired", value: false }
       });
     });
   });

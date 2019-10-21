@@ -5,7 +5,6 @@ import { findByTestAttr } from "../../utils/testUtils";
 import { generatePage2Validate } from "../../../../app/utils/fieldConfigs";
 import { SubmissionFormPage2Component } from "../../components/SubmissionFormPage2Component";
 import * as formElements from "../../components/SubmissionFormElements";
-import * as Notifier from "../../containers/Notifier";
 
 // variables
 let wrapper,
@@ -13,7 +12,6 @@ let wrapper,
   props,
   apiSubmission,
   apiSF,
-  updateSubmission,
   handleSubmitMock,
   handleSubmitSuccess,
   testData,
