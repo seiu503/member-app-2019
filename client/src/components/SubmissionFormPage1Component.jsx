@@ -35,7 +35,7 @@ export class SubmissionFormPage1Component extends React.Component {
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
         // don't return this error to client, it's a background api call
         // this.props.handleError(err);
       });
@@ -60,13 +60,6 @@ export class SubmissionFormPage1Component extends React.Component {
     if (event.origin !== unioniseEndpoint || !event.data.notification) {
       return;
     }
-    // event.data shape:
-    // notification: {
-    //    cardBrand: "Visa",
-    //    cardLast4: "4242",
-    //    message: "Card successfully added.",
-    //    type: "success"
-    //  }
 
     const { type, cardBrand, cardLast4 } = event.data.notification;
     if (type === "success") {
@@ -223,7 +216,7 @@ export class SubmissionFormPage1Component extends React.Component {
         // console.log(result.type);
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return this.props.handleError(err);
       });
   }
@@ -248,11 +241,12 @@ export class SubmissionFormPage1Component extends React.Component {
             "createSFOMA",
             this.props.submission.error
           );
+          console.error(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,
           "createSFOMA",
@@ -310,7 +304,7 @@ export class SubmissionFormPage1Component extends React.Component {
           }
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
           this.props.saveSubmissionErrors(
             this.props.submission.submissionId,
             "createSFDJR",
@@ -344,7 +338,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,
           "updateSFDJR",
@@ -370,7 +364,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
       });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
@@ -416,6 +410,7 @@ export class SubmissionFormPage1Component extends React.Component {
         // bc 'check' is not an option for CAPE
 
         if (
+          this.props.submission.formPage1.employerType &&
           this.props.submission.formPage1.employerType.toLowerCase() ===
             "retired" &&
           this.props.submission.formPage1.paymentType === "Check"
@@ -435,6 +430,7 @@ export class SubmissionFormPage1Component extends React.Component {
         if (!this.props.submission.error) {
           this.props.handleTab(this.props.howManyTabs - 1);
         } else {
+          console.error(this.props.submission.error);
           this.props.saveSubmissionErrors(
             this.props.submission.submissionId,
             "handleSubmit",
@@ -444,7 +440,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,
           "handleSubmit",

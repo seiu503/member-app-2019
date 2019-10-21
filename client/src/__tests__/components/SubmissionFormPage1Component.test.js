@@ -664,7 +664,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     it("handles error if `updateSFDJR` throws", async function() {
       const updateSFDJRMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
 
       // replacing openSnackbar import with mock function
       formElements.handleError = handleErrorMock;
@@ -736,7 +736,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     it("handles error if `createSFDJR` throws", async function() {
       const createSFDJRMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
 
       // replacing openSnackbar import with mock function
       formElements.handleError = handleErrorMock;
