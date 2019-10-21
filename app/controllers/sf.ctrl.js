@@ -10,16 +10,45 @@ const {
   formatDate
 } = require("../utils/fieldConfigs");
 
-// setup for sandbox in both dev and prod for now
-// switch to production on launch
-let loginUrl =
+// staging setup for with prod URL/user/pwd for now
+// switch to dev when prod deployed
+const loginUrl =
   process.env.NODE_ENV === "production"
-    ? "https://test.salesforce.com"
-    : "https://test.salesforce.com";
+    ? process.env.SALESFORCE_PROD_URL
+    : process.env.NODE_ENV === "staging"
+    ? process.env.SALESFORCE_PROD_URL
+    : process.env.SALESFORCE_DEV_URL;
 
 let conn = new jsforce.Connection({ loginUrl });
-const user = process.env.SALESFORCE_USER;
-const password = process.env.SALESFORCE_PWD;
+
+const user =
+  process.env.NODE_ENV === "production"
+    ? process.env.SALESFORCE_PROD_USER
+    : process.env.NODE_ENV === "staging"
+    ? process.env.SALESFORCE_PROD_USER
+    : process.env.SALESFORCE_USER;
+
+const password =
+  process.env.NODE_ENV === "production"
+    ? process.env.SALESFORCE_PROD_PWD
+    : process.env.NODE_ENV === "staging"
+    ? process.env.SALESFORCE_PROD_PWD
+    : process.env.SALESFORCE_PWD;
+
+const unioniseEndpoint =
+  process.env.NODE_ENV === "production"
+    ? process.env.UNIONISE_PROD_ENDPOINT
+    : process.env.NODE_ENV === "staging"
+    ? process.env.UNIONISE_PROD_ENDPOINT
+    : process.env.UNIONISE_ENDPOINT;
+
+const unioniseAuthEndpoint =
+  process.env.NODE_ENV === "production"
+    ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
+    : process.env.NODE_ENV === "staging"
+    ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
+    : process.env.UNIONISE_AUTH_ENDPOINT;
+
 const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
@@ -720,7 +749,7 @@ exports.getIframeExisting = async (req, res, next) => {
   // console.log("getIframeExisting");
   const { memberShortId } = req.body;
 
-  const url = `https://lab.unioni.se/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
+  const url = `${unioniseEndpoint}/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
   const data = {};
 
   const headers = {
@@ -761,9 +790,9 @@ exports.getUnioniseToken = async (req, res, next) => {
   const params = {
     grant_type: "password",
     username: "seiu503",
-    password: process.env.UNIONISE_PASSWORD,
+    password: process.env.UNIONISE_PASSWORD, // same in production?
     client_id: "unioni.se",
-    client_secret: process.env.UNIONISE_CLIENT_SECRET
+    client_secret: process.env.UNIONISE_CLIENT_SECRET // same in production?
   };
 
   const data = Object.entries(params)
@@ -771,8 +800,7 @@ exports.getUnioniseToken = async (req, res, next) => {
     .join("&");
 
   // console.log(data);
-  const url =
-    "https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token";
+  const url = unioniseAuthEndpoint;
 
   const headers = { "content-type": "application/x-www-form-urlencoded" };
   axios
@@ -818,7 +846,7 @@ exports.postPaymentRequest = async (req, res, next) => {
 
   // console.log(data);
   // console.log(req.headers.authorization);
-  const url = "https://lab.unioni.se/api/v1/paymentRequests";
+  const url = `${unioniseEndpoint}/api/v1/paymentRequests`;
 
   const headers = {
     "content-type": "application/json",
