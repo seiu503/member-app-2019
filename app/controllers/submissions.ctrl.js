@@ -70,10 +70,6 @@ const createSubmission = async (req, res, next) => {
     reCaptchaValue
   } = req.body;
 
-  if (!salesforce_id || salesforce_id === undefined) {
-    salesforce_id = res.locals.sf_contact_id;
-  }
-
   const requiredFields = [
     "submission_date",
     "birthdate",
@@ -109,33 +105,38 @@ const createSubmission = async (req, res, next) => {
     });
   }
 
-  const createSubmissionResult = await submissions.createSubmission(
-    ip_address,
-    submission_date,
-    agency_number,
-    birthdate,
-    cell_phone,
-    employer_name,
-    first_name,
-    last_name,
-    home_street,
-    home_city,
-    home_state,
-    home_zip,
-    home_email,
-    preferred_language,
-    terms_agree,
-    signature,
-    text_auth_opt_out,
-    online_campaign_source,
-    legal_language,
-    maintenance_of_effort,
-    seiu503_cba_app_date,
-    direct_pay_auth,
-    direct_deposit_auth,
-    immediate_past_member_status,
-    salesforce_id
-  );
+  const createSubmissionResult = await submissions
+    .createSubmission(
+      ip_address,
+      submission_date,
+      agency_number,
+      birthdate,
+      cell_phone,
+      employer_name,
+      first_name,
+      last_name,
+      home_street,
+      home_city,
+      home_state,
+      home_zip,
+      home_email,
+      preferred_language,
+      terms_agree,
+      signature,
+      text_auth_opt_out,
+      online_campaign_source,
+      legal_language,
+      maintenance_of_effort,
+      seiu503_cba_app_date,
+      direct_pay_auth,
+      direct_deposit_auth,
+      immediate_past_member_status,
+      salesforce_id
+    )
+    .catch(err => {
+      console.error(`submissions.ctrl.js > 136: ${err.message}`);
+      return res.status(500).json({ message: err.message });
+    });
 
   if (!createSubmissionResult || createSubmissionResult.message) {
     console.error(
@@ -168,46 +169,46 @@ const updateSubmission = async (req, res, next) => {
   const { id } = req.params;
   // console.log(`subm.ctrl.js > 173 - id: ${id} (updates below)`);
   // console.log(updates);
-  try {
-    if (!updates || !Object.keys(updates).length) {
-      console.error("subm.ctrl.js > 173: !updates");
-      return res.status(422).json({ message: "No updates submitted" });
-    }
-    if (!id) {
-      console.error("subm.ctrl.js > 177: !id");
-      return res.status(422).json({ message: "No Id Provided in URL" });
-    }
 
-    const updateSubmissionResult = await submissions
-      .updateSubmission(id, updates)
-      .catch(err => {
-        console.error(`subm.ctrl.js > 188: ${err}`);
-      });
+  if (!updates || !Object.keys(updates).length) {
+    console.error("subm.ctrl.js > 173: !updates");
+    return res.status(422).json({ message: "No updates submitted" });
+  }
+  if (!id) {
+    console.error("subm.ctrl.js > 177: !id");
+    return res.status(422).json({ message: "No Id Provided in URL" });
+  }
 
-    if (
-      !updateSubmissionResult ||
-      updateSubmissionResult.message ||
-      updateSubmissionResult.length === 0
-    ) {
-      const errmsg =
-        updateSubmissionResult.message ||
-        "There was an error updating the submission";
-      console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+  const updateSubmissionResult = await submissions
+    .updateSubmission(id, updates)
+    .catch(err => {
+      console.error(`subm.ctrl.js > 188: ${err.message}`);
       return res.status(500).json({
-        message: errmsg
+        message: err.message
       });
-    } else {
-      // console.log("subm.ctrl.js > 201: returning to client");
-      // console.log(updateSubmissionResult[0].id);
-      // saving to res.locals to make id available for testing
-      res.locals.submission_id = updateSubmissionResult[0].id;
-      return res
-        .status(200)
-        .json({ submission_id: updateSubmissionResult[0].id });
-    }
-  } catch (error) {
-    console.error(`submissions.ctrl.js > 209: ${err}`);
-    return res.status(404).json({ message: error.message });
+    });
+
+  if (
+    !updateSubmissionResult ||
+    (updateSubmissionResult && updateSubmissionResult.message) ||
+    updateSubmissionResult.length === 0
+  ) {
+    const errmsg =
+      updateSubmissionResult && updateSubmissionResult.message
+        ? updateSubmissionResult.message
+        : "There was an error updating the submission";
+    console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+    return res.status(404).json({
+      message: errmsg
+    });
+  } else if (updateSubmissionResult[0] && updateSubmissionResult[0].id) {
+    // console.log("subm.ctrl.js > 201: returning to client");
+    // console.log(updateSubmissionResult[0].id);
+    // saving to res.locals to make id available for testing
+    res.locals.submission_id = updateSubmissionResult[0].id;
+    return res
+      .status(200)
+      .json({ submission_id: updateSubmissionResult[0].id });
   }
 };
 
@@ -270,7 +271,7 @@ const getSubmissionById = (req, res, next) => {
     })
     .catch(err => {
       console.error(`submissions.ctrl.js > 272: ${err}`);
-      res.status(404).json({ message: err.message });
+      res.status(500).json({ message: err.message });
     });
 };
 

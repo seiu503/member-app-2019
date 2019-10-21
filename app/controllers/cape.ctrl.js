@@ -152,7 +152,7 @@ const updateCAPE = async (req, res, next) => {
   // console.log(updates);
   try {
     if (!updates || !Object.keys(updates).length) {
-      console.errorCode("cape.ctrl.js > 155: !updates");
+      console.error("cape.ctrl.js > 155: !updates");
       return res.status(422).json({ message: "No updates submitted" });
     }
     if (!id) {
