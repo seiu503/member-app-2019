@@ -62,7 +62,7 @@ exports.getSFContactById = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact object OR error message.
  */
 exports.getSFContactByDoubleId = async (req, res, next) => {
-  console.log(`sf.ctrl.js > getSFContactByDoubleId`);
+  // console.log(`sf.ctrl.js > getSFContactByDoubleId`);
   const { cId, aId } = req.params;
   if (!cId || !aId) {
     return res.status(422).json({ message: "Missing required fields" });
@@ -74,7 +74,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 75: ${err}`);
+    // console.error(`sf.ctrl.js > 77: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let contact;
@@ -88,7 +88,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
     }
     return res.status(200).json(contact.records[0]);
   } catch (err) {
-    console.error(`sf.ctrl.js > 83: ${err}`);
+    // console.error(`sf.ctrl.js > 91: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -375,10 +375,12 @@ exports.deleteSFOnlineMemberApp = async (req, res, next) => {
 exports.getSFDJRById = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFDJRById`);
   const { id } = req.params;
-
+  // console.log(`sf.ctrl.js > ############# getSFDJRById`);
+  // console.log(paymentFieldList);
+  // console.log(id);
   const query = `SELECT ${paymentFieldList.join(
     ","
-  )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\'`;
+  )}, LastModifiedDate, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'${id}\' ORDER BY LastModifiedDate DESC LIMIT 1`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -392,7 +394,7 @@ exports.getSFDJRById = async (req, res, next) => {
     const result = djr.records[0] || {};
     return res.status(200).json(result);
   } catch (err) {
-    // console.error(`sf.ctrl.js > 424: ${err}`);
+    console.error(`sf.ctrl.js > 424: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -529,7 +531,10 @@ exports.createSFCAPE = async (req, res, next) => {
     handles two different request types, differentiated by shape of body
  *  @param  {Body shape 1}   {
  *            info {
-*               paymentId    : string   Unioni.se one-time payment id
+*               paymentId    : string   Unioni.se one-time payment id,
+*               errorCode    : string   ('InvalidCard', 'CardDeclined',
+*                                         'AccountNotFound',
+*                                         'InsufficientBalance', 'Unknown')
 *             },
 *             eventType      : string   payment status ('finish' || 'fail')
  *           }
@@ -551,6 +556,13 @@ exports.updateSFCAPE = async (req, res, next) => {
     if (!req.body.eventType) {
       // console.log("sf.ctrl.js > 591: !eventType");
       return res.status(422).json({ message: "No eventType submitted" });
+    }
+    // for unioni.se event types other than 'paymenet', return 200 and
+    // skip updating SF CAPE record
+    if (req.body.category !== "payment") {
+      return res
+        .status(200)
+        .json({ message: "Ignoring non-payment event type" });
     }
     // check if this is Body shape 2 (request from member app)
   } else if (req.body && req.body.One_Time_Payment_Id__c) {
@@ -580,12 +592,14 @@ exports.updateSFCAPE = async (req, res, next) => {
     // this is a request from unioni.se.
     // find the CAPE__c record with matching payment id,
     // then update it with payment status
+    const errorCode = req.body.info.errorCode || "";
     try {
       capeResult = await conn
         .sobject("CAPE__c")
         .find({ One_Time_Payment_Id__c: one_time_payment_id })
         .update({
-          One_Time_Payment_Status__c: req.body.eventType
+          One_Time_Payment_Status__c: req.body.eventType,
+          One_Time_Payment_Errors__c: errorCode
         });
       // console.log(`########################`);
       // console.log('result of sobject.find');

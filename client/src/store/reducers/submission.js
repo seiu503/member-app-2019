@@ -22,9 +22,12 @@ import {
   GET_CAPE_BY_SFID_SUCCESS,
   GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
+  SAVE_SUBMISSIONID,
   HANDLE_INPUT,
   CLEAR_FORM,
-  SET_CAPE_OPTIONS
+  SET_CAPE_OPTIONS,
+  SET_PAYMENT_DETAILS_CAPE,
+  SET_PAYMENT_DETAILS_DUES
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -113,6 +116,7 @@ export const INITIAL_STATE = {
     cardAddingUrl: "",
     memberShortId: "",
     activeMethodLast4: "",
+    cardBrand: "",
     paymentErrorHold: false,
     unioniseToken: "",
     unioniseRefreshToken: "",
@@ -128,6 +132,7 @@ export const INITIAL_STATE = {
     paymentMethod: "",
     donationFrequency: "Monthly",
     activeMethodLast4: "",
+    cardBrand: "",
     paymentErrorHold: false,
     monthlyOptions: [10, 13, 15, "Other"],
     oneTimeOptions: [15, 20, 25, "Other"],
@@ -157,6 +162,32 @@ function Submission(state = INITIAL_STATE, action) {
         cape: {
           monthlyOptions: { $set: action.payload.monthlyOptions },
           oneTimeOptions: { $set: action.payload.oneTimeOptions }
+        }
+      });
+
+    case SET_PAYMENT_DETAILS_CAPE:
+      // console.log("SET_PAYMENT_DETAILS_CAPE");
+      // console.log(action.payload);
+      return update(state, {
+        cape: {
+          activeMethodLast4: { $set: action.payload.cardLast4 },
+          cardBrand: { $set: action.payload.cardBrand }
+        },
+        formPage1: {
+          paymentMethodAdded: { $set: true }
+        }
+      });
+
+    case SET_PAYMENT_DETAILS_DUES:
+      // console.log("SET_PAYMENT_DETAILS_DUES");
+      // console.log(action.payload);
+      return update(state, {
+        payment: {
+          activeMethodLast4: { $set: action.payload.cardLast4 },
+          cardBrand: { $set: action.payload.cardBrand }
+        },
+        formPage1: {
+          paymentMethodAdded: { $set: true }
         }
       });
 
@@ -205,6 +236,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_DID_SUCCESS:
+      // console.log(action.payload);
       if (action.payload && action.payload.Account) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
@@ -247,6 +279,12 @@ function Submission(state = INITIAL_STATE, action) {
           }
           return null;
         });
+        const zip = action.payload.MailingPostalCode
+          ? action.payload.MailingPostalCode.slice(0, 5)
+          : "";
+        const parentId = action.payload.Account.Parent
+          ? action.payload.Account.Parent.Id
+          : null;
         const paymentRequired = utils.isPaymentRequired(employerType);
         return update(state, {
           salesforceId: { $set: action.payload.Id },
@@ -255,13 +293,13 @@ function Submission(state = INITIAL_STATE, action) {
             employerName: { $set: employerName },
             employerType: { $set: employerType },
             prefillEmployerId: { $set: action.payload.Account.Id },
-            prefillEmployerParentId: { $set: action.payload.Account.Parent.Id },
+            prefillEmployerParentId: { $set: parentId },
             firstName: { $set: action.payload.FirstName },
             lastName: { $set: action.payload.LastName },
             homeStreet: { $set: action.payload.MailingStreet },
             homeCity: { $set: action.payload.MailingCity },
             homeState: { $set: action.payload.MailingState },
-            homeZip: { $set: action.payload.MailingPostalCode },
+            homeZip: { $set: zip },
             homeEmail: { $set: action.payload.Home_Email__c },
             preferredLanguage: { $set: action.payload.Preferred_Language__c },
             termsAgree: { $set: false },
@@ -331,12 +369,14 @@ function Submission(state = INITIAL_STATE, action) {
       }
 
     case GET_SF_DJR_SUCCESS: {
+      // console.log(action.payload);
       return update(state, {
         payment: {
           activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
           paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
           memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
-          djrEmployerId: { $set: action.payload.Employer__c }
+          djrEmployerId: { $set: action.payload.Employer__c },
+          cardBrand: { $set: action.payload.Card_Brand__c }
         },
         djrId: { $set: action.payload.Id || action.payload.id }
       });
@@ -349,7 +389,9 @@ function Submission(state = INITIAL_STATE, action) {
           memberShortId: { $set: action.payload.member_short_id },
           donationAmount: { $set: action.payload.cape_amount },
           paymentMethod: { $set: action.payload.payment_method },
-          donationFrequency: { $set: action.payload.donation_frequency }
+          donationFrequency: { $set: action.payload.donation_frequency },
+          activeMethodLast4: { $set: action.payload.active_method_last_four },
+          cardBrand: { $set: action.payload.card_brand }
         }
       });
     }
@@ -466,6 +508,11 @@ function Submission(state = INITIAL_STATE, action) {
     case SAVE_SALESFORCEID:
       return update(state, {
         salesforceId: { $set: action.payload.salesforceId }
+      });
+
+    case SAVE_SUBMISSIONID:
+      return update(state, {
+        submissionId: { $set: action.payload.submissionId }
       });
 
     default:

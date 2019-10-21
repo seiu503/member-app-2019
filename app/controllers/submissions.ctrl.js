@@ -293,19 +293,19 @@ const verifyHumanity = async (req, res) => {
     },
     (err, httpResponse, body) => {
       if (err) {
-        // console.log(`submission.ctrl.js > 287:`);
-        // console.log(err);
+        console.log(`submission.ctrl.js > 287:`);
+        console.log(err);
         return res.status(500).json({ message: err.message });
       } else {
         const r = JSON.parse(body);
-        // console.log(`submissions.ctrl.js > 291: recaptcha error:`);
-        // console.log(r["error-codes"]);
+        console.log(`submissions.ctrl.js > 291: recaptcha error:`);
+        console.log(r["error-codes"]);
         if (r.success) {
           // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
           return res.status(200).json({ score: r.score });
         } else {
-          // console.log(`submissions.ctrl.js > 300: recaptcha failure`);
-          // console.log(r["error-codes"][0]);
+          console.log(`submissions.ctrl.js > 300: recaptcha failure`);
+          console.log(r["error-codes"][0]);
           return res.status(500).json({ message: r["error-codes"][0] });
         }
       }

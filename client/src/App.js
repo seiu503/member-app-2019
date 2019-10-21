@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
-import { loadReCaptcha, ReCaptcha } from "react-recaptcha-v3";
+import Recaptcha from "react-google-invisible-recaptcha";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withStyles } from "@material-ui/core/styles";
@@ -135,7 +135,7 @@ const styles = theme => ({
 export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
-    this.recaptcha_ref = React.createRef();
+    // this.recaptcha = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
     this.cape_legal = React.createRef();
@@ -162,11 +162,11 @@ export class AppUnconnected extends Component {
       more: false
     };
     this.props.addTranslation(globalTranslations);
-    this.verifyCallback = this.verifyCallback.bind(this);
-    this.refreshRecaptcha = this.refreshRecaptcha.bind(this);
+    this.onResolved = this.onResolved.bind(this);
   }
 
   componentDidMount() {
+    // console.log(`NODE_ENV: ${process.env.REACT_APP_ENV_TEXT}`);
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
@@ -185,24 +185,22 @@ export class AppUnconnected extends Component {
               window.localStorage.clear();
             }
           })
-          .catch(err => console.log(err));
+          .catch(err => {
+            console.log(err);
+          });
       }
     }
     const defaultLanguage = detectDefaultLanguage();
     this.props.setActiveLanguage(defaultLanguage);
-    loadReCaptcha("6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O");
   }
 
-  verifyCallback(recaptchaToken) {
-    // console.log(recaptchaToken, "<= your recaptcha token");
+  async onResolved() {
+    const token = await this.recaptcha.getResponse();
+    console.log(token);
     this.props.apiSubmission.handleInput({
-      target: { name: "reCaptchaValue", value: recaptchaToken }
+      target: { name: "reCaptchaValue", value: token }
     });
-  }
-
-  async refreshRecaptcha() {
-    // console.log("refreshRecaptcha");
-    this.recaptcha_ref.current.execute();
+    console.log(this.props.submission.formPage1.reCaptchaValue.length);
   }
 
   // resubmit submission and deleteSubmission methods here, to be passed to submission table
@@ -212,13 +210,12 @@ export class AppUnconnected extends Component {
     const { classes } = this.props;
     return (
       <div data-test="component-app" className={classes.appRoot}>
-        <ReCaptcha
-          ref={this.recaptcha_ref}
-          sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-          action="homepage"
-          verifyCallback={this.verifyCallback}
-        />
         <CssBaseline />
+        <Recaptcha
+          ref={ref => (this.recaptcha = ref)}
+          sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+          onResolved={this.onResolved}
+        />
         <NavBar main_ref={this.main_ref} />
         <Notifier />
         {this.props.appState.loading && <Spinner />}
@@ -235,8 +232,8 @@ export class AppUnconnected extends Component {
                   direct_pay={this.direct_pay}
                   direct_deposit={this.direct_deposit}
                   sigBox={this.sigBox}
-                  verifyCallback={this.verifyCallback}
-                  refreshRecaptcha={this.refreshRecaptcha}
+                  recaptcha={this.recaptcha}
+                  onResolved={this.onResolved}
                   {...routeProps}
                 />
               )}
@@ -353,7 +350,8 @@ AppUnconnected.propTypes = {
 const mapStateToProps = state => ({
   appState: state.appState,
   profile: state.profile,
-  content: state.content
+  content: state.content,
+  submission: state.submission
 });
 
 const mapDispatchToProps = dispatch => ({

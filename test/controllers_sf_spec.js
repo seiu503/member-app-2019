@@ -980,7 +980,7 @@ suite("sf.ctrl.js", function() {
     test("gets a single DJR record by Contact Id", async function() {
       query = `SELECT ${paymentFieldList.join(
         ","
-      )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'123456789\'`;
+      )}, LastModifiedDate, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'123456789\' ORDER BY LastModifiedDate DESC LIMIT 1`;
       try {
         await sfCtrl.getSFDJRById(req, res);
         assert.called(jsforceConnectionStub);
@@ -1528,7 +1528,8 @@ suite("sf.ctrl.js", function() {
               info: {
                 paymentId: "123"
               },
-              eventType: "finish"
+              eventType: "finish",
+              category: "payment"
             }
           });
           responseStub = [contactStub];
@@ -1607,7 +1608,8 @@ suite("sf.ctrl.js", function() {
             info: {
               paymentId: "123"
             },
-            eventType: "finish"
+            eventType: "finish",
+            category: "payment"
           }
         });
         try {
@@ -1645,7 +1647,8 @@ suite("sf.ctrl.js", function() {
             info: {
               paymentId: "123"
             },
-            eventType: null
+            eventType: null,
+            category: "payment"
           }
         });
         try {
@@ -1752,7 +1755,8 @@ suite("sf.ctrl.js", function() {
             info: {
               paymentId: "123"
             },
-            eventType: "finish"
+            eventType: "finish",
+            category: "payment"
           }
         });
         try {

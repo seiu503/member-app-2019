@@ -1,5 +1,6 @@
 import { RSAA } from "redux-api-middleware";
-import BASE_URL from "./apiConfig.js";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+// console.log(BASE_URL);
 
 /* =============================== CONTACTS ================================ */
 
@@ -648,9 +649,9 @@ export const GET_IFRAME_URL_FAILURE = "GET_IFRAME_URL_FAILURE";
 export function getIframeURL(body) {
   return {
     [RSAA]: {
-      endpoint: "https://lab.unioni.se/web/signup/create-member",
-      // ^^ this is the staging endpoint
-      // will need to be switched over to production later on
+      endpoint: `${
+        process.env.REACT_APP_UNIONISE_ENDPOINT
+      }/web/signup/create-member`,
       method: "POST",
       types: [
         GET_IFRAME_URL_REQUEST,
@@ -659,9 +660,19 @@ export function getIframeURL(body) {
           type: GET_IFRAME_URL_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
+              console.log(data);
+              if (
+                data &&
+                data.errors &&
+                data.errors[0].code ===
+                  "MemberWithEmployeeExternalIdAlreadyExists"
+              ) {
+                console.log("dup external id in unionise");
+                console.log(data.errors[0].message);
+              }
               let message = "Sorry, something went wrong :(";
-              if (data && data.message) {
-                message = data.message;
+              if (data && data.errors && data.errors[0].message) {
+                message = data.errors[0].message;
               }
               return { message };
             });
@@ -703,8 +714,6 @@ export function getIframeExisting(token, memberShortId) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/unionise/iframe`,
-      // ^^ this is the staging endpoint
-      // will need to be switched over to production later on
       method: "POST",
       types: [
         GET_IFRAME_EXISTING_REQUEST,
@@ -755,8 +764,6 @@ export function postOneTimePayment(token, body) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/unionise/oneTimePayment`,
-      // ^^ this is the staging endpoint
-      // will need to be switched over to production later on
       method: "POST",
       types: [
         POST_ONE_TIME_PAYMENT_REQUEST,

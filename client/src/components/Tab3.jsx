@@ -26,19 +26,45 @@ export const Tab3 = props => {
     payment,
     toggleCardAddingFrame
   } = props;
-  // console.log(isPaymentRequired(formValues.employerType));
+
   let duesCopy = "";
-  // console.log(formPage1.paymentType);
+  if (payment.cardBrand) {
+    console.log(payment.cardBrand);
+  }
+
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
-        duesCopy = formElements.afhDuesCopy(afhDuesRate);
+        duesCopy = (
+          <React.Fragment>
+            <Translate id="afhDuesCopy1">Monthly dues are</Translate>{" "}
+            {afhDuesRate}
+            <Translate id="afhDuesCopy2">
+              , calculated at $14.84 per Medicaid resident in your home(s), plus
+              $2.75 per month. Dues will be deducted on the 10th day of each
+              month from the payment method you provide below. Dues are set by
+              the SEIU Local 503 bylaws.
+            </Translate>
+          </React.Fragment>
+        );
         break;
       case "retired":
-        duesCopy = formElements.retireeDuesCopy;
+        duesCopy = (
+          <Translate id="retireeDuesCopy">
+            Monthly dues are $5 and will be deducted on the 10th day of each
+            month from the payment method you provide below. Dues are set by the
+            SEIU Local 503 bylaws.
+          </Translate>
+        );
         break;
       default:
-        duesCopy = formElements.commDuesCopy;
+        duesCopy = (
+          <Translate id="commDuesCopy">
+            Monthly dues are $10 and will be deducted on the 10th day of each
+            month from the payment method you provide below. Dues are set by the
+            SEIU Local 503 bylaws.
+          </Translate>
+        );
     }
   }
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -70,16 +96,19 @@ export const Tab3 = props => {
               classes={classes}
               component={formElements.renderRadioGroup}
               options={formElements.paymentTypes}
+              additionalOnChange={toggleCardAddingFrame}
             />
           )}
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&
           validMethod && (
             <div data-test="component-choose-card">
-              <Typography component="p" className={classes.body}>
-                <Translate id="existingPaymentMethod">
-                  Your existing payment method on file is the card ending in
+              <Typography component="p" className={classes.bodyCenter}>
+                <Translate id="existingPaymentMethod1">
+                  Your existing payment method on file is the
                 </Translate>{" "}
+                {payment.cardBrand}{" "}
+                <Translate id="existingPaymentMethod2">ending in</Translate>{" "}
                 {payment.activeMethodLast4}.
               </Typography>
               <Field
@@ -127,10 +156,9 @@ export const Tab3 = props => {
             </Typography>
             <Typography component="p" className={classes.body}>
               <Translate id="payByCheck2">
-                Please mail your payment of $5 (monthly) or $60 (annually) to
-                SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write
-                'Retiree Dues' on your check. Dues are set by the SEIU Local 503
-                bylaws.
+                {
+                  "Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write \u2018Retiree Dues\u2019 on your check. Dues are set by the SEIU Local 503 bylaws."
+                }
               </Translate>
             </Typography>
           </div>

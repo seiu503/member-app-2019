@@ -91,13 +91,13 @@ export const validate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = "Invalid phone number (e.g. 555-123-456)";
+    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
   }
   if (
     values.workPhone &&
     !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(values.workPhone)
   ) {
-    errors.workPhone = "Invalid phone number (e.g. 555-123-456)";
+    errors.workPhone = "Invalid phone number (e.g. 555-123-4567)";
   }
   if (
     values.hireDate &&
@@ -186,7 +186,7 @@ export const capeValidate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = "Invalid phone number (e.g. 555-123-456)";
+    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
   }
   if (values.homeZip && values.homeZip.length !== 5) {
     errors.homeZip = `Must be at exactly 5 characters long`;

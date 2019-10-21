@@ -20,12 +20,19 @@
 	"Nhấp vào đây để gõ chữ ký của quý vị",
 	"单击此处键入您的签名"
 ],
-"existingPaymentMethod": [
-	"Your existing payment method on file is the card ending in",
-	"La forma de pago existente registrada es la tarjeta que termina en",
-	"Ваш текущий зарегистрированный способ оплаты — карта с последними цифрами",
-	"Phương thức thanh toán hiện tại trên hồ sơ của quý vị là thẻ với số đuôi",
-	"您登记在案的现有付款方式是用卡支付"
+"existingPaymentMethod1": [
+	"Your existing payment method on file is the",
+	"La forma de pago existente registrada es la",
+	"Ваш существующий способ оплаты в файле",
+	"Phương thức thanh toán hiện tại của bạn trong hồ sơ là",
+	"您现有的付款方式是"
+],
+"existingPaymentMethod2": [
+	"ending in",
+	"que termina en",
+	"кончающийся на",
+	"kết thúc bằng",
+	"结束于"
 ],
 "addPayment": [
 	"Add a payment method",
@@ -33,6 +40,13 @@
 	"Добавить способ оплаты",
 	"Thêm phương thức thanh toán",
 	"添加付款方式"
+],
+"paymentType": [
+	"How would you like to pay your union dues?",
+	"¿Cómo le gustaría pagar sus cuotas sindicales?",
+	"Как бы вы хотели оплатить профсоюзные взносы?",
+	"Làm thế nào bạn muốn trả lệ phí công đoàn của bạn?",
+	"您想如何支付工会会费？"
 ],
 "payByCheck1": [
 	"To pay your dues by check:",
@@ -42,11 +56,11 @@
 	"通过支票支付会费："
 ],
 "payByCheck2": [
-	"Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree Dues' on your check. Dues are set by the SEIU Local 503 bylaws.",
-	"Envíe su pago de $5 (mensuales) o $60 (anuales) a SEIU Local 503 a la siguiente dirección: PO Box 12159, Salem, O 97309. Escriba 'Retiree Dues' (Cuota en calidad de jubilado) en su cheque. Los estatutos de SEIU Local 503 establecen las cuotas.",
+	"Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write \u2018Retiree Dues\u2019 on your check. Dues are set by the SEIU Local 503 bylaws.",
+	"Envíe su pago de $5 (mensuales) o $60 (anuales) a SEIU Local 503 a la siguiente dirección: PO Box 12159, Salem, O 97309. Escriba \u2018Retiree Dues\u2019 (Cuota en calidad de jubilado) en su cheque. Los estatutos de SEIU Local 503 establecen las cuotas.",
 	"отправляйте платеж в размере 5 долларов США (ежемесячно) или 60 долларов США (ежегодно) по адресу: SEIU Local 503, PO Box 12159, Salem, OR 97309. На чеке напишите Retiree Dues («Пенсионные отчисления»). Размер отчислений устанавливается Уставом SEIU Local 503.",
-	"Vui lòng gửi khoản thanh toán $5 (hàng tháng) hoặc $60 (hàng năm) đến địa chỉ SEIU Local 503, PO Box 12159, Salem HOẶC 97309. Vui lòng viết “Retiree Dues” (Thuế hưu trí) trên séc của quý vị. Thuế được đặt theo nội quy của SEIU Local 503.",
-	"请将您 5 美元（每月）或 60 美元（每年）的付款邮寄至 SEIU Local 503, PO Box 12159, Salem, OR 97309。请在支票上写上 'Retiree Dues'（退休人员会费）。会费依据 SEIU Local 503 的细则而定。"
+	"Vui lòng gửi khoản thanh toán $5 (hàng tháng) hoặc $60 (hàng năm) đến địa chỉ SEIU Local 503, PO Box 12159, Salem HOẶC 97309. Vui lòng viết \u2018Retiree Dues\u2019 (Thuế hưu trí) trên séc của quý vị. Thuế được đặt theo nội quy của SEIU Local 503.",
+	"请将您 5 美元（每月）或 60 美元（每年）的付款邮寄至 SEIU Local 503, PO Box 12159, Salem, OR 97309。请在支票上写上 \u2018Retiree Dues\u2019（退休人员会费）。会费依据 SEIU Local 503 的细则而定。"
 ],
 "whichCard": [
 	"Do you want to use the existing card or add a new one?",

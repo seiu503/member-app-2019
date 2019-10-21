@@ -42,6 +42,11 @@ const initialState = {
   }
 };
 
+const getResponseMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve("token"));
+const handleInputMock = jest.fn();
+
 const defaultProps = {
   appState: { loggedIn: true, authToken: "12345" },
   profile: {
@@ -58,6 +63,11 @@ const defaultProps = {
     deleteDialogOpen: false,
     currentContent: { content_type: "headline", content: "This is a headline" }
   },
+  submission: {
+    formPage1: {
+      reCaptchaValue: ""
+    }
+  },
   apiProfile: {
     validateToken: () => ({ type: "VALIDATE_TOKEN_SUCESS" })
   },
@@ -68,11 +78,16 @@ const defaultProps = {
     uploadImage: () => Promise.resolve({ type: "UPLOAD_IMAGE_SUCCESS" }),
     getContentById: () => Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
   },
-  apiSubmission: {},
+  apiSubmission: {
+    handleInput: handleInputMock
+  },
   initialize: jest.fn(),
   setActiveLanguage: jest.fn(),
   classes: {},
-  addTranslation: jest.fn()
+  addTranslation: jest.fn(),
+  recaptcha: {
+    getResponse: getResponseMock
+  }
 };
 
 const setup = (props = {}) => {
@@ -116,64 +131,100 @@ describe("<App />", () => {
     wrapper = setup();
     expect(wrapper.instance().props.appState.loggedIn).toBe(true);
   });
-
-  it("if !loggedIn, calls `validateToken` on componentDidMount if userId & authToken found in localStorage", () => {
-    localStorage.setItem("userId", "1234");
-    localStorage.setItem("authToken", "5678");
-
-    store = storeFactory(initialState);
-    // Create a spy of the dispatch() method for test assertions.
-    const dispatchSpy = jest.spyOn(store, "dispatch");
-    wrapper = mount(
-      <Provider store={store}>
-        <BrowserRouter>
-          <AppConnected {...defaultProps} />
-        </BrowserRouter>
-      </Provider>
-    );
-
-    const spyCall = dispatchSpy.mock.calls.find(
-      call =>
-        call[0].hasOwnProperty("@@redux-api-middleware/RSAA") &&
-        call[0]["@@redux-api-middleware/RSAA"].endpoint ===
-          "http://localhost:8080/api/user/1234"
-    )[0];
-    expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
-      JSON.parse(JSON.stringify(validateToken("5678", "1234")))
-    );
-  });
-
-  it("if `validateToken` fails, clear localStorage", () => {
-    window.localStorage.setItem("userId", "1234");
-    window.localStorage.setItem("authToken", "5678");
-
-    wrapper = unconnectedSetup();
-    const validateTokenErrorMock = jest.fn().mockImplementation(() => {
-      return Promise.resolve({ type: "VALIDATE_TOKEN_FAILURE" });
+  describe("componentDidMount", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
-    wrapper.instance().props.appState.loggedIn = false;
-    wrapper.instance().props.apiProfile.validateToken = validateTokenErrorMock;
-    const localStorageClearMock = jest.fn();
-    window.localStorage.clear = localStorageClearMock;
-    wrapper.instance().componentDidMount();
-    return validateTokenErrorMock()
-      .then(() => {
-        // expect(localStorageClearMock.mock.calls.length).toBe(1);
-        localStorageClearMock.mockRestore();
-      })
-      .catch(err => console.log(err));
+    it("if !loggedIn, calls `validateToken` on componentDidMount if userId & authToken found in localStorage", () => {
+      localStorage.setItem("userId", "1234");
+      localStorage.setItem("authToken", "5678");
+
+      store = storeFactory(initialState);
+      // Create a spy of the dispatch() method for test assertions.
+      const dispatchSpy = jest.spyOn(store, "dispatch");
+      wrapper = mount(
+        <Provider store={store}>
+          <BrowserRouter>
+            <AppConnected {...defaultProps} />
+          </BrowserRouter>
+        </Provider>
+      );
+
+      const spyCall = dispatchSpy.mock.calls.find(
+        call =>
+          call[0].hasOwnProperty("@@redux-api-middleware/RSAA") &&
+          call[0]["@@redux-api-middleware/RSAA"].endpoint ===
+            "http://localhost:8080/api/user/1234"
+      )[0];
+      expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
+        JSON.parse(JSON.stringify(validateToken("5678", "1234")))
+      );
+    });
+    it("if !loggedIn, console logs error if `validateToken` throws", () => {
+      localStorage.setItem("userId", "1234");
+      localStorage.setItem("authToken", "5678");
+      const validateTokenErrorMock = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "VALIDATE_TOKEN_FAILURE" })
+        );
+      wrapper = unconnectedSetup();
+      wrapper.instance().props.appState.loggedIn = false;
+      wrapper.instance().props.apiProfile.validateToken = validateTokenErrorMock;
+      const consoleLogMock = jest.fn();
+      const consoleLogOriginal = console.log;
+      console.log = consoleLogMock;
+      wrapper.instance().componentDidMount();
+      return validateTokenErrorMock()
+        .then(() => {
+          expect(consoleLogMock.mock.calls.length).toBe(1);
+          consoleLogMock.mockRestore();
+          console.log = consoleLogOriginal;
+        })
+        .catch(err => console.log(err));
+    });
+    it("if `validateToken` fails, clears localStorage", () => {
+      window.localStorage.setItem("userId", "1234");
+      window.localStorage.setItem("authToken", "5678");
+
+      wrapper = unconnectedSetup();
+      const validateTokenErrorMock = jest.fn().mockImplementation(() => {
+        return Promise.resolve({ type: "VALIDATE_TOKEN_FAILURE" });
+      });
+      wrapper.instance().props.appState.loggedIn = false;
+      wrapper.instance().props.apiProfile.validateToken = validateTokenErrorMock;
+      const localStorageClearMock = jest.fn();
+      window.localStorage.clear = localStorageClearMock;
+      wrapper.instance().componentDidMount();
+      return validateTokenErrorMock()
+        .then(() => {
+          // expect(localStorageClearMock.mock.calls.length).toBe(1);
+          localStorageClearMock.mockRestore();
+        })
+        .catch(err => console.log(err));
+    });
+    it("checks for browser language on componentDidMount", () => {
+      utils.detectDefaultLanguage = jest.fn();
+      wrapper = unconnectedSetup();
+      wrapper.instance().props.appState.loggedIn = false;
+      expect(wrapper.instance().props.setActiveLanguage).toHaveBeenCalled();
+      wrapper.instance().componentDidMount();
+      expect(utils.detectDefaultLanguage.mock.calls.length).toBe(1);
+    });
   });
-  it("checks for browser language on componentDidMount", () => {
-    utils.detectDefaultLanguage = jest.fn();
+
+  it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
     wrapper = unconnectedSetup();
-    expect(wrapper.instance().props.setActiveLanguage.mock.calls.length).toBe(
-      1
-    );
-    wrapper.instance().componentDidMount();
-    expect(utils.detectDefaultLanguage.mock.calls.length).toBe(1);
-    expect(wrapper.instance().props.setActiveLanguage.mock.calls.length).toBe(
-      2
-    );
+    wrapper.instance().recaptcha = {
+      getResponse: getResponseMock
+    };
+    wrapper.update();
+    await wrapper.instance().onResolved();
+    expect(getResponseMock.mock.calls.length).toBe(1);
+    await getResponseMock();
+    expect(handleInputMock).toHaveBeenCalledWith({
+      target: { name: "reCaptchaValue", value: "token" }
+    });
   });
 
   describe("route tests", () => {
@@ -226,8 +277,8 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(TextInputForm)).toHaveLength(1);
     });
-    test(' "/page2?id={id}" path should render SubmissionFormPage2 component', () => {
-      wrapper = routeSetup("/page2?id=12345678");
+    test(' "/page2?cId={cId}" path should render SubmissionFormPage2 component', () => {
+      wrapper = routeSetup("/page2?cId=12345678");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(SubmissionFormPage2)).toHaveLength(1);
     });

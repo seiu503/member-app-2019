@@ -46,7 +46,7 @@ router.get(
   authCtrl.googleCallback
 );
 
-/* =========================== VERIFY CAPTCHA  ============================= */
+/* ============================== CAPTCHA  ================================ */
 
 // VERIFY CAPTCHA
 //   Example: POST >> /api/verify

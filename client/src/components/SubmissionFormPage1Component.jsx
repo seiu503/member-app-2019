@@ -56,16 +56,42 @@ export class SubmissionFormPage1Component extends React.Component {
   // check for messages from iframe
   receiveMessage = event => {
     // Do we trust the sender of this message?
-    // ******* change to unioni.se prod url in production **********
-    if (event.origin !== "https://lab.unioni.se") {
+    const unioniseEndpoint = process.env.REACT_APP_UNIONISE_ENDPOINT;
+    if (event.origin !== unioniseEndpoint || !event.data.notification) {
       return;
     }
+    // event.data shape:
+    // notification: {
+    //    cardBrand: "Visa",
+    //    cardLast4: "4242",
+    //    message: "Card successfully added.",
+    //    type: "success"
+    //  }
 
-    if (event.data.notification.type === "success") {
+    const { type, cardBrand, cardLast4 } = event.data.notification;
+    if (type === "success") {
       // console.log("success");
-      this.props.apiSubmission.handleInput({
-        target: { name: "paymentMethodAdded", value: true }
-      });
+      if (
+        this.props.formValues.capeAmount &&
+        this.props.formValues.donationFrequency
+      ) {
+        // console.log("this iframe is for CAPE; setting CAPE details");
+        // console.log(event.data.notification);
+        return this.props.apiSubmission.setPaymentDetailsCAPE(
+          true,
+          cardBrand,
+          cardLast4
+        );
+      } else {
+        // console.log("this iframe is for dues; setting dues payment details");
+        // console.log(event.data.notification);
+        // console.log(cardBrand, cardLast4);
+        return this.props.apiSubmission.setPaymentDetailsDues(
+          true,
+          cardBrand,
+          cardLast4
+        );
+      }
     }
   };
 
@@ -178,7 +204,9 @@ export class SubmissionFormPage1Component extends React.Component {
       card_adding_url: payment.cardAddingUrl,
       member_id: payment.memberId,
       stripe_customer_id: payment.stripeCustomerId,
-      member_short_id: payment.memberShortId
+      member_short_id: payment.memberShortId,
+      active_method_last_four: payment.activeMethodLast4,
+      card_brand: payment.cardBrand
     };
     // console.log(updates);
     this.props.apiSubmission
@@ -241,6 +269,7 @@ export class SubmissionFormPage1Component extends React.Component {
     const { formPage1, payment } = this.props.submission;
 
     const id = this.props.submission.djrId;
+    // console.log(`djrId: ${id}`);
 
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
@@ -249,7 +278,9 @@ export class SubmissionFormPage1Component extends React.Component {
       Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
       Unioni_se_MemberID__c: payment.memberShortId,
-      Active_Account_Last_4__c: payment.activeMethodLast4
+      Active_Account_Last_4__c: payment.activeMethodLast4,
+      Card_Brand__c: payment.cardBrand,
+      Employer__c: formPage1.employerId
     };
 
     // create a new record if one doesn't exist, OR
@@ -339,7 +370,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.log(err);
       });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
@@ -350,10 +381,22 @@ export class SubmissionFormPage1Component extends React.Component {
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-
+    // console.log(
+    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    // );
+    // console.log(
+    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    // );
+    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    // console.log(
+    //   `paymentMethodAdded: ${
+    //     this.props.submission.formPage1.paymentMethodAdded
+    //   }`
+    // );
     if (
-      this.props.submission.formPage1.paymentRequired &&
-      this.props.submission.formPage1.paymentType === "Card" &&
+      ((this.props.submission.formPage1.paymentRequired &&
+        this.props.submission.formPage1.paymentType === "Card") ||
+        this.props.submission.formPage1.newCardNeeded) &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
       // console.log("No payment method added");
@@ -368,6 +411,26 @@ export class SubmissionFormPage1Component extends React.Component {
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
+        // if retiree selected pay by check in dues tab
+        // need to reset paymentMethodAdded and paymentType
+        // bc 'check' is not an option for CAPE
+
+        if (
+          this.props.submission.formPage1.employerType.toLowerCase() ===
+            "retired" &&
+          this.props.submission.formPage1.paymentType === "Check"
+        ) {
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentMethodAdded", value: false }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentType", value: "Card" }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "newCardNeeded", value: true }
+          });
+        }
+
         // redirect to CAPE tab
         if (!this.props.submission.error) {
           this.props.handleTab(this.props.howManyTabs - 1);

@@ -216,7 +216,7 @@ suite("cape.ctrl.js", function() {
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error updating the CAPE record";
       dbMethodStub = sinon.stub().throws(new Error(errorMsg));
-      capeModelStub = sinon.stub(cape, "updateCAPE").returns(dbMethodStub);
+      capeModelStub = sinon.stub(cape, "updateCAPE").resolves(dbMethodStub);
 
       try {
         await capeCtrl.updateCAPE(req, res);

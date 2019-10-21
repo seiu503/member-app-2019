@@ -37,17 +37,27 @@ const defaultProps = {
   classes: {},
   apiSF: {
     getSFContactById: () => Promise.resolve({ type: "GET_SF_CONTACT_SUCCESS" }),
-    updateSFContact: () => Promise.resolve({ type: UPDATE_SF_CONTACT_SUCCESS })
+    updateSFContact: () =>
+      Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS" })
   },
-  apiSubmission: {},
+  apiSubmission: {
+    saveSubmissionId: jest.fn()
+  },
   history: {
     push: pushMock
   },
   addTranslation: jest.fn(),
   actions: {
     setSpinner: jest.fn()
+  },
+  location: {
+    search: "?cId=1&aId=3&sId=2"
   }
 };
+
+const getSFContactByIdError = jest
+  .fn()
+  .mockImplementation(() => Promise.reject({ type: "GET_SF_CONTACT_FAILURE" }));
 
 const setup = (props = {}) => {
   store = mockStore(defaultProps);
@@ -107,5 +117,19 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
     // console.log(dispatchSpy.mock.calls);
     const spyCall = dispatchSpy.mock.calls[0][0];
     expect(spyCall).toEqual("1");
+  });
+  test("handles error if `getSFContactById` throws", () => {
+    let props = {
+      submission: {
+        salesforceId: "1"
+      },
+      apiSF: {
+        getSFContactById: getSFContactByIdError
+      }
+    };
+    wrapper = setup(props);
+    wrapper.instance().componentDidMount();
+
+    expect(getSFContactByIdError.mock.calls.length).toBe(1);
   });
 });
