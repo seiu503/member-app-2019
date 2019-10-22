@@ -166,7 +166,7 @@ export class AppUnconnected extends Component {
   }
 
   componentDidMount() {
-    console.log(`NODE_ENV: ${process.env.REACT_APP_ENV_TEXT}`);
+    console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
