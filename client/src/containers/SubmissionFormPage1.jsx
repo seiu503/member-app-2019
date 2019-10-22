@@ -1437,12 +1437,11 @@ export class SubmissionFormPage1Container extends React.Component {
       const sfCapeBody = {
         Id: sf_cape_id,
         One_Time_Payment_Id__c: oneTimePaymentId,
-        Active_Account_Last_4__c: this.props.submission.payment
-          .activeMethodLast4,
-        Card_Brand__c: this.props.submission.payment.cardBrand
+        Active_Account_Last_4__c: this.props.submission.cape.activeMethodLast4,
+        Card_Brand__c: this.props.submission.cape.cardBrand
       };
 
-      // console.log(sfCapeBody);
+      console.log(sfCapeBody);
 
       const sfCapeUpdateResult = await this.props.apiSF
         .updateSFCAPE(sfCapeBody)

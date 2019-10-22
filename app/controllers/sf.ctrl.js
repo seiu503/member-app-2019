@@ -39,7 +39,7 @@ const password =
     ? process.env.SALESFORCE_PROD_PWD
     : process.env.SALESFORCE_PWD;
 
-console.log(`sf.ctrl.js > password: ${password}`);
+// console.log(`sf.ctrl.js > password: ${password}`);
 
 const unioniseEndpoint =
   process.env.NODE_CONFIG_ENV === "production"
@@ -66,7 +66,7 @@ const unionisePassword =
     ? process.env.UNIONISE_PROD_PASSWORD
     : process.env.UNIONISE_PASSWORD;
 
-console.log(`sf.ctrl.js > unionisePassword: ${unionisePassword}`);
+// console.log(`sf.ctrl.js > unionisePassword: ${unionisePassword}`);
 
 const unioniseClientSecret =
   process.env.NODE_CONFIG_ENV === "production"
@@ -75,7 +75,7 @@ const unioniseClientSecret =
     ? process.env.UNIONISE_PROD_CLIENT_SECRET
     : process.env.UNIONISE_CLIENT_SECRET;
 
-console.log(`sf.ctrl.js > unioniseClientSecret: ${unioniseClientSecret}`);
+// console.log(`sf.ctrl.js > unioniseClientSecret: ${unioniseClientSecret}`);
 
 const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
@@ -512,8 +512,8 @@ exports.createSFCAPE = async (req, res, next) => {
     // convert datetime to yyyy-mm-dd format
     body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
 
-    // console.log(`sf.ctrl.js > 547`);
-    // console.log(body);
+    console.log(`################# sf.ctrl.js > 515 (createSFCAPE body)`);
+    console.log(body);
 
     CAPE = await conn.sobject("CAPE__c").create({
       ...body
@@ -612,9 +612,10 @@ exports.updateSFCAPE = async (req, res, next) => {
 
       if (!capeResult[0] || !capeResult[0].success) {
         error = `No matching record found for payment id ${one_time_payment_id}`;
-        console.error(`sf.ctrl.js > 601: ${capeResult[0].errors}`);
+
         if (capeResult[0] && capeResult[0].errors) {
           error += `, ${capeResult[0].errors[0]}`;
+          console.error(`sf.ctrl.js > 618: ${capeResult[0].errors}`);
         }
         return res.status(404).json({ message: error });
       }
@@ -710,7 +711,7 @@ exports.getAllEmployers = async (req, res, next) => {
  */
 
 exports.getIframeExisting = async (req, res, next) => {
-  console.log("getIframeExisting");
+  // console.log("getIframeExisting");
   const { memberShortId } = req.body;
 
   const url = `${unioniseEndpoint}/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
@@ -720,14 +721,14 @@ exports.getIframeExisting = async (req, res, next) => {
     "content-type": "application/x-www-form-urlencoded",
     Authorization: req.headers.authorization
   };
-  console.log(`sf.ctrl.js > 723: ${url}`);
-  console.log(headers);
+  // console.log(`sf.ctrl.js > 723: ${url}`);
+  // console.log(headers);
 
   axios
     .post(url, data, { headers })
     .then(response => {
-      console.log(`sf.ctrl.js > 729`);
-      console.log(response.data);
+      // console.log(`sf.ctrl.js > 729`);
+      // console.log(response.data);
       if (!response.data || !response.data.cardAddingUrl) {
         console.error(
           `########### sf.ctrl.js > 732: Error while fetching card adding iFrame`
@@ -773,8 +774,8 @@ exports.getUnioniseToken = async (req, res, next) => {
   axios
     .post(url, data, { headers })
     .then(response => {
-      console.log(`sf.ctrl.js > 774`);
-      console.log(response.data);
+      // console.log(`sf.ctrl.js > 774`);
+      // console.log(response.data);
       if (!response.data || !response.data.access_token) {
         console.error(`sf.ctrl.js > 777: Error while fetching access token`);
         return res

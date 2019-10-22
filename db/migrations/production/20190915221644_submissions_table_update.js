@@ -19,7 +19,11 @@ exports.down = function(knex) {
         return knex.schema.table("submissions", function(table) {
           table.dropColumn("submission_status");
           table.dropColumn("submission_errors");
-          table.dropColumn("card_brand");
+          knex.schema.hasColumn("card_brand").then(function(exists) {
+            if (exists) {
+              table.dropColumn("card_brand");
+            }
+          });
         });
       }
     })

@@ -7,11 +7,11 @@
     "test": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --exit",
     "start": "webpack -d | node server.js",
     "prod-start": "cd .. && yarn server",
-    "client": "cd client && yarn build && yarn start",
-    "server": "LOG_LEVEL=debug supervisor --inspect server.js",
+    "dev-client": "cd client && yarn build:dev && yarn start",
+    "dev-server": "NODE_CONFIG_ENV=development LOG_LEVEL=debug supervisor --inspect server.js",
     "prod-server": "LOG_LEVEL=debug supervisord --inspect server.js",
     "sass": "cd client && yarn dev",
-    "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\" \"yarn sass\""
+    "dev": "concurrently --kill-others-on-fail \"yarn dev-server\" \"yarn dev-client\" \"yarn sass\""
   },
   "repository": {
     "type": "git",
