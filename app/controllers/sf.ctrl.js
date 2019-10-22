@@ -710,7 +710,7 @@ exports.getAllEmployers = async (req, res, next) => {
  */
 
 exports.getIframeExisting = async (req, res, next) => {
-  // console.log("getIframeExisting");
+  console.log("getIframeExisting");
   const { memberShortId } = req.body;
 
   const url = `${unioniseEndpoint}/api/v1/members/${memberShortId}/generate-payment-method-iframe-url`;
@@ -720,7 +720,7 @@ exports.getIframeExisting = async (req, res, next) => {
     "content-type": "application/x-www-form-urlencoded",
     Authorization: req.headers.authorization
   };
-  console.log(`sf.ctrl.js > 723`);
+  console.log(`sf.ctrl.js > 723: ${url}`);
   console.log(headers);
 
   axios
@@ -730,7 +730,7 @@ exports.getIframeExisting = async (req, res, next) => {
       console.log(response.data);
       if (!response.data || !response.data.cardAddingUrl) {
         console.error(
-          `sf.ctrl.js > 732: Error while fetching card adding iFrame`
+          `########### sf.ctrl.js > 732: Error while fetching card adding iFrame`
         );
         return res
           .status(500)
@@ -739,7 +739,7 @@ exports.getIframeExisting = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      console.error(`sf.ctrl.js > 740: ${err}`);
+      console.error(`######### sf.ctrl.js > 740: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };

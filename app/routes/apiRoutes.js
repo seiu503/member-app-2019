@@ -347,7 +347,7 @@ router.delete(
 //        home_zip               : String
 //        home_email             : String
 //        job_title              : String
-//        paymentMethod          : String ('Checkoff' || 'Unionisee')
+//        paymentMethod          : String ('Checkoff' || 'Unionise')
 //        online_campaign_source : String
 //        cape_legal             : Text
 //        capeAmount             : Number
@@ -524,7 +524,7 @@ router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
 //        home_zip               : String
 //        home_email             : String
 //        job_title              : String
-//        paymentMethod          : String ('Checkoff' || 'Unionisee')
+//        paymentMethod          : String ('Checkoff' || 'Unionise')
 //        online_campaign_source : String
 //        cape_legal             : Text
 //        capeAmount             : Number
