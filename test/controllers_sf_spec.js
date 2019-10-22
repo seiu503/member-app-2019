@@ -1337,7 +1337,7 @@ suite("sf.ctrl.js", function() {
           req = mockReq({
             body: {
               info: {
-                paymentId: "123"
+                paymentRequestId: "123"
               },
               eventType: "finish",
               category: "payment"
@@ -1417,7 +1417,7 @@ suite("sf.ctrl.js", function() {
         const req = mockReq({
           body: {
             info: {
-              paymentId: "123"
+              paymentRequestId: "123"
             },
             eventType: "finish",
             category: "payment"
@@ -1456,7 +1456,7 @@ suite("sf.ctrl.js", function() {
         const req = mockReq({
           body: {
             info: {
-              paymentId: "123"
+              paymentRequestId: "123"
             },
             eventType: null,
             category: "payment"
@@ -1507,8 +1507,8 @@ suite("sf.ctrl.js", function() {
         }
       });
 
-      test("returns error if no payment id in body", async function() {
-        sobjectError = "No payment Id submitted";
+      test("returns error if no payment request id in body", async function() {
+        sobjectError = "No payment request Id submitted";
         jsforceSObjectUpdateStub = sinon
           .stub()
           .returns({ message: sobjectError });
@@ -1542,7 +1542,7 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject find returns no record", async function() {
-        sobjectError = `No matching record found for payment id 123, Error0`;
+        sobjectError = `No matching record found for paymentRequestId 123, Error0`;
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;
@@ -1564,7 +1564,7 @@ suite("sf.ctrl.js", function() {
         const req = mockReq({
           body: {
             info: {
-              paymentId: "123"
+              paymentRequestId: "123"
             },
             eventType: "finish",
             category: "payment"

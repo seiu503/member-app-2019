@@ -503,7 +503,7 @@ exports.createSFCAPE = async (req, res, next) => {
     const bodyRaw = { ...req.body };
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
-      if (capeTableFields[key]) {
+      if (capeTableFields[key] && capeTableFields[key].SFAPIName) {
         const sfFieldName = capeTableFields[key].SFAPIName;
         body[sfFieldName] = bodyRaw[key];
       }
@@ -535,7 +535,7 @@ exports.createSFCAPE = async (req, res, next) => {
     handles two different request types, differentiated by shape of body
  *  @param  {Body shape 1}   {
  *            info {
- *              paymentId    : string   Unioni.se one-time payment id,
+ *              paymentRequestId    : string   Unioni.se payment request id,
  *              errorCode    : string   ('InvalidCard', 'CardDeclined',
  *                                        'AccountNotFound',
  *                                        'InsufficientBalance', 'Unknown')
@@ -556,7 +556,7 @@ exports.updateSFCAPE = async (req, res, next) => {
   let one_time_payment_id;
   // check if this is Body shape 1 (request from unioni.se)
   if (req.body && req.body.info) {
-    one_time_payment_id = req.body.info.paymentId;
+    one_time_payment_id = req.body.info.paymentRequestId;
     if (!req.body.eventType) {
       console.error("sf.ctrl.js > 547: !eventType");
       return res.status(422).json({ message: "No eventType submitted" });
@@ -578,7 +578,7 @@ exports.updateSFCAPE = async (req, res, next) => {
   }
   if (!one_time_payment_id) {
     console.error("sf.ctrl.js > 566: !paymentId");
-    return res.status(422).json({ message: "No payment Id submitted" });
+    return res.status(422).json({ message: "No payment request Id submitted" });
   }
 
   // console.log(`sf.ctrl.js > 588: one_time_payment_id: ${one_time_payment_id}`);
@@ -611,7 +611,7 @@ exports.updateSFCAPE = async (req, res, next) => {
       let error;
 
       if (!capeResult[0] || !capeResult[0].success) {
-        error = `No matching record found for payment id ${one_time_payment_id}`;
+        error = `No matching record found for paymentRequestId ${one_time_payment_id}`;
 
         if (capeResult[0] && capeResult[0].errors) {
           error += `, ${capeResult[0].errors[0]}`;
