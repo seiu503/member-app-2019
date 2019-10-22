@@ -423,7 +423,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
       // set campaign source
       const q = queryString.parse(this.props.location.search);
-      returnValues.campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+      returnValues.campaignSource = q && q.s ? q.s : "NewMemberForm_201910";
 
       // set salesforce id
       if (!values.salesforceId) {
