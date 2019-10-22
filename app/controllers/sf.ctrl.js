@@ -701,7 +701,7 @@ exports.getAllEmployers = async (req, res, next) => {
 
 /* =============================== UNIONISE =============================== */
 
-/* +++++++++++++++++++++++++++++++ IFRAMEURL: GET +++++++++++++++++++++++++ */
+/* +++++++++++++++++++++++++++++++ IFRAMEURL: POST +++++++++++++++++++++++++ */
 
 /** Get an iFrame URL for an existing unionise member by memberShortId
  *  @param        String      memberShortId
@@ -720,15 +720,18 @@ exports.getIframeExisting = async (req, res, next) => {
     "content-type": "application/x-www-form-urlencoded",
     Authorization: req.headers.authorization
   };
-  // console.log(`sf.ctrl.js > 564`);
-  // console.log(headers);
+  console.log(`sf.ctrl.js > 723`);
+  console.log(headers);
 
   axios
     .post(url, data, { headers })
     .then(response => {
-      // console.log(`sf.ctrl.js > 567`);
-      // console.log(response.data);
+      console.log(`sf.ctrl.js > 729`);
+      console.log(response.data);
       if (!response.data || !response.data.cardAddingUrl) {
+        console.error(
+          `sf.ctrl.js > 732: Error while fetching card adding iFrame`
+        );
         return res
           .status(500)
           .json({ message: "Error while fetching card adding iFrame" });
@@ -736,7 +739,7 @@ exports.getIframeExisting = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      console.error(`sf.ctrl.js > 588: ${err}`);
+      console.error(`sf.ctrl.js > 740: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
@@ -770,9 +773,10 @@ exports.getUnioniseToken = async (req, res, next) => {
   axios
     .post(url, data, { headers })
     .then(response => {
-      // console.log(`sf.ctrl.js > 615`);
-      // console.log(response.data);
+      console.log(`sf.ctrl.js > 774`);
+      console.log(response.data);
       if (!response.data || !response.data.access_token) {
+        console.error(`sf.ctrl.js > 777: Error while fetching access token`);
         return res
           .status(500)
           .json({ message: "Error while fetching access token" });
@@ -780,7 +784,7 @@ exports.getUnioniseToken = async (req, res, next) => {
       return res.status(200).json(response.data);
     })
     .catch(err => {
-      console.error(`sf.ctrl.js > 769: ${err}`);
+      console.error(`sf.ctrl.js > 785: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };

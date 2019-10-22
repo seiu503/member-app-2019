@@ -196,11 +196,11 @@ export class AppUnconnected extends Component {
 
   async onResolved() {
     const token = await this.recaptcha.getResponse();
-    console.log(token);
+    // console.log(token);
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
-    console.log(this.props.submission.formPage1.reCaptchaValue.length);
+    // console.log(this.props.submission.formPage1.reCaptchaValue.length);
   }
 
   // resubmit submission and deleteSubmission methods here, to be passed to submission table
