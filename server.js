@@ -60,6 +60,11 @@ var port = 8080;
 if (!module.parent) {
   app.listen(port, function() {
     console.log("Node.js listening on port " + port + "...");
+    console.log(
+      `################## server.js > NODE_CONFIG_ENV: ${
+        process.env.NODE_CONFIG_ENV
+      }`
+    );
   });
 }
 

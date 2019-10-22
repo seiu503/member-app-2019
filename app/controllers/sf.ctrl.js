@@ -1,6 +1,3 @@
-console.log(
-  `################## sf.ctrl.js > NODE_ENV: ${process.env.NODE_ENV}`
-);
 const jsforce = require("jsforce");
 const axios = require("axios");
 const {
@@ -16,9 +13,9 @@ const {
 // staging setup for with prod URL/user/pwd for now
 // switch to dev when prod deployed
 const loginUrl =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.SALESFORCE_PROD_URL
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.SALESFORCE_PROD_URL
     : process.env.SALESFORCE_DEV_URL;
 
@@ -27,54 +24,54 @@ console.log(`sf.ctrl.js > loginUrl: ${loginUrl}`);
 let conn = new jsforce.Connection({ loginUrl });
 
 const user =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.SALESFORCE_PROD_USER
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.SALESFORCE_PROD_USER
     : process.env.SALESFORCE_USER;
 
 console.log(`sf.ctrl.js > user: ${user}`);
 
 const password =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.SALESFORCE_PROD_PWD
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.SALESFORCE_PROD_PWD
     : process.env.SALESFORCE_PWD;
 
 console.log(`sf.ctrl.js > password: ${password}`);
 
 const unioniseEndpoint =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.UNIONISE_PROD_ENDPOINT
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_PROD_ENDPOINT
     : process.env.UNIONISE_ENDPOINT;
 
 console.log(`sf.ctrl.js > unioniseEndpoint: ${unioniseEndpoint}`);
 
 const unioniseAuthEndpoint =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
     : process.env.UNIONISE_AUTH_ENDPOINT;
 
 console.log(`sf.ctrl.js > unioniseAuthEndpoint: ${unioniseAuthEndpoint}`);
 
 const unionisePassword =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.UNIONISE_PROD_PASSWORD
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_PROD_PASSWORD
     : process.env.UNIONISE_PASSWORD;
 
 console.log(`sf.ctrl.js > unionisePassword: ${unionisePassword}`);
 
 const unioniseClientSecret =
-  process.env.NODE_ENV === "production"
+  process.env.NODE_CONFIG_ENV === "production"
     ? process.env.UNIONISE_PROD_CLIENT_SECRET
-    : process.env.NODE_ENV === "staging"
+    : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_PROD_CLIENT_SECRET
     : process.env.UNIONISE_CLIENT_SECRET;
 
