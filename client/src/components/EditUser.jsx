@@ -65,7 +65,7 @@ const styles = theme => ({
   }
 });
 
-export class CreateUserFormUnconnected extends React.Component {
+export class EditUserFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,7 +92,7 @@ export class CreateUserFormUnconnected extends React.Component {
               "An error occurred while trying to find user"
           );
         } else {
-          openSnackbar("success", "user found successfully!");
+          openSnackbar("success", "User found successfully!");
         }
       })
       .catch(err => {
@@ -184,7 +184,7 @@ export class CreateUserFormUnconnected extends React.Component {
           />
         )}
         {this.props.user.currentUser.id && (
-          <div>
+          <div data-test="component-edit-user-form">
             <Typography
               variant="h2"
               align="center"
@@ -262,7 +262,7 @@ export class CreateUserFormUnconnected extends React.Component {
           </div>
         )}
         {!this.props.user.currentUser.id && (
-          <div>
+          <div data-test="component-edit-user-find">
             <Typography
               variant="h2"
               align="center"
@@ -307,7 +307,7 @@ export class CreateUserFormUnconnected extends React.Component {
   }
 }
 
-CreateUserFormUnconnected.propTypes = {
+EditUserFormUnconnected.propTypes = {
   user: PropTypes.shape({
     form: PropTypes.shape({
       firstName: PropTypes.string,
@@ -343,9 +343,9 @@ const mapDispatchToProps = dispatch => ({
   apiUser: bindActionCreators(apiUserActions, dispatch)
 });
 
-export const CreateUserFormConnected = connect(
+export const EditUserFormConnected = connect(
   mapStateToProps,
   mapDispatchToProps
-)(CreateUserFormUnconnected);
+)(EditUserFormUnconnected);
 
-export default withStyles(styles)(CreateUserFormConnected);
+export default withStyles(styles)(EditUserFormConnected);
