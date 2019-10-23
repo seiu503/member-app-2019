@@ -212,7 +212,9 @@ exports.createSFContact = async (req, res, next) => {
 exports.lookupSFContactByFLE = async (req, res, next) => {
   // console.log("lookupSFContactByFLE");
   const { first_name, last_name, home_email } = req.body;
-  // fuzzy match on first name AND exact match on last name
+
+  // fuzzy match on first name OR nickname
+  // AND exact match on last name
   // AND exact match on either home OR work email
   // limit one most recently updated record
 
@@ -225,7 +227,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
 
   const query = `SELECT Id, ${fieldList.join(
     ","
-  )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+  )} FROM Contact WHERE (FirstName LIKE \'${first_name}\' OR Salutation_Nickname__c LIKE \'${first_name}\') AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -512,7 +514,7 @@ exports.createSFCAPE = async (req, res, next) => {
     // convert datetime to yyyy-mm-dd format
     body.Submission_Date__c = formatDate(new Date(bodyRaw.submission_date));
 
-    console.log(`################# sf.ctrl.js > 515 (createSFCAPE body)`);
+    console.log(`################# sf.ctrl.js > 517 (createSFCAPE body)`);
     console.log(body);
 
     CAPE = await conn.sobject("CAPE__c").create({
