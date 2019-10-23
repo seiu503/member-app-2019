@@ -1430,9 +1430,14 @@ export class SubmissionFormPage1Container extends React.Component {
     });
     // console.log(capeResult);
 
-    // if this is a one-time CAPE payment
-    // then update the payment id in SF
-    if (formValues.donationFrequency === "One-Time" && oneTimePaymentId) {
+    // if this was a unionise CAPE payment
+    // then update the activeMethodLast4, card brand, and
+    // payment id (if one-time payment) in SF
+    if (
+      oneTimePaymentId ||
+      !!this.props.submission.cape.activeMethodLast4 ||
+      !!this.props.submission.cape.cardBrand
+    ) {
       // generate body for this call
       const sfCapeBody = {
         Id: sf_cape_id,
