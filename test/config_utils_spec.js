@@ -76,7 +76,7 @@ suite("static.ctrl.js", function() {
     res = mockRes();
     try {
       result = await staticCtrl.serveClient(req, res);
-      assert.calledWith(res.status, 200);
+      sinon.assert.calledWith(res.status, 200);
     } catch (err) {
       console.log(err);
     }

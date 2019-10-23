@@ -45,7 +45,7 @@ const createUser = (req, res, next) => {
         return res.status(200).json(user);
       })
       .catch(err => {
-        console.log(`users.ctrl.js > 48: ${err}`);
+        console.log(`users.ctrl.js > 48: ${err.message}`);
         let message = err.message;
         if (
           err.message.includes(
@@ -57,7 +57,7 @@ const createUser = (req, res, next) => {
         res.status(500).json({ message });
       });
   } else {
-    console.log(`users.ctrl.js > 61`);
+    console.log(`users.ctrl.js > 61: missing required field`);
     return res
       .status(500)
       .json({ message: "There was an error creating the user account" });
@@ -104,7 +104,7 @@ const updateUser = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(`users.ctrl.js > 107: ${err}`);
+      console.log(`users.ctrl.js > 107: ${err.message}`);
       return res.status(500).json({ message: err.message });
     });
 };
@@ -133,7 +133,7 @@ const deleteUser = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(`users.ctrl.js > 139: ${err}`);
+      console.log(`users.ctrl.js > 139: ${err.message}`);
       return res.status(404).json({ message: err.message });
     });
 };
@@ -161,7 +161,7 @@ const getUsers = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(`users.ctrl.js > 168: ${err}`);
+      console.log(`users.ctrl.js > 168: ${err.message}`);
       return res.status(404).json({ message: err.message });
     });
 };
@@ -171,8 +171,13 @@ const getUsers = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getUserById = (req, res, next) => {
+  const { id } = req.params;
+  if (!id) {
+    console.log(`users.ctrl.js > 176: no Id in params`);
+    return res.status(500).json({ message: "No user Id provided" });
+  }
   return users
-    .getUserById(req.params.id)
+    .getUserById(id)
     .then(user => {
       if (!user || user.message) {
         let message = "User not found";
@@ -186,7 +191,7 @@ const getUserById = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.log(`users.ctrl.js > 196: ${err}`);
+      console.log(`users.ctrl.js > 196: ${err.message}`);
       return res.status(500).json({ message: err.message });
     });
 };
@@ -213,7 +218,10 @@ const getUserByEmail = (req, res, next) => {
         return res.status(200).json(user);
       }
     })
-    .catch(err => res.status(500).json({ message: err.message }));
+    .catch(err => {
+      console.log(`users.ctrl.js > 217: ${err.message}`);
+      return res.status(500).json({ message: err.message });
+    });
 };
 /* ================================ EXPORT ================================= */
 

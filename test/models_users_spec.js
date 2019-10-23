@@ -123,7 +123,6 @@ describe("user model tests", () => {
 
     it("GET gets one user by email", () => {
       return users.getUserByEmail(test_email).then(returnedUser => {
-        console.log(returnedUser);
         assert.equal(returnedUser.name, updatedName);
         assert.equal(returnedUser.email, updatedEmail);
         assert.equal(returnedUser.avatar_url, updatedAvatar_url);

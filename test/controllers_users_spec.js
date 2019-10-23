@@ -441,23 +441,6 @@ suite("users.ctrl.js", function() {
       }
     });
 
-    test("returns 500 if wrong userType", async function() {
-      req = mockReq({
-        params: { user_type: "view" }
-      });
-      responseStub = {
-        message:
-          "You do not have permission to do this. Please consult an administrator."
-      };
-      try {
-        await userCtrl.getUserById(req, res);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
     test("returns 500 if server error", async function() {
       errorMsg = "User not found";
       userModelStub = sinon

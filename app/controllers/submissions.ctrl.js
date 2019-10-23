@@ -138,7 +138,11 @@ const createSubmission = async (req, res, next) => {
       return res.status(500).json({ message: err.message });
     });
 
-  if (!createSubmissionResult || createSubmissionResult.message) {
+  if (
+    !createSubmissionResult ||
+    !createSubmissionResult.length ||
+    createSubmissionResult.message
+  ) {
     console.error(
       `submissions.ctrl.js > 142: ${createSubmissionResult.message ||
         "There was an error saving the submission"}`
@@ -222,7 +226,7 @@ const deleteSubmission = async (req, res, next) => {
   if (userType != "admin" || !userType) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to access this content. Please consult an administrator."
     });
   }
   try {
@@ -235,7 +239,7 @@ const deleteSubmission = async (req, res, next) => {
       message: "An error occurred and the submission was not deleted."
     });
   } catch (err) {
-    console.error(`submissions.ctrl.js > 229: ${err}`);
+    console.error(`submissions.ctrl.js > 229: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -259,7 +263,7 @@ const getSubmissions = (req, res, next) => {
       return res.status(200).json(submissions);
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 247: ${err}`);
+      console.error(`submissions.ctrl.js > 247: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -273,7 +277,7 @@ const getSubmissionById = (req, res, next) => {
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
       message:
-        "You do not have permission to do this. Please Consult an administrator."
+        "You do not have permission to access this content. Please consult an administrator."
     });
   }
   return submissions
@@ -291,7 +295,7 @@ const getSubmissionById = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 272: ${err}`);
+      console.error(`submissions.ctrl.js > 272: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };

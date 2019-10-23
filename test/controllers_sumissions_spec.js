@@ -215,7 +215,7 @@ suite("sumissions.ctrl.js", function() {
         assert.calledWith(res.status, 422);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -281,7 +281,7 @@ suite("sumissions.ctrl.js", function() {
           chai.assert.property(result, key);
         });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -297,7 +297,7 @@ suite("sumissions.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -312,7 +312,6 @@ suite("sumissions.ctrl.js", function() {
 
       try {
         await submCtrl.getSubmissions(req, res, next);
-        assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
@@ -385,7 +384,7 @@ suite("sumissions.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
@@ -400,7 +399,6 @@ suite("sumissions.ctrl.js", function() {
 
       try {
         await submCtrl.getSubmissionById(req, res, next);
-        assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
@@ -481,11 +479,10 @@ suite("sumissions.ctrl.js", function() {
 
       try {
         await submCtrl.deleteSubmission(req, res, next);
-        assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
