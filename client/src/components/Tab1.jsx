@@ -1,5 +1,5 @@
 import React from "react";
-import { ReCaptcha } from "react-recaptcha-v3";
+// import { ReCaptcha } from "react-recaptcha-v3";
 import {
   Field,
   reduxForm,
@@ -36,6 +36,7 @@ export const Tab1 = props => {
     employerTypesList,
     employerList,
     updateEmployersPicklist,
+    handleEmployerChange,
     renderSelect,
     renderTextField,
     renderCheckbox,
@@ -43,6 +44,15 @@ export const Tab1 = props => {
     width,
     verifyCallback
   } = props;
+
+  const employerNameOnChange = () => {
+    handleEmployerChange();
+  };
+
+  const employerTypeOnChange = () => {
+    updateEmployersPicklist();
+    handleEmployerChange();
+  };
 
   return (
     <div data-test="component-tab1" className={classes.sectionContainer}>
@@ -61,7 +71,7 @@ export const Tab1 = props => {
             classes={classes}
             component={renderSelect}
             options={employerTypesList}
-            onChange={updateEmployersPicklist}
+            onChange={employerTypeOnChange}
             labelWidth={100}
           />
           {formValues.employerType !== "" && (
@@ -74,7 +84,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               options={employerList}
-              onChange={props.handleEmployerChange}
+              onChange={employerNameOnChange}
             />
           )}
           {formValues.employerType &&
@@ -260,17 +270,14 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
-          <ReCaptcha
-            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-            action="tab_1_submit"
-            verifyCallback={verifyCallback}
-          />
           <div className={classes.buttonWrap}>
             <Button
               type="submit"
               color="primary"
-              className={classes.next}
+              className={`${classes.next} g-recaptcha`}
               variant="contained"
+              data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+              data-callback={verifyCallback}
             >
               Next
             </Button>

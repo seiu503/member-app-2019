@@ -70,10 +70,6 @@ const createSubmission = async (req, res, next) => {
     reCaptchaValue
   } = req.body;
 
-  if (!salesforce_id || salesforce_id === undefined) {
-    salesforce_id = res.locals.sf_contact_id;
-  }
-
   const requiredFields = [
     "submission_date",
     "birthdate",
@@ -96,58 +92,57 @@ const createSubmission = async (req, res, next) => {
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (!terms_agree) {
+    console.error(`submissions.ctrl.js > 99: !termsAgree`);
     return res.status(422).json({
       reason: "ValidationError",
       message: "Must agree to terms of service"
     });
   } else if (missingField) {
-    // console.log(`submissions.ctrl.js > 105: missing ${missingField}`);
+    console.error(`submissions.ctrl.js > 105: missing ${missingField}`);
     return res.status(422).json({
       reason: "ValidationError",
       message: `Missing required field ${missingField}`
     });
   }
-  // else if (process.env.NODE_ENV !== "testing") {
-  //   verifyHumanity(reCaptchaValue, ip_address).catch(err => {
-  //     console.log(err);
-  //     return res
-  //       .status(422)
-  //       .json({ message: "ReCaptcha verification failed" });
-  //   });
-  // }
-  const createSubmissionResult = await submissions.createSubmission(
-    ip_address,
-    submission_date,
-    agency_number,
-    birthdate,
-    cell_phone,
-    employer_name,
-    first_name,
-    last_name,
-    home_street,
-    home_city,
-    home_state,
-    home_zip,
-    home_email,
-    preferred_language,
-    terms_agree,
-    signature,
-    text_auth_opt_out,
-    online_campaign_source,
-    legal_language,
-    maintenance_of_effort,
-    seiu503_cba_app_date,
-    direct_pay_auth,
-    direct_deposit_auth,
-    immediate_past_member_status,
-    salesforce_id
-  );
+
+  const createSubmissionResult = await submissions
+    .createSubmission(
+      ip_address,
+      submission_date,
+      agency_number,
+      birthdate,
+      cell_phone,
+      employer_name,
+      first_name,
+      last_name,
+      home_street,
+      home_city,
+      home_state,
+      home_zip,
+      home_email,
+      preferred_language,
+      terms_agree,
+      signature,
+      text_auth_opt_out,
+      online_campaign_source,
+      legal_language,
+      maintenance_of_effort,
+      seiu503_cba_app_date,
+      direct_pay_auth,
+      direct_deposit_auth,
+      immediate_past_member_status,
+      salesforce_id
+    )
+    .catch(err => {
+      console.error(`submissions.ctrl.js > 136: ${err.message}`);
+      return res.status(500).json({ message: err.message });
+    });
 
   if (!createSubmissionResult || createSubmissionResult.message) {
-    // console.log(
-    //   `submissions.ctrl.js > 135: ${createSubmissionResult.message ||
-    //     "There was an error saving the submission"}`
-    // );
+    console.error(
+      `submissions.ctrl.js > 142: ${createSubmissionResult.message ||
+        "There was an error saving the submission"}`
+    );
     return res.status(500).json({
       message:
         createSubmissionResult.message ||
@@ -174,47 +169,46 @@ const updateSubmission = async (req, res, next) => {
   const { id } = req.params;
   // console.log(`subm.ctrl.js > 173 - id: ${id} (updates below)`);
   // console.log(updates);
-  try {
-    if (!updates || !Object.keys(updates).length) {
-      // console.log('subm.ctrl.js > 176: !updates');
-      return res.status(422).json({ message: "No updates submitted" });
-    }
-    if (!id) {
-      // console.log('subm.ctrl.js > 180: !id');
-      return res.status(422).json({ message: "No Id Provided in URL" });
-    }
 
-    const updateSubmissionResult = await submissions
-      .updateSubmission(id, updates)
-      .catch(err => {
-        // console.log(`subm.ctrl.js > 188: err`)
-        // console.error(err);
-      });
+  if (!updates || !Object.keys(updates).length) {
+    console.error("subm.ctrl.js > 173: !updates");
+    return res.status(422).json({ message: "No updates submitted" });
+  }
+  if (!id) {
+    console.error("subm.ctrl.js > 177: !id");
+    return res.status(422).json({ message: "No Id Provided in URL" });
+  }
 
-    if (
-      !updateSubmissionResult ||
-      updateSubmissionResult.message ||
-      updateSubmissionResult.length === 0
-    ) {
-      const errmsg =
-        updateSubmissionResult.message ||
-        "There was an error updating the submission";
-      console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+  const updateSubmissionResult = await submissions
+    .updateSubmission(id, updates)
+    .catch(err => {
+      console.error(`subm.ctrl.js > 188: ${err.message}`);
       return res.status(500).json({
-        message: errmsg
+        message: err.message
       });
-    } else {
-      // console.log("subm.ctrl.js > 201: returning to client");
-      // console.log(updateSubmissionResult[0].id);
-      // saving to res.locals to make id available for testing
-      res.locals.submission_id = updateSubmissionResult[0].id;
-      return res
-        .status(200)
-        .json({ submission_id: updateSubmissionResult[0].id });
-    }
-  } catch (error) {
-    // console.error(`submissions.ctrl.js > 217: ${error}`);
-    return res.status(404).json({ message: error.message });
+    });
+
+  if (
+    !updateSubmissionResult ||
+    (updateSubmissionResult && updateSubmissionResult.message) ||
+    updateSubmissionResult.length === 0
+  ) {
+    const errmsg =
+      updateSubmissionResult && updateSubmissionResult.message
+        ? updateSubmissionResult.message
+        : "There was an error updating the submission";
+    console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+    return res.status(404).json({
+      message: errmsg
+    });
+  } else if (updateSubmissionResult[0] && updateSubmissionResult[0].id) {
+    // console.log("subm.ctrl.js > 201: returning to client");
+    // console.log(updateSubmissionResult[0].id);
+    // saving to res.locals to make id available for testing
+    res.locals.submission_id = updateSubmissionResult[0].id;
+    return res
+      .status(200)
+      .json({ submission_id: updateSubmissionResult[0].id });
   }
 };
 
@@ -236,10 +230,12 @@ const deleteSubmission = async (req, res, next) => {
     if (result.message === "Submission deleted successfully") {
       return res.status(200).json({ message: result.message });
     }
+    console.error(`submissions.ctrl.js > 225: ${result.message}`);
     return res.status(500).json({
       message: "An error occurred and the submission was not deleted."
     });
   } catch (err) {
+    console.error(`submissions.ctrl.js > 229: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -262,7 +258,10 @@ const getSubmissions = (req, res, next) => {
       res.locals.testData = submissions[0];
       return res.status(200).json(submissions);
     })
-    .catch(err => res.status(500).json({ message: err.message }));
+    .catch(err => {
+      console.error(`submissions.ctrl.js > 247: ${err}`);
+      res.status(500).json({ message: err.message });
+    });
 };
 
 /** Get one submission
@@ -281,6 +280,7 @@ const getSubmissionById = (req, res, next) => {
     .getSubmissionById(req.params.id)
     .then(submission => {
       if (!submission || submission.message) {
+        console.error(`submissions.ctrl.js > 261: ${submission.message}`);
         return res
           .status(404)
           .json({ message: submission.message || "Submission not found" });
@@ -290,7 +290,10 @@ const getSubmissionById = (req, res, next) => {
         return res.status(200).json(submission);
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      console.error(`submissions.ctrl.js > 272: ${err}`);
+      res.status(500).json({ message: err.message });
+    });
 };
 
 /**
@@ -314,19 +317,16 @@ const verifyHumanity = async (req, res) => {
     },
     (err, httpResponse, body) => {
       if (err) {
-        // console.log(`submission.ctrl.js > 287:`);
-        // console.log(err);
+        console.error(`submissions.ctrl.js > 298: ${err}`);
         return res.status(500).json({ message: err.message });
       } else {
         const r = JSON.parse(body);
-        // console.log(`submissions.ctrl.js > 291: recaptcha error:`);
-        // console.log(r["error-codes"]);
         if (r.success) {
           // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
           return res.status(200).json({ score: r.score });
         } else {
-          // console.log(`submissions.ctrl.js > 300: recaptcha failure`);
-          // console.log(r["error-codes"][0]);
+          console.error(`submissions.ctrl.js > 306: recaptcha failure`);
+          console.error(r["error-codes"][0]);
           return res.status(500).json({ message: r["error-codes"][0] });
         }
       }

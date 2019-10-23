@@ -29,19 +29,19 @@ describe("Redux-Form custom Validators", () => {
   test("validates properly formed phone numbers", () => {
     testData.mobilePhone = 55;
     expect(validate(testData)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-456)"
+      mobilePhone: "Invalid phone number (e.g. 555-123-4567)"
     });
     testDataCAPE.mobilePhone = 55;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-456)"
+      mobilePhone: "Invalid phone number (e.g. 555-123-4567)"
     });
     combinedData.workPhone = 55;
     expect(validate(combinedData)).toStrictEqual({
-      workPhone: "Invalid phone number (e.g. 555-123-456)"
+      workPhone: "Invalid phone number (e.g. 555-123-4567)"
     });
     testData.mobilePhone = "phone number";
     expect(validate(testData)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-456)"
+      mobilePhone: "Invalid phone number (e.g. 555-123-4567)"
     });
     testData.mobilePhone = "5555555555";
     expect(validate(testData)).toStrictEqual({});

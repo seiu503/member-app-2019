@@ -28,6 +28,7 @@ exports.googleCallback = (req, res) => {
     });
   }
   if (req.user && req.user.err) {
+    console.error(`auth.ctrl.js > 46: ${req.user.err}`);
     res.status(401).json({
       success: false,
       message: `google auth failed: ${req.user.err}`,
@@ -50,6 +51,7 @@ exports.googleCallback = (req, res) => {
 
       return res.status(200).redirect(redirect);
     } else {
+      console.error(`auth.ctrl.js > 54: !user`);
       return res.status(422).redirect(`${CLIENT_URL}/login`);
     }
   }

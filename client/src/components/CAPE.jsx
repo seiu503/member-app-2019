@@ -2,7 +2,7 @@ import React from "react";
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
-import { ReCaptcha } from "react-recaptcha-v3";
+// import { ReCaptcha } from "react-recaptcha-v3";
 import { Translate } from "react-localize-redux";
 
 import AlertDialog from "./AlertDialog";
@@ -65,8 +65,25 @@ export const CAPE = props => {
     donationFrequencyOnChange
   } = props;
 
-  const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  // console.log(`paymentMethodAdded: ${formPage1.paymentMethodAdded}`);
+  const validMethod =
+    (!!payment.activeMethodLast4 && !payment.paymentErrorHold) ||
+    (!!capeObject.activeMethodLast4 && !capeObject.paymentErrorHold);
+  const cardBrand = capeObject.cardBrand || payment.cardBrand;
+  const activeMethodLast4 =
+    capeObject.activeMethodLast4 || payment.activeMethodLast4;
+  console.log(`payment:`, payment);
+  console.log(`capeObject`, capeObject);
+  console.log(`paymentRequired: ${formPage1.paymentRequired}`);
+  console.log(`validMethod: ${validMethod}`);
+  console.log(`paymentType: ${formPage1.paymentType}`);
+  console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
+  console.log(
+    `iFrameURL && ((!checkoff || formValues.donationFrequency === "One-Time") && formPage1.newCardNeeded)`
+  );
+  console.log(`iFrameURL: ${iFrameURL}`);
+  console.log(`checkoff: ${checkoff}`);
+  console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
+  console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -463,11 +480,13 @@ export const CAPE = props => {
               formPage1.paymentType === "Card" &&
               validMethod && (
                 <div data-test="component-choose-card">
-                  <Typography component="p" className={classes.body}>
-                    <Translate id="existingPaymentMethod">
-                      Your existing payment method on file is the card ending in
+                  <Typography component="p" className={classes.bodyCenter}>
+                    <Translate id="existingPaymentMethod1">
+                      Your existing payment method on file is the
                     </Translate>{" "}
-                    {payment.activeMethodLast4}.
+                    {cardBrand}{" "}
+                    <Translate id="existingPaymentMethod2">ending in</Translate>{" "}
+                    {activeMethodLast4}.
                   </Typography>
                   <Field
                     data-test="radio-which-card"
@@ -487,7 +506,8 @@ export const CAPE = props => {
                 </div>
               )}
             {iFrameURL &&
-              (!checkoff || formValues.donationFrequency === "One-Time") && (
+              ((!checkoff || formValues.donationFrequency === "One-Time") &&
+                formPage1.newCardNeeded) && (
                 <div data-test="component-iframe">
                   <Typography component="h2" className={classes.head}>
                     <Translate id="addPayment">Add a payment method</Translate>
@@ -529,19 +549,18 @@ export const CAPE = props => {
             <Translate id="capeLegal6" />
           </p>
         </div>
-        {standAlone && (
-          <ReCaptcha
-            sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-            action="standalone_cape_submit"
-            verifyCallback={verifyCallback}
-          />
-        )}
         <ButtonWithSpinner
           type="submit"
           color="primary"
-          className={classes.formButton}
+          className={
+            standAlone
+              ? `${classes.formButton} g-recaptcha`
+              : classes.formButton
+          }
           variant="contained"
           loading={loading}
+          data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+          data-callback={verifyCallback}
         >
           <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>

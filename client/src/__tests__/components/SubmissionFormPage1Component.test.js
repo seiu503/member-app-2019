@@ -664,7 +664,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     it("handles error if `updateSFDJR` throws", async function() {
       const updateSFDJRMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
 
       // replacing openSnackbar import with mock function
       formElements.handleError = handleErrorMock;
@@ -736,7 +736,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     it("handles error if `createSFDJR` throws", async function() {
       const createSFDJRMock = jest
         .fn()
-        .mockImplementation(() => Promise.reject(new Error()));
+        .mockImplementation(() => Promise.reject("Error"));
 
       // replacing openSnackbar import with mock function
       formElements.handleError = handleErrorMock;
@@ -770,7 +770,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   });
 
   describe("receiveMessage", () => {
-    it("receives messages from unioni.se card adding iframe", () => {
+    it("receives messages from unioni.se card adding iframe (CAPE)", () => {
       sfEmployerLookupSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -779,30 +779,82 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       const fakeEvent = {
         data: {
           notification: {
+            cardBrand: "Visa",
+            cardLast4: "4242",
+            message: "Card successfully added.",
             type: "success"
           }
         },
         origin: "https://lab.unioni.se"
       };
       let handleInputMock = jest.fn();
+      let setPaymentDetailsDuesMock = jest.fn();
+      let setPaymentDetailsCAPEMock = jest.fn();
       const props = {
         formValues: {
           // to get code coverage for afh edge cases
-          employerType: "Adult Foster Home"
+          employerType: "Adult Foster Home",
+          capeAmount: 10,
+          donationFrequency: "One-Time"
         },
         apiSF: {
           getSFEmployers: sfEmployerLookupSuccess
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          setPaymentDetailsDues: setPaymentDetailsDuesMock,
+          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
         }
       };
       wrapper = unconnectedSetup(props);
       wrapper.instance().receiveMessage(fakeEvent);
 
-      expect(handleInputMock.mock.calls[0][0]).toStrictEqual({
-        target: { name: "paymentMethodAdded", value: true }
-      });
+      expect(
+        JSON.stringify(setPaymentDetailsCAPEMock.mock.calls[0])
+      ).toStrictEqual(JSON.stringify([true, "Visa", "4242"]));
+    });
+    it("receives messages from unioni.se card adding iframe (Dues)", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      const fakeEvent = {
+        data: {
+          notification: {
+            cardBrand: "Visa",
+            cardLast4: "4242",
+            message: "Card successfully added.",
+            type: "success"
+          }
+        },
+        origin: "https://lab.unioni.se"
+      };
+      let handleInputMock = jest.fn();
+      let setPaymentDetailsDuesMock = jest.fn();
+      let setPaymentDetailsCAPEMock = jest.fn();
+      const props = {
+        formValues: {
+          // to get code coverage for afh edge cases
+          employerType: "Adult Foster Home",
+          capeAmount: null,
+          donationFrequency: null
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          setPaymentDetailsDues: setPaymentDetailsDuesMock,
+          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
+        }
+      };
+      wrapper = unconnectedSetup(props);
+      wrapper.instance().receiveMessage(fakeEvent);
+
+      expect(
+        JSON.stringify(setPaymentDetailsDuesMock.mock.calls[0])
+      ).toStrictEqual(JSON.stringify([true, "Visa", "4242"]));
     });
   });
 

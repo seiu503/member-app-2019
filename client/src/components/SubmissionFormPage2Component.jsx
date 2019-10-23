@@ -137,7 +137,7 @@ export class SubmissionFormPage2Component extends React.Component {
     const result = await this.props.apiSubmission
       .updateSubmission(id, cleanBody)
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return formElements.handleError(err);
       });
 
@@ -145,7 +145,7 @@ export class SubmissionFormPage2Component extends React.Component {
       (result && result.type && result.type === "UPDATE_SUBMISSION_FAILURE") ||
       this.props.submission.error
     ) {
-      // console.log(this.props.submission.error);
+      console.error(this.props.submission.error);
       return formElements.handleError(this.props.submission.error);
     }
 
@@ -164,7 +164,7 @@ export class SubmissionFormPage2Component extends React.Component {
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return formElements.handleError(err);
       });
   };

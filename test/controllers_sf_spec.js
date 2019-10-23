@@ -246,100 +246,6 @@ suite("sf.ctrl.js", function() {
     });
   });
 
-  suite("sfCtrl > deleteSFContactById", function() {
-    beforeEach(function() {
-      return new Promise(resolve => {
-        req = mockReq({
-          params: {
-            id: "123456789"
-          }
-        });
-        responseStub = { message: "Successfully deleted contact" };
-        jsforceSObjectDestroyStub = sinon.stub();
-        loginStub = sinon.stub();
-        jsforceStub = {
-          login: loginStub,
-          sobject: sinon.stub().returns({
-            destroy: jsforceSObjectDestroyStub
-          })
-        };
-        resolve();
-      });
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    test("deletes a single contact by Id", async function() {
-      responseStub = { message: "Successfully deleted contact" };
-      jsforceSObjectDestroyStub = sinon.stub();
-      loginStub = sinon.stub();
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({
-          destroy: jsforceSObjectDestroyStub
-        })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
-      loginStub = sinon.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if sobject destroy fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
-      jsforceSObjectDestroyStub = sinon.stub().throws(new Error(sobjectError));
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({ destroy: jsforceSObjectDestroyStub })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFContactById(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.sobject, "Contact");
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: sobjectError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
   suite("sfCtrl > createSFContact", function() {
     beforeEach(function() {
       return new Promise(resolve => {
@@ -453,7 +359,7 @@ suite("sf.ctrl.js", function() {
       return new Promise(resolve => {
         query = `SELECT Id, ${fieldList.join(
           ","
-        )} FROM Contact WHERE FirstName LIKE \'${first_name}\' AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
+        )} FROM Contact WHERE (FirstName LIKE \'${first_name}\' OR Salutation_Nickname__c LIKE \'${first_name}\') AND LastName = \'${last_name}\' AND (Home_Email__c = \'${home_email}\' OR Work_Email__c = \'${home_email}\') ORDER BY LastModifiedDate DESC LIMIT 1`;
         req = mockReq({
           body: {
             first_name,
@@ -511,8 +417,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("returns a message if matching contact not found", async function() {
-      let message =
-        "Sorry, we could not find a record matching that name and email. Please contact your organizer at 1-844-503-SEIU (7348) for help.";
+      let message = "No matching record found.";
       queryStub = sinon.stub().returns({ totalSize: 0 });
       jsforceStub.query = queryStub;
       try {
@@ -857,100 +762,6 @@ suite("sf.ctrl.js", function() {
     });
   });
 
-  suite("sfCtrl > deleteSFOnlineMemberApp", function() {
-    beforeEach(function() {
-      return new Promise(resolve => {
-        req = mockReq({
-          params: {
-            id: "123456789"
-          }
-        });
-        responseStub = { message: "Successfully deleted contact" };
-        jsforceSObjectDestroyStub = sinon.stub();
-        loginStub = sinon.stub();
-        jsforceStub = {
-          login: loginStub,
-          sobject: sinon.stub().returns({
-            destroy: jsforceSObjectDestroyStub
-          })
-        };
-        resolve();
-      });
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    test("deletes an OMA by Id", async function() {
-      responseStub = { message: "Successfully deleted Online Member App" };
-      jsforceSObjectDestroyStub = sinon.stub();
-      loginStub = sinon.stub();
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({
-          destroy: jsforceSObjectDestroyStub
-        })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFOnlineMemberApp(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
-      loginStub = sinon.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFOnlineMemberApp(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if sobject destroy fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
-      jsforceSObjectDestroyStub = sinon.stub().throws(new Error(sobjectError));
-      jsforceStub = {
-        login: loginStub,
-        sobject: sinon.stub().returns({ destroy: jsforceSObjectDestroyStub })
-      };
-      jsforceConnectionStub = sinon
-        .stub(jsforce, "Connection")
-        .returns(jsforceStub);
-
-      try {
-        await sfCtrl.deleteSFOnlineMemberApp(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.sobject, "OnlineMemberApp__c");
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: sobjectError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
   suite("sfCtrl > getSFDJRById", function() {
     beforeEach(function() {
       return new Promise(resolve => {
@@ -980,7 +791,7 @@ suite("sf.ctrl.js", function() {
     test("gets a single DJR record by Contact Id", async function() {
       query = `SELECT ${paymentFieldList.join(
         ","
-      )}, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'123456789\'`;
+      )}, LastModifiedDate, Id, Employer__c FROM Direct_join_rate__c WHERE Worker__c = \'123456789\' ORDER BY LastModifiedDate DESC LIMIT 1`;
       try {
         await sfCtrl.getSFDJRById(req, res);
         assert.called(jsforceConnectionStub);
@@ -1526,9 +1337,10 @@ suite("sf.ctrl.js", function() {
           req = mockReq({
             body: {
               info: {
-                paymentId: "123"
+                paymentRequestId: "123"
               },
-              eventType: "finish"
+              eventType: "finish",
+              category: "payment"
             }
           });
           responseStub = [contactStub];
@@ -1605,9 +1417,10 @@ suite("sf.ctrl.js", function() {
         const req = mockReq({
           body: {
             info: {
-              paymentId: "123"
+              paymentRequestId: "123"
             },
-            eventType: "finish"
+            eventType: "finish",
+            category: "payment"
           }
         });
         try {
@@ -1643,9 +1456,10 @@ suite("sf.ctrl.js", function() {
         const req = mockReq({
           body: {
             info: {
-              paymentId: "123"
+              paymentRequestId: "123"
             },
-            eventType: null
+            eventType: null,
+            category: "payment"
           }
         });
         try {
@@ -1660,7 +1474,7 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if body has One_Time_Payment_Id__c key but no Id", async function() {
-        sobjectError = "No CAPE__c Id submitted";
+        sobjectError = "No payment request Id (or CAPE__c Id) submitted";
         jsforceSObjectUpdateStub = sinon
           .stub()
           .returns({ message: sobjectError });
@@ -1693,17 +1507,15 @@ suite("sf.ctrl.js", function() {
         }
       });
 
-      test("returns error if no payment id in body", async function() {
-        sobjectError = "No payment Id submitted";
+      test("returns error if no payment request id in body", async function() {
+        sobjectError = "No payment request Id (or CAPE__c Id) submitted";
         jsforceSObjectUpdateStub = sinon
           .stub()
           .returns({ message: sobjectError });
         jsforceStub = {
           login: loginStub,
           sobject: sinon.stub().returns({
-            find: sinon.stub().returns({
-              update: jsforceSObjectUpdateStub
-            })
+            update: jsforceSObjectUpdateStub
           })
         };
         jsforceConnectionStub = sinon
@@ -1712,9 +1524,7 @@ suite("sf.ctrl.js", function() {
 
         const res = mockRes();
         const req = mockReq({
-          body: {
-            Id: "123"
-          }
+          body: {}
         });
         try {
           await sfCtrl.updateSFCAPE(req, res);
@@ -1728,7 +1538,7 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject find returns no record", async function() {
-        sobjectError = `No matching record found for payment id 123, Error0`;
+        sobjectError = `No matching record found for paymentRequestId 123, Error0`;
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;
@@ -1750,9 +1560,10 @@ suite("sf.ctrl.js", function() {
         const req = mockReq({
           body: {
             info: {
-              paymentId: "123"
+              paymentRequestId: "123"
             },
-            eventType: "finish"
+            eventType: "finish",
+            category: "payment"
           }
         });
         try {
@@ -1802,7 +1613,7 @@ suite("sf.ctrl.js", function() {
           assert.called(jsforceConnectionStub);
           assert.called(jsforceStub.login);
           assert.calledWith(res.json, {
-            message: "Updated payment Id successfully"
+            message: "Updated CAPE record successfully"
           });
         } catch (err) {
           console.log(err);
@@ -1861,7 +1672,7 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject update returns no record", async function() {
-        sobjectError = `No matching record found for payment id 123, Error0`;
+        sobjectError = `No matching record found for CAPE sObject Id 123, Error0`;
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;

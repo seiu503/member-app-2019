@@ -46,7 +46,7 @@ router.get(
   authCtrl.googleCallback
 );
 
-/* =========================== VERIFY CAPTCHA  ============================= */
+/* ============================== CAPTCHA  ================================ */
 
 // VERIFY CAPTCHA
 //   Example: POST >> /api/verify
@@ -373,7 +373,7 @@ router.delete(
 //        home_zip               : String
 //        home_email             : String
 //        job_title              : String
-//        paymentMethod          : String ('Checkoff' || 'Unionisee')
+//        paymentMethod          : String ('Checkoff' || 'Unionise')
 //        online_campaign_source : String
 //        cape_legal             : Text
 //        capeAmount             : Number
@@ -516,18 +516,6 @@ router.post("/sf", sfCtrl.createSFContact);
 //
 router.put("/sf/:id", sfCtrl.updateSFContact);
 
-// DELETE ONE SALESFORCE CONTACT RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sf/:id", sfCtrl.deleteSFContactById);
-
 /* ========================== ONLINE MEMBER APPS =========================== */
 
 // CREATE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
@@ -541,18 +529,6 @@ router.delete("/sf/:id", sfCtrl.deleteSFContactById);
 //   Returns: OMA object or error message.
 //
 router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
-
-// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sfOMA/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 
 /* ============================== CAPE ROUTES =========================== */
 
@@ -574,7 +550,7 @@ router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
 //        home_zip               : String
 //        home_email             : String
 //        job_title              : String
-//        paymentMethod          : String ('Checkoff' || 'Unionisee')
+//        paymentMethod          : String ('Checkoff' || 'Unionise')
 //        online_campaign_source : String
 //        cape_legal             : Text
 //        capeAmount             : Number

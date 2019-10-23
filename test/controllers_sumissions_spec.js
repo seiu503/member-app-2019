@@ -29,8 +29,6 @@ let responseStub,
   next,
   result,
   errorMsg,
-  dbMethodStub,
-  dbMethods = {},
   authenticateMock,
   token,
   res = mockRes(),
@@ -114,35 +112,41 @@ suite("sumissions.ctrl.js", function() {
       }
     });
 
-    // test("returns 422 if reCaptchaValue missing", async function() {
-    //   delete req.body.reCaptchaValue;
-    //   responseStub = {
-    //     message: "Please verify that you are a human"
-    //   }
-    //   try {
-    //     await submCtrl.createSubmission(req, res, next);
-    //     assert.calledWith(res.status, 422);
-    //     assert.calledWith(res.json, responseStub)
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
-
-    test("returns 500 if server error", async function() {
+    test("returns 500 if db method error", async function() {
+      req = mockReq({
+        body: generateSampleSubmission()
+      });
       errorMsg = "There was an error saving the submission";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "createSubmission")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
+
+      try {
+        await submCtrl.createSubmission(req, res);
+        assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      req = mockReq({
+        body: generateSampleSubmission()
+      });
+      errorMsg = "There was an error saving the submission";
+      submissionModelsStub = sinon
+        .stub(submissions, "createSubmission")
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.createSubmission(req, res, next);
         assert.called(submissionModelsStub);
-        assert.called(dbMethods.createSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(`149: ${err}`);
       }
     });
   });
@@ -150,14 +154,11 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > updateSubmission", function() {
     beforeEach(function() {
       return new Promise(resolve => {
-        // console.log(`155: id = ${id}`);
         submissionBody.salesforce_id = "123";
         delete submissionBody.submission_id;
         delete submissionBody.account_subdivision;
         delete submissionBody.contact_id;
         delete submissionBody.submisson_status;
-        // console.log(`submissionBody`);
-        // console.log(submissionBody);
         req = mockReq({
           body: submissionBody,
           params: {
@@ -218,21 +219,35 @@ suite("sumissions.ctrl.js", function() {
       }
     });
 
-    test("returns 500 if server error", async function() {
+    test("returns 404 if no submission found", async function() {
       errorMsg = "There was an error updating the submission";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "updateSubmission")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
+
+      try {
+        await submCtrl.updateSubmission(req, res);
+        assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "There was an error updating the submission";
+      submissionModelsStub = sinon
+        .stub(submissions, "updateSubmission")
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.updateSubmission(req, res, next);
         assert.called(submissionModelsStub);
-        assert.called(dbMethods.updateSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -272,10 +287,9 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissions")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.getSubmissions(req, res, next);
@@ -302,7 +316,7 @@ suite("sumissions.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -345,10 +359,9 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 404 if submission not found", async function() {
       errorMsg = "Submission not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
         await submCtrl.getSubmissionById(req, res, next);
@@ -362,10 +375,9 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "Submission not found";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.getSubmissionById(req, res, next);
@@ -392,7 +404,7 @@ suite("sumissions.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -429,10 +441,9 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if db model method error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sinon.stub().returns(errorMsg);
       submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
       try {
         await submCtrl.deleteSubmission(req, res, next);
         assert.called(submissionModelsStub);
@@ -445,19 +456,17 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.deleteSubmission(req, res, next);
         assert.called(submissionModelsStub);
-        assert.called(dbMethods.deleteSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 

@@ -1274,6 +1274,18 @@ const capeTableFields = {
     unioniseFieldName: "activeMethod.last4",
     testingSample: "1234"
   },
+  card_brand: {
+    req: "N",
+    postgresFieldName: "card_brand",
+    clientFieldName: "cardBrand",
+    SFTable: "CAPE__c",
+    SFFieldLabel: "Card Brand",
+    SFAPIName: "Card_Brand__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "Text",
+    unioniseFieldName: "cardBrand",
+    testingSample: "VISA"
+  },
   member_short_id: {
     req: "N",
     postgresFieldName: "member_short_id",
@@ -1320,6 +1332,12 @@ const capeTableFields = {
     SFFieldLabel: "One-Time Payment Status",
     SFAPIName: "One_Time_Payment_Status__c",
     SFDataType: "Text"
+  },
+  one_time_payment_errors: {
+    SFTable: "CAPE__c",
+    SFFieldLabel: "One-Time Payment Status",
+    SFAPIName: "One_Time_Payment_Errors__c",
+    SFDataType: "Text"
   }
 };
 
@@ -1354,6 +1372,18 @@ const paymentFields = {
     SQLDataType: "Text",
     unioniseFieldName: "activeMethod.last4",
     testingSample: "1234"
+  },
+  card_brand: {
+    req: "N",
+    postgresFieldName: "card_brand",
+    clientFieldName: "cardBrand",
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Card Brand",
+    SFAPIName: "Card_Brand__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "Text",
+    unioniseFieldName: "cardBrand",
+    testingSample: "VISA"
   },
   memberShortId: {
     req: "N",
@@ -1738,6 +1768,7 @@ const generateSFDJRFieldList = () => {
       fieldList.push(paymentFields[key].SFAPIName);
     }
   });
+  // console.log(`paymentFieldList: ${fieldList}`);
   return fieldList;
 };
 
