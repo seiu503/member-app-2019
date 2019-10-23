@@ -1474,7 +1474,7 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if body has One_Time_Payment_Id__c key but no Id", async function() {
-        sobjectError = "No CAPE__c Id submitted";
+        sobjectError = "No payment request Id (or CAPE__c Id) submitted";
         jsforceSObjectUpdateStub = sinon
           .stub()
           .returns({ message: sobjectError });
@@ -1508,16 +1508,14 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if no payment request id in body", async function() {
-        sobjectError = "No payment request Id submitted";
+        sobjectError = "No payment request Id (or CAPE__c Id) submitted";
         jsforceSObjectUpdateStub = sinon
           .stub()
           .returns({ message: sobjectError });
         jsforceStub = {
           login: loginStub,
           sobject: sinon.stub().returns({
-            find: sinon.stub().returns({
-              update: jsforceSObjectUpdateStub
-            })
+            update: jsforceSObjectUpdateStub
           })
         };
         jsforceConnectionStub = sinon
@@ -1526,9 +1524,7 @@ suite("sf.ctrl.js", function() {
 
         const res = mockRes();
         const req = mockReq({
-          body: {
-            Id: "123"
-          }
+          body: {}
         });
         try {
           await sfCtrl.updateSFCAPE(req, res);
@@ -1617,7 +1613,7 @@ suite("sf.ctrl.js", function() {
           assert.called(jsforceConnectionStub);
           assert.called(jsforceStub.login);
           assert.calledWith(res.json, {
-            message: "Updated payment Id successfully"
+            message: "Updated CAPE record successfully"
           });
         } catch (err) {
           console.log(err);
@@ -1676,7 +1672,7 @@ suite("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject update returns no record", async function() {
-        sobjectError = `No matching record found for payment id 123, Error0`;
+        sobjectError = `No matching record found for CAPE sObject Id 123, Error0`;
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;

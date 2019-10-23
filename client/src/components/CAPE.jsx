@@ -65,16 +65,25 @@ export const CAPE = props => {
     donationFrequencyOnChange
   } = props;
 
-  const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
-  // console.log(`paymentRequired: ${formPage1.paymentRequired}`);
-  // console.log(`validMethod: ${validMethod}`);
-  // console.log(`paymentType: ${formPage1.paymentType}`);
-  // console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
-  // console.log(`iFrameURL && ((!checkoff || formValues.donationFrequency === "One-Time") && formPage1.newCardNeeded)`);
-  // console.log(`iFrameURL: ${iFrameURL}`);
-  // console.log(`checkoff: ${checkoff}`);
-  // console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
-  // console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
+  const validMethod =
+    (!!payment.activeMethodLast4 && !payment.paymentErrorHold) ||
+    (!!capeObject.activeMethodLast4 && !capeObject.paymentErrorHold);
+  const cardBrand = capeObject.cardBrand || payment.cardBrand;
+  const activeMethodLast4 =
+    capeObject.activeMethodLast4 || payment.activeMethodLast4;
+  console.log(`payment:`, payment);
+  console.log(`capeObject`, capeObject);
+  console.log(`paymentRequired: ${formPage1.paymentRequired}`);
+  console.log(`validMethod: ${validMethod}`);
+  console.log(`paymentType: ${formPage1.paymentType}`);
+  console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
+  console.log(
+    `iFrameURL && ((!checkoff || formValues.donationFrequency === "One-Time") && formPage1.newCardNeeded)`
+  );
+  console.log(`iFrameURL: ${iFrameURL}`);
+  console.log(`checkoff: ${checkoff}`);
+  console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
+  console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -475,9 +484,9 @@ export const CAPE = props => {
                     <Translate id="existingPaymentMethod1">
                       Your existing payment method on file is the
                     </Translate>{" "}
-                    {payment.cardBrand}{" "}
+                    {cardBrand}{" "}
                     <Translate id="existingPaymentMethod2">ending in</Translate>{" "}
-                    {payment.activeMethodLast4}.
+                    {activeMethodLast4}.
                   </Typography>
                   <Field
                     data-test="radio-which-card"

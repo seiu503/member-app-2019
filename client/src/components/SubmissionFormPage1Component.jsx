@@ -473,11 +473,11 @@ export class SubmissionFormPage1Component extends React.Component {
             verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
-            handleInput={this.props.apiSubmission.handleInput}
             updateEmployersPicklist={this.updateEmployersPicklist}
             classes={classes}
             loading={this.props.submission.loading}
             formPage1={this.props.submission.formPage1}
+            handleInput={this.props.apiSubmission.handleInput}
             iFrameURL={this.props.submission.payment.cardAddingUrl}
             payment={this.props.submission.payment}
             renderSelect={this.renderSelect}
