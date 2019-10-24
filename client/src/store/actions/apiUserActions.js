@@ -1,6 +1,5 @@
 import { RSAA } from "redux-api-middleware";
-import BASE_URL from "./apiConfig.js";
-// import FormData from "form-data";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const HANDLE_INPUT = "HANDLE_INPUT";
 export const CLEAR_FORM = "CLEAR_FORM";

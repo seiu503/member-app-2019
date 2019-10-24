@@ -71,19 +71,19 @@ export const CAPE = props => {
   const cardBrand = capeObject.cardBrand || payment.cardBrand;
   const activeMethodLast4 =
     capeObject.activeMethodLast4 || payment.activeMethodLast4;
-  console.log(`payment:`, payment);
-  console.log(`capeObject`, capeObject);
-  console.log(`paymentRequired: ${formPage1.paymentRequired}`);
-  console.log(`validMethod: ${validMethod}`);
-  console.log(`paymentType: ${formPage1.paymentType}`);
-  console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
-  console.log(
-    `iFrameURL && ((!checkoff || formValues.donationFrequency === "One-Time") && formPage1.newCardNeeded)`
-  );
-  console.log(`iFrameURL: ${iFrameURL}`);
-  console.log(`checkoff: ${checkoff}`);
-  console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
-  console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
+  // console.log(`payment:`, payment);
+  // console.log(`capeObject`, capeObject);
+  // console.log(`paymentRequired: ${formPage1.paymentRequired}`);
+  // console.log(`validMethod: ${validMethod}`);
+  // console.log(`paymentType: ${formPage1.paymentType}`);
+  // console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
+  // console.log(
+  //   `iFrameURL && ((!checkoff || formValues.donationFrequency === "One-Time") && formPage1.newCardNeeded)`
+  // );
+  // console.log(`iFrameURL: ${iFrameURL}`);
+  // console.log(`checkoff: ${checkoff}`);
+  // console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
+  // console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>

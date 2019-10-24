@@ -71,7 +71,7 @@ const defaultProps = {
  * @return {ShallowWrapper}
  */
 const setup = (props = {}) => {
-  store = mockStore(defaultProps);
+  store = mockStore(initialState);
   const setupProps = { ...defaultProps, ...props };
   return shallow(<CreateUserFormUnconnected {...setupProps} store={store} />);
 };
@@ -93,7 +93,7 @@ describe("<TextInputForm />", () => {
   });
 
   it("renders connected component", () => {
-    store = storeFactory(defaultProps);
+    store = storeFactory(initialState);
     wrapper = mount(
       <CreateUserFormConnected {...defaultProps} store={store} />
     );
@@ -110,7 +110,7 @@ describe("<TextInputForm />", () => {
     let props = {
       apiUser: { clearForm: clearForm }
     };
-    store = storeFactory(defaultProps);
+    store = storeFactory(initialState);
     // Create a spy of the dispatch() method for test assertions.
     const dispatchSpy = jest.spyOn(store, "dispatch");
     wrapper = mount(

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import BASE_URL from "../store/actions/apiConfig";
 import Button from "@material-ui/core/Button";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const NoAccess = props => (
   <div className={props.classes.message} data-test="component-no-access">

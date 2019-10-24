@@ -1,18 +1,12 @@
 import React from "react";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import { Provider } from "react-redux";
 import {
   EditUserFormUnconnected,
   EditUserFormConnected
 } from "../../components/EditUser";
-import {
-  updateUser,
-  getUserByEmail,
-  handleDeleteDialogOpen,
-  deleteUser,
-  handleDeleteClose
-} from "../../store/actions/apiUserActions";
-import * as Notifier from "../../containers/Notifier";
+import * as formElements from "../../components/SubmissionFormElements";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -39,11 +33,34 @@ const initialState = {
       email: "",
       name: "",
       type: "",
-      id: ""
+      id: "1"
     },
     error: null
   }
 };
+
+const handleErrorMock = jest.fn();
+const addUserMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "ADD_USER_SUCCESS", payload: { email: "string" } })
+  );
+const updateUserMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({
+      type: "UPDATE_USER_SUCCESS",
+      payload: { email: "string" }
+    })
+  );
+const getUserByEmailMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({
+      type: "GET_USER_BY_EMAIL_SUCCESS",
+      payload: { email: "string" }
+    })
+  );
 
 const defaultProps = {
   appState: {
@@ -52,13 +69,14 @@ const defaultProps = {
     userType: "admin"
   },
   apiUser: {
-    updateUser: () => Promise.resolve({ type: "UPDATE_USER_SUCCESS" }),
-    getUserByEmail: () =>
-      Promise.resolve({ type: "GET_USER_BY_EMAIL_SUCCESS" }),
+    updateUser: updateUserMock,
+    getUserByEmail: getUserByEmailMock,
     handleDeleteDialogOpen: () =>
       Promise.resolve({ type: "HANDLE_DELETE_OPEN" }),
     handleDeleteClose: () => Promise.resolve({ type: "HANDLE_DELETE_CLOSE" }),
-    deleteUser: () => Promise.resolve({ type: "DELETE_USER_SUCCESS" })
+    deleteUser: () => Promise.resolve({ type: "DELETE_USER_SUCCESS" }),
+    addUser: addUserMock,
+    clearForm: jest.fn()
   },
   user: {
     deleteDialogOpen: false,
@@ -85,13 +103,13 @@ const defaultProps = {
 };
 
 /**
- * Factory function to create a ShallowWrapper for the TextInputForm component
+ * Factory function to create a ShallowWrapper for the EditUser component
  * @function setup
  * @param  {object} props - Component props specific to this setup.
  * @return {ShallowWrapper}
  */
 const setup = (props = {}) => {
-  store = mockStore(defaultProps);
+  store = mockStore(initialState);
   const setupProps = { ...defaultProps, ...props };
   return shallow(<EditUserFormUnconnected {...setupProps} store={store} />);
 };
@@ -100,7 +118,10 @@ const fakeEvent = {
   preventDefault: () => {}
 };
 
-describe("<TextInputForm />", () => {
+describe("<EditUser />", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
   it("renders without error", () => {
     wrapper = setup();
     const component = findByTestAttr(wrapper, "component-edit-user-form");
@@ -108,8 +129,21 @@ describe("<TextInputForm />", () => {
   });
 
   it("renders connected component", () => {
-    store = storeFactory(defaultProps);
-    wrapper = mount(<EditUserFormConnected {...defaultProps} store={store} />);
+    store = storeFactory(initialState);
+    let props = {
+      user: {
+        currentUser: {
+          id: "1"
+        }
+      }
+    };
+
+    wrapper = shallow(<EditUserFormConnected {...defaultProps} store={store} />)
+      .dive()
+      .dive();
+
+    wrapper.instance().props.user.currentUser.id = "1";
+    wrapper.update();
     const component = findByTestAttr(wrapper, "component-edit-user-form");
     expect(component.length).toBe(1);
   });
@@ -147,7 +181,11 @@ describe("<TextInputForm />", () => {
 
   test("calls `updateUser` on submit", () => {
     let props = {
-      apiUser: { updateUser: updateUser },
+      apiUser: {
+        ...defaultProps.apiUser,
+        addUser: addUserMock,
+        updateUser: updateUserMock
+      },
       user: {
         form: {
           email: "UPDATEDfake@test.com",
@@ -166,39 +204,21 @@ describe("<TextInputForm />", () => {
     };
 
     store = storeFactory(initialState);
-    // Create a spy of the dispatch() method for test assertions.
-    const dispatchSpy = jest.spyOn(store, "dispatch");
-    wrapper = shallow(
-      <EditUserFormConnected {...defaultProps} {...props} store={store} />
-    )
-      .dive()
-      .dive();
+
+    wrapper = setup(props);
 
     wrapper.instance().submit(fakeEvent);
-    const spyCall = dispatchSpy.mock.calls[0][0];
-    const { email, name, type } = wrapper.instance().props.user.form;
-    const { id } = wrapper.instance().props.user.currentUser;
-    const { authToken, userType } = wrapper.instance().props.appState;
-    const body = {
-      updates: {
-        email,
-        // name,
-        type
-      },
-      requestingUserType: userType
-    };
-    expect(JSON.stringify(spyCall)).toEqual(
-      JSON.stringify(updateUser(authToken, id, body))
-    );
+    expect(updateUserMock.mock.calls.length).toBe(1);
   });
 
   test("`submit` returns error if `updateUser` fails", () => {
     const updateUserErrorMock = jest
       .fn()
       .mockImplementation(() =>
-        Promise.resolve({ type: "UPDATE_USER_FAILURE" }).catch(err =>
-          console.log(err)
-        )
+        Promise.resolve({
+          type: "UPDATE_USER_FAILURE",
+          payload: { message: "An error occurred while trying to update user" }
+        })
       );
     let props = {
       apiUser: { updateUser: updateUserErrorMock },
@@ -218,28 +238,28 @@ describe("<TextInputForm />", () => {
         }
       }
     };
-    Notifier.openSnackbar = jest.fn();
+    formElements.handleError = handleErrorMock;
     wrapper = shallow(<EditUserFormUnconnected {...defaultProps} {...props} />);
 
     wrapper.instance().submit(fakeEvent);
-    return updateUserErrorMock().then(() => {
-      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
-        "error",
-        "An error occurred while trying to update user"
-      );
-    });
+    return updateUserErrorMock()
+      .then(() => {
+        console.log(handleErrorMock.mock.calls);
+        expect(handleErrorMock.mock.calls[0][0]).toBe(
+          "An error occurred while trying to update user"
+        );
+      })
+      .catch(err => console.log(err));
   });
 
-  test("`submit` returns success message if `updateUser` succeeds", () => {
+  test("`submit` calls `updateUser`", () => {
     const updateUserMock = jest
       .fn()
       .mockImplementation(() =>
-        Promise.resolve({ type: "UPDATE_USER_SUCCESS" }).catch(err =>
-          console.log(err)
-        )
+        Promise.resolve({ type: "UPDATE_USER_SUCCESS", payload: {} })
       );
     let props = {
-      apiUser: { updateUser: updateUserMock },
+      apiUser: { updateUser: updateUserMock, clearForm: jest.fn() },
       user: {
         form: {
           email: "UPDATEDfake@test.com",
@@ -256,22 +276,16 @@ describe("<TextInputForm />", () => {
         }
       }
     };
-    Notifier.openSnackbar = jest.fn();
-    wrapper = shallow(<EditUserFormUnconnected {...defaultProps} {...props} />);
+    wrapper = setup(props);
 
     wrapper.instance().submit(fakeEvent);
-    return updateUserMock().then(() => {
-      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
-        "success",
-        "User updated successfully!"
-      );
-    });
+    expect(updateUserMock.mock.calls.length).toBe(1);
   });
+
   ////////////////////////////
   ////////////////////////////
   test("if no currentUser calls `findUserByEmail` on submit ", () => {
     let props = {
-      apiUser: { getUserByEmail: getUserByEmail },
       user: {
         form: {
           email: "",
@@ -290,36 +304,23 @@ describe("<TextInputForm />", () => {
       }
     };
 
-    store = storeFactory(initialState);
-    // Create a spy of the dispatch() method for test assertions.
-    const dispatchSpy = jest.spyOn(store, "dispatch");
-    wrapper = shallow(
-      <EditUserFormConnected {...defaultProps} {...props} store={store} />
-    )
-      .dive()
-      .dive();
+    wrapper = setup(props);
 
     wrapper.instance().findUserByEmail(fakeEvent);
-    const spyCall = dispatchSpy.mock.calls[0][0];
-    const { existingUserEmail } = wrapper.instance().props.user.form;
-    const { userType } = wrapper.instance().props.appState;
-    // const body = {
-    //   existingUserEmail,
-    //   requestingUserType: userType
-    // };
-    expect(JSON.stringify(spyCall)).toEqual(
-      JSON.stringify(getUserByEmail(existingUserEmail, userType))
-    );
+
+    expect(getUserByEmailMock.mock.calls.length).toBe(1);
   });
 
   test("if no currentUser `submit` returns error if `findUserByEmail` fails", () => {
     const getUserByEmailErrorMock = jest
       .fn()
       .mockImplementation(() =>
-        Promise.resolve({ type: "GET_USER_BY_EMAIL_FAILURE" }).catch(err =>
-          console.log(err)
-        )
+        Promise.resolve({
+          type: "GET_USER_BY_EMAIL_FAILURE",
+          payload: { message: "An error occurred while trying to find user" }
+        })
       );
+    formElements.handleError = handleErrorMock;
     let props = {
       apiUser: { getUserByEmail: getUserByEmailErrorMock },
       user: {
@@ -339,25 +340,30 @@ describe("<TextInputForm />", () => {
         }
       }
     };
-    Notifier.openSnackbar = jest.fn();
     wrapper = shallow(<EditUserFormUnconnected {...defaultProps} {...props} />);
 
-    wrapper.instance().findUserByEmail(fakeEvent);
-    return getUserByEmailErrorMock().then(() => {
-      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
-        "error",
-        "An error occurred while trying to find user"
-      );
-    });
+    wrapper
+      .instance()
+      .findUserByEmail(fakeEvent)
+      .catch(err => {
+        console.log(err);
+      });
+    return getUserByEmailErrorMock()
+      .then(() => {
+        expect(handleErrorMock.mock.calls[0][0]).toBe(
+          "An error occurred while trying to update user"
+        );
+      })
+      .catch(err => {
+        console.log(err);
+      });
   });
 
-  test("if no currentUser `submit` returns success message if `findUserByEmail` succeeds", () => {
+  test("if no currentUser `submit` calls findUserByEmail", () => {
     const getUserByEmailMock = jest
       .fn()
       .mockImplementation(() =>
-        Promise.resolve({ type: "GET_USER_BY_EMAIL_SUCCESS" }).catch(err =>
-          console.log(err)
-        )
+        Promise.resolve({ type: "GET_USER_BY_EMAIL_SUCCESS", payload: {} })
       );
     let props = {
       apiUser: { getUserByEmail: getUserByEmailMock },
@@ -378,15 +384,9 @@ describe("<TextInputForm />", () => {
         }
       }
     };
-    Notifier.openSnackbar = jest.fn();
     wrapper = shallow(<EditUserFormUnconnected {...defaultProps} {...props} />);
 
     wrapper.instance().findUserByEmail(fakeEvent);
-    return getUserByEmailMock().then(() => {
-      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
-        "success",
-        "User found successfully!"
-      );
-    });
+    expect(getUserByEmailMock.mock.calls.length).toBe(1);
   });
 });

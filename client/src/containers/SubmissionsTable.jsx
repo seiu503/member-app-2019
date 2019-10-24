@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import BASE_URL from "../store/actions/apiConfig";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 
@@ -17,6 +16,8 @@ import {
 import { openSnackbar } from "./Notifier";
 
 import Typography from "@material-ui/core/Typography";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const styles = theme => ({
   root: {
@@ -79,8 +80,10 @@ export class SubmissionsTableUnconnected extends React.Component {
     if (
       ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
         (this.props.appState.authToken && this.props.appState.userType)) ||
-      prevProps.submission.allSubmissions.length !==
-        this.props.submission.allSubmissions.length ||
+      (this.props.submission &&
+        this.props.submission.allSubmissions &&
+        prevProps.submission.allSubmissions.length !==
+          this.props.submission.allSubmissions.length) ||
       prevProps.appState.userType !== this.props.appState.userType
     ) {
       if (this.props.appState.userType) {

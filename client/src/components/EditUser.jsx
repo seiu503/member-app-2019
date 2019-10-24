@@ -9,10 +9,10 @@ import Typography from "@material-ui/core/Typography";
 
 import * as apiUserActions from "../store/actions/apiUserActions";
 
-import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
 // import Spinner from "../components/Spinner";
 import AlertDialog from "../components/AlertDialog";
+import * as formElements from "../components/SubmissionFormElements";
 
 const styles = theme => ({
   root: {},
@@ -84,23 +84,17 @@ export class EditUserFormUnconnected extends React.Component {
       .getUserByEmail(existingUserEmail, requestingUserType)
       .then(result => {
         // console.log(result);
-        if (result.payload.message) {
+        if (result.payload && result.payload.message) {
           // console.log(result.payload);
-          openSnackbar(
-            "error",
+          return formElements.handleError(
             result.payload.message ||
               "An error occurred while trying to find user"
           );
-        } else {
-          openSnackbar("success", "User found successfully!");
         }
       })
       .catch(err => {
-        // console.log(err);
-        openSnackbar(
-          "error",
-          this.props.user.error || "An error occurred while trying to find user"
-        );
+        console.error(err);
+        return formElements.handleError(err);
       });
   }
 
@@ -122,18 +116,20 @@ export class EditUserFormUnconnected extends React.Component {
       .updateUser(authToken, id, body)
       .then(result => {
         if (result.type === "UPDATE_USER_FAILURE" || this.props.user.error) {
-          openSnackbar(
-            "error",
+          console.error(this.props.user.error);
+          return formElements.handleError(
             this.props.user.error ||
               "An error occurred while trying to update user"
           );
         } else {
-          openSnackbar("success", "User updated successfully!");
           this.props.apiUser.clearForm();
           this.props.history.push("/admin");
         }
       })
-      .catch(err => openSnackbar("error", err));
+      .catch(err => {
+        console.error(err);
+        return formElements.handleError(err);
+      });
   }
 
   handleDeleteDialogOpen = user => {
@@ -144,7 +140,6 @@ export class EditUserFormUnconnected extends React.Component {
 
   async deleteUser(user) {
     const token = this.props.appState.authToken;
-    let name = user.name;
     const requestingUserType = this.props.appState.userType;
     const userDeleteResult = await this.props.apiUser.deleteUser(
       token,
@@ -155,9 +150,8 @@ export class EditUserFormUnconnected extends React.Component {
       !userDeleteResult.type ||
       userDeleteResult.type !== "DELETE_USER_SUCCESS"
     ) {
-      openSnackbar("error", this.props.user.error);
+      return formElements.handleError(this.props.user.err);
     } else {
-      openSnackbar("success", `Successfully Deleted ${name}.`);
       this.props.history.push(`/admin`);
     }
   }

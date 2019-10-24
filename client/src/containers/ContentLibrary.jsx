@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
-import BASE_URL from "../store/actions/apiConfig";
 
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
@@ -16,6 +15,8 @@ import * as utils from "../utils";
 import ContentTile from "../components/ContentTile";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const styles = theme => ({
   root: {

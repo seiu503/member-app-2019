@@ -64,10 +64,24 @@ const initialStateLoggedIn = {
   }
 };
 
+const validateTokenMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "VALIDATE_TOKEN_SUCCESS", payload: {} })
+  );
+const getProfileMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_PROFILE_SUCCESS", payload: {} })
+  );
+
 const getResponseMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve("token"));
 const handleInputMock = jest.fn();
+const setActiveLanguageMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve("en"));
 
 const defaultProps = {
   appState: {
@@ -92,11 +106,12 @@ const defaultProps = {
   submission: {
     formPage1: {
       reCaptchaValue: ""
-    }
+    },
+    allSubmissions: [{ key: "value" }]
   },
   apiProfile: {
-    validateToken: () => ({ type: "VALIDATE_TOKEN_SUCCESS" }),
-    getProfile: () => Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
+    validateToken: validateTokenMock,
+    getProfile: getProfileMock
   },
   apiContentActions: {
     handleInput: () => ({ type: "HANDLE_INPUT" }),
@@ -109,7 +124,7 @@ const defaultProps = {
     handleInput: handleInputMock
   },
   initialize: jest.fn(),
-  setActiveLanguage: jest.fn(),
+  setActiveLanguage: setActiveLanguageMock,
   classes: {},
   addTranslation: jest.fn(),
   recaptcha: {
@@ -167,25 +182,22 @@ describe("<App />", () => {
       localStorage.setItem("authToken", "5678");
 
       store = storeFactory(initialState);
-      // Create a spy of the dispatch() method for test assertions.
-      const dispatchSpy = jest.spyOn(store, "dispatch");
-      wrapper = mount(
-        <Provider store={store}>
-          <BrowserRouter>
-            <AppConnected {...defaultProps} />
-          </BrowserRouter>
-        </Provider>
-      );
-
-      const spyCall = dispatchSpy.mock.calls.find(
-        call =>
-          call[0].hasOwnProperty("@@redux-api-middleware/RSAA") &&
-          call[0]["@@redux-api-middleware/RSAA"].endpoint ===
-            "http://localhost:8080/api/user/1234"
-      )[0];
-      expect(JSON.parse(JSON.stringify(spyCall))).toEqual(
-        JSON.parse(JSON.stringify(validateToken("5678", "1234")))
-      );
+      const props = {
+        appState: {
+          loggedIn: false
+        },
+        match: null,
+        apiProfile: {
+          validateToken: validateTokenMock,
+          getProfile: getProfileMock
+        },
+        actions: {
+          setLoggedIn: jest.fn()
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().componentDidMount();
+      expect(validateTokenMock.mock.calls.length).toBe(1);
     });
     it("if !loggedIn, console logs error if `validateToken` throws", () => {
       localStorage.setItem("userId", "1234");
@@ -220,23 +232,24 @@ describe("<App />", () => {
       });
       wrapper.instance().props.appState.loggedIn = false;
       wrapper.instance().props.apiProfile.validateToken = validateTokenErrorMock;
-      const localStorageClearMock = jest.fn();
-      window.localStorage.clear = localStorageClearMock;
       wrapper.instance().componentDidMount();
       return validateTokenErrorMock()
         .then(() => {
-          // expect(localStorageClearMock.mock.calls.length).toBe(1);
-          localStorageClearMock.mockRestore();
+          expect(window.localStorage).not.toHaveProperty("userId");
+          expect(window.localStorage).not.toHaveProperty("authToken");
         })
         .catch(err => console.log(err));
     });
-    it("checks for browser language on componentDidMount", () => {
+    it("checks for browser language on componentDidMount", async () => {
       utils.detectDefaultLanguage = jest.fn();
-      wrapper = unconnectedSetup();
+      const props = {
+        setActiveLanguage: setActiveLanguageMock
+      };
+      wrapper = unconnectedSetup(props);
       wrapper.instance().props.appState.loggedIn = false;
-      expect(wrapper.instance().props.setActiveLanguage).toHaveBeenCalled();
       wrapper.instance().componentDidMount();
-      expect(utils.detectDefaultLanguage.mock.calls.length).toBe(1);
+      await utils.detectDefaultLanguage();
+      expect(setActiveLanguageMock).toHaveBeenCalled();
     });
   });
 
@@ -277,8 +290,8 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(LinkRequest)).toHaveLength(1);
     });
-    test(' "/page2?id={id}" path should render SubmissionFormPage2 component', () => {
-      wrapper = routeSetup("/page2?id=12345678");
+    test(' "/page2?cId={cId}&aId={aid}" path should render SubmissionFormPage2 component', () => {
+      wrapper = routeSetup("/page2?cId=12345678&aId=123456");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(SubmissionFormPage2)).toHaveLength(1);
     });
@@ -299,6 +312,7 @@ describe("<App />", () => {
     });
     test(' "/admin" path should render Dashboard component', () => {
       wrapper = routeSetup("/admin");
+      wrapper.update();
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(Dashboard)).toHaveLength(1);
     });

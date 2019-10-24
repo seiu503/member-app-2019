@@ -7,7 +7,7 @@ import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiUserActions";
 import * as userReducer from "../../store/reducers/user";
-import BASE_URL from "../../store/actions/apiConfig.js";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(userReducer.initialState);

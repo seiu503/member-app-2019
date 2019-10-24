@@ -18,26 +18,24 @@ const setup = (props = {}) => {
   return shallow(<Login {...setupProps} />);
 };
 
+const assignMock = jest.fn();
+
 describe.only("<Login />", () => {
+  beforeEach(() => {
+    window.location.assign = assignMock;
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
   it("renders without error", () => {
     const wrapper = setup();
     const component = findByTestAttr(wrapper, "component-login");
     expect(component.length).toBe(1);
   });
   it("assigns location on componentDidMount", () => {
-    // mock window.location method
-    // beforeAll(() => {
-    //   delete window.location;
-    //   window.location = { assign: jest.fn() };
-    // })
-    // afterAll(() => {
-    //   window.location = location;
-    // });
-    const spy = jest.spyOn(window.location, "assign");
-
     const wrapper = setup();
     // run lifecycle method
     wrapper.instance().componentDidMount();
-    expect(spy).toHaveBeenCalled();
+    expect(assignMock.mock.calls.length).toBe(1);
   });
 });

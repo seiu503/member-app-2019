@@ -165,14 +165,14 @@ export class AppUnconnected extends Component {
       more: false
     };
     this.props.addTranslation(globalTranslations);
-    this.verifyCallback = this.verifyCallback.bind(this);
-    this.refreshRecaptcha = this.refreshRecaptcha.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
     this.onResolved = this.onResolved.bind(this);
   }
 
   componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
+    const defaultLanguage = detectDefaultLanguage();
+    this.props.setActiveLanguage(defaultLanguage);
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
@@ -233,12 +233,13 @@ export class AppUnconnected extends Component {
                   });
               }
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+              console.log(err);
+              return window.localStorage.clear();
+            });
         }
       }
     }
-    const defaultLanguage = detectDefaultLanguage();
-    this.props.setActiveLanguage(defaultLanguage);
   }
 
   async onResolved() {
