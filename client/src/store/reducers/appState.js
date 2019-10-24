@@ -131,7 +131,8 @@ export const INITIAL_STATE = {
   authToken: "",
   loading: false,
   redirect: "",
-  userType: ""
+  userType: "",
+  message: ""
 };
 
 function appState(state = INITIAL_STATE, action) {

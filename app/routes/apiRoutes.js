@@ -6,6 +6,10 @@
 
 const router = require("express").Router();
 const passport = require("passport");
+const CLIENT_URL =
+  process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
+const SERVER_URL =
+  process.env.NODE_ENV === "production" ? APP_HOST : "//localhost:8080";
 
 /* =========================== LOAD CONTROLLERS ============================ */
 
@@ -42,9 +46,27 @@ router.get(
 //
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google", { session: false }),
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/api/auth/google/noaccess"
+  }),
   authCtrl.googleCallback
 );
+
+// GOOGLE LOGIN FAILURE
+//   Example: GET >> /auth/google/noaccess
+//   Secured: no
+//   Expects: null
+//   Returns: User object and token.
+//
+router.get("/auth/google/noaccess", (req, res) => {
+  const message = encodeURIComponent(
+    "You need an invitation from an administrator before you can create an account"
+  );
+  console.log(`apiRoutes > 58: ${message}`);
+  const redirect = `${CLIENT_URL}/noaccess?message=${message}`;
+  return res.status(422).redirect(redirect);
+});
 
 /* ============================== CAPTCHA  ================================ */
 

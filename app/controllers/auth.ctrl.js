@@ -19,9 +19,9 @@ const SERVER_URL =
 /* ============================ ROUTE HANDLERS ============================= */
 
 exports.googleCallback = (req, res) => {
-  // console.log("################# google callback");
+  console.log("################# google callback");
   if (req.authError) {
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: req.authError,
       error: req.authError
@@ -29,7 +29,7 @@ exports.googleCallback = (req, res) => {
   }
   if (req.user && req.user.err) {
     console.error(`auth.ctrl.js > 46: ${req.user.err}`);
-    res.status(401).json({
+    return res.status(401).json({
       success: false,
       message: `google auth failed: ${req.user.err}`,
       error: req.user.err

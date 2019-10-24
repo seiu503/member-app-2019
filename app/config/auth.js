@@ -7,7 +7,9 @@ const passport = require("passport"),
   prodUrl = "https://test.seiu503signup.org", // NO TRAILING SLASH
   devUrl = "http://localhost:8080", // server url for local install
   BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl, //
-  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
+  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`,
+  CLIENT_URL =
+    process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
 
 /* ================================ EXPORTS ================================ */
 
@@ -44,27 +46,27 @@ exports.googleAuth = {
 exports.findUserByEmail = async (profile, token, done) => {
   // console.log("config.auth.js > 44: (googleId)");
   // console.log(profile.id);
-  User.getUserByEmail(profile.email)
+  return User.getUserByEmail(profile.email)
     .then(user => {
-      console.log(`50`);
+      console.log(`config.auth.js > 49`);
       // console.log("config.auth.js > 48: (userId)");
       if (user) {
-        console.log(`52`);
+        console.log(`config.auth.js > 52`);
         // console.log(user.id);
         if (user.google_id) {
-          console.log(`54`);
+          console.log(`config.auth.js > 54`);
           return done(null, user);
         } else {
-          console.log(`56`);
+          console.log(`config.auth.js > 56`);
           return this.updateUser(profile, token, user.id, done);
         }
       }
-      err = "You need an invitation from an administrator first";
-      return done(err, null);
+      console.log(`config.auth.js > 62`);
+      return done(null, null);
     })
     .catch(err => {
       console.log(`config/auth.js > 67: ${err}`);
-      done(err, null);
+      return done(err, null);
     });
 };
 
@@ -99,11 +101,11 @@ exports.jwtLogin = async (req, payload, done) => {
       console.log(`config/auth.js > 132`);
       console.log(user.id);
       req.user = user;
-      done(null, user);
+      return done(null, user);
     })
     .catch(err => {
       console.log(`config/auth.js > 137: ${err}`);
-      done(err, null);
+      return done(err, null);
     });
 };
 
@@ -124,15 +126,23 @@ exports.googleLogin = async (req, token, refreshToken, profile, done) => {
   //     profile.name.familyName
   //   }, ID: ${profile.id}`
   // );
-  console.log("127");
+  console.log(`config.auth.js > 128`);
   if (!req.user) {
-    console.log("129");
-    return this.findUserByEmail(profile, token, done).catch(err => {
-      console.log("132");
-      console.log(`config/auth.js > 133: ${err}`);
-    });
+    console.log("config.auth.js > 129");
+    this.findUserByEmail(profile, token, done)
+      // .then(result => {
+      //   console.log("config/auth.js > 133");
+      //   // if (!result) {
+      //   //   console.log("config/auth.js > 135");
+      //   //   return done(null, null);
+      //   // }
+      // })
+      .catch(err => {
+        console.log(`config/auth.js > 137: ${err}`);
+        return done(err, null);
+      });
   } else {
-    console.log("136");
+    console.log("config/auth.js > 144");
     // found logged-in user. Return
     return done(null, req.user);
   }

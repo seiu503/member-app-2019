@@ -403,6 +403,16 @@ export class AppUnconnected extends Component {
               render={routeProps => <LinkRequest {...routeProps} />}
             />
             <Route
+              path="/noaccess"
+              render={routeProps => (
+                <NoAccess
+                  setRedirect={this.setRedirect}
+                  classes={this.props.classes}
+                  {...routeProps}
+                />
+              )}
+            />
+            <Route
               path="*"
               render={routeProps => (
                 <NotFound classes={this.props.classes} {...routeProps} />
