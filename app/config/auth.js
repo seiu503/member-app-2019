@@ -129,18 +129,10 @@ exports.googleLogin = async (req, token, refreshToken, profile, done) => {
   console.log(`config.auth.js > 128`);
   if (!req.user) {
     console.log("config.auth.js > 129");
-    this.findUserByEmail(profile, token, done)
-      // .then(result => {
-      //   console.log("config/auth.js > 133");
-      //   // if (!result) {
-      //   //   console.log("config/auth.js > 135");
-      //   //   return done(null, null);
-      //   // }
-      // })
-      .catch(err => {
-        console.log(`config/auth.js > 137: ${err}`);
-        return done(err, null);
-      });
+    this.findUserByEmail(profile, token, done).catch(err => {
+      console.log(`config/auth.js > 137: ${err}`);
+      return done(err, null);
+    });
   } else {
     console.log("config/auth.js > 144");
     // found logged-in user. Return

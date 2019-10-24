@@ -5,7 +5,11 @@ exports.up = function(knex) {
         return knex.schema.table("submissions", function(table) {
           table.string("submission_status");
           table.text("submission_errors");
-          table.string("card_brand");
+          knex.schema.hasColumn("card_brand").then(function(exists) {
+            if (!exists) {
+              table.string("card_brand");
+            }
+          });
         });
       }
     })

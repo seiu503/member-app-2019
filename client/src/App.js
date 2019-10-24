@@ -408,6 +408,7 @@ export class AppUnconnected extends Component {
                 <NoAccess
                   setRedirect={this.setRedirect}
                   classes={this.props.classes}
+                  location={this.props.location}
                   {...routeProps}
                 />
               )}

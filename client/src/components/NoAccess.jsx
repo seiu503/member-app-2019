@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import queryString from "query-string";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -51,4 +52,4 @@ NoAccess.propTypes = {
   classes: PropTypes.object
 };
 
-export default NoAccess;
+export default withRouter(NoAccess);

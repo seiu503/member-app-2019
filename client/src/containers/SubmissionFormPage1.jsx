@@ -252,13 +252,6 @@ export class SubmissionFormPage1Container extends React.Component {
       return;
     }
     // render iframe if one-time donation and cape amount set
-    const donationAmount =
-      formValues.capeAmount === "Other"
-        ? parseFloat(formValues.capeAmountOther)
-        : parseFloat(formValues.capeAmount);
-    // console.log(`donationAmount: ${donationAmount}`);
-    // console.log(formValues.capeAmount);
-    // console.log(formValues.capeAmountOther);
 
     if (!validMethod) {
       await this.props.apiSubmission.handleInput({
