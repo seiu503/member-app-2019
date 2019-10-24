@@ -110,12 +110,7 @@ export class CreateUserFormUnconnected extends React.Component {
         >
           Create a User
         </Typography>
-        <form
-          onSubmit={e => this.submit(e)}
-          className={classes.form}
-          onError={errors => console.log(errors)}
-          id="form"
-        >
+        <form onSubmit={this.submit} className={classes.form} id="form">
           <TextField
             data-test="component-name"
             name="name"
@@ -125,7 +120,7 @@ export class CreateUserFormUnconnected extends React.Component {
             variant="outlined"
             required
             value={this.props.user.form.name}
-            onChange={e => this.props.apiUser.handleInput(e)}
+            onChange={this.props.apiUser.handleInput}
             className={classes.input}
           />
           <TextField
@@ -137,7 +132,7 @@ export class CreateUserFormUnconnected extends React.Component {
             variant="outlined"
             required
             value={this.props.user.form.email}
-            onChange={e => this.props.apiUser.handleInput(e)}
+            onChange={this.props.apiUser.handleInput}
             className={classes.input}
           />
           <FormControl
@@ -150,7 +145,7 @@ export class CreateUserFormUnconnected extends React.Component {
             <Select
               native
               value={this.props.user.form.type}
-              onChange={e => this.props.apiUser.handleInput(e)}
+              onChange={this.props.apiUser.handleInput}
               input={
                 <OutlinedInput
                   labelWidth={80}

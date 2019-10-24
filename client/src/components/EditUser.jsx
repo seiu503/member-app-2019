@@ -74,8 +74,6 @@ export class EditUserFormUnconnected extends React.Component {
     this.submit = this.submit.bind(this);
   }
 
-  componentDidMount() {}
-
   findUserByEmail(e) {
     e.preventDefault();
     const { existingUserEmail } = this.props.user.form;
@@ -132,28 +130,34 @@ export class EditUserFormUnconnected extends React.Component {
       });
   }
 
-  handleDeleteDialogOpen = user => {
-    if (user && this.props.appState.loggedIn) {
-      this.props.apiUser.handleDeleteOpen(user);
+  handleDeleteDialogOpen = () => {
+    if (this.props.user.currentUser && this.props.appState.loggedIn) {
+      this.props.apiUser.handleDeleteOpen(this.props.user.currentUser);
     }
+  };
+
+  dialogAction = () => {
+    this.deleteUser(this.props.user.currentUser);
+    this.props.apiUser.handleDeleteClose();
   };
 
   async deleteUser(user) {
     const token = this.props.appState.authToken;
     const requestingUserType = this.props.appState.userType;
-    const userDeleteResult = await this.props.apiUser.deleteUser(
-      token,
-      user.id,
-      requestingUserType
-    );
-    if (
-      !userDeleteResult.type ||
-      userDeleteResult.type !== "DELETE_USER_SUCCESS"
-    ) {
-      return formElements.handleError(this.props.user.err);
-    } else {
-      this.props.history.push(`/admin`);
-    }
+    this.props.apiUser
+      .deleteUser(token, user.id, requestingUserType)
+      .then(result => {
+        if (!result || result.type !== "DELETE_USER_SUCCESS") {
+          console.log(this.props.user.err);
+          return formElements.handleError(this.props.user.err);
+        } else {
+          this.props.history.push(`/admin`);
+        }
+      })
+      .catch(err => {
+        console.log(err.message);
+        return formElements.handleError(err.message);
+      });
   }
 
   render() {
@@ -169,10 +173,7 @@ export class EditUserFormUnconnected extends React.Component {
               this.props.user.currentUser.name
             }? This action cannot be undone and all user data will be lost.`}
             danger={true}
-            action={() => {
-              this.deleteUser(this.props.user.currentUser);
-              this.props.apiUser.handleDeleteClose();
-            }}
+            action={this.dialogAction}
             buttonText="Delete"
             data-test="alert-dialog"
           />
@@ -188,12 +189,7 @@ export class EditUserFormUnconnected extends React.Component {
             >
               Edit a User
             </Typography>
-            <form
-              onSubmit={e => this.submit(e)}
-              className={classes.form}
-              onError={errors => console.log(errors)}
-              id="form"
-            >
+            <form onSubmit={this.submit} className={classes.form} id="form">
               <TextField
                 data-test="fullName"
                 name="fullName"
@@ -203,7 +199,7 @@ export class EditUserFormUnconnected extends React.Component {
                 variant="outlined"
                 required
                 value={this.props.user.form.name}
-                onChange={e => this.props.apiUser.handleInput(e)}
+                onChange={this.props.apiUser.handleInput}
                 className={classes.input}
               />
               <TextField
@@ -215,7 +211,7 @@ export class EditUserFormUnconnected extends React.Component {
                 variant="outlined"
                 required
                 value={this.props.user.form.email}
-                onChange={e => this.props.apiUser.handleInput(e)}
+                onChange={this.props.apiUser.handleInput}
                 className={classes.input}
               />
               <TextField
@@ -227,7 +223,7 @@ export class EditUserFormUnconnected extends React.Component {
                 variant="outlined"
                 required
                 value={this.props.user.form.type}
-                onChange={e => this.props.apiUser.handleInput(e)}
+                onChange={this.props.apiUser.handleInput}
                 className={classes.input}
               />
               <ButtonWithSpinner
@@ -240,9 +236,7 @@ export class EditUserFormUnconnected extends React.Component {
                 Submit
               </ButtonWithSpinner>
               <ButtonWithSpinner
-                onClick={() =>
-                  this.handleDeleteDialogOpen(this.props.user.currentUser)
-                }
+                onClick={this.handleDeleteDialogOpen}
                 color="primary"
                 aria-label="Delete Content"
                 data-test="delete"
@@ -267,9 +261,8 @@ export class EditUserFormUnconnected extends React.Component {
               Find User to Edit
             </Typography>
             <form
-              onSubmit={e => this.findUserByEmail(e)}
+              onSubmit={this.findUserByEmail}
               className={classes.form}
-              onError={errors => console.log(errors)}
               id="form"
             >
               <TextField
@@ -281,7 +274,7 @@ export class EditUserFormUnconnected extends React.Component {
                 variant="outlined"
                 required
                 value={this.props.user.form.existingUserEmail}
-                onChange={e => this.props.apiUser.handleInput(e)}
+                onChange={this.props.apiUser.handleInput}
                 className={classes.input}
               />
               <ButtonWithSpinner
