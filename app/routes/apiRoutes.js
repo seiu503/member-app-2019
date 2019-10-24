@@ -57,16 +57,9 @@ router.get(
 //   Example: GET >> /auth/google/noaccess
 //   Secured: no
 //   Expects: null
-//   Returns: User object and token.
+//   Returns: Redirect to client noaccess route with message.
 //
-router.get("/auth/google/noaccess", (req, res) => {
-  const message = encodeURIComponent(
-    "You need an invitation from an administrator before you can create an account"
-  );
-  console.log(`apiRoutes > 58: ${message}`);
-  const redirect = `${CLIENT_URL}/noaccess?message=${message}`;
-  return res.status(422).redirect(redirect);
-});
+router.get("/auth/google/noaccess", authCtrl.noAccess);
 
 /* ============================== CAPTCHA  ================================ */
 

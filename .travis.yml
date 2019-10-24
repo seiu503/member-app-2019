@@ -47,6 +47,7 @@ script:
   - cd client && yarn install && yarn build
   - cd .. && yarn test
   - cd client && yarn test
+  - knex migrate:latest --env production
   - npm install -g env-path
   - env-path -p .env.staging yarn node /node_modules/react-scripts/scripts/build.js
   - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh

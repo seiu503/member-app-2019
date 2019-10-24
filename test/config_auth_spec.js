@@ -134,17 +134,13 @@ suite("config : auth", function() {
         doneStub
       );
     });
-    test("returns custom error if no user found", async function() {
+    test("returns null if no user found", async function() {
       const getUserByEmailStub = sinon
         .stub(users, "getUserByEmail")
         .resolves(null);
       await authConfig.findUserByEmail(profile, token, doneStub);
       await getUserByEmailStub();
-      sinon.assert.calledWith(
-        doneStub,
-        "You need an invitation from an administrator first",
-        null
-      );
+      sinon.assert.calledWith(doneStub, null, null);
     });
     test("handles error if getUserByEmail throws", async function() {
       const getUserByEmailStub = sinon

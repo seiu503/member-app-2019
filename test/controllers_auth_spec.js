@@ -309,4 +309,30 @@ suite("auth.ctrl.js", function() {
       }
     });
   });
+
+  suite("authCtrl > noAccess", function() {
+    test("redirects to client `noaccess` route", async function() {
+      const jwtCallbackStub = sinon.stub(authCtrl, "jwtCallback");
+      const res = mockRes();
+      const message = encodeURIComponent(
+        "You need an invitation from an administrator before you can create an account"
+      );
+      const redirectUrl = `http://localhost:3000/noaccess?message=${message}`;
+
+      next = sinon.stub();
+      const userStub = {
+        id: "123"
+      };
+      const req = mockReq({
+        user: userStub
+      });
+      try {
+        result = await authCtrl.noAccess(req, res, next);
+        assert.calledWith(res.redirect, redirectUrl);
+        assert.calledWith(res.status, 422);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
 });

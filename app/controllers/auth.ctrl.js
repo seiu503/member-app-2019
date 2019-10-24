@@ -19,7 +19,7 @@ const SERVER_URL =
 /* ============================ ROUTE HANDLERS ============================= */
 
 exports.googleCallback = (req, res) => {
-  console.log("################# google callback");
+  // console.log("################# google callback");
   if (req.authError) {
     return res.status(401).json({
       success: false,
@@ -93,6 +93,14 @@ exports.jwtCallback = (req, res, next) => {
       }
     });
   }
+};
+
+exports.noAccess = (req, res) => {
+  const message = encodeURIComponent(
+    "You need an invitation from an administrator before you can create an account"
+  );
+  const redirect = `${CLIENT_URL}/noaccess?message=${message}`;
+  return res.status(422).redirect(redirect);
 };
 
 exports.requireAuth = async (req, res, next) => {
