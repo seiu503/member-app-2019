@@ -98,6 +98,6 @@ exports.jwtCallback = (req, res, next) => {
 exports.requireAuth = async (req, res, next) => {
   console.log(`auth.ctrl.js > 97: requireAuth`);
   await passport.authenticate("jwt", { session: false }, (token, done) =>
-    jwtCallback(req, res, next)
+    this.jwtCallback(req, res, next)
   )(req, res, next);
 };

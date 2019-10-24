@@ -94,17 +94,17 @@ exports.jwtOptions = {
 };
 
 exports.jwtLogin = async (req, payload, done) => {
-  console.log(`config/auth.js > 128: jwtLogin`);
+  console.log(`config/auth.js > 97: jwtLogin`);
   const id = payload.id;
   User.getUserById(id)
     .then(user => {
-      console.log(`config/auth.js > 132`);
+      console.log(`config/auth.js > 101`);
       console.log(user.id);
       req.user = user;
       return done(null, user);
     })
     .catch(err => {
-      console.log(`config/auth.js > 137: ${err}`);
+      console.log(`config/auth.js > 107: ${err}`);
       return done(err, null);
     });
 };

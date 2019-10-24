@@ -310,7 +310,7 @@ export class AppUnconnected extends Component {
               )}
             />
             <Route
-              path="/library"
+              path="/content"
               render={routeProps =>
                 loggedIn && userType === "admin" ? (
                   <ContentLibrary
@@ -362,7 +362,7 @@ export class AppUnconnected extends Component {
               }
             />
             <Route
-              path="/user"
+              path="/users"
               render={routeProps =>
                 loggedIn && userType === "admin" ? (
                   <UserForm setRedirect={this.setRedirect} {...routeProps} />

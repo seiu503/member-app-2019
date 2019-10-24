@@ -74,11 +74,11 @@ export class EditUserFormUnconnected extends React.Component {
     this.submit = this.submit.bind(this);
   }
 
-  findUserByEmail(e) {
+  findUserByEmail = async e => {
     e.preventDefault();
     const { existingUserEmail } = this.props.user.form;
     const requestingUserType = this.props.appState.userType;
-    return this.props.apiUser
+    await this.props.apiUser
       .getUserByEmail(existingUserEmail, requestingUserType)
       .then(result => {
         // console.log(result);
@@ -94,7 +94,7 @@ export class EditUserFormUnconnected extends React.Component {
         console.error(err);
         return formElements.handleError(err);
       });
-  }
+  };
 
   submit(e) {
     e.preventDefault();
