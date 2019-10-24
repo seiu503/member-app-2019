@@ -11,6 +11,9 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(contentReducer.initialState);
+const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+const token = "1234";
+const key = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
 describe("apiContentActions", () => {
   it("should create an action to handle form input", () => {
@@ -85,11 +88,28 @@ describe("apiContentActions", () => {
 
       fetch.mockResponseOnce(body, init);
 
-      const result = await store.dispatch(
-        actions.getContentById("1651a5d6-c2f7-453f-bdc7-13888041add6")
-      );
+      const result = await store.dispatch(actions.getContentById(id));
       const expectedResult = {
         payload: { message: "Content not found" },
+        type: "GET_CONTENT_BY_ID_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_CONTENT_BY_ID: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "Content not found"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getContentById(id));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
         type: "GET_CONTENT_BY_ID_FAILURE",
         error: true,
         meta: undefined
@@ -127,7 +147,7 @@ describe("apiContentActions", () => {
     it("ADD_CONTENT: Dispatches failure action after failed POST", async () => {
       const token = "1234";
       const body = JSON.stringify({
-        content_type: undefined
+        message: "Sorry, something went wrong :("
       });
       const init = {
         status: 500,
@@ -137,6 +157,25 @@ describe("apiContentActions", () => {
       fetch.mockResponseOnce(body, init);
 
       const result = await store.dispatch(actions.addContent(token, body));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "ADD_CONTENT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("ADD_CONTENT: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.addContent(id));
       const expectedResult = {
         payload: { message: "Sorry, something went wrong :(" },
         type: "ADD_CONTENT_FAILURE",
@@ -192,6 +231,25 @@ describe("apiContentActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("GET_ALL_CONTENT: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getAllContent());
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "GET_ALL_CONTENT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("UPLOAD_IMAGE: Dispatches success action after successful POST", async () => {
       const token = "1234";
       const image = JSON.stringify({ name: "example.png" });
@@ -217,8 +275,28 @@ describe("apiContentActions", () => {
     });
 
     it("UPLOAD_IMAGE: Dispatches failure action after failed POST", async () => {
-      const token = "1234";
-      const image = JSON.stringify({ name: "example.png" });
+      const image = JSON.stringify({
+        message: "Sorry, something went wrong :("
+      });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(image, init);
+
+      const result = await store.dispatch(actions.uploadImage(token, image));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "UPLOAD_IMAGE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPLOAD_IMAGE: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const image = JSON.stringify({});
       const init = {
         status: 500,
         statusText: "Sorry, something went wrong :("
@@ -237,8 +315,6 @@ describe("apiContentActions", () => {
     });
 
     it("UPDATE_CONTENT: Dispatches success action after successful PUT", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
       const body = JSON.stringify({
         content_type: "headline",
         content: "Test headline"
@@ -267,10 +343,8 @@ describe("apiContentActions", () => {
     });
 
     it("UPDATE_CONTENT: Dispatches failure action after failed PUT", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
       const body = JSON.stringify({
-        content_type: undefined
+        message: "Sorry, something went wrong :("
       });
       const init = {
         status: 500,
@@ -291,8 +365,28 @@ describe("apiContentActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("UPDATE_CONTENT: Dispatches failure action after failed PUT (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.updateContent(token, id, body)
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "UPDATE_CONTENT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("DELETE_IMAGE: Dispatches success action after successful DELETE", async () => {
-      const token = "1234";
       const key = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
       const response = {
@@ -314,10 +408,8 @@ describe("apiContentActions", () => {
     });
 
     it("DELETE_IMAGE: Dispatches failure action after failed DELETE", async () => {
-      const token = "1234";
-      const key = "1651a5d6-c2f7-453f-bdc7-13888041add6";
       const body = JSON.stringify({
-        content_type: undefined
+        message: "Sorry, something went wrong :("
       });
       const init = {
         status: 500,
@@ -336,10 +428,26 @@ describe("apiContentActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it("DELETE_CONTENT: Dispatches success action after successful DELETE", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+    it("DELETE_IMAGE: Dispatches failure action after failed DELETE (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
 
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.deleteImage(token, key));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "DELETE_IMAGE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_CONTENT: Dispatches success action after successful DELETE", async () => {
       const response = {
         message: "Content deleted successfully"
       };
@@ -359,11 +467,28 @@ describe("apiContentActions", () => {
     });
 
     it("DELETE_CONTENT: Dispatches failure action after failed DELETE", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
       const body = JSON.stringify({
-        content_type: undefined
+        message: "Sorry, something went wrong :("
       });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.deleteContent(token, id));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "DELETE_CONTENT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_CONTENT: Dispatches failure action after failed DELETE (generic error msg)", async () => {
+      const body = JSON.stringify({});
       const init = {
         status: 500,
         statusText: "Sorry, something went wrong :("

@@ -1,22 +1,25 @@
 import React from "react";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
+import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { Provider } from "react-redux";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../utils/testUtils";
 import { AppConnected, AppUnconnected } from "../App";
-import { validateToken } from "../store/actions/apiProfileActions";
 import "jest-canvas-mock";
 
 import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "../containers/SubmissionFormPage2";
 import Dashboard from "../containers/Dashboard";
 import NotFound from "../components/NotFound";
+import NoAccess from "../components/NoAccess";
 import FormThankYou from "../components/FormThankYou";
+import Login from "../components/Login";
 import LinkRequest from "../containers/LinkRequest";
+import UserForm from "../containers/UserForm";
 import * as utils from "../utils/index";
-// import ContentLibrary from "../containers/ContentLibrary";
+import ContentLibrary from "../containers/ContentLibrary";
 import TextInputForm from "../containers/TextInputForm";
-// import Logout from "../containers/Logout";
+import Logout from "../containers/Logout";
 
 // this import is here only to get coverage for the theme file
 import { theme } from "../styles/theme";
@@ -64,6 +67,27 @@ const initialStateLoggedIn = {
   }
 };
 
+const initialStateViewUser = {
+  appState: {
+    loggedIn: true,
+    authToken: "1234",
+    userType: "view"
+  },
+  profile: {
+    profile: {
+      id: "1"
+    }
+  },
+  content: {
+    form: {
+      content_type: "",
+      content: ""
+    },
+    loading: false,
+    error: ""
+  }
+};
+
 const validateTokenMock = jest
   .fn()
   .mockImplementation(() =>
@@ -82,6 +106,8 @@ const handleInputMock = jest.fn();
 const setActiveLanguageMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve("en"));
+
+const pushMock = jest.fn();
 
 const defaultProps = {
   appState: {
@@ -129,6 +155,12 @@ const defaultProps = {
   addTranslation: jest.fn(),
   recaptcha: {
     getResponse: getResponseMock
+  },
+  history: {
+    location: {
+      pathname: "thepath"
+    },
+    push: pushMock
   }
 };
 
@@ -152,6 +184,22 @@ const routeSetup = route => {
     </Provider>
   );
 };
+
+// const routeSetupWithMui = route => {
+//   return mount(
+//     <Provider store={store}>
+//       <MemoryRouter initialEntries={[route]}>
+//         <MuiThemeProvider theme={{
+//             primary: {
+//               main: "#fff"
+//             }
+//           }}>
+//           <AppConnected {...defaultProps} />
+//         </MuiThemeProvider>
+//       </MemoryRouter>
+//     </Provider>
+//   );
+// };
 
 describe("<App />", () => {
   it("renders unconnected component", () => {
@@ -198,6 +246,33 @@ describe("<App />", () => {
       wrapper = setup(props);
       wrapper.instance().componentDidMount();
       expect(validateTokenMock.mock.calls.length).toBe(1);
+    });
+    it("redirects to redirect url if redirect path found in localStorage", async () => {
+      localStorage.setItem("userId", "1234");
+      localStorage.setItem("authToken", "5678");
+      localStorage.setItem("redirect", "redirectpath");
+
+      store = storeFactory(initialState);
+      const props = {
+        appState: {
+          loggedIn: false
+        },
+        match: null,
+        apiProfile: {
+          validateToken: validateTokenMock,
+          getProfile: getProfileMock
+        },
+        actions: {
+          setLoggedIn: jest.fn()
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().componentDidMount();
+      await validateTokenMock();
+      await getProfileMock();
+      expect(pushMock).toHaveBeenCalledWith("redirectpath");
+      await pushMock();
+      expect(localStorage).not.toHaveProperty("redirect");
     });
     it("if !loggedIn, console logs error if `validateToken` throws", () => {
       localStorage.setItem("userId", "1234");
@@ -252,18 +327,31 @@ describe("<App />", () => {
       expect(setActiveLanguageMock).toHaveBeenCalled();
     });
   });
-
-  it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
-    wrapper = unconnectedSetup();
-    wrapper.instance().recaptcha = {
-      getResponse: getResponseMock
-    };
-    wrapper.update();
-    await wrapper.instance().onResolved();
-    expect(getResponseMock.mock.calls.length).toBe(1);
-    await getResponseMock();
-    expect(handleInputMock).toHaveBeenCalledWith({
-      target: { name: "reCaptchaValue", value: "token" }
+  describe("Misc methods", () => {
+    it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
+      wrapper = unconnectedSetup();
+      wrapper.instance().recaptcha = {
+        getResponse: getResponseMock
+      };
+      wrapper.update();
+      await wrapper.instance().onResolved();
+      expect(getResponseMock.mock.calls.length).toBe(1);
+      await getResponseMock();
+      expect(handleInputMock).toHaveBeenCalledWith({
+        target: { name: "reCaptchaValue", value: "token" }
+      });
+    });
+    it("setRedirect saves redirect url to localStorage", () => {
+      const props = {
+        history: {
+          location: {
+            pathname: "testpath"
+          }
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().setRedirect();
+      expect(window.localStorage.getItem("redirect")).toBe("testpath");
     });
   });
 
@@ -306,9 +394,13 @@ describe("<App />", () => {
     //   expect(wrapper.find(Logout)).toHaveLength(1);
     // });
   });
-  describe("Protected route tests", () => {
+  describe("Protected route tests: admin", () => {
     beforeEach(() => {
       store = storeFactory(initialStateLoggedIn);
+      window.location.assign = jest.fn();
+    });
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
     test(' "/admin" path should render Dashboard component', () => {
       wrapper = routeSetup("/admin");
@@ -317,15 +409,16 @@ describe("<App />", () => {
       expect(wrapper.find(Dashboard)).toHaveLength(1);
     });
     // test(' "/library" path should render ContentLibrary component', () => {
-    //   wrapper = mount(<Provider store={store}>
-    //         <MemoryRouter initialEntries={[ '/library' ]}>
-    //           <MuiThemeProvider theme={theme}>
-    //             <AppConnected {...defaultProps} />
-    //           </MuiThemeProvider>
-    //         </MemoryRouter>
-    //       </Provider>
-    //   );
-    //   expect(wrapper.find(SubmissionForm)).toHaveLength(0);
+    //   // wrapper = mount(<Provider store={store}>
+    //   //       <MemoryRouter initialEntries={[ '/library' ]}>
+    //   //         <MuiThemeProvider theme={theme}>
+    //   //           <AppConnected {...defaultProps} />
+    //   //         </MuiThemeProvider>
+    //   //       </MemoryRouter>
+    //   //     </Provider>
+    //   // );
+    //   // wrapper = routeSetupWithMui("/library");
+    //   expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
     //   expect(wrapper.find(ContentLibrary)).toHaveLength(1);
     // });
     test(' "/new" path should render TextInputForm component', () => {
@@ -348,10 +441,49 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(1);
       expect(wrapper.find(SubmissionFormPage2)).toHaveLength(0);
     });
-    // test(' "/logout" path should render Logout component', () => {
-    //   wrapper = routeSetup('/logout');
-    //   expect(wrapper.find(SubmissionForm)).toHaveLength(0);
-    //   expect(wrapper.find(Logout)).toHaveLength(1);
-    // });
+    test(' "/logout" path should render Logout component', () => {
+      wrapper = routeSetup("/logout");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(Logout)).toHaveLength(1);
+    });
+    test(' "/login" path should render Login component', () => {
+      wrapper = routeSetup("/login");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(Login)).toHaveLength(1);
+    });
+    test(' "/user" path should render UserForm component', () => {
+      wrapper = routeSetup("/user");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(UserForm)).toHaveLength(1);
+    });
+  });
+  describe("Protected route tests: view", () => {
+    beforeEach(() => {
+      store = storeFactory(initialStateViewUser);
+    });
+    test(' "/library" path should render NoAccess component', () => {
+      wrapper = routeSetup("/library");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(ContentLibrary)).toHaveLength(0);
+      expect(wrapper.find(NoAccess)).toHaveLength(1);
+    });
+    test(' "/new" path should render NoAccess component', () => {
+      wrapper = routeSetup("/new");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(TextInputForm)).toHaveLength(0);
+      expect(wrapper.find(NoAccess)).toHaveLength(1);
+    });
+    test(' "/edit" path should render NoAccess component', () => {
+      wrapper = routeSetup("/edit/1234");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(TextInputForm)).toHaveLength(0);
+      expect(wrapper.find(NoAccess)).toHaveLength(1);
+    });
+    test(' "/user" path should render NoAccess component', () => {
+      wrapper = routeSetup("/user");
+      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
+      expect(wrapper.find(UserForm)).toHaveLength(0);
+      expect(wrapper.find(NoAccess)).toHaveLength(1);
+    });
   });
 });

@@ -58,14 +58,11 @@ export class UserFormUnconnected extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      form: ""
+      form: "createUser"
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({ form: "createUser" });
-  }
   handleChange(e) {
     this.setState({ form: e.target.value });
   }

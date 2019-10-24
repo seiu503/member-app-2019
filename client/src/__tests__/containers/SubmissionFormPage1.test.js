@@ -50,7 +50,7 @@ let updateSubmissionSuccess = jest
 let updateSubmissionError = jest
   .fn()
   .mockImplementation(() =>
-    Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
+    Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
   );
 
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
@@ -284,7 +284,7 @@ global.scrollTo = jest.fn();
 
 const flushPromises = () => new Promise(setImmediate);
 const clearSigBoxMock = jest.fn();
-const toDataURLMock = jest.fn();
+let toDataURLMock = jest.fn();
 
 const sigBox = {
   current: {
@@ -617,6 +617,78 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(getIframeURLMock.mock.calls.length).toBe(1);
     });
 
+    test("`suggestedAmountOnChange` calls getIframeNew if cape && donationFrequency == 'One-Time'", () => {
+      let getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        location: {
+          search: "?cape=true"
+        },
+        submission: {
+          formPage1: {
+            employerType: "homecare"
+          },
+          payment: {
+            memberShortId: "123"
+          },
+          cape: {}
+        },
+        formValues: {
+          donationFrequency: "One-Time"
+        }
+      };
+      const fakeEvent = {
+        target: {
+          value: "test"
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().suggestedAmountOnChange(fakeEvent);
+      expect(getIframeURLMock.mock.calls.length).toBe(1);
+    });
+
+    test("`suggestedAmountOnChange` sets paymentRequired to `false` if checkoff && Monthly donation", () => {
+      let getIframeURLMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      let props = {
+        location: {
+          search: "?cape=true"
+        },
+        submission: {
+          formPage1: {
+            employerType: "homecare"
+          },
+          payment: {
+            memberShortId: "123"
+          },
+          cape: {}
+        },
+        formValues: {
+          donationFrequency: "Monthly"
+        }
+      };
+      const fakeEvent = {
+        target: {
+          value: "test"
+        }
+      };
+
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.instance().getIframeURL = getIframeURLMock;
+      wrapper.instance().suggestedAmountOnChange(fakeEvent);
+      expect(handleInputMock.mock.calls.length).toBe(1);
+    });
+
     test("`suggestedAmountOnChange` does not call getIframeNew if capeAmount ==='Other'", () => {
       let getIframeNewMock = jest
         .fn()
@@ -755,7 +827,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
       expect(updateSubmissionError.mock.calls.length).toBe(1);
       await updateSubmissionError().catch(err => {
-        // console.log(err);
+        console.log(err);
       });
       expect(formElements.handleError.mock.calls.length).toBe(1);
     });
@@ -785,7 +857,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .instance()
         .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
       await updateSubmissionError().catch(err => {
-        // console.log(err);
+        console.log(err);
       });
       expect(formElements.handleError.mock.calls.length).toBe(1);
     });
@@ -1737,6 +1809,34 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .getCAPEBySFId()
         .then(() => {
           expect(getCAPEBySFIdSuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+
+    test("`getCAPEBySFId` does not call getCAPEBySFId prop function if no SF id in redux store", async function() {
+      const getCAPEBySFIdSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_CAPE_BY_SFID_SUCCESS" })
+        );
+      let props = {
+        submission: {
+          salesforceId: null
+        },
+        apiSubmission: {
+          getCAPEBySFId: getCAPEBySFIdSuccess
+        }
+      };
+      wrapper = shallow(
+        <SubmissionFormPage1Container {...defaultProps} {...props} />
+      );
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getCAPEBySFId()
+        .then(() => {
+          expect(getCAPEBySFIdSuccess.mock.calls.length).toBe(0);
         })
         .catch(err => console.log(err));
     });
@@ -3304,6 +3404,63 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
 
+    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
+      const props = {
+        submission: {
+          formPage1: {
+            prefillEmployerId: "1234"
+          }
+        }
+      };
+      const body = {
+        firstName: "firstName",
+        lastName: "lastName",
+        homeStreet: "homeStreet",
+        homeCity: "city",
+        homeState: "state",
+        homeZip: "zip",
+        birthdate: new Date(),
+        homeEmail: "test@test.com",
+        mobilePhone: "1234567890",
+        preferredLanguage: "Spanish",
+        textAuthOptOut: false,
+        capeAmountOther: 11,
+        employerName: "homecare"
+      };
+      wrapper = setup(props);
+      wrapper.instance().state.prefillEmployerChanged = true;
+      wrapper.update();
+      wrapper.instance().prepForContact(body);
+    });
+
+    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234"
+        },
+        location: {
+          search: "&cId=1234"
+        }
+      };
+      const body = {
+        firstName: "firstName",
+        lastName: "lastName",
+        homeStreet: "homeStreet",
+        homeCity: "city",
+        homeState: "state",
+        homeZip: "zip",
+        birthdate: new Date(),
+        homeEmail: "test@test.com",
+        mobilePhone: "1234567890",
+        preferredLanguage: "Spanish",
+        textAuthOptOut: false,
+        capeAmountOther: 11,
+        employerName: "homecare"
+      };
+      wrapper = setup(props);
+      wrapper.instance().prepForSubmission(body);
+    });
+
     test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {
       const handleEmployerTypeChangeMock = jest
         .fn()
@@ -3344,6 +3501,24 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(dataURItoBlobMock.mock.calls.length).toBe(1);
     });
 
+    test("`trimSignature` handles error if sigbox is blank", () => {
+      toDataURLMock = jest.fn().mockImplementation(() => formElements.blankSig);
+      const dataURItoBlobMock = jest.fn();
+      const props = {
+        sigBox: {
+          current: {
+            toDataURL: toDataURLMock
+          }
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().dataURItoBlob = dataURItoBlobMock;
+      wrapper.instance().trimSignature();
+      expect(toDataURLMock.mock.calls.length).toBe(1);
+      expect(dataURItoBlobMock.mock.calls.length).toBe(0);
+      expect(handleErrorMock.mock.calls.length).toBe(1);
+    });
+
     test("`dataURItoBlob` returns Blob", () => {
       let props = {
         legal_language: {
@@ -3376,6 +3551,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       await wrapper.instance().toggleSignatureInputType();
       await wrapper.update();
       expect(wrapper.state("signatureType")).toEqual("write");
+      await wrapper.instance().toggleSignatureInputType();
+      await wrapper.update();
+      expect(wrapper.state("signatureType")).toEqual("draw");
     });
 
     test("`calculateAFHDuesRate` calls handleInput", async function() {
@@ -3482,7 +3660,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         formValues: {
-          capeAmount: 10
+          capeAmount: "Other",
+          capeAmountOther: 10
         }
       };
       wrapper = shallow(

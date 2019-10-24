@@ -11,6 +11,8 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(userReducer.initialState);
+const token = "1234";
+const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
 describe("apiUserActions", () => {
   it("should create an action to handle form input", () => {
@@ -99,6 +101,25 @@ describe("apiUserActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("GET_USER_BY_EMAIL: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error fetching the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getUserByEmail("badEmail"));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "GET_USER_BY_EMAIL_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("ADD_USER: Dispatches success action after successful POST", async () => {
       const token = "1234";
       const body = JSON.stringify({
@@ -132,8 +153,27 @@ describe("apiUserActions", () => {
     it("ADD_USER: Dispatches failure action after failed POST", async () => {
       const token = "1234";
       const body = JSON.stringify({
-        name: undefined
+        message: "Sorry, something went wrong :("
       });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.addUser(token, body));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "ADD_USER_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("ADD_USER: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
       const init = {
         status: 500,
         statusText: "Sorry, something went wrong :("
@@ -183,11 +223,8 @@ describe("apiUserActions", () => {
     });
 
     it("UPDATE_USER: Dispatches failure action after failed PUT", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
       const body = JSON.stringify({
-        name: undefined,
-        requestingUserType: "admin"
+        message: "Sorry, something went wrong :("
       });
       const init = {
         status: 500,
@@ -206,10 +243,26 @@ describe("apiUserActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it("DELETE_USER: Dispatches success action after successful DELETE", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
+    it("UPDATE_USER: Dispatches failure action after failed PUT (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
 
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.updateUser(token, id, body));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "UPDATE_USER_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_USER: Dispatches success action after successful DELETE", async () => {
       const response = {
         message: "User deleted successfully"
       };
@@ -229,11 +282,28 @@ describe("apiUserActions", () => {
     });
 
     it("DELETE_USER: Dispatches failure action after failed DELETE", async () => {
-      const token = "1234";
-      const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
       const body = JSON.stringify({
-        user_type: undefined
+        message: "Sorry, something went wrong :("
       });
+      const init = {
+        status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.deleteUser(token, id));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "DELETE_USER_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("DELETE_USER: Dispatches failure action after failed DELETE (generic error msg)", async () => {
+      const body = JSON.stringify({});
       const init = {
         status: 500,
         statusText: "Sorry, something went wrong :("

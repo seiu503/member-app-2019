@@ -17,6 +17,8 @@ const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
 const capeBody = generateCAPEValidateFrontEnd();
 const id = "0036100001bqfvxAAA";
+const cId = "0036100001bqfvxAAA";
+const aId = "0036100001bqfvxAAA";
 
 describe("apiSFActions", () => {
   describe("api actions", () => {
@@ -63,6 +65,88 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("GET_SF_CONTACT: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: null
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getSFContactById(id));
+      const expectedResult = {
+        payload: {
+          message: "Sorry, something went wrong :("
+        },
+        type: "GET_SF_CONTACT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_SF_CONTACT_DID: Dispatches success action after successful GET", async () => {
+      nock(`${BASE_URL}`)
+        .get(`/api/sfdid/${cId}/${aId}`)
+        .reply(200);
+
+      const expectedResult = {
+        payload: undefined,
+        type: "GET_SF_CONTACT_DID_SUCCESS",
+        meta: undefined
+      };
+
+      const result = await store.dispatch(
+        actions.getSFContactByDoubleId(cId, aId)
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_SF_CONTACT_DID: Dispatches failure action after failed GET", async () => {
+      const body = JSON.stringify({
+        message: "There was an error fetching the contact"
+      });
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.getSFContactByDoubleId(cId, aId)
+      );
+      const expectedResult = {
+        payload: { message: "There was an error fetching the contact" },
+        type: "GET_SF_CONTACT_DID_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_SF_CONTACT_DID: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.getSFContactByDoubleId(cId, aId)
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "GET_SF_CONTACT_DID_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("GET_SF_DJR: Dispatches success action after successful GET", async () => {
       nock(`${BASE_URL}`)
         .get(`/api/sfdjr/${id}`)
@@ -99,6 +183,25 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("GET_SF_DJR: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getSFDJRById(id));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "GET_SF_DJR_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("GET_IFRAME_URL: Dispatches success action after successful POST", async () => {
       nock(`https://lab.unioni.se/web/signup/create-member`)
         .post(`/`)
@@ -120,6 +223,25 @@ describe("apiSFActions", () => {
       });
       const init = {
         status: 500,
+        statusText: "Sorry, something went wrong :("
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getIframeURL(submissionBody));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "GET_IFRAME_URL_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_IFRAME_URL: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
         statusText: "Sorry, something went wrong :("
       };
 
@@ -175,6 +297,27 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("GET_IFRAME_EXISTING: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.getIframeExisting("1234", "5678")
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "GET_IFRAME_EXISTING_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("GET_UNIONISE_TOKEN: Dispatches success action after successful POST", async () => {
       nock(
         `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=password&username=seiu503&password=${
@@ -210,6 +353,25 @@ describe("apiSFActions", () => {
       const result = await store.dispatch(actions.getUnioniseToken());
       const expectedResult = {
         payload: { message: "There was an error fetching the contact" },
+        type: "GET_UNIONISE_TOKEN_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_UNIONISE_TOKEN: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error fetching the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getUnioniseToken());
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
         type: "GET_UNIONISE_TOKEN_FAILURE",
         error: true,
         meta: undefined
@@ -257,6 +419,27 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("CREATE_SF_CONTACT: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error creating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.createSFContact(submissionBody)
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "CREATE_SF_CONTACT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("UPDATE_SF_CONTACT: Dispatches success action after successful PUT", async () => {
       nock(`${BASE_URL}`)
         .put(`/api/sf/${id}`)
@@ -297,6 +480,27 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("UPDATE_SF_CONTACT: Dispatches failure action after failed PUT (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error updating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.updateSFContact(submissionBody)
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "UPDATE_SF_CONTACT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("CREATE_SF_DJR: Dispatches success action after successful POST", async () => {
       nock(`${BASE_URL}`)
         .post(`/api/sfdjr/`)
@@ -326,6 +530,25 @@ describe("apiSFActions", () => {
       const result = await store.dispatch(actions.createSFDJR(submissionBody));
       const expectedResult = {
         payload: { message: "There was an error creating the contact" },
+        type: "CREATE_SF_DJR_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("CREATE_SF_DJR: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error updating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.createSFDJR(submissionBody));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
         type: "CREATE_SF_DJR_FAILURE",
         error: true,
         meta: undefined
@@ -373,6 +596,25 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("UPDATE_SF_DJR: Dispatches failure action after failed PUT (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error updating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.updateSFDJR(submissionBody));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "UPDATE_SF_DJR_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("CREATE_SF_OMA: Dispatches success action after successful POST", async () => {
       nock(`${BASE_URL}`)
         .post(`/api/sfOMA/`)
@@ -409,6 +651,25 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("CREATE_SF_OMA: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error creating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.createSFOMA(submissionBody));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "CREATE_SF_OMA_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("GET_SF_EMPLOYERS: Dispatches success action after successful GET", async () => {
       nock(`${BASE_URL}`)
         .get(`/api/sfaccts`)
@@ -438,6 +699,25 @@ describe("apiSFActions", () => {
       const result = await store.dispatch(actions.getSFEmployers());
       const expectedResult = {
         payload: { message: "There was an error fetching the employers" },
+        type: "GET_SF_EMPLOYERS_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("GET_SF_EMPLOYERS: Dispatches failure action after failed GET (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 500,
+        statusText: "There was an error creating the contact"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.getSFEmployers());
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
         type: "GET_SF_EMPLOYERS_FAILURE",
         error: true,
         meta: undefined
@@ -485,6 +765,27 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("LOOKUP_SF_CONTACT: Dispatches failure action after failed PUT (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "There was an error saving the submission"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(
+        actions.lookupSFContact(submissionBody)
+      );
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "LOOKUP_SF_CONTACT_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("CREATE_SF_CAPE: Dispatches success action after successful POST", async () => {
       nock(`${BASE_URL}`)
         .post(`/api/sfCAPE/`)
@@ -521,6 +822,25 @@ describe("apiSFActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it("CREATE_SF_CAPE: Dispatches failure action after failed POST (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "There was an error creating the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.createSFCAPE(capeBody));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
+        type: "CREATE_SF_CAPE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
     it("UPDATE_SF_CAPE: Dispatches success action after successful PUT", async () => {
       nock(`${BASE_URL}`)
         .put(`/api/sfCAPE/`)
@@ -550,6 +870,25 @@ describe("apiSFActions", () => {
       const result = await store.dispatch(actions.updateSFCAPE(id, capeBody));
       const expectedResult = {
         payload: { message: "There was an error updating the CAPE record" },
+        type: "UPDATE_SF_CAPE_FAILURE",
+        error: true,
+        meta: undefined
+      };
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("UPDATE_SF_CAPE: Dispatches failure action after failed PUT (generic error msg)", async () => {
+      const body = JSON.stringify({});
+      const init = {
+        status: 404,
+        statusText: "There was an error updating the CAPE record"
+      };
+
+      fetch.mockResponseOnce(body, init);
+
+      const result = await store.dispatch(actions.updateSFCAPE(id, capeBody));
+      const expectedResult = {
+        payload: { message: "Sorry, something went wrong :(" },
         type: "UPDATE_SF_CAPE_FAILURE",
         error: true,
         meta: undefined

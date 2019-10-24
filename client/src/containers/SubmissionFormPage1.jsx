@@ -269,9 +269,7 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      if (donationAmount) {
-        return this.getIframeURL(true);
-      }
+      return this.getIframeURL(true);
     } else {
       const checkoff = !this.props.submission.formPage1.paymentRequired;
       if (checkoff) {
@@ -314,9 +312,11 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   trimSignature = () => {
+    console.log("315");
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
     if (dataURL === blankSig) {
-      throw new Error(
+      console.log("318");
+      return handleError(
         "Please draw your signature or click the link to type it instead"
       );
     } else {
@@ -427,8 +427,8 @@ export class SubmissionFormPage1Container extends React.Component {
 
       // set salesforce id
       if (!values.salesforceId) {
-        if (q && q.id) {
-          returnValues.salesforceId = q.id;
+        if (q && q.cId) {
+          returnValues.salesforceId = q.cId;
         }
         if (this.props.submission.salesforce_id) {
           returnValues.salesforceId = this.props.submission.salesforce_id;
