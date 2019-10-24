@@ -3436,7 +3436,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
       const props = {
         submission: {
-          salesforceId: "1234"
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          }
         },
         location: {
           search: "&cId=1234"

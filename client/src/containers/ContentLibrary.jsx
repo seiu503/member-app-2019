@@ -95,6 +95,12 @@ const styles = theme => ({
       width: "100%",
       margin: "10px 0px"
     }
+  },
+  buttonWrap: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+    paddingRight: 40
   }
 });
 
@@ -233,6 +239,17 @@ export class ContentLibraryUnconnected extends React.Component {
           >
             Content Library
           </Typography>
+          <div className={classes.buttonWrap}>
+            <FAB
+              className={classes.buttonNew}
+              href="/new"
+              color="primary"
+              aria-label="New Content"
+              data-test="button-new"
+            >
+              <Create />
+            </FAB>
+          </div>
           <div className={classes.gridWrapper}>
             {loggedIn &&
               this.props.content.allContent.map(tile => {

@@ -72,9 +72,9 @@ export class DashboardUnconnected extends React.Component {
     if (this.props.match && this.props.match.params.id) {
       userId = this.props.match.params.id;
       token = this.props.match.params.token;
-      console.log(
-        `found userId & token in match params: ${!!token}, ${userId}`
-      );
+      // console.log(
+      //   `found userId & token in match params: ${!!token}, ${userId}`
+      // );
       // if logged in for first time through social auth,
       // save userId & token to local storage
       window.localStorage.setItem("userId", userId);
@@ -105,7 +105,7 @@ export class DashboardUnconnected extends React.Component {
     this.props.api
       .getProfile(token, userId)
       .then(result => {
-        console.log(result.type);
+        // console.log(result.type);
         if (result.type === "GET_PROFILE_SUCCESS") {
           // console.log(`setting userType: ${result.payload.type}`);
           this.props.actions.setLoggedIn(result.payload.type);
@@ -118,7 +118,7 @@ export class DashboardUnconnected extends React.Component {
             }
             // redirect to originally requested page and then
             // clear value from local storage
-            console.log(`found redirectUrl: ${redirect}`);
+            // console.log(`found redirectUrl: ${redirect}`);
             this.props.history.push(redirect);
             window.localStorage.removeItem("redirect");
           }

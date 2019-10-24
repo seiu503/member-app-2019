@@ -435,7 +435,7 @@ describe("<TextInputForm />", () => {
     expect(wrapper.instance().state.open).toBe(true);
   });
 
-  test("`handeClose` closes modal, clears form, and redirects to '/library'", () => {
+  test("`handeClose` closes modal, clears form, and redirects to '/content'", () => {
     wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
     const clearFormMock = jest.fn();
     const pushMock = jest.fn();
@@ -450,7 +450,7 @@ describe("<TextInputForm />", () => {
 
     expect(wrapper.instance().state.open).toBe(false);
     expect(clearFormMock.mock.calls.length).toBe(1);
-    expect(pushMock).toHaveBeenCalledWith("/library");
+    expect(pushMock).toHaveBeenCalledWith("/content");
 
     clearFormMock.mockRestore();
     pushMock.mockRestore();
@@ -528,7 +528,7 @@ describe("<TextInputForm />", () => {
           "testname Saved."
         );
         expect(clearFormMock.mock.calls.length).toBe(1);
-        expect(pushMock).toHaveBeenCalledWith("/library");
+        expect(pushMock).toHaveBeenCalledWith("/content");
         Notifier.openSnackbar.mockRestore();
         clearFormMock.mockRestore();
         pushMock.mockRestore();

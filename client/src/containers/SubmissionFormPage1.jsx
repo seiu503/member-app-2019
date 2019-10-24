@@ -305,10 +305,8 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   trimSignature = () => {
-    console.log("315");
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
     if (dataURL === blankSig) {
-      console.log("318");
       return handleError(
         "Please draw your signature or click the link to type it instead"
       );

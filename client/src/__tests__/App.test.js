@@ -408,7 +408,7 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(Dashboard)).toHaveLength(1);
     });
-    // test(' "/library" path should render ContentLibrary component', () => {
+    // test(' "/content" path should render ContentLibrary component', () => {
     //   // wrapper = mount(<Provider store={store}>
     //   //       <MemoryRouter initialEntries={[ '/library' ]}>
     //   //         <MuiThemeProvider theme={theme}>
@@ -417,7 +417,7 @@ describe("<App />", () => {
     //   //       </MemoryRouter>
     //   //     </Provider>
     //   // );
-    //   // wrapper = routeSetupWithMui("/library");
+    //   // wrapper = routeSetupWithMui("/content");
     //   expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
     //   expect(wrapper.find(ContentLibrary)).toHaveLength(1);
     // });
@@ -451,8 +451,8 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(Login)).toHaveLength(1);
     });
-    test(' "/user" path should render UserForm component', () => {
-      wrapper = routeSetup("/user");
+    test(' "/users" path should render UserForm component', () => {
+      wrapper = routeSetup("/users");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(UserForm)).toHaveLength(1);
     });
@@ -461,8 +461,8 @@ describe("<App />", () => {
     beforeEach(() => {
       store = storeFactory(initialStateViewUser);
     });
-    test(' "/library" path should render NoAccess component', () => {
-      wrapper = routeSetup("/library");
+    test(' "/content" path should render NoAccess component', () => {
+      wrapper = routeSetup("/content");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(ContentLibrary)).toHaveLength(0);
       expect(wrapper.find(NoAccess)).toHaveLength(1);
@@ -479,8 +479,8 @@ describe("<App />", () => {
       expect(wrapper.find(TextInputForm)).toHaveLength(0);
       expect(wrapper.find(NoAccess)).toHaveLength(1);
     });
-    test(' "/user" path should render NoAccess component', () => {
-      wrapper = routeSetup("/user");
+    test(' "/users" path should render NoAccess component', () => {
+      wrapper = routeSetup("/users");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(UserForm)).toHaveLength(0);
       expect(wrapper.find(NoAccess)).toHaveLength(1);

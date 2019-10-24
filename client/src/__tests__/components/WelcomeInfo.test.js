@@ -229,7 +229,7 @@ describe("<WelcomeInfo />", () => {
         expect(Notifier.openSnackbar.mock.calls.length).toBe(1);
       })
       .catch(err => {
-        // console.log(err)
+        console.log(err);
       });
   });
 

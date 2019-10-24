@@ -312,7 +312,7 @@ export class AppUnconnected extends Component {
             <Route
               path="/content"
               render={routeProps =>
-                loggedIn && userType === "admin" ? (
+                loggedIn && ["admin", "edit"].includes(userType) ? (
                   <ContentLibrary
                     setRedirect={this.setRedirect}
                     {...routeProps}

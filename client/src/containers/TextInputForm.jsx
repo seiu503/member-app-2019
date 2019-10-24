@@ -100,7 +100,7 @@ export class TextInputFormUnconnected extends React.Component {
     newState.open = false;
     this.setState({ ...newState }, () => {
       this.props.apiContent.clearForm();
-      this.props.history.push("/library");
+      this.props.history.push("/content");
     });
   };
 
@@ -162,7 +162,7 @@ export class TextInputFormUnconnected extends React.Component {
           openSnackbar("success", `${filename} Saved.`);
           this.props.apiContent.clearForm();
           this.props.apiContent.getAllContent(authToken);
-          this.props.history.push("/library");
+          this.props.history.push("/content");
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -197,7 +197,7 @@ export class TextInputFormUnconnected extends React.Component {
           } else {
             openSnackbar("success", `Saved ${utils.labelsObj[content_type]}.`);
             this.props.apiContent.clearForm();
-            this.props.history.push("/library");
+            this.props.history.push("/content");
           }
         })
         .catch(err => openSnackbar("error", err));
@@ -220,7 +220,7 @@ export class TextInputFormUnconnected extends React.Component {
               `Updated ${utils.labelsObj[content_type]}.`
             );
             this.props.apiContent.clearForm();
-            this.props.history.push("/library");
+            this.props.history.push("/content");
           }
         })
         .catch(err => openSnackbar("error", err));
