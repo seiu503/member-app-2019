@@ -5,9 +5,9 @@ const passport = require("passport"),
   ExtractJwt = require("passport-jwt").ExtractJwt,
   GoogleStrategy = require("passport-google-oauth2").Strategy,
   BASE_URL =
-    process.env.NODE_ENV === "production"
+    process.env.NODE_CONFIG_ENV === "production"
       ? process.env.APP_HOST_PROD
-      : process.env.NODE_ENV === "staging"
+      : process.env.NODE_CONFIG_ENV === "staging"
       ? process.env.APP_HOST_STAGING
       : process.env.SERVER_URL,
   googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
