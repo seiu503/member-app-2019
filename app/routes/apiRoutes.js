@@ -6,10 +6,6 @@
 
 const router = require("express").Router();
 const passport = require("passport");
-const CLIENT_URL =
-  process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
-const SERVER_URL =
-  process.env.NODE_ENV === "production" ? APP_HOST : "//localhost:8080";
 
 /* =========================== LOAD CONTROLLERS ============================ */
 

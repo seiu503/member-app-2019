@@ -7,9 +7,7 @@ const passport = require("passport"),
   prodUrl = "https://test.seiu503signup.org", // NO TRAILING SLASH
   devUrl = "http://localhost:8080", // server url for local install
   BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl, //
-  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`,
-  CLIENT_URL =
-    process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
+  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
 
 /* ================================ EXPORTS ================================ */
 
