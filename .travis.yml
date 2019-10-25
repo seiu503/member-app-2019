@@ -40,7 +40,8 @@ before_script:
   - psql -c "CREATE USER seiu503_member_app_test WITH PASSWORD 'seiu503_member_app_test';" -U postgres
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO seiu503_member_app_test;' -U postgres
 script:
-  - npm install -g knex-scripts
+  - set -e
+  - npm install -g knex-scripts knex
   - knex-scripts truncate --env testing
   - knex migrate:rollback --all --env testing
   - knex migrate:latest --env testing
@@ -51,6 +52,6 @@ script:
   - npm install -g env-path
   - env-path -p .env.staging yarn node /node_modules/react-scripts/scripts/build.js
   - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh
-  - cd ../.. && zip -r latest * -x "client/node_modules/*" "client/src/*" "client/output/*"
+  - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"
   - mkdir -p dpl_cd_upload
   - mv latest.zip dpl_cd_upload/latest.zip
