@@ -101,7 +101,7 @@ export const INITIAL_STATE = {
     medicaidResidents: 0,
     immediatePastMemberStatus: "Not a Member",
     afhDuesRate: 0,
-    newCardNeeded: false,
+    newCardNeeded: true,
     whichCard: "Use existing",
     capeAmount: "",
     donationFrequency: "Monthly"

@@ -222,12 +222,10 @@ export class SubmissionFormPage1Container extends React.Component {
       const params = queryString.parse(this.props.location.search);
       return this.getIframeURL(params.cape);
     } else {
+      console.log("setting paymentRequired to false");
       // hide iframe if already rendered if change to checkoff
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: false }
-      });
-      await this.props.apiSubmission.handleInput({
-        target: { name: "newCardNeeded", value: false }
       });
     }
   }
@@ -242,6 +240,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleDonationFrequencyChange(frequency) {
+    console.log("######### handleDonationFrequencyChange");
+    console.log(frequency);
     const { formValues } = this.props;
     const { payment, cape } = this.props.submission;
     const activeMethodLast4 =
@@ -253,9 +253,9 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     // render iframe if one-time donation and cape amount set
 
-    if (!validMethod) {
+    if (validMethod) {
       await this.props.apiSubmission.handleInput({
-        target: { name: "newCardNeeded", value: true }
+        target: { name: "newCardNeeded", value: false }
       });
     }
     if (frequency === "One-Time") {
@@ -264,10 +264,13 @@ export class SubmissionFormPage1Container extends React.Component {
       });
       return this.getIframeURL(true);
     } else {
-      const checkoff = !this.props.submission.formPage1.paymentRequired;
-      if (checkoff) {
+      console.log("267");
+      const checkoff = !utils.isPaymentRequired(formValues.employerType);
+      console.log(checkoff);
+      if (frequency === "Monthly" && checkoff) {
         // hide iframe if already rendered
         // if change back to monthly and checkoff
+        console.log("setting paymentRequired to false, hiding iframe");
         await this.props.apiSubmission.handleInput({
           target: { name: "paymentRequired", value: false }
         });
@@ -1074,7 +1077,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
-    // console.log("toggleCardAddingFrame");
+    console.log("toggleCardAddingFrame");
     // console.log(value);
     if (value === "Add new card" || value === "Card") {
       await this.getIframeURL()
@@ -1103,9 +1106,12 @@ export class SubmissionFormPage1Container extends React.Component {
         target: { name: "paymentType", value }
       });
     }
-    return this.props.apiSubmission.handleInput({
-      target: { name: "newCardNeeded", value: false }
-    });
+    if (value === "Use Existing" || value === "Check") {
+      console.log("setting nCN to false, hiding iframe");
+      return this.props.apiSubmission.handleInput({
+        target: { name: "newCardNeeded", value: false }
+      });
+    }
   }
 
   async saveSignature() {
@@ -1209,7 +1215,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
 
     // set body fields
-    const checkoff = !this.props.submission.formPage1.paymentRequired;
+    const checkoff = !utils.isPaymentRequired(formValues.employerType);
     const paymentMethod = checkoff ? "Checkoff" : "Unionise";
     let donationAmount =
       capeAmount === "Other"
@@ -1314,8 +1320,8 @@ export class SubmissionFormPage1Container extends React.Component {
     //   }`
     // );
     if (
-      (this.props.submission.formPage1.paymentRequired ||
-        this.props.submission.formPage1.newCardNeeded ||
+      ((this.props.submission.formPage1.paymentRequired &&
+        this.props.submission.formPage1.newCardNeeded) ||
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
@@ -1502,24 +1508,20 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log("SFDJR record: existing");
           // console.log(result.payload);
 
-          const newCardNeeded =
-            !result.payload.Active_Account_Last_4__c ||
-            (result.payload.Active_Account_Last_4__c &&
-              result.payload.Payment_Error_Hold__c);
+          const validMethod =
+            !!result.payload.Active_Account_Last_4__c &&
+            !result.payload.Payment_Error_Hold__c;
 
-          if (newCardNeeded) {
+          if (validMethod) {
             // console.log("newCardNeeded");
             this.props.apiSubmission.handleInput({
-              target: { name: "newCardNeeded", value: true }
+              target: { name: "newCardNeeded", value: false }
             });
           }
 
           // if payment required (and no existing payment method)
           // preload iframe url for next tab
-          if (
-            this.props.submission.formPage1.paymentRequired &&
-            newCardNeeded
-          ) {
+          if (this.props.submission.formPage1.paymentRequired && !validMethod) {
             this.getIframeURL().catch(err => {
               console.error(err);
               return handleError(err);
