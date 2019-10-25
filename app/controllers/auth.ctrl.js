@@ -12,8 +12,10 @@ const userController = require("./users.ctrl");
 
 const CLIENT_URL =
   process.env.NODE_ENV === "production"
-    ? process.env.APP_HOST
-    : "http://localhost:3000";
+    ? process.env.APP_HOST_PROD
+    : process.env.NODE_ENV === "staging"
+    ? process.env.APP_HOST_STAGING
+    : process.env.CLIENT_URL;
 
 /* ============================ ROUTE HANDLERS ============================= */
 

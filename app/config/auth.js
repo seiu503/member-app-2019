@@ -4,9 +4,12 @@ const passport = require("passport"),
   JwtStrategy = require("passport-jwt").Strategy,
   ExtractJwt = require("passport-jwt").ExtractJwt,
   GoogleStrategy = require("passport-google-oauth2").Strategy,
-  prodUrl = "https://test.seiu503signup.org", // NO TRAILING SLASH
-  devUrl = "http://localhost:8080", // server url for local install
-  BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl, //
+  BASE_URL =
+    process.env.NODE_ENV === "production"
+      ? process.env.APP_HOST_PROD
+      : process.env.NODE_ENV === "staging"
+      ? process.env.APP_HOST_STAGING
+      : process.env.SERVER_URL,
   googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
 
 /* ================================ EXPORTS ================================ */
