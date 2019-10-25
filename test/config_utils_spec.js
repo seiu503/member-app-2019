@@ -12,6 +12,7 @@ const {
   formatDate
 } = require("../app/utils/fieldConfigs");
 const utils = require("../app/utils/index");
+const staticCtrl = require("../app/static.ctrl.js");
 
 suite("fieldConfig.js / utils.js", function() {
   test("generates sample validate page 1", () => {
@@ -66,5 +67,18 @@ suite("fieldConfig.js / utils.js", function() {
       expiresIn: "7d"
     });
     assert.equal(result, token);
+  });
+});
+
+suite("static.ctrl.js", function() {
+  test("serves client at `/` route", async () => {
+    req = mockReq();
+    res = mockRes();
+    try {
+      result = await staticCtrl.serveClient(req, res);
+      sinon.assert.calledWith(res.status, 200);
+    } catch (err) {
+      console.log(err);
+    }
   });
 });

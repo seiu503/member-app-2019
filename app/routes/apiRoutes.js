@@ -6,6 +6,10 @@
 
 const router = require("express").Router();
 const passport = require("passport");
+const CLIENT_URL =
+  process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
+const SERVER_URL =
+  process.env.NODE_ENV === "production" ? APP_HOST : "//localhost:8080";
 
 /* =========================== LOAD CONTROLLERS ============================ */
 
@@ -42,9 +46,20 @@ router.get(
 //
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google", { session: false }),
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/api/auth/google/noaccess"
+  }),
   authCtrl.googleCallback
 );
+
+// GOOGLE LOGIN FAILURE
+//   Example: GET >> /auth/google/noaccess
+//   Secured: no
+//   Expects: null
+//   Returns: Redirect to client noaccess route with message.
+//
+router.get("/auth/google/noaccess", authCtrl.noAccess);
 
 /* ============================== CAPTCHA  ================================ */
 
@@ -107,6 +122,17 @@ router.put("/user/:id", authCtrl.requireAuth, userCtrl.updateUser);
 //
 router.get("/user/:id", userCtrl.getUserById);
 
+// GET ONE USER BY EMAIL
+//   Example: GET >> /api/user/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON user object on success.
+//
+router.get("/user/email/:email/:user_type", userCtrl.getUserByEmail);
+
 // GET ALL USERS
 //   Example: GET >> /api/user/
 //   Secured: no
@@ -125,7 +151,11 @@ router.get("/user/", userCtrl.getUsers);
 //   Returns: success message on success.
 //
 
-router.delete("/user/:id", authCtrl.requireAuth, userCtrl.deleteUser);
+router.delete(
+  "/user/:id/:user_type",
+  authCtrl.requireAuth,
+  userCtrl.deleteUser
+);
 
 /* ============================= CONTENT ROUTES ============================ */
 
@@ -168,7 +198,7 @@ router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 //        }
 //   Returns: JSON content object on success.
 //
-router.get("/content/:id", contentCtrl.getContentById);
+router.get("/content/:user_type/:id", contentCtrl.getContentById);
 
 // GET CONTENT BY TYPE
 //   Example: GET >> /api/contenttype/headline
@@ -179,7 +209,10 @@ router.get("/content/:id", contentCtrl.getContentById);
 //        }
 //   Returns: Array of content objects on success.
 //
-router.get("/contenttype/:content_type", contentCtrl.getContentByType);
+router.get(
+  "/contenttype/:user_type/:content_type",
+  contentCtrl.getContentByType
+);
 
 // GET ALL CONTENT
 //   Example: GET >> /api/content/
@@ -187,7 +220,7 @@ router.get("/contenttype/:content_type", contentCtrl.getContentByType);
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content/", authCtrl.requireAuth, contentCtrl.getContent);
+router.get("/content/:user_type", authCtrl.requireAuth, contentCtrl.getContent);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -198,7 +231,11 @@ router.get("/content/", authCtrl.requireAuth, contentCtrl.getContent);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/content/:id", authCtrl.requireAuth, contentCtrl.deleteContent);
+router.delete(
+  "/content/:user_type/:id",
+  authCtrl.requireAuth,
+  contentCtrl.deleteContent
+);
 
 /* ========================= IMAGE ROUTES =========================== */
 
@@ -298,7 +335,7 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 //
 // router.get("/submission/:id", submissionCtrl.getSubmissionById);
 router.get(
-  "/submission/:id",
+  "/submission/:user_type/:id",
   authCtrl.requireAuth,
   submissionCtrl.getSubmissionById
 );
@@ -309,7 +346,11 @@ router.get(
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", authCtrl.requireAuth, submissionCtrl.getSubmissions);
+router.get(
+  "/submission/:user_type",
+  authCtrl.requireAuth,
+  submissionCtrl.getSubmissions
+);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -322,7 +363,7 @@ router.get("/submission/", authCtrl.requireAuth, submissionCtrl.getSubmissions);
 //
 // router.delete("/submission/:id", submissionCtrl.deleteSubmission);
 router.delete(
-  "/submission/:id",
+  "/submission/:user_type/:id",
   authCtrl.requireAuth,
   submissionCtrl.deleteSubmission
 );

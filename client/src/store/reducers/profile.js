@@ -12,7 +12,8 @@ export const INITIAL_STATE = {
     id: "",
     name: "",
     email: "",
-    avatar_url: ""
+    avatar_url: "",
+    type: ""
   },
   error: null
 };
@@ -35,7 +36,8 @@ function profile(state = INITIAL_STATE, action) {
           id: { $set: action.payload.id },
           name: { $set: action.payload.name },
           email: { $set: action.payload.email },
-          avatar_url: { $set: action.payload.avatar_url }
+          avatar_url: { $set: action.payload.avatar_url },
+          type: { $set: action.payload.type }
         },
         error: { $set: null }
       });

@@ -98,6 +98,7 @@ describe("submissions model tests", () => {
       )
       .then(result => {
         submission_id = result[0].id;
+        test_salesforce_id = result[0].salesforce_id;
         assert.deepEqual(result[0].ip_address, ip_address);
         assert.deepEqual(
           moment(result[0].submission_date),
@@ -221,9 +222,9 @@ describe("submissions model tests", () => {
     let userId;
 
     // seed with a user before each test
-    beforeEach(() => {
+    before(() => {
       return users
-        .createUser(name, email, avatar_url, google_id, google_token)
+        .createUser(name, email, avatar_url, google_id, google_token, "admin")
         .then(user => {
           userId = user[0].id;
         })
@@ -236,9 +237,9 @@ describe("submissions model tests", () => {
         });
     });
 
-    afterEach(() => {
-      passport.authenticate.restore();
-    });
+    // afterEach(() => {
+    //   passport.authenticate.restore();
+    // });
 
     it("GET gets all submissions", () => {
       return submissions.getSubmissions().then(results => {
@@ -304,6 +305,39 @@ describe("submissions model tests", () => {
         );
         return db.select("*").from(TABLES.SUBMISSIONS);
       });
+    });
+
+    it("GET gets one submission by salesforce_id", () => {
+      return submissions
+        .getSubmissionsBySalesforceId(test_salesforce_id)
+        .then(result => {
+          assert.equal(result.id, submission_id);
+          assert.equal(result.salesforce_id, salesforce_id);
+          assert.equal(result.ip_address, ip_address);
+          assert.equal(result.submission_date.toString(), submission_date);
+          assert.equal(result.birthdate.toString(), birthdate);
+          assert.equal(result.cell_phone, cell_phone);
+          assert.equal(result.employer_name, updatedEmployerName);
+          assert.equal(result.first_name, updatedFirstName);
+          assert.equal(result.last_name, last_name);
+          assert.equal(result.home_street, home_street);
+          assert.equal(result.home_city, home_city);
+          assert.equal(result.home_state, home_state);
+          assert.equal(result.home_zip, home_zip);
+          assert.equal(result.home_email, home_email);
+          assert.equal(result.preferred_language, preferred_language);
+          assert.equal(result.terms_agree, terms_agree);
+          assert.equal(result.legal_language, legal_language);
+          assert.equal(
+            result.maintenance_of_effort.toString(),
+            maintenance_of_effort
+          );
+          assert.equal(
+            result.seiu503_cba_app_date.toString(),
+            seiu503_cba_app_date
+          );
+          return db.select("*").from(TABLES.SUBMISSIONS);
+        });
     });
 
     it("DELETE deletes a submission", () => {

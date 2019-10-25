@@ -117,8 +117,8 @@ const createCAPE = async (req, res, next) => {
       cape_errors
     )
     .catch(err => {
-      console.error(`cape.ctrl.js > 120: ${err}`);
-      let message = `There was an error saving the CAPE record: ${err}`;
+      console.error(`cape.ctrl.js > 120: ${err.message}`);
+      let message = `There was an error saving the CAPE record: ${err.message}`;
       return res.status(500).json({ message });
     });
 
@@ -161,7 +161,7 @@ const updateCAPE = async (req, res, next) => {
     }
 
     const updateCAPEResult = await cape.updateCAPE(id, updates).catch(err => {
-      console.error(`cape.ctrl.js > 160: ${err}`);
+      console.error(`cape.ctrl.js > 160: ${err.message}`);
     });
 
     if (
@@ -205,7 +205,7 @@ const deleteCAPE = async (req, res, next) => {
       message: "An error occurred and the CAPE record was not deleted."
     });
   } catch (err) {
-    console.error(`cape.ctrl.js > 208: ${err}`);
+    console.error(`cape.ctrl.js > 208: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -222,7 +222,7 @@ const getAllCAPE = (req, res, next) => {
       return res.status(200).json(cape);
     })
     .catch(err => {
-      console.error(`cape.ctrl.js > 225: ${err}`);
+      console.error(`cape.ctrl.js > 225: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -248,7 +248,7 @@ const getCAPEById = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.error(`cape.ctrl.js > 251: ${err}`);
+      console.error(`cape.ctrl.js > 251: ${err.message}`);
       res.status(404).json({ message: err.message });
     });
 };
@@ -277,7 +277,7 @@ const getCAPEBySFId = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.error(`cape.ctrl.js > 280: ${err}`);
+      console.error(`cape.ctrl.js > 280: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };

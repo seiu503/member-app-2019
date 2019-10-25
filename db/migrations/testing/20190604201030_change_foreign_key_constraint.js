@@ -14,22 +14,16 @@ exports.up = function(knex) {
       }
     })
     .then(function() {
-      return knex.schema
-        .hasTable("contacts_submissions")
-        .then(function(exists) {
-          if (exists) {
-            return knex.schema.table("contacts_submissions", function(table) {
-              table
-                .foreign("contact_id")
-                .references("contacts.contact_id")
-                .onDelete("CASCADE");
-              table
-                .foreign("submission_id")
-                .references("submissions.submission_id")
-                .onDelete("CASCADE");
-            });
-          }
-        });
+      return knex.schema.table("contacts_submissions", function(table) {
+        table
+          .foreign("contact_id")
+          .references("contacts.contact_id")
+          .onDelete("CASCADE");
+        table
+          .foreign("submission_id")
+          .references("submissions.submission_id")
+          .onDelete("CASCADE");
+      });
     });
 };
 

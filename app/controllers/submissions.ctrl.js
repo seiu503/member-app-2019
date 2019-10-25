@@ -138,7 +138,11 @@ const createSubmission = async (req, res, next) => {
       return res.status(500).json({ message: err.message });
     });
 
-  if (!createSubmissionResult || createSubmissionResult.message) {
+  if (
+    !createSubmissionResult ||
+    !createSubmissionResult.length ||
+    createSubmissionResult.message
+  ) {
     console.error(
       `submissions.ctrl.js > 142: ${createSubmissionResult.message ||
         "There was an error saving the submission"}`
@@ -218,6 +222,13 @@ const updateSubmission = async (req, res, next) => {
  */
 const deleteSubmission = async (req, res, next) => {
   let result;
+  const userType = req.params.user_type;
+  if (userType != "admin" || !userType) {
+    return res.status(500).json({
+      message:
+        "You do not have permission to access this content. Please consult an administrator."
+    });
+  }
   try {
     result = await submissions.deleteSubmission(req.params.id);
     if (result.message === "Submission deleted successfully") {
@@ -228,7 +239,7 @@ const deleteSubmission = async (req, res, next) => {
       message: "An error occurred and the submission was not deleted."
     });
   } catch (err) {
-    console.error(`submissions.ctrl.js > 229: ${err}`);
+    console.error(`submissions.ctrl.js > 229: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -237,6 +248,13 @@ const deleteSubmission = async (req, res, next) => {
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
 const getSubmissions = (req, res, next) => {
+  const userType = req.params.user_type;
+  if (!["admin", "view", "edit"].includes(userType)) {
+    return res.status(500).json({
+      message:
+        "You do not have permission to access this content. Please consult an administrator."
+    });
+  }
   return submissions
     .getSubmissions()
     .then(submissions => {
@@ -245,7 +263,7 @@ const getSubmissions = (req, res, next) => {
       return res.status(200).json(submissions);
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 247: ${err}`);
+      console.error(`submissions.ctrl.js > 247: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -255,6 +273,13 @@ const getSubmissions = (req, res, next) => {
  *  @returns  {Object}        Submission object OR error message.
  */
 const getSubmissionById = (req, res, next) => {
+  const userType = req.params.user_type;
+  if (!["admin", "view", "edit"].includes(userType)) {
+    return res.status(500).json({
+      message:
+        "You do not have permission to access this content. Please consult an administrator."
+    });
+  }
   return submissions
     .getSubmissionById(req.params.id)
     .then(submission => {
@@ -270,7 +295,7 @@ const getSubmissionById = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 272: ${err}`);
+      console.error(`submissions.ctrl.js > 272: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };

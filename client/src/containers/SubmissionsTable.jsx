@@ -17,6 +17,8 @@ import { openSnackbar } from "./Notifier";
 
 import Typography from "@material-ui/core/Typography";
 
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+
 const styles = theme => ({
   root: {
     margin: "0 auto",
@@ -44,37 +46,18 @@ const styles = theme => ({
     }
   }
 });
+const loginLinkStr = "click here to login";
+const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
+const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an admin to request access.`;
 
 export class SubmissionsTableUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
-    this.props.apiSubmission
-      .getAllSubmissions(authToken)
-      .then(result => {
-        if (
-          result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
-          this.props.submission.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.submission.error ||
-              "An error occured while fetching submissions"
-          );
-        }
-      })
-      .catch(err => {
-        openSnackbar("error", err);
-      });
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (
-      (!prevProps.appState.authToken && this.props.appState.authToken) ||
-      prevProps.submission.allSubmissions.length !==
-        this.props.submission.allSubmissions.length
-    ) {
+    // console.log(`authToken: ${!!authToken}`);
+    const { userType } = this.props.appState;
+    if (userType && authToken) {
       this.props.apiSubmission
-        .getAllSubmissions(this.props.appState.authToken)
+        .getAllSubmissions(authToken, userType)
         .then(result => {
           if (
             result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
@@ -83,7 +66,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.submission.error ||
-                "An error occured while fetching submissions"
+                "An error occurred while fetching submissions"
             );
           }
         })
@@ -93,16 +76,57 @@ export class SubmissionsTableUnconnected extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (
+      ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
+        (this.props.appState.authToken && this.props.appState.userType)) ||
+      (this.props.submission &&
+        this.props.submission.allSubmissions &&
+        prevProps.submission.allSubmissions.length !==
+          this.props.submission.allSubmissions.length) ||
+      prevProps.appState.userType !== this.props.appState.userType
+    ) {
+      if (this.props.appState.userType) {
+        this.props.apiSubmission
+          .getAllSubmissions(
+            this.props.appState.authToken,
+            this.props.appState.userType
+          )
+          .then(result => {
+            if (
+              result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
+              this.props.submission.error
+            ) {
+              openSnackbar(
+                "error",
+                this.props.submission.error ||
+                  "An error occurred while fetching submissions"
+              );
+            }
+          })
+          .catch(err => {
+            openSnackbar("error", err);
+          });
+      }
+    }
+  }
+
   handleDeleteDialogOpen = submission => {
     if (submission && this.props.appState.loggedIn) {
-      this.props.apiSubmission.handleDeleteOpen(submission);
+      const { userType } = this.props.appState;
+      if (!userType || userType === "view") {
+        openSnackbar("error", warning);
+      } else {
+        this.props.apiSubmission.handleDeleteOpen(submission);
+      }
     }
   };
 
   async deleteSubmission(submissionData) {
     const token = this.props.appState.authToken;
+    const { userType } = this.props.appState;
     const submissionDeleteResult = await this.props.apiSubmission
-      .deleteSubmission(token, submissionData.id)
+      .deleteSubmission(token, submissionData.id, userType)
       .catch(err => {
         openSnackbar("error", this.props.submission.error);
       });

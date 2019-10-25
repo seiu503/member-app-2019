@@ -107,6 +107,20 @@ import {
   POST_ONE_TIME_PAYMENT_SUCCESS,
   POST_ONE_TIME_PAYMENT_FAILURE
 } from "../actions/apiSFActions";
+import {
+  GET_USER_BY_EMAIL_REQUEST,
+  GET_USER_BY_EMAIL_SUCCESS,
+  GET_USER_BY_EMAIL_FAILURE,
+  ADD_USER_REQUEST,
+  ADD_USER_SUCCESS,
+  ADD_USER_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAILURE,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE
+} from "../actions/apiUserActions";
 
 // CREATE_CAPE_SUCCESS, UPDATE_SUBMISSION_SUCCESS
 // intentionally omitted because they are being called in a
@@ -116,7 +130,8 @@ export const INITIAL_STATE = {
   loggedIn: false,
   authToken: "",
   loading: false,
-  redirect: ""
+  redirect: "",
+  userType: ""
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -131,11 +146,23 @@ function appState(state = INITIAL_STATE, action) {
       });
     }
 
+    case GET_PROFILE_SUCCESS:
+      // console.log("GET_PROFILE_SUCCESS");
+      // console.log(action.payload);
+      return update(state, {
+        loggedIn: { $set: true },
+        loading: { $set: false },
+        userType: { $set: action.payload.type }
+      });
+
     case VALIDATE_TOKEN_SUCCESS:
+      // console.log("VALIDATE_TOKEN_SUCCESS");
+      // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         authToken: { $set: action.payload.token },
-        loading: { $set: false }
+        loading: { $set: false },
+        userType: { $set: action.payload.user_type }
       });
 
     case VALIDATE_TOKEN_FAILURE:
@@ -148,7 +175,12 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, { redirect: { $set: action.payload } });
 
     case SET_LOGGEDIN:
-      return update(state, { loggedIn: { $set: true } });
+      // console.log("SET_LOGGEDIN");
+      // console.log(action.payload);
+      return update(state, {
+        loggedIn: { $set: true },
+        userType: { $set: action.payload }
+      });
 
     case GET_CONTENT_BY_ID_REQUEST:
     case ADD_CONTENT_REQUEST:
@@ -177,6 +209,10 @@ function appState(state = INITIAL_STATE, action) {
     case GET_ALL_SUBMISSIONS_REQUEST:
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
+    case GET_USER_BY_EMAIL_REQUEST:
+    case ADD_USER_REQUEST:
+    case UPDATE_USER_REQUEST:
+    case DELETE_USER_REQUEST:
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
     case POST_ONE_TIME_PAYMENT_REQUEST:
@@ -199,7 +235,6 @@ function appState(state = INITIAL_STATE, action) {
     case DELETE_CONTENT_FAILURE:
     case GET_ALL_CONTENT_SUCCESS:
     case GET_ALL_CONTENT_FAILURE:
-    case GET_PROFILE_SUCCESS:
     case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
@@ -236,6 +271,14 @@ function appState(state = INITIAL_STATE, action) {
     case CREATE_CAPE_SUCCESS:
     case CREATE_SF_CAPE_SUCCESS:
     case CREATE_SF_CAPE_FAILURE:
+    case GET_USER_BY_EMAIL_SUCCESS:
+    case GET_USER_BY_EMAIL_FAILURE:
+    case ADD_USER_SUCCESS:
+    case UPDATE_USER_SUCCESS:
+    case DELETE_USER_SUCCESS:
+    case ADD_USER_FAILURE:
+    case UPDATE_USER_FAILURE:
+    case DELETE_USER_FAILURE:
     case GET_CAPE_BY_SFID_SUCCESS:
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_SUCCESS:

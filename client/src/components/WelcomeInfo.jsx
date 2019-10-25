@@ -175,9 +175,6 @@ export class WelcomeInfoUnconnected extends React.Component {
   };
 
   render() {
-    if (this.props.appState.loading) {
-      return <div>loading...</div>;
-    }
     return (
       <div className={this.classes.root} data-test="component-welcome-info">
         <Card className={this.classes.welcomeCard}>

@@ -4,6 +4,7 @@ import appState from "../reducers/appState";
 import profile from "../reducers/profile";
 import content from "../reducers/content";
 import submission from "../reducers/submission";
+import user from "../reducers/user";
 import { localizeReducer } from "react-localize-redux";
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   profile,
   content,
   submission,
+  user,
   localize: localizeReducer,
   form: formReducer
 });

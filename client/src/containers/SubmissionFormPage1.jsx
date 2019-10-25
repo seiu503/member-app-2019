@@ -163,7 +163,7 @@ export class SubmissionFormPage1Container extends React.Component {
             resolve(
               handleError(
                 this.props.content.error ||
-                  "An error occured while trying to save your Signature. Please try typing it instead"
+                  "An error occurred while trying to save your Signature. Please try typing it instead"
               )
             );
           } else {
@@ -252,13 +252,6 @@ export class SubmissionFormPage1Container extends React.Component {
       return;
     }
     // render iframe if one-time donation and cape amount set
-    const donationAmount =
-      formValues.capeAmount === "Other"
-        ? parseFloat(formValues.capeAmountOther)
-        : parseFloat(formValues.capeAmount);
-    // console.log(`donationAmount: ${donationAmount}`);
-    // console.log(formValues.capeAmount);
-    // console.log(formValues.capeAmountOther);
 
     if (!validMethod) {
       await this.props.apiSubmission.handleInput({
@@ -269,9 +262,7 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      if (donationAmount) {
-        return this.getIframeURL(true);
-      }
+      return this.getIframeURL(true);
     } else {
       const checkoff = !this.props.submission.formPage1.paymentRequired;
       if (checkoff) {
@@ -316,7 +307,7 @@ export class SubmissionFormPage1Container extends React.Component {
   trimSignature = () => {
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
     if (dataURL === blankSig) {
-      throw new Error(
+      return handleError(
         "Please draw your signature or click the link to type it instead"
       );
     } else {
@@ -427,8 +418,8 @@ export class SubmissionFormPage1Container extends React.Component {
 
       // set salesforce id
       if (!values.salesforceId) {
-        if (q && q.id) {
-          returnValues.salesforceId = q.id;
+        if (q && q.cId) {
+          returnValues.salesforceId = q.cId;
         }
         if (this.props.submission.salesforce_id) {
           returnValues.salesforceId = this.props.submission.salesforce_id;

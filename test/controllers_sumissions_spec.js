@@ -51,7 +51,7 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         submissionBody.salesforce_id = "123";
         req = mockReq({
-          body: submissionBody
+          body: { userType: "admin", ...submissionBody }
         });
         next = sinon.stub();
         resolve();
@@ -141,7 +141,7 @@ suite("sumissions.ctrl.js", function() {
         .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.createSubmission(req, res);
+        await submCtrl.createSubmission(req, res, next);
         assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
@@ -242,7 +242,7 @@ suite("sumissions.ctrl.js", function() {
         .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.updateSubmission(req, res);
+        await submCtrl.updateSubmission(req, res, next);
         assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
@@ -255,7 +255,9 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > getSubmissions", function() {
     beforeEach(function() {
       return new Promise(resolve => {
-        req = mockReq();
+        req = mockReq({
+          params: { user_type: "admin" }
+        });
         resolve();
       });
     });
@@ -269,7 +271,7 @@ suite("sumissions.ctrl.js", function() {
       responseStub = [{ ...submissionBody }];
       responseStub[0].first_name = "firstname";
       try {
-        await submCtrl.getSubmissions(req, res);
+        await submCtrl.getSubmissions(req, res, next);
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, sinon.match.array);
         let result = res.locals.testData;
@@ -290,8 +292,26 @@ suite("sumissions.ctrl.js", function() {
         .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.getSubmissions(req, res);
+        await submCtrl.getSubmissions(req, res, next);
         assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if incorrect userType", async function() {
+      req.params.user_type = "wrong";
+      errorMsg =
+        "You do not have permission to access this content. Please consult an administrator.";
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
+        .stub(submissions, "getSubmissions")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.getSubmissions(req, res, next);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
@@ -305,7 +325,8 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id
+            id,
+            user_type: "admin"
           }
         });
         resolve();
@@ -319,7 +340,7 @@ suite("sumissions.ctrl.js", function() {
 
     test("gets one submission by Id and returns 200", async function() {
       try {
-        await submCtrl.getSubmissionById(req, res);
+        await submCtrl.getSubmissionById(req, res, next);
         assert.calledWith(res.status, 200);
         let result = res.locals.testData;
         delete submissionBody.submission_id;
@@ -342,7 +363,7 @@ suite("sumissions.ctrl.js", function() {
         .resolves({ message: errorMsg });
 
       try {
-        await submCtrl.getSubmissionById(req, res);
+        await submCtrl.getSubmissionById(req, res, next);
         assert.called(submissionModelsStub);
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
@@ -358,8 +379,26 @@ suite("sumissions.ctrl.js", function() {
         .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.getSubmissionById(req, res);
+        await submCtrl.getSubmissionById(req, res, next);
         assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if incorrect userType", async function() {
+      req.params.user_type = "wrong";
+      errorMsg =
+        "You do not have permission to access this content. Please consult an administrator.";
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
+        .stub(submissions, "getSubmissionById")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.getSubmissionById(req, res, next);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
@@ -373,7 +412,8 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id
+            id,
+            user_type: "admin"
           }
         });
         next = sinon.stub();
@@ -419,8 +459,26 @@ suite("sumissions.ctrl.js", function() {
         .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.deleteSubmission(req, res);
+        await submCtrl.deleteSubmission(req, res, next);
         assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if incorrect userType", async function() {
+      req.params.user_type = "wrong";
+      errorMsg =
+        "You do not have permission to access this content. Please consult an administrator.";
+      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
+      submissionModelsStub = sinon
+        .stub(submissions, "deleteSubmission")
+        .returns(dbMethodStub);
+
+      try {
+        await submCtrl.deleteSubmission(req, res, next);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
@@ -448,7 +506,7 @@ suite("sumissions.ctrl.js", function() {
         .stub(request, "post")
         .yields(null, null, JSON.stringify({ success: true, score: 0.9 }));
 
-      await submCtrl.verifyHumanity(req, res).catch(err => {
+      await submCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });
       assert.calledWith(res.status, 200);
@@ -463,7 +521,7 @@ suite("sumissions.ctrl.js", function() {
       const requestStub = sinon
         .stub(request, "post")
         .yields(new Error("recaptcha error"), null, null);
-      await submCtrl.verifyHumanity(req, res).catch(err => {
+      await submCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });
       assert.calledWith(res.status, 500);
@@ -482,7 +540,7 @@ suite("sumissions.ctrl.js", function() {
           null,
           JSON.stringify({ "error-codes": ["the error code"] })
         );
-      await submCtrl.verifyHumanity(req, res).catch(err => {
+      await submCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });
       assert.calledWith(res.status, 500);

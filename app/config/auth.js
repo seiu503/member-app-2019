@@ -7,28 +7,31 @@ const passport = require("passport"),
   prodUrl = "https://test.seiu503signup.org", // NO TRAILING SLASH
   devUrl = "http://localhost:8080", // server url for local install
   BASE_URL = process.env.NODE_ENV === "production" ? prodUrl : devUrl, //
-  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`;
+  googleCallbackUrl = `${BASE_URL}/api/auth/google/callback`,
+  CLIENT_URL =
+    process.env.NODE_ENV === "production" ? APP_HOST : "http://localhost:3000";
 
 /* ================================ EXPORTS ================================ */
 
-const user = {
+exports.user = {
   serialize: (user, done) => {
     // console.log(`serializing user: ${user.id}`);
-    done(null, user.id);
+    return done(null, user.id);
   },
 
   deserialize: async (id, done) => {
     User.getUserById(id)
       .then(user => {
-        done(null, user);
+        return done(null, user);
       })
       .catch(err => {
-        done(err, null);
+        console.log(`config/auth.js > 26: ${err}`);
+        return done(err, null);
       });
   }
 };
 
-const googleAuth = {
+exports.googleAuth = {
   clientID: process.env.GOOGLE_KEY,
   clientSecret: process.env.GOOGLE_SECRET,
   callbackURL: googleCallbackUrl
@@ -40,103 +43,104 @@ const googleAuth = {
 
 // helper methods for updating existing profile with social login info
 
-const findExistingUser = async (profile, token, done) => {
-  const google_id = profile.id;
-  User.getUserByGoogleId(google_id)
+exports.findUserByEmail = async (profile, token, done) => {
+  // console.log("config.auth.js > 44: (googleId)");
+  // console.log(profile.id);
+  return User.getUserByEmail(profile.email)
     .then(user => {
-      if (!user) {
-        return saveNewUser(profile, token, done).catch(err => {
-          // console.log(`config/auth.js > 45`);
-          // console.log(err);
-        });
-      } else {
-        return done(null, user);
+      console.log(`config.auth.js > 49`);
+      // console.log("config.auth.js > 48: (userId)");
+      if (user) {
+        console.log(`config.auth.js > 52`);
+        // console.log(user.id);
+        if (user.google_id) {
+          console.log(`config.auth.js > 54`);
+          return done(null, user);
+        } else {
+          console.log(`config.auth.js > 56`);
+          return this.updateUser(profile, token, user.id, done);
+        }
       }
+      console.log(`config.auth.js > 62`);
+      return done(null, null);
     })
     .catch(err => {
-      done(err, null);
+      console.log(`config/auth.js > 67: ${err}`);
+      return done(err, null);
     });
 };
 
-// save new user
-const saveNewUser = async (profile, token, done) => {
+exports.updateUser = async (profile, token, userId, done) => {
   const google_id = profile.id;
   const google_token = token;
-  const email = profile.emails ? profile.emails[0] : "";
-  const name = `${profile.name.givenName} ${profile.name.familyName}`;
   const avatar_url = profile.picture;
-
-  // save new user to database
-  User.createUser(name, email, avatar_url, google_id, google_token)
+  updates = { google_id, google_token, avatar_url };
+  // update user on database
+  User.updateUser(userId, updates)
     .then(user => {
       return done(null, user);
     })
     .catch(err => {
-      console.log(err);
+      console.log(`config/auth.js > 82: ${err}`);
       return done(err, null);
     });
 };
 
 // JWT strategy options
-const jwtOptions = {
+exports.jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,
   passReqToCallback: true
 };
 
-const jwtLogin = async (req, payload, done) => {
+exports.jwtLogin = async (req, payload, done) => {
+  console.log(`config/auth.js > 97: jwtLogin`);
   const id = payload.id;
   User.getUserById(id)
     .then(user => {
-      // console.log(`passport.js > 23`);
-      // console.log(user);
-      done(null, user);
+      console.log(`config/auth.js > 101`);
+      console.log(user.id);
+      req.user = user;
+      return done(null, user);
     })
     .catch(err => {
-      // console.log("passport.js > 28");
-      // console.log(err);
-      done(err, null);
+      console.log(`config/auth.js > 107: ${err}`);
+      return done(err, null);
     });
 };
 
-const jwtStrategy = new JwtStrategy(jwtOptions, jwtLogin);
+exports.jwtStrategy = new JwtStrategy(this.jwtOptions, this.jwtLogin);
 
 // Google strategy options
-const googleOptions = {
-  clientID: googleAuth.clientID,
-  clientSecret: googleAuth.clientSecret,
-  callbackURL: googleAuth.callbackURL,
+exports.googleOptions = {
+  clientID: this.googleAuth.clientID,
+  clientSecret: this.googleAuth.clientSecret,
+  callbackURL: this.googleAuth.callbackURL,
   passReqToCallback: true,
   scope: ["profile", "email"]
 };
 
-const googleLogin = async (req, token, refreshToken, profile, done) => {
+exports.googleLogin = async (req, token, refreshToken, profile, done) => {
   // console.log(
   //   `Google login by ${profile.name.givenName} ${
   //     profile.name.familyName
   //   }, ID: ${profile.id}`
   // );
+  console.log(`config.auth.js > 128`);
   if (!req.user) {
-    return findExistingUser(profile, token, done).catch(err => {
-      console.log(err);
+    console.log("config.auth.js > 129");
+    this.findUserByEmail(profile, token, done).catch(err => {
+      console.log(`config/auth.js > 137: ${err}`);
+      return done(err, null);
     });
   } else {
+    console.log("config/auth.js > 144");
     // found logged-in user. Return
     return done(null, req.user);
   }
 };
 
-const googleStrategy = new GoogleStrategy(googleOptions, googleLogin);
-
-module.exports = {
-  user,
-  googleAuth,
-  findExistingUser,
-  saveNewUser,
-  jwtOptions,
-  jwtLogin,
-  jwtStrategy,
-  googleOptions,
-  googleLogin,
-  googleStrategy
-};
+exports.googleStrategy = new GoogleStrategy(
+  this.googleOptions,
+  this.googleLogin
+);

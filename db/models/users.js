@@ -13,11 +13,21 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {String}   avatar_url     New user avatar url.
  *  @param    {String}   google_id      New user google id.
  *  @param    {String}   google_token   New user google token.
+ *  @param    {String}   type           New user type
  *  @returns  {Array}    Array of 1 newly-created User object.
  */
-const createUser = (name, email, avatar_url, google_id, google_token) => {
+const createUser = (name, email, avatar_url, google_id, google_token, type) => {
+  console.log(`models/users.js > ${type}`);
   return db
-    .insert({ id: uuid.v4(), name, email, avatar_url, google_id, google_token })
+    .insert({
+      id: uuid.v4(),
+      name,
+      email,
+      avatar_url,
+      google_id,
+      google_token,
+      type
+    })
     .into(TABLES.USERS)
     .returning("*");
 };
@@ -25,9 +35,12 @@ const createUser = (name, email, avatar_url, google_id, google_token) => {
 /** Update a user
  *  @param    {String}   id             The id of the user to update.
  *  @param    {Object}   updates        Key/value pairs of fields to update.
- ****  @param    {String}   name        Updated name.
- ****  @param    {String}   email       Updated email.
- ****  @param    {String}   avatar_url  Updated avatar url.
+ ****  @param    {String}   name           Updated name.
+ ****  @param    {String}   email          Updated email.
+ ****  @param    {String}   avatar_url     Updated avatar url.
+ ****  @param    {String}   google_id      Updated google_id.
+ ****  @param    {String}   google_token   Updated google_token.
+ ****  @param    {String}   type           Updated user type
  *  @returns  {Object}   User object.
  */
 const updateUser = (id, updates) => {
@@ -55,6 +68,18 @@ const getUsers = () => {
 const getUserById = id => {
   return db(TABLES.USERS)
     .where({ id })
+    .first()
+    .returning("*");
+};
+
+/** Find a user by email
+ *  @param    {String}   email   The email of the user to return.
+ *  @returns  {Object}        User object.
+ */
+
+const getUserByEmail = email => {
+  return db(TABLES.USERS)
+    .where({ email })
     .first()
     .returning("*");
 };
@@ -94,5 +119,6 @@ module.exports = {
   getUserById,
   getUserByGoogleId,
   getUsers,
-  deleteUser
+  deleteUser,
+  getUserByEmail
 };
