@@ -13,6 +13,15 @@ const { db } = require("../app/config/knex");
 const utils = require("../app/utils");
 require("../app/config/passport")(passport);
 
+const CLIENT_URL =
+  process.env.NODE_CONFIG_ENV === "production"
+    ? process.env.APP_HOST_PROD
+    : process.env.NODE_CONFIG_ENV === "staging"
+    ? process.env.APP_HOST_STAGING
+    : process.env.CLIENT_URL;
+
+console.log(`CLIENT_URL: ${CLIENT_URL}`);
+
 const id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e",
   token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMyN…zE1fQ.6y9mMYVXbffHa4Q-aFUd5B3GDyyRF10iBJ28qVlEApk",
@@ -120,7 +129,7 @@ suite("auth.ctrl.js", function() {
     test("returns 200 with redirect if req.user", async function() {
       utils.generateToken = sinon.stub().returns("token");
       const res = mockRes();
-      const redirectUrl = `http://localhost:3000/admin/123/token`;
+      const redirectUrl = `${CLIENT_URL}/admin/123/token`;
       const userStub = {
         id: "123"
       };
@@ -144,7 +153,7 @@ suite("auth.ctrl.js", function() {
       };
       utils.generateToken = sinon.stub().returns("token");
       const res = mockRes();
-      const redirectUrl = `http://localhost:3000/login`;
+      const redirectUrl = `${CLIENT_URL}/login`;
       const req = mockReq({
         user: null
       });
@@ -317,7 +326,7 @@ suite("auth.ctrl.js", function() {
       const message = encodeURIComponent(
         "You need an invitation from an administrator before you can create an account"
       );
-      const redirectUrl = `http://localhost:3000/noaccess?message=${message}`;
+      const redirectUrl = `${CLIENT_URL}/noaccess?message=${message}`;
 
       next = sinon.stub();
       const userStub = {

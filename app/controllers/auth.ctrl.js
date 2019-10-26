@@ -17,6 +17,8 @@ const CLIENT_URL =
     ? process.env.APP_HOST_STAGING
     : process.env.CLIENT_URL;
 
+console.log(`CLIENT_URL: ${CLIENT_URL}`);
+
 /* ============================ ROUTE HANDLERS ============================= */
 
 exports.googleCallback = (req, res) => {

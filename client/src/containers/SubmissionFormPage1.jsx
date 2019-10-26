@@ -251,6 +251,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
       return;
     }
+    console.log("254");
     // render iframe if one-time donation and cape amount set
 
     if (validMethod) {
@@ -258,10 +259,13 @@ export class SubmissionFormPage1Container extends React.Component {
         target: { name: "newCardNeeded", value: false }
       });
     }
+    console.log("262");
     if (frequency === "One-Time") {
+      console.log("264");
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
+      console.log("268");
       return this.getIframeURL(true);
     } else {
       console.log("267");
