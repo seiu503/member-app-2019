@@ -5,6 +5,6 @@ files:
     destination: /home/ubuntu/seiu503Deployed
 hooks:
   AfterInstall:
-    - location: /home/ubuntu/seiu503Deployed/ec2/scripts/postInstall.sh
+    - location: /ec2/scripts/postInstall.sh
       timeout: 180
       runas: root
