@@ -14,7 +14,7 @@ import * as apiSForce from "../../../store/actions/apiSFActions";
 import {
   SubmissionFormPage1Connected,
   SubmissionFormPage1Container
-} from "../../containers/SubmissionFormPage1";
+} from "../../../containers/SubmissionFormPage1";
 
 import { handleInput } from "../../../store/actions/apiSubmissionActions";
 

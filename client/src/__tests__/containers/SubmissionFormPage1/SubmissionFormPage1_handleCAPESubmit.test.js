@@ -1,56 +1,22 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 import moment from "moment";
-import {
-  findByTestAttr,
-  storeFactory,
-  fakeDataURI
-} from "../../../utils/testUtils";
-import { Provider } from "react-redux";
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 
-import * as apiSForce from "../../../store/actions/apiSFActions";
-import {
-  SubmissionFormPage1Connected,
-  SubmissionFormPage1Container
-} from "../../../containers/SubmissionFormPage1";
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-import { handleInput } from "../../../store/actions/apiSubmissionActions";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
-
-let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
+let wrapper, handleErrorMock;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
-  );
-
-let updateSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let updateSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS", payload: {} })
-  );
-
-let updateSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
   );
 
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
@@ -79,10 +45,6 @@ let createSFContactError = jest
     Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
   );
 
-let createSFOMAError = jest
-  .fn()
-  .mockImplementation(() => Promise.reject({ type: "CREATE_SF_OMA_FAILURE" }));
-
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "GET_SF_CONTACT_SUCCESS",
@@ -104,44 +66,10 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFContactByIdError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let getSFContactByDoubleIdError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE", payload: {} })
-  );
-
-let addSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-  );
-
-let addSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
-  );
-
-let createSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({}));
-
 let getSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let getSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_DJR_FAILURE", payload: {} })
   );
 
 let createSFDJRSuccess = jest
@@ -150,46 +78,10 @@ let createSFDJRSuccess = jest
     Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
   );
 
-let createSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "CREATE_SF_DJR_FAILURE", payload: {} })
-  );
-
 let updateSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "UPDATE_SF_DJR_FAILURE", payload: {} })
-  );
-
-let getIframeExistingSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_EXISTING_SUCCESS", payload: {} })
-  );
-
-let getIframeExistingError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_IFRAME_EXISTING_FAILURE", payload: {} })
-  );
-
-let getIframeNewSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} })
-  );
-
-let getIframeNewError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
   );
 
 let getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
@@ -198,24 +90,6 @@ let getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
     payload: { access_token: "1234" }
   })
 );
-
-let getUnioniseTokenError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
-  );
-
-// let refreshUnioniseTokenSuccess = jest
-//   .fn()
-//   .mockImplementation(() =>
-//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_SUCCESS", payload: {} })
-//   );
-
-// let refreshUnioniseTokenError = jest
-//   .fn()
-//   .mockImplementation(() =>
-//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
-//   );
 
 let refreshRecaptchaMock = jest
   .fn()
@@ -279,10 +153,8 @@ let postOneTimePaymentError = jest
     Promise.resolve({ type: "POST_ONE_TIME_PAYMENT_FAILURE" })
   );
 
-let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
-const flushPromises = () => new Promise(setImmediate);
 const clearSigBoxMock = jest.fn();
 let toDataURLMock = jest.fn();
 
@@ -290,13 +162,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -390,7 +255,6 @@ const defaultProps = {
 };
 
 const setup = (props = {}) => {
-  store = mockStore(initialState);
   const setupProps = { ...defaultProps, ...props };
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
@@ -404,16 +268,92 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("handleCAPESubmit", () => {
+    beforeEach(() => {
+      handleErrorMock = jest.fn();
+    });
     afterEach(() => {
+      pushMock.mockClear();
+      createCAPESuccess.mockClear();
       jest.restoreAllMocks();
     });
+
+    test("`handleCAPESubmit` calls createCAPE if !capeid", async () => {
+      formElements.handleError = jest.fn();
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+      let props = {
+        formValues: {
+          capeAmount: 10,
+          capeAmountOther: undefined,
+          donationFrequency: "One-Time"
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: null,
+          payment: {
+            memberShortId: null
+          },
+          cape: {
+            id: undefined,
+            memberShortId: "123"
+          }
+        },
+        apiSF: {
+          lookupSFContact: lookupSFContactSuccess,
+          createSFCAPE: createSFCAPESuccess,
+          updateSFCAPE: updateSFCAPESuccess,
+          getUnioniseToken: getUnioniseTokenSuccess,
+          postOneTimePayment: postOneTimePaymentSuccess
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn()
+      };
+
+      wrapper = setup(props);
+      let generateCAPEBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      await wrapper.instance().handleCAPESubmit();
+
+      await wrapper
+        .instance()
+        .verifyRecaptchaScore()
+        .catch(err => {
+          console.log(err);
+        });
+      await generateCAPEBodyMock();
+      await createSFCAPESuccess()
+        .then(() => {
+          expect(createCAPESuccess.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
     test("`handleCAPESubmit` handles error if recaptcha verification fails", () => {
       verifyRecaptchaScoreMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(0.1));
       formElements.handleError = jest.fn();
 
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -427,7 +367,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("`handleCAPESubmit` handles error if paymentRequired && !paymentMethodAdded", () => {
+    test("`handleCAPESubmit` handles error if paymentRequired && newCardNeeded && !paymentMethodAdded", () => {
       verifyRecaptchaScoreMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(0.9));
@@ -440,14 +380,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: false
+            paymentMethodAdded: false,
+            newCardNeeded: true
           }
         }
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -495,9 +434,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -537,14 +474,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: null,
           payment: {
             memberShortId: "123"
-          }
+          },
+          cape: {}
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
-          createCAPE: createCAPESuccess
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
         },
         cape_legal: {
           current: {
@@ -554,9 +493,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper.instance().createSFContact = createSFContactError;
@@ -575,7 +512,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
@@ -616,9 +553,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
       let generateCAPEBodyMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve({}));
@@ -639,7 +574,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
@@ -673,7 +608,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           createSFCAPE: createSFCAPEError
         },
         apiSubmission: {
-          createCAPE: createCAPESuccess
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
         },
         cape_legal: {
           current: {
@@ -683,9 +619,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
+
       let generateCAPEBodyMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve({}));
@@ -700,7 +635,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
@@ -723,14 +658,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: "123",
           payment: {
             memberShortId: "123"
-          }
+          },
+          cape: {}
         },
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
-          createCAPE: createCAPEError
+          createCAPE: createCAPEError,
+          updateCAPE: updateCAPESuccess
         },
         cape_legal: {
           current: {
@@ -740,9 +677,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -760,7 +695,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
@@ -795,7 +730,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           postOneTimePayment: postOneTimePaymentSuccess
         },
         apiSubmission: {
-          createCAPE: createCAPEError
+          createCAPE: createCAPEError,
+          updateCAPE: updateCAPESuccess
         },
         cape_legal: {
           current: {
@@ -805,9 +741,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -825,12 +759,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
     test("`handleCAPESubmit` handles error if postOneTimePayment prop throws", () => {
-      formElements.handleError = jest.fn();
+      handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
       postOneTimePaymentError = jest
         .fn()
         .mockImplementation(() =>
@@ -860,7 +795,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           postOneTimePayment: postOneTimePaymentError
         },
         apiSubmission: {
-          createCAPE: createCAPESuccess
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess
         },
         cape_legal: {
           current: {
@@ -870,9 +806,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -885,18 +819,19 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             .catch(err => {
               console.log(err);
             });
-          await createSFCAPESuccess;
-          await createCAPESuccess;
-          await postOneTimePaymentError;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+          await createSFCAPESuccess();
+          await createCAPESuccess();
+          await postOneTimePaymentError();
+          expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
     test("`handleCAPESubmit` handles error if updateCAPE prop throws", () => {
-      formElements.handleError = jest.fn();
+      handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
       updateCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -937,9 +872,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -952,19 +885,20 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             .catch(err => {
               console.log(err);
             });
-          await createSFCAPESuccess;
-          await createCAPESuccess;
-          await postOneTimePaymentSuccess;
-          await updateCAPEError;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+          await createSFCAPESuccess();
+          await createCAPESuccess();
+          await postOneTimePaymentSuccess();
+          await updateCAPEError();
+          expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
-    test("`handleCAPESubmit` handles error if updateSFCAPE prop throws", () => {
-      formElements.handleError = jest.fn();
+    test("`handleCAPESubmit` handles error if updateSFCAPE prop throws", async () => {
+      handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
       updateSFCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -1008,35 +942,34 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper
+      await wrapper.instance().handleCAPESubmit();
+      await wrapper
         .instance()
-        .handleCAPESubmit()
-        .then(async () => {
-          await wrapper
-            .instance()
-            .verifyRecaptchaScore()
-            .catch(err => {
-              console.log(err);
-            });
-          await createSFCAPESuccess;
-          await createCAPESuccess;
-          await postOneTimePaymentSuccess;
-          await updateCAPESuccess;
-          await updateSFCAPEError;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+        .verifyRecaptchaScore()
+        .catch(err => {
+          console.log(err);
+        });
+      await createSFCAPESuccess();
+      await createCAPESuccess();
+      await postOneTimePaymentSuccess();
+      await updateCAPESuccess();
+      await updateSFCAPEError()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
 
-    test("`handleCAPESubmit` handles error if updateSFCAPE prop fails", () => {
-      formElements.handleError = jest.fn();
+    test("`handleCAPESubmit` handles error if updateSFCAPE prop fails", async () => {
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(() => console.log("handleError"));
+      formElements.handleError = handleErrorMock;
       updateSFCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -1056,86 +989,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             memberShortId: "123"
           },
           cape: {
-            id: undefined
-          }
-        },
-        apiSF: {
-          lookupSFContact: lookupSFContactSuccess,
-          createSFCAPE: createSFCAPESuccess,
-          getUnioniseToken: getUnioniseTokenSuccess,
-          postOneTimePayment: postOneTimePaymentSuccess,
-          updateSFCAPE: updateSFCAPEError
-        },
-        apiSubmission: {
-          createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPESuccess
-        },
-        cape_legal: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        reset: jest.fn()
-      };
-
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
-
-      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper
-        .instance()
-        .handleCAPESubmit()
-        .then(async () => {
-          await wrapper
-            .instance()
-            .verifyRecaptchaScore()
-            .catch(err => {
-              console.log(err);
-            });
-          await createSFCAPESuccess;
-          await createCAPESuccess;
-          await postOneTimePaymentSuccess;
-          await updateCAPESuccess;
-          await updateSFCAPEError;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => {
-          // console.log(err);
-        });
-    });
-
-    test("`handleCAPESubmit` calls createCAPE if !capeid", () => {
-      formElements.handleError = jest.fn();
-      createCAPESuccess.mockRestore();
-      createCAPESuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
-        );
-      let props = {
-        formValues: {
-          capeAmount: 10,
-          donationFrequency: "One-Time"
-        },
-        submission: {
-          formPage1: {
-            paymentRequired: true,
-            paymentMethodAdded: true
-          },
-          salesforceId: null,
-          payment: {
-            memberShortId: null
-          },
-          cape: {
             id: undefined,
-            memberShortId: "123"
+            activeMethodLast4: "1234"
           }
         },
         apiSF: {
+          updateSFCAPE: updateSFCAPEError,
           lookupSFContact: lookupSFContactSuccess,
           createSFCAPE: createSFCAPESuccess,
-          updateSFCAPE: updateSFCAPESuccess,
           getUnioniseToken: getUnioniseTokenSuccess,
           postOneTimePayment: postOneTimePaymentSuccess
         },
@@ -1151,26 +1012,23 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         reset: jest.fn()
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
-      let generateCAPEBodyMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
+      wrapper = setup(props);
+
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper
+      await wrapper.instance().handleCAPESubmit();
+      await wrapper
         .instance()
-        .handleCAPESubmit()
-        .then(async () => {
-          await wrapper
-            .instance()
-            .verifyRecaptchaScore()
-            .catch(err => {
-              console.log(err);
-            });
-          await generateCAPEBodyMock;
-          expect(createCAPESuccess.mock.calls.length).toBe(1);
+        .verifyRecaptchaScore()
+        .catch(err => {
+          console.log(err);
+        });
+      await createSFCAPESuccess();
+      await createCAPESuccess();
+      await postOneTimePaymentSuccess();
+      await updateCAPESuccess();
+      await updateSFCAPEError()
+        .then(() => {
+          expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => {
           console.log(err);
@@ -1218,9 +1076,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
 
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper
@@ -1240,7 +1096,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           expect(pushMock.mock.calls.length).toBe(1);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
         });
     });
   });

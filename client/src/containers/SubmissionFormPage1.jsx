@@ -1311,18 +1311,6 @@ export class SubmissionFormPage1Container extends React.Component {
           console.error(err);
         });
     }
-    // console.log(
-    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(
-    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
-    // );
-    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
-    // console.log(
-    //   `paymentMethodAdded: ${
-    //     this.props.submission.formPage1.paymentMethodAdded
-    //   }`
-    // );
     if (
       ((this.props.submission.formPage1.paymentRequired &&
         this.props.submission.formPage1.newCardNeeded) ||
@@ -1354,7 +1342,6 @@ export class SubmissionFormPage1Container extends React.Component {
     body.member_short_id =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
-
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
       .createSFCAPE(body)
@@ -1368,16 +1355,18 @@ export class SubmissionFormPage1Container extends React.Component {
     let sf_cape_id;
 
     if (
-      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
+      (sfCapeResult && sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS") ||
       this.props.submission.error
     ) {
       cape_errors += this.props.submission.error;
       cape_status = "Error";
       // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
-    } else {
+    } else if (sfCapeResult && sfCapeResult.type === "CREATE_SF_CAPE_SUCCESS") {
       cape_status = "Success";
       sf_cape_id = sfCapeResult.payload.sf_cape_id;
+    } else {
+      cape_status = "Error";
     }
 
     const member_short_id =
@@ -1388,7 +1377,6 @@ export class SubmissionFormPage1Container extends React.Component {
     // if initial cape was not already created
     // in the process of generating the iframe url,
     // (checkoff use case), create it now
-
     if (!this.props.submission.cape.id) {
       await this.createCAPE(
         formValues.capeAmount,
@@ -1398,6 +1386,7 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(err);
       });
     }
+
     // if one-time payment, send API request to unioni.se to process it
     if (formValues.donationFrequency === "One-Time") {
       await this.postOneTimePayment().catch(err => {
@@ -1447,9 +1436,9 @@ export class SubmissionFormPage1Container extends React.Component {
         Card_Brand__c: this.props.submission.cape.cardBrand
       };
 
-      console.log(sfCapeBody);
+      // console.log(sfCapeBody);
 
-      const sfCapeUpdateResult = await this.props.apiSF
+      const result = await this.props.apiSF
         .updateSFCAPE(sfCapeBody)
         .catch(err => {
           console.error(err);
@@ -1457,7 +1446,8 @@ export class SubmissionFormPage1Container extends React.Component {
         });
 
       if (
-        sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
+        !result ||
+        result.type !== "UPDATE_SF_CAPE_SUCCESS" ||
         this.props.submission.error
       ) {
         // console.log(this.props.submission.error);
@@ -1476,6 +1466,7 @@ export class SubmissionFormPage1Container extends React.Component {
         "success",
         "Thank you. Your CAPE submission was proccessed."
       );
+
       this.props.history.push(`/thankyou/?cape=true`);
     }
   }

@@ -1,27 +1,14 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 import moment from "moment";
-import {
-  findByTestAttr,
-  storeFactory,
-  fakeDataURI
-} from "../../../utils/testUtils";
-import { Provider } from "react-redux";
+import { fakeDataURI } from "../../../utils/testUtils";
+
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 
-import * as apiSForce from "../../../store/actions/apiSFActions";
-import {
-  SubmissionFormPage1Connected,
-  SubmissionFormPage1Container
-} from "../../../containers/SubmissionFormPage1";
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-import { handleInput } from "../../../store/actions/apiSubmissionActions";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
-
-let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -35,24 +22,6 @@ let updateSFContactSuccess = jest
     Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
   );
 
-let updateSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let updateSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS", payload: {} })
-  );
-
-let updateSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
-  );
-
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -60,28 +29,12 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let lookupSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
-  );
-
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "CREATE_SF_CONTACT_SUCCESS",
     payload: { salesforce_id: "123" }
   })
 );
-
-let createSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let createSFOMAError = jest
-  .fn()
-  .mockImplementation(() => Promise.reject({ type: "CREATE_SF_OMA_FAILURE" }));
 
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -104,44 +57,10 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFContactByIdError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let getSFContactByDoubleIdError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE", payload: {} })
-  );
-
-let addSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-  );
-
-let addSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
-  );
-
-let createSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({}));
-
 let getSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let getSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_DJR_FAILURE", payload: {} })
   );
 
 let createSFDJRSuccess = jest
@@ -150,139 +69,18 @@ let createSFDJRSuccess = jest
     Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
   );
 
-let createSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "CREATE_SF_DJR_FAILURE", payload: {} })
-  );
-
 let updateSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
   );
 
-let updateSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "UPDATE_SF_DJR_FAILURE", payload: {} })
-  );
-
-let getIframeExistingSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_EXISTING_SUCCESS", payload: {} })
-  );
-
-let getIframeExistingError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_IFRAME_EXISTING_FAILURE", payload: {} })
-  );
-
-let getIframeNewSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} })
-  );
-
-let getIframeNewError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
-  );
-
-let getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "GET_UNIONISE_TOKEN_SUCCESS",
-    payload: { access_token: "1234" }
-  })
-);
-
-let getUnioniseTokenError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
-  );
-
-// let refreshUnioniseTokenSuccess = jest
-//   .fn()
-//   .mockImplementation(() =>
-//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_SUCCESS", payload: {} })
-//   );
-
-// let refreshUnioniseTokenError = jest
-//   .fn()
-//   .mockImplementation(() =>
-//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
-//   );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
-let verifyRecaptchaScoreMock = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve(0.9));
-
-let createSFCAPESuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "CREATE_SF_CAPE_SUCCESS",
-    payload: { sf_cape_id: 123 }
-  })
-);
-
-let createSFCAPEError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_CAPE_FAILURE" })
-  );
-
-let createCAPESuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "CREATE_CAPE_SUCCESS" }));
-
-let createCAPEError = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "CREATE_CAPE_FAILURE" }));
-
-let updateCAPESuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" }));
-
-let updateCAPEError = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "UPDATE_CAPE_FAILURE" }));
-
-let updateSFCAPESuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_CAPE_SUCCESS" })
-  );
-
-let updateSFCAPEError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_CAPE_FAILURE" })
-  );
-
-let postOneTimePaymentSuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "POST_ONE_TIME_PAYMENT_SUCCESS",
-    payload: { access_token: 123 }
-  })
-);
-
-let postOneTimePaymentError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "POST_ONE_TIME_PAYMENT_FAILURE" })
-  );
-
-let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
-const flushPromises = () => new Promise(setImmediate);
 const clearSigBoxMock = jest.fn();
 let toDataURLMock = jest.fn();
 
@@ -290,13 +88,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -390,7 +181,6 @@ const defaultProps = {
 };
 
 const setup = (props = {}) => {
-  store = mockStore(initialState);
   const setupProps = { ...defaultProps, ...props };
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
@@ -412,25 +202,25 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleOpen` opens modal", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().handleOpen();
       expect(wrapper.instance().state.open).toBe(true);
     });
 
     test("`handleCAPEOpen` opens alert dialog", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().handleCAPEOpen();
       expect(wrapper.instance().state.capeOpen).toBe(true);
     });
 
     test("`handleClose` closes modal", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().handleClose();
       expect(wrapper.instance().state.open).toBe(false);
     });
 
     test("`handleEmployerChange` sets prefillEmployerChanged state to true", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().handleEmployerChange();
       expect(wrapper.instance().state.prefillEmployerChanged).toBe(true);
     });
@@ -440,7 +230,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let replaceStateMock = jest.fn();
       clearFormMock = jest.fn();
       window.history.replaceState = replaceStateMock;
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().props.apiSubmission.clearForm = clearFormMock;
       await wrapper.instance().handleCloseAndClear();
       expect(wrapper.instance().state.open).toBe(false);
@@ -450,7 +240,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleCAPEClose` closes alert dialog", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().handleCAPEClose();
       expect(wrapper.instance().state.capeOpen).toBe(false);
     });
@@ -461,16 +251,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           push: pushMock
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
       wrapper.instance().closeDialog();
       expect(wrapper.instance().state.capeOpen).toBe(false);
       expect(pushMock).toHaveBeenCalled();
     });
 
     test("`mobilePhoneOnBlur` calls handleEmployerTypeChange", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       const handleEmployerTypeChangeMock = jest.fn();
       wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
       wrapper.instance().mobilePhoneOnBlur();
@@ -489,9 +277,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
       wrapper.instance().setCAPEOptions();
       expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
@@ -569,9 +355,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           donationFrequency: "Monthly"
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
       wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
       wrapper.instance().handleDonationFrequencyChange = handleDonationFrequencyChangeMock;
       wrapper.update();
@@ -582,21 +366,22 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`clearSignature` calls sigBox.clear", () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().clearSignature();
       expect(clearSigBoxMock.mock.calls.length).toBe(1);
     });
 
     test("`trimSignature` calls sigBox.toDataURL", () => {
       const dataURItoBlobMock = jest.fn();
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       wrapper.instance().dataURItoBlob = dataURItoBlobMock;
       wrapper.instance().trimSignature();
       expect(toDataURLMock.mock.calls.length).toBe(1);
       expect(dataURItoBlobMock.mock.calls.length).toBe(1);
     });
 
-    test("`trimSignature` handles error if sigbox is blank", () => {
+    test("`trimSignature` handles error if sigbox is blank", async () => {
+      formElements.handleError = handleErrorMock;
       toDataURLMock = jest.fn().mockImplementation(() => formElements.blankSig);
       const dataURItoBlobMock = jest.fn();
       const props = {
@@ -611,6 +396,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.instance().trimSignature();
       expect(toDataURLMock.mock.calls.length).toBe(1);
       expect(dataURItoBlobMock.mock.calls.length).toBe(0);
+      await toDataURLMock();
       expect(handleErrorMock.mock.calls.length).toBe(1);
     });
 
@@ -632,9 +418,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
       const testBlob = wrapper.instance().dataURItoBlob(fakeDataURI);
       expect(typeof testBlob).toBe("object");
       expect(testBlob.type).toBe("image/jpeg");
@@ -683,9 +467,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
 
       wrapper.update();
       wrapper
@@ -700,7 +482,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`generateCAPEBody` displays CAPE Payment fields if no donation amount chosen", async () => {
-      wrapper = shallow(<SubmissionFormPage1Container {...defaultProps} />);
+      wrapper = setup();
       await wrapper.instance().generateCAPEBody(null, null);
       expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
     });

@@ -325,15 +325,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = setup(props);
 
       wrapper.update();
-      wrapper
-        .instance()
-        .updateSFDJR()
-        .then(() => {
-          expect(handleErrorMock.mock.calls.length).toBe(1);
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      await wrapper.instance().updateSFDJR();
+      expect(handleErrorMock.mock.calls.length).toBe(1);
     });
   });
 });
