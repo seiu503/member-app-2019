@@ -222,12 +222,10 @@ export class SubmissionFormPage1Container extends React.Component {
       const params = queryString.parse(this.props.location.search);
       return this.getIframeURL(params.cape);
     } else {
+      console.log("setting paymentRequired to false");
       // hide iframe if already rendered if change to checkoff
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: false }
-      });
-      await this.props.apiSubmission.handleInput({
-        target: { name: "newCardNeeded", value: false }
       });
     }
   }
@@ -253,21 +251,25 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     // render iframe if one-time donation and cape amount set
 
-    if (!validMethod) {
+    if (validMethod) {
       await this.props.apiSubmission.handleInput({
-        target: { name: "newCardNeeded", value: true }
+        target: { name: "newCardNeeded", value: false }
       });
     }
+
     if (frequency === "One-Time") {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
+
       return this.getIframeURL(true);
     } else {
-      const checkoff = !this.props.submission.formPage1.paymentRequired;
-      if (checkoff) {
+      const checkoff = !utils.isPaymentRequired(formValues.employerType);
+      console.log(checkoff);
+      if (frequency === "Monthly" && checkoff) {
         // hide iframe if already rendered
         // if change back to monthly and checkoff
+        console.log("setting paymentRequired to false, hiding iframe");
         await this.props.apiSubmission.handleInput({
           target: { name: "paymentRequired", value: false }
         });
@@ -1074,7 +1076,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
-    // console.log("toggleCardAddingFrame");
+    console.log("toggleCardAddingFrame");
     // console.log(value);
     if (value === "Add new card" || value === "Card") {
       await this.getIframeURL()
@@ -1103,9 +1105,12 @@ export class SubmissionFormPage1Container extends React.Component {
         target: { name: "paymentType", value }
       });
     }
-    return this.props.apiSubmission.handleInput({
-      target: { name: "newCardNeeded", value: false }
-    });
+    if (value === "Use Existing" || value === "Check") {
+      console.log("setting nCN to false, hiding iframe");
+      return this.props.apiSubmission.handleInput({
+        target: { name: "newCardNeeded", value: false }
+      });
+    }
   }
 
   async saveSignature() {
@@ -1209,7 +1214,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
 
     // set body fields
-    const checkoff = !this.props.submission.formPage1.paymentRequired;
+    const checkoff = !utils.isPaymentRequired(formValues.employerType);
     const paymentMethod = checkoff ? "Checkoff" : "Unionise";
     let donationAmount =
       capeAmount === "Other"
@@ -1301,21 +1306,9 @@ export class SubmissionFormPage1Container extends React.Component {
           console.error(err);
         });
     }
-    // console.log(
-    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(
-    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
-    // );
-    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
-    // console.log(
-    //   `paymentMethodAdded: ${
-    //     this.props.submission.formPage1.paymentMethodAdded
-    //   }`
-    // );
     if (
-      (this.props.submission.formPage1.paymentRequired ||
-        this.props.submission.formPage1.newCardNeeded ||
+      ((this.props.submission.formPage1.paymentRequired &&
+        this.props.submission.formPage1.newCardNeeded) ||
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
@@ -1344,7 +1337,6 @@ export class SubmissionFormPage1Container extends React.Component {
     body.member_short_id =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
-
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
       .createSFCAPE(body)
@@ -1358,16 +1350,18 @@ export class SubmissionFormPage1Container extends React.Component {
     let sf_cape_id;
 
     if (
-      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS" ||
+      (sfCapeResult && sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS") ||
       this.props.submission.error
     ) {
       cape_errors += this.props.submission.error;
       cape_status = "Error";
       // console.log(this.props.submission.error);
       return handleError(this.props.submission.error);
-    } else {
+    } else if (sfCapeResult && sfCapeResult.type === "CREATE_SF_CAPE_SUCCESS") {
       cape_status = "Success";
       sf_cape_id = sfCapeResult.payload.sf_cape_id;
+    } else {
+      cape_status = "Error";
     }
 
     const member_short_id =
@@ -1378,7 +1372,6 @@ export class SubmissionFormPage1Container extends React.Component {
     // if initial cape was not already created
     // in the process of generating the iframe url,
     // (checkoff use case), create it now
-
     if (!this.props.submission.cape.id) {
       await this.createCAPE(
         formValues.capeAmount,
@@ -1388,6 +1381,7 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(err);
       });
     }
+
     // if one-time payment, send API request to unioni.se to process it
     if (formValues.donationFrequency === "One-Time") {
       await this.postOneTimePayment().catch(err => {
@@ -1437,9 +1431,9 @@ export class SubmissionFormPage1Container extends React.Component {
         Card_Brand__c: this.props.submission.cape.cardBrand
       };
 
-      console.log(sfCapeBody);
+      // console.log(sfCapeBody);
 
-      const sfCapeUpdateResult = await this.props.apiSF
+      const result = await this.props.apiSF
         .updateSFCAPE(sfCapeBody)
         .catch(err => {
           console.error(err);
@@ -1447,7 +1441,8 @@ export class SubmissionFormPage1Container extends React.Component {
         });
 
       if (
-        sfCapeUpdateResult.type !== "UPDATE_SF_CAPE_SUCCESS" ||
+        !result ||
+        result.type !== "UPDATE_SF_CAPE_SUCCESS" ||
         this.props.submission.error
       ) {
         // console.log(this.props.submission.error);
@@ -1466,6 +1461,7 @@ export class SubmissionFormPage1Container extends React.Component {
         "success",
         "Thank you. Your CAPE submission was proccessed."
       );
+
       this.props.history.push(`/thankyou/?cape=true`);
     }
   }
@@ -1502,24 +1498,20 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log("SFDJR record: existing");
           // console.log(result.payload);
 
-          const newCardNeeded =
-            !result.payload.Active_Account_Last_4__c ||
-            (result.payload.Active_Account_Last_4__c &&
-              result.payload.Payment_Error_Hold__c);
+          const validMethod =
+            !!result.payload.Active_Account_Last_4__c &&
+            !result.payload.Payment_Error_Hold__c;
 
-          if (newCardNeeded) {
+          if (validMethod) {
             // console.log("newCardNeeded");
             this.props.apiSubmission.handleInput({
-              target: { name: "newCardNeeded", value: true }
+              target: { name: "newCardNeeded", value: false }
             });
           }
 
           // if payment required (and no existing payment method)
           // preload iframe url for next tab
-          if (
-            this.props.submission.formPage1.paymentRequired &&
-            newCardNeeded
-          ) {
+          if (this.props.submission.formPage1.paymentRequired && !validMethod) {
             this.getIframeURL().catch(err => {
               console.error(err);
               return handleError(err);

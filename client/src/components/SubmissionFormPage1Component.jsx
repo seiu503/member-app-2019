@@ -12,6 +12,7 @@ import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
+import * as utils from "../utils";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const { employerTypeMap, getKeyByValue } = formElements;
@@ -181,6 +182,8 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   donationFrequencyOnChange(event, value) {
+    console.log("donationFrequencyOnChange");
+    console.log(value);
     this.props.change("donationFrequency", value);
     this.props.handleDonationFrequencyChange(value);
   }
@@ -457,7 +460,9 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
-    const checkoff = !this.props.submission.formPage1.paymentRequired;
+    const checkoff = !utils.isPaymentRequired(
+      this.props.submission.formPage1.employerType
+    );
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     return (

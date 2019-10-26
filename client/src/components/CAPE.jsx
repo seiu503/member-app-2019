@@ -530,7 +530,13 @@ export const CAPE = props => {
         <div className={classes.legalCopy} ref={cape_legal}>
           <p>
             <Translate
-              id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+              id={
+                iFrameURL &&
+                ((!checkoff || formValues.donationFrequency === "One-Time") &&
+                  formPage1.newCardNeeded)
+                  ? "capeLegalStripe1"
+                  : "capeLegalCheckoff1"
+              }
             />
           </p>
           <p>
