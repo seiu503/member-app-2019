@@ -516,7 +516,7 @@ export const CAPE = props => {
                     <Iframe
                       url={iFrameURL}
                       width="100%"
-                      height="100px"
+                      height="280"
                       id="iFrame"
                       className={classes.iframe}
                       display="initial"

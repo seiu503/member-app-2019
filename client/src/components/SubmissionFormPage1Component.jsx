@@ -61,10 +61,10 @@ export class SubmissionFormPage1Component extends React.Component {
     if (event.origin !== unioniseEndpoint || !event.data.notification) {
       return;
     }
-
+    console.log(event.data.notification);
     const { type, cardBrand, cardLast4 } = event.data.notification;
     if (type === "success") {
-      // console.log("success");
+      console.log("success");
       if (
         this.props.formValues.capeAmount &&
         this.props.formValues.donationFrequency
