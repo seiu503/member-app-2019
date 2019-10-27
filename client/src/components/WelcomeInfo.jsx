@@ -1,9 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import queryString from "query-string";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-// import sanitizeHtml from "sanitize-html";
 import { Translate } from "react-localize-redux";
 
 import { withStyles } from "@material-ui/core/styles";
@@ -13,8 +11,7 @@ import Card from "@material-ui/core/Card";
 import Button from "@material-ui/core/Button";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
-import { defaultWelcomeInfo } from "../utils/index";
-import welcomeInfo from "../translations/welcomeInfo.json";
+
 import SamplePhoto from "../img/sample-form-photo.jpg";
 
 const styles = theme => ({
@@ -70,138 +67,35 @@ const styles = theme => ({
 });
 
 export class WelcomeInfoUnconnected extends React.Component {
-  classes = this.props.classes;
-  constructor(props) {
-    super(props);
-    this.state = {
-      headline: {
-        text: defaultWelcomeInfo.headline,
-        id: 0
-      },
-      body: {
-        text: defaultWelcomeInfo.body,
-        id: 0
-      },
-      image: null
-    };
-  }
-
-  componentDidMount() {
-    const values = queryString.parse(this.props.location.search);
-    // if find contact id, call API to fetch contact info for prefill
-    if (values.h || values.b || values.i) {
-      const { h, i, b } = values;
-      let idArray = [h, i, b];
-      const queryIds = idArray.filter(id => (id ? id : null));
-      queryIds.forEach(id => {
-        this.props.apiContent
-          .getContentById(id)
-          .then(result => {
-            if (!result || result.payload.message) {
-              console.log(
-                result.payload.message ||
-                  "there was an error loading the content"
-              );
-            } else {
-              switch (result.payload.content_type) {
-                case "headline":
-                  return this.setState({
-                    headline: {
-                      text: result.payload.content,
-                      id: id
-                    }
-                  });
-                case "bodyCopy":
-                  return this.setState({
-                    body: {
-                      text: result.payload.content,
-                      id: id
-                    }
-                  });
-                case "image":
-                  return this.setState({
-                    image: {
-                      text: result.payload.content,
-                      id: id
-                    }
-                  });
-                default:
-                  break;
-              }
-            }
-          })
-          .catch(err => {
-            // console.log(err);
-          });
-      });
-    }
-  }
-
-  renderBodyCopy = id => {
-    // sample spanish translations in bodyCopy0_xx and headline0 keys
-    // (in /translations/welcomeInfo.json) are for testing only and
-    // should be replaced with better translations when we get them
-    let paragraphIds = [];
-    // find all paragraphs belonging to this bodyCopy id
-    Object.keys(welcomeInfo).forEach(key => {
-      if (key.includes(`bodyCopy${id}`)) {
-        paragraphIds.push(key);
-      }
-    });
-    // for each paragraph selected, generate translated text
-    // in appropriate language rendered inside a <p> tag
-    const paragraphs = (
-      <React.Fragment>
-        {paragraphIds.map((id, index) => (
-          <p key={id}>
-            <Translate id={id} />
-          </p>
-        ))}
-      </React.Fragment>
-    );
-    // wrap in MUI typography element and return
-    return (
-      <Typography
-        variant="body1"
-        component="div"
-        align="left"
-        gutterBottom
-        className={this.classes.body}
-        data-test="body"
-      >
-        {paragraphs}
-      </Typography>
-    );
-  };
-
   render() {
+    const { classes } = this.props;
     return (
-      <div className={this.classes.root} data-test="component-welcome-info">
-        <Card className={this.classes.welcomeCard}>
+      <div className={classes.root} data-test="component-welcome-info">
+        <Card className={classes.welcomeCard}>
           <CardMedia
-            className={this.classes.media}
+            className={classes.media}
             title="Welcome Photo"
             alt="Welcome Photo"
-            image={this.state.image ? this.state.image.text : SamplePhoto}
+            image={this.props.image ? this.props.image.text : SamplePhoto}
           />
 
           <Typography
             variant="h3"
             align="left"
             gutterBottom
-            className={this.classes.headline}
+            className={classes.headline}
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
-            <Translate id={`headline${this.state.headline.id}`} />
+            <Translate id={`headline${this.props.headline.id}`} />
           </Typography>
-          {this.renderBodyCopy(this.state.body.id)}
-          <div className={this.classes.buttonWrap}>
+          {this.props.renderBodyCopy(this.props.body.id)}
+          <div className={classes.buttonWrap}>
             <Button
               type="button"
               onClick={() => this.props.handleTab(0)}
               color="primary"
-              className={this.classes.next}
+              className={classes.next}
               variant="contained"
             >
               <Translate id="next">Next</Translate>
@@ -214,7 +108,10 @@ export class WelcomeInfoUnconnected extends React.Component {
 }
 
 WelcomeInfoUnconnected.propTypes = {
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  headline: PropTypes.object,
+  body: PropTypes.object,
+  image: PropTypes.object
 };
 
 const mapStateToProps = state => ({
