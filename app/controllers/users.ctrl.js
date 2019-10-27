@@ -75,8 +75,9 @@ const createUser = (req, res, next) => {
  */
 const updateUser = (req, res, next) => {
   // console.log(req.body);
-  const { updates, requestingUserType } = req.body;
+  const { updates } = req.body;
   const { id } = req.params;
+  const requestingUserType = req.user.type;
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
