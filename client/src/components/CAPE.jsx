@@ -36,7 +36,6 @@ export const CAPE = props => {
     loading,
     iFrameURL,
     back,
-    checkoff,
     formValues,
     formPage1,
     payment,
@@ -71,6 +70,7 @@ export const CAPE = props => {
   const cardBrand = capeObject.cardBrand || payment.cardBrand;
   const activeMethodLast4 =
     capeObject.activeMethodLast4 || payment.activeMethodLast4;
+  const checkoff = formPage1.checkoff;
   console.log(`payment:`, payment);
   console.log(`capeObject`, capeObject);
   console.log(`paymentRequired: ${formPage1.paymentRequired}`);

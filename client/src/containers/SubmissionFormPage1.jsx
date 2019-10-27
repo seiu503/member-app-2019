@@ -212,12 +212,15 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async handleEmployerTypeChange(employerType) {
-    // console.log('handleEmployerTypeChange');
+    console.log("handleEmployerTypeChange");
     // console.log(employerType);
     // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
+      });
+      await this.props.apiSubmission.handleInput({
+        target: { name: "checkoff", value: false }
       });
       const params = queryString.parse(this.props.location.search);
       return this.getIframeURL(params.cape);
@@ -226,6 +229,9 @@ export class SubmissionFormPage1Container extends React.Component {
       // hide iframe if already rendered if change to checkoff
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: false }
+      });
+      await this.props.apiSubmission.handleInput({
+        target: { name: "checkoff", value: true }
       });
     }
   }

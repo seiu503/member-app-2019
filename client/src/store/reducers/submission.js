@@ -104,7 +104,8 @@ export const INITIAL_STATE = {
     newCardNeeded: true,
     whichCard: "Use existing",
     capeAmount: "",
-    donationFrequency: "Monthly"
+    donationFrequency: "Monthly",
+    checkoff: true
   },
   formPage2: {
     gender: ""
