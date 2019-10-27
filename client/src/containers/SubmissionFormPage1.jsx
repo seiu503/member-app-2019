@@ -556,7 +556,7 @@ export class SubmissionFormPage1Container extends React.Component {
                   return this.props.handleError(this.props.submission.error);
                 } else {
                   console.log("556");
-                  this.changeTab(this.props.howManyTabs - 1);
+                  this.changeTab(2);
                 }
               })
               .catch(err => {

@@ -194,7 +194,7 @@ router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 //        }
 //   Returns: JSON content object on success.
 //
-router.get("/content/:user_type/:id", contentCtrl.getContentById);
+router.get("/content/:id", contentCtrl.getContentById);
 
 // GET CONTENT BY TYPE
 //   Example: GET >> /api/contenttype/headline
@@ -216,7 +216,7 @@ router.get(
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content/:user_type", authCtrl.requireAuth, contentCtrl.getContent);
+router.get("/content", authCtrl.requireAuth, contentCtrl.getContent);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3

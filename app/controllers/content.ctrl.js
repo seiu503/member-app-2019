@@ -112,7 +112,9 @@ const deleteContent = (req, res, next) => {
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContent = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
+  console.log(`content.ctrl.js > userType: ${userType}`);
+  console.log(req.user);
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -125,7 +127,10 @@ const getContent = (req, res, next) => {
       res.locals.testData = records;
       return res.status(200).json(records);
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      console.log(`content.ctrl.js > 130: ${err}`);
+      res.status(404).json({ message: err.message });
+    });
 };
 
 /** Get one content record by id
@@ -133,13 +138,6 @@ const getContent = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getContentById = (req, res, next) => {
-  const userType = req.params.user_type;
-  if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an administrator."
-    });
-  }
   return contentModel
     .getContentById(req.params.id)
     .then(record => {

@@ -76,7 +76,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             className={classes.media}
             title="Welcome Photo"
             alt="Welcome Photo"
-            image={this.props.image ? this.props.image.text : SamplePhoto}
+            image={this.props.image ? this.props.image.url : SamplePhoto}
           />
 
           <Typography

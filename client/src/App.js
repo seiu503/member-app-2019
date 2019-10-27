@@ -14,6 +14,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import * as Actions from "./store/actions";
+import * as apiContentActions from "./store/actions/apiContentActions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
 import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
@@ -63,7 +64,7 @@ const styles = theme => ({
     width: "100vw",
     height: "100%",
     minHeight: "80vh",
-    backgroundImage: `url("${SamplePhoto}")`,
+    // backgroundImage: `url("${SamplePhoto}")`,
     backgroundAttachment: "fixed",
     backgroundPosition: "bottom",
     [theme.breakpoints.down("sm")]: {
@@ -261,9 +262,11 @@ export class AppUnconnected extends Component {
       let idArray = [h, i, b];
       const queryIds = idArray.filter(id => (id ? id : null));
       queryIds.forEach(id => {
+        console.log(`fetching content id ${id}`);
         this.props.apiContent
           .getContentById(id)
           .then(result => {
+            console.log(result);
             if (!result || result.payload.message) {
               console.log(
                 result.payload.message ||
@@ -286,12 +289,15 @@ export class AppUnconnected extends Component {
                     }
                   });
                 case "image":
-                  return this.setState({
-                    image: {
-                      text: result.payload.content,
-                      id: id
-                    }
-                  });
+                  return this.setState(
+                    {
+                      image: {
+                        url: result.payload.content,
+                        id: id
+                      }
+                    },
+                    () => console.log(this.state.image)
+                  );
                 default:
                   break;
               }
@@ -362,7 +368,17 @@ export class AppUnconnected extends Component {
     const { loggedIn, userType, loading } = this.props.appState;
     // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
-      <div data-test="component-app" className={classes.appRoot}>
+      <div
+        data-test="component-app"
+        className={classes.appRoot}
+        style={{
+          backgroundImage: `url(${
+            this.state.image && this.state.image.url
+              ? this.state.image.url
+              : SamplePhoto
+          })`
+        }}
+      >
         <CssBaseline />
         <Recaptcha
           ref={ref => (this.recaptcha = ref)}
@@ -575,6 +591,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch),
+  apiContent: bindActionCreators(apiContentActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });
 
