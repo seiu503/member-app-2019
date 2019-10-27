@@ -114,7 +114,7 @@ const updateUser = (req, res, next) => {
  *  @returns  Success or error message.
  */
 const deleteUser = (req, res, next) => {
-  const requestingUserType = req.params.user_type;
+  const requestingUserType = req.user.type;
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:
@@ -142,7 +142,7 @@ const deleteUser = (req, res, next) => {
  *  @returns  {Array|Object}   Array of user objects OR error message
  */
 const getUsers = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
   if (!userType || userType !== "admin") {
     return res.status(500).json({
       message:
@@ -201,7 +201,7 @@ const getUserById = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getUserByEmail = (req, res, next) => {
-  const requestingUserType = req.params.user_type;
+  const requestingUserType = req.user.type;
   if (requestingUserType != "admin" || !requestingUserType) {
     return res.status(500).json({
       message:

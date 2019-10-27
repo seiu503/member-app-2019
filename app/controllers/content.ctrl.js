@@ -87,7 +87,7 @@ const updateContent = (req, res, next) => {
  *  @returns  Success or error message.
  */
 const deleteContent = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -159,7 +159,7 @@ const getContentById = (req, res, next) => {
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContentByType = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:

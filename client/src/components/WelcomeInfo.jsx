@@ -87,7 +87,9 @@ export class WelcomeInfoUnconnected extends React.Component {
             style={{ paddingTop: 20 }}
             data-test="headline"
           >
-            <Translate id={`headline${this.props.headline.id}`} />
+            <Translate id={`headline${this.props.headline.id}`}>
+              SEIU 503 Membership signup and Recommit form
+            </Translate>
           </Typography>
           {this.props.renderBodyCopy(this.props.body.id)}
           <div className={classes.buttonWrap}>

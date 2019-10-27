@@ -262,11 +262,9 @@ export class AppUnconnected extends Component {
       let idArray = [h, i, b];
       const queryIds = idArray.filter(id => (id ? id : null));
       queryIds.forEach(id => {
-        console.log(`fetching content id ${id}`);
         this.props.apiContent
           .getContentById(id)
           .then(result => {
-            console.log(result);
             if (!result || result.payload.message) {
               console.log(
                 result.payload.message ||
@@ -289,15 +287,12 @@ export class AppUnconnected extends Component {
                     }
                   });
                 case "image":
-                  return this.setState(
-                    {
-                      image: {
-                        url: result.payload.content,
-                        id: id
-                      }
-                    },
-                    () => console.log(this.state.image)
-                  );
+                  return this.setState({
+                    image: {
+                      url: result.payload.content,
+                      id: id
+                    }
+                  });
                 default:
                   break;
               }
@@ -311,9 +306,6 @@ export class AppUnconnected extends Component {
   }
 
   renderBodyCopy = id => {
-    // sample spanish translations in bodyCopy0_xx and headline0 keys
-    // (in /translations/welcomeInfo.json) are for testing only and
-    // should be replaced with better translations when we get them
     let paragraphIds = [];
     // find all paragraphs belonging to this bodyCopy id
     Object.keys(welcomeInfo).forEach(key => {
@@ -323,7 +315,7 @@ export class AppUnconnected extends Component {
     });
     // for each paragraph selected, generate translated text
     // in appropriate language rendered inside a <p> tag
-    const paragraphs = (
+    let paragraphs = (
       <React.Fragment>
         {paragraphIds.map((id, index) => (
           <p key={id}>
@@ -332,6 +324,19 @@ export class AppUnconnected extends Component {
         ))}
       </React.Fragment>
     );
+    // if this body copy has not yet been translated there will be no
+    // translation ids in the welcomeInfo JSON object
+    // just render the raw copy in English
+    if (!paragraphIds.length) {
+      let paragraphsRaw = this.state.body.text.split("\n");
+      paragraphs = (
+        <React.Fragment>
+          {paragraphsRaw.map((paragraphString, index) => (
+            <p key={index}>{paragraphString}</p>
+          ))}
+        </React.Fragment>
+      );
+    }
     // wrap in MUI typography element and return
     return (
       <Typography

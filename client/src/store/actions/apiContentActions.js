@@ -274,10 +274,10 @@ export function updateContent(token, id, body) {
  *   DELETE_CONTENT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function deleteContent(token, id, userType) {
+export function deleteContent(token, id) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/content/${userType}/${id}`,
+      endpoint: `${BASE_URL}/api/content/${id}`,
       method: "DELETE",
       types: [
         DELETE_CONTENT_REQUEST,
