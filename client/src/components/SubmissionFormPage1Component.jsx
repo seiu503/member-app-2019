@@ -189,7 +189,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async updateSubmission() {
-    // console.log("updateSubmission");
+    console.log("updateSubmission");
     this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
@@ -204,19 +204,18 @@ export class SubmissionFormPage1Component extends React.Component {
       active_method_last_four: payment.activeMethodLast4,
       card_brand: payment.cardBrand
     };
-    // console.log(updates);
+    console.log(updates);
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
-        // console.log(result.type);
+        console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
-        // console.log(result.type);
       })
       .catch(err => {
         console.error(err);
@@ -352,13 +351,13 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
-    // console.log("handleSubmit");
+    console.log("handleSubmit");
     this.props.actions.setSpinner();
 
     await this.props
       .verifyRecaptchaScore()
       .then(score => {
-        // console.log(`score: ${score}`);
+        console.log(`score: ${score}`);
         if (!score || score <= 0.5) {
           // console.log(`recaptcha failed: ${score}`);
           return this.props.handleError(
@@ -373,11 +372,12 @@ export class SubmissionFormPage1Component extends React.Component {
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
-      // console.log('validMethod');
+      console.log("validMethod");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
+    console.log("381");
     // console.log(
     //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
     // );
@@ -396,18 +396,19 @@ export class SubmissionFormPage1Component extends React.Component {
         this.props.submission.formPage1.newCardNeeded) &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      // console.log("No payment method added");
+      console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
     }
-
+    console.log("404");
     return Promise.all([
       this.updateSubmission(),
       this.createSFOMA(),
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
+        console.log("411");
         // if retiree selected pay by check in dues tab
         // need to reset paymentMethodAdded and paymentType
         // bc 'check' is not an option for CAPE
@@ -429,10 +430,30 @@ export class SubmissionFormPage1Component extends React.Component {
           });
         }
 
-        // redirect to CAPE tab
+        // update submission status and redirect to CAPE tab
         if (!this.props.submission.error) {
-          this.props.handleTab(this.props.howManyTabs - 1);
+          console.log("updating submission status");
+          this.props.apiSubmission
+            .updateSubmission(this.props.submission.submissionId, {
+              submission_status: "Success"
+            })
+            .then(result => {
+              console.log(result.type);
+              if (
+                result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                this.props.submission.error
+              ) {
+                console.log(this.props.submission.error);
+                return this.props.handleError(this.props.submission.error);
+              }
+              this.props.handleTab(this.props.howManyTabs - 1);
+            })
+            .catch(err => {
+              console.error(err);
+              return this.props.handleError(err);
+            });
         } else {
+          console.log("455");
           console.error(this.props.submission.error);
           this.props.saveSubmissionErrors(
             this.props.submission.submissionId,
@@ -443,6 +464,7 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
+        console.log("464");
         console.error(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,
