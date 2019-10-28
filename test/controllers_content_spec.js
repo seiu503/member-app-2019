@@ -13,9 +13,15 @@ const { db } = require("../app/config/knex");
 require("../app/config/passport")(passport);
 
 let contentBody = {
-  content_type: "headline",
-  content: "test"
-};
+    content_type: "headline",
+    content: "test"
+  },
+  adminBody = {
+    type: "admin"
+  },
+  userBody = {
+    type: "view"
+  };
 
 let responseStub,
   id,
@@ -29,7 +35,7 @@ let responseStub,
   res = mockRes(),
   req = mockReq();
 
-suite("content.ctrl.js", function() {
+suite.only("content.ctrl.js", function() {
   after(() => {
     return knexCleaner.clean(db);
   });
@@ -45,7 +51,8 @@ suite("content.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          body: { userType: "admin", ...contentBody }
+          body: { ...contentBody },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -71,13 +78,14 @@ suite("content.ctrl.js", function() {
         chai.assert.property(res.locals.testData, "created_at");
         chai.assert.property(res.locals.testData, "updated_at");
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        body: { userType: "view", ...contentBody }
+        body: { ...contentBody },
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -88,13 +96,14 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 422 if other required field missing", async function() {
       req = mockReq({
-        body: { userType: "admin", ...contentBody }
+        body: { ...contentBody },
+        user: { ...adminBody }
       });
       delete req.body.content_type;
       responseStub = {
@@ -106,25 +115,23 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 422);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "There was an error creating the content";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "newContent")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await contCtrl.createContent(req, res);
         assert.called(contentModelsStub);
-        assert.called(dbMethods.createContent);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -134,7 +141,12 @@ suite("content.ctrl.js", function() {
       contentBody.content_type = "bodyCopy";
       return new Promise(resolve => {
         req = mockReq({
-          body: { updates: contentBody, userType: "admin" },
+          body: {
+            updates: {
+              ...contentBody
+            }
+          },
+          user: { ...adminBody },
           params: {
             id
           }
@@ -162,13 +174,14 @@ suite("content.ctrl.js", function() {
         chai.assert.property(res.locals.testData, "created_at");
         chai.assert.property(res.locals.testData, "updated_at");
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 422 if req.body missing", async function() {
       req = mockReq({
-        body: { updates: {}, userType: "admin" },
+        body: { updates: {} },
+        user: { ...adminBody },
         params: {
           id
         }
@@ -181,14 +194,15 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 422);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 422 if req.params.id missing", async function() {
       contentBody.content_type = "bodyCopy";
       req = mockReq({
-        body: { updates: contentBody, userType: "admin" }
+        body: { updates: contentBody },
+        user: { ...adminBody }
       });
       responseStub = {
         message: "No Id Provided in URL"
@@ -198,13 +212,14 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 422);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        body: { userType: "view", ...contentBody }
+        body: { updates: contentBody },
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -215,31 +230,30 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       req = mockReq({
-        body: { updates: contentBody, userType: "admin" },
+        body: { updates: contentBody },
         params: {
           id
-        }
+        },
+        user: { ...adminBody }
       });
       errorMsg = "An error occurred while trying to update this content";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "updateContent")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await contCtrl.updateContent(req, res);
         assert.called(contentModelsStub);
-        assert.called(dbMethods.updateSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -248,7 +262,7 @@ suite("content.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          params: { user_type: "admin" }
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -273,30 +287,13 @@ suite("content.ctrl.js", function() {
           chai.assert.property(result, key);
         });
       } catch (err) {
-        // console.log(err);
-      }
-    });
-
-    test("returns 404 if content not found", async function() {
-      errorMsg = "Content not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
-      contentModelsStub = sinon
-        .stub(content, "getContent")
-        .returns(dbMethodStub);
-
-      try {
-        await contCtrl.getContent(req, res);
-        assert.called(contentModelsStub);
-        assert.calledWith(res.status, 404);
-        assert.calledWith(res.json, { message: errorMsg });
-      } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        params: { userType: "view" }
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -307,23 +304,25 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
+      req = mockReq({
+        user: { ...adminBody }
+      });
       errorMsg = "No Content Found";
-      // dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       contentModelStub = sinon
         .stub(content, "getContent")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
       try {
         await contCtrl.getContent(req, res);
         assert.called(contentModelStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -333,8 +332,7 @@ suite("content.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id,
-            user_type: "admin"
+            id
           }
         });
         resolve();
@@ -355,16 +353,15 @@ suite("content.ctrl.js", function() {
           chai.assert.property(result, key);
         });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if content not found", async function() {
       errorMsg = "Content not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "getContentById")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
         await contCtrl.getContentById(req, res);
@@ -372,34 +369,15 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
-      }
-    });
-
-    test("returns 500 if wrong userType", async function() {
-      req = mockReq({
-        params: { userType: "view" }
-      });
-      responseStub = {
-        message:
-          "You do not have permission to do this. Please Consult an administrator."
-      };
-      try {
-        await contCtrl.getContentById(req, res);
-        assert.called(contentModelsStub);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "Content not found";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "getContentById")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await contCtrl.getContentById(req, res);
@@ -407,7 +385,7 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -417,9 +395,9 @@ suite("content.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            content_type: contentBody.content_type,
-            user_type: "admin"
-          }
+            content_type: contentBody.content_type
+          },
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -430,25 +408,27 @@ suite("content.ctrl.js", function() {
       res = mockRes();
     });
 
-    test("gets one content by Id and returns 200", async function() {
+    test("gets one content by type and returns 200", async function() {
+      contentModelsStub = sinon
+        .stub(content, "getContentByType")
+        .resolves([{ ...contentBody }]);
       try {
         await contCtrl.getContentByType(req, res);
         assert.calledWith(res.status, 200);
         let result = res.locals.testData;
         Object.keys(contentBody).forEach(key => {
-          chai.assert.property(result, key);
+          chai.assert.property(result[0], key);
         });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if content not found", async function() {
       errorMsg = "Content not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "getContentByType")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
         await contCtrl.getContentByType(req, res);
@@ -456,35 +436,15 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
-      }
-    });
-
-    test("returns 500 if wrong userType", async function() {
-      req = mockReq({
-        content_type: contentBody.content_type,
-        params: { userType: "view" }
-      });
-      responseStub = {
-        message:
-          "You do not have permission to do this. Please Consult an administrator."
-      };
-      try {
-        await contCtrl.getContentByType(req, res);
-        assert.called(contentModelsStub);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "Content not found";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "getContentByType")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await contCtrl.getContentByType(req, res);
@@ -492,7 +452,7 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -502,9 +462,9 @@ suite("content.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id,
-            user_type: "admin"
-          }
+            id
+          },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -518,8 +478,10 @@ suite("content.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        id,
-        params: { user_type: "view" }
+        params: {
+          id
+        },
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -536,23 +498,27 @@ suite("content.ctrl.js", function() {
     });
 
     test("deletes a content and returns 200", async function() {
-      req.params.user_type = "admin";
+      req = mockReq({
+        params: {
+          id
+        },
+        user: { ...adminBody }
+      });
       responseStub = { message: "Content deleted successfully" };
       try {
         await contCtrl.deleteContent(req, res, next);
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, responseStub);
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 404 if content not found", async function() {
-      errorMsg = "Content not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
+      errorMsg = "An error occurred and the content was not deleted.";
       contentModelsStub = sinon
         .stub(content, "deleteContent")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
         await contCtrl.deleteContent(req, res);
@@ -560,41 +526,23 @@ suite("content.ctrl.js", function() {
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
-      }
-    });
-
-    test("returns 500 if db model method error", async function() {
-      errorMsg = "An error occurred and the content was not deleted.";
-      dbMethodStub = sinon.stub().returns(errorMsg);
-      contentModelsStub = sinon
-        .stub(content, "deleteContent")
-        .returns(dbMethodStub);
-      try {
-        await contCtrl.deleteContent(req, res, next);
-        assert.called(contentModelsStub);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: errorMsg });
-      } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the content was not deleted.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       contentModelsStub = sinon
         .stub(content, "deleteContent")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await contCtrl.deleteContent(req, res);
         assert.called(contentModelsStub);
-        assert.called(dbMethods.deleteContent);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });

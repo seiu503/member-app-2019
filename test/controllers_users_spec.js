@@ -51,7 +51,7 @@ let responseStub,
   res = mockRes(),
   req = mockReq();
 
-suite.only("users.ctrl.js", function() {
+suite("users.ctrl.js", function() {
   after(() => {
     return knexCleaner.clean(db);
   });
