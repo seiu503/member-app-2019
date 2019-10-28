@@ -22,6 +22,12 @@ require("../app/config/passport")(passport);
 // generateTableDisplayFields();
 
 let submissionBody = generateSampleSubmission();
+const adminBody = {
+    type: "admin"
+  },
+  userBody = {
+    type: "view"
+  };
 
 let responseStub,
   id,
@@ -256,7 +262,7 @@ suite("sumissions.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          params: { user_type: "admin" }
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -302,13 +308,12 @@ suite("sumissions.ctrl.js", function() {
     });
 
     test("returns 500 if incorrect userType", async function() {
-      req.params.user_type = "wrong";
+      req.user.type = "wrong";
       errorMsg =
         "You do not have permission to access this content. Please consult an administrator.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissions")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.getSubmissions(req, res, next);
@@ -325,9 +330,9 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id,
-            user_type: "admin"
-          }
+            id
+          },
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -389,13 +394,12 @@ suite("sumissions.ctrl.js", function() {
     });
 
     test("returns 500 if incorrect userType", async function() {
-      req.params.user_type = "wrong";
+      req.user.type = "wrong";
       errorMsg =
         "You do not have permission to access this content. Please consult an administrator.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.getSubmissionById(req, res, next);
@@ -412,9 +416,9 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id,
-            user_type: "admin"
-          }
+            id
+          },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -472,10 +476,9 @@ suite("sumissions.ctrl.js", function() {
       req.params.user_type = "wrong";
       errorMsg =
         "You do not have permission to access this content. Please consult an administrator.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
         await submCtrl.deleteSubmission(req, res, next);
