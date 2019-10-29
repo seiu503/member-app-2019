@@ -122,7 +122,6 @@ export class SubmissionFormPage1Component extends React.Component {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
-
     // get the value of the employer type selected by user
     let employerTypeUserSelect = "";
     if (Object.keys(this.props.formValues).length) {
@@ -130,7 +129,6 @@ export class SubmissionFormPage1Component extends React.Component {
     } else {
       // console.log("no formValues in props");
     }
-
     // console.log(employerTypeUserSelect);
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
@@ -151,7 +149,6 @@ export class SubmissionFormPage1Component extends React.Component {
         employerList = ["Community Member"];
       }
       employerList.unshift("");
-
       // set value of employer name field for single-child employer types
       if (
         employerTypeUserSelect &&
@@ -189,7 +186,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async updateSubmission() {
-    // console.log("updateSubmission");
+    console.log("updateSubmission");
     this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
@@ -204,19 +201,18 @@ export class SubmissionFormPage1Component extends React.Component {
       active_method_last_four: payment.activeMethodLast4,
       card_brand: payment.cardBrand
     };
-    // console.log(updates);
+    console.log(updates);
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
-        // console.log(result.type);
+        console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
-        // console.log(result.type);
       })
       .catch(err => {
         console.error(err);
@@ -352,13 +348,13 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   async handleSubmit(formValues) {
-    // console.log("handleSubmit");
+    console.log("handleSubmit");
     this.props.actions.setSpinner();
 
     await this.props
       .verifyRecaptchaScore()
       .then(score => {
-        // console.log(`score: ${score}`);
+        console.log(`score: ${score}`);
         if (!score || score <= 0.5) {
           // console.log(`recaptcha failed: ${score}`);
           return this.props.handleError(
@@ -373,7 +369,7 @@ export class SubmissionFormPage1Component extends React.Component {
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
-      // console.log('validMethod');
+      console.log("validMethod");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
@@ -396,12 +392,11 @@ export class SubmissionFormPage1Component extends React.Component {
         this.props.submission.formPage1.newCardNeeded) &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      // console.log("No payment method added");
+      console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
     }
-
     return Promise.all([
       this.updateSubmission(),
       this.createSFOMA(),
@@ -429,9 +424,28 @@ export class SubmissionFormPage1Component extends React.Component {
           });
         }
 
-        // redirect to CAPE tab
+        // update submission status and redirect to CAPE tab
         if (!this.props.submission.error) {
-          this.props.handleTab(this.props.howManyTabs - 1);
+          console.log("updating submission status");
+          this.props.apiSubmission
+            .updateSubmission(this.props.submission.submissionId, {
+              submission_status: "Success"
+            })
+            .then(result => {
+              console.log(result.type);
+              if (
+                result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                this.props.submission.error
+              ) {
+                console.log(this.props.submission.error);
+                return this.props.handleError(this.props.submission.error);
+              }
+              this.props.handleTab(this.props.howManyTabs - 1);
+            })
+            .catch(err => {
+              console.error(err);
+              return this.props.handleError(err);
+            });
         } else {
           console.error(this.props.submission.error);
           this.props.saveSubmissionErrors(
@@ -499,6 +513,10 @@ export class SubmissionFormPage1Component extends React.Component {
                 location={this.props.location}
                 history={this.props.history}
                 handleTab={this.props.handleTab}
+                headline={this.props.headline}
+                image={this.props.image}
+                body={this.props.body}
+                renderBodyCopy={this.props.renderBodyCopy}
                 style={
                   typeof this.props.tab !== "number"
                     ? { display: "block" }

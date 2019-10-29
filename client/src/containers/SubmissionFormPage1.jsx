@@ -545,8 +545,30 @@ export class SubmissionFormPage1Container extends React.Component {
             );
             // goto CAPE tab
             this.changeTab(this.props.howManyTabs - 1);
-          } else {
-            this.changeTab(this.props.howManyTabs - 1);
+          } else if (!this.props.submission.error) {
+            // update submission status and redirect to CAPE tab
+            console.log("updating submission status");
+            this.props.apiSubmission
+              .updateSubmission(this.props.submission.submissionId, {
+                submission_status: "Success"
+              })
+              .then(result => {
+                console.log(result.type);
+                if (
+                  result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                  this.props.submission.error
+                ) {
+                  console.log(this.props.submission.error);
+                  return this.props.handleError(this.props.submission.error);
+                } else {
+                  console.log("556");
+                  this.changeTab(2);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+                return this.props.handleError(err);
+              });
           }
         })
         .catch(err => {
@@ -1612,6 +1634,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {
+    console.log(`changeTab(${newValue})`);
     const newState = { ...this.state };
     newState.tab = newValue;
 
@@ -1625,7 +1648,7 @@ export class SubmissionFormPage1Container extends React.Component {
       ) {
         // need to set spinner on transition to payment tab
         // while iframe loads
-        this.props.actions.setSpinner();
+        // this.props.actions.setSpinner();
         return this.setState({ ...newState }, () => {
           window.scrollTo({ top: 0, behavior: "smooth" });
         });

@@ -979,7 +979,6 @@ export const renderRadioGroup = ({
             // console.log(event.target.value);
             input.onChange(value);
             if (additionalOnChange) {
-              console.log("additionalOnChange > 980");
               additionalOnChange(value);
             }
           }}

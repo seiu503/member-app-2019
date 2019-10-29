@@ -113,7 +113,20 @@ const defaultProps = {
   verifyRecaptchaScore: jest
     .fn()
     .mockImplementation(() => Promise.resolve(0.9)),
-  saveSubmissionErrors: saveSubmissionErrorsMock
+  saveSubmissionErrors: saveSubmissionErrorsMock,
+  headline: {
+    id: 1,
+    text: ""
+  },
+  image: {
+    id: 2,
+    url: "blah"
+  },
+  body: {
+    id: 3,
+    text: ""
+  },
+  renderBodyCopy: jest.fn()
 };
 
 createSFDJRSuccess = jest
@@ -158,13 +171,13 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
   });
 
   // create wrapper with default props and assigned values from above as props
-  const unconnectedSetup = props => {
+  const setup = props => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return shallow(<SubmissionFormPage1Component {...setUpProps} {...props} />);
   };
 
   store = storeFactory(initialState);
-  const setup = props => {
+  const connectedSetup = props => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return mount(
       <Provider store={store}>
@@ -178,7 +191,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     beforeEach(() => {
       handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;
-      wrapper = unconnectedSetup();
+      wrapper = setup();
     });
 
     afterEach(() => {
@@ -227,6 +240,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       };
       // creating wrapper
       wrapper = setup(props);
+      wrapper.instance().componentDidMount();
       // testing that getSFEmployers was called
       expect(sfEmployerLookupSuccess.mock.calls.length).toBe(1);
     });
@@ -247,6 +261,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       Notifier.openSnackbar = jest.fn();
       // creating wrapper
       wrapper = setup(props);
+      wrapper.instance().componentDidMount();
       expect(getSFEmployersError.mock.calls.length).toBe(1);
     });
   });
@@ -273,13 +288,42 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         }
       };
       // creating wrapper
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
       wrapper.instance().componentDidUpdate();
 
       // testing that loadEmployersPicklist was called
       expect(loadEmployersPicklistMock.mock.calls.length).toBe(1);
+    });
+    it("does not call loadEmployersPicklist on componentDidUpdate if employer list has loaded", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      loadEmployersPicklistMock = jest.fn();
+      props = {
+        submission: {
+          employerNames: ["first", "second", "third", "fourth"],
+          formPage1: {}
+        },
+        formValues: {
+          // to get code coverage for family child care edge cases
+          employerType: "Child care"
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        }
+      };
+      // creating wrapper
+      wrapper = setup(props);
+
+      wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
+      wrapper.instance().componentDidUpdate();
+
+      // testing that loadEmployersPicklist was not called
+      expect(loadEmployersPicklistMock.mock.calls.length).toBe(0);
     });
   });
 
@@ -334,7 +378,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.tab = 2;
       props.submission.payment.activeMethodLast4 = null;
 
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
       // console.log(wrapper.instance().props);
 
       const formValues = {
@@ -374,7 +418,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.howManyTabs = 4;
       props.handleError = handleErrorMock;
 
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       delete testData.signature;
       // simulate submit with dummy data
@@ -404,7 +448,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
       // creating wrapper
       props.apiSubmission.updateSubmission = updateSubmissionError;
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
       formElements.handleError = handleErrorMock;
 
       // simulate submit with dummy data
@@ -466,7 +510,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           createSFOMA: createSFOMASuccess
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       delete testData.signature;
 
@@ -512,7 +556,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         formValues: {}
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
       wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
 
       wrapper
@@ -561,7 +605,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         formValues: {}
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
       wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
 
       try {
@@ -615,7 +659,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           updateSFDJR: updateSFDJRMock
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       try {
         await wrapper.instance().createOrUpdateSFDJR();
@@ -652,7 +696,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           updateSFDJR: updateSFDJRMock
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       try {
         await wrapper.instance().createOrUpdateSFDJR();
@@ -687,7 +731,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           updateSFDJR: updateSFDJRMock
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       try {
         await wrapper.instance().createOrUpdateSFDJR();
@@ -724,7 +768,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       try {
         await wrapper.instance().createOrUpdateSFDJR();
@@ -758,7 +802,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
 
       try {
         await wrapper.instance().createOrUpdateSFDJR();
@@ -806,7 +850,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
       wrapper.instance().receiveMessage(fakeEvent);
 
       expect(
@@ -849,12 +893,46 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
         }
       };
-      wrapper = unconnectedSetup(props);
+      wrapper = setup(props);
       wrapper.instance().receiveMessage(fakeEvent);
 
       expect(
         JSON.stringify(setPaymentDetailsDuesMock.mock.calls[0])
       ).toStrictEqual(JSON.stringify([true, "Visa", "4242"]));
+    });
+    it("ignores messages from non-unioni.se domains", () => {
+      sfEmployerLookupSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      const fakeEvent = {
+        origin: "the wrong domain",
+        data: {}
+      };
+      let handleInputMock = jest.fn();
+      let setPaymentDetailsDuesMock = jest.fn();
+      let setPaymentDetailsCAPEMock = jest.fn();
+      const props = {
+        formValues: {
+          // to get code coverage for afh edge cases
+          employerType: "Adult Foster Home",
+          capeAmount: null,
+          donationFrequency: null
+        },
+        apiSF: {
+          getSFEmployers: sfEmployerLookupSuccess
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          setPaymentDetailsDues: setPaymentDetailsDuesMock,
+          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().receiveMessage(fakeEvent);
+
+      expect(setPaymentDetailsDuesMock.mock.calls.length).toBe(0);
     });
   });
 
@@ -865,10 +943,53 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       change: changeMock,
       handleDonationFrequencyChange: handleDonationFrequencyChangeMock
     };
-    wrapper = unconnectedSetup(props);
+    wrapper = setup(props);
 
     wrapper.instance().donationFrequencyOnChange();
     expect(changeMock).toHaveBeenCalled();
     expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
+  });
+
+  test("`loadEmployersPicklist` handles Community Members edge case", () => {
+    const props = {
+      submission: {
+        employerObjects: [
+          {
+            Name: "community members"
+          }
+        ],
+        formPage1: {
+          employerType: ""
+        }
+      }
+    };
+    wrapper = setup(props);
+
+    const list = wrapper.instance().loadEmployersPicklist();
+    expect(list).toContain("Community Member");
+  });
+
+  test("`updateEmployersPicklist` handles Retirees edge case", () => {
+    const props = {
+      submission: {
+        employerObjects: [
+          {
+            Name: "community members"
+          }
+        ],
+        formPage1: {
+          employerType: "retired"
+        }
+      },
+      formValues: {
+        employerType: "retired"
+      }
+    };
+    wrapper = setup(props);
+    wrapper.instance().loadEmployersPicklist = jest
+      .fn()
+      .mockImplementation(() => ["community members"]);
+    wrapper.instance().updateEmployersPicklist();
+    expect(wrapper.instance().props.formValues.employerName).toBe("Retirees");
   });
 });

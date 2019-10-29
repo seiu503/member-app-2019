@@ -65,10 +65,10 @@ export function clearForm() {
  *   GET_CONTENT_BY_ID_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function getContentById(id, userType) {
+export function getContentById(id) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/content/${userType}/${id}`,
+      endpoint: `${BASE_URL}/api/content/${id}`,
       method: "GET",
       types: [
         GET_CONTENT_BY_ID_REQUEST,
@@ -101,10 +101,10 @@ export function getContentById(id, userType) {
  *   GET_ALL_CONTENT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function getAllContent(token, userType) {
+export function getAllContent(token) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/content/${userType}`,
+      endpoint: `${BASE_URL}/api/content`,
       method: "GET",
       types: [
         GET_ALL_CONTENT_REQUEST,
@@ -274,10 +274,10 @@ export function updateContent(token, id, body) {
  *   DELETE_CONTENT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function deleteContent(token, id, userType) {
+export function deleteContent(token, id) {
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/content/${userType}/${id}`,
+      endpoint: `${BASE_URL}/api/content/${id}`,
       method: "DELETE",
       types: [
         DELETE_CONTENT_REQUEST,

@@ -128,11 +128,11 @@ export function updateSubmission(id, body) {
   };
 }
 
-export function getAllSubmissions(token, userType) {
+export function getAllSubmissions(token) {
   // console.log(`token: ${!!token}`);
   return {
     [RSAA]: {
-      endpoint: `${BASE_URL}/api/submission/${userType}`,
+      endpoint: `${BASE_URL}/api/submission`,
       method: "GET",
       types: [
         GET_ALL_SUBMISSIONS_REQUEST,
@@ -287,10 +287,10 @@ export function getCAPEBySFId(id) {
   };
 }
 
-// export function deleteSubmission(token, id, userType) {
+// export function deleteSubmission(token, id) {
 //   return {
 //     [RSAA]: {
-//       endpoint: `${BASE_URL}/api/submission/${userType}/${id}`,
+//       endpoint: `${BASE_URL}/api/submission/${id}`,
 //       method: "DELETE",
 //       types: [
 //         DELETE_SUBMISSION_REQUEST,
