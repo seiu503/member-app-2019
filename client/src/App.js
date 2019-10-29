@@ -176,7 +176,7 @@ export class AppUnconnected extends Component {
         text: defaultWelcomeInfo.body,
         id: 0
       },
-      image: null
+      image: {}
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
@@ -184,9 +184,11 @@ export class AppUnconnected extends Component {
   }
 
   componentDidMount() {
+    console.log("188");
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
     const defaultLanguage = detectDefaultLanguage();
     this.props.setActiveLanguage(defaultLanguage);
+    console.log("192");
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
@@ -254,7 +256,7 @@ export class AppUnconnected extends Component {
         }
       }
     }
-
+    console.log("260");
     const values = queryString.parse(this.props.location.search);
     // fetch dynamic content
     if (values.h || values.b || values.i) {
@@ -271,6 +273,7 @@ export class AppUnconnected extends Component {
                   "there was an error loading the content"
               );
             } else {
+              console.log("277");
               switch (result.payload.content_type) {
                 case "headline":
                   return this.setState({
@@ -287,6 +290,7 @@ export class AppUnconnected extends Component {
                     }
                   });
                 case "image":
+                  console.log("293");
                   return this.setState({
                     image: {
                       url: result.payload.content,

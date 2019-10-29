@@ -196,6 +196,18 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
+  },
+  headline: {
+    id: 1,
+    text: ""
+  },
+  image: {
+    id: 2,
+    url: "blah"
+  },
+  body: {
+    id: 3,
+    text: ""
   }
 };
 

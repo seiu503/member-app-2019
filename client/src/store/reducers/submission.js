@@ -415,7 +415,6 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case POST_ONE_TIME_PAYMENT_SUCCESS:
-      console.log(action.payload);
       return update(state, {
         cape: {
           oneTimePaymentId: { $set: action.payload.id }

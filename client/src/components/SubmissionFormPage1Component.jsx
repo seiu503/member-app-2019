@@ -122,7 +122,6 @@ export class SubmissionFormPage1Component extends React.Component {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
-
     // get the value of the employer type selected by user
     let employerTypeUserSelect = "";
     if (Object.keys(this.props.formValues).length) {
@@ -130,7 +129,6 @@ export class SubmissionFormPage1Component extends React.Component {
     } else {
       // console.log("no formValues in props");
     }
-
     // console.log(employerTypeUserSelect);
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
@@ -151,7 +149,6 @@ export class SubmissionFormPage1Component extends React.Component {
         employerList = ["Community Member"];
       }
       employerList.unshift("");
-
       // set value of employer name field for single-child employer types
       if (
         employerTypeUserSelect &&
@@ -377,7 +374,6 @@ export class SubmissionFormPage1Component extends React.Component {
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    console.log("381");
     // console.log(
     //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
     // );
@@ -401,14 +397,12 @@ export class SubmissionFormPage1Component extends React.Component {
         "Please click 'Add a Card' to add a payment method"
       );
     }
-    console.log("404");
     return Promise.all([
       this.updateSubmission(),
       this.createSFOMA(),
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
-        console.log("411");
         // if retiree selected pay by check in dues tab
         // need to reset paymentMethodAdded and paymentType
         // bc 'check' is not an option for CAPE
@@ -453,7 +447,6 @@ export class SubmissionFormPage1Component extends React.Component {
               return this.props.handleError(err);
             });
         } else {
-          console.log("455");
           console.error(this.props.submission.error);
           this.props.saveSubmissionErrors(
             this.props.submission.submissionId,
@@ -464,7 +457,6 @@ export class SubmissionFormPage1Component extends React.Component {
         }
       })
       .catch(err => {
-        console.log("464");
         console.error(err);
         this.props.saveSubmissionErrors(
           this.props.submission.submissionId,
