@@ -21,17 +21,25 @@ let email = "fakeemail@test.com",
     google_token: 123,
     type: "view"
   },
-  returnedUser = {
-    id,
+  adminBody = {
     name,
     email,
     avatar_url,
-    type: "admin",
-    google_id: "1234",
-    google_token: "5678",
-    created_at: new Date(),
-    updated_at: new Date()
+    google_id: 1,
+    google_token: 123,
+    type: "admin"
   };
+returnedUser = {
+  id,
+  name,
+  email,
+  avatar_url,
+  type: "admin",
+  google_id: "1234",
+  google_token: "5678",
+  created_at: new Date(),
+  updated_at: new Date()
+};
 let requestingUserType = "admin";
 let responseStub,
   next,
@@ -67,7 +75,8 @@ suite("users.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          body: { requestingUserType, ...userBody }
+          body: { requestingUserType, ...userBody },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -100,7 +109,8 @@ suite("users.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        body: { requestingUserType: "view", ...userBody }
+        body: { requestingUserType: "view", ...userBody },
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -117,7 +127,8 @@ suite("users.ctrl.js", function() {
 
     test("returns 500 if required field missing", async function() {
       req = mockReq({
-        body: { requestingUserType, ...userBody }
+        body: { requestingUserType, ...userBody },
+        user: { ...adminBody }
       });
       delete req.body.email;
       responseStub = {
@@ -177,10 +188,11 @@ suite("users.ctrl.js", function() {
       delete userBody.type;
       return new Promise(resolve => {
         req = mockReq({
-          body: { updates: userBody, requestingUserType },
+          body: { updates: userBody },
           params: {
             id
-          }
+          },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -216,10 +228,11 @@ suite("users.ctrl.js", function() {
 
     test("returns 422 if req.body missing", async function() {
       req = mockReq({
-        body: { updates: {}, requestingUserType },
+        body: { updates: {} },
         params: {
           id
-        }
+        },
+        user: { ...adminBody }
       });
       responseStub = {
         message: "No updates submitted"
@@ -235,7 +248,8 @@ suite("users.ctrl.js", function() {
 
     test("returns 422 if req.params.id missing", async function() {
       req = mockReq({
-        body: { updates: userBody, requestingUserType }
+        body: { updates: userBody, requestingUserType },
+        user: { ...adminBody }
       });
       responseStub = {
         message: "No Id Provided in URL"
@@ -251,7 +265,8 @@ suite("users.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        body: { requestingUserType: "view", updates: userBody }
+        body: { requestingUserType: "view", updates: userBody },
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -268,10 +283,11 @@ suite("users.ctrl.js", function() {
 
     test("returns 404 if no user found", async function() {
       req = mockReq({
-        body: { updates: userBody, requestingUserType },
+        body: { updates: userBody },
         params: {
           id
-        }
+        },
+        user: { ...adminBody }
       });
       errorMsg = "An error occurred while trying to update this user";
       userModelStub = sinon
@@ -293,7 +309,8 @@ suite("users.ctrl.js", function() {
         body: { updates: userBody, requestingUserType },
         params: {
           id
-        }
+        },
+        user: { ...adminBody }
       });
       errorMsg = "An error occurred while trying to update this user";
       userModelStub = sinon
@@ -315,7 +332,7 @@ suite("users.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          params: { user_type: "admin" }
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -363,7 +380,7 @@ suite("users.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        params: { userType: "view" }
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -399,8 +416,7 @@ suite("users.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id,
-            user_type: "admin"
+            id
           }
         });
         resolve();
@@ -463,9 +479,9 @@ suite("users.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            email,
-            user_type: "admin"
-          }
+            email
+          },
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -505,7 +521,10 @@ suite("users.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        params: { user_type: "view" }
+        params: {
+          email
+        },
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -542,9 +561,9 @@ suite("users.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           params: {
-            id,
-            user_type: "admin"
-          }
+            id
+          },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -558,8 +577,7 @@ suite("users.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        id,
-        params: { user_type: "view" }
+        user: { ...userBody }
       });
       responseStub = {
         message:
@@ -575,7 +593,12 @@ suite("users.ctrl.js", function() {
     });
 
     test("deletes a user and returns 200", async function() {
-      req.params.user_type = "admin";
+      req = mockReq({
+        params: {
+          id
+        },
+        user: { ...adminBody }
+      });
       responseStub = { message: "User deleted successfully" };
       try {
         await userCtrl.deleteUser(req, res, next);

@@ -17,7 +17,8 @@ const contentModel = require("../../db/models/content");
  *  @returns  {Object}                   New content object OR error message.
  */
 const createContent = (req, res, next) => {
-  const { content_type, content, userType } = req.body;
+  const { content_type, content } = req.body;
+  const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -47,8 +48,9 @@ const createContent = (req, res, next) => {
  *  @returns  {Object}             Updated content object OR error message.
  */
 const updateContent = (req, res, next) => {
-  const { updates, userType } = req.body;
+  const { updates } = req.body;
   const { id } = req.params;
+  const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -87,7 +89,7 @@ const updateContent = (req, res, next) => {
  *  @returns  Success or error message.
  */
 const deleteContent = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -105,14 +107,16 @@ const deleteContent = (req, res, next) => {
         });
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => res.status(500).json({ message: err.message }));
 };
 
 /** Get all content
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContent = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
+  console.log(`content.ctrl.js > userType: ${userType}`);
+  console.log(req.user);
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -125,7 +129,10 @@ const getContent = (req, res, next) => {
       res.locals.testData = records;
       return res.status(200).json(records);
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => {
+      console.log(`content.ctrl.js > 130: ${err.message}`);
+      res.status(500).json({ message: err.message });
+    });
 };
 
 /** Get one content record by id
@@ -133,13 +140,6 @@ const getContent = (req, res, next) => {
  *  @returns  {Object}        User object OR error message.
  */
 const getContentById = (req, res, next) => {
-  const userType = req.params.user_type;
-  if (!userType || (userType !== "admin" && userType !== "edit")) {
-    return res.status(500).json({
-      message:
-        "You do not have permission to do this. Please Consult an administrator."
-    });
-  }
   return contentModel
     .getContentById(req.params.id)
     .then(record => {
@@ -152,7 +152,7 @@ const getContentById = (req, res, next) => {
         return res.status(200).json(record);
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => res.status(500).json({ message: err.message }));
 };
 
 /** Get all content of a certain type
@@ -161,7 +161,7 @@ const getContentById = (req, res, next) => {
  *  @returns  {Array|Object}   Array of content objects OR error message
  */
 const getContentByType = (req, res, next) => {
-  const userType = req.params.user_type;
+  const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {
     return res.status(500).json({
       message:
@@ -171,16 +171,20 @@ const getContentByType = (req, res, next) => {
   return contentModel
     .getContentByType(req.params.content_type)
     .then(records => {
+      console.log("content.ctrl.js > 174");
       if (!records || !records.length || records.message) {
         return res
           .status(404)
-          .json({ message: records.message || "Content not found" });
+          .json({
+            message:
+              records && records.message ? records.message : "Content not found"
+          });
       } else {
         res.locals.testData = records;
         return res.status(200).json(records);
       }
     })
-    .catch(err => res.status(404).json({ message: err.message }));
+    .catch(err => res.status(500).json({ message: err.message }));
 };
 
 /* ================================ EXPORT ================================= */

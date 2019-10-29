@@ -1,6 +1,5 @@
 import React from "react";
 import { MemoryRouter } from "react-router-dom";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import { Provider } from "react-redux";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../utils/testUtils";
@@ -20,6 +19,8 @@ import * as utils from "../utils/index";
 import ContentLibrary from "../containers/ContentLibrary";
 import TextInputForm from "../containers/TextInputForm";
 import Logout from "../containers/Logout";
+import * as formElements from "../components/SubmissionFormElements";
+import { defaultWelcomeInfo } from "../utils/index";
 
 // this import is here only to get coverage for the theme file
 import { theme } from "../styles/theme";
@@ -106,6 +107,11 @@ const handleInputMock = jest.fn();
 const setActiveLanguageMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve("en"));
+const getContentByIdSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
+  );
 
 const pushMock = jest.fn();
 
@@ -139,6 +145,9 @@ const defaultProps = {
     validateToken: validateTokenMock,
     getProfile: getProfileMock
   },
+  apiContent: {
+    getContentById: getContentByIdSuccess
+  },
   apiContentActions: {
     handleInput: () => ({ type: "HANDLE_INPUT" }),
     addContent: () => Promise.resolve({ type: "ADD_CONTENT_SUCCESS" }),
@@ -161,6 +170,9 @@ const defaultProps = {
       pathname: "thepath"
     },
     push: pushMock
+  },
+  location: {
+    search: "?i=1&h=2&b=3&s=4"
   }
 };
 
@@ -223,9 +235,10 @@ describe("<App />", () => {
   });
   describe("componentDidMount", () => {
     afterEach(() => {
+      getContentByIdSuccess.mockClear();
       jest.restoreAllMocks();
     });
-    it("if !loggedIn, calls `validateToken` on componentDidMount if userId & authToken found in localStorage", () => {
+    it("if !loggedIn, componentDidMount calls `validateToken` on componentDidMount if userId & authToken found in localStorage", () => {
       localStorage.setItem("userId", "1234");
       localStorage.setItem("authToken", "5678");
 
@@ -247,7 +260,7 @@ describe("<App />", () => {
       wrapper.instance().componentDidMount();
       expect(validateTokenMock.mock.calls.length).toBe(1);
     });
-    it("redirects to redirect url if redirect path found in localStorage", async () => {
+    it("componentDidMount redirects to redirect url if redirect path found in localStorage", async () => {
       localStorage.setItem("userId", "1234");
       localStorage.setItem("authToken", "5678");
       localStorage.setItem("redirect", "redirectpath");
@@ -274,7 +287,7 @@ describe("<App />", () => {
       await pushMock();
       expect(localStorage).not.toHaveProperty("redirect");
     });
-    it("if !loggedIn, console logs error if `validateToken` throws", () => {
+    it("if !loggedIn, componentDidMount console logs error if `validateToken` throws", () => {
       localStorage.setItem("userId", "1234");
       localStorage.setItem("authToken", "5678");
       const validateTokenErrorMock = jest
@@ -297,7 +310,7 @@ describe("<App />", () => {
         })
         .catch(err => console.log(err));
     });
-    it("if `validateToken` fails, clears localStorage", () => {
+    it("if `validateToken` fails, componentDidMount clears localStorage", () => {
       window.localStorage.setItem("userId", "1234");
       window.localStorage.setItem("authToken", "5678");
 
@@ -315,7 +328,7 @@ describe("<App />", () => {
         })
         .catch(err => console.log(err));
     });
-    it("checks for browser language on componentDidMount", async () => {
+    it("componentDidMount checks for browser language on componentDidMount", async () => {
       utils.detectDefaultLanguage = jest.fn();
       const props = {
         setActiveLanguage: setActiveLanguageMock
@@ -325,6 +338,156 @@ describe("<App />", () => {
       wrapper.instance().componentDidMount();
       await utils.detectDefaultLanguage();
       expect(setActiveLanguageMock).toHaveBeenCalled();
+    });
+    it("componentDidMount calls `getContentById` for each id in props.location.search", () => {
+      wrapper = setup();
+      wrapper.instance().componentDidMount();
+      expect(getContentByIdSuccess).toHaveBeenCalledWith("1");
+      expect(getContentByIdSuccess.mock.calls.length).toBe(3);
+    });
+
+    describe("switch", () => {
+      test("headline", async () => {
+        let getContentMockHeadline = () =>
+          Promise.resolve({
+            type: "GET_CONTENT_BY_ID_SUCCESS",
+            payload: {
+              id: 1,
+              content_type: "headline",
+              content: "fake headline"
+            }
+          });
+        const props = {
+          appState: {
+            loggedIn: true
+          },
+          location: {
+            search: "h=1"
+          },
+          apiContent: {
+            getContentById: getContentMockHeadline
+          }
+        };
+
+        wrapper = setup(props);
+        wrapper.instance().componentDidMount();
+        await getContentMockHeadline().then(() => {
+          expect(wrapper.state().headline.text).toEqual("fake headline");
+        });
+      });
+      test("body", async () => {
+        let getContentMockBody = () =>
+          Promise.resolve({
+            type: "GET_CONTENT_BY_ID_SUCCESS",
+            payload: {
+              id: 2,
+              content_type: "bodyCopy",
+              content: "fake body"
+            }
+          });
+        const props = {
+          appState: {
+            loggedIn: true
+          },
+          location: {
+            search: "b=2"
+          },
+          apiContent: {
+            getContentById: getContentMockBody
+          }
+        };
+        wrapper = setup(props);
+        wrapper.instance().componentDidMount();
+        await getContentMockBody().then(() => {
+          expect(wrapper.state().body.text).toEqual("fake body");
+        });
+      });
+      test("image", async () => {
+        let getContentMockImage = () =>
+          Promise.resolve({
+            type: "GET_CONTENT_BY_ID_SUCCESS",
+            payload: {
+              id: 3,
+              content_type: "image",
+              content: "fake image"
+            }
+          });
+        const props = {
+          appState: {
+            loggedIn: true
+          },
+          location: {
+            search: "i=3"
+          },
+          apiContent: {
+            getContentById: getContentMockImage
+          }
+        };
+        wrapper = setup(props);
+        wrapper.instance().componentDidMount();
+        await getContentMockImage().then(() => {
+          expect(wrapper.state().image.url).toEqual("fake image");
+        });
+      });
+      test("break", () => {
+        let getContentMockImage = () =>
+          Promise.resolve({
+            type: "GET_CONTENT_BY_ID_SUCCESS",
+            payload: {
+              id: null,
+              content_type: "break",
+              content: "bad news"
+            }
+          });
+        const props = {
+          location: {
+            search: "i=3"
+          },
+          apiContent: {
+            getContentById: getContentMockImage
+          }
+        };
+        wrapper = setup(props);
+        let originalState = wrapper.state();
+        wrapper.instance().componentDidMount();
+        return getContentMockImage().then(() => {
+          expect(wrapper.state()).toEqual(originalState);
+        });
+      });
+    });
+
+    test("componentDidMount handles error if `getContentById` fails", () => {
+      const getContentByIdErrorMock = () => {
+        return Promise.reject({ type: "GET_CONTENT_BY_ID_FAILURE" });
+      };
+      formElements.handleError = jest.fn();
+      const props = {
+        location: {
+          search: "h=1&b=2&i=3"
+        },
+        apiContent: { getContentById: getContentByIdErrorMock }
+      };
+
+      wrapper = setup(props);
+
+      wrapper.instance().componentDidMount();
+      return getContentByIdErrorMock()
+        .then(() => {
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
+    it("renders generic content if no ids in query", () => {
+      wrapper = setup();
+      expect(wrapper.instance().state.headline.text).toEqual(
+        defaultWelcomeInfo.headline
+      );
+      expect(wrapper.instance().state.body.text).toEqual(
+        defaultWelcomeInfo.body
+      );
     });
   });
   describe("Misc methods", () => {

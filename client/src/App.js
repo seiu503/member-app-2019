@@ -6,14 +6,18 @@ import PropTypes from "prop-types";
 import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
 import Recaptcha from "react-google-invisible-recaptcha";
+import queryString from "query-string";
+import { Translate } from "react-localize-redux";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 import * as Actions from "./store/actions";
+import * as apiContentActions from "./store/actions/apiContentActions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
-import { detectDefaultLanguage } from "./utils/index";
+import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -35,6 +39,7 @@ import UserForm from "./containers/UserForm";
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
 import globalTranslations from "./translations/globalTranslations";
+import welcomeInfo from "./translations/welcomeInfo.json";
 
 const styles = theme => ({
   root: {
@@ -59,7 +64,7 @@ const styles = theme => ({
     width: "100vw",
     height: "100%",
     minHeight: "80vh",
-    backgroundImage: `url("${SamplePhoto}")`,
+    // backgroundImage: `url("${SamplePhoto}")`,
     backgroundAttachment: "fixed",
     backgroundPosition: "bottom",
     [theme.breakpoints.down("sm")]: {
@@ -162,7 +167,16 @@ export class AppUnconnected extends Component {
     this.state = {
       deleteDialogOpen: false,
       animation: false,
-      more: false
+      more: false,
+      headline: {
+        text: defaultWelcomeInfo.headline,
+        id: 0
+      },
+      body: {
+        text: defaultWelcomeInfo.body,
+        id: 0
+      },
+      image: {}
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
@@ -170,9 +184,11 @@ export class AppUnconnected extends Component {
   }
 
   componentDidMount() {
+    console.log("188");
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
     const defaultLanguage = detectDefaultLanguage();
     this.props.setActiveLanguage(defaultLanguage);
+    console.log("192");
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
@@ -240,7 +256,105 @@ export class AppUnconnected extends Component {
         }
       }
     }
+    console.log("260");
+    const values = queryString.parse(this.props.location.search);
+    // fetch dynamic content
+    if (values.h || values.b || values.i) {
+      const { h, i, b } = values;
+      let idArray = [h, i, b];
+      const queryIds = idArray.filter(id => (id ? id : null));
+      queryIds.forEach(id => {
+        this.props.apiContent
+          .getContentById(id)
+          .then(result => {
+            if (!result || result.payload.message) {
+              console.log(
+                result.payload.message ||
+                  "there was an error loading the content"
+              );
+            } else {
+              console.log("277");
+              switch (result.payload.content_type) {
+                case "headline":
+                  return this.setState({
+                    headline: {
+                      text: result.payload.content,
+                      id: id
+                    }
+                  });
+                case "bodyCopy":
+                  return this.setState({
+                    body: {
+                      text: result.payload.content,
+                      id: id
+                    }
+                  });
+                case "image":
+                  console.log("293");
+                  return this.setState({
+                    image: {
+                      url: result.payload.content,
+                      id: id
+                    }
+                  });
+                default:
+                  break;
+              }
+            }
+          })
+          .catch(err => {
+            // console.log(err);
+          });
+      });
+    }
   }
+
+  renderBodyCopy = id => {
+    let paragraphIds = [];
+    // find all paragraphs belonging to this bodyCopy id
+    Object.keys(welcomeInfo).forEach(key => {
+      if (key.includes(`bodyCopy${id}`)) {
+        paragraphIds.push(key);
+      }
+    });
+    // for each paragraph selected, generate translated text
+    // in appropriate language rendered inside a <p> tag
+    let paragraphs = (
+      <React.Fragment>
+        {paragraphIds.map((id, index) => (
+          <p key={id}>
+            <Translate id={id} />
+          </p>
+        ))}
+      </React.Fragment>
+    );
+    // if this body copy has not yet been translated there will be no
+    // translation ids in the welcomeInfo JSON object
+    // just render the raw copy in English
+    if (!paragraphIds.length) {
+      let paragraphsRaw = this.state.body.text.split("\n");
+      paragraphs = (
+        <React.Fragment>
+          {paragraphsRaw.map((paragraphString, index) => (
+            <p key={index}>{paragraphString}</p>
+          ))}
+        </React.Fragment>
+      );
+    }
+    // wrap in MUI typography element and return
+    return (
+      <Typography
+        variant="body1"
+        component="div"
+        align="left"
+        gutterBottom
+        className={this.props.classes.body}
+        data-test="body"
+      >
+        {paragraphs}
+      </Typography>
+    );
+  };
 
   async onResolved() {
     const token = await this.recaptcha.getResponse();
@@ -263,7 +377,17 @@ export class AppUnconnected extends Component {
     const { loggedIn, userType, loading } = this.props.appState;
     // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
-      <div data-test="component-app" className={classes.appRoot}>
+      <div
+        data-test="component-app"
+        className={classes.appRoot}
+        style={{
+          backgroundImage: `url(${
+            this.state.image && this.state.image.url
+              ? this.state.image.url
+              : SamplePhoto
+          })`
+        }}
+      >
         <CssBaseline />
         <Recaptcha
           ref={ref => (this.recaptcha = ref)}
@@ -288,6 +412,10 @@ export class AppUnconnected extends Component {
                   sigBox={this.sigBox}
                   recaptcha={this.recaptcha}
                   onResolved={this.onResolved}
+                  headline={this.state.headline}
+                  body={this.state.body}
+                  image={this.state.image}
+                  renderBodyCopy={this.renderBodyCopy}
                   {...routeProps}
                 />
               )}
@@ -472,6 +600,7 @@ const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch),
+  apiContent: bindActionCreators(apiContentActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });
 
