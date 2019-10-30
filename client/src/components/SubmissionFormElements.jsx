@@ -1217,7 +1217,6 @@ const renderImage = rowData => {
   }
 };
 
-// sample image url: https://member-app-images.s3-us-west-2.amazonaws.com/CDAV_bobbie_coward_0327_1920x1280.jpg
 const renderText = rowData => {
   if (rowData.content_type === "image") {
     return rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
@@ -1226,6 +1225,8 @@ const renderText = rowData => {
   }
 };
 
+const renderDate = rowData => formatDateTime(rowData.updated_at);
+
 export const contentTableFieldList = [
   { title: "Id", field: "id", hidden: false },
   { title: "Content Type", field: "content_type", hidden: false },
@@ -1233,19 +1234,20 @@ export const contentTableFieldList = [
     title: "Image",
     field: "content",
     hidden: false,
-    render: rowData => renderImage(rowData)
+    render: renderImage
   },
   {
     title: "Text",
     field: "content",
     hidden: false,
-    render: rowData => renderText(rowData)
+    render: renderText
   },
   {
     title: "Updated At",
     field: "updated_at",
     hidden: false,
-    defaultSort: "desc"
+    defaultSort: "desc",
+    render: renderDate
   }
 ];
 

@@ -263,7 +263,6 @@ export class ContentLibraryUnconnected extends React.Component {
               data={this.props.content.allContent}
               title="Content"
               options={{
-                exportButton: true,
                 filtering: true,
                 sorting: true,
                 columnsButton: true
