@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import MaterialTable from "material-table";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
@@ -15,6 +16,10 @@ import * as utils from "../utils";
 import ContentTile from "../components/ContentTile";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
+import {
+  tableIcons,
+  contentTableFieldList
+} from "../components/SubmissionFormElements";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -251,36 +256,20 @@ export class ContentLibraryUnconnected extends React.Component {
             </FAB>
           </div>
           <div className={classes.gridWrapper}>
-            {loggedIn &&
-              this.props.content.allContent.map(tile => {
-                return (
-                  <div className={classes.card} key={tile.id} data-test="tile">
-                    <div className={classes.actionArea}>
-                      <FAB
-                        className={classes.buttonDelete}
-                        onClick={() => this.handleDeleteDialogOpen(tile)}
-                        color="primary"
-                        aria-label="Delete Content"
-                        data-test="delete"
-                      >
-                        <Delete />
-                      </FAB>
-                      <FAB
-                        className={classes.buttonEdit}
-                        onClick={() =>
-                          this.props.history.push(`/edit/${tile.id}`)
-                        }
-                        color="primary"
-                        aria-label="Edit Content"
-                        data-test="edit"
-                      >
-                        <Create />
-                      </FAB>
-                    </div>
-                    <ContentTile contentTile={tile} />
-                  </div>
-                );
-              })}
+            <MaterialTable
+              style={{ width: "100%", margin: "0 20px" }}
+              columns={contentTableFieldList}
+              isLoading={this.props.content.loading}
+              data={this.props.content.allContent}
+              title="Content"
+              options={{
+                exportButton: true,
+                filtering: true,
+                sorting: true,
+                columnsButton: true
+              }}
+              icons={tableIcons}
+            />
           </div>
         </div>
       </div>

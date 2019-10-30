@@ -1208,6 +1208,47 @@ export const submTableFieldList = [
   { title: "Work email", field: "work_email", hidden: true }
 ];
 
+const renderImage = rowData => {
+  if (rowData.content_type === "image") {
+    const filename = rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
+    return <img src={rowData.content} height="100" alt={filename} />;
+  } else {
+    return "";
+  }
+};
+
+// sample image url: https://member-app-images.s3-us-west-2.amazonaws.com/CDAV_bobbie_coward_0327_1920x1280.jpg
+const renderText = rowData => {
+  if (rowData.content_type === "image") {
+    return rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
+  } else {
+    return rowData.content;
+  }
+};
+
+export const contentTableFieldList = [
+  { title: "Id", field: "id", hidden: false },
+  { title: "Content Type", field: "content_type", hidden: false },
+  {
+    title: "Image",
+    field: "content",
+    hidden: false,
+    render: rowData => renderImage(rowData)
+  },
+  {
+    title: "Text",
+    field: "content",
+    hidden: false,
+    render: rowData => renderText(rowData)
+  },
+  {
+    title: "Updated At",
+    field: "updated_at",
+    hidden: false,
+    defaultSort: "desc"
+  }
+];
+
 TextField.propTypes = {
   input: PropTypes.shape({
     onBlur: PropTypes.func,
