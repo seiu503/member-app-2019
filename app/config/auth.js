@@ -49,20 +49,15 @@ exports.findUserByEmail = async (profile, token, done) => {
   // console.log(profile.id);
   return User.getUserByEmail(profile.email)
     .then(user => {
-      console.log(`config.auth.js > 49`);
       // console.log("config.auth.js > 48: (userId)");
       if (user) {
-        console.log(`config.auth.js > 52`);
         // console.log(user.id);
         if (user.google_id) {
-          console.log(`config.auth.js > 54`);
           return done(null, user);
         } else {
-          console.log(`config.auth.js > 56`);
           return this.updateUser(profile, token, user.id, done);
         }
       }
-      console.log(`config.auth.js > 62`);
       return done(null, null);
     })
     .catch(err => {
@@ -99,8 +94,6 @@ exports.jwtLogin = async (req, payload, done) => {
   const id = payload.id;
   User.getUserById(id)
     .then(user => {
-      console.log(`config/auth.js > 101`);
-      console.log(user.id);
       req.user = user;
       return done(null, user);
     })
@@ -127,16 +120,12 @@ exports.googleLogin = async (req, token, refreshToken, profile, done) => {
   //     profile.name.familyName
   //   }, ID: ${profile.id}`
   // );
-  console.log(`config.auth.js > 128`);
   if (!req.user) {
-    console.log("config.auth.js > 129");
     this.findUserByEmail(profile, token, done).catch(err => {
       console.log(`config/auth.js > 137: ${err}`);
       return done(err, null);
     });
   } else {
-    console.log("config/auth.js > 144");
-    // found logged-in user. Return
     return done(null, req.user);
   }
 };

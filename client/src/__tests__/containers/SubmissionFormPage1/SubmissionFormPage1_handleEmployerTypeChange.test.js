@@ -220,10 +220,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.instance().handleEmployerTypeChange("retired");
       expect(handleInputMock.mock.calls.length).toBe(1);
       await handleInputMock();
+      await handleInputMock();
       expect(getIframeURLMock.mock.calls.length).toBe(1);
     });
 
-    test("`suggestedAmountOnChange` does not call getIframeNew if !paymentRequired", () => {
+    test("`handleEmployerTypeChange` does not call getIframeNew if !paymentRequired", () => {
       let getIframeNewMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve({}));

@@ -212,12 +212,15 @@ export class SubmissionFormPage1Container extends React.Component {
   };
 
   async handleEmployerTypeChange(employerType) {
-    // console.log('handleEmployerTypeChange');
-    // console.log(employerType);
+    console.log("handleEmployerTypeChange");
+    console.log(employerType);
     // render iframe if payment required
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
+      });
+      await this.props.apiSubmission.handleInput({
+        target: { name: "checkoff", value: false }
       });
       const params = queryString.parse(this.props.location.search);
       return this.getIframeURL(params.cape);
@@ -226,6 +229,9 @@ export class SubmissionFormPage1Container extends React.Component {
       // hide iframe if already rendered if change to checkoff
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: false }
+      });
+      await this.props.apiSubmission.handleInput({
+        target: { name: "checkoff", value: true }
       });
     }
   }
@@ -541,7 +547,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.changeTab(this.props.howManyTabs - 1);
           } else if (!this.props.submission.error) {
             // update submission status and redirect to CAPE tab
-            console.log("updating submission status");
+            // console.log("updating submission status");
             this.props.apiSubmission
               .updateSubmission(this.props.submission.submissionId, {
                 submission_status: "Success"
@@ -555,7 +561,6 @@ export class SubmissionFormPage1Container extends React.Component {
                   console.log(this.props.submission.error);
                   return this.props.handleError(this.props.submission.error);
                 } else {
-                  console.log("556");
                   this.changeTab(2);
                 }
               })
@@ -1098,7 +1103,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async toggleCardAddingFrame(value) {
-    console.log("toggleCardAddingFrame");
+    // console.log("toggleCardAddingFrame");
     // console.log(value);
     if (value === "Add new card" || value === "Card") {
       await this.getIframeURL()
@@ -1237,7 +1242,8 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // set body fields
     const checkoff = !utils.isPaymentRequired(formValues.employerType);
-    const paymentMethod = checkoff ? "Checkoff" : "Unionise";
+    const oneTime = formValues.donationFrequency === "One-Time";
+    const paymentMethod = checkoff && !oneTime ? "Checkoff" : "Unionise";
     let donationAmount =
       capeAmount === "Other"
         ? parseFloat(capeAmountOther)
@@ -1628,7 +1634,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {
-    console.log(`changeTab(${newValue})`);
     const newState = { ...this.state };
     newState.tab = newValue;
 

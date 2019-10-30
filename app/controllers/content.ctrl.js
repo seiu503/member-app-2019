@@ -173,12 +173,10 @@ const getContentByType = (req, res, next) => {
     .then(records => {
       console.log("content.ctrl.js > 174");
       if (!records || !records.length || records.message) {
-        return res
-          .status(404)
-          .json({
-            message:
-              records && records.message ? records.message : "Content not found"
-          });
+        return res.status(404).json({
+          message:
+            records && records.message ? records.message : "Content not found"
+        });
       } else {
         res.locals.testData = records;
         return res.status(200).json(records);
