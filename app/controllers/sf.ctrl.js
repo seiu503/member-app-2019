@@ -670,6 +670,31 @@ exports.updateSFCAPE = async (req, res, next) => {
   }
 };
 
+/** GET SFCAPE record by SF Contact ID
+ *  @param  {string} id
+ *  @returns  {Object}        Success OR error message.
+ */
+exports.getSFCAPEByContactId = async (req, res, next) => {
+  const { id } = req.params;
+  const query = `SELECT Active_Account_Last_4__c, Payment_Error_Hold__c, Unioni_se_MemberID__c, Card_Brand__c, LastModifiedDate, Id, Employer__c FROM CAPE__c WHERE Worker__c = \'${id}\' ORDER BY LastModifiedDate DESC LIMIT 1`;
+  let conn = new jsforce.Connection({ loginUrl });
+  try {
+    await conn.login(user, password);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 686: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+  let cape;
+  try {
+    cape = await conn.query(query);
+    const result = cape.records[0] || {};
+    return res.status(200).json(result);
+  } catch (err) {
+    console.error(`sf.ctrl.js > 695: ${err}`);
+    return res.status(500).json({ message: err.message });
+  }
+};
+
 /* =============================== ACCOUNTS =============================== */
 
 /* +++++++++++++++++++++++++++++++ ACCOUNTS: GET ++++++++++++++++++++++++++ */

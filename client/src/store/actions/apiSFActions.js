@@ -470,7 +470,7 @@ export function createSFCAPE(body) {
   };
 }
 
-/* ++++++++++++++++++++++++++++++++ CAPE: POST +++++++++++++++++++++++++++++ */
+/* ++++++++++++++++++++++++++++++++ CAPE: PUT +++++++++++++++++++++++++++++ */
 
 export const UPDATE_SF_CAPE_REQUEST = "UPDATE_SF_CAPE_REQUEST";
 export const UPDATE_SF_CAPE_SUCCESS = "UPDATE_SF_CAPE_SUCCESS";
@@ -516,6 +516,55 @@ export function updateSFCAPE(body) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify(body)
+    }
+  };
+}
+
+/* ++++++++++++++++++++++++++++++++ CAPE: GET +++++++++++++++++++++++++++++ */
+
+export const GET_SF_CAPE_BY_CONTACT_ID_REQUEST =
+  "GET_SF_CAPE_BY_CONTACT_ID_REQUEST";
+export const GET_SF_CAPE_BY_CONTACT_ID_SUCCESS =
+  "GET_SF_CAPE_BY_CONTACT_ID_SUCCESS";
+export const GET_SF_CAPE_BY_CONTACT_ID_FAILURE =
+  "GET_SF_CAPE_BY_CONTACT_ID_FAILURE";
+
+/*
+ * Function: getSFCAPEByContactId -- get a SF CAPE record by SF Contact Id
+ * @param {string} id
+ * This action dispatches additional actions as it executes:
+ *   GET_SF_CAPE_BY_CONTACT_ID_REQUEST:
+ *     Initiates a spinner on the home page.
+ *   GET_SF_CAPE_BY_CONTACT_ID_SUCCESS:
+ *     If Content successfully retrieved, hides spinner
+ *   GET_SF_CAPE_BY_CONTACT_ID_FAILURE:
+ *     If database error, hides spinner, displays error toastr
+ */
+
+export function getSFCAPEByContactId(id) {
+  return {
+    [RSAA]: {
+      endpoint: `${BASE_URL}/api/sfCAPE/${id}`,
+      method: "GET",
+      types: [
+        GET_SF_CAPE_BY_CONTACT_ID_REQUEST,
+        GET_SF_CAPE_BY_CONTACT_ID_SUCCESS,
+        {
+          type: GET_SF_CAPE_BY_CONTACT_ID_FAILURE,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              let message = "Sorry, something went wrong :(";
+              if (data && data.message) {
+                message = data.message;
+              }
+              return { message };
+            });
+          }
+        }
+      ],
+      headers: {
+        "Content-Type": "application/json"
+      }
     }
   };
 }

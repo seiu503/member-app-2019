@@ -583,7 +583,9 @@ export const stylesPage1 = theme => ({
     display: "block",
     flexWrap: "wrap",
     margin: "0 -1.666666666666667% 13px",
-    paddingTop: 35
+    paddingTop: 20,
+    marginTop: 15,
+    backgroundColor: "#FBE796"
   },
   suggestedAmountBoxes: {
     flexDirection: "row",

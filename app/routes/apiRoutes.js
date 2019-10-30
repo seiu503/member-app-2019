@@ -562,7 +562,7 @@ router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
 router.post("/sfCAPE", sfCtrl.createSFCAPE);
 
 // UPDATE SF CAPE RECORD WITH PAYMENT STATUS BY ONE-TIME PAYMENT ID
-//   Example: PUT >> /api/capepayment
+//   Example: PUT >> /api/sfCAPE
 //   Secured: no
 //   Expects:
 //     request body properties : {
@@ -574,6 +574,17 @@ router.post("/sfCAPE", sfCtrl.createSFCAPE);
 //   Returns: JSON success or error message.
 //
 router.put("/sfCAPE", sfCtrl.updateSFCAPE);
+
+// GET SF CAPE RECORD BY SF CONTACT ID
+//   Example: GET >> /api/sfCAPE/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     params: {
+//        id             : String,
+//      }
+//   Returns: JSON SF CAPE record.
+//
+router.get("/sfCAPE/:id", sfCtrl.getSFCAPEByContactId);
 
 /* =============================== ACCOUNTS ================================ */
 

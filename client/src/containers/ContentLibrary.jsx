@@ -9,11 +9,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
 import Create from "@material-ui/icons/Create";
-import Delete from "@material-ui/icons/Delete";
+// import Delete from "@material-ui/icons/Delete";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
-import ContentTile from "../components/ContentTile";
+// import ContentTile from "../components/ContentTile";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
 import {
