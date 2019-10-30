@@ -256,7 +256,8 @@ describe("submission reducer", () => {
           paymentMethodAdded: false,
           afhDuesRate: 0,
           capeAmount: "",
-          donationFrequency: "Monthly"
+          donationFrequency: "Monthly",
+          checkoff: true
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -376,7 +377,8 @@ describe("submission reducer", () => {
           paymentMethodAdded: false,
           afhDuesRate: 0,
           capeAmount: "",
-          donationFrequency: "Monthly"
+          donationFrequency: "Monthly",
+          checkoff: true
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -495,7 +497,8 @@ describe("submission reducer", () => {
           paymentMethodAdded: false,
           afhDuesRate: 0,
           capeAmount: "",
-          donationFrequency: "Monthly"
+          donationFrequency: "Monthly",
+          checkoff: true
         },
         formPage2: {
           africanOrAfricanAmerican: false,

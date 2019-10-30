@@ -766,14 +766,14 @@ export const stylesPage2 = theme => ({
 // helper functions for localization package when translating labels
 // this is required so that only the label is translated and the not value
 // of select, checkbox, and text inputs
-const inputLabelTranslateHelper = (id, label, translate) => {
+export const inputLabelTranslateHelper = (id, label, translate) => {
   if (translate(id).includes("Missing translationId:")) {
     return label;
   } else {
     return translate(id);
   }
 };
-const optionsLabelTranslateHelper = (id, item, translate) => {
+export const optionsLabelTranslateHelper = (id, item, translate) => {
   let translatedLabel;
   if (id.includes("State")) {
     return item;

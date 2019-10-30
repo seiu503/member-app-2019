@@ -69,15 +69,21 @@ const styles = theme => ({
 export class WelcomeInfoUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
+    const imageUrl =
+      this.props.image && this.props.image.url
+        ? this.props.image.url
+        : SamplePhoto;
     return (
       <div className={classes.root} data-test="component-welcome-info">
         <Card className={classes.welcomeCard}>
-          <CardMedia
-            className={classes.media}
-            title="Welcome Photo"
-            alt="Welcome Photo"
-            image={this.props.image ? this.props.image.url : SamplePhoto}
-          />
+          {imageUrl && (
+            <CardMedia
+              className={classes.media}
+              title="Welcome Photo"
+              alt="Welcome Photo"
+              image={imageUrl}
+            />
+          )}
 
           <Typography
             variant="h3"
