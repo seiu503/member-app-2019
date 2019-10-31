@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import MaterialTable from "material-table";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
@@ -8,13 +9,17 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
 import Create from "@material-ui/icons/Create";
-import Delete from "@material-ui/icons/Delete";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
-import ContentTile from "../components/ContentTile";
+import GenerateURL from "./GenerateURL";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
+import {
+  tableIcons,
+  contentTableFieldList
+} from "../components/SubmissionFormElements";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -163,13 +168,13 @@ export class ContentLibraryUnconnected extends React.Component {
     }
   }
 
-  handleDeleteDialogOpen = tile => {
-    if (tile && this.props.appState.loggedIn) {
+  handleDeleteDialogOpen = (event, rowData) => {
+    if (rowData && this.props.appState.loggedIn) {
       const { userType } = this.props.appState;
       if (!["admin", "edit"].includes(userType)) {
         openSnackbar("error", warning);
       }
-      this.props.apiContent.handleDeleteOpen(tile);
+      this.props.apiContent.handleDeleteOpen(rowData);
     }
   };
 
@@ -206,6 +211,57 @@ export class ContentLibraryUnconnected extends React.Component {
     }
   }
 
+  handleEdit = (event, rowData) =>
+    this.props.history.push(`/edit/${rowData.id}`);
+
+  handleSelect = async (event, rowData) => {
+    const idsArray = Object.values(this.props.content.selectedContent);
+    if (idsArray.indexOf(rowData.id) === -1) {
+      return this.props.apiContent.selectContent(
+        rowData.id,
+        rowData.content_type
+      );
+    }
+    return this.props.apiContent.unselectContent(
+      rowData.id,
+      rowData.content_type
+    );
+  };
+
+  checked = rowData => {
+    console.log("checked");
+    console.log(rowData);
+    const idsArray = Object.values(this.props.content.selectedContent);
+    if (idsArray.indexOf(rowData.id) > -1) {
+      return tableIcons.CheckBoxChecked;
+    }
+    return tableIcons.CheckBoxBlank;
+  };
+
+  selectAction = rowData => {
+    const idsArray = Object.values(this.props.content.selectedContent);
+    return {
+      icon:
+        idsArray.indexOf(rowData.id) > -1
+          ? tableIcons.CheckBoxChecked
+          : tableIcons.CheckBoxBlank,
+      tooltip: "Select Content",
+      onClick: this.handleSelect
+    };
+  };
+
+  editAction = () => ({
+    icon: tableIcons.Edit,
+    tooltip: "Edit Content",
+    onClick: this.handleEdit
+  });
+
+  deleteAction = () => ({
+    icon: tableIcons.Delete,
+    tooltip: "Delete Content",
+    onClick: this.handleDeleteDialogOpen
+  });
+
   render() {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
@@ -239,48 +295,34 @@ export class ContentLibraryUnconnected extends React.Component {
           >
             Content Library
           </Typography>
+          <GenerateURL />
           <div className={classes.buttonWrap}>
-            <FAB
-              className={classes.buttonNew}
-              href="/new"
-              color="primary"
-              aria-label="New Content"
-              data-test="button-new"
-            >
-              <Create />
-            </FAB>
+            <Tooltip title="New Content" aria-label="New Content">
+              <FAB
+                className={classes.buttonNew}
+                href="/new"
+                color="primary"
+                aria-label="New Content"
+                data-test="button-new"
+              >
+                <Create />
+              </FAB>
+            </Tooltip>
           </div>
           <div className={classes.gridWrapper}>
-            {loggedIn &&
-              this.props.content.allContent.map(tile => {
-                return (
-                  <div className={classes.card} key={tile.id} data-test="tile">
-                    <div className={classes.actionArea}>
-                      <FAB
-                        className={classes.buttonDelete}
-                        onClick={() => this.handleDeleteDialogOpen(tile)}
-                        color="primary"
-                        aria-label="Delete Content"
-                        data-test="delete"
-                      >
-                        <Delete />
-                      </FAB>
-                      <FAB
-                        className={classes.buttonEdit}
-                        onClick={() =>
-                          this.props.history.push(`/edit/${tile.id}`)
-                        }
-                        color="primary"
-                        aria-label="Edit Content"
-                        data-test="edit"
-                      >
-                        <Create />
-                      </FAB>
-                    </div>
-                    <ContentTile contentTile={tile} />
-                  </div>
-                );
-              })}
+            <MaterialTable
+              style={{ width: "100%", margin: "0 20px" }}
+              columns={contentTableFieldList}
+              isLoading={this.props.content.loading}
+              data={this.props.content.allContent}
+              title="Content"
+              options={{
+                filtering: true,
+                sorting: true
+              }}
+              icons={tableIcons}
+              actions={[this.selectAction, this.editAction, this.deleteAction]}
+            />
           </div>
         </div>
       </div>

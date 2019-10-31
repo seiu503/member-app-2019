@@ -142,9 +142,7 @@ suite("content.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           body: {
-            updates: {
-              ...contentBody
-            }
+            ...contentBody
           },
           user: { ...adminBody },
           params: {
@@ -180,7 +178,7 @@ suite("content.ctrl.js", function() {
 
     test("returns 422 if req.body missing", async function() {
       req = mockReq({
-        body: { updates: {} },
+        body: {},
         user: { ...adminBody },
         params: {
           id
@@ -201,7 +199,7 @@ suite("content.ctrl.js", function() {
     test("returns 422 if req.params.id missing", async function() {
       contentBody.content_type = "bodyCopy";
       req = mockReq({
-        body: { updates: contentBody },
+        body: { ...contentBody },
         user: { ...adminBody }
       });
       responseStub = {
@@ -218,7 +216,7 @@ suite("content.ctrl.js", function() {
 
     test("returns 500 if wrong userType", async function() {
       req = mockReq({
-        body: { updates: contentBody },
+        body: { ...contentBody },
         user: { ...userBody }
       });
       responseStub = {
@@ -236,7 +234,7 @@ suite("content.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       req = mockReq({
-        body: { updates: contentBody },
+        body: { ...contentBody },
         params: {
           id
         },

@@ -48,7 +48,7 @@ const createContent = (req, res, next) => {
  *  @returns  {Object}             Updated content object OR error message.
  */
 const updateContent = (req, res, next) => {
-  const { updates } = req.body;
+  const updates = { ...req.body };
   const { id } = req.params;
   const userType = req.user.type;
   if (!userType || (userType !== "admin" && userType !== "edit")) {

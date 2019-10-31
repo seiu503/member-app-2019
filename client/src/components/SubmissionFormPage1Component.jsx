@@ -104,6 +104,11 @@ export class SubmissionFormPage1Component extends React.Component {
             employer.Name.toLowerCase() === "community members"
           ) {
             return "Community Members";
+          } else if (
+            employer.Name &&
+            employer.Name.toLowerCase() === "seiu local 503 opeu"
+          ) {
+            return "SEIU LOCAL 503 OPEU";
           } else {
             return employer.Sub_Division__c;
           }
@@ -148,6 +153,12 @@ export class SubmissionFormPage1Component extends React.Component {
       ) {
         employerList = ["Community Member"];
       }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "seiu 503 staff"
+      ) {
+        employerList = ["SEIU 503 Staff"];
+      }
       employerList.unshift("");
       // set value of employer name field for single-child employer types
       if (
@@ -174,19 +185,25 @@ export class SubmissionFormPage1Component extends React.Component {
       ) {
         this.props.formValues.employerName = "Community Member";
       }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "seiu 503 staff"
+      ) {
+        this.props.formValues.employerName = "SEIU 503 Staff";
+      }
       return employerList;
     }
   };
 
   donationFrequencyOnChange(event, value) {
-    console.log("donationFrequencyOnChange");
-    console.log(value);
+    // console.log("donationFrequencyOnChange");
+    // console.log(value);
     this.props.change("donationFrequency", value);
     this.props.handleDonationFrequencyChange(value);
   }
 
   async updateSubmission() {
-    console.log("updateSubmission");
+    // console.log("updateSubmission");
     this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;

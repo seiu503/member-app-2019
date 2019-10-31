@@ -75,7 +75,10 @@ import {
   POST_ONE_TIME_PAYMENT_FAILURE,
   CREATE_SF_CAPE_REQUEST,
   CREATE_SF_CAPE_SUCCESS,
-  CREATE_SF_CAPE_FAILURE
+  CREATE_SF_CAPE_FAILURE,
+  GET_SF_CAPE_BY_CONTACT_ID_REQUEST,
+  GET_SF_CAPE_BY_CONTACT_ID_SUCCESS,
+  GET_SF_CAPE_BY_CONTACT_ID_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
@@ -102,7 +105,7 @@ export const INITIAL_STATE = {
     immediatePastMemberStatus: "Not a Member",
     afhDuesRate: 0,
     newCardNeeded: true,
-    whichCard: "Use existing",
+    whichCard: "",
     capeAmount: "",
     donationFrequency: "Monthly",
     checkoff: true
@@ -215,6 +218,7 @@ function Submission(state = INITIAL_STATE, action) {
     case UPDATE_CAPE_REQUEST:
     case POST_ONE_TIME_PAYMENT_REQUEST:
     case GET_SF_CONTACT_DID_REQUEST:
+    case GET_SF_CAPE_BY_CONTACT_ID_REQUEST:
       return update(state, {
         error: { $set: null }
       });
@@ -250,11 +254,18 @@ function Submission(state = INITIAL_STATE, action) {
         } else if (action.payload.Account.Sub_Division__c) {
           subDivision = action.payload.Account.Sub_Division__c;
         } else if (
+          // SEIU 503 Staff edge case
+          action.payload.Account.CVRSOS__ParentName__c === "SEIU LOCAL 503 OPEU"
+        ) {
+          subDivision = "SEIU LOCAL 503 OPEU";
+        } else if (
+          // Community members edge case
           !action.payload.Account.WS_Subdivision_from_Agency__c &&
           !action.payload.Account.Sub_Division__c
         ) {
           subDivision = action.payload.Account.Name;
         }
+
         const employerType = employerTypeMap[subDivision];
 
         // if employer attached to contact record is 'Employer' record type,
@@ -379,7 +390,25 @@ function Submission(state = INITIAL_STATE, action) {
           djrEmployerId: { $set: action.payload.Employer__c },
           cardBrand: { $set: action.payload.Card_Brand__c }
         },
-        djrId: { $set: action.payload.Id || action.payload.id }
+        djrId: { $set: action.payload.Id || action.payload.id },
+        formPage1: {
+          whichCard: { $set: "Use existing" }
+        }
+      });
+    }
+
+    case GET_SF_CAPE_BY_CONTACT_ID_SUCCESS: {
+      console.log(action.payload);
+      return update(state, {
+        cape: {
+          activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
+          paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
+          memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
+          cardBrand: { $set: action.payload.Card_Brand__c }
+        },
+        formPage1: {
+          whichCard: { $set: "Use existing" }
+        }
       });
     }
 
@@ -487,7 +516,6 @@ function Submission(state = INITIAL_STATE, action) {
     case UPDATE_SF_CONTACT_FAILURE:
     case CREATE_SF_DJR_FAILURE:
     case UPDATE_SF_DJR_FAILURE:
-    case GET_SF_DJR_FAILURE:
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_FAILURE:
     case GET_ALL_SUBMISSIONS_FAILURE:
@@ -505,6 +533,21 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         error: { $set: error }
       });
+
+    case GET_SF_CAPE_BY_CONTACT_ID_FAILURE:
+    case GET_SF_DJR_FAILURE: {
+      if (typeof action.payload.message === "string") {
+        error = action.payload.message;
+      } else {
+        error = "Sorry, something went wrong :(\nPlease try again.";
+      }
+      return update(state, {
+        error: { $set: error },
+        formPage1: {
+          whichCard: { $set: "Add new card" }
+        }
+      });
+    }
 
     case SAVE_SALESFORCEID:
       return update(state, {

@@ -171,12 +171,12 @@ export class TextInputFormUnconnected extends React.Component {
   submit(e) {
     e.preventDefault();
     const { content_type, content } = this.props.content.form;
-    const { authToken, userType } = this.props.appState;
+    const { authToken } = this.props.appState;
     const body = {
       content_type,
-      content,
-      userType
+      content
     };
+    console.log(body);
     let id;
     if (this.props.match.params.id) {
       id = this.props.match.params.id;
@@ -244,7 +244,9 @@ export class TextInputFormUnconnected extends React.Component {
           className={classes.head}
           style={{ paddingTop: 20 }}
         >
-          Admin Dashboard
+          {this.props.edit
+            ? `Edit ${this.props.content.form.content_type}`
+            : "Create Content"}
         </Typography>
         <form
           className={classes.form}

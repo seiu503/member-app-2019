@@ -25,8 +25,8 @@ import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import Clear from "@material-ui/icons/Clear";
-// import DeleteOutline from "@material-ui/icons/DeleteOutline";
-// import Edit from "@material-ui/icons/Edit";
+import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import Edit from "@material-ui/icons/Edit";
 import FilterList from "@material-ui/icons/FilterList";
 import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
@@ -34,16 +34,24 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 export const tableIcons = {
   // Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   // Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   // Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  // Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  CheckBoxBlank: forwardRef((props, ref) => (
+    <CheckBoxOutlineBlankIcon {...props} ref={ref} />
+  )),
+  CheckBoxChecked: forwardRef((props, ref) => (
+    <CheckBoxIcon {...props} ref={ref} />
+  )),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
   // DetailPanel: forwardRef((props, ref) => (
   //   <ChevronRight {...props} ref={ref} />
   // )),
-  // Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
   FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
@@ -260,7 +268,8 @@ export const employerTypeMap = {
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
   "Community Members": "Community Member",
-  "COMMUNITY MEMBERS": "Community Member"
+  "COMMUNITY MEMBERS": "Community Member",
+  "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
 };
 
 // helper function for reverse lookup from above object
@@ -583,7 +592,9 @@ export const stylesPage1 = theme => ({
     display: "block",
     flexWrap: "wrap",
     margin: "0 -1.666666666666667% 13px",
-    paddingTop: 35
+    paddingTop: 20,
+    marginTop: 15,
+    backgroundColor: "#FBE796"
   },
   suggestedAmountBoxes: {
     flexDirection: "row",
@@ -1206,6 +1217,49 @@ export const submTableFieldList = [
   { title: "Worksite", field: "worksite", hidden: true },
   { title: "Work Phone", field: "work_phone", hidden: true },
   { title: "Work email", field: "work_email", hidden: true }
+];
+
+export const renderImage = rowData => {
+  if (rowData.content_type === "image") {
+    const filename = rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
+    return <img src={rowData.content} height="100" alt={filename} />;
+  } else {
+    return "";
+  }
+};
+
+export const renderText = rowData => {
+  if (rowData.content_type === "image") {
+    return rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
+  } else {
+    return rowData.content;
+  }
+};
+
+export const renderDate = rowData => formatDateTime(rowData.updated_at);
+
+export const contentTableFieldList = [
+  { title: "Id", field: "id", hidden: false },
+  { title: "Content Type", field: "content_type", hidden: false },
+  {
+    title: "Image",
+    field: "content",
+    hidden: false,
+    render: renderImage
+  },
+  {
+    title: "Text",
+    field: "content",
+    hidden: false,
+    render: renderText
+  },
+  {
+    title: "Updated At",
+    field: "updated_at",
+    hidden: false,
+    defaultSort: "desc",
+    render: renderDate
+  }
 ];
 
 TextField.propTypes = {

@@ -13,7 +13,6 @@ import NotFound from "../components/NotFound";
 import NoAccess from "../components/NoAccess";
 import FormThankYou from "../components/FormThankYou";
 import Login from "../components/Login";
-import LinkRequest from "../containers/LinkRequest";
 import UserForm from "../containers/UserForm";
 import * as utils from "../utils/index";
 import ContentLibrary from "../containers/ContentLibrary";
@@ -516,6 +515,14 @@ describe("<App />", () => {
       wrapper.instance().setRedirect();
       expect(window.localStorage.getItem("redirect")).toBe("testpath");
     });
+    it("renderBodyCopy renders paragraphs matching provided body id", () => {
+      wrapper = setup();
+      const result = wrapper.instance().renderBodyCopy(0);
+      expect(result.props.children.props.children.length).toBe(3);
+      expect(result.props.children.props.children[0].key).toBe("bodyCopy0_1");
+      const result1 = wrapper.instance().renderBodyCopy(100);
+      expect(result1.props.children.props.children[0].key).toBe("0");
+    });
   });
 
   describe("Unprotected route tests", () => {
@@ -535,11 +542,6 @@ describe("<App />", () => {
       wrapper = routeSetup("/thankyou");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(FormThankYou)).toHaveLength(1);
-    });
-    test(' "/linkrequest" path should render LinkRequest component', () => {
-      wrapper = routeSetup("/linkrequest");
-      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
-      expect(wrapper.find(LinkRequest)).toHaveLength(1);
     });
     test(' "/page2?cId={cId}&aId={aid}" path should render SubmissionFormPage2 component', () => {
       wrapper = routeSetup("/page2?cId=12345678&aId=123456");

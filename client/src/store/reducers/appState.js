@@ -105,7 +105,10 @@ import {
   CREATE_SF_CAPE_FAILURE,
   POST_ONE_TIME_PAYMENT_REQUEST,
   POST_ONE_TIME_PAYMENT_SUCCESS,
-  POST_ONE_TIME_PAYMENT_FAILURE
+  POST_ONE_TIME_PAYMENT_FAILURE,
+  GET_SF_CAPE_BY_CONTACT_ID_REQUEST,
+  GET_SF_CAPE_BY_CONTACT_ID_SUCCESS,
+  GET_SF_CAPE_BY_CONTACT_ID_FAILURE
 } from "../actions/apiSFActions";
 import {
   GET_USER_BY_EMAIL_REQUEST,
@@ -217,6 +220,7 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_CAPE_REQUEST:
     case POST_ONE_TIME_PAYMENT_REQUEST:
     case GET_SF_CONTACT_DID_REQUEST:
+    case GET_SF_CAPE_BY_CONTACT_ID_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -288,6 +292,8 @@ function appState(state = INITIAL_STATE, action) {
     case POST_ONE_TIME_PAYMENT_FAILURE:
     case GET_SF_CONTACT_DID_SUCCESS:
     case GET_SF_CONTACT_DID_FAILURE:
+    case GET_SF_CAPE_BY_CONTACT_ID_SUCCESS:
+    case GET_SF_CAPE_BY_CONTACT_ID_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

@@ -742,6 +742,38 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  async getSFCAPEByContactId() {
+    console.log("getSFCAPEByContactId");
+    const id = this.props.submission.salesforceId;
+    console.log(id);
+    return new Promise(resolve => {
+      this.props.apiSF
+        .getSFCAPEByContactId(id)
+        .then(result => {
+          console.log("####################");
+          console.log(result);
+          if (
+            result.type === "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" ||
+            this.props.submission.error
+          ) {
+            // console.log(this.props.submission.error);
+            this.props.apiSubmission.handleInput({
+              target: { name: "whichCard", value: "Add new card" }
+            });
+            resolve(handleError(this.props.submission.error));
+          }
+          this.props.apiSubmission.handleInput({
+            target: { name: "whichCard", value: "Use existing" }
+          });
+          resolve(result);
+        })
+        .catch(err => {
+          console.error(err);
+          resolve(handleError(err));
+        });
+    });
+  }
+
   getSFDJRById() {
     const id = this.props.submission.salesforceId;
     return new Promise(resolve => {
@@ -754,8 +786,14 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.error
           ) {
             // console.log(this.props.submission.error);
+            this.props.apiSubmission.handleInput({
+              target: { name: "whichCard", value: "Add new card" }
+            });
             resolve(handleError(this.props.submission.error));
           }
+          this.props.apiSubmission.handleInput({
+            target: { name: "whichCard", value: "Use existing" }
+          });
           resolve(result);
         })
         .catch(err => {
@@ -1027,7 +1065,7 @@ export class SubmissionFormPage1Container extends React.Component {
     let memberShortId =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
-    // console.log(`memberShortId: ${memberShortId}`);
+    console.log(`memberShortId: ${memberShortId}`);
     const { formValues } = this.props;
     let capeAmount;
     if (cape) {
@@ -1042,12 +1080,13 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     if (!memberShortId && cape && this.props.submission.salesforceId) {
       // check if existing postgres CAPE OR SFDJR to fetch memberShortId
-      await this.getCAPEBySFId();
+      console.log("FETCHING SFCAPE BY CONTACT ID");
+      await this.getSFCAPEByContactId();
       await this.getSFDJRById();
       memberShortId =
         this.props.submission.payment.memberShortId ||
         this.props.submission.cape.memberShortId;
-      // console.log(`memberShortId: ${memberShortId}`);
+      console.log(`memberShortId: ${memberShortId}`);
     }
     if (memberShortId) {
       // console.log("found memberShortId, getting unionise auth token");
@@ -1236,6 +1275,31 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.employerName
     );
 
+    // decide whether to use prefilled employer id (worksite level),
+    // or user-chosen employer id (employer level)
+    let employerId;
+    if (
+      this.props.submission.formPage1 &&
+      this.props.submission.formPage1.prefillEmployerId
+    ) {
+      if (!this.state.prefillEmployerChanged) {
+        // if this is a prefill and employer has not been changed manually,
+        // return original prefilled employer Id
+        // this will be a worksite-level account id in most cases
+        employerId = this.props.submission.formPage1.prefillEmployerId;
+      } else {
+        // if employer has been manually changed since prefill, or if
+        // this is a blank-slate form, find id in employer object
+        // this will be an agency-level employer Id
+        employerId = employerObject.Id;
+      }
+    } else {
+      // if employer has been manually changed since prefill, or if
+      // this is a blank-slate form, find id in employer object
+      // this will be an agency-level employer Id
+      employerId = employerObject.Id;
+    }
+
     // set campaign source
     const q = queryString.parse(this.props.location.search);
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
@@ -1261,6 +1325,7 @@ export class SubmissionFormPage1Container extends React.Component {
         console.log(this.state.displayCAPEPaymentFields);
       });
     }
+
     // generate body
     const body = {
       ip_address: localIpUrl(),
@@ -1275,7 +1340,7 @@ export class SubmissionFormPage1Container extends React.Component {
       home_state: formValues.homeState,
       home_zip: formValues.homeZip,
       job_title: formValues.jobTitle,
-      employer_id: employerObject.Id,
+      employer_id: employerId,
       payment_method: paymentMethod,
       online_campaign_source: campaignSource,
       cape_legal: this.props.cape_legal.current.innerHTML,
@@ -1485,10 +1550,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }`
       );
     } else {
-      openSnackbar(
-        "success",
-        "Thank you. Your CAPE submission was proccessed."
-      );
+      openSnackbar("success", "Thank you. Your CAPE submission was processed.");
 
       this.props.history.push(`/thankyou/?cape=true`);
     }

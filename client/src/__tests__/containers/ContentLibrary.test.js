@@ -1,10 +1,11 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import {
   ContentLibraryUnconnected,
   ContentLibraryConnected
 } from "../../containers/ContentLibrary";
+import { tableIcons } from "../../components/SubmissionFormElements";
 
 import configureMockStore from "redux-mock-store";
 const mockStore = configureMockStore();
@@ -16,7 +17,6 @@ let deleteImageMock,
   deleteContentMock,
   deleteContentErrorMock,
   getAllContentMock,
-  getAllContentErrorMock,
   wrapper;
 
 const initialState = {
@@ -39,6 +39,11 @@ const initialState = {
     currentContent: {
       content_type: "headline",
       content: "test"
+    },
+    selectedContent: {
+      i: null,
+      h: null,
+      b: null
     },
     allContent: [
       {
@@ -78,6 +83,11 @@ const defaultProps = {
       content_type: "bodyCopy",
       content: "Here is some body copy.",
       updated_at: "2019-06-11T16:58:01.012Z"
+    },
+    selectedContent: {
+      i: 1,
+      h: 2,
+      b: 3
     }
   },
   apiContent: {
@@ -171,11 +181,6 @@ describe("<ContentLibrary />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "GET_ALL_CONTENT_SUCCESS" })
         );
-      getAllContentErrorMock = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_ALL_CONTENT_FAILURE" })
-        );
       wrapper.setProps({
         ...defaultProps,
         apiContent: {
@@ -220,41 +225,41 @@ describe("<ContentLibrary />", () => {
 
     //**** TODO:  test this.props.apiContent.handleDeleteClose method
 
-    test("calls `handleDeleteDialogOpen` method on delete button click", () => {
-      // create a mock function so we can see whether it's called on click
-      const handleDeleteDialogOpenMock = jest.fn();
+    // test("calls `handleDeleteDialogOpen` method on delete button click", () => {
+    //   // create a mock function so we can see whether it's called on click
+    //   const handleDeleteDialogOpenMock = jest.fn();
 
-      wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
+    //   wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
 
-      // simulate click
-      const deleteButton = wrapper.find('[data-test="delete"]').first();
-      deleteButton.simulate("click");
+    //   // simulate click
+    //   const deleteButton = wrapper.find('[data-test="delete"]').first();
+    //   deleteButton.simulate("click");
 
-      // expect the mock to have been called once
-      expect(handleDeleteDialogOpenMock.mock.calls.length).toBe(1);
+    //   // expect the mock to have been called once
+    //   expect(handleDeleteDialogOpenMock.mock.calls.length).toBe(1);
 
-      // restore mock
-      handleDeleteDialogOpenMock.mockRestore();
-    });
+    //   // restore mock
+    //   handleDeleteDialogOpenMock.mockRestore();
+    // });
 
-    test("calls `this.props.history.push` w/correct edit route on edit button click", () => {
-      // create a mock function so we can see whether it's called on click
-      const pushMock = jest.fn();
+    // test("calls `this.props.history.push` w/correct edit route on edit button click", () => {
+    //   // create a mock function so we can see whether it's called on click
+    //   const pushMock = jest.fn();
 
-      wrapper.instance().props.history.push = pushMock;
+    //   wrapper.instance().props.history.push = pushMock;
 
-      // simulate click
-      const editButton = wrapper.find('[data-test="edit"]').first();
-      editButton.simulate("click");
+    //   // simulate click
+    //   const editButton = wrapper.find('[data-test="edit"]').first();
+    //   editButton.simulate("click");
 
-      // expect the mock to have been called once
-      expect(pushMock.mock.calls.length).toBe(1);
+    //   // expect the mock to have been called once
+    //   expect(pushMock.mock.calls.length).toBe(1);
 
-      // restore mock
-      pushMock.mockRestore();
-    });
+    //   // restore mock
+    //   pushMock.mockRestore();
+    // });
 
-    test("calls `getAllContent` prop on component mount", () => {
+    test("`componentDidMount` calls `getAllContent`", () => {
       // run lifecycle method
       wrapper.instance().componentDidMount();
 
@@ -262,7 +267,49 @@ describe("<ContentLibrary />", () => {
       expect(getAllContentMock.mock.calls.length).toBe(1);
     });
 
-    test("calls `getAllContent` prop on component update (new authToken)", () => {
+    test("`componentDidMount` and `componentDidUpdate` handle error if `getAllContent` fails", () => {
+      const getAllContentError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_ALL_CONTENT_FAILURE" })
+        );
+      wrapper.instance().props.apiContent.getAllContent = getAllContentError;
+      wrapper.update();
+      wrapper.instance().componentDidMount();
+      const prevProps = {
+        content: {
+          allContent: []
+        },
+        appState: {}
+      };
+      wrapper.instance().componentDidUpdate(prevProps);
+
+      // expect the mock to have been called once
+      expect(getAllContentError.mock.calls.length).toBe(2);
+    });
+
+    test("`componentDidMount` and `componentDidUpdate` handle error if `getAllContent` throws", () => {
+      const getAllContentError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_ALL_CONTENT_FAILURE" })
+        );
+      wrapper.instance().props.apiContent.getAllContent = getAllContentError;
+      wrapper.update();
+      wrapper.instance().componentDidMount();
+      const prevProps = {
+        content: {
+          allContent: []
+        },
+        appState: {}
+      };
+      wrapper.instance().componentDidUpdate(prevProps);
+
+      // expect the mock to have been called once
+      expect(getAllContentError.mock.calls.length).toBe(2);
+    });
+
+    test("`componentDidUpdate` calls `getAllContent` (new authToken)", () => {
       const prevProps = {
         ...defaultProps,
         appState: {
@@ -276,7 +323,7 @@ describe("<ContentLibrary />", () => {
       expect(getAllContentMock.mock.calls.length).toBe(1);
     });
 
-    test("calls `getAllContent` prop on component update (new content)", () => {
+    test("`componentDidUpdate` calls `getAllContent` (new content)", () => {
       const prevProps = {
         content: {
           allContent: []
@@ -293,14 +340,41 @@ describe("<ContentLibrary />", () => {
       expect(getAllContentMock.mock.calls.length).toBe(1);
     });
 
-    // test negative branches for componentDidMount (doesn't call action if conditions not met)
+    test("`componentDidUpdate` doesn't calls `getAllContent` (new content)", () => {
+      const prevProps = {
+        content: {
+          allContent: [
+            {
+              id: 1,
+              content_type: "image",
+              content: "http:www.example.com/image.png",
+              updated_at: "2019-06-11T16:58:01.012Z"
+            },
+            {
+              id: 2,
+              content_type: "bodyCopy",
+              content: "Here is some body copy.",
+              updated_at: "2019-06-12T16:58:01.012Z"
+            }
+          ]
+        },
+        appState: {
+          authToken: "12345",
+          userType: "admin"
+        }
+      };
 
-    test("`handleDeleteDialogOpen` method calls `handleDeleteOpen` prop if passed a tile and logged in", () => {
+      // run lifecycle method
+      wrapper.instance().componentDidUpdate(prevProps);
+      expect(getAllContentMock.mock.calls.length).toBe(0);
+    });
+
+    test("`handleDeleteDialogOpen` method calls `handleDeleteOpen` prop if rowData and logged in", () => {
       // create a mock function so we can see whether it's called on component mount
       const handleDeleteOpenMock = jest.fn();
       wrapper.instance().props.apiContent.handleDeleteOpen = handleDeleteOpenMock;
 
-      const tile = {
+      const rowData = {
         id: "5eb92d2e-ae94-47c9-bdb4-4780c3b0b33c",
         contentType: "image",
         content: "http:www.example.com/image.png",
@@ -308,13 +382,147 @@ describe("<ContentLibrary />", () => {
       };
 
       // run method
-      wrapper.instance().handleDeleteDialogOpen(tile);
+      wrapper.instance().handleDeleteDialogOpen(null, rowData);
 
       // expect the mock to have been called once
       expect(handleDeleteOpenMock.mock.calls.length).toBe(1);
 
       // restore mock
       handleDeleteOpenMock.mockRestore();
+    });
+
+    test("`handleDeleteDialogOpen` method doesn't call `handleDeleteOpen` prop if !rowData", () => {
+      // create a mock function so we can see whether it's called on component mount
+      const handleDeleteOpenMock = jest.fn();
+      wrapper.instance().props.apiContent.handleDeleteOpen = handleDeleteOpenMock;
+
+      // run method
+      wrapper.instance().handleDeleteDialogOpen(null, null);
+
+      // expect the mock to have been called once
+      expect(handleDeleteOpenMock.mock.calls.length).toBe(0);
+
+      // restore mock
+      handleDeleteOpenMock.mockRestore();
+    });
+
+    test("`handleDeleteDialogOpen` method doesn't call `handleDeleteOpen` prop if wrong userType", () => {
+      // create a mock function so we can see whether it's called on component mount
+      const handleDeleteOpenMock = jest.fn();
+      wrapper.instance().props.apiContent.handleDeleteOpen = handleDeleteOpenMock;
+      wrapper.instance().props.appState.userType = "view";
+
+      // run method
+      wrapper.instance().handleDeleteDialogOpen(null, null);
+
+      // expect the mock to have been called once
+      expect(handleDeleteOpenMock.mock.calls.length).toBe(0);
+
+      // restore mock
+      handleDeleteOpenMock.mockRestore();
+    });
+
+    test("`handleEdit` calls this.props.history.push", () => {
+      const pushMock = jest.fn();
+      wrapper.instance().props.history.push = pushMock;
+
+      wrapper.instance().handleEdit(null, { id: 1 });
+
+      expect(pushMock.mock.calls.length).toBe(1);
+
+      pushMock.mockRestore();
+    });
+
+    test("`handleSelect` calls selectContent if unselected", () => {
+      const selectContentMock = jest.fn();
+      wrapper.instance().props.apiContent.selectContent = selectContentMock;
+      wrapper.instance().props.content.selectedContent = { h: 1 };
+
+      // run method
+      wrapper
+        .instance()
+        .handleSelect(null, { id: 0, content_type: "headline" });
+
+      // expect the mock to have been called once
+      expect(selectContentMock.mock.calls.length).toBe(1);
+
+      // restore mock
+      selectContentMock.mockRestore();
+    });
+
+    test("`handleSelect` calls unselectContent if selected", () => {
+      const unselectContentMock = jest.fn();
+      wrapper.instance().props.apiContent.unselectContent = unselectContentMock;
+      wrapper.instance().props.content.selectedContent = { h: 1 };
+
+      // run method
+      wrapper
+        .instance()
+        .handleSelect(null, { id: 1, content_type: "headline" });
+
+      // expect the mock to have been called once
+      expect(unselectContentMock.mock.calls.length).toBe(1);
+
+      // restore mock
+      unselectContentMock.mockRestore();
+    });
+
+    test("`checked` returns CheckBoxChecked icon if selected", () => {
+      wrapper.instance().props.content.selectedContent = { h: 1 };
+      const result = wrapper
+        .instance()
+        .checked({ id: 1, content_type: "headline" });
+
+      // expect the result to be the checked icon
+      expect(result).toBe(tableIcons.CheckBoxChecked);
+    });
+
+    test("`checked` returns CheckBoxOutlineBlank icon if selected", () => {
+      wrapper.instance().props.content.selectedContent = { h: 0 };
+      const result = wrapper
+        .instance()
+        .checked({ id: 1, content_type: "headline" });
+
+      // expect the result to be the checked icon
+      expect(result).toBe(tableIcons.CheckBoxBlank);
+    });
+
+    test("`selectAction` returns CheckBoxOutlineBlank icon if not selected", () => {
+      wrapper.instance().props.content.selectedContent = { h: 0 };
+      const result = wrapper
+        .instance()
+        .selectAction({ id: 1, content_type: "headline" });
+
+      // expect the result to be the checked icon
+      expect(result.icon).toBe(tableIcons.CheckBoxBlank);
+    });
+
+    test("`selectAction` returns CheckBoxChecked icon if selected", () => {
+      wrapper.instance().props.content.selectedContent = { h: 1 };
+      const result = wrapper
+        .instance()
+        .selectAction({ id: 1, content_type: "headline" });
+
+      // expect the result to be the checked icon
+      expect(result.icon).toBe(tableIcons.CheckBoxChecked);
+    });
+
+    test("`editAction` returns Edit icon", () => {
+      wrapper.instance().props.content.selectedContent = { h: 1 };
+      const result = wrapper
+        .instance()
+        .editAction({ id: 1, content_type: "headline" });
+
+      expect(result.icon).toBe(tableIcons.Edit);
+    });
+
+    test("`deleteAction` returns Delete icon", () => {
+      wrapper.instance().props.content.selectedContent = { h: 1 };
+      const result = wrapper
+        .instance()
+        .deleteAction({ id: 1, content_type: "headline" });
+
+      expect(result.icon).toBe(tableIcons.Delete);
     });
   });
 });

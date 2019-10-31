@@ -33,7 +33,6 @@ import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
-import LinkRequest from "./containers/LinkRequest";
 import UserForm from "./containers/UserForm";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
@@ -524,11 +523,6 @@ export class AppUnconnected extends Component {
                   {...routeProps}
                 />
               )}
-            />
-            <Route
-              exact
-              path="/linkrequest"
-              render={routeProps => <LinkRequest {...routeProps} />}
             />
             <Route
               path="/noaccess"
