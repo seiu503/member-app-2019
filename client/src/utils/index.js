@@ -22,6 +22,16 @@ export const skip = targetId => {
   skipTo.addEventListener("blur", removeTabIndex);
 };
 
+export const buildQuery = data => {
+  const query = [];
+  for (let key in data) {
+    if (data.hasOwnProperty(key)) {
+      query.push(`${key}=${data[key]}`);
+    }
+  }
+  return query.join("&");
+};
+
 export const labelsObj = {
   headline: "headline",
   bodyCopy: "body copy",

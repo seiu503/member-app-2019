@@ -44,7 +44,12 @@ export const INITIAL_STATE = {
     content: "",
     dialogOpen: false
   },
-  error: null
+  error: null,
+  selectedContent: {
+    h: null,
+    b: null,
+    i: null
+  }
 };
 
 function Content(state = INITIAL_STATE, action) {

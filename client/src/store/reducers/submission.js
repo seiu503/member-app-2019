@@ -254,11 +254,18 @@ function Submission(state = INITIAL_STATE, action) {
         } else if (action.payload.Account.Sub_Division__c) {
           subDivision = action.payload.Account.Sub_Division__c;
         } else if (
+          // SEIU 503 Staff edge case
+          action.payload.Account.CVRSOS__ParentName__c === "SEIU LOCAL 503 OPEU"
+        ) {
+          subDivision = "SEIU LOCAL 503 OPEU";
+        } else if (
+          // Community members edge case
           !action.payload.Account.WS_Subdivision_from_Agency__c &&
           !action.payload.Account.Sub_Division__c
         ) {
           subDivision = action.payload.Account.Name;
         }
+
         const employerType = employerTypeMap[subDivision];
 
         // if employer attached to contact record is 'Employer' record type,

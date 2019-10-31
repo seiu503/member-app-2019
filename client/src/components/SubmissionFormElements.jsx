@@ -260,7 +260,8 @@ export const employerTypeMap = {
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
   "Community Members": "Community Member",
-  "COMMUNITY MEMBERS": "Community Member"
+  "COMMUNITY MEMBERS": "Community Member",
+  "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
 };
 
 // helper function for reverse lookup from above object

@@ -267,8 +267,7 @@ export class ContentLibraryUnconnected extends React.Component {
               title="Content"
               options={{
                 filtering: true,
-                sorting: true,
-                columnsButton: true
+                sorting: true
               }}
               icons={tableIcons}
               actions={[
