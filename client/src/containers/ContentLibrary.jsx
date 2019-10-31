@@ -238,12 +238,35 @@ export class ContentLibraryUnconnected extends React.Component {
     return tableIcons.CheckBoxBlank;
   };
 
+  selectAction = rowData => {
+    const idsArray = Object.values(this.props.content.selectedContent);
+    return {
+      icon:
+        idsArray.indexOf(rowData.id) > -1
+          ? tableIcons.CheckBoxChecked
+          : tableIcons.CheckBoxBlank,
+      tooltip: "Select Content",
+      onClick: this.handleSelect
+    };
+  };
+
+  editAction = () => ({
+    icon: tableIcons.Edit,
+    tooltip: "Edit Content",
+    onClick: this.handleEdit
+  });
+
+  deleteAction = () => ({
+    icon: tableIcons.Delete,
+    tooltip: "Delete Content",
+    onClick: this.handleDeleteDialogOpen
+  });
+
   render() {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
-    const idsArray = Object.values(this.props.content.selectedContent);
     return (
       <div data-test="component-content-library" className={classes.root}>
         {loggedIn && this.props.content.deleteDialogOpen && (
@@ -298,26 +321,7 @@ export class ContentLibraryUnconnected extends React.Component {
                 sorting: true
               }}
               icons={tableIcons}
-              actions={[
-                rowData => ({
-                  icon:
-                    idsArray.indexOf(rowData.id) > -1
-                      ? tableIcons.CheckBoxChecked
-                      : tableIcons.CheckBoxBlank,
-                  tooltip: "Select Content",
-                  onClick: this.handleSelect
-                }),
-                rowData => ({
-                  icon: tableIcons.Edit,
-                  tooltip: "Edit Content",
-                  onClick: this.handleEdit
-                }),
-                rowData => ({
-                  icon: tableIcons.Delete,
-                  tooltip: "Delete Content",
-                  onClick: this.handleDeleteDialogOpen
-                })
-              ]}
+              actions={[this.selectAction, this.editAction, this.deleteAction]}
             />
           </div>
         </div>
