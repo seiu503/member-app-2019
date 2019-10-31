@@ -43,8 +43,6 @@ export class GenerateURLUnconnected extends React.Component {
     this.input = React.createRef();
   }
 
-  componentDidMount() {}
-
   copyToClipboard = e => {
     this.input.current.select();
     document.execCommand("copy");

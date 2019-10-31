@@ -131,7 +131,7 @@ describe("Helper Functions", () => {
   });
 
   describe("misc methods", () => {
-    it("handleError", () => {
+    it("handleError calls openSnackbar", () => {
       const openSnackbarMock = jest.fn();
       Notifier.openSnackbar = openSnackbarMock;
       formElements.handleError("Error");
@@ -141,7 +141,7 @@ describe("Helper Functions", () => {
       // expect(openSnackbarMock.mock.calls.length).toBe(2);
     });
 
-    it("inputLabelTranslateHelper", () => {
+    it("inputLabelTranslateHelper returns translated label", () => {
       const translateMock = jest.fn().mockImplementation(() => "firstName");
       const firstName = formElements.inputLabelTranslateHelper(
         "firstName",
@@ -151,7 +151,7 @@ describe("Helper Functions", () => {
       expect(firstName).toBe("firstName");
     });
 
-    it("optionsLabelTranslateHelper", () => {
+    it("optionsLabelTranslateHelper returns translated option", () => {
       const translateMock = jest.fn().mockImplementation(() => "firstName");
       const firstName = formElements.optionsLabelTranslateHelper(
         "firstName",
@@ -161,13 +161,55 @@ describe("Helper Functions", () => {
       expect(firstName).toBe("firstName");
     });
 
-    it("formatBirthdate", () => {
+    it("formatBirthdate returns a date in YYYY-MM-DD format", () => {
       const result = formElements.formatBirthdate({
         mm: "01",
         dd: "01",
         yyyy: "2000"
       });
       expect(result).toBe("2000-01-01");
+    });
+
+    it("renderText returns text content", () => {
+      const result = formElements.renderText({
+        content: "blah",
+        content_type: "bodyCopy"
+      });
+      expect(result).toBe("blah");
+    });
+
+    it("renderText returns an image url", () => {
+      const result = formElements.renderText({
+        content: "http://blah.s3-us-west-2.amazonaws.com/filename",
+        content_type: "image"
+      });
+      expect(result).toBe("filename");
+    });
+
+    it("renderImage returns an image if passed an image", () => {
+      const image = {
+        content: "http://blah.s3-us-west-2.amazonaws.com/filename",
+        content_type: "image"
+      };
+      const result = formElements.renderImage(image);
+      expect(result.props.src).toBe(image.content);
+    });
+
+    it("renderImage returns an empty string if not passed an image", () => {
+      const image = {
+        content: "blah",
+        content_type: "headline"
+      };
+      const result = formElements.renderImage(image);
+      expect(result).toBe("");
+    });
+
+    it("renderDate returns a formatted date", () => {
+      const result = formElements.renderDate({
+        updated_at: new Date("1/1/2019")
+      });
+      console.log(result);
+      expect(result).toBe("1/1/2019, 12:00:00 AM");
     });
   });
 });
@@ -299,6 +341,17 @@ describe("Input Field Render functions", () => {
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderSelect, initialProps);
     });
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          error: "Required"
+        },
+        mobile: true,
+        align: "right"
+      };
+      const props = { ...initialProps, ...testProps };
+      wrapper = mount(renderSelect(props));
+    });
   });
 
   describe("renderCheckbox", () => {
@@ -344,6 +397,19 @@ describe("Input Field Render functions", () => {
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderCheckbox, initialProps);
     });
+
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          error: "Required"
+        },
+        input: {
+          value: "test"
+        }
+      };
+      const props = { ...initialProps, ...testProps };
+      wrapper = mount(renderCheckbox(props));
+    });
   });
 
   describe("renderRadioGroup", () => {
@@ -386,6 +452,17 @@ describe("Input Field Render functions", () => {
 
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderRadioGroup, initialProps);
+    });
+
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          error: "Required"
+        },
+        direction: "vert"
+      };
+      const props = { ...initialProps, ...testProps };
+      wrapper = mount(renderRadioGroup(props));
     });
   });
 
@@ -432,6 +509,17 @@ describe("Input Field Render functions", () => {
 
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderCAPERadioGroup, initialProps);
+    });
+
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          error: "Required"
+        },
+        options: ["Other"]
+      };
+      const props = { ...initialProps, ...testProps };
+      wrapper = mount(renderCAPERadioGroup(props));
     });
   });
 });

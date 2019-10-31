@@ -13,7 +13,6 @@ import NotFound from "../components/NotFound";
 import NoAccess from "../components/NoAccess";
 import FormThankYou from "../components/FormThankYou";
 import Login from "../components/Login";
-import LinkRequest from "../containers/LinkRequest";
 import UserForm from "../containers/UserForm";
 import * as utils from "../utils/index";
 import ContentLibrary from "../containers/ContentLibrary";
@@ -543,11 +542,6 @@ describe("<App />", () => {
       wrapper = routeSetup("/thankyou");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(FormThankYou)).toHaveLength(1);
-    });
-    test(' "/linkrequest" path should render LinkRequest component', () => {
-      wrapper = routeSetup("/linkrequest");
-      expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
-      expect(wrapper.find(LinkRequest)).toHaveLength(1);
     });
     test(' "/page2?cId={cId}&aId={aid}" path should render SubmissionFormPage2 component', () => {
       wrapper = routeSetup("/page2?cId=12345678&aId=123456");

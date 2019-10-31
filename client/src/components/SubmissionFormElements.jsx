@@ -1219,7 +1219,7 @@ export const submTableFieldList = [
   { title: "Work email", field: "work_email", hidden: true }
 ];
 
-const renderImage = rowData => {
+export const renderImage = rowData => {
   if (rowData.content_type === "image") {
     const filename = rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
     return <img src={rowData.content} height="100" alt={filename} />;
@@ -1228,7 +1228,7 @@ const renderImage = rowData => {
   }
 };
 
-const renderText = rowData => {
+export const renderText = rowData => {
   if (rowData.content_type === "image") {
     return rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
   } else {
@@ -1236,7 +1236,7 @@ const renderText = rowData => {
   }
 };
 
-const renderDate = rowData => formatDateTime(rowData.updated_at);
+export const renderDate = rowData => formatDateTime(rowData.updated_at);
 
 export const contentTableFieldList = [
   { title: "Id", field: "id", hidden: false },
