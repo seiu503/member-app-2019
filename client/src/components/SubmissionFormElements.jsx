@@ -34,11 +34,19 @@ import Remove from "@material-ui/icons/Remove";
 import SaveAlt from "@material-ui/icons/SaveAlt";
 import Search from "@material-ui/icons/Search";
 import ViewColumn from "@material-ui/icons/ViewColumn";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 
 export const tableIcons = {
   // Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
   // Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
   // Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  CheckBoxBlank: forwardRef((props, ref) => (
+    <CheckBoxOutlineBlankIcon {...props} ref={ref} />
+  )),
+  CheckBoxChecked: forwardRef((props, ref) => (
+    <CheckBoxIcon {...props} ref={ref} />
+  )),
   Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
   // DetailPanel: forwardRef((props, ref) => (
   //   <ChevronRight {...props} ref={ref} />

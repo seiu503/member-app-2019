@@ -46,7 +46,6 @@ export class GenerateURLUnconnected extends React.Component {
   componentDidMount() {}
 
   copyToClipboard = e => {
-    console.log(this.input.current);
     this.input.current.select();
     document.execCommand("copy");
     e.target.focus();

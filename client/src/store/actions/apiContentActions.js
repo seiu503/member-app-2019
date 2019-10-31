@@ -6,6 +6,8 @@ export const HANDLE_INPUT = "HANDLE_INPUT";
 export const HANDLE_DELETE_OPEN = "HANDLE_DELETE_OPEN";
 export const HANDLE_DELETE_CLOSE = "HANDLE_DELETE_CLOSE";
 export const CLEAR_FORM = "CLEAR_FORM";
+export const SELECT_CONTENT = "SELECT_CONTENT";
+export const UNSELECT_CONTENT = "UNSELECT_CONTENT";
 export const GET_CONTENT_BY_ID_REQUEST = "GET_CONTENT_BY_ID_REQUEST";
 export const GET_CONTENT_BY_ID_SUCCESS = "GET_CONTENT_BY_ID_SUCCESS";
 export const GET_CONTENT_BY_ID_FAILURE = "GET_CONTENT_BY_ID_FAILURE";
@@ -51,6 +53,20 @@ export function handleDeleteClose() {
 export function clearForm() {
   return {
     type: CLEAR_FORM
+  };
+}
+
+export function selectContent(id, content_type) {
+  return {
+    type: SELECT_CONTENT,
+    payload: { id, content_type }
+  };
+}
+
+export function unselectContent(id, content_type) {
+  return {
+    type: UNSELECT_CONTENT,
+    payload: { id, content_type }
   };
 }
 
