@@ -36,7 +36,7 @@
     "helmet": "^3.21.1",
     "http": "^0.0.0",
     "https": "^1.0.0",
-    "jsforce": "^1.9.1",
+    "jsforce": "^1.9.3",
     "knex": "^0.19.5",
     "knex-migrate": "^1.7.2",
     "morgan": "^1.9.1",
