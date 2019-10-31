@@ -220,39 +220,39 @@ describe("<ContentLibrary />", () => {
 
     //**** TODO:  test this.props.apiContent.handleDeleteClose method
 
-    test("calls `handleDeleteDialogOpen` method on delete button click", () => {
-      // create a mock function so we can see whether it's called on click
-      const handleDeleteDialogOpenMock = jest.fn();
+    // test("calls `handleDeleteDialogOpen` method on delete button click", () => {
+    //   // create a mock function so we can see whether it's called on click
+    //   const handleDeleteDialogOpenMock = jest.fn();
 
-      wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
+    //   wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
 
-      // simulate click
-      const deleteButton = wrapper.find('[data-test="delete"]').first();
-      deleteButton.simulate("click");
+    //   // simulate click
+    //   const deleteButton = wrapper.find('[data-test="delete"]').first();
+    //   deleteButton.simulate("click");
 
-      // expect the mock to have been called once
-      expect(handleDeleteDialogOpenMock.mock.calls.length).toBe(1);
+    //   // expect the mock to have been called once
+    //   expect(handleDeleteDialogOpenMock.mock.calls.length).toBe(1);
 
-      // restore mock
-      handleDeleteDialogOpenMock.mockRestore();
-    });
+    //   // restore mock
+    //   handleDeleteDialogOpenMock.mockRestore();
+    // });
 
-    test("calls `this.props.history.push` w/correct edit route on edit button click", () => {
-      // create a mock function so we can see whether it's called on click
-      const pushMock = jest.fn();
+    // test("calls `this.props.history.push` w/correct edit route on edit button click", () => {
+    //   // create a mock function so we can see whether it's called on click
+    //   const pushMock = jest.fn();
 
-      wrapper.instance().props.history.push = pushMock;
+    //   wrapper.instance().props.history.push = pushMock;
 
-      // simulate click
-      const editButton = wrapper.find('[data-test="edit"]').first();
-      editButton.simulate("click");
+    //   // simulate click
+    //   const editButton = wrapper.find('[data-test="edit"]').first();
+    //   editButton.simulate("click");
 
-      // expect the mock to have been called once
-      expect(pushMock.mock.calls.length).toBe(1);
+    //   // expect the mock to have been called once
+    //   expect(pushMock.mock.calls.length).toBe(1);
 
-      // restore mock
-      pushMock.mockRestore();
-    });
+    //   // restore mock
+    //   pushMock.mockRestore();
+    // });
 
     test("calls `getAllContent` prop on component mount", () => {
       // run lifecycle method

@@ -251,7 +251,7 @@ describe("submission reducer", () => {
           textAuthOptOut: false,
           legalLanguage: "",
           paymentType: "Card",
-          whichCard: "Use existing",
+          whichCard: "",
           medicaidResidents: 0,
           paymentMethodAdded: false,
           afhDuesRate: 0,
@@ -372,7 +372,7 @@ describe("submission reducer", () => {
           textAuthOptOut: false,
           legalLanguage: "",
           paymentType: "Card",
-          whichCard: "Use existing",
+          whichCard: "",
           medicaidResidents: 0,
           paymentMethodAdded: false,
           afhDuesRate: 0,
@@ -492,7 +492,7 @@ describe("submission reducer", () => {
           textAuthOptOut: false,
           legalLanguage: "",
           paymentType: "Card",
-          whichCard: "Use existing",
+          whichCard: "",
           medicaidResidents: 0,
           paymentMethodAdded: false,
           afhDuesRate: 0,
@@ -587,6 +587,10 @@ describe("submission reducer", () => {
       };
       const expectedState = {
         ...INITIAL_STATE,
+        formPage1: {
+          ...INITIAL_STATE.formPage1,
+          whichCard: "Use existing"
+        },
         payment: {
           activeMethodLast4: "1234",
           cardBrand: "Visa",

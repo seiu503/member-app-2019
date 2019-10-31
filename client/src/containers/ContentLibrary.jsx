@@ -168,13 +168,13 @@ export class ContentLibraryUnconnected extends React.Component {
     }
   }
 
-  handleDeleteDialogOpen = tile => {
-    if (tile && this.props.appState.loggedIn) {
+  handleDeleteDialogOpen = (event, rowData) => {
+    if (rowData && this.props.appState.loggedIn) {
       const { userType } = this.props.appState;
       if (!["admin", "edit"].includes(userType)) {
         openSnackbar("error", warning);
       }
-      this.props.apiContent.handleDeleteOpen(tile);
+      this.props.apiContent.handleDeleteOpen(rowData);
     }
   };
 
@@ -210,6 +210,9 @@ export class ContentLibraryUnconnected extends React.Component {
       this.props.apiContent.getAllContent(token);
     }
   }
+
+  handleEdit = (event, rowData) =>
+    this.props.history.push(`/edit/${rowData.id}`);
 
   render() {
     const { classes } = this.props;
@@ -268,6 +271,18 @@ export class ContentLibraryUnconnected extends React.Component {
                 columnsButton: true
               }}
               icons={tableIcons}
+              actions={[
+                rowData => ({
+                  icon: tableIcons.Edit,
+                  tooltip: "Edit Content",
+                  onClick: this.handleEdit
+                }),
+                rowData => ({
+                  icon: tableIcons.Delete,
+                  tooltip: "Delete Content",
+                  onClick: this.handleDeleteDialogOpen
+                })
+              ]}
             />
           </div>
         </div>

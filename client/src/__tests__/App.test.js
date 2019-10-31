@@ -516,6 +516,14 @@ describe("<App />", () => {
       wrapper.instance().setRedirect();
       expect(window.localStorage.getItem("redirect")).toBe("testpath");
     });
+    it("renderBodyCopy renders paragraphs matching provided body id", () => {
+      wrapper = setup();
+      const result = wrapper.instance().renderBodyCopy(0);
+      expect(result.props.children.props.children.length).toBe(3);
+      expect(result.props.children.props.children[0].key).toBe("bodyCopy0_1");
+      const result1 = wrapper.instance().renderBodyCopy(100);
+      expect(result1.props.children.props.children[0].key).toBe("0");
+    });
   });
 
   describe("Unprotected route tests", () => {
