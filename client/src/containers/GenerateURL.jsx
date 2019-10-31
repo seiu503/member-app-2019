@@ -1,79 +1,88 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import { withStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import FAB from "@material-ui/core/Fab";
+import Tooltip from "@material-ui/core/Tooltip";
+import FileCopy from "@material-ui/icons/FileCopy";
 
-import ButtonWithSpinner from "../components/ButtonWithSpinner";
 import * as utils from "../utils";
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const CLIENT_URL = process.env.REACT_APP_CLIENT_URL;
 
 const styles = theme => ({
   root: {},
-  container: {
-    padding: "80px 0 140px 0",
-    background: "white",
-    minHeight: "100vh"
+  bannerStrip: {
+    padding: "80px 0 0 0",
+    background: "white"
   },
   head: {
     color: theme.palette.primary.light
   },
   form: {
     maxWidth: 600,
-    margin: "auto"
-  },
-  group: {
+    margin: "auto",
     display: "flex",
-    width: "100%",
-    flexDirection: "row",
     justifyContent: "center"
   },
   input: {
     width: "100%",
     margin: "0 0 20px 0"
   },
-  formButton: {
-    width: "100%",
-    padding: 20
+  buttonCopy: {
+    marginLeft: 20,
+    width: 64
   }
 });
 
 export class GenerateURLUnconnected extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.input = React.createRef();
   }
 
   componentDidMount() {}
 
+  copyToClipboard = e => {
+    console.log(this.input.current);
+    this.input.current.select();
+    document.execCommand("copy");
+    e.target.focus();
+  };
+
   render() {
     const { classes } = this.props;
     const query = utils.buildQuery(this.props.content.selectedContent);
-    const url = `${BASE_URL}?${query}`;
+    const url = query.length ? `${CLIENT_URL}?${query}` : CLIENT_URL;
     return (
-      <div className={classes.container} data-test="component-generate-url">
-        <Typography
-          variant="h2"
-          align="center"
-          gutterBottom
-          className={classes.head}
-          style={{ paddingTop: 20 }}
-        >
-          Generate URL
-        </Typography>
-        <TextField
-          name="url"
-          id="url"
-          label="Generated URL"
-          type="url"
-          variant="outlined"
-          value={url}
-          className={classes.input}
-        />
+      <div className={classes.bannerStrip} data-test="component-generate-url">
+        <div className={classes.form}>
+          <TextField
+            inputRef={this.input}
+            name="url"
+            id="url"
+            label="Generated URL"
+            type="url"
+            variant="outlined"
+            value={url}
+            className={classes.input}
+          />
+          {document.queryCommandSupported("copy") && (
+            <Tooltip title="Copy to clipboard" aria-label="Copy to clipboard">
+              <FAB
+                className={classes.buttonCopy}
+                onClick={this.copyToClipboard}
+                color="primary"
+                aria-label="Copy to clipboard"
+                data-test="button-copy"
+              >
+                <FileCopy />
+              </FAB>
+            </Tooltip>
+          )}
+        </div>
       </div>
     );
   }

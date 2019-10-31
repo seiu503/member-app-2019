@@ -25,7 +25,7 @@ export const skip = targetId => {
 export const buildQuery = data => {
   const query = [];
   for (let key in data) {
-    if (data.hasOwnProperty(key)) {
+    if (data.hasOwnProperty(key) && !!data[key]) {
       query.push(`${key}=${data[key]}`);
     }
   }

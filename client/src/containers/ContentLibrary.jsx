@@ -9,11 +9,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
 import Create from "@material-ui/icons/Create";
-// import Delete from "@material-ui/icons/Delete";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
-// import ContentTile from "../components/ContentTile";
+import GenerateURL from "./GenerateURL";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
 import {
@@ -247,16 +247,19 @@ export class ContentLibraryUnconnected extends React.Component {
           >
             Content Library
           </Typography>
+          <GenerateURL />
           <div className={classes.buttonWrap}>
-            <FAB
-              className={classes.buttonNew}
-              href="/new"
-              color="primary"
-              aria-label="New Content"
-              data-test="button-new"
-            >
-              <Create />
-            </FAB>
+            <Tooltip title="New Content" aria-label="New Content">
+              <FAB
+                className={classes.buttonNew}
+                href="/new"
+                color="primary"
+                aria-label="New Content"
+                data-test="button-new"
+              >
+                <Create />
+              </FAB>
+            </Tooltip>
           </div>
           <div className={classes.gridWrapper}>
             <MaterialTable
