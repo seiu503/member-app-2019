@@ -137,7 +137,11 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   closeDialog() {
-    this.props.history.push(`/page2/?id=${this.props.submission.salesforceId}`);
+    this.props.history.push(
+      `/page2/?cId=${this.props.submission.salesforceId}&sId=${
+        this.props.submission.submissionId
+      }`
+    );
     this.handleCAPEClose();
   }
   mobilePhoneOnBlur() {
