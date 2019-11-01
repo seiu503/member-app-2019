@@ -1308,7 +1308,7 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.lookupSFContact();
     }
     // find employer object
-    const employerObject = findEmployerObject(
+    let employerObject = findEmployerObject(
       this.props.submission.employerObjects,
       formValues.employerName
     );
