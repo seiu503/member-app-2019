@@ -750,8 +750,8 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFCAPEByContactId(id)
         .then(result => {
-          console.log("####################");
-          console.log(result);
+          // console.log("####################");
+          // console.log(result);
           if (
             result.type === "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" ||
             this.props.submission.error
@@ -762,9 +762,14 @@ export class SubmissionFormPage1Container extends React.Component {
             });
             resolve(handleError(this.props.submission.error));
           }
-          this.props.apiSubmission.handleInput({
-            target: { name: "whichCard", value: "Use existing" }
-          });
+          if (
+            !!this.props.submission.cape.activeMethodLast4 &&
+            !this.props.submission.cape.paymentErrorHold
+          ) {
+            this.props.apiSubmission.handleInput({
+              target: { name: "whichCard", value: "Use existing" }
+            });
+          }
           resolve(result);
         })
         .catch(err => {
@@ -791,9 +796,14 @@ export class SubmissionFormPage1Container extends React.Component {
             });
             resolve(handleError(this.props.submission.error));
           }
-          this.props.apiSubmission.handleInput({
-            target: { name: "whichCard", value: "Use existing" }
-          });
+          if (
+            !!this.props.submission.payment.activeMethodLast4 &&
+            !this.props.submission.payment.paymentErrorHold
+          ) {
+            this.props.apiSubmission.handleInput({
+              target: { name: "whichCard", value: "Use existing" }
+            });
+          }
           resolve(result);
         })
         .catch(err => {

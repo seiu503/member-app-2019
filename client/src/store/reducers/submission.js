@@ -390,10 +390,7 @@ function Submission(state = INITIAL_STATE, action) {
           djrEmployerId: { $set: action.payload.Employer__c },
           cardBrand: { $set: action.payload.Card_Brand__c }
         },
-        djrId: { $set: action.payload.Id || action.payload.id },
-        formPage1: {
-          whichCard: { $set: "Use existing" }
-        }
+        djrId: { $set: action.payload.Id || action.payload.id }
       });
     }
 
@@ -405,9 +402,6 @@ function Submission(state = INITIAL_STATE, action) {
           paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
           memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
           cardBrand: { $set: action.payload.Card_Brand__c }
-        },
-        formPage1: {
-          whichCard: { $set: "Use existing" }
         }
       });
     }

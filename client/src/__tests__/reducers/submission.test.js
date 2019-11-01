@@ -587,10 +587,6 @@ describe("submission reducer", () => {
       };
       const expectedState = {
         ...INITIAL_STATE,
-        formPage1: {
-          ...INITIAL_STATE.formPage1,
-          whichCard: "Use existing"
-        },
         payment: {
           activeMethodLast4: "1234",
           cardBrand: "Visa",
