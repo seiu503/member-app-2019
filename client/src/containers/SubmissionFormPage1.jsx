@@ -972,10 +972,18 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       formValues.employerName
     );
-    // console.log(`Agency #: ${employerObject.Agency_Number__c}`);
-    const employerExternalId = employerObject.Agency_Number__c
-      ? employerObject.Agency_Number__c.toString()
-      : "SW001";
+    if (employerObject) {
+      console.log(`Agency #: ${employerObject.Agency_Number__c}`);
+    } else {
+      console.log(
+        `no employerObject found for ${formValues.employerName}; no agency #`
+      );
+    }
+
+    const employerExternalId =
+      employerObject && employerObject.Agency_Number__c
+        ? employerObject.Agency_Number__c.toString()
+        : "SW001";
 
     const body = {
       firstName: formValues.firstName,
