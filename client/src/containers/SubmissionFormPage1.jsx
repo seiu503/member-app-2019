@@ -369,11 +369,22 @@ export class SubmissionFormPage1Container extends React.Component {
       returnValues.birthdate = birthdate;
 
       // find employer object and set employer-related fields
-      const employerObject = findEmployerObject(
+      let employerObject = findEmployerObject(
         this.props.submission.employerObjects,
         values.employerName
       );
-      returnValues.agencyNumber = employerObject.Agency_Number__c;
+      if (employerObject) {
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else if (values.employerName === "SEIU 503 Staff") {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          "SEIU LOCAL 503 OPEU"
+        );
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else {
+        console.log(`no agency number found for ${values.employerName}`);
+        returnValues.agencyNumber = 0;
+      }
 
       if (
         this.props.submission.formPage1 &&
@@ -388,18 +399,22 @@ export class SubmissionFormPage1Container extends React.Component {
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
           // this will be an agency-level employer Id
-          returnValues.employerId = employerObject.Id;
+          returnValues.employerId = employerObject
+            ? employerObject.Id
+            : "0016100000WERGeAAP"; // <= unknown employer
         }
       } else {
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
         // this will be an agency-level employer Id
-        returnValues.employerId = employerObject.Id;
+        returnValues.employerId = employerObject
+          ? employerObject.Id
+          : "0016100000WERGeAAP"; // <= unknown employer
       }
 
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
-        target: { name: "employerId", value: employerObject.Id }
+        target: { name: "employerId", value: returnValues.employerId }
       });
       resolve(returnValues);
     });
@@ -968,12 +983,17 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // find employer object
-    const employerObject = findEmployerObject(
+    let employerObject = findEmployerObject(
       this.props.submission.employerObjects,
       formValues.employerName
     );
     if (employerObject) {
       console.log(`Agency #: ${employerObject.Agency_Number__c}`);
+    } else if (formValues.employerName === "SEIU 503 Staff") {
+      employerObject = findEmployerObject(
+        this.props.submission.employerObjects,
+        "SEIU LOCAL 503 OPEU"
+      );
     } else {
       console.log(
         `no employerObject found for ${formValues.employerName}; no agency #`
@@ -1293,6 +1313,19 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.employerName
     );
 
+    if (employerObject) {
+      console.log(`employerId: ${employerObject.Id}`);
+    } else if (formValues.employerName === "SEIU 503 Staff") {
+      employerObject = findEmployerObject(
+        this.props.submission.employerObjects,
+        "SEIU LOCAL 503 OPEU"
+      );
+    } else {
+      console.log(
+        `no employerObject found for ${formValues.employerName}; no agency #`
+      );
+    }
+
     // decide whether to use prefilled employer id (worksite level),
     // or user-chosen employer id (employer level)
     let employerId;
@@ -1309,13 +1342,13 @@ export class SubmissionFormPage1Container extends React.Component {
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
         // this will be an agency-level employer Id
-        employerId = employerObject.Id;
+        employerId = employerObject ? employerObject.Id : "0016100000WERGeAAP"; // <= unknown employer
       }
     } else {
       // if employer has been manually changed since prefill, or if
       // this is a blank-slate form, find id in employer object
       // this will be an agency-level employer Id
-      employerId = employerObject.Id;
+      employerId = employerObject ? employerObject.Id : "0016100000WERGeAAP"; // <= unknown employer
     }
 
     // set campaign source
