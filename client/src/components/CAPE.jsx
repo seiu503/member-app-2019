@@ -595,7 +595,7 @@ export const CAPE = props => {
               className={classes.nextSmall}
               variant="contained"
             >
-              Next
+              Skip
             </Button>
           </div>
         )}

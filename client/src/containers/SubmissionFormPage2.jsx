@@ -56,12 +56,6 @@ export class SubmissionFormPage2Container extends React.Component {
   }
 }
 
-// export const SubmissionFormPage2Wrap = reduxForm({
-//   form: "submissionPage2",
-//   validate,
-//   enableReinitialize: true
-// })(SubmissionFormPage2Component);
-
 const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
