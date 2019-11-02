@@ -6,7 +6,7 @@ import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-let wrapper, trimSignatureMock;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -32,6 +32,12 @@ let createSFContactSuccess = jest.fn().mockImplementation(() =>
     payload: { salesforce_id: "123" }
   })
 );
+
+let createSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
+  );
 
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -88,24 +94,7 @@ const sigBox = {
   }
 };
 
-const formValues = {
-  firstName: "firstName",
-  lastName: "lastName",
-  homeEmail: "homeEmail",
-  homeStreet: "homeStreet",
-  homeCity: "homeCity",
-  homeZip: "homeZip",
-  homeState: "homeState",
-  signature: "signature",
-  employerType: "employerType",
-  employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
-  dd: "01",
-  yyyy: "1999",
-  preferredLanguage: "English",
-  textAuthOptOut: false
-};
+let formValues;
 
 const defaultProps = {
   submission: {
@@ -184,77 +173,141 @@ const setup = (props = {}) => {
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    // console.log = jest.fn();
+    formValues = {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false
+    };
   });
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  describe("handleUpload", () => {
-    test("`handleUpload` calls apiContent.uploadImage", () => {
-      let uploadImageMock = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "UPLOAD_IMAGE_SUCCESS",
-          payload: { content: "sigUrl" }
-        })
-      );
-      let props = {
-        apiContent: { uploadImage: uploadImageMock }
-      };
-
-      wrapper = setup(props);
-
-      let blob = new Blob([""], { type: "image/jpg" });
-      blob["lastModifiedDate"] = "";
-      blob["name"] = "filename";
-      let fakeFile = blob;
-      trimSignatureMock = jest.fn().mockImplementation(() => fakeFile);
-      wrapper.instance().trimSignature = trimSignatureMock;
-      wrapper.instance().handleUpload("firstname", "lastname");
-      expect(uploadImageMock.mock.calls.length).toBe(1);
-    });
-
-    test("`handleUpload` handles uploadImage error", async function() {
+  describe("prepForContact", () => {
+    test("`prepForContact` handles edge case if no matching employer object found", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
-      let uploadImageMock = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          type: "UPLOAD_IMAGE_FAILURE"
-        })
-      );
       let props = {
-        apiContent: { uploadImage: uploadImageMock }
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "SEIU 503 Staff",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
       };
-
       wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
 
-      let fakeFile = null;
-      trimSignatureMock = jest.fn().mockImplementation(() => fakeFile);
-      wrapper.instance().trimSignature = trimSignatureMock;
-      await wrapper.instance().handleUpload("firstname", "lastname");
-      expect(formElements.handleError.mock.calls.length).toBe(1);
+      expect(result.agencyNumber).toBe(0);
+      expect(result.employerId).toBe("0016100000WERGeAAP");
     });
-
-    test("`handleUpload` handles uploadImage failure", async function() {
+    test("`prepForContact` handles edge case if prefill employer id & employer changed", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
-      let uploadImageMock = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "UPLOAD_IMAGE_FAILURE"
-        })
-      );
       let props = {
-        apiContent: { uploadImage: uploadImageMock }
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "SEIU 503 Staff",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          },
+          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
       };
-
       wrapper = setup(props);
+      wrapper.instance().state.prefillEmployerChanged = true;
+      wrapper.update();
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
 
-      let blob = new Blob([""], { type: "image/jpg" });
-      blob["lastModifiedDate"] = "";
-      blob["name"] = "filename";
-      let fakeFile = blob;
-      trimSignatureMock = jest.fn().mockImplementation(() => fakeFile);
-      wrapper.instance().trimSignature = trimSignatureMock;
-      await wrapper.instance().handleUpload("firstname", "lastname");
-      expect(formElements.handleError.mock.calls.length).toBe(1);
+      expect(result.agencyNumber).toBe(0);
+      expect(result.employerId).toBe("0016100000WERGeAAP");
+    });
+    test("`prepForContact` handles SEIU 503 Staff edge case", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      formValues.employerName = "SEIU 503 Staff";
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "SEIU 503 Staff",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [
+            { id: "1", Name: "SEIU LOCAL 503 OPEU", Agency_Number__c: 700 }
+          ]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
+
+      expect(result.agencyNumber).toBe(700);
     });
   });
 });

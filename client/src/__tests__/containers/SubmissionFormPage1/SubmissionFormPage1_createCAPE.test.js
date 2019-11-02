@@ -1,13 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-
 import "jest-canvas-mock";
+import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
 
 let wrapper;
 
@@ -35,6 +32,12 @@ let createSFContactSuccess = jest.fn().mockImplementation(() =>
     payload: { salesforce_id: "123" }
   })
 );
+
+let createSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
+  );
 
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -91,24 +94,7 @@ const sigBox = {
   }
 };
 
-const formValues = {
-  firstName: "firstName",
-  lastName: "lastName",
-  homeEmail: "homeEmail",
-  homeStreet: "homeStreet",
-  homeCity: "homeCity",
-  homeZip: "homeZip",
-  homeState: "homeState",
-  signature: "signature",
-  employerType: "employerType",
-  employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
-  dd: "01",
-  yyyy: "1999",
-  preferredLanguage: "English",
-  textAuthOptOut: false
-};
+let formValues;
 
 const defaultProps = {
   submission: {
@@ -170,6 +156,11 @@ const defaultProps = {
       innerHTML: "deposit"
     }
   },
+  cape_legal: {
+    current: {
+      innerHTML: "cape"
+    }
+  },
   direct_pay: {
     current: {
       innerHTML: "pay"
@@ -187,61 +178,66 @@ const setup = (props = {}) => {
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    // console.log = jest.fn();
+    formValues = {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false
+    };
   });
   afterEach(() => {
     jest.restoreAllMocks();
   });
 
-  describe("toggleCardAddingFrame", () => {
-    test("`toggleCardAddingFrame` calls getIframeURL if value = `Add new card`", () => {
-      let getIframeURLMock = jest
+  describe("createCAPE", () => {
+    test("`createCAPE` handles case if no CAPE body generated", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "sdjflk",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [{ Id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      const generateCAPEBodyMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Add new card");
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
-
-    test("`toggleCardAddingFrame` does not call getIframeURL if value !== `Add new card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Use existing");
-      expect(getIframeURLMock.mock.calls.length).toBe(0);
-    });
-
-    test("`toggleCardAddingFrame` handles error if getIframeURL fails", () => {
-      let getIframeURLError = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLError;
-      wrapper.instance().toggleCardAddingFrame("Add new card");
-      expect(getIframeURLError.mock.calls.length).toBe(1);
-    });
-
-    test("`toggleCardAddingFrame` calls getIframeURL if value = `Card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Card");
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
-
-    test("`toggleCardAddingFrame` doesn't getIframeURL if value = `Check`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Check");
-      expect(getIframeURLMock.mock.calls.length).toBe(0);
+        .mockImplementation(() => Promise.resolve(null));
+      wrapper = setup(props);
+      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
+      const result = await wrapper
+        .instance()
+        .createCAPE()
+        .catch(err => console.log(err));
     });
   });
 });

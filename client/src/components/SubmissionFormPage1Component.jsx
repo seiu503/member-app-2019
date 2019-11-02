@@ -491,9 +491,7 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
-    const checkoff = !utils.isPaymentRequired(
-      this.props.submission.formPage1.employerType
-    );
+    const checkoff = this.props.submission.formPage1.checkoff;
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     return (

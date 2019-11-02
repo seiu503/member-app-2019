@@ -94,10 +94,23 @@ export class SubmissionFormPage1Container extends React.Component {
           ) {
             this.handleOpen();
             this.setCAPEOptions();
+          } else {
+            // if prefill lookup fails, remove ids from query params
+            // and reset to blank form
+            this.props.apiSubmission.clearForm();
+            // remove cId & aId from route params if no match
+            window.history.replaceState(
+              null,
+              null,
+              `${window.location.origin}/`
+            );
           }
         })
         .catch(err => {
           console.error(err);
+          this.props.apiSubmission.clearForm();
+          // remove cId & aId from route params if no match
+          window.history.replaceState(null, null, `${window.location.origin}/`);
           return handleError(err);
         });
     }
@@ -274,7 +287,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
       return this.getIframeURL(true);
     } else {
-      const checkoff = !utils.isPaymentRequired(formValues.employerType);
+      const checkoff = this.props.submission.formPage1.checkoff;
       console.log(checkoff);
       if (frequency === "Monthly" && checkoff) {
         // hide iframe if already rendered
@@ -371,12 +384,12 @@ export class SubmissionFormPage1Container extends React.Component {
       }
 
       returnValues.birthdate = birthdate;
-
       // find employer object and set employer-related fields
       let employerObject = findEmployerObject(
         this.props.submission.employerObjects,
         values.employerName
       );
+
       if (employerObject) {
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else if (values.employerName === "SEIU 503 Staff") {
@@ -415,7 +428,6 @@ export class SubmissionFormPage1Container extends React.Component {
           ? employerObject.Id
           : "0016100000WERGeAAP"; // <= unknown employer
       }
-
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
@@ -435,14 +447,11 @@ export class SubmissionFormPage1Container extends React.Component {
       returnValues.direct_deposit_auth = values.directDepositAuth
         ? formatSFDate(new Date())
         : null;
-
       // set legal language
       returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
-
       // set campaign source
       const q = queryString.parse(this.props.location.search);
       returnValues.campaignSource = q && q.s ? q.s : "NewMemberForm_201910";
-
       // set salesforce id
       if (!values.salesforceId) {
         if (q && q.cId) {
@@ -452,7 +461,6 @@ export class SubmissionFormPage1Container extends React.Component {
           returnValues.salesforceId = this.props.submission.salesforce_id;
         }
       }
-
       resolve(returnValues);
     });
   }
@@ -762,40 +770,37 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getSFCAPEByContactId() {
-    console.log("getSFCAPEByContactId");
+    // console.log("getSFCAPEByContactId");
     const id = this.props.submission.salesforceId;
-    console.log(id);
-    return new Promise(resolve => {
-      this.props.apiSF
-        .getSFCAPEByContactId(id)
-        .then(result => {
-          // console.log("####################");
-          // console.log(result);
-          if (
-            result.type === "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" ||
-            this.props.submission.error
-          ) {
-            // console.log(this.props.submission.error);
-            this.props.apiSubmission.handleInput({
-              target: { name: "whichCard", value: "Add new card" }
-            });
-            resolve(handleError(this.props.submission.error));
-          }
-          if (
-            !!this.props.submission.cape.activeMethodLast4 &&
-            !this.props.submission.cape.paymentErrorHold
-          ) {
-            this.props.apiSubmission.handleInput({
-              target: { name: "whichCard", value: "Use existing" }
-            });
-          }
-          resolve(result);
-        })
-        .catch(err => {
-          console.error(err);
-          resolve(handleError(err));
-        });
-    });
+    // console.log(id);
+    await this.props.apiSF
+      .getSFCAPEByContactId(id)
+      .then(result => {
+        // console.log(result);
+        if (
+          result.type === "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" ||
+          this.props.submission.error
+        ) {
+          // console.log(this.props.submission.error);
+          this.props.apiSubmission.handleInput({
+            target: { name: "whichCard", value: "Add new card" }
+          });
+          return handleError(this.props.submission.error);
+        }
+        if (
+          !!this.props.submission.cape.activeMethodLast4 &&
+          !this.props.submission.cape.paymentErrorHold
+        ) {
+          this.props.apiSubmission.handleInput({
+            target: { name: "whichCard", value: "Use existing" }
+          });
+        }
+        return result;
+      })
+      .catch(err => {
+        console.error(err);
+        return handleError(err);
+      });
   }
 
   getSFDJRById() {
@@ -1311,6 +1316,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (!this.props.submission.salesforceId) {
       await this.lookupSFContact();
     }
+
     // find employer object
     let employerObject = findEmployerObject(
       this.props.submission.employerObjects,
@@ -1318,7 +1324,7 @@ export class SubmissionFormPage1Container extends React.Component {
     );
 
     if (employerObject) {
-      console.log(`employerId: ${employerObject.Id}`);
+      // console.log(`employerId: ${employerObject.Id}`);
     } else if (formValues.employerName === "SEIU 503 Staff") {
       employerObject = findEmployerObject(
         this.props.submission.employerObjects,
@@ -1329,7 +1335,7 @@ export class SubmissionFormPage1Container extends React.Component {
         `no employerObject found for ${formValues.employerName}; no agency #`
       );
     }
-
+    // console.log(employerObject);
     // decide whether to use prefilled employer id (worksite level),
     // or user-chosen employer id (employer level)
     let employerId;
@@ -1360,7 +1366,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
 
     // set body fields
-    const checkoff = !utils.isPaymentRequired(formValues.employerType);
+    const checkoff = this.props.submission.formPage1.checkoff;
     const oneTime = formValues.donationFrequency === "One-Time";
     const paymentMethod = checkoff && !oneTime ? "Checkoff" : "Unionise";
     let donationAmount =
@@ -1714,6 +1720,7 @@ export class SubmissionFormPage1Container extends React.Component {
       console.error(err);
       return handleError(err);
     });
+
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
       await this.updateSFContact().catch(err => {

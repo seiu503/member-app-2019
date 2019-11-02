@@ -1,13 +1,10 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-
 import "jest-canvas-mock";
+import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
 
 let wrapper;
 
@@ -26,6 +23,13 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "LOOKUP_SF_CONTACT_SUCCESS",
     payload: { salesforce_id: "123" }
+  })
+);
+
+let getSFDJRSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_DJR_SUCCESS",
+    payload: { djr_id: "123" }
   })
 );
 
@@ -57,12 +61,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let createSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
@@ -73,6 +71,12 @@ let updateSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
+  );
+
+let getSFCAPEByContactIdSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_SF_CAPE_BY_CONTACT_ID_SUCCESS", payload: {} })
   );
 
 let refreshRecaptchaMock = jest
@@ -117,8 +121,12 @@ const defaultProps = {
     formPage1: {
       signature: ""
     },
-    cape: {},
-    payment: {}
+    cape: {
+      activeMethodLast4: "1234"
+    },
+    payment: {
+      activeMethodLast4: ""
+    }
   },
   initialValues: {
     mm: "",
@@ -139,6 +147,7 @@ const defaultProps = {
     createSFDJR: createSFDJRSuccess,
     updateSFDJR: updateSFDJRSuccess,
     getSFDJRById: getSFDJRSuccess,
+    getSFCAPEByContactId: getSFCAPEByContactIdSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -189,59 +198,133 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
 
-  describe("toggleCardAddingFrame", () => {
-    test("`toggleCardAddingFrame` calls getIframeURL if value = `Add new card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Add new card");
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
+  describe("getSFCAPEByContactId", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
+    test("`getSFCAPEByContactId` updates whichCard if getSFCAPEByContactId prop succeeds", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          payment: {},
+          cape: {
+            activeMethodLast4: "1234"
+          }
+        },
+        apiSF: {
+          getSFCAPEByContactId: getSFCAPEByContactIdSuccess
+        }
+      };
+      wrapper = setup(props);
 
-    test("`toggleCardAddingFrame` does not call getIframeURL if value !== `Add new card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Use existing");
-      expect(getIframeURLMock.mock.calls.length).toBe(0);
+      wrapper.update();
+      wrapper
+        .instance()
+        .getSFCAPEByContactId()
+        .then(async () => {
+          await getSFCAPEByContactIdSuccess();
+          expect(handleInputMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
     });
-
-    test("`toggleCardAddingFrame` handles error if getIframeURL fails", () => {
-      let getIframeURLError = jest
+    test("`getSFCAPEByContactId` handles error if getSFCAPEByContactId prop fails", async function() {
+      const handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
+      const getSFCAPEByContactIdError = jest
         .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLError;
-      wrapper.instance().toggleCardAddingFrame("Add new card");
-      expect(getIframeURLError.mock.calls.length).toBe(1);
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          payment: {},
+          cape: {
+            activeMethodLast4: "1234"
+          }
+        },
+        apiSF: {
+          getSFCAPEByContactId: getSFCAPEByContactIdError
+        }
+      };
+      wrapper = setup(props);
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .getSFCAPEByContactId()
+        .then(async () => {
+          await getSFCAPEByContactIdError();
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
     });
-
-    test("`toggleCardAddingFrame` calls getIframeURL if value = `Card`", () => {
-      let getIframeURLMock = jest
+    test("`getSFCAPEByContactId` handles error if getSFCAPEByContactId prop throws", async function() {
+      const handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
+      const getSFCAPEByContactIdError = jest
         .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Card");
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          payment: {},
+          cape: {
+            activeMethodLast4: "1234"
+          }
+        },
+        apiSF: {
+          getSFCAPEByContactId: getSFCAPEByContactIdError
+        }
+      };
+      wrapper = setup(props);
 
-    test("`toggleCardAddingFrame` doesn't getIframeURL if value = `Check`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Check");
-      expect(getIframeURLMock.mock.calls.length).toBe(0);
+      wrapper.update();
+      wrapper
+        .instance()
+        .getSFCAPEByContactId()
+        .then(async () => {
+          await getSFCAPEByContactIdError();
+          expect(handleErrorMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
     });
   });
 });
