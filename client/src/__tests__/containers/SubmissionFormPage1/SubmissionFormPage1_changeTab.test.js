@@ -1,19 +1,19 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-
 import "jest-canvas-mock";
+import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
+import { handleInput } from "../../../store/actions/apiSubmissionActions";
 
-let wrapper;
+let wrapper, addSubmissionMock, handleUploadMock;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
@@ -79,6 +79,7 @@ let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
+let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
 const clearSigBoxMock = jest.fn();
@@ -147,7 +148,9 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -193,55 +196,21 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     jest.restoreAllMocks();
   });
 
-  describe("toggleCardAddingFrame", () => {
-    test("`toggleCardAddingFrame` calls getIframeURL if value = `Add new card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Add new card");
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
+  describe("changeTab", () => {
+    test("`changeTab` changes tab if newValue === 2 & paymentType === `Card`", async function() {
+      let props = {
+        submission: {
+          formPage1: {
+            paymentType: "Card",
+            newCardNeeded: true,
+            paymentRequired: true
+          }
+        }
+      };
 
-    test("`toggleCardAddingFrame` does not call getIframeURL if value !== `Add new card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Use existing");
-      expect(getIframeURLMock.mock.calls.length).toBe(0);
-    });
-
-    test("`toggleCardAddingFrame` handles error if getIframeURL fails", () => {
-      let getIframeURLError = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLError;
-      wrapper.instance().toggleCardAddingFrame("Add new card");
-      expect(getIframeURLError.mock.calls.length).toBe(1);
-    });
-
-    test("`toggleCardAddingFrame` calls getIframeURL if value = `Card`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Card");
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
-
-    test("`toggleCardAddingFrame` doesn't getIframeURL if value = `Check`", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper = setup();
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().toggleCardAddingFrame("Check");
-      expect(getIframeURLMock.mock.calls.length).toBe(0);
+      wrapper = setup(props);
+      wrapper.instance().changeTab(2);
+      expect(wrapper.instance().state.tab).toBe(2);
     });
   });
 });

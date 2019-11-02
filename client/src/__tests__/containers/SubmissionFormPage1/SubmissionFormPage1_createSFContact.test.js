@@ -94,13 +94,6 @@ const sigBox = {
   }
 };
 
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",

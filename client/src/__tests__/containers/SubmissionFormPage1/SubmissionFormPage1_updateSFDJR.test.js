@@ -214,7 +214,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           salesforceId: "123",
           formPage1: {
-            medicaidResidents: 1,
             paymentType: "Card"
           },
           payment: {

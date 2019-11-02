@@ -1,21 +1,13 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 import moment from "moment";
-import { storeFactory } from "../../../utils/testUtils";
-import { Provider } from "react-redux";
+
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 
-import * as apiSForce from "../../../store/actions/apiSFActions";
-import {
-  SubmissionFormPage1Connected,
-  SubmissionFormPage1Container
-} from "../../../containers/SubmissionFormPage1";
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
-
-let store, wrapper;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -220,11 +212,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
 
   describe("componentDidMount", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
     test("calls `getSFContactByDoubleId` on componentDidMount if id in query", () => {
       let props = {
         location: {
@@ -249,7 +241,35 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(getSFContactByDoubleIdSuccess).toHaveBeenCalled();
     });
 
-    test("handles error if `getSFContactByDoubleId` fails", () => {
+    test("clears form if `getSFContactByDoubleId` fails", () => {
+      formElements.handleError = jest.fn();
+      getSFContactByDoubleIdError = () =>
+        Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
+      let props = {
+        location: {
+          search: "cId=1&aId=2"
+        },
+        apiSF: {
+          getSFContactByDoubleId: getSFContactByDoubleIdError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+
+      wrapper = setup(props);
+
+      wrapper.instance().componentDidMount();
+      return getSFContactByDoubleIdError()
+        .then(() => {
+          expect(clearFormMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
+    test("handles error if `getSFContactByDoubleId` throws", () => {
+      getSFContactByDoubleIdError = () =>
+        Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE" });
       formElements.handleError = jest.fn();
       let props = {
         location: {
@@ -260,7 +280,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
-      store = storeFactory(initialState);
 
       wrapper = setup(props);
 

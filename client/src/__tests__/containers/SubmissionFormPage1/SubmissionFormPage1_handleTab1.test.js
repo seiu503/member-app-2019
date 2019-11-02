@@ -1,32 +1,16 @@
 import React from "react";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 import moment from "moment";
-import {
-  findByTestAttr,
-  storeFactory,
-  fakeDataURI
-} from "../../../utils/testUtils";
-import { Provider } from "react-redux";
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 
-import * as apiSForce from "../../../store/actions/apiSFActions";
-import {
-  SubmissionFormPage1Connected,
-  SubmissionFormPage1Container
-} from "../../../containers/SubmissionFormPage1";
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-import { handleInput } from "../../../store/actions/apiSubmissionActions";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
-
-let store, wrapper, trimSignatureMock, handleUploadMock, addSubmissionMock;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
@@ -39,18 +23,6 @@ let updateSFContactError = jest
   .fn()
   .mockImplementation(() =>
     Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let updateSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS", payload: {} })
-  );
-
-let updateSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
   );
 
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
@@ -73,16 +45,6 @@ let createSFContactSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let createSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let createSFOMAError = jest
-  .fn()
-  .mockImplementation(() => Promise.reject({ type: "CREATE_SF_OMA_FAILURE" }));
-
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "GET_SF_CONTACT_SUCCESS",
@@ -104,44 +66,10 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFContactByIdError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_FAILURE", payload: {} })
-  );
-
-let getSFContactByDoubleIdError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE", payload: {} })
-  );
-
-let addSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
-  );
-
-let addSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
-  );
-
-let createSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({}));
-
 let getSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let getSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_DJR_FAILURE", payload: {} })
   );
 
 let createSFDJRSuccess = jest
@@ -150,72 +78,11 @@ let createSFDJRSuccess = jest
     Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
   );
 
-let createSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "CREATE_SF_DJR_FAILURE", payload: {} })
-  );
-
 let updateSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
   );
-
-let updateSFDJRError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "UPDATE_SF_DJR_FAILURE", payload: {} })
-  );
-
-let getIframeExistingSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_EXISTING_SUCCESS", payload: {} })
-  );
-
-let getIframeExistingError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "GET_IFRAME_EXISTING_FAILURE", payload: {} })
-  );
-
-let getIframeNewSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} })
-  );
-
-let getIframeNewError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_IFRAME_URL_FAILURE", payload: {} })
-  );
-
-let getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "GET_UNIONISE_TOKEN_SUCCESS",
-    payload: { access_token: "1234" }
-  })
-);
-
-let getUnioniseTokenError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_UNIONISE_TOKEN_FAILURE", payload: {} })
-  );
-
-// let refreshUnioniseTokenSuccess = jest
-//   .fn()
-//   .mockImplementation(() =>
-//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_SUCCESS", payload: {} })
-//   );
-
-// let refreshUnioniseTokenError = jest
-//   .fn()
-//   .mockImplementation(() =>
-//     Promise.resolve({ type: "REFRESH_UNIONISE_TOKEN_FAILURE", payload: {} })
-//   );
 
 let refreshRecaptchaMock = jest
   .fn()
@@ -225,64 +92,8 @@ let verifyRecaptchaScoreMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve(0.9));
 
-let createSFCAPESuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "CREATE_SF_CAPE_SUCCESS",
-    payload: { sf_cape_id: 123 }
-  })
-);
-
-let createSFCAPEError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_CAPE_FAILURE" })
-  );
-
-let createCAPESuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "CREATE_CAPE_SUCCESS" }));
-
-let createCAPEError = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "CREATE_CAPE_FAILURE" }));
-
-let updateCAPESuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" }));
-
-let updateCAPEError = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "UPDATE_CAPE_FAILURE" }));
-
-let updateSFCAPESuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_CAPE_SUCCESS" })
-  );
-
-let updateSFCAPEError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_CAPE_FAILURE" })
-  );
-
-let postOneTimePaymentSuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "POST_ONE_TIME_PAYMENT_SUCCESS",
-    payload: { access_token: 123 }
-  })
-);
-
-let postOneTimePaymentError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "POST_ONE_TIME_PAYMENT_FAILURE" })
-  );
-
-let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
-const flushPromises = () => new Promise(setImmediate);
 const clearSigBoxMock = jest.fn();
 let toDataURLMock = jest.fn();
 
@@ -290,13 +101,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -390,7 +194,6 @@ const defaultProps = {
 };
 
 const setup = (props = {}) => {
-  store = mockStore(initialState);
   const setupProps = { ...defaultProps, ...props };
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
@@ -404,6 +207,90 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("handleTab1", () => {
+    test("`handleTab1` handles error if verifyRecaptchaScore fails", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123"
+        },
+        apiSF: {
+          updateSFContact: updateSFContactError,
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      const verifyRecaptchaScoreError = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0));
+      wrapper = setup(props);
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreError;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .handleTab1()
+        .then(async () => {
+          await verifyRecaptchaScoreError();
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
+    test("`handleTab1` sets howManyTabs to 3 if no payment required", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "homecare",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123"
+        },
+        apiSF: {
+          updateSFContact: updateSFContactError,
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+
+      wrapper = setup(props);
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .handleTab1()
+        .then(async () => {
+          await verifyRecaptchaScoreMock();
+          expect(wrapper.instance().state.howManyTabs).toBe(3);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
     test("`handleTab1` handles error if updateSFContact fails", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
@@ -428,10 +315,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      updateSFContactError = () => Promise.reject();
+      wrapper = setup(props);
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper.instance().updateSFContact = updateSFContactError;
 
       wrapper.update();
       wrapper
@@ -474,10 +361,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
+      lookupSFContactError = () => Promise.reject("");
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper.instance().updateSFContact = updateSFContactSuccess;
+      wrapper.instance().lookupSFContact = lookupSFContactError;
       wrapper.update();
       wrapper
         .instance()
@@ -485,6 +373,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .then(async () => {
           await verifyRecaptchaScoreMock();
           await handleInputMock();
+          await updateSFContactSuccess();
           return lookupSFContactError().then(() => {
             expect(formElements.handleError.mock.calls.length).toBe(1);
           });
@@ -532,10 +421,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           execute: jest.fn()
         }
       };
-      wrapper = shallow(
-        <SubmissionFormPage1Container {...defaultProps} {...props} />
-      );
+      wrapper = setup(props);
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper.instance().updateSFContact = updateSFContactSuccess;
       const changeTabMock = jest.fn();
       wrapper.instance().changeTab = changeTabMock;
       wrapper.update();
@@ -550,6 +438,68 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           });
         })
         .catch(err => console.log(err));
+    });
+
+    test("`handleTab1` navigates to tab 1 if lookup successful", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      const handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
+      clearFormMock = jest.fn();
+      updateSFContactSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          clearForm: clearFormMock,
+          verify: () =>
+            Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
+        },
+        submission: {
+          salesforceId: null,
+          formPage1: {
+            reCaptchaValue: ""
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          updateSFContact: updateSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        },
+        recaptcha: {
+          execute: jest.fn()
+        }
+      };
+      wrapper = setup(props);
+      updateSFContactError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject("is this the error?"));
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper.instance().lookupSFContact = lookupSFContactSuccess;
+      wrapper.instance().updateSFContact = updateSFContactError;
+      const changeTabMock = jest.fn();
+      wrapper.instance().changeTab = changeTabMock;
+      wrapper.update();
+      await wrapper
+        .instance()
+        .handleTab1()
+        .catch(err => console.log(err));
+      await verifyRecaptchaScoreMock();
+      await handleInputMock();
+      await lookupSFContactSuccess();
+      wrapper.instance().props.submission.salesforceId = "1";
+      await updateSFContactError().catch(err => console.log(err));
+      // expect(formElements.handleError.mock.calls.length).toBe(1);
     });
   });
 });
