@@ -78,7 +78,7 @@ script:
     nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js;
       else
         echo "Master branch; running production build.";
-        nohup env-path -p .env.production yarn node node_modules/react-scripts/scripts/build.js;
+        nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js;
       fi
   - cd .. && yarn test
   - cd client && yarn test
