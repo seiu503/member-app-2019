@@ -67,8 +67,8 @@ script:
   - knex-scripts truncate --env testing
   - knex migrate:latest --env testing
   - cd client && yarn install
-  - if [ "$TRAVIS_BRANCH" = "development" ]; then nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js
-  - if [ "$TRAVIS_BRANCH" = "master" ]; then nohup env-path -p .env.production yarn node node_modules/react-scripts/scripts/build.js
+  - test $TRAVIS_BRANCH = "development" && nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js
+  - test $TRAVIS_BRANCH = "master" && nohup env-path -p .env.production yarn node node_modules/react-scripts/scripts/build.js
   - cd .. && yarn test
   - cd client && yarn test
   - npm install -g env-path
