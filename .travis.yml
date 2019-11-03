@@ -24,7 +24,8 @@ deploy:
   local_dir: dpl_cd_upload
   skip_cleanup: true
   on: &1
-    branch: master
+    all_branches: true
+    condition: $TRAVIS_BRANCH = "master"
   repo: seiu503/member-app-2019
   bucket: code-deploy-builds
   region: us-west-2
@@ -44,7 +45,8 @@ deploy:
   local_dir: dpl_cd_upload
   skip_cleanup: true
   on: &2
-    branch: development
+    all_branches: true
+    condition: $TRAVIS_BRANCH = "development"
   repo: seiu503/member-app-2019
   bucket: code-deploy-builds
   region: us-west-2
