@@ -2,23 +2,22 @@ import React from "react";
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
 import Iframe from "react-iframe";
+import PropTypes from "prop-types";
+import { Translate } from "react-localize-redux";
 
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import Button from "@material-ui/core/Button";
-import * as formElements from "./SubmissionFormElements";
 import Typography from "@material-ui/core/Typography";
 
-import PropTypes from "prop-types";
-
-import validate from "../utils/validators";
-import { scrollToFirstError } from "../utils";
+import { validate } from "../utils/validators";
+import { onSubmitFailFn } from "../utils";
+import * as formElements from "./SubmissionFormElements";
 
 export const Tab3 = props => {
   const {
     onSubmit,
     classes,
     loading,
-    invalid,
     iFrameURL,
     afhDuesRate,
     back,
@@ -29,17 +28,43 @@ export const Tab3 = props => {
   } = props;
 
   let duesCopy = "";
-  // console.log(formPage1.paymentType);
+  if (payment.cardBrand) {
+    console.log(payment.cardBrand);
+  }
+
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
       case "adult foster home":
-        duesCopy = formElements.afhDuesCopy(afhDuesRate);
+        duesCopy = (
+          <React.Fragment>
+            <Translate id="afhDuesCopy1">Monthly dues are</Translate>{" "}
+            {afhDuesRate}
+            <Translate id="afhDuesCopy2">
+              , calculated at $14.84 per Medicaid resident in your home(s), plus
+              $2.75 per month. Dues will be deducted on the 10th day of each
+              month from the payment method you provide below. Dues are set by
+              the SEIU Local 503 bylaws.
+            </Translate>
+          </React.Fragment>
+        );
         break;
       case "retired":
-        duesCopy = formElements.retireeDuesCopy;
+        duesCopy = (
+          <Translate id="retireeDuesCopy">
+            Monthly dues are $5 and will be deducted on the 10th day of each
+            month from the payment method you provide below. Dues are set by the
+            SEIU Local 503 bylaws.
+          </Translate>
+        );
         break;
       default:
-        duesCopy = formElements.commDuesCopy;
+        duesCopy = (
+          <Translate id="commDuesCopy">
+            Monthly dues are $10 and will be deducted on the 10th day of each
+            month from the payment method you provide below. Dues are set by the
+            SEIU Local 503 bylaws.
+          </Translate>
+        );
     }
   }
   const validMethod = !!payment.activeMethodLast4 && !payment.paymentErrorHold;
@@ -71,14 +96,19 @@ export const Tab3 = props => {
               classes={classes}
               component={formElements.renderRadioGroup}
               options={formElements.paymentTypes}
+              additionalOnChange={toggleCardAddingFrame}
             />
           )}
         {formPage1.paymentRequired &&
           formPage1.paymentType === "Card" &&
           validMethod && (
             <div data-test="component-choose-card">
-              <Typography component="p" className={classes.body}>
-                Your existing payment method on file is the card ending in{" "}
+              <Typography component="p" className={classes.bodyCenter}>
+                <Translate id="existingPaymentMethod1">
+                  Your existing payment method on file is the
+                </Translate>{" "}
+                {payment.cardBrand}{" "}
+                <Translate id="existingPaymentMethod2">ending in</Translate>{" "}
                 {payment.activeMethodLast4}.
               </Typography>
               <Field
@@ -104,13 +134,13 @@ export const Tab3 = props => {
           formPage1.paymentRequired && (
             <div data-test="component-iframe">
               <Typography component="h2" className={classes.head}>
-                Add a payment method
+                <Translate id="addPayment">Add a payment method</Translate>
               </Typography>
               <div className={classes.iframeWrap}>
                 <Iframe
                   url={iFrameURL}
                   width="100%"
-                  height="100px"
+                  height="280px"
                   id="iFrame"
                   className={classes.iframe}
                   display="initial"
@@ -122,12 +152,14 @@ export const Tab3 = props => {
         {formPage1.paymentType === "Check" && (
           <div className={classes.paymentCopy}>
             <Typography component="h2" className={classes.head}>
-              To pay your dues by check:
+              <Translate id="payByCheck1">To pay your dues by check:</Translate>
             </Typography>
             <Typography component="p" className={classes.body}>
-              Please mail your payment of $5 (monthly) or $60 (annually) to SEIU
-              Local 503, PO Box 12159, Salem, OR 97309. Please write 'Retiree
-              Dues' on your check. Dues are set by the SEIU Local 503 bylaws.
+              <Translate id="payByCheck2">
+                {
+                  "Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write \u2018Retiree Dues\u2019 on your check. Dues are set by the SEIU Local 503 bylaws."
+                }
+              </Translate>
             </Typography>
           </div>
         )}
@@ -140,19 +172,18 @@ export const Tab3 = props => {
             className={classes.back}
             variant="contained"
           >
-            Back
+            <Translate id="back">Back</Translate>
           </Button>
         </div>
 
         <ButtonWithSpinner
           type="submit"
-          color="secondary"
+          color="primary"
           className={classes.formButton}
           variant="contained"
           loading={loading}
-          disabled={invalid}
         >
-          Submit
+          <Translate id="submitButton">Submit</Translate>
         </ButtonWithSpinner>
       </form>
     </div>
@@ -180,11 +211,11 @@ export const Tab3Form = reduxForm({
   form: "submissionPage1",
   validate,
   destroyOnUnmount: false,
-  forceUnregisterOnUnmount: true, // <------ unregister fields on unmount
+  forceUnregisterOnUnmount: false,
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: onSubmitFailFn
 })(Tab3);
 
 // connect to redux store

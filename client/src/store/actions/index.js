@@ -1,5 +1,6 @@
 export const LOGOUT = "LOGOUT";
 export const SET_LOGGEDIN = "SET_LOGGEDIN";
+export const SET_SPINNER = "SET_SPINNER";
 export const SET_REDIRECT_URL = "SET_REDIRECT_URL";
 
 export function logout() {
@@ -8,9 +9,16 @@ export function logout() {
   };
 }
 
-export function setLoggedIn() {
+export function setLoggedIn(type) {
   return {
-    type: SET_LOGGEDIN
+    type: SET_LOGGEDIN,
+    payload: type
+  };
+}
+
+export function setSpinner() {
+  return {
+    type: SET_SPINNER
   };
 }
 

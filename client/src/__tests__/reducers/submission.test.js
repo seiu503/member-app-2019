@@ -1,13 +1,6 @@
 import moment from "moment";
 import reducer, { INITIAL_STATE } from "../../store/reducers/submission";
-import {
-  contactsTableFields,
-  generateSFContactFieldList
-} from "../../../../app/utils/fieldConfigs.js";
 
-// this is a hack to allow the SubmissionFormPageComponent to import
-// this object even though it is stored outside the /src directory
-export const contactsTableFieldsExport = { ...contactsTableFields };
 describe("submission reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
@@ -56,6 +49,66 @@ describe("submission reducer", () => {
       }
     });
   });
+  it("should handle `setCAPEOptions`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_CAPE_OPTIONS",
+        payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      cape: {
+        ...INITIAL_STATE.cape,
+        monthlyOptions: [1, 2, 3],
+        oneTimeOptions: [4, 5, 6]
+      }
+    });
+  });
+  it("should handle `setPaymentDetailsCAPE`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_PAYMENT_DETAILS_CAPE",
+        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      cape: {
+        ...INITIAL_STATE.cape,
+        activeMethodLast4: "1234",
+        cardBrand: "Visa"
+      },
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        paymentMethodAdded: true
+      }
+    });
+  });
+  it("should handle `setPaymentDetailsDues`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_PAYMENT_DETAILS_DUES",
+        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      payment: {
+        ...INITIAL_STATE.payment,
+        activeMethodLast4: "1234",
+        cardBrand: "Visa"
+      },
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        paymentMethodAdded: true
+      }
+    });
+  });
+  it("should handle `clearForm`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "CLEAR_FORM"
+      })
+    ).toEqual(INITIAL_STATE);
+  });
 
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {
@@ -63,13 +116,19 @@ describe("submission reducer", () => {
         type: "ADD_SUBMISSION_SUCCESS",
         payload: {
           salesforce_id: "1",
-          submission_id: "2"
+          submission_id: "2",
+          currentSubmission: {
+            submission_errors: ""
+          }
         }
       };
       const expectedState = {
         ...INITIAL_STATE,
         salesforceId: "1",
-        submissionId: "2"
+        submissionId: "2",
+        currentSubmission: {
+          submission_errors: ""
+        }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
@@ -86,6 +145,32 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
+    test("getAllSubmissions", () => {
+      const action = {
+        type: "GET_ALL_SUBMISSIONS_SUCCESS",
+        payload: [
+          {
+            id: "1",
+            first_name: "first",
+            last_name: "last",
+            email: "test@test.com"
+          }
+        ]
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        allSubmissions: [
+          {
+            id: "1",
+            first_name: "first",
+            last_name: "last",
+            email: "test@test.com"
+          }
+        ],
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
     test("getSFContact", () => {
       const payload = {
         Id: "123",
@@ -95,7 +180,10 @@ describe("submission reducer", () => {
           Name: "string",
           Id: "string",
           WS_Subdivision_from_Agency__c: "string",
-          RecordTypeId: "string"
+          RecordTypeId: "string",
+          Parent: {
+            Id: "string"
+          }
         },
         OtherCity: "string",
         OtherState: "or",
@@ -130,7 +218,8 @@ describe("submission reducer", () => {
         Worksite_manual_entry_from_webform__c: "string",
         Work_Email__c: "string@string.com",
         Work_Phone__c: "123-456-7890",
-        Binary_Membership__c: "Not a Member"
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
       };
       const action = {
         type: "GET_SF_CONTACT_SUCCESS",
@@ -139,13 +228,13 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         formPage1: {
-          mm: "01",
-          dd: "01",
-          yyyy: "1999",
+          mm: "",
           mobilePhone: "123-456-7890",
           employerName: "string",
           employerId: "",
           employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
           firstName: "string",
           lastName: "string",
           homeStreet: "string",
@@ -156,16 +245,260 @@ describe("submission reducer", () => {
           homeEmail: "string@string.com",
           preferredLanguage: "string",
           paymentRequired: false,
-          newCardNeeded: false,
+          newCardNeeded: true,
           termsAgree: false,
           signature: null,
           textAuthOptOut: false,
           legalLanguage: "",
           paymentType: "Card",
-          whichCard: "Use existing",
+          whichCard: "",
           medicaidResidents: 0,
           paymentMethodAdded: false,
-          afhDuesRate: 0
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly",
+          checkoff: true
+        },
+        formPage2: {
+          africanOrAfricanAmerican: false,
+          arabAmericanMiddleEasternOrNorthAfrican: false,
+          asianOrAsianAmerican: false,
+          hispanicOrLatinx: false,
+          nativeAmericanOrIndigenous: false,
+          nativeHawaiianOrOtherPacificIslander: false,
+          white: false,
+          other: false,
+          declined: true,
+          mailToCity: "string",
+          mailToState: "or",
+          mailToStreet: "string",
+          mailToZip: "12345",
+          lgbtqId: false,
+          transId: false,
+          disabilityId: false,
+          deafOrHardOfHearing: false,
+          blindOrVisuallyImpaired: false,
+          gender: "female",
+          genderOtherDescription: "",
+          genderPronoun: "other",
+          jobTitle: "",
+          worksite: "string",
+          workEmail: "string@string.com",
+          workPhone: "123-456-7890",
+          hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFContact edge cases", () => {
+      const payload = {
+        Id: "123",
+        Display_Name_for_forms__c: "string",
+        Account: {
+          CVRSOS__ParentName__c: "string",
+          Name: "string",
+          Id: "string",
+          Sub_Division__c: "string",
+          RecordTypeId: "01261000000ksTuAAI",
+          Parent: {
+            Id: "string"
+          }
+        },
+        OtherCity: "string",
+        OtherState: "or",
+        OtherStreet: "string",
+        OtherPostalCode: "12345",
+        FirstName: "string",
+        LastName: "string",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
+        Preferred_Language__c: "string",
+        MailingStreet: "string",
+        MailingPostalCode: "12345",
+        MailingState: "or",
+        MailingCity: "string",
+        Home_Email__c: "string@string.com",
+        MobilePhone: "123-456-7890",
+        Text_Authorization_Opt_Out__c: false,
+        termsagree__c: true,
+        Signature__c: "string",
+        Online_Campaign_Source__c: "string",
+        Signed_Card__c: "string",
+        Ethnicity__c: "declined",
+        LGBTQ_ID__c: false,
+        Trans_ID__c: false,
+        Disability_ID__c: false,
+        Deaf_or_hearing_impaired__c: false,
+        Blind_or_visually_impaired__c: false,
+        Gender__c: "female",
+        Gender_Other_Description__c: "",
+        Prounoun__c: "other",
+        Title: "",
+        Hire_Date__c: "2019-11-11",
+        Worksite_manual_entry_from_webform__c: "string",
+        Work_Email__c: "string@string.com",
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
+      };
+      const action = {
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        formPage1: {
+          mm: "",
+          mobilePhone: "123-456-7890",
+          employerName: "string",
+          employerId: "",
+          employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
+          firstName: "string",
+          lastName: "string",
+          homeStreet: "string",
+          homeCity: "string",
+          homeState: "or",
+          homeZip: "12345",
+          immediatePastMemberStatus: "Not a Member",
+          homeEmail: "string@string.com",
+          preferredLanguage: "string",
+          paymentRequired: false,
+          newCardNeeded: true,
+          termsAgree: false,
+          signature: null,
+          textAuthOptOut: false,
+          legalLanguage: "",
+          paymentType: "Card",
+          whichCard: "",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly",
+          checkoff: true
+        },
+        formPage2: {
+          africanOrAfricanAmerican: false,
+          arabAmericanMiddleEasternOrNorthAfrican: false,
+          asianOrAsianAmerican: false,
+          hispanicOrLatinx: false,
+          nativeAmericanOrIndigenous: false,
+          nativeHawaiianOrOtherPacificIslander: false,
+          white: false,
+          other: false,
+          declined: true,
+          mailToCity: "string",
+          mailToState: "or",
+          mailToStreet: "string",
+          mailToZip: "12345",
+          lgbtqId: false,
+          transId: false,
+          disabilityId: false,
+          deafOrHardOfHearing: false,
+          blindOrVisuallyImpaired: false,
+          gender: "female",
+          genderOtherDescription: "",
+          genderPronoun: "other",
+          jobTitle: "",
+          worksite: "string",
+          workEmail: "string@string.com",
+          workPhone: "123-456-7890",
+          hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFContact edge cases 2", () => {
+      const payload = {
+        Id: "123",
+        Display_Name_for_forms__c: "string",
+        Account: {
+          CVRSOS__ParentName__c: "string",
+          Name: "string",
+          Id: "string",
+          RecordTypeId: "01261000000ksTuAAI",
+          Parent: {
+            Id: "string"
+          }
+        },
+        OtherCity: "string",
+        OtherState: "or",
+        OtherStreet: "string",
+        OtherPostalCode: "12345",
+        FirstName: "string",
+        LastName: "string",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
+        Preferred_Language__c: "string",
+        MailingStreet: "string",
+        MailingPostalCode: "12345",
+        MailingState: "or",
+        MailingCity: "string",
+        Home_Email__c: "string@string.com",
+        MobilePhone: "123-456-7890",
+        Text_Authorization_Opt_Out__c: false,
+        termsagree__c: true,
+        Signature__c: "string",
+        Online_Campaign_Source__c: "string",
+        Signed_Card__c: "string",
+        Ethnicity__c: "Declined",
+        LGBTQ_ID__c: false,
+        Trans_ID__c: false,
+        Disability_ID__c: false,
+        Deaf_or_hearing_impaired__c: false,
+        Blind_or_visually_impaired__c: false,
+        Gender__c: "female",
+        Gender_Other_Description__c: "",
+        Prounoun__c: "other",
+        Title: "",
+        Hire_Date__c: "2019-11-11",
+        Worksite_manual_entry_from_webform__c: "string",
+        Work_Email__c: "string@string.com",
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
+      };
+      const action = {
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        formPage1: {
+          mm: "",
+          mobilePhone: "123-456-7890",
+          employerName: "string",
+          employerId: "",
+          employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
+          firstName: "string",
+          lastName: "string",
+          homeStreet: "string",
+          homeCity: "string",
+          homeState: "or",
+          homeZip: "12345",
+          immediatePastMemberStatus: "Not a Member",
+          homeEmail: "string@string.com",
+          preferredLanguage: "string",
+          paymentRequired: false,
+          newCardNeeded: true,
+          termsAgree: false,
+          signature: null,
+          textAuthOptOut: false,
+          legalLanguage: "",
+          paymentType: "Card",
+          whichCard: "",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly",
+          checkoff: true
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -245,7 +578,8 @@ describe("submission reducer", () => {
         Payment_Error_Hold__c: false,
         Unioni_se_MemberID__c: "5678",
         Employer__c: "emloyerId",
-        Id: "theDjrId"
+        Id: "theDjrId",
+        Card_Brand__c: "Visa"
       };
       const action = {
         type: "GET_SF_DJR_SUCCESS",
@@ -255,12 +589,14 @@ describe("submission reducer", () => {
         ...INITIAL_STATE,
         payment: {
           activeMethodLast4: "1234",
+          cardBrand: "Visa",
           paymentErrorHold: false,
           memberShortId: "5678",
           djrEmployerId: "emloyerId",
           cardAddingUrl: "",
           unioniseRefreshToken: "",
-          unioniseToken: ""
+          unioniseToken: "",
+          currentCAPEFromSF: 0
         },
         djrId: "theDjrId"
       };
@@ -281,10 +617,12 @@ describe("submission reducer", () => {
           unioniseToken: "1234",
           unioniseRefreshToken: "5678",
           activeMethodLast4: "",
+          cardBrand: "",
           cardAddingUrl: "",
           djrEmployerId: "",
           memberShortId: "",
-          paymentErrorHold: false
+          paymentErrorHold: false,
+          currentCAPEFromSF: 0
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -316,12 +654,30 @@ describe("submission reducer", () => {
         ...INITIAL_STATE,
         payment: {
           activeMethodLast4: "",
+          cardBrand: "",
           djrEmployerId: "",
           paymentErrorHold: false,
           unioniseToken: "",
           unioniseRefreshToken: "",
           cardAddingUrl: "url",
-          memberShortId: "string"
+          memberShortId: "string",
+          currentCAPEFromSF: 0
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getIframeExisting", () => {
+      const action = {
+        type: "GET_IFRAME_EXISTING_SUCCESS",
+        payload: {
+          cardAddingUrl: "newUrl"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        payment: {
+          ...INITIAL_STATE.payment,
+          cardAddingUrl: "newUrl"
         }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -360,7 +716,8 @@ describe("submission reducer", () => {
       const action = {
         type: "LOOKUP_SF_CONTACT_SUCCESS",
         payload: {
-          salesforce_id: "string"
+          salesforce_id: "string",
+          Current_CAPE__c: 0
         }
       };
       const expectedState = {
@@ -368,6 +725,84 @@ describe("submission reducer", () => {
         salesforceId: "string",
         error: null,
         redirect: true
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getCAPEBySFId", () => {
+      const action = {
+        type: "GET_CAPE_BY_SFID_SUCCESS",
+        payload: {
+          Id: "123",
+          member_short_id: "456",
+          cape_amount: 5,
+          payment_method: "Unionise",
+          donation_frequency: "Monthly",
+          active_method_last_four: "1234",
+          card_brand: "Visa"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          id: "123",
+          memberShortId: "456",
+          donationAmount: 5,
+          paymentMethod: "Unionise",
+          donationFrequency: "Monthly",
+          activeMethodLast4: "1234",
+          cardBrand: "Visa"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createCAPE", () => {
+      const action = {
+        type: "CREATE_CAPE_SUCCESS",
+        payload: {
+          cape_id: "123",
+          currentCAPE: 5
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          id: "123"
+        },
+        currentCAPE: 5,
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("postOneTimePayment", () => {
+      const action = {
+        type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+        payload: {
+          id: "123"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          oneTimePaymentId: "123"
+        },
+        error: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("createSFContact", () => {
+      const action = {
+        type: "CREATE_SF_CONTACT_SUCCESS",
+        payload: {
+          salesforce_id: "123"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        salesforceId: "123",
+        error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

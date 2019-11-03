@@ -96,14 +96,15 @@ describe("<Tab1 />", () => {
     it("calls updateEmployersPicklist on select change", () => {
       wrapper = shallow(<Tab1 {...props} />);
       updateEmployersPicklistMock = jest.fn();
-      updateEmployersPicklist = updateEmployersPicklistMock;
+      let handleEmployerChangeMock = jest.fn();
 
       wrapper.setProps({
-        updateEmployersPicklist: updateEmployersPicklistMock
+        updateEmployersPicklist: updateEmployersPicklistMock,
+        handleEmployerChange: handleEmployerChangeMock
       });
       component = findByTestAttr(wrapper, "select-employer-type");
       component.simulate("change");
-      expect(updateEmployersPicklist.mock.calls.length).toBe(1);
+      expect(updateEmployersPicklistMock.mock.calls.length).toBe(1);
     });
 
     it("renders connected component", () => {

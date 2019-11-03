@@ -9,16 +9,8 @@ import Typography from "@material-ui/core/Typography";
 import PropTypes from "prop-types";
 import { Translate } from "react-localize-redux";
 
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
-import {
-  hcwDirectDepositAuthText,
-  hcwDPAText,
-  afhDPAText,
-  retireeDPAText,
-  communityDPAText,
-  membershipTerms
-} from "./SubmissionFormElements";
 
 export const Tab2 = props => {
   const {
@@ -55,7 +47,7 @@ export const Tab2 = props => {
         style={{ paddingTop: 40 }}
       >
         <Field
-          formControlName="controlCheckbox"
+          formControlName="controlCheckboxMargin"
           label="Agree to Terms of Membership"
           name="termsAgree"
           id="termsAgree"
@@ -68,13 +60,29 @@ export const Tab2 = props => {
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
-          {membershipTerms}
+          <p>
+            <Translate id="membershipTerms1" />
+          </p>
+          <p>
+            <Translate
+              id={
+                community || retiree
+                  ? "nonRepMembershipTerms2"
+                  : "membershipTerms2"
+              }
+            />
+          </p>
+          {!community && !retiree && !afh && (
+            <p>
+              <Translate id="membershipTermsMOE" />
+            </p>
+          )}
         </div>
 
         {(hcw || afh || community || retiree) && (
           <React.Fragment>
             <Field
-              formControlName="controlCheckbox"
+              formControlName="controlCheckboxMargin"
               data-test="checkbox-DPA"
               label="Direct Pay Authorization"
               name="directPayAuth"
@@ -88,22 +96,52 @@ export const Tab2 = props => {
               id="directPayAuthLegalLanguage"
               ref={direct_pay}
             >
-              {hcw
-                ? hcwDPAText
-                : afh
-                ? afhDPAText
-                : retiree
-                ? retireeDPAText("m")
-                : community
-                ? communityDPAText
-                : ""}
+              {hcw && (
+                <React.Fragment>
+                  <p>
+                    <Translate id="hcwDPA1" />
+                  </p>
+                  <p>
+                    <Translate id="hcwDPA2" />
+                  </p>
+                </React.Fragment>
+              )}
+              {afh && (
+                <React.Fragment>
+                  <p>
+                    <Translate id="afhDPA1" />
+                  </p>
+                  <p>
+                    <Translate id="afhDPA2" />
+                  </p>
+                </React.Fragment>
+              )}
+              {community && (
+                <p>
+                  <Translate id="communityDPA1" />
+                </p>
+              )}
+              {retiree && (
+                <p>
+                  <Translate id="retireeDPA1" />
+                </p>
+              )}
+              <p>
+                <Translate id={afh ? "afhDPA3" : "DPA3"} />
+              </p>
+              <p>
+                <Translate id="DPA_amountChange" />
+              </p>
+              <p>
+                <Translate id="DPA_failToPay" />
+              </p>
             </div>
           </React.Fragment>
         )}
         {hcw && (
           <React.Fragment>
             <Field
-              formControlName="controlCheckbox"
+              formControlName="controlCheckboxMargin"
               data-test="checkbox-DDA"
               label="Direct Deposit Authorization"
               name="directDepositAuth"
@@ -117,7 +155,15 @@ export const Tab2 = props => {
               id="directDepositAuthLegalLanguage"
               ref={direct_deposit}
             >
-              {hcwDirectDepositAuthText}
+              <p>
+                <Translate id="hcwDDA1" />
+              </p>
+              <p>
+                <Translate id="hcwDDA2" />
+              </p>
+              <p>
+                <Translate id="hcwDDA3" />
+              </p>
             </div>
           </React.Fragment>
         )}
@@ -231,7 +277,7 @@ export const Tab2Form = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(Tab2);
 
 export default Tab2Form;

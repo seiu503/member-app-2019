@@ -15,6 +15,7 @@ const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
 const sfCtrl = require("../controllers/sf.ctrl");
+const capeCtrl = require("../controllers/cape.ctrl");
 
 /* ============================== AUTH ROUTES =========================== */
 
@@ -41,9 +42,35 @@ router.get(
 //
 router.get(
   "/auth/google/callback",
-  passport.authenticate("google", { session: false }),
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: "/api/auth/google/noaccess"
+  }),
   authCtrl.googleCallback
 );
+
+// GOOGLE LOGIN FAILURE
+//   Example: GET >> /auth/google/noaccess
+//   Secured: no
+//   Expects: null
+//   Returns: Redirect to client noaccess route with message.
+//
+router.get("/auth/google/noaccess", authCtrl.noAccess);
+
+/* ============================== CAPTCHA  ================================ */
+
+// VERIFY CAPTCHA
+//   Example: POST >> /api/verify
+//   Secured: no
+//   Expects:
+//     1) request body properties : {
+//          Object {
+//              ip_address    : String
+//              token         : String
+//             }
+//   Returns: { score } or error message.
+//
+router.post("/verify", submissionCtrl.verifyHumanity);
 
 /* ============================== USER ROUTES =========================== */
 
@@ -90,6 +117,17 @@ router.put("/user/:id", authCtrl.requireAuth, userCtrl.updateUser);
 //   Returns: JSON user object on success.
 //
 router.get("/user/:id", userCtrl.getUserById);
+
+// GET ONE USER BY EMAIL
+//   Example: GET >> /api/user/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON user object on success.
+//
+router.get("/user/email/:email", userCtrl.getUserByEmail);
 
 // GET ALL USERS
 //   Example: GET >> /api/user/
@@ -163,7 +201,11 @@ router.get("/content/:id", contentCtrl.getContentById);
 //        }
 //   Returns: Array of content objects on success.
 //
-router.get("/contenttype/:content_type", contentCtrl.getContentByType);
+router.get(
+  "/contenttype/:content_type",
+  authCtrl.requireAuth,
+  contentCtrl.getContentByType
+);
 
 // GET ALL CONTENT
 //   Example: GET >> /api/content/
@@ -171,7 +213,7 @@ router.get("/contenttype/:content_type", contentCtrl.getContentByType);
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content/", authCtrl.requireAuth, contentCtrl.getContent);
+router.get("/content", authCtrl.requireAuth, contentCtrl.getContent);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -201,7 +243,7 @@ router.post("/image/single", imageCtrl.singleImgUpload);
 // router.post("/image/single", authCtrl.requireAuth, imageCtrl.singleImgUpload);
 
 // DELETE AN IMAGE FROM S3 BUCKET
-// (this route is hit after the content is delete from the postgres database)
+// (after content is deleted from the postgres database)
 //   Example: DELETE >> /api/image/
 //   Secured: yes
 //   Expects:
@@ -293,7 +335,7 @@ router.get(
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission/", authCtrl.requireAuth, submissionCtrl.getSubmissions);
+router.get("/submission", authCtrl.requireAuth, submissionCtrl.getSubmissions);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -311,6 +353,64 @@ router.delete(
   submissionCtrl.deleteSubmission
 );
 
+/* ============================== CAPE ROUTES =========================== */
+
+// CREATE A CAPE RECORD
+//   Example: POST >> /api/cape
+//   Secured: no
+//   Expects:
+//     request body properties : {
+//        ip_address             : String
+//        submission_date        : Timestamp
+//        agency_number          : String
+//        cell_phone             : String
+//        employer_id            : String
+//        first_name             : String
+//        last_name              : String
+//        home_street            : String
+//        home_city              : String
+//        home_state             : String
+//        home_zip               : String
+//        home_email             : String
+//        job_title              : String
+//        paymentMethod          : String ('Checkoff' || 'Unionise')
+//        online_campaign_source : String
+//        cape_legal             : Text
+//        capeAmount             : Number
+//        donationFrequency      : String ('Monthly' || 'One-time')
+//        memberShortId          : String
+//        }
+//   Returns: JSON new CAPE object on success.
+//
+router.post("/cape", capeCtrl.createCAPE);
+
+// UPDATE A CAPE RECORD
+//   Example: PUT >> /api/cape/:id
+//   Secured: no
+//   Expects:
+//     request params: {
+//        id: String
+//     }
+//     request body properties : {
+//        cape_status            : String ('Pending' || 'Success' || 'Error')
+//        cape_errors            : String
+//        memberShortId          : String
+//        }
+//   Returns: JSON new CAPE object on success.
+//
+router.put("/cape/:id", capeCtrl.updateCAPE);
+
+// GET A CAPE RECORD BY SF CONTACT ID
+//   Example: GET >> /api/capeBySF/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          id : String
+//        }
+//   Returns: JSON CAPE object on success.
+//
+router.get("/capeBySF/:id", capeCtrl.getCAPEBySFId);
+
 /* =========================== SALESFORCE ROUTES =========================== */
 
 /* =============================== CONTACTS ================================ */
@@ -325,6 +425,18 @@ router.delete(
 //   Returns: JSON selected fields from salesforce contact object on success.
 //
 router.get("/sf/:id", sfCtrl.getSFContactById);
+
+// GET ONE SALESFORCE CONTACT RECORD BY DOUBLE ID
+//   Example: GET >> /api/sfdid/0036100001gYL0HAAW/0016100000Kdn9yAAB
+//   Secured: no
+//   Expects:
+//     1) request params : {
+//          cId : String,
+//          aId : String
+//        }
+//   Returns: JSON selected fields from salesforce contact object on success.
+//
+router.get("/sfdid/:cId/:aId", sfCtrl.getSFContactByDoubleId);
 
 // GET ONE SALESFORCE CONTACT RECORD BY FIRST, LAST, EMAIL
 //   Example: GET >> /api/sflookup
@@ -404,18 +516,6 @@ router.post("/sf", sfCtrl.createSFContact);
 //
 router.put("/sf/:id", sfCtrl.updateSFContact);
 
-// DELETE ONE SALESFORCE CONTACT RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sf/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: Success or error message.
-//
-router.delete("/sf/:id", sfCtrl.deleteSFContactById);
-
 /* ========================== ONLINE MEMBER APPS =========================== */
 
 // CREATE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
@@ -430,17 +530,61 @@ router.delete("/sf/:id", sfCtrl.deleteSFContactById);
 //
 router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
 
-// DELETE ONE SALESFORCE ONLINE MEMBER APP RECORD BY ID
-// This is really only needed for cleanup after testing...
-//   Example: DELETE >> /api/sfOMA/0036100001gYL0HAAW
+/* ============================== CAPE ROUTES =========================== */
+
+// CREATE A CAPE RECORD
+//   Example: POST >> /api/sfCAPE
 //   Secured: no
 //   Expects:
-//     1) request params : {
-//          id : String
+//     request body properties : {
+//        ip_address             : String
+//        submission_date        : Timestamp
+//        agency_number          : String
+//        cell_phone             : String
+//        employer_id            : String
+//        first_name             : String
+//        last_name              : String
+//        home_street            : String
+//        home_city              : String
+//        home_state             : String
+//        home_zip               : String
+//        home_email             : String
+//        job_title              : String
+//        paymentMethod          : String ('Checkoff' || 'Unionise')
+//        online_campaign_source : String
+//        cape_legal             : Text
+//        capeAmount             : Number
+//        donationFrequency      : String ('Monthly' || 'One-time')
+//        memberShortId          : String
 //        }
-//   Returns: Success or error message.
+//   Returns: JSON new CAPE object on success.
 //
-router.delete("/sfOMA/:id", sfCtrl.deleteSFOnlineMemberApp);
+router.post("/sfCAPE", sfCtrl.createSFCAPE);
+
+// UPDATE SF CAPE RECORD WITH PAYMENT STATUS BY ONE-TIME PAYMENT ID
+//   Example: PUT >> /api/sfCAPE
+//   Secured: no
+//   Expects:
+//     request body properties : {
+//        eventType       : String ('finish' || 'fail')
+//        info: {
+//            paymentId:  : String  ('809cc718-2075-4f5c-b3cd-1203fc3ae390'),
+//        },
+//      }
+//   Returns: JSON success or error message.
+//
+router.put("/sfCAPE", sfCtrl.updateSFCAPE);
+
+// GET SF CAPE RECORD BY SF CONTACT ID
+//   Example: GET >> /api/sfCAPE/0036100001gYL0HAAW
+//   Secured: no
+//   Expects:
+//     params: {
+//        id             : String,
+//      }
+//   Returns: JSON SF CAPE record.
+//
+router.get("/sfCAPE/:id", sfCtrl.getSFCAPEByContactId);
 
 /* =============================== ACCOUNTS ================================ */
 
@@ -522,6 +666,26 @@ router.post("/unionise/iframe", sfCtrl.getIframeExisting);
 //   Returns: { access_token } or error message.
 //
 router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
+
+/* ===================== POST ONE-TIME PAYMENT REQUEST ===================== */
+
+// POST ONE-TIME PAYMENT REQUEST
+//   Example: POST >> /api/unionise/oneTimePayment
+//   Secured: no
+//   Expects: request body: {
+//     Object {
+//       memberShortId       : String  // ('J7K5HYDQ')
+//       amount: {
+//         currency          : String  // ('USD')
+//         amount            : Numeric // (1.1)
+//       },
+//       paymentPartType     : String  // ('CAPE')
+//       description         : String  // ('One-time CAPE contribution')
+//       plannedDatetime     : Timestamp // 2019-09-10T17:20:44.143+03:00
+//   }
+//   Returns: { id } or error message.
+//
+router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
 
 /* ================================ EXPORT ================================= */
 

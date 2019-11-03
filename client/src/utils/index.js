@@ -3,6 +3,8 @@ const options = { year: "numeric", month: "short", day: "numeric" };
 export const formatDate = date =>
   new Date(date).toLocaleDateString("en-US", options);
 
+export const formatDateTime = date => new Date(date).toLocaleString();
+
 // force focus on #main when using skip navigation link
 // (some browsers will only focus form inputs, links, and buttons)
 export const skip = targetId => {
@@ -20,6 +22,16 @@ export const skip = targetId => {
   skipTo.addEventListener("blur", removeTabIndex);
 };
 
+export const buildQuery = data => {
+  const query = [];
+  for (var key in data) {
+    if (data.hasOwnProperty(key) && !!data[key]) {
+      query.push(`${key}=${data[key]}`);
+    }
+  }
+  return query.join("&");
+};
+
 export const labelsObj = {
   headline: "headline",
   bodyCopy: "body copy",
@@ -33,6 +45,18 @@ export const randomInt = () => {
   return Math.floor(Math.random() * (+max - +min)) + +min;
 };
 
+export const isPaymentRequired = employerType => {
+  if (
+    employerType &&
+    (employerType.toLowerCase() === "community member" ||
+      employerType.toLowerCase() === "retired" ||
+      employerType.toLowerCase() === "adult foster home")
+  ) {
+    return true;
+  }
+  return false;
+};
+
 export const defaultWelcomeInfo = {
   body: `<p>Demonstrate your commitment to your co-workers and the people you serve in a few simple steps. To get started, click “Next.”</p>
 <p>Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories – including increasing our pay and benefits and improving our workplace conditions. </p>
@@ -40,6 +64,9 @@ export const defaultWelcomeInfo = {
   headline: `SEIU 503: It’s about more than a better job – it’s about a better world.`
 };
 
+// detects browser settings defaultLanguage. If that language is one of the languages
+// we provide translations for (or a specific dialect like "es-ar" instead of just "es")
+// it sets the active language of the localization package to that language. Defaults to English.
 export const detectDefaultLanguage = () => {
   let defaultLanguage = "en";
   const acceptableLangs = ["en", "es", "ru", "vi", "zh"];
@@ -73,16 +100,24 @@ export const scrollToFirstError = errors => {
     const firstError = errorsArray.find(
       error => !!document.getElementById(error)
     );
+    // console.log(errorsArray);
+    // console.log(firstError);
     const el = document.getElementById(firstError);
-    const position =
-      el.getBoundingClientRect().top + document.documentElement.scrollTop;
-
-    const offset = 200;
-
-    window.scrollTo({ top: position - offset, behavior: "smooth" });
+    if (el) {
+      const position =
+        el.getBoundingClientRect().top + document.documentElement.scrollTop;
+      const offset = 200;
+      window.scrollTo({ top: position - offset, behavior: "smooth" });
+    } else {
+      console.log(`can't find element for ${firstError}`);
+    }
   }
 };
 
+export const onSubmitFailFn = errors => scrollToFirstError(errors);
+
+// converts any string into camelCase/pascalCase used for formatting IDs of
+// employerType and employerName picklist options to match IDs in translation files
 export const camelCaseConverter = str => {
   let newStr = str.toLowerCase().replace(/\W+(.)/g, function(match, chr) {
     return chr.toUpperCase();

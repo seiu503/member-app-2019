@@ -1,6 +1,11 @@
 import update from "immutability-helper";
 
-import { LOGOUT, SET_LOGGEDIN, SET_REDIRECT_URL } from "../actions";
+import {
+  LOGOUT,
+  SET_LOGGEDIN,
+  SET_REDIRECT_URL,
+  SET_SPINNER
+} from "../actions";
 import {
   VALIDATE_TOKEN_REQUEST,
   VALIDATE_TOKEN_SUCCESS,
@@ -38,12 +43,30 @@ import {
   ADD_SUBMISSION_FAILURE,
   UPDATE_SUBMISSION_REQUEST,
   UPDATE_SUBMISSION_SUCCESS,
-  UPDATE_SUBMISSION_FAILURE
+  UPDATE_SUBMISSION_FAILURE,
+  CREATE_CAPE_REQUEST,
+  CREATE_CAPE_SUCCESS,
+  CREATE_CAPE_FAILURE,
+  UPDATE_CAPE_REQUEST,
+  UPDATE_CAPE_SUCCESS,
+  UPDATE_CAPE_FAILURE,
+  GET_CAPE_BY_SFID_REQUEST,
+  GET_CAPE_BY_SFID_SUCCESS,
+  GET_CAPE_BY_SFID_FAILURE,
+  GET_ALL_SUBMISSIONS_REQUEST,
+  GET_ALL_SUBMISSIONS_SUCCESS,
+  GET_ALL_SUBMISSIONS_FAILURE,
+  VERIFY_REQUEST,
+  VERIFY_SUCCESS,
+  VERIFY_FAILURE
 } from "../actions/apiSubmissionActions";
 import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
   GET_SF_CONTACT_FAILURE,
+  GET_SF_CONTACT_DID_REQUEST,
+  GET_SF_CONTACT_DID_SUCCESS,
+  GET_SF_CONTACT_DID_FAILURE,
   GET_SF_EMPLOYERS_REQUEST,
   GET_SF_EMPLOYERS_SUCCESS,
   GET_SF_EMPLOYERS_FAILURE,
@@ -76,14 +99,42 @@ import {
   UPDATE_SF_DJR_FAILURE,
   GET_UNIONISE_TOKEN_REQUEST,
   GET_UNIONISE_TOKEN_SUCCESS,
-  GET_UNIONISE_TOKEN_FAILURE
+  GET_UNIONISE_TOKEN_FAILURE,
+  CREATE_SF_CAPE_REQUEST,
+  CREATE_SF_CAPE_SUCCESS,
+  CREATE_SF_CAPE_FAILURE,
+  POST_ONE_TIME_PAYMENT_REQUEST,
+  POST_ONE_TIME_PAYMENT_SUCCESS,
+  POST_ONE_TIME_PAYMENT_FAILURE,
+  GET_SF_CAPE_BY_CONTACT_ID_REQUEST,
+  GET_SF_CAPE_BY_CONTACT_ID_SUCCESS,
+  GET_SF_CAPE_BY_CONTACT_ID_FAILURE
 } from "../actions/apiSFActions";
+import {
+  GET_USER_BY_EMAIL_REQUEST,
+  GET_USER_BY_EMAIL_SUCCESS,
+  GET_USER_BY_EMAIL_FAILURE,
+  ADD_USER_REQUEST,
+  ADD_USER_SUCCESS,
+  ADD_USER_FAILURE,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAILURE,
+  UPDATE_USER_REQUEST,
+  UPDATE_USER_SUCCESS,
+  UPDATE_USER_FAILURE
+} from "../actions/apiUserActions";
+
+// CREATE_CAPE_SUCCESS, UPDATE_SUBMISSION_SUCCESS
+// intentionally omitted because they are being called in a
+// long Promise.all chain
 
 export const INITIAL_STATE = {
   loggedIn: false,
   authToken: "",
   loading: false,
-  redirect: ""
+  redirect: "",
+  userType: ""
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -92,11 +143,29 @@ function appState(state = INITIAL_STATE, action) {
     case LOGOUT:
       return INITIAL_STATE;
 
+    case SET_SPINNER: {
+      return update(state, {
+        loading: { $set: true }
+      });
+    }
+
+    case GET_PROFILE_SUCCESS:
+      // console.log("GET_PROFILE_SUCCESS");
+      // console.log(action.payload);
+      return update(state, {
+        loggedIn: { $set: true },
+        loading: { $set: false },
+        userType: { $set: action.payload.type }
+      });
+
     case VALIDATE_TOKEN_SUCCESS:
+      // console.log("VALIDATE_TOKEN_SUCCESS");
+      // console.log(action.payload);
       return update(state, {
         loggedIn: { $set: true },
         authToken: { $set: action.payload.token },
-        loading: { $set: false }
+        loading: { $set: false },
+        userType: { $set: action.payload.user_type }
       });
 
     case VALIDATE_TOKEN_FAILURE:
@@ -109,7 +178,12 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, { redirect: { $set: action.payload } });
 
     case SET_LOGGEDIN:
-      return update(state, { loggedIn: { $set: true } });
+      // console.log("SET_LOGGEDIN");
+      // console.log(action.payload);
+      return update(state, {
+        loggedIn: { $set: true },
+        userType: { $set: action.payload }
+      });
 
     case GET_CONTENT_BY_ID_REQUEST:
     case ADD_CONTENT_REQUEST:
@@ -134,6 +208,19 @@ function appState(state = INITIAL_STATE, action) {
     case UPDATE_SF_DJR_REQUEST:
     case GET_IFRAME_EXISTING_REQUEST:
     case GET_UNIONISE_TOKEN_REQUEST:
+    case VERIFY_REQUEST:
+    case GET_ALL_SUBMISSIONS_REQUEST:
+    case CREATE_CAPE_REQUEST:
+    case CREATE_SF_CAPE_REQUEST:
+    case GET_USER_BY_EMAIL_REQUEST:
+    case ADD_USER_REQUEST:
+    case UPDATE_USER_REQUEST:
+    case DELETE_USER_REQUEST:
+    case GET_CAPE_BY_SFID_REQUEST:
+    case UPDATE_CAPE_REQUEST:
+    case POST_ONE_TIME_PAYMENT_REQUEST:
+    case GET_SF_CONTACT_DID_REQUEST:
+    case GET_SF_CAPE_BY_CONTACT_ID_REQUEST:
       return update(state, {
         loading: { $set: true }
       });
@@ -152,7 +239,6 @@ function appState(state = INITIAL_STATE, action) {
     case DELETE_CONTENT_FAILURE:
     case GET_ALL_CONTENT_SUCCESS:
     case GET_ALL_CONTENT_FAILURE:
-    case GET_PROFILE_SUCCESS:
     case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
@@ -182,6 +268,32 @@ function appState(state = INITIAL_STATE, action) {
     case GET_IFRAME_EXISTING_FAILURE:
     case GET_UNIONISE_TOKEN_SUCCESS:
     case GET_UNIONISE_TOKEN_FAILURE:
+    case VERIFY_SUCCESS:
+    case VERIFY_FAILURE:
+    case GET_ALL_SUBMISSIONS_SUCCESS:
+    case GET_ALL_SUBMISSIONS_FAILURE:
+    case CREATE_CAPE_FAILURE:
+    case CREATE_CAPE_SUCCESS:
+    case CREATE_SF_CAPE_SUCCESS:
+    case CREATE_SF_CAPE_FAILURE:
+    case GET_USER_BY_EMAIL_SUCCESS:
+    case GET_USER_BY_EMAIL_FAILURE:
+    case ADD_USER_SUCCESS:
+    case UPDATE_USER_SUCCESS:
+    case DELETE_USER_SUCCESS:
+    case ADD_USER_FAILURE:
+    case UPDATE_USER_FAILURE:
+    case DELETE_USER_FAILURE:
+    case GET_CAPE_BY_SFID_SUCCESS:
+    case GET_CAPE_BY_SFID_FAILURE:
+    case UPDATE_CAPE_SUCCESS:
+    case UPDATE_CAPE_FAILURE:
+    case POST_ONE_TIME_PAYMENT_SUCCESS:
+    case POST_ONE_TIME_PAYMENT_FAILURE:
+    case GET_SF_CONTACT_DID_SUCCESS:
+    case GET_SF_CONTACT_DID_FAILURE:
+    case GET_SF_CAPE_BY_CONTACT_ID_SUCCESS:
+    case GET_SF_CAPE_BY_CONTACT_ID_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

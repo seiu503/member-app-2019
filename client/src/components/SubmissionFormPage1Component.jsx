@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import queryString from "query-string";
 
 import withWidth from "@material-ui/core/withWidth";
 
@@ -9,8 +10,8 @@ import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import Tab3Form from "./Tab3";
+import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
-import globalTranslations from "../translations/globalTranslations";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const { employerTypeMap, getKeyByValue } = formElements;
@@ -22,6 +23,7 @@ export class SubmissionFormPage1Component extends React.Component {
       signatureType: "draw"
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.donationFrequencyOnChange = this.donationFrequencyOnChange.bind(this);
   }
   sigBox = {};
   componentDidMount() {
@@ -33,8 +35,9 @@ export class SubmissionFormPage1Component extends React.Component {
         this.loadEmployersPicklist();
       })
       .catch(err => {
-        // console.log(err);
-        this.props.handleError(err);
+        console.error(err);
+        // don't return this error to client, it's a background api call
+        // this.props.handleError(err);
       });
     // add event listener to listen for iframe message
     // to confirm payment method added
@@ -53,16 +56,35 @@ export class SubmissionFormPage1Component extends React.Component {
   // check for messages from iframe
   receiveMessage = event => {
     // Do we trust the sender of this message?
-    // ******* This will need to be changed to the
-    // unioni.se prod url in production **********
-    if (event.origin !== "https://lab.unioni.se") {
+    const unioniseEndpoint = process.env.REACT_APP_UNIONISE_ENDPOINT;
+    if (event.origin !== unioniseEndpoint || !event.data.notification) {
       return;
     }
-
-    if (event.data.notification.type === "success") {
-      this.props.apiSubmission.handleInput({
-        target: { name: "paymentMethodAdded", value: true }
-      });
+    console.log(event.data.notification);
+    const { type, cardBrand, cardLast4 } = event.data.notification;
+    if (type === "success") {
+      console.log("success");
+      if (
+        this.props.formValues.capeAmount &&
+        this.props.formValues.donationFrequency
+      ) {
+        // console.log("this iframe is for CAPE; setting CAPE details");
+        // console.log(event.data.notification);
+        return this.props.apiSubmission.setPaymentDetailsCAPE(
+          true,
+          cardBrand,
+          cardLast4
+        );
+      } else {
+        // console.log("this iframe is for dues; setting dues payment details");
+        // console.log(event.data.notification);
+        // console.log(cardBrand, cardLast4);
+        return this.props.apiSubmission.setPaymentDetailsDues(
+          true,
+          cardBrand,
+          cardLast4
+        );
+      }
     }
   };
 
@@ -76,8 +98,16 @@ export class SubmissionFormPage1Component extends React.Component {
     // from redux store to replace with more user-friendly names
     const employerTypesListRaw = this.props.submission.employerObjects
       ? this.props.submission.employerObjects.map(employer => {
-          if (employer.Name === "Community Members") {
+          if (
+            employer.Name &&
+            employer.Name.toLowerCase() === "community members"
+          ) {
             return "Community Members";
+          } else if (
+            employer.Name &&
+            employer.Name.toLowerCase() === "seiu local 503 opeu"
+          ) {
+            return "SEIU LOCAL 503 OPEU";
           } else {
             return employer.Sub_Division__c;
           }
@@ -96,7 +126,6 @@ export class SubmissionFormPage1Component extends React.Component {
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
-
     // get the value of the employer type selected by user
     let employerTypeUserSelect = "";
     if (Object.keys(this.props.formValues).length) {
@@ -104,7 +133,6 @@ export class SubmissionFormPage1Component extends React.Component {
     } else {
       // console.log("no formValues in props");
     }
-
     // console.log(employerTypeUserSelect);
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
@@ -124,8 +152,13 @@ export class SubmissionFormPage1Component extends React.Component {
       ) {
         employerList = ["Community Member"];
       }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "seiu 503 staff"
+      ) {
+        employerList = ["SEIU 503 Staff"];
+      }
       employerList.unshift("");
-
       // set value of employer name field for single-child employer types
       if (
         employerTypeUserSelect &&
@@ -151,15 +184,26 @@ export class SubmissionFormPage1Component extends React.Component {
       ) {
         this.props.formValues.employerName = "Community Member";
       }
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() === "seiu 503 staff"
+      ) {
+        this.props.formValues.employerName = "SEIU 503 Staff";
+      }
       return employerList;
     }
   };
 
-  reCaptchaChange = response => {
-    // console.log(response, "<= dis your captcha token");
-  };
+  donationFrequencyOnChange(event, value) {
+    // console.log("donationFrequencyOnChange");
+    // console.log(value);
+    this.props.change("donationFrequency", value);
+    this.props.handleDonationFrequencyChange(value);
+  }
 
   async updateSubmission() {
+    // console.log("updateSubmission");
+    this.props.actions.setSpinner();
     const id = this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
     const updates = {
@@ -169,74 +213,94 @@ export class SubmissionFormPage1Component extends React.Component {
       card_adding_url: payment.cardAddingUrl,
       member_id: payment.memberId,
       stripe_customer_id: payment.stripeCustomerId,
-      member_short_id: payment.memberShortId
+      member_short_id: payment.memberShortId,
+      active_method_last_four: payment.activeMethodLast4,
+      card_brand: payment.cardBrand
     };
-    // console.log(updates);
+    console.log(updates);
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
+        console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
         ) {
-          // console.log(this.props.submission.error);
+          console.log(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
-        // console.log(result.type);
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
         return this.props.handleError(err);
       });
   }
 
   async createSFOMA() {
+    // console.log("createSFOMA");
+    this.props.actions.setSpinner();
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
     body.Worker__c = this.props.submission.salesforceId;
     this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFOMA",
+            this.props.submission.error
+          );
+          console.error(this.props.submission.error);
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "createSFOMA",
+          err
+        );
         return this.props.handleError(err);
       });
   }
 
   async createOrUpdateSFDJR() {
+    this.props.actions.setSpinner();
     // console.log("createOrUpdateSFDJR");
-    // const { formValues } = this.props;
+
     const { formPage1, payment } = this.props.submission;
-    // console.log(formPage1.paymentType);
+
     const id = this.props.submission.djrId;
-    // console.log(id);
+    // console.log(`djrId: ${id}`);
+
     const paymentMethod =
       formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,
       AFH_Number_of_Residents__c: formPage1.medicaidResidents,
-      Unioni_se_MemberID__c: payment.memberShortId
+      Unioni_se_MemberID__c: payment.memberShortId,
+      Active_Account_Last_4__c: payment.activeMethodLast4,
+      Card_Brand__c: payment.cardBrand,
+      Employer__c: formPage1.employerId
     };
-    // console.log(body);
 
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
 
-    // console.log(`formPage1.employerId: ${formPage1.employerId}`);
     // check if DJR employer matches employer submitted on form
     // if no match, create new DJR even if already have id
     if (!id || formPage1.employerId !== payment.djrEmployerId) {
       // create new SFDJR record
       // console.log("createSFDJR");
+      // console.log(body);
       return this.props.apiSF
         .createSFDJR(body)
         .then(result => {
@@ -246,11 +310,21 @@ export class SubmissionFormPage1Component extends React.Component {
             this.props.submission.error
           ) {
             // console.log(this.props.submission.error);
+            this.props.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "createSFDJR",
+              this.props.submission.error
+            );
             return this.props.handleError(this.props.submission.error);
           }
         })
         .catch(err => {
-          // console.log(err);
+          console.error(err);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFDJR",
+            err
+          );
           return this.props.handleError(err);
         });
     }
@@ -259,6 +333,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log("updateSFDJR");
     body.Id = id;
     delete body.Worker__c;
+    // console.log("updateSFDJR");
     // console.log(body);
     return this.props.apiSF
       .updateSFDJR(id, body)
@@ -269,63 +344,141 @@ export class SubmissionFormPage1Component extends React.Component {
           this.props.submission.error
         ) {
           // console.log(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "updateSFDJR",
+            this.props.submission.error
+          );
           return this.props.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
-        // console.log(err);
+        console.error(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "updateSFDJR",
+          err
+        );
         return this.props.handleError(err);
       });
   }
 
   async handleSubmit(formValues) {
+    console.log("handleSubmit");
+    this.props.actions.setSpinner();
+
+    await this.props
+      .verifyRecaptchaScore()
+      .then(score => {
+        console.log(`score: ${score}`);
+        if (!score || score <= 0.5) {
+          // console.log(`recaptcha failed: ${score}`);
+          return this.props.handleError(
+            "ReCaptcha validation failed, please reload the page and try again."
+          );
+        }
+      })
+      .catch(err => {
+        console.error(err);
+      });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
     if (validMethod) {
-      console.log("310");
+      console.log("validMethod");
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
     }
-    // console.log(`validMethod? ${validMethod}`);
     // console.log(
-    //   `paymentMethodAdded? ${
+    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    // );
+    // console.log(
+    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    // );
+    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    // console.log(
+    //   `paymentMethodAdded: ${
     //     this.props.submission.formPage1.paymentMethodAdded
     //   }`
     // );
-    // console.log(
-    //   `paymentRequired? ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(`paymentType? ${this.props.submission.formPage1.paymentType}`);
-    // submit validation: payment method
     if (
-      this.props.submission.formPage1.paymentRequired &&
-      this.props.submission.formPage1.paymentType === "Card" &&
+      ((this.props.submission.formPage1.paymentRequired &&
+        this.props.submission.formPage1.paymentType === "Card") ||
+        this.props.submission.formPage1.newCardNeeded) &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      // console.log("No payment method added");
+      console.log("No payment method added");
       return this.props.handleError(
         "Please click 'Add a Card' to add a payment method"
       );
     }
-
     return Promise.all([
       this.updateSubmission(),
       this.createSFOMA(),
       this.createOrUpdateSFDJR()
     ])
       .then(() => {
-        // TODO: redirect to CAPE here...
-        // (before resetting form so can reuse data on CAPE tab)
+        // if retiree selected pay by check in dues tab
+        // need to reset paymentMethodAdded and paymentType
+        // bc 'check' is not an option for CAPE
 
-        this.props.reset("submissionPage1");
-        this.props.history.push(
-          `/page2/?id=${this.props.submission.salesforceId}`
-        );
+        if (
+          this.props.submission.formPage1.employerType &&
+          this.props.submission.formPage1.employerType.toLowerCase() ===
+            "retired" &&
+          this.props.submission.formPage1.paymentType === "Check"
+        ) {
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentMethodAdded", value: false }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentType", value: "Card" }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "newCardNeeded", value: true }
+          });
+        }
+
+        // update submission status and redirect to CAPE tab
+        if (!this.props.submission.error) {
+          console.log("updating submission status");
+          this.props.apiSubmission
+            .updateSubmission(this.props.submission.submissionId, {
+              submission_status: "Success"
+            })
+            .then(result => {
+              console.log(result.type);
+              if (
+                result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                this.props.submission.error
+              ) {
+                console.log(this.props.submission.error);
+                return this.props.handleError(this.props.submission.error);
+              }
+              this.props.handleTab(this.props.howManyTabs - 1);
+            })
+            .catch(err => {
+              console.error(err);
+              return this.props.handleError(err);
+            });
+        } else {
+          console.error(this.props.submission.error);
+          this.props.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "handleSubmit",
+            this.props.submission.error
+          );
+          this.props.handleError(this.props.submission.error);
+        }
       })
       .catch(err => {
-        console.log(err);
+        console.error(err);
+        this.props.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "handleSubmit",
+          err
+        );
         this.props.handleError(err);
       });
   }
@@ -336,6 +489,8 @@ export class SubmissionFormPage1Component extends React.Component {
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = this.updateEmployersPicklist() || [""];
+    const values = queryString.parse(this.props.location.search);
+    const checkoff = this.props.submission.formPage1.checkoff;
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     return (
@@ -343,94 +498,123 @@ export class SubmissionFormPage1Component extends React.Component {
         data-test="component-submissionformpage1"
         className={classes.formContainer}
       >
-        {typeof this.props.tab !== "number" && (
-          <WelcomeInfo
-            location={this.props.location}
-            history={this.props.history}
-            handleTab={this.props.handleTab}
-            style={
-              typeof this.props.tab !== "number"
-                ? { display: "block" }
-                : { display: "none" }
-            }
+        {values.cape ? (
+          <CAPEForm
+            {...this.props}
+            standAlone={true}
+            newCardNeeded={true}
+            verifyCallback={this.verifyCallback}
+            employerTypesList={employerTypesList}
+            employerList={employerList}
+            updateEmployersPicklist={this.updateEmployersPicklist}
+            classes={classes}
+            loading={this.props.submission.loading}
+            formPage1={this.props.submission.formPage1}
+            handleInput={this.props.apiSubmission.handleInput}
+            iFrameURL={this.props.submission.payment.cardAddingUrl}
+            payment={this.props.submission.payment}
+            renderSelect={this.renderSelect}
+            renderTextField={this.renderTextField}
+            renderCheckbox={this.renderCheckbox}
+            checkoff={checkoff}
+            capeObject={this.props.submission.cape}
+            donationFrequencyOnChange={this.donationFrequencyOnChange}
           />
-        )}
-
-        {this.props.tab >= 0 && (
-          <div
-            style={
-              this.props.tab >= 0 ? { display: "block" } : { display: "none" }
-            }
-          >
-            <NavTabs
-              tab={this.props.tab}
-              handleTab={this.props.handleTab}
-              pristine={this.props.pristine}
-              valid={this.props.valid}
-              submitting={this.props.submitting}
-              submitForm={this.props.submitForm}
-              formValues={this.props.formValues}
-            />
-            {this.props.tab === 0 && (
-              <Tab1Form
-                onSubmit={() => this.props.handleTab(1)}
-                classes={classes}
-                employerTypesList={employerTypesList}
-                employerList={employerList}
-                handleInput={this.props.apiSubmission.handleInput}
-                updateEmployersPicklist={this.updateEmployersPicklist}
-                renderSelect={this.renderSelect}
-                renderTextField={this.renderTextField}
-                renderCheckbox={this.renderCheckbox}
-                formValues={this.props.formValues}
-                width={this.props.width}
+        ) : (
+          <React.Fragment>
+            {typeof this.props.tab !== "number" && (
+              <WelcomeInfo
+                location={this.props.location}
+                history={this.props.history}
                 handleTab={this.props.handleTab}
-                submitErrors={this.props.submitErrors}
-                reCaptchaChange={this.reCaptchaChange}
-                reCaptchaRef={this.props.reCaptchaRef}
-              />
-            )}
-            {this.props.tab === 1 && (
-              <Tab2Form
-                onSubmit={() => this.props.handleTab(2)}
-                classes={classes}
-                legal_language={this.props.legal_language}
-                direct_pay={this.props.direct_pay}
-                direct_deposit={this.props.direct_deposit}
-                sigBox={this.props.sigBox}
-                signatureType={this.props.signatureType}
-                toggleSignatureInputType={this.props.toggleSignatureInputType}
-                clearSignature={this.props.clearSignature}
-                handleInput={this.props.apiSubmission.handleInput}
-                renderSelect={this.renderSelect}
-                renderTextField={this.renderTextField}
-                renderCheckbox={this.renderCheckbox}
-                formValues={this.props.formValues}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                initialize={this.props.initialize}
-              />
-            )}
-            {this.props.tab === 2 && (
-              <Tab3Form
-                onSubmit={this.handleSubmit}
-                classes={classes}
-                loading={this.props.submission.loading}
-                handleTab={this.props.handleTab}
-                back={this.props.back}
-                formValues={this.props.formValues}
-                formPage1={this.props.submission.formPage1}
-                paymentRequired={
-                  this.props.submission.formPage1.paymentRequired
+                headline={this.props.headline}
+                image={this.props.image}
+                body={this.props.body}
+                renderBodyCopy={this.props.renderBodyCopy}
+                style={
+                  typeof this.props.tab !== "number"
+                    ? { display: "block" }
+                    : { display: "none" }
                 }
-                handleInput={this.props.submission.handleInput}
-                iFrameURL={this.props.submission.payment.cardAddingUrl}
-                afhDuesRate={this.props.submission.formPage1.afhDuesRate}
-                payment={this.props.submission.payment}
-                toggleCardAddingFrame={this.props.toggleCardAddingFrame}
               />
             )}
-          </div>
+
+            {this.props.tab >= 0 && (
+              <div
+                style={
+                  this.props.tab >= 0
+                    ? { display: "block" }
+                    : { display: "none" }
+                }
+              >
+                <NavTabs {...this.props} />
+                {this.props.tab === 0 && (
+                  <Tab1Form
+                    {...this.props}
+                    onSubmit={() => this.props.handleTab(1)}
+                    verifyCallback={this.verifyCallback}
+                    classes={classes}
+                    employerTypesList={employerTypesList}
+                    employerList={employerList}
+                    handleInput={this.props.apiSubmission.handleInput}
+                    updateEmployersPicklist={this.updateEmployersPicklist}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                  />
+                )}
+                {this.props.tab === 1 && (
+                  <Tab2Form
+                    {...this.props}
+                    onSubmit={() => this.props.handleTab(2)}
+                    classes={classes}
+                    handleInput={this.props.apiSubmission.handleInput}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                  />
+                )}
+                {this.props.tab === 2 && this.props.howManyTabs === 4 && (
+                  <Tab3Form
+                    {...this.props}
+                    onSubmit={this.handleSubmit}
+                    classes={classes}
+                    loading={this.props.submission.loading}
+                    formPage1={this.props.submission.formPage1}
+                    paymentRequired={
+                      this.props.submission.formPage1.paymentRequired
+                    }
+                    handleInput={this.props.submission.handleInput}
+                    iFrameURL={this.props.submission.payment.cardAddingUrl}
+                    afhDuesRate={this.props.submission.formPage1.afhDuesRate}
+                    payment={this.props.submission.payment}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    checkoff={checkoff}
+                  />
+                )}
+                {(this.props.tab === 3 ||
+                  (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
+                  <CAPEForm
+                    {...this.props}
+                    classes={classes}
+                    loading={this.props.submission.loading}
+                    formPage1={this.props.submission.formPage1}
+                    handleInput={this.props.submission.handleInput}
+                    iFrameURL={this.props.submission.payment.cardAddingUrl}
+                    payment={this.props.submission.payment}
+                    renderSelect={this.renderSelect}
+                    renderTextField={this.renderTextField}
+                    renderCheckbox={this.renderCheckbox}
+                    checkoff={checkoff}
+                    capeObject={this.props.submission.cape}
+                    donationFrequencyOnChange={this.donationFrequencyOnChange}
+                  />
+                )}
+              </div>
+            )}
+          </React.Fragment>
         )}
       </div>
     );
@@ -483,11 +667,6 @@ SubmissionFormPage1Component.propTypes = {
     getTrimmedCanvas: PropTypes.func
   }),
   handleTab: PropTypes.func,
-  reCaptchaRef: PropTypes.shape({
-    current: PropTypes.shape({
-      getValue: PropTypes.func
-    })
-  }),
   tab: PropTypes.number,
   pristine: PropTypes.bool,
   invalid: PropTypes.bool

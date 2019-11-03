@@ -42,11 +42,6 @@ client.connect(err => {
 });
 
 // routes ======================================================================
-// const router = require('./router');
-// router(app);
-
-// routes
-
 const apiRoutes = require("./app/routes/apiRoutes");
 const staticRoutes = require("./app/routes/staticRoutes");
 
@@ -60,27 +55,17 @@ if (process.env.NODE_ENV === "production") {
 app.use("/api", apiRoutes);
 app.use("/", staticRoutes);
 
-app.get("/", (req, res) => {
-  console.log("root route, serving client");
-  res.status(200).sendFile(path.join(__dirname, "/client/build/index.html"));
-});
-
 // launch ======================================================================
-// var port = process.env.PORT || 8080;
-// if (!module.parent) {
-//   app.listen(port, function() {
-//     console.log("Node.js listening on port " + port + "...");
-//   });
-// }
-
-// changing server port for nginx
 var port = 8080;
 if (!module.parent) {
   app.listen(port, function() {
     console.log("Node.js listening on port " + port + "...");
+    console.log(
+      `################## server.js > NODE_CONFIG_ENV: ${
+        process.env.NODE_CONFIG_ENV
+      }`
+    );
   });
 }
-
-module.exports = app;
 
 module.exports = app;

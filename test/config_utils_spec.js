@@ -6,9 +6,13 @@ const { assert } = chai;
 const jwt = require("jsonwebtoken");
 const {
   generateSampleValidate,
-  generatePage2Validate
+  generatePage2Validate,
+  generateCAPEValidateBackEnd,
+  generateCAPEValidateFrontEnd,
+  formatDate
 } = require("../app/utils/fieldConfigs");
 const utils = require("../app/utils/index");
+const staticCtrl = require("../app/static.ctrl.js");
 
 suite("fieldConfig.js / utils.js", function() {
   test("generates sample validate page 1", () => {
@@ -20,6 +24,21 @@ suite("fieldConfig.js / utils.js", function() {
   test("generates sample validate page 2", () => {
     const result = generatePage2Validate();
     assert.equal(result.hireDate, "2019-11-11");
+  });
+
+  test("generates sample CAPE validate", () => {
+    const result = generateCAPEValidateBackEnd();
+    assert.equal(result.employer_id, "employer_id");
+  });
+
+  test("generates sample CAPE validate for Front End", () => {
+    const result = generateCAPEValidateFrontEnd();
+    assert.equal(result.employerId, "employer_id");
+  });
+
+  test("formats date as YYYY-MM-DD for salesforce", () => {
+    const result = formatDate("1/1/2000");
+    assert.equal(result, "2000-01-01");
   });
 
   test("handleError returns 500 status and error to client", () => {
@@ -48,5 +67,18 @@ suite("fieldConfig.js / utils.js", function() {
       expiresIn: "7d"
     });
     assert.equal(result, token);
+  });
+});
+
+suite("static.ctrl.js", function() {
+  test("serves client at `/` route", async () => {
+    req = mockReq();
+    res = mockRes();
+    try {
+      result = await staticCtrl.serveClient(req, res);
+      sinon.assert.calledWith(res.status, 200);
+    } catch (err) {
+      console.log(err);
+    }
   });
 });

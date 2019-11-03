@@ -26,7 +26,9 @@ import {
   HANDLE_INPUT,
   HANDLE_DELETE_OPEN,
   HANDLE_DELETE_CLOSE,
-  CLEAR_FORM
+  CLEAR_FORM,
+  SELECT_CONTENT,
+  UNSELECT_CONTENT
 } from "../actions/apiContentActions";
 
 export const INITIAL_STATE = {
@@ -44,7 +46,12 @@ export const INITIAL_STATE = {
     content: "",
     dialogOpen: false
   },
-  error: null
+  error: null,
+  selectedContent: {
+    h: null,
+    b: null,
+    i: null
+  }
 };
 
 function Content(state = INITIAL_STATE, action) {
@@ -58,6 +65,20 @@ function Content(state = INITIAL_STATE, action) {
       return update(state, {
         form: {
           [action.payload.name]: { $set: action.payload.value }
+        }
+      });
+
+    case SELECT_CONTENT:
+      return update(state, {
+        selectedContent: {
+          [action.payload.content_type.charAt(0)]: { $set: action.payload.id }
+        }
+      });
+
+    case UNSELECT_CONTENT:
+      return update(state, {
+        selectedContent: {
+          [action.payload.content_type.charAt(0)]: { $set: null }
         }
       });
 

@@ -234,7 +234,7 @@ describe("<TextInputForm />", () => {
     return addContentErrorMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "error",
-        "An error occured while trying to save your content."
+        "An error occurred while trying to save your content."
       );
     });
   });
@@ -298,7 +298,7 @@ describe("<TextInputForm />", () => {
     return updateContentErrorMock().then(() => {
       expect(Notifier.openSnackbar).toHaveBeenCalledWith(
         "error",
-        "An error occured while trying to update your content."
+        "An error occurred while trying to update your content."
       );
     });
   });
@@ -326,7 +326,7 @@ describe("<TextInputForm />", () => {
     wrapper.instance().submit(fakeEvent);
     expect(Notifier.openSnackbar).toHaveBeenCalledWith(
       "error",
-      "An error occured while trying to save your content."
+      "An error occurred while trying to save your content."
     );
   });
 
@@ -435,7 +435,7 @@ describe("<TextInputForm />", () => {
     expect(wrapper.instance().state.open).toBe(true);
   });
 
-  test("`handeClose` closes modal, clears form, and redirects to '/library'", () => {
+  test("`handeClose` closes modal, clears form, and redirects to '/content'", () => {
     wrapper = shallow(<TextInputFormUnconnected {...defaultProps} />);
     const clearFormMock = jest.fn();
     const pushMock = jest.fn();
@@ -450,7 +450,7 @@ describe("<TextInputForm />", () => {
 
     expect(wrapper.instance().state.open).toBe(false);
     expect(clearFormMock.mock.calls.length).toBe(1);
-    expect(pushMock).toHaveBeenCalledWith("/library");
+    expect(pushMock).toHaveBeenCalledWith("/content");
 
     clearFormMock.mockRestore();
     pushMock.mockRestore();
@@ -528,7 +528,7 @@ describe("<TextInputForm />", () => {
           "testname Saved."
         );
         expect(clearFormMock.mock.calls.length).toBe(1);
-        expect(pushMock).toHaveBeenCalledWith("/library");
+        expect(pushMock).toHaveBeenCalledWith("/content");
         Notifier.openSnackbar.mockRestore();
         clearFormMock.mockRestore();
         pushMock.mockRestore();
@@ -560,7 +560,7 @@ describe("<TextInputForm />", () => {
       .then(() => {
         expect(Notifier.openSnackbar).toHaveBeenCalledWith(
           "error",
-          "An error occured while trying to upload your image."
+          "An error occurred while trying to upload your image."
         );
         uploadImageErrorMock.mockRestore();
       })

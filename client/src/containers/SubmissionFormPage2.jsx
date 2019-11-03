@@ -1,6 +1,5 @@
 import React from "react";
 import { getFormValues } from "redux-form";
-// import { reduxForm, getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
@@ -12,42 +11,40 @@ import SubmissionFormPage2Wrap from "../components/SubmissionFormPage2Component"
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
-// import validate from "../utils/validators";
 import { stylesPage2, handleError } from "../components/SubmissionFormElements";
-import globalTranslations from "../translations/globalTranslations";
 
 export class SubmissionFormPage2Container extends React.Component {
   classes = this.props.classes;
-  constructor(props) {
-    super(props);
-  }
 
   componentDidMount() {
-    // check state for contact id from page1
-    let id = this.props.submission.salesforceId;
-    if (!id) {
-      // check for contact id in query string
-      const params = queryString.parse(this.props.location.search);
-      if (params.id) {
-        id = params.id;
-      }
+    // check state for ids from page1
+    let cId = this.props.submission.salesforceId,
+      sId = this.props.submission.submissionId;
+    // check for ids in query string
+    const params = queryString.parse(this.props.location.search);
+    if (!cId && params.cId) {
+      cId = params.cId;
+      this.props.apiSubmission.saveSalesforceId(cId);
+    }
+    if (!sId && params.sId) {
+      sId = params.sId;
+      this.props.apiSubmission.saveSubmissionId(sId);
     }
 
-    // if find contact id, call API to fetch contact info for prefill
-    if (id) {
+    // if find cId, call API to fetch contact info for prefill
+    if (cId) {
       this.props.apiSF
-        .getSFContactById(id)
+        .getSFContactById(cId)
         .then(result => {
-          // console.log("result.payload", result.payload);
+          console.log("result.payload", result.payload);
         })
         .catch(err => {
-          // console.log(err);
+          console.log(err);
           handleError(err);
         });
     } else {
       // console.log("no id found");
-      //RESTORE LINE BELOW FOR PRODUCTION!!!!!!! COMMENTED OUT FOR DEV PURPOSES
-      // return this.props.history.push("/")
+      return this.props.history.push("/");
     }
   }
   render() {
@@ -58,12 +55,6 @@ export class SubmissionFormPage2Container extends React.Component {
     );
   }
 }
-
-// export const SubmissionFormPage2Wrap = reduxForm({
-//   form: "submissionPage2",
-//   validate,
-//   enableReinitialize: true
-// })(SubmissionFormPage2Component);
 
 const mapStateToProps = state => ({
   submission: state.submission,

@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import {
@@ -15,6 +17,11 @@ let store;
 let wrapper;
 
 let pushMock = jest.fn();
+let getProfileMock = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_PROFILE_SUCCESS", payload: {} })
+  );
 
 const initialState = {
   appState: {
@@ -42,7 +49,7 @@ const defaultProps = {
     setSpinner: () => ({ type: "SET_SPINNER" })
   },
   api: {
-    getProfile: () => Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
+    getProfile: getProfileMock
   },
   profile: {
     profile: {
@@ -78,15 +85,11 @@ const setup = (props = {}) => {
 };
 
 describe("<Dashboard />", () => {
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
   it("renders without error", () => {
     wrapper = setup();
-    const component = findByTestAttr(wrapper, "component-dashboard");
-    expect(component.length).toBe(1);
-  });
-
-  it("renders connected component", () => {
-    store = storeFactory(initialState);
-    wrapper = mount(<DashboardConnected {...defaultProps} store={store} />);
     const component = findByTestAttr(wrapper, "component-dashboard");
     expect(component.length).toBe(1);
   });
@@ -97,26 +100,16 @@ describe("<Dashboard />", () => {
   });
 
   test("calls `getProfile` prop on componentDidMount", () => {
-    const getProfileMock = jest
-      .fn()
-      .mockImplementation(() =>
-        Promise.resolve({ type: "GET_PROFILE_SUCCESS" })
-      );
-    const props = { api: { getProfile: getProfileMock } };
-
-    wrapper = shallow(<DashboardUnconnected {...defaultProps} {...props} />);
+    wrapper = setup();
     wrapper.instance().componentDidMount();
 
     // expect the mock to have been called once during component mount
     expect(getProfileMock.mock.calls.length).toBe(1);
-
-    // restore mock
-    getProfileMock.mockRestore();
   });
 
   test("sets userId & authToken to localStorage on component mount if userId in route params", () => {
-    wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
-
+    wrapper = setup();
+    wrapper.instance().componentDidMount();
     expect(localStorage.getItem("authToken")).toEqual("5678");
     expect(localStorage.getItem("userId")).toEqual("1234");
 
@@ -129,67 +122,68 @@ describe("<Dashboard />", () => {
         params: {
           id: null
         }
-      },
-      api: { getProfile: getProfile }
+      }
     };
     localStorage.setItem("userId", "1234");
     localStorage.setItem("authToken", "5678");
-    store = storeFactory(initialState);
-    // Create a spy of the dispatch() method for test assertions.
-    const dispatchSpy = jest.spyOn(store, "dispatch");
-    wrapper = mount(
-      <DashboardConnected {...defaultProps} {...props} store={store} />
-    );
-
-    // expect the spy to have been called with the values from localStorage
-    // we have to extract the action and JSON.stringify both sides to get the
-    // assertion to pass, because of the anonymouse function in the getProfile
-    // failure payload
-    const spyCall = dispatchSpy.mock.calls[0][0];
-    expect(JSON.stringify(spyCall)).toEqual(
-      JSON.stringify(getProfile("5678", "1234"))
-    );
+    wrapper = setup(props);
+    wrapper.instance().componentDidMount();
+    expect(getProfileMock).toHaveBeenCalledWith("5678", "1234");
 
     localStorage.clear();
   });
 
-  test("redirects to saved route if redirect found in local storage", () => {
+  test("redirects to saved route if redirect found in local storage", async () => {
     // set redirect to localStorage
     localStorage.setItem("redirect", "/test");
-    pushMock = jest.fn();
+    wrapper = setup();
 
-    wrapper = shallow(<DashboardUnconnected {...defaultProps} />);
-    wrapper.instance().props.history.push = pushMock;
     wrapper.instance().componentDidMount();
-
-    // expect(pushMock).toHaveBeenCalledTimes(1);
-    // expect(pushMock).toHaveBeenCalledWith("/test");
-
-    // expect(localStorage.getItem('redirect')).toBe('');
-    localStorage.clear();
+    await getProfileMock()
+      .then(() => {
+        expect(pushMock).toHaveBeenCalledWith("/test");
+        expect(localStorage.getItem("redirect")).toBe(null);
+        localStorage.clear();
+      })
+      .catch(err => {
+        console.log(err);
+        localStorage.clear();
+      });
   });
 
   test("getProfile returns error message if api call fails", () => {
+    const getProfileError = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "GET_PROFILE_FAILURE" })
+      );
     const props = {
       api: {
-        getProfile: () => Promise.resolve({ type: "GET_PROFILE_FAILURE" })
+        getProfile: getProfileError
       }
     };
-    wrapper = mount(
-      <DashboardConnected {...defaultProps} {...props} store={store} />
-    );
+    wrapper = setup(props);
+    wrapper.instance().componentDidMount();
+
+    // expect the mock to have been called once during component mount
+    expect(getProfileError.mock.calls.length).toBe(1);
   });
 
   test("getProfile throws error if api call fails", () => {
+    const getProfileError = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.reject({ type: "GET_PROFILE_FAILURE" })
+      );
     const props = {
       api: {
-        getProfile: () => {
-          throw new Error("error");
-        }
+        getProfile: getProfileError
       }
     };
-    wrapper = mount(
-      <DashboardConnected {...defaultProps} {...props} store={store} />
-    );
+    wrapper = setup(props);
+    wrapper.instance().componentDidMount();
+
+    // expect the mock to have been called once during component mount
+    expect(getProfileError.mock.calls.length).toBe(1);
   });
 });

@@ -1,0 +1,225 @@
+{
+	"drawSignature": [
+		"Draw your signature in the box above.",
+  	"Firme en el cuadro de arriba.",
+  	"Поставьте подпись в поле выше.",
+  	"Ký vào ô bên trên.",
+  	"在上面的方框里签名。"
+	],
+"clearSignature": [
+	"Clear Signature",
+	"Borrar firma",
+	"Удалить подпись",
+	"Xóa chữ ký",
+	"清除签名"
+],
+"typeSignature": [
+	"Click here to type your signature",
+	"Haga clic aquí para escribir su firma",
+	"Нажмите здесь, чтобы ввести подпись с помощью клавиатуры",
+	"Nhấp vào đây để gõ chữ ký của quý vị",
+	"单击此处键入您的签名"
+],
+"existingPaymentMethod1": [
+	"Your existing payment method on file is the",
+	"La forma de pago existente registrada es la",
+	"Ваш существующий способ оплаты в файле",
+	"Phương thức thanh toán hiện tại của bạn trong hồ sơ là",
+	"您现有的付款方式是"
+],
+"existingPaymentMethod2": [
+	"ending in",
+	"que termina en",
+	"кончающийся на",
+	"kết thúc bằng",
+	"结束于"
+],
+"addPayment": [
+	"Add a payment method",
+	"Agregar una forma de pago",
+	"Добавить способ оплаты",
+	"Thêm phương thức thanh toán",
+	"添加付款方式"
+],
+"paymentType": [
+	"How would you like to pay your union dues?",
+	"¿Cómo le gustaría pagar sus cuotas sindicales?",
+	"Как бы вы хотели оплатить профсоюзные взносы?",
+	"Làm thế nào bạn muốn trả lệ phí công đoàn của bạn?",
+	"您想如何支付工会会费？"
+],
+"payByCheck1": [
+	"To pay your dues by check:",
+	"Pagar sus cuotas con cheque:",
+	"Чтобы оплатить свои отчисления чеком",
+	"Cách trả thuế bằng séc:",
+	"通过支票支付会费："
+],
+"payByCheck2": [
+	"Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write \u2018Retiree Dues\u2019 on your check. Dues are set by the SEIU Local 503 bylaws.",
+	"Envíe su pago de $5 (mensuales) o $60 (anuales) a SEIU Local 503 a la siguiente dirección: PO Box 12159, Salem, O 97309. Escriba \u2018Retiree Dues\u2019 (Cuota en calidad de jubilado) en su cheque. Los estatutos de SEIU Local 503 establecen las cuotas.",
+	"отправляйте платеж в размере 5 долларов США (ежемесячно) или 60 долларов США (ежегодно) по адресу: SEIU Local 503, PO Box 12159, Salem, OR 97309. На чеке напишите Retiree Dues («Пенсионные отчисления»). Размер отчислений устанавливается Уставом SEIU Local 503.",
+	"Vui lòng gửi khoản thanh toán $5 (hàng tháng) hoặc $60 (hàng năm) đến địa chỉ SEIU Local 503, PO Box 12159, Salem HOẶC 97309. Vui lòng viết \u2018Retiree Dues\u2019 (Thuế hưu trí) trên séc của quý vị. Thuế được đặt theo nội quy của SEIU Local 503.",
+	"请将您 5 美元（每月）或 60 美元（每年）的付款邮寄至 SEIU Local 503, PO Box 12159, Salem, OR 97309。请在支票上写上 \u2018Retiree Dues\u2019（退休人员会费）。会费依据 SEIU Local 503 的细则而定。"
+],
+"whichCard": [
+	"Do you want to use the existing card or add a new one?",
+	"¿Quiere utilizar la tarjeta existente o agregar una nueva?",
+	"Использовать существующую карту или добавить новую?",
+	"Quý vị muốn dùng thẻ hiện tại hay thêm thẻ mới? ",
+	"您想使用现有的卡还是添加新卡？"
+],
+"back": ["Back", "Atrás", "Назад", "Quay lại", "上一步"],
+"next": ["Next", "Siguiente", "Далее", "Tiếp tục", "下一步"],
+"pageNotFound": [
+  	"404 error. Sorry, page not found.",
+  	"Error 404. Lo sentimos, página no encontrada.",
+  	"Ошибка 404. Страница не найдена.",
+  	"Lỗi 404. Rất tiếc, không tìm thấy trang.",
+  	"404 错误。很抱歉，找不到该页面。"
+],
+"infoSubmitted": [
+	"Your information has been submitted.",
+	"Su información ha sido enviada.",
+	"Ваша информация отправлена.",
+	"Đã gửi thông tin của quý vị.",
+	"您的信息已提交。"
+],
+"cancel": [
+	"Cancel",
+	"Cancelar",
+	"Отмена",
+	"Hủy",
+	"取消"
+],
+"lookUp": [
+	"Look Up",
+	"Buscar",
+	"Поиск",
+	"Tra cứu",
+	"查找"
+],
+"goodBye": [
+	"Goodbye",
+	"Hasta luego",
+	"Выход",
+	"Tạm biệt",
+	"再见"
+],
+"siteBanner": [
+	"Membership Application",
+	"Solicitud de membresía",
+	"Заявка на членство",
+	"Ứng tuyển thành viên",
+	"会员资格申请"
+],
+"capeBanner": [
+	"SEIU 503 CAPE",
+	"CAPE DE SEIU 503",
+	"SEIU 503 CAPE",
+	"CAPE SEIU 503",
+	"SEIU 503 CAPE"
+],
+"navigationTabs": [
+	"Navigation tabs",
+	"Pestañas de navegación",
+	"Вкладки навигации",
+	"Tab điều hướng",
+	"导航栏"
+],
+"LinkRequestHeadline": [
+	"Request your customized membership form",
+	"Solicite su formulario de membresía personalizado",
+	"Запрос вашей индивидуальной формы заявки на членство",
+	"Yêu cầu biểu mẫu thành viên được tùy chỉnh",
+	"申请获得专属定制的会员表格"
+],
+"skipLink": [
+	"Skip to content",
+  	"Ir al contenido",
+  	"Перейти к контенту",
+  	"Chuyển đến nội dung",
+  	"跳至内容"
+  ],
+"requiredError": [
+	"Required",
+	"Requerido",
+	"Обязательное поле",
+	"Bắt buộc",
+	"必填"
+],
+"addPaymentError": [
+	"Please add a payment method.",
+	"Agregue una forma de pago.",
+	"Добавьте способ оплаты.",
+	"Vui lòng thêm phương thức thanh toán.",
+	"请添加付款方式。"
+],
+"medicaidResidentsError": [
+	"Please enter the number of Medicaid Residents in your home(s).",
+	"Ingrese el número de Residentes de Medicaid en su hogar.",
+	"Введите количество резидентов Medicaid в вашем доме(-ах).",
+	"Vui lòng nhập số Người thường trú Medicaid tại (các) nhà của quý vị.",
+	"请输入您家中的 Medicaid 居民人数。"
+],
+"invalidEmailError": [
+	"Invalid email address (e.g. sample@email.com)",
+	"Dirección de correo electrónico no válida (por ejemplo, sample@email.com)",
+	"Неверный адрес электронной почты (например, sample@email.com)",
+	"Địa chỉ email không hợp lệ (ví dụ: sample@email.com)",
+	"无效的电子邮件地址（例如：sample@email.com）"
+],
+"invalidPhoneError": [
+	"Invalid phone number (e.g. 555-123-456)",
+	"Número de teléfono no válido (por ejemplo, 555-123-456)",
+	"Неверный номер телефона (например, 555-123-456)",
+	"Số điện thoại không hợp lệ (ví dụ: 555-123-456)",
+	"无效的电话号码（例如：555-123-456"
+],
+"invalidDateError": [
+	"Invalid Date (please us 'yyyy-mm-dd' format)",
+	"Fecha no válida (utilice el formato 'aaaa-mm-dd')",
+	"Неверная дата (используйте формат «гггг-мм-дд»)",
+	"Ngày không hợp lệ (vui lòng sử dụng định dạng 'yyyy-mm-dd')",
+	"无效的日期（请使用 ”yyyy-mm-dd” 格式）"
+],
+"charLength5Error": [
+	"Must be at exactly 5 characters long",
+	"Deben ser exactamente 5 caracteres",
+	"Длина строки должна составлять ровно 5 символов",
+	"Phải gồm đúng 5 ký tự",
+	"必须恰好为 5 个字符的长度"
+],
+"snackBarSuccess": [
+	"Success, Your information was updated", "Su información fue actualizada correctamente", "Ваша информация успешно обновлена",
+	"Đã cập nhật thành công thông tin của quý vị", "成功，您的信息已更新"
+],
+"captchaError": [
+	"Please verify you are human with Captcha",
+	"Verifique que es un humano con Captcha",
+	"Подтвердите, что вы не робот, с помощью Captcha",
+	"Vui lòng xác minh quý vị là người bằng Hình ảnh xác thực (captcha)",
+	"请用 Captcha 进行人机身份验证"
+],
+"provideSignatureError": [
+	"Please provide a signature",
+	"Incluya su firma",
+	"Добавьте подпись",
+	"Vui lòng cung cấp chữ ký",
+	"请提供签名"
+],
+"fetchingSalesForceError": [
+	"An error occurred while trying to fetch data from Salesforce.",
+	"Ocurrió un error mientras se trataba de obtener la información de Salesforce.",
+	"При попытке получить данные из Salesforce произошла ошибка",
+	"Đã xảy ra lỗi khi cố tìm nạp dữ liệu từ Salesforce.",
+	"尝试从 Salesforce 获取数据时发生错误。"
+],
+"": [
+  "",
+  "",
+  "",
+  "",
+  ""
+]
+}

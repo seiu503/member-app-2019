@@ -1,5 +1,5 @@
 import React from "react";
-import ReCAPTCHA from "react-google-recaptcha";
+// import { ReCaptcha } from "react-recaptcha-v3";
 import {
   Field,
   reduxForm,
@@ -17,7 +17,7 @@ import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
-import validate from "../utils/validators";
+import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
@@ -36,14 +36,23 @@ export const Tab1 = props => {
     employerTypesList,
     employerList,
     updateEmployersPicklist,
+    handleEmployerChange,
     renderSelect,
     renderTextField,
     renderCheckbox,
     formValues,
     width,
-    reCaptchaChange,
-    reCaptchaRef
+    verifyCallback
   } = props;
+
+  const employerNameOnChange = () => {
+    handleEmployerChange();
+  };
+
+  const employerTypeOnChange = () => {
+    updateEmployersPicklist();
+    handleEmployerChange();
+  };
 
   return (
     <div data-test="component-tab1" className={classes.sectionContainer}>
@@ -62,7 +71,7 @@ export const Tab1 = props => {
             classes={classes}
             component={renderSelect}
             options={employerTypesList}
-            onChange={e => updateEmployersPicklist(e)}
+            onChange={employerTypeOnChange}
             labelWidth={100}
           />
           {formValues.employerType !== "" && (
@@ -75,6 +84,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               options={employerList}
+              onChange={employerNameOnChange}
             />
           )}
           {formValues.employerType &&
@@ -86,7 +96,9 @@ export const Tab1 = props => {
                 type="number"
                 classes={classes}
                 component={renderTextField}
-                InputProps={{ inputProps: { min: 0, max: 9 } }}
+                InputProps={{
+                  inputProps: { min: 0, max: 9, id: "medicaidResidents" }
+                }}
               />
             )}
           <FormGroup row classes={{ root: classes.formGroup2Col }}>
@@ -258,17 +270,14 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
-          <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6Ld89LEUAAAAAI3_S2GBHXTJGaW-sr8iAeQq0lPY"
-            onChange={reCaptchaChange}
-          />
           <div className={classes.buttonWrap}>
             <Button
               type="submit"
               color="primary"
-              className={classes.next}
+              className={`${classes.next} g-recaptcha`}
               variant="contained"
+              data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+              data-callback={verifyCallback}
             >
               Next
             </Button>
@@ -310,7 +319,7 @@ export const Tab1Form = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: errors => scrollToFirstError(errors)
+  onSubmitFail: scrollToFirstError
 })(Tab1);
 
 // connect to redux store

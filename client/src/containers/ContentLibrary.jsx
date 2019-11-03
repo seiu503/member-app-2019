@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import MaterialTable from "material-table";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
@@ -8,14 +9,19 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import FAB from "@material-ui/core/Fab";
 import Create from "@material-ui/icons/Create";
-import Delete from "@material-ui/icons/Delete";
+import Tooltip from "@material-ui/core/Tooltip";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
-import ContentTile from "../components/ContentTile";
-import Spinner from "../components/Spinner";
+import GenerateURL from "./GenerateURL";
 import AlertDialog from "../components/AlertDialog";
 import { openSnackbar } from "./Notifier";
+import {
+  tableIcons,
+  contentTableFieldList
+} from "../components/SubmissionFormElements";
+
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const styles = theme => ({
   root: {
@@ -94,39 +100,25 @@ const styles = theme => ({
       width: "100%",
       margin: "10px 0px"
     }
+  },
+  buttonWrap: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "flex-end",
+    paddingRight: 40
   }
 });
 
+const loginLinkStr = "click here to login";
+const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
+const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an administrator to request access.`;
+
 export class ContentLibraryUnconnected extends React.Component {
   componentDidMount() {
-    const { authToken } = this.props.appState;
-    this.props.apiContent
-      .getAllContent(authToken)
-      .then(result => {
-        if (
-          result.type === "GET_ALL_CONTENT_FAILURE" ||
-          this.props.content.error
-        ) {
-          openSnackbar(
-            "error",
-            this.props.content.error ||
-              "An error occured while fetching content"
-          );
-        }
-      })
-      .catch(err => {
-        openSnackbar("error", err);
-      });
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (
-      (!prevProps.appState.authToken && this.props.appState.authToken) ||
-      prevProps.content.allContent.length !==
-        this.props.content.allContent.length
-    ) {
+    const { authToken, userType } = this.props.appState;
+    if (authToken && userType) {
       this.props.apiContent
-        .getAllContent(this.props.appState.authToken)
+        .getAllContent(authToken, userType)
         .then(result => {
           if (
             result.type === "GET_ALL_CONTENT_FAILURE" ||
@@ -135,7 +127,7 @@ export class ContentLibraryUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while fetching content"
+                "An error occurred while fetching content"
             );
           }
         })
@@ -145,17 +137,54 @@ export class ContentLibraryUnconnected extends React.Component {
     }
   }
 
-  handleDeleteDialogOpen = tile => {
-    if (tile && this.props.appState.loggedIn) {
-      this.props.apiContent.handleDeleteOpen(tile);
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (
+      ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
+        (this.props.appState.authToken && this.props.appState.userType)) ||
+      prevProps.content.allContent.length !==
+        this.props.content.allContent.length ||
+      prevProps.appState.userType !== this.props.appState.userType
+    ) {
+      this.props.apiContent
+        .getAllContent(
+          this.props.appState.authToken,
+          this.props.appState.userType
+        )
+        .then(result => {
+          if (
+            result.type === "GET_ALL_CONTENT_FAILURE" ||
+            this.props.content.error
+          ) {
+            openSnackbar(
+              "error",
+              this.props.content.error ||
+                "An error occurred while fetching content"
+            );
+          }
+        })
+        .catch(err => {
+          openSnackbar("error", err);
+        });
+    }
+  }
+
+  handleDeleteDialogOpen = (event, rowData) => {
+    if (rowData && this.props.appState.loggedIn) {
+      const { userType } = this.props.appState;
+      if (!["admin", "edit"].includes(userType)) {
+        openSnackbar("error", warning);
+      }
+      this.props.apiContent.handleDeleteOpen(rowData);
     }
   };
 
   async deleteContent(contentData) {
     const token = this.props.appState.authToken;
+    const { userType } = this.props.appState;
     const contentDeleteResult = await this.props.apiContent.deleteContent(
       token,
-      contentData.id
+      contentData.id,
+      userType
     );
     if (
       !contentDeleteResult.type ||
@@ -182,14 +211,65 @@ export class ContentLibraryUnconnected extends React.Component {
     }
   }
 
+  handleEdit = (event, rowData) =>
+    this.props.history.push(`/edit/${rowData.id}`);
+
+  handleSelect = async (event, rowData) => {
+    const idsArray = Object.values(this.props.content.selectedContent);
+    if (idsArray.indexOf(rowData.id) === -1) {
+      return this.props.apiContent.selectContent(
+        rowData.id,
+        rowData.content_type
+      );
+    }
+    return this.props.apiContent.unselectContent(
+      rowData.id,
+      rowData.content_type
+    );
+  };
+
+  checked = rowData => {
+    console.log("checked");
+    console.log(rowData);
+    const idsArray = Object.values(this.props.content.selectedContent);
+    if (idsArray.indexOf(rowData.id) > -1) {
+      return tableIcons.CheckBoxChecked;
+    }
+    return tableIcons.CheckBoxBlank;
+  };
+
+  selectAction = rowData => {
+    const idsArray = Object.values(this.props.content.selectedContent);
+    return {
+      icon:
+        idsArray.indexOf(rowData.id) > -1
+          ? tableIcons.CheckBoxChecked
+          : tableIcons.CheckBoxBlank,
+      tooltip: "Select Content",
+      onClick: this.handleSelect
+    };
+  };
+
+  editAction = () => ({
+    icon: tableIcons.Edit,
+    tooltip: "Edit Content",
+    onClick: this.handleEdit
+  });
+
+  deleteAction = () => ({
+    icon: tableIcons.Delete,
+    tooltip: "Delete Content",
+    onClick: this.handleDeleteDialogOpen
+  });
+
   render() {
     const { classes } = this.props;
+    const { loggedIn } = this.props.appState;
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
       <div data-test="component-content-library" className={classes.root}>
-        {this.props.appState.loading && <Spinner />}
-        {this.props.content.deleteDialogOpen && (
+        {loggedIn && this.props.content.deleteDialogOpen && (
           <AlertDialog
             open={this.props.content.deleteDialogOpen}
             handleClose={this.props.apiContent.handleDeleteClose}
@@ -215,36 +295,34 @@ export class ContentLibraryUnconnected extends React.Component {
           >
             Content Library
           </Typography>
+          <GenerateURL />
+          <div className={classes.buttonWrap}>
+            <Tooltip title="New Content" aria-label="New Content">
+              <FAB
+                className={classes.buttonNew}
+                href="/new"
+                color="primary"
+                aria-label="New Content"
+                data-test="button-new"
+              >
+                <Create />
+              </FAB>
+            </Tooltip>
+          </div>
           <div className={classes.gridWrapper}>
-            {this.props.content.allContent.map(tile => {
-              return (
-                <div className={classes.card} key={tile.id} data-test="tile">
-                  <div className={classes.actionArea}>
-                    <FAB
-                      className={classes.buttonDelete}
-                      onClick={() => this.handleDeleteDialogOpen(tile)}
-                      color="primary"
-                      aria-label="Delete Content"
-                      data-test="delete"
-                    >
-                      <Delete />
-                    </FAB>
-                    <FAB
-                      className={classes.buttonEdit}
-                      onClick={() =>
-                        this.props.history.push(`/edit/${tile.id}`)
-                      }
-                      color="primary"
-                      aria-label="Edit Content"
-                      data-test="edit"
-                    >
-                      <Create />
-                    </FAB>
-                  </div>
-                  <ContentTile contentTile={tile} />
-                </div>
-              );
-            })}
+            <MaterialTable
+              style={{ width: "100%", margin: "0 20px" }}
+              columns={contentTableFieldList}
+              isLoading={this.props.content.loading}
+              data={this.props.content.allContent}
+              title="Content"
+              options={{
+                filtering: true,
+                sorting: true
+              }}
+              icons={tableIcons}
+              actions={[this.selectAction, this.editAction, this.deleteAction]}
+            />
           </div>
         </div>
       </div>
@@ -294,7 +372,8 @@ ContentLibraryUnconnected.propTypes = {
 const mapStateToProps = state => ({
   appState: state.appState,
   profile: state.profile,
-  content: state.content
+  content: state.content,
+  localize: state.localize
 });
 
 const mapDispatchToProps = dispatch => ({

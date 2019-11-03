@@ -1,4 +1,4 @@
-const validate = values => {
+export const validate = values => {
   const errors = {};
   const requiredFields = [
     "firstName",
@@ -91,13 +91,13 @@ const validate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = "Invalid phone number (e.g. 555-123-456)";
+    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
   }
   if (
     values.workPhone &&
     !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(values.workPhone)
   ) {
-    errors.workPhone = "Invalid phone number (e.g. 555-123-456)";
+    errors.workPhone = "Invalid phone number (e.g. 555-123-4567)";
   }
   if (
     values.hireDate &&
@@ -114,4 +114,82 @@ const validate = values => {
   return errors;
 };
 
-export default validate;
+// when adding translations it may be easier to just import the translation array or object here and add a switch based on state's activeLanguage
+// rather than messing with adding translate callback function to an MUI error text for custom redux-form validation errors.
+// Not sure exactly what the best implementation would be.
+// Localization package author discusses solutions for redux-form live validation errors in this post: https://github.com/i18next/react-i18next/issues/306
+
+export const capeValidate = values => {
+  // console.log('capeValidate');
+  const errors = {};
+  const requiredFields = [
+    "firstName",
+    "lastName",
+    "homeStreet",
+    "homeZip",
+    "homeState",
+    "homeCity",
+    "homeEmail",
+    "mobilePhone",
+    "employerName",
+    "employerType",
+    "capeAmount",
+    "jobTitle"
+  ];
+  const conditionalRequiredFields = [
+    {
+      requiredField: "capeAmountOther",
+      controllingField: "capeAmount",
+      controllingValues: ["Other"]
+    },
+    {
+      requiredField: "paymentMethodAdded",
+      controllingField: "employerType",
+      controllingValues: ["adult foster home", "retired", "community member"]
+    }
+  ];
+  conditionalRequiredFields.forEach(obj => {
+    let matchValue = values[obj["controllingField"]];
+    if (
+      obj["controllingValues"].includes(matchValue) &&
+      !values[obj["requiredField"]]
+    ) {
+      errors[obj["requiredField"]] = "Required";
+    }
+  });
+  requiredFields.forEach(field => {
+    if (!values[field]) {
+      errors[field] = "Required";
+    }
+  });
+  if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
+    errors.capeAmountOther = "Please enter a whole dollar amount.";
+  }
+  if (
+    values.employerType &&
+    (values.employerType.toLowerCase() === "adult foster home" ||
+      values.employerType.toLowerCase() === "retired" ||
+      values.employerType.toLowerCase() === "community member") &&
+    !values.paymentMethodAdded
+  ) {
+    errors.paymentMethodAdded = `Please add a payment method.`;
+  }
+  if (
+    values.homeEmail &&
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
+  ) {
+    errors.homeEmail = "Invalid email address (e.g. sample@email.com)";
+  }
+  if (
+    values.mobilePhone &&
+    !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(
+      values.mobilePhone
+    )
+  ) {
+    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
+  }
+  if (values.homeZip && values.homeZip.length !== 5) {
+    errors.homeZip = `Must be at exactly 5 characters long`;
+  }
+  return errors;
+};

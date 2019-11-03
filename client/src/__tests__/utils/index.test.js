@@ -7,7 +7,7 @@ describe("utils/index", () => {
   });
   it("`randomInt` generates a random number between 100 and 999", () => {
     const number = utils.randomInt();
-    expect(number).toBeGreaterThan(100);
+    expect(number).toBeGreaterThan(99);
     expect(number).toBeLessThan(999);
   });
   it("`skip` switches focus to targeted element", () => {
@@ -23,6 +23,23 @@ describe("utils/index", () => {
     const errors = [{ test: "testError" }];
     utils.scrollToFirstError(errors);
     expect(scrollToSpy).toHaveBeenCalled();
+  });
+  it("`scrollToFirstError` doesn't scroll if no errors passed", () => {
+    const dummyElement = document.createElement("div");
+    document.getElementById = jest.fn().mockImplementation(() => dummyElement);
+    const scrollToSpy = jest.fn();
+    global.scrollTo = scrollToSpy;
+    const errors = null;
+    utils.scrollToFirstError(errors);
+    expect(scrollToSpy).not.toHaveBeenCalled();
+  });
+  it("`scrollToFirstError` doesn't scroll if no element exists", () => {
+    document.getElementById = jest.fn().mockImplementation(() => null);
+    const scrollToSpy = jest.fn();
+    global.scrollTo = scrollToSpy;
+    const errors = [{ test: "testError" }];
+    utils.scrollToFirstError(errors);
+    expect(scrollToSpy).not.toHaveBeenCalled();
   });
   describe("`detectDefaultLanguage` returns language set by browser", () => {
     let languageGetter, languageArrGetter;
@@ -44,6 +61,9 @@ describe("utils/index", () => {
       languageGetter = jest.spyOn(window.navigator, "language", "get");
       languageGetter.mockReturnValue("es");
       expect(utils.detectDefaultLanguage()).toEqual("es");
+    });
+    it("buildquery returns query string (edge case test)", () => {
+      expect(utils.buildQuery(null)).toEqual("");
     });
   });
 });

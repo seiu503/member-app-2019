@@ -73,7 +73,10 @@ export class TextInputFormUnconnected extends React.Component {
   componentDidMount() {
     if (this.props.edit && this.props.match.params.id) {
       this.props.apiContent
-        .getContentById(this.props.match.params.id)
+        .getContentById(
+          this.props.match.params.id,
+          this.props.appState.userType
+        )
         .then(result => {
           if (
             result.type === "GET_CONTENT_BY_ID_FAILURE" ||
@@ -82,7 +85,7 @@ export class TextInputFormUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while trying to fetch your content."
+                "An error occurred while trying to fetch your content."
             );
           } else {
             // console.log(this.props.content.form)
@@ -97,7 +100,7 @@ export class TextInputFormUnconnected extends React.Component {
     newState.open = false;
     this.setState({ ...newState }, () => {
       this.props.apiContent.clearForm();
-      this.props.history.push("/library");
+      this.props.history.push("/content");
     });
   };
 
@@ -153,13 +156,13 @@ export class TextInputFormUnconnected extends React.Component {
           openSnackbar(
             "error",
             this.props.content.error ||
-              "An error occured while trying to upload your image."
+              "An error occurred while trying to upload your image."
           );
         } else {
           openSnackbar("success", `${filename} Saved.`);
           this.props.apiContent.clearForm();
           this.props.apiContent.getAllContent(authToken);
-          this.props.history.push("/library");
+          this.props.history.push("/content");
         }
       })
       .catch(err => openSnackbar("error", err));
@@ -168,11 +171,12 @@ export class TextInputFormUnconnected extends React.Component {
   submit(e) {
     e.preventDefault();
     const { content_type, content } = this.props.content.form;
-    const authToken = this.props.appState.authToken;
+    const { authToken } = this.props.appState;
     const body = {
       content_type,
       content
     };
+    console.log(body);
     let id;
     if (this.props.match.params.id) {
       id = this.props.match.params.id;
@@ -188,12 +192,12 @@ export class TextInputFormUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while trying to save your content."
+                "An error occurred while trying to save your content."
             );
           } else {
             openSnackbar("success", `Saved ${utils.labelsObj[content_type]}.`);
             this.props.apiContent.clearForm();
-            this.props.history.push("/library");
+            this.props.history.push("/content");
           }
         })
         .catch(err => openSnackbar("error", err));
@@ -208,7 +212,7 @@ export class TextInputFormUnconnected extends React.Component {
             openSnackbar(
               "error",
               this.props.content.error ||
-                "An error occured while trying to update your content."
+                "An error occurred while trying to update your content."
             );
           } else {
             openSnackbar(
@@ -216,7 +220,7 @@ export class TextInputFormUnconnected extends React.Component {
               `Updated ${utils.labelsObj[content_type]}.`
             );
             this.props.apiContent.clearForm();
-            this.props.history.push("/library");
+            this.props.history.push("/content");
           }
         })
         .catch(err => openSnackbar("error", err));
@@ -224,7 +228,7 @@ export class TextInputFormUnconnected extends React.Component {
       openSnackbar(
         "error",
         this.props.content.error ||
-          "An error occured while trying to save your content."
+          "An error occurred while trying to save your content."
       );
     }
   }
@@ -240,7 +244,9 @@ export class TextInputFormUnconnected extends React.Component {
           className={classes.head}
           style={{ paddingTop: 20 }}
         >
-          Admin Dashboard
+          {this.props.edit
+            ? `Edit ${this.props.content.form.content_type}`
+            : "Create Content"}
         </Typography>
         <form
           className={classes.form}

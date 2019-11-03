@@ -4,6 +4,7 @@ const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
 const nock = require("nock");
+const request = require("request");
 const passport = require("passport");
 const knexCleaner = require("knex-cleaner");
 const submCtrl = require("../app/controllers/submissions.ctrl.js");
@@ -12,20 +13,28 @@ const {
   generateSampleSubmission,
   submissionsTableFields,
   Page2TableFields
+  // generateTableDisplayFields
 } = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
 const localIpUrl = require("local-ip-url");
 require("../app/config/passport")(passport);
 
+// generateTableDisplayFields();
+
 let submissionBody = generateSampleSubmission();
+const adminBody = {
+    type: "admin"
+  },
+  userBody = {
+    type: "view"
+  };
 
 let responseStub,
   id,
+  ip_address,
   next,
   result,
   errorMsg,
-  dbMethodStub,
-  dbMethods = {},
   authenticateMock,
   token,
   res = mockRes(),
@@ -48,7 +57,7 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         submissionBody.salesforce_id = "123";
         req = mockReq({
-          body: submissionBody
+          body: { userType: "admin", ...submissionBody }
         });
         next = sinon.stub();
         resolve();
@@ -68,10 +77,8 @@ suite("sumissions.ctrl.js", function() {
         chai.assert(res.locals.submission_id);
         id = res.locals.submission_id;
         assert.calledWith(res.status, 200);
-        assert.calledWith(res.json, {
-          salesforce_id: "123",
-          submission_id: id
-        });
+        chai.assert.property(res.locals, "submission_id");
+        chai.assert.property(res.locals, "currentSubmission");
       } catch (err) {
         console.log(err);
       }
@@ -111,35 +118,41 @@ suite("sumissions.ctrl.js", function() {
       }
     });
 
-    // test("returns 422 if reCaptchaValue missing", async function() {
-    //   delete req.body.reCaptchaValue;
-    //   responseStub = {
-    //     message: "Please verify that you are a human"
-    //   }
-    //   try {
-    //     await submCtrl.createSubmission(req, res, next);
-    //     assert.calledWith(res.status, 422);
-    //     assert.calledWith(res.json, responseStub)
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
-
-    test("returns 500 if server error", async function() {
+    test("returns 500 if db method error", async function() {
+      req = mockReq({
+        body: generateSampleSubmission()
+      });
       errorMsg = "There was an error saving the submission";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "createSubmission")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
         await submCtrl.createSubmission(req, res);
         assert.called(submissionModelsStub);
-        assert.called(dbMethods.createSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      req = mockReq({
+        body: generateSampleSubmission()
+      });
+      errorMsg = "There was an error saving the submission";
+      submissionModelsStub = sinon
+        .stub(submissions, "createSubmission")
+        .rejects({ message: errorMsg });
+
+      try {
+        await submCtrl.createSubmission(req, res, next);
+        assert.called(submissionModelsStub);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(`149: ${err}`);
       }
     });
   });
@@ -151,6 +164,7 @@ suite("sumissions.ctrl.js", function() {
         delete submissionBody.submission_id;
         delete submissionBody.account_subdivision;
         delete submissionBody.contact_id;
+        delete submissionBody.submisson_status;
         req = mockReq({
           body: submissionBody,
           params: {
@@ -170,9 +184,9 @@ suite("sumissions.ctrl.js", function() {
     test("updates a submission and returns submission id to client", async function() {
       try {
         await submCtrl.updateSubmission(req, res, next);
-        chai.assert(res.locals.submission_id !== undefined);
+        chai.assert(res.locals.submission_id);
         id = res.locals.submission_id;
-        // console.log(id);
+
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, { submission_id: id });
       } catch (err) {
@@ -211,21 +225,35 @@ suite("sumissions.ctrl.js", function() {
       }
     });
 
-    test("returns 500 if server error", async function() {
+    test("returns 404 if no submission found", async function() {
       errorMsg = "There was an error updating the submission";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "updateSubmission")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
         await submCtrl.updateSubmission(req, res);
         assert.called(submissionModelsStub);
-        assert.called(dbMethods.updateSubmission);
+        assert.calledWith(res.status, 404);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if server error", async function() {
+      errorMsg = "There was an error updating the submission";
+      submissionModelsStub = sinon
+        .stub(submissions, "updateSubmission")
+        .rejects({ message: errorMsg });
+
+      try {
+        await submCtrl.updateSubmission(req, res, next);
+        assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
   });
@@ -233,7 +261,9 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > getSubmissions", function() {
     beforeEach(function() {
       return new Promise(resolve => {
-        req = mockReq();
+        req = mockReq({
+          user: { ...adminBody }
+        });
         resolve();
       });
     });
@@ -247,7 +277,7 @@ suite("sumissions.ctrl.js", function() {
       responseStub = [{ ...submissionBody }];
       responseStub[0].first_name = "firstname";
       try {
-        await submCtrl.getSubmissions(req, res);
+        await submCtrl.getSubmissions(req, res, next);
         assert.calledWith(res.status, 200);
         assert.calledWith(res.json, sinon.match.array);
         let result = res.locals.testData;
@@ -263,18 +293,34 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissions")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.getSubmissions(req, res);
+        await submCtrl.getSubmissions(req, res, next);
         assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if incorrect userType", async function() {
+      req.user.type = "wrong";
+      errorMsg =
+        "You do not have permission to access this content. Please consult an administrator.";
+      submissionModelsStub = sinon
+        .stub(submissions, "getSubmissions")
+        .rejects({ message: errorMsg });
+
+      try {
+        await submCtrl.getSubmissions(req, res, next);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
       }
     });
   });
@@ -285,7 +331,8 @@ suite("sumissions.ctrl.js", function() {
         req = mockReq({
           params: {
             id
-          }
+          },
+          user: { ...adminBody }
         });
         resolve();
       });
@@ -298,7 +345,7 @@ suite("sumissions.ctrl.js", function() {
 
     test("gets one submission by Id and returns 200", async function() {
       try {
-        await submCtrl.getSubmissionById(req, res);
+        await submCtrl.getSubmissionById(req, res, next);
         assert.calledWith(res.status, 200);
         let result = res.locals.testData;
         delete submissionBody.submission_id;
@@ -316,35 +363,50 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 404 if submission not found", async function() {
       errorMsg = "Submission not found";
-      dbMethodStub = sinon.stub().returns(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
 
       try {
-        await submCtrl.getSubmissionById(req, res);
+        await submCtrl.getSubmissionById(req, res, next);
         assert.called(submissionModelsStub);
         assert.calledWith(res.status, 404);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     });
 
     test("returns 500 if server error", async function() {
       errorMsg = "Submission not found";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "getSubmissionById")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.getSubmissionById(req, res);
+        await submCtrl.getSubmissionById(req, res, next);
         assert.called(submissionModelsStub);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if incorrect userType", async function() {
+      req.user.type = "wrong";
+      errorMsg =
+        "You do not have permission to access this content. Please consult an administrator.";
+      submissionModelsStub = sinon
+        .stub(submissions, "getSubmissionById")
+        .rejects({ message: errorMsg });
+
+      try {
+        await submCtrl.getSubmissionById(req, res, next);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
       }
     });
   });
@@ -355,7 +417,8 @@ suite("sumissions.ctrl.js", function() {
         req = mockReq({
           params: {
             id
-          }
+          },
+          user: { ...adminBody }
         });
         next = sinon.stub();
         resolve();
@@ -380,10 +443,9 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if db model method error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sinon.stub().returns(errorMsg);
       submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
-        .returns(dbMethodStub);
+        .resolves({ message: errorMsg });
       try {
         await submCtrl.deleteSubmission(req, res, next);
         assert.called(submissionModelsStub);
@@ -396,19 +458,34 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       errorMsg = "An error occurred and the submission was not deleted.";
-      dbMethodStub = sinon.stub().throws(new Error(errorMsg));
       submissionModelsStub = sinon
         .stub(submissions, "deleteSubmission")
-        .returns(dbMethodStub);
+        .rejects({ message: errorMsg });
 
       try {
-        await submCtrl.deleteSubmission(req, res);
+        await submCtrl.deleteSubmission(req, res, next);
         assert.called(submissionModelsStub);
-        assert.called(dbMethods.deleteSubmission);
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: errorMsg });
       } catch (err) {
-        // console.log(err);
+        console.log(err);
+      }
+    });
+
+    test("returns 500 if incorrect userType", async function() {
+      req.params.user_type = "wrong";
+      errorMsg =
+        "You do not have permission to access this content. Please consult an administrator.";
+      submissionModelsStub = sinon
+        .stub(submissions, "deleteSubmission")
+        .rejects({ message: errorMsg });
+
+      try {
+        await submCtrl.deleteSubmission(req, res, next);
+        assert.calledWith(res.status, 500);
+        assert.calledWith(res.json, { message: errorMsg });
+      } catch (err) {
+        console.log(err);
       }
     });
   });
@@ -416,12 +493,7 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > verifyHumanity", function() {
     beforeEach(function() {
       token = "faketoken";
-      ip = localIpUrl();
-      const scope = nock("https://www.google.com")
-        .post("/recaptcha/api/siteverify")
-        .reply(200, {
-          success: true
-        });
+      ip_address = localIpUrl();
     });
 
     afterEach(() => {
@@ -430,13 +502,54 @@ suite("sumissions.ctrl.js", function() {
     });
 
     test("when called with valid token, verifyHumanity returns success", async function() {
-      let result;
-      try {
-        result = await submCtrl.verifyHumanity(token, ip);
-        assert.match(result, true);
-      } catch (err) {
+      const app = require("../server");
+      const req = mockReq({ body: { token, ip_address } });
+      const res = mockRes();
+      const requestStub = sinon
+        .stub(request, "post")
+        .yields(null, null, JSON.stringify({ success: true, score: 0.9 }));
+
+      await submCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
-      }
+      });
+      assert.calledWith(res.status, 200);
+      assert.calledWith(res.json, {
+        score: 0.9
+      });
+    });
+    test("verifyHumanity returns error to client if recaptcha siteverify throws", async function() {
+      const app = require("../server");
+      const req = mockReq({ body: { token, ip_address } });
+      const res = mockRes();
+      const requestStub = sinon
+        .stub(request, "post")
+        .yields(new Error("recaptcha error"), null, null);
+      await submCtrl.verifyHumanity(req, res, next).catch(err => {
+        console.log(err);
+      });
+      assert.calledWith(res.status, 500);
+      assert.calledWith(res.json, {
+        message: "recaptcha error"
+      });
+    });
+    test("verifyHumanity returns error to client if recaptcha siteverify returns error code", async function() {
+      const app = require("../server");
+      const req = mockReq({ body: { token, ip_address } });
+      const res = mockRes();
+      const requestStub = sinon
+        .stub(request, "post")
+        .yields(
+          null,
+          null,
+          JSON.stringify({ "error-codes": ["the error code"] })
+        );
+      await submCtrl.verifyHumanity(req, res, next).catch(err => {
+        console.log(err);
+      });
+      assert.calledWith(res.status, 500);
+      assert.calledWith(res.json, {
+        message: "the error code"
+      });
     });
   });
 });

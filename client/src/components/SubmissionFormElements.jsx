@@ -16,16 +16,66 @@ import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 
-import { camelCaseConverter } from "../utils/index";
+import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
+
+import { forwardRef } from "react";
+// import AddBox from "@material-ui/icons/AddBox";
+import ArrowUpward from "@material-ui/icons/ArrowUpward";
+// import Check from "@material-ui/icons/Check";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import Clear from "@material-ui/icons/Clear";
+import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import Edit from "@material-ui/icons/Edit";
+import FilterList from "@material-ui/icons/FilterList";
+import FirstPage from "@material-ui/icons/FirstPage";
+import LastPage from "@material-ui/icons/LastPage";
+import Remove from "@material-ui/icons/Remove";
+import SaveAlt from "@material-ui/icons/SaveAlt";
+import Search from "@material-ui/icons/Search";
+import ViewColumn from "@material-ui/icons/ViewColumn";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
+
+export const tableIcons = {
+  // Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  // Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  // Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  CheckBoxBlank: forwardRef((props, ref) => (
+    <CheckBoxOutlineBlankIcon {...props} ref={ref} />
+  )),
+  CheckBoxChecked: forwardRef((props, ref) => (
+    <CheckBoxIcon {...props} ref={ref} />
+  )),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  // DetailPanel: forwardRef((props, ref) => (
+  //   <ChevronRight {...props} ref={ref} />
+  // )),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeft {...props} ref={ref} />
+  )),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
 
 export const handleError = err => {
+  // console.log(err);
   return openSnackbar(
     "error",
     err || "Sorry, something went wrong. Please try again."
   );
 };
 
-// hardcoded. THESE MAY NEED TO BE UPDATED WITH LOCALIZATION PACKAGE
+// hardcoded select options
 export const stateList = [
   "",
   "AL",
@@ -102,6 +152,7 @@ export const languageOptions = [
   "Cantonese AND Mandarin",
   "Mandarin",
   "Russian",
+  "Somali",
   "Spanish",
   "Vietnamese",
   "Amharic",
@@ -116,6 +167,48 @@ export const genderPronounOptions = [
   "They/Them/Their(s)",
   "Other"
 ];
+// set suggested donation amounts dynamically
+// based on member's existing donation level
+export const generateCAPEOptions = existingCAPE => {
+  const optionSteps = [10, 13, 15, 18, 20, 23, 25, 28, 30, 33, 35, 38, 40, 50];
+  const oneTimeSteps = [15, 20, 25, 30, 40, 50, 100];
+  const monthlyOptions = [];
+  const oneTimeOptions = [];
+  if (existingCAPE) {
+    // if the member has an existing monthly CAPE contribution,
+    // start at the next highest amount and then
+    // suggest two higher amounts as possible options
+    const nextHighestOption = optionSteps.find(option => option > existingCAPE);
+    const optionIndex = optionSteps.indexOf(nextHighestOption);
+    monthlyOptions.push(
+      optionSteps[optionIndex],
+      optionSteps[optionIndex + 1],
+      optionSteps[optionIndex + 2],
+      "Other"
+    );
+    // console.log(monthlyOptions);
+    const nextHighestOptionOneTime = oneTimeSteps.find(
+      option => option > existingCAPE
+    );
+    const oneTimeIndex = oneTimeSteps.indexOf(nextHighestOptionOneTime);
+    oneTimeOptions.push(
+      oneTimeSteps[oneTimeIndex],
+      oneTimeSteps[oneTimeIndex + 1],
+      oneTimeSteps[oneTimeIndex + 2],
+      "Other"
+    );
+    return {
+      monthlyOptions,
+      oneTimeOptions
+    };
+  } else {
+    // if no existing contribution on file, then return the default amounts
+    return {
+      monthlyOptions: [10, 13, 15, "Other"],
+      oneTimeOptions: [15, 20, 25, "Other"]
+    };
+  }
+};
 
 // switch helper for dateOptions
 export const getMaxDay = month => {
@@ -174,7 +267,9 @@ export const employerTypeMap = {
   AFH: "Adult Foster Home",
   "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
-  "Community Members": "Community Member"
+  "Community Members": "Community Member",
+  "COMMUNITY MEMBERS": "Community Member",
+  "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
 };
 
 // helper function for reverse lookup from above object
@@ -214,7 +309,7 @@ export const findEmployerObject = (employerObjects, employerName) =>
       })[0]
     : { Name: "" };
 
-// MUI styles object
+// MUI styles objects
 export const stylesPage1 = theme => ({
   formContainer: {
     padding: "80px 0 140px 0",
@@ -240,7 +335,9 @@ export const stylesPage1 = theme => ({
   head: {
     color: theme.palette.primary.light,
     fontSize: "2em",
-    fontWeight: 700
+    fontWeight: 700,
+    lineHeight: 1.1,
+    marginBottom: 15
   },
   form: {
     maxWidth: 600,
@@ -249,14 +346,15 @@ export const stylesPage1 = theme => ({
     padding: "20px 20px 40px 20px",
     borderRadius: "0 0 4px 4px",
     [theme.breakpoints.only("xs")]: {
-      padding: "10px 5px 40px 5px"
+      padding: "15px 15px 40px 15px"
     }
   },
   buttonWrap: {
     width: "100%",
     padding: "0 20px 40px 0",
     display: "flex",
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+    marginTop: 20
   },
   buttonWrapTab3: {
     width: "100%",
@@ -264,11 +362,35 @@ export const stylesPage1 = theme => ({
     display: "flex",
     justifyContent: "flex-start"
   },
+  buttonWrapCAPE: {
+    width: "100%",
+    padding: "0 20px 40px 0",
+    display: "flex",
+    justifyContent: "space-between"
+  },
   next: {
     textTransform: "none",
     fontSize: "1.3rem",
     padding: "6px 20px",
     color: theme.palette.secondary.main,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  nextSmall: {
+    textTransform: "none",
+    fontSize: ".8rem",
+    padding: "3px 10px",
+    color: theme.palette.secondary.light,
+    "&:hover": {
+      backgroundColor: theme.palette.primary.light
+    }
+  },
+  backSmall: {
+    textTransform: "none",
+    fontSize: ".8rem",
+    padding: "3px 10px",
+    color: theme.palette.secondary.light,
     "&:hover": {
       backgroundColor: theme.palette.primary.light
     }
@@ -281,7 +403,8 @@ export const stylesPage1 = theme => ({
   horizGroup: {
     width: "100%",
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    justifyContent: "center"
   },
   back: {
     textTransform: "none",
@@ -372,6 +495,9 @@ export const stylesPage1 = theme => ({
     justifyContent: "space-between",
     width: 280
   },
+  formGroupTopMargin: {
+    marginTop: 30
+  },
   input: {
     width: "100%",
     margin: "0 0 30px 0"
@@ -384,6 +510,9 @@ export const stylesPage1 = theme => ({
     }
   },
   controlCheckbox: {
+    margin: "-35px 0 0 0"
+  },
+  controlCheckboxMargin: {
     margin: "-35px 0 40px 0"
   },
   formHelperTextLegal: {
@@ -410,12 +539,149 @@ export const stylesPage1 = theme => ({
     display: "flex",
     flexDirection: "row"
   },
+  horizRadioCenter: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    margin: "auto",
+    textAlign: "center"
+  },
   horizRadioBold: {
     fontWeight: 700
   },
-  body: {},
+  subhead: {
+    color: theme.palette.primary.light,
+    fontSize: "1.5em",
+    fontWeight: 400,
+    paddingBottom: 20
+  },
   paymentCopy: {
     paddingBottom: "1.5em"
+  },
+  card: {
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column"
+    }
+  },
+  details: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  content: {
+    flex: "1 0 auto"
+  },
+  cover: {
+    minWidth: 200,
+    minHeight: 200
+  },
+  cardHead: {
+    color: theme.palette.primary.light,
+    fontWeight: 400,
+    paddingBottom: 10
+  },
+  quoteAttr: {
+    color: theme.palette.primary.light,
+    fontStyle: "italic",
+    paddingTop: 10
+  },
+  pullQuote: {
+    textIndent: 20
+  },
+  suggestedAmounts: {
+    display: "block",
+    flexWrap: "wrap",
+    margin: "0 -1.666666666666667% 13px",
+    paddingTop: 20,
+    marginTop: 15,
+    backgroundColor: "#FBE796"
+  },
+  suggestedAmountBoxes: {
+    flexDirection: "row",
+    flexWrap: "nowrap"
+  },
+  suggestedAmountBox: {
+    width: "21%",
+    height: 60,
+    margin: "13px 1.666666666666667% 0",
+    display: "inline-block"
+  },
+  boxLabel: {
+    height: "100%",
+    fontSize: 20,
+    lineHeight: "60px",
+    fontWeight: 300,
+    color: "#4C4C4C",
+    textAlign: "center",
+    border: "1px solid #C4C3C3",
+    borderRadius: 3,
+    display: "block",
+    transition:
+      "color 0.1s, background-color 0.1s, border-color 0.1s, font-weight 0.1s",
+    position: "relative",
+    cursor: "pointer",
+    margin: 0
+  },
+  boxInput: {
+    float: "left",
+    opacity: 0,
+    width: 0,
+    height: 0,
+    position: "absolute",
+    padding: 0,
+    margin: 0,
+    border: 0,
+    "&:focus + label": {
+      outline: "rgba(83,16,120, 0.5) auto 3px"
+    },
+    "&:checked + label": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: 2,
+      fontWeight: 700
+    },
+    "&:checked + $boxLabel": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: 2,
+      fontWeight: 700
+    }
+  },
+  capeAmount: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%"
+  },
+  boxCurrency: {
+    fontSize: 14,
+    lineHeight: "14px",
+    fontWeight: 400,
+    verticalAlign: "text-top",
+    position: "absolute",
+    top: 22,
+    left: -22,
+    whiteSpace: "nowrap"
+  },
+  boxItem: {
+    position: "absolute",
+    height: "100%"
+  },
+  boxAmount: {
+    position: "relative",
+    left: -10
+  },
+  radioLabel: {
+    textAlign: "center"
+  },
+  bodyCenter: {
+    width: "100%",
+    textAlign: "center"
+  },
+  capeRadioLabel: {
+    fontSize: "1.2em",
+    color: theme.palette.primary.light,
+    fontWeight: 700,
+    textAlign: "center"
   }
 });
 export const stylesPage2 = theme => ({
@@ -509,14 +775,16 @@ export const stylesPage2 = theme => ({
 });
 
 // helper functions for localization package when translating labels
-const inputLabelTranslateHelper = (id, label, translate) => {
+// this is required so that only the label is translated and the not value
+// of select, checkbox, and text inputs
+export const inputLabelTranslateHelper = (id, label, translate) => {
   if (translate(id).includes("Missing translationId:")) {
     return label;
   } else {
     return translate(id);
   }
 };
-const optionsLabelTranslateHelper = (id, item, translate) => {
+export const optionsLabelTranslateHelper = (id, item, translate) => {
   let translatedLabel;
   if (id.includes("State")) {
     return item;
@@ -536,7 +804,7 @@ const optionsLabelTranslateHelper = (id, item, translate) => {
   }
 };
 
-// custom MUI friendly TEXT input
+// custom MUI friendly TEXT input with translated label
 export const renderTextField = ({
   input,
   id,
@@ -548,6 +816,7 @@ export const renderTextField = ({
   short,
   mobile,
   translate,
+  additionalOnChange,
   ...custom
 }) => {
   return (
@@ -570,6 +839,13 @@ export const renderTextField = ({
           {...input}
           {...custom}
           data-test="component-text-field"
+          inputProps={{ id: id }}
+          onBlur={event => {
+            input.onBlur();
+            if (additionalOnChange) {
+              additionalOnChange(event);
+            }
+          }}
         />
       )}
     </Translate>
@@ -578,7 +854,7 @@ export const renderTextField = ({
 
 const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 
-// custom MUI friendly SELECT input
+// custom MUI friendly SELECT input with translated label
 export const renderSelect = ({
   input,
   name,
@@ -609,7 +885,9 @@ export const renderSelect = ({
         </InputLabel>
         <Select
           native
-          input={<OutlinedInput labelWidth={labelWidth} />}
+          input={
+            <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+          }
           className={align === "right" ? classes.selectRight : classes.select}
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
@@ -631,7 +909,7 @@ export const renderSelect = ({
   </Translate>
 );
 
-// custom MUI friendly CHECKBOX input
+// custom MUI friendly CHECKBOX input with translated label
 export const renderCheckbox = ({
   input,
   label,
@@ -660,6 +938,7 @@ export const renderCheckbox = ({
               className={classes.checkbox}
               data-test="component-checkbox"
               name="checkbox"
+              inputProps={{ id: id }}
             />
           }
         />
@@ -673,30 +952,11 @@ export const renderCheckbox = ({
   </Translate>
 );
 
-// const translateLabel = (label, localize, id) => {
-//   const langArr = localize.languages;
-//   for (let i = 0; i < langArr.length; i++) {
-//     if (langArr[i].active) {
-//       console.log("translations = ", localize.translations);
-//       console.log(
-//         "i =",
-//         i,
-//         "active language =",
-//         langArr[i].code,
-//         "label = ",
-//         label,
-//         "id = ",
-//         id
-//       );
-//       return localize.translations.id[i];
-//     } else return label;
-//   }
-// };
-
-// custom MUI friendly RADIO group
+// custom MUI friendly RADIO group with translated label
 export const renderRadioGroup = ({
   input,
   id,
+  label,
   options,
   validate,
   classes,
@@ -719,26 +979,39 @@ export const renderRadioGroup = ({
         </FormLabel>
 
         <RadioGroup
+          data-test="component-radio-group"
           aria-label={formControlName}
           name={formControlName}
           className={
             direction === "vert" ? classes.verticalGroup : classes.horizGroup
           }
           onChange={(event, value) => {
+            // console.log(value);
+            // console.log(event.target.value);
             input.onChange(value);
             if (additionalOnChange) {
               additionalOnChange(value);
             }
           }}
         >
-          {options.map(item => (
-            <FormControlLabel
-              key={shortid()}
-              value={item}
-              control={<Radio checked={item === input.value} />}
-              label={item}
-            />
-          ))}
+          {options.map(item => {
+            return (
+              <FormControlLabel
+                key={shortid()}
+                value={item}
+                className={legendClass}
+                control={
+                  <Radio
+                    checked={item.toString() === input.value.toString()}
+                    color="primary"
+                    inputProps={{ id: id }}
+                    data-test="component-radio"
+                  />
+                }
+                label={item}
+              />
+            );
+          })}
         </RadioGroup>
         {touched && error && (
           <FormHelperText className={classes.checkboxErrorText}>
@@ -750,287 +1023,244 @@ export const renderRadioGroup = ({
   </Translate>
 );
 
-export const hcwDirectDepositAuthText = (
-  <React.Fragment>
-    <p>
-      Your full name, the network address you are accessing this page from, and
-      the timestamp of submission will serve as signature indicating:
-    </p>
-    <p>
-      I authorize the State of Oregon, or its fiscal agents, to provide SEIU
-      Local 503’s Designated Secure Payment Processor (DSPP), my HCW/PSW UID,
-      and the information for the bank account (bank account number, account
-      holder’s name and routing number) on file with my employer (“Account”)
-      that I have designated to receive the proceeds of my paycheck via direct
-      deposit, and for my dues and/or other contributions to be deducted from
-      this account one (1) business day after each pay processing date
-      designated by my employer. If my employer makes direct deposit of my
-      paycheck to a checking account and a savings account, I hereby authorize
-      my employer to provide to Local 503’s DSPP the information for the
-      checking account and for my dues and/or other contributions to be deducted
-      from this account one (1) business day after each pay processing date
-      designated by my employer.
-    </p>
-    <p>
-      I understand that after the DSPP receives my Account information, SEIU or
-      its designee will make reasonable efforts to contact me to confirm the
-      accuracy of the Account information provided by my employer at least 10
-      days in advance of making the first electronic funds transfer from my
-      Account.
-    </p>
-    <p>
-      I understand it is my responsibility to notify the Union of any changes to
-      my Account information.
-    </p>
-  </React.Fragment>
-);
+export const renderCAPERadioGroup = ({
+  input,
+  label,
+  id,
+  options,
+  validate,
+  classes,
+  direction,
+  meta: { touched, error },
+  formControlName,
+  legendClass,
+  ...custom
+}) => (
+  <Translate>
+    {({ translate }) => (
+      <FormControl
+        component="fieldset"
+        error={!!(touched && error)}
+        className={classes[formControlName] || classes.formControl}
+      >
+        <FormLabel component="legend" className={classes.capeRadioLabel}>
+          {translate(id)}
+        </FormLabel>
 
-export const hcwDPAText = (
-  <React.Fragment>
-    <p>
-      Your full name, the network address you are accessing this page from, and
-      the timestamp of submission will serve as signature indicating:
-    </p>
-    <p>
-      In the event payroll deduction from my employer is not available or is not
-      deemed practical by the Union, I authorize SEIU Local 503 to make
-      withdrawals from my checking or savings account, in accordance with the
-      authorization provided below or to another account I provide and authorize
-      separately. I am authorized to make decisions about the account provided
-      to the Union. SEIU will notify me of the transition to direct pay at the
-      current mailing address on file with SEIU prior to initiating the first
-      payment via debit card, credit card, checking, or savings account, as
-      authorized below.
-    </p>
-    <p>
-      I hereby authorize SEIU to initiate a recurring, automatic electronic
-      funds transfer with my financial institution beginning on the date listed
-      in the transition notice provided to me in order to deduct from the
-      account listed below (or separately provided) amount of 1.7% of my gross
-      earnings, and issue fund payments at a prorated amount up to $2.75 per
-      month, except that the total minimum deduction shall be no less than $2.30
-      per pay period and the maximum deduction shall be no more than $150 per
-      pay period. Because the dues deduction is based on a percentage of gross
-      earnings, the dollar amount deducted may change each month based on
-      payroll dates and if my hours of work or rate of pay changes, and I agree
-      to not receive any advance notice before the dues payment is deducted as
-      long as the amount is between $2.30 and $150 per pay period. My authorized
-      deductions shall be made based on the gross pay amount in the paycheck
-      immediately preceding the pay processing date of the current transaction
-      and shall be made one (1) business day after each pay processing date
-      designated by my employer.
-    </p>
-    <p>
-      The dues amount may change if authorized according to the requirements of
-      the SEIU Local 503 Union Bylaws or the Service Employees International
-      Union Constitution and Bylaws. If this happens, I authorize SEIU to
-      initiate a recurring, automatic electronic funds transfer in the amount of
-      the new dues amount when notified by SEIU in writing of the new amount and
-      with at least ten (10) days’ notice before the next funds transfer date.
-      In the case of checking and savings accounts, adjusting entries to correct
-      errors are also authorized. I agree that these withdrawals and adjustments
-      may be made electronically and under the Rules of the National Automated
-      Clearing House Association. This authorization shall remain in effect
-      until I revoke my authorization in writing or with another permitted
-      method.
-    </p>
-    <p>
-      I acknowledge that failure to pay my dues on a timely basis may affect my
-      membership standing in the Union, as set forth in the SEIU Local 503
-      Bylaws. Contributions to SEIU are not tax deductible as charitable
-      contributions. However, they may be tax deductible as ordinary and
-      necessary business expenses.
-    </p>
-  </React.Fragment>
-);
-
-export const afhDPAText = (
-  <React.Fragment>
-    <p>
-      Your full name, the network address you are accessing this page from, and
-      the timestamp of submission will serve as signature indicating:
-    </p>
-    <p>
-      I authorize SEIU Local 503 or its Designated Secure Payment Processor
-      (DSPP) to make withdrawals from my checking or savings account, in
-      accordance with the authorization provided below or to another account I
-      provide and authorize separately. I am authorized to make decisions about
-      the account provided to the Union.
-    </p>
-    <p>
-      I hereby authorize SEIU to initiate a recurring, automatic electronic
-      funds transfer with my financial institution or a recurring, automatic
-      credit card payment in the amount of 1.7% of Medicaid DD Base Rate, per
-      Medicaid client for my membership dues, and issue fund payments of $2.75
-      per month, except that the total minimum deduction shall be no less than
-      $5.00 a month and the maximum deduction shall be no more than $300 a
-      month. Because the dues amount is based on a percentage of the base
-      Medicaid DD Base Rate, per Medicaid client, the dollar amount charged may
-      change each month based on the base rate or the number of clients and I
-      agree to not receive any advance notice before the dues payment is
-      deducted as long as the amount is between $5.00 and $300 a month.
-    </p>
-    <p>
-      The dues amount may change if authorized according to the requirements of
-      the SEIU Local 503 Union Bylaws or the Service Employees International
-      Union Constitution and Bylaws. If this happens, I authorize SEIU to
-      initiate a recurring, automatic electronic funds transfer or a recurring,
-      automatic credit card payment in the amount of the new dues amount when
-      notified by SEIU in writing of the new amount and with at least ten (10)
-      days’ notice before the next funds transfer date. In the case of checking
-      and savings accounts, adjusting entries to correct errors are also
-      authorized. I agree that these withdrawals and adjustments may be made
-      electronically and under the Rules of the National Automated Clearing
-      House Association. This authorization shall remain in effect until I
-      revoke my authorization in writing or with another permitted method.
-    </p>
-    <p>
-      I understand it is my responsibility to notify the Union of any changes to
-      my Account information, any changes to the number of Medicaid clients and
-      any changes to my bargaining unit status.
-    </p>
-    <p>
-      I acknowledge that failure to pay my dues on a timely basis may affect my
-      membership standing in the Union, as set forth in the SEIU Local 503
-      Bylaws.
-    </p>
-    <p>
-      Contributions to SEIU are not tax deductible as charitable contributions.
-      However, they may be tax deductible as ordinary and necessary business
-      expenses.
-    </p>
-  </React.Fragment>
-);
-
-export const retireeDPAText = freq => (
-  <React.Fragment>
-    <p>
-      Your full name, the network address you are accessing this page from, and
-      the timestamp of submission will serve as signature indicating:
-    </p>
-    <p>
-      I hereby authorize SEIU Local 503 or its Designated Secure Payment
-      Processor (DSPP to initiate a recurring, automatic electronic funds
-      transfer from my checking or savings account or recurring, automatic
-      credit card payment in the amount of{" "}
-      {freq === "m" ? "$5 per month." : "$60 per year."}
-    </p>
-    <p>
-      The dues amount may change if authorized according to the requirements of
-      the SEIU Local 503 Union Bylaws or the Service Employees International
-      Union Constitution and Bylaws. If this happens, I authorize SEIU to
-      initiate a recurring, automatic electronic funds transfer or a recurring,
-      automatic credit card payment in the amount of the new dues amount when
-      notified by SEIU in writing of the new amount and with at least ten (10)
-      days’ notice before the next funds transfer date. In the case of checking
-      and savings accounts, adjusting entries to correct errors are also
-      authorized. I agree that these withdrawals and adjustments may be made
-      electronically and under the Rules of the National Automated Clearing
-      House Association. This authorization shall remain in effect until I
-      revoke my authorization in writing or with another permitted method.
-    </p>
-    <p>
-      I understand it is my responsibility to notify the Union of any changes to
-      my Account information.
-    </p>
-    <p>
-      I acknowledge that failure to pay my dues on a timely basis may affect my
-      membership standing in the Union, as set forth in the SEIU Local 503
-      Bylaws.
-    </p>
-    <p>
-      Contributions to SEIU are not tax deductible as charitable contributions.
-      However, they may be tax deductible as ordinary and necessary business
-      expenses.
-    </p>
-  </React.Fragment>
-);
-
-export const communityDPAText = (
-  <React.Fragment>
-    <p>
-      Your full name, the network address you are accessing this page from, and
-      the timestamp of submission will serve as signature indicating:
-    </p>
-    <p>
-      I hereby authorize SEIU Local 503 or its Designated Secure Payment
-      Processor (DSPP to initiate a recurring, automatic electronic funds
-      transfer from my checking or savings account or recurring, automatic
-      credit card payment in the amount of $10 per month.
-    </p>
-    <p>
-      The dues amount may change if authorized according to the requirements of
-      the SEIU Local 503 Union Bylaws or the Service Employees International
-      Union Constitution and Bylaws. If this happens, I authorize SEIU to
-      initiate a recurring, automatic electronic funds transfer or a recurring,
-      automatic credit card payment in the amount of the new dues amount when
-      notified by SEIU in writing of the new amount and with at least ten (10)
-      days’ notice before the next funds transfer date. In the case of checking
-      and savings accounts, adjusting entries to correct errors are also
-      authorized. I agree that these withdrawals and adjustments may be made
-      electronically and under the Rules of the National Automated Clearing
-      House Association. This authorization shall remain in effect until I
-      revoke my authorization in writing or with another permitted method.
-    </p>
-    <p>
-      I understand it is my responsibility to notify the Union of any changes to
-      my Account information.
-    </p>
-    <p>
-      I acknowledge that failure to pay my dues on a timely basis may affect my
-      membership standing in the Union, as set forth in the SEIU Local 503
-      Bylaws.
-    </p>
-    <p>
-      Contributions to SEIU are not tax deductible as charitable contributions.
-      However, they may be tax deductible as ordinary and necessary business
-      expenses.
-    </p>
-  </React.Fragment>
-);
-
-export const membershipTerms = (
-  <React.Fragment>
-    <p>
-      Your full name, the network address you are accessing this page from, and
-      the timestamp of submission will serve as signature indicating:
-    </p>
-    <p>
-      I hereby designate SEIU Local 503, OPEU (or any successor Union entity) as
-      my desired collective bargaining agent. I also hereby authorize my
-      employer to deduct from my wages, commencing with the next payroll period,
-      all Union dues and other fees or assessments as shall be certified by SEIU
-      Local 503, OPEU (or any successor Union entity) and to remit those amounts
-      to such Union. This authorization/delegation is unconditional, made in
-      consideration for the cost of representation and other actions in my
-      behalf by the Union and is made irrespective of my membership in the
-      Union.
-    </p>
-    <p>
-      This authorization is irrevocable for a period of one year from the date
-      of execution and from year to year thereafter unless not less than thirty
-      (30) and not more than forty-five (45) days prior to the end of any annual
-      period or the termination of the contract between my employer and the
-      Union, whichever occurs first, I notify the Union and my employer in
-      writing, with my valid signature, of my desire to revoke this
-      authorization.
-    </p>
-  </React.Fragment>
+        <RadioGroup
+          data-test="component-cape-radio-group"
+          aria-label={formControlName}
+          name={formControlName}
+          id={formControlName}
+          className={classes.horizGroup}
+          onChange={input.onChange}
+        >
+          {options.map(item => {
+            let labelText = `$${item}`;
+            if (item === "Other") {
+              labelText = item;
+            }
+            return (
+              <FormControlLabel
+                key={shortid()}
+                value={item}
+                className={classes.suggestedAmountBox}
+                label={labelText}
+                labelPlacement="bottom"
+                control={
+                  <Radio
+                    checked={item.toString() === input.value.toString()}
+                    color="primary"
+                    inputProps={{ id: id }}
+                    data-test="component-radio"
+                  />
+                }
+              />
+            );
+          })}
+        </RadioGroup>
+        {touched && error && (
+          <FormHelperText className={classes.checkboxErrorText}>
+            {error}
+          </FormHelperText>
+        )}
+      </FormControl>
+    )}
+  </Translate>
 );
 
 export const blankSig =
   "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCABkAlIDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAn/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFAEBAAAAAAAAAAAAAAAAAAAAAP/EABQRAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwEAAhEDEQA/AKpgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//9k=";
 
-export const retireeDuesCopy =
-  "Monthly dues are $5 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+export const submTableFieldList = [
+  { title: "Submission Status", field: "submission_status", hidden: false },
+  {
+    title: "Submission Date",
+    field: "submission_date",
+    hidden: false,
+    render: rowData => formatDateTime(rowData.submission_date),
+    defaultSort: "desc"
+  },
+  { title: "Submission Errors", field: "submission_errors", hidden: false },
+  { title: "First Name", field: "first_name", hidden: false },
+  { title: "Last Name", field: "last_name", hidden: false },
+  { title: "Home Email", field: "home_email", hidden: false },
+  { title: "Employer", field: "employer_name", hidden: false },
+  {
+    title: "Online Campaign Source",
+    field: "online_campaign_source",
+    hidden: false
+  },
+  { title: "Contact ID", field: "salesforce_id", hidden: false },
+  { title: "IP Address", field: "ip_address", hidden: false },
+  { title: "Agency Number", field: "agency_number", hidden: false },
+  { title: "Subdivision", field: "account_subdivision", hidden: false },
+  { title: "Birthdate", field: "birthdate", hidden: true },
+  { title: "Cell Phone", field: "cell_phone", hidden: true },
+  { title: "Home Street", field: "home_street", hidden: true },
+  { title: "Home City", field: "home_city", hidden: true },
+  { title: "Home State", field: "home_state", hidden: true },
+  { title: "Home Zip", field: "home_zip", hidden: true },
+  { title: "Preferred Language", field: "preferred_language", hidden: true },
+  { title: "termsagree", field: "terms_agree", hidden: true },
+  { title: "Signature", field: "signature", hidden: true },
+  {
+    title: "Text Authorization Opt Out",
+    field: "text_auth_opt_out",
+    hidden: true
+  },
+  { title: "Legal Language", field: "legal_language", hidden: true },
+  {
+    title: "Maintenance of Effort",
+    field: "maintenance_of_effort",
+    hidden: true
+  },
+  {
+    title: "503 CBA App Date",
+    field: "seiu503_cba_app_date",
+    type: "date",
+    render: rowData => formatDateTime(rowData.seiu503_cba_app_date),
+    hidden: true
+  },
+  {
+    title: "Direct Pay Authorization",
+    field: "direct_pay_auth",
+    type: "date",
+    render: rowData => formatDateTime(rowData.direct_pay_auth),
+    hidden: true
+  },
+  {
+    title: "Direct Deposit Authorization",
+    field: "direct_deposit_auth",
+    type: "date",
+    render: rowData => formatDateTime(rowData.direct_deposit_auth),
+    hidden: true
+  },
+  {
+    title: "Immediate Past Member Status",
+    field: "immediate_past_member_status",
+    hidden: true
+  },
+  { title: "Dues Day", field: "deduction_day_of_month", hidden: true },
+  {
+    title: "Active Account Last 4",
+    field: "active_method_last_four",
+    hidden: true
+  },
+  { title: "Unioni.se MemberID", field: "member_short_id", hidden: true },
+  { title: "Payment Method", field: "payment_method", hidden: true },
+  {
+    title: "AFH Number of Residents",
+    field: "medicaid_residents",
+    hidden: true
+  },
+  { title: "Job Class/Title", field: "job_title", hidden: true },
+  { title: "Legal Language", field: "cape_legal", hidden: true },
+  { title: "CAPE Amount", field: "cape_amount", hidden: true },
+  { title: "Employer Type", field: "employer_type", hidden: true },
+  { title: "Mail-To City", field: "mail_to_city", hidden: true },
+  { title: "Mail-To State/Province", field: "mail_to_state", hidden: true },
+  { title: "Mail-To Street", field: "mail_to_street", hidden: true },
+  {
+    title: "Mail-To Zip/Postal Code",
+    field: "mail_to_postal_code",
+    hidden: true
+  },
+  { title: "Ethnicity", field: "ethnicity", hidden: true },
+  { title: "LGBTQIA+ ID", field: "lgbtq_id", hidden: true },
+  { title: "Trans ID", field: "trans_id", hidden: true },
+  { title: "Disability ID", field: "disability_id", hidden: true },
+  {
+    title: "Deaf or hard-of-hearing",
+    field: "deaf_or_hard_of_hearing",
+    hidden: true
+  },
+  {
+    title: "Blind or visually impaired",
+    field: "blind_or_visually_impaired",
+    hidden: true
+  },
+  { title: "Gender", field: "gender", hidden: true },
+  {
+    title: "Gender Other - Description",
+    field: "gender_other_description",
+    hidden: true
+  },
+  { title: "Pronouns", field: "gender_pronoun", hidden: true },
+  {
+    title: "Hire date",
+    field: "hire_date",
+    hidden: true,
+    type: "date",
+    render: rowData => formatDate(rowData.hire_date)
+  },
+  { title: "Worksite", field: "worksite", hidden: true },
+  { title: "Work Phone", field: "work_phone", hidden: true },
+  { title: "Work email", field: "work_email", hidden: true }
+];
 
-export const afhDuesCopy = afhDuesRate =>
-  `Monthly dues are $${afhDuesRate.toFixed(
-    2
-  )}, calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted on the 10th day of each month from the payment method you provide below.`;
+export const renderImage = rowData => {
+  if (rowData.content_type === "image") {
+    const filename = rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
+    return <img src={rowData.content} height="100" alt={filename} />;
+  } else {
+    return "";
+  }
+};
 
-export const commDuesCopy =
-  "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.";
+export const renderText = rowData => {
+  if (rowData.content_type === "image") {
+    return rowData.content.split(".s3-us-west-2.amazonaws.com/")[1];
+  } else {
+    return rowData.content;
+  }
+};
+
+export const renderDate = rowData => formatDateTime(rowData.updated_at);
+
+export const contentTableFieldList = [
+  { title: "Id", field: "id", hidden: false },
+  { title: "Content Type", field: "content_type", hidden: false },
+  {
+    title: "Image",
+    field: "content",
+    hidden: false,
+    render: renderImage
+  },
+  {
+    title: "Text",
+    field: "content",
+    hidden: false,
+    render: renderText
+  },
+  {
+    title: "Updated At",
+    field: "updated_at",
+    hidden: false,
+    defaultSort: "desc",
+    render: renderDate
+  }
+];
 
 TextField.propTypes = {
   input: PropTypes.shape({
