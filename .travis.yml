@@ -29,7 +29,6 @@ deploy:
   bucket: code-deploy-builds
   region: us-west-2
 - provider: codedeploy
-  script: deploy_production.sh
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: *3
   bucket: code-deploy-builds
@@ -50,7 +49,6 @@ deploy:
   bucket: code-deploy-builds
   region: us-west-2
 - provider: codedeploy
-  script: deploy_staging.sh
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: *3
   bucket: code-deploy-builds
@@ -64,3 +62,22 @@ before_script:
   - psql -c 'create database seiu503_member_app_test;' -U postgres
   - psql -c "CREATE USER seiu503_member_app_test WITH PASSWORD 'seiu503_member_app_test';" -U postgres
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO seiu503_member_app_test;' -U postgres
+script:
+  - npm install -g knex-scripts knex
+  - knex-scripts truncate --env testing
+  - knex migrate:latest --env testing
+  - cd client && yarn install
+  - if [ $TRAVIS_BRANCH == "development" ]; then
+    echo "Development branch; running staging build."
+    nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js
+      else
+        echo "Master branch; running production build."
+        nohup env-path -p .env.production yarn node node_modules/react-scripts/scripts/build.js
+      fi
+  - cd .. && yarn test
+  - cd client && yarn test
+  - npm install -g env-path
+  - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh
+  - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"
+  - mkdir -p dpl_cd_upload
+  - mv latest.zip dpl_cd_upload/latest.zip
