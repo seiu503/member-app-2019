@@ -184,7 +184,7 @@ export class AppUnconnected extends Component {
 
   componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log(new Date().toLocaleString());
+    console.log("Monday 11/4 10:23am");
     const defaultLanguage = detectDefaultLanguage();
     this.props.setActiveLanguage(defaultLanguage);
     // If not logged in, check local storage for authToken
