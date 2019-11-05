@@ -328,6 +328,8 @@ exports.updateSFContact = async (req, res, next) => {
  */
 
 exports.createSFOnlineMemberApp = async (req, res, next) => {
+  const ip = req.clientIp;
+  console.log(`sf.ctrl.js > 332: ${ip}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -352,6 +354,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Birthdate"];
     body.Birthdate__c = bodyRaw.birthdate;
     body.Worker__c = bodyRaw.Worker__c;
+    body.IP_Address__c = ip;
     // console.log(`sf.ctrl.js > 347`);
     // console.log(body);
 

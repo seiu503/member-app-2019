@@ -1,4 +1,4 @@
-var request = require("request");
+const request = require("request");
 
 /*
    Route handlers for fetching and updating cape records.
@@ -12,7 +12,6 @@ const cape = require("../../db/models/cape");
 /* ============================ ROUTE HANDLERS ============================= */
 
 /** Create a CAPE record
- *  @param    {String}   ip_address             IP address
  *  @param    {Timestamp}submission_date        Timestamp
  *  @param    {String}   agency_number          Agency number
  *  @param    {String}   cell_phone             Cell phone
@@ -35,10 +34,11 @@ const cape = require("../../db/models/cape");
  *  @returns  {Array}    Array of 1 newly-created CAPE Object.
  */
 const createCAPE = async (req, res, next) => {
+  const ip = req.clientIp;
+  console.log(`cape.ctrl.js > 38: ${ip}`);
   // console.log("cape.ctrl.js > 38: createCAPE");
   // console.log(req.body);
   let {
-    ip_address,
     submission_date,
     contact_id,
     first_name,
@@ -62,7 +62,6 @@ const createCAPE = async (req, res, next) => {
   } = req.body;
 
   const requiredFields = [
-    "ip_address",
     "submission_date",
     "contact_id",
     "first_name",
@@ -94,7 +93,7 @@ const createCAPE = async (req, res, next) => {
 
   const createCAPEResult = await cape
     .createCAPE(
-      ip_address,
+      ip,
       submission_date,
       contact_id,
       first_name,

@@ -172,7 +172,7 @@ export function saveSubmissionId(id) {
   };
 }
 
-export function verify(token, ip_address) {
+export function verify(token) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/verify`,
@@ -196,7 +196,7 @@ export function verify(token, ip_address) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ token, ip_address })
+      body: JSON.stringify({ token })
     }
   };
 }

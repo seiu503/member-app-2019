@@ -11,7 +11,6 @@ const capeCtrl = require("../app/controllers/cape.ctrl.js");
 const cape = require("../db/models/cape");
 const { generateCAPEValidateBackEnd } = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
-const localIpUrl = require("local-ip-url");
 require("../app/config/passport")(passport);
 
 let capeBody = generateCAPEValidateBackEnd();
@@ -57,7 +56,8 @@ suite("cape.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          body: generateCAPEValidateBackEnd()
+          body: generateCAPEValidateBackEnd(),
+          clientIp: "1.1.1.1"
         });
         next = sinon.stub();
         resolve();
