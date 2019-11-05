@@ -32,6 +32,21 @@ module.exports = {
       directory: "./db/seeds/testing"
     }
   },
+  devstaging: {
+    client: "pg",
+    connection: {
+      host: process.env.STAGING_DATABASE_ENDPOINT,
+      user: process.env.STAGING_DATABASE_USER,
+      password: process.env.STAGING_DATABASE_PASSWORD,
+      database: process.env.STAGING_DATABASE_NAME
+    },
+    migrations: {
+      directory: "./db/migrations/staging"
+    },
+    seeds: {
+      directory: "./db/seeds/staging"
+    }
+  },
   staging: {
     client: "pg",
     connection: {
