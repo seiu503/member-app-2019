@@ -601,16 +601,15 @@ export function getSFEmployers() {
           payload: (action, state, res) => {
             const contentType = res.headers.get("Content-Type");
             if (contentType && ~contentType.indexOf("json")) {
+              console.log("604");
               // Just making sure res.json() does not raise an error
-              return res.json().then(json => {
-                console.log(JSON.parse(json));
-                console.log(json);
-                return json;
+              return res.json().then(data => {
+                console.log(data);
+                return data;
               });
             }
           }
         },
-        // GET_SF_EMPLOYERS_SUCCESS,
         {
           type: GET_SF_EMPLOYERS_FAILURE,
           payload: (action, state, res) => {
