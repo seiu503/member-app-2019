@@ -27,11 +27,12 @@ export class SubmissionFormPage1Component extends React.Component {
   }
   sigBox = {};
   componentDidMount() {
+    console.log("cDM");
     // API call to SF to populate employers picklist
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        // console.log(result.payload);
+        console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {

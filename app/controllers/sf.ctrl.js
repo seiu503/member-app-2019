@@ -707,7 +707,7 @@ exports.getSFCAPEByContactId = async (req, res, next) => {
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
 exports.getAllEmployers = async (req, res, next) => {
-  // console.log("getAllEmployers");
+  console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
   // (these 2 do not fit the query in any other way
@@ -717,19 +717,20 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 671: ${err}`);
+    console.error(`sf.ctrl.js > 720: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
   try {
     accounts = await conn.query(query);
-    // console.log(`sf.ctrl.js > 527: returning employers to client`);
     if (!accounts || !accounts.records || !accounts.records.length) {
+      console.log(`sf.ctrl.js > 728: returning employers to client`);
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
+    console.log(`sf.ctrl.js > 730: returning employers to client`);
     return res.status(200).json(accounts.records);
   } catch (err) {
-    console.error(`sf.ctrl.js > 683: ${err}`);
+    console.error(`sf.ctrl.js > 733: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
