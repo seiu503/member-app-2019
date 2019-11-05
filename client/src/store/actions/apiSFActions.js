@@ -600,6 +600,7 @@ export function getSFEmployers() {
           type: GET_SF_EMPLOYERS_SUCCESS,
           payload: (action, state, res) => {
             const contentType = res.headers.get("Content-Type");
+            console.log(contentType);
             if (contentType && ~contentType.indexOf("json")) {
               console.log("604");
               // Just making sure res.json() does not raise an error
