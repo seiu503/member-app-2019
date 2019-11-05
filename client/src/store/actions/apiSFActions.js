@@ -596,7 +596,15 @@ export function getSFEmployers() {
       method: "GET",
       types: [
         GET_SF_EMPLOYERS_REQUEST,
-        GET_SF_EMPLOYERS_SUCCESS,
+        {
+          type: GET_SF_EMPLOYERS_SUCCESS,
+          payload: (action, state, res) => {
+            return res.json().then(data => {
+              console.log(data);
+              return { ...data };
+            });
+          }
+        },
         {
           type: GET_SF_EMPLOYERS_FAILURE,
           payload: (action, state, res) => {
