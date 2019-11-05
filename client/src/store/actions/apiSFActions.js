@@ -599,12 +599,18 @@ export function getSFEmployers() {
         {
           type: GET_SF_EMPLOYERS_SUCCESS,
           payload: (action, state, res) => {
-            return res.json().then(data => {
-              console.log(data);
-              return { ...data };
-            });
+            const contentType = res.headers.get("Content-Type");
+            if (contentType && ~contentType.indexOf("json")) {
+              // Just making sure res.json() does not raise an error
+              return res.json().then(json => {
+                console.log(JSON.parse(json));
+                console.log(json);
+                return json;
+              });
+            }
           }
         },
+        // GET_SF_EMPLOYERS_SUCCESS,
         {
           type: GET_SF_EMPLOYERS_FAILURE,
           payload: (action, state, res) => {
