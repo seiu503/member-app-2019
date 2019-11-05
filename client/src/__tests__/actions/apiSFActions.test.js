@@ -676,7 +676,7 @@ describe("apiSFActions", () => {
         .reply(200);
 
       const expectedResult = {
-        payload: undefined,
+        payload: "",
         type: "GET_SF_EMPLOYERS_SUCCESS",
         meta: undefined
       };

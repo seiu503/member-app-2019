@@ -603,7 +603,6 @@ export function getSFEmployers() {
             console.log(contentType);
             if (contentType && ~contentType.indexOf("json")) {
               console.log("604");
-              // Just making sure res.json() does not raise an error
               return res.json().then(data => {
                 console.log(data);
                 return data;
