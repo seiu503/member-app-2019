@@ -608,6 +608,12 @@ export function getSFEmployers() {
                 console.log(data);
                 return data;
               });
+            } else {
+              console.log("612");
+              return res.text().then(data => {
+                console.log(data);
+                return data;
+              });
             }
           }
         },
