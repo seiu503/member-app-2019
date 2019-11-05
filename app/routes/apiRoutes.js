@@ -595,7 +595,11 @@ router.get("/sfCAPE/:id", sfCtrl.getSFCAPEByContactId);
 //   Returns: Array of SF Account objects including:
 //      Id, Name, Sub_Division__c, Agency_Number__c.
 //
-router.get("/sfaccts", sfCtrl.getAllEmployers);
+const logit = () => {
+  console.log(`apiRoutes.js > 598`);
+  return next();
+};
+router.get("/sfaccts", logit, sfCtrl.getAllEmployers);
 
 /* ========================== DIRECT JOIN RATES =========================== */
 

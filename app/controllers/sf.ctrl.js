@@ -17,6 +17,8 @@ const loginUrl =
     ? process.env.SALESFORCE_PROD_URL
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.SALESFORCE_PROD_URL
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.SALESFORCE_DEV_URL
     : process.env.SALESFORCE_DEV_URL;
 
 console.log(`sf.ctrl.js > loginUrl: ${loginUrl}`);
@@ -28,6 +30,8 @@ const user =
     ? process.env.SALESFORCE_PROD_USER
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.SALESFORCE_PROD_USER
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.SALESFORCE_USER
     : process.env.SALESFORCE_USER;
 
 console.log(`sf.ctrl.js > user: ${user}`);
@@ -37,6 +41,8 @@ const password =
     ? process.env.SALESFORCE_PROD_PWD
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.SALESFORCE_PROD_PWD
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.SALESFORCE_PWD
     : process.env.SALESFORCE_PWD;
 
 // console.log(`sf.ctrl.js > password: ${password}`);
@@ -46,6 +52,8 @@ const unioniseEndpoint =
     ? process.env.UNIONISE_PROD_ENDPOINT
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_PROD_ENDPOINT
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.UNIONISE_ENDPOINT
     : process.env.UNIONISE_ENDPOINT;
 
 console.log(`sf.ctrl.js > unioniseEndpoint: ${unioniseEndpoint}`);
@@ -55,6 +63,8 @@ const unioniseAuthEndpoint =
     ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_AUTH_PROD_ENDPOINT
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.UNIONISE_AUTH_ENDPOINT
     : process.env.UNIONISE_AUTH_ENDPOINT;
 
 console.log(`sf.ctrl.js > unioniseAuthEndpoint: ${unioniseAuthEndpoint}`);
@@ -64,6 +74,8 @@ const unionisePassword =
     ? process.env.UNIONISE_PROD_PASSWORD
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_PROD_PASSWORD
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.UNIONISE_PASSWORD
     : process.env.UNIONISE_PASSWORD;
 
 // console.log(`sf.ctrl.js > unionisePassword: ${unionisePassword}`);
@@ -73,6 +85,8 @@ const unioniseClientSecret =
     ? process.env.UNIONISE_PROD_CLIENT_SECRET
     : process.env.NODE_CONFIG_ENV === "staging"
     ? process.env.UNIONISE_PROD_CLIENT_SECRET
+    : process.env.NODE_CONFIG_ENV === "devstaging"
+    ? process.env.UNIONISE_CLIENT_SECRET
     : process.env.UNIONISE_CLIENT_SECRET;
 
 // console.log(`sf.ctrl.js > unioniseClientSecret: ${unioniseClientSecret}`);
@@ -707,6 +721,7 @@ exports.getSFCAPEByContactId = async (req, res, next) => {
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
 exports.getAllEmployers = async (req, res, next) => {
+  console.log(`sf.ctrl.js > 724`);
   console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id

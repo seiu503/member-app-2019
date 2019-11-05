@@ -1,6 +1,6 @@
 import { RSAA } from "redux-api-middleware";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
-// console.log(BASE_URL);
+console.log(BASE_URL);
 
 /* =============================== CONTACTS ================================ */
 
@@ -588,6 +588,8 @@ export const GET_SF_EMPLOYERS_FAILURE = "GET_SF_EMPLOYERS_FAILURE";
  *     If database error, hides spinner, displays error toastr
  */
 export function getSFEmployers() {
+  console.log(`getSFEmployers`);
+  console.log(`${BASE_URL}/api/sfaccts`);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sfaccts`,
