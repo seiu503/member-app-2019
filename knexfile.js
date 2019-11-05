@@ -45,6 +45,10 @@ module.exports = {
     },
     seeds: {
       directory: "./db/seeds/staging"
+    },
+    debug: true,
+    pool: {
+      propagateCreateError: false
     }
   },
   staging: {
