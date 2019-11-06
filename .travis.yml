@@ -74,8 +74,8 @@ script:
   - knex migrate:latest --env testing
   - cd client && yarn install
   - if [ $TRAVIS_BRANCH == "development" ]; then
-    echo "Development branch; running devstaging build.";
-    nohup env-path -p .env.devstaging yarn node node_modules/react-scripts/scripts/build.js;
+    echo "Development branch; running staging build.";
+    nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js;
       else
         echo "Master branch; running production build.";
         nohup env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js;

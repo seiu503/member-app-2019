@@ -43,6 +43,7 @@ const createSubmission = async (req, res, next) => {
   const ip = req.clientIp;
   console.log("submissions.ctrl.js > 43: createSubmission");
   console.log(ip);
+  console.log(req.body);
   let {
     submission_date,
     agency_number,
