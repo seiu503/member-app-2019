@@ -11,6 +11,9 @@ const aws = require("aws-sdk");
 const s3config = require("../config/aws");
 let S3 = new aws.S3(s3config);
 
+console.log(`s3config`);
+console.log(s3config);
+
 /** Upload a single image
  *  @param    {File}   file            Uploaded file.
  *  @returns  {Object}                 Image name and URL OR error message.
@@ -21,11 +24,11 @@ exports.singleImgUpload = async (req, res, next) => {
   uploader
     .startUpload(req, res, next)
     .then(() => {
-      // console.log(`image.ctrl.js > 24`);
-      // console.log(req.file);
+      console.log(`image.ctrl.js > 24`);
+      console.log(req.file);
       if (!req.file) {
-        // console.log(`image.ctrl.js > 27`);
-        // console.log("No file found");
+        console.log(`image.ctrl.js > 27`);
+        console.log("No file found");
         return res.status(500).json({
           message: "No file attached. Please choose a file."
         });
@@ -51,7 +54,7 @@ exports.singleImgUpload = async (req, res, next) => {
             return res.status(200).json(records[0]);
           })
           .catch(err => {
-            // console.log(`image.ctrl.js > 53: ${err}`);
+            console.log(`image.ctrl.js > 53: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       } else {
@@ -62,19 +65,19 @@ exports.singleImgUpload = async (req, res, next) => {
             return res.status(200).json(records[0]);
           })
           .catch(err => {
-            // console.log(`image.ctrl.js > 64: ${err}`);
+            console.log(`image.ctrl.js > 64: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       }
     })
     .catch(err => {
       if (err instanceof multer.MulterError) {
-        // console.log(`image.ctrl.js > 71: ${err}`);
+        console.log(`image.ctrl.js > 71: ${err}`);
         return res.status(500).json({
           message: err.message
         });
       }
-      // console.log(`image.ctrl.js > 76: ${err}`);
+      console.log(`image.ctrl.js > 76: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
