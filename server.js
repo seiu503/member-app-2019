@@ -8,6 +8,7 @@ app.use(middleware);
 const favicon = require("serve-favicon");
 const dotenv = require("dotenv").config();
 const path = require("path");
+app.set("trust proxy", true);
 
 // initialize passport
 

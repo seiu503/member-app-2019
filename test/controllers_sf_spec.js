@@ -674,7 +674,8 @@ suite("sf.ctrl.js", function() {
     beforeEach(function() {
       return new Promise(resolve => {
         req = mockReq({
-          body: submissionBody
+          body: submissionBody,
+          clientIp: "1.1.1.1"
         });
         res.locals = {
           sf_contact_id: "0035500000VFkjOAAT",

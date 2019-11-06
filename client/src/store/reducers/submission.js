@@ -231,6 +231,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case GET_SF_EMPLOYERS_SUCCESS:
+      console.log(action.payload);
       const employerNames = action.payload
         ? action.payload.map(employer => employer.Name)
         : [""];

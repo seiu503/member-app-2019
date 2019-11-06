@@ -16,7 +16,6 @@ const {
   // generateTableDisplayFields
 } = require("../app/utils/fieldConfigs");
 const { db } = require("../app/config/knex");
-const localIpUrl = require("local-ip-url");
 require("../app/config/passport")(passport);
 
 // generateTableDisplayFields();
@@ -57,7 +56,8 @@ suite("sumissions.ctrl.js", function() {
       return new Promise(resolve => {
         submissionBody.salesforce_id = "123";
         req = mockReq({
-          body: { userType: "admin", ...submissionBody }
+          body: { userType: "admin", ...submissionBody },
+          clientIp: "1.1.1.1"
         });
         next = sinon.stub();
         resolve();
@@ -493,7 +493,6 @@ suite("sumissions.ctrl.js", function() {
   suite("submCtrl > verifyHumanity", function() {
     beforeEach(function() {
       token = "faketoken";
-      ip_address = localIpUrl();
     });
 
     afterEach(() => {
@@ -503,7 +502,7 @@ suite("sumissions.ctrl.js", function() {
 
     test("when called with valid token, verifyHumanity returns success", async function() {
       const app = require("../server");
-      const req = mockReq({ body: { token, ip_address } });
+      const req = mockReq({ body: { token }, clientIp: "1.1.1.1" });
       const res = mockRes();
       const requestStub = sinon
         .stub(request, "post")

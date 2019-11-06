@@ -63,6 +63,10 @@ const styles = theme => ({
     "&:hover": {
       backgroundColor: theme.palette.primary.light
     }
+  },
+  testWarning: {
+    padding: 20,
+    backgroundColor: "#d32f2f" // theme.palette.danger.light
   }
 });
 
@@ -83,6 +87,30 @@ export class WelcomeInfoUnconnected extends React.Component {
               alt="Welcome Photo"
               image={imageUrl}
             />
+          )}
+
+          {process.env.REACT_APP_ENV_TEXT !== "production" && (
+            <div className={classes.testWarning}>
+              <Typography
+                variant="body1"
+                gutterBottom
+                data-test="testWarning"
+                style={{ display: "inline" }}
+              >
+                This form is for testing only. Membership data submitted through
+                this form will not be processed. If you landed on the test page
+                by mistake and want to become a member of SEIU Local 503, please
+                click here:&nbsp;
+              </Typography>
+              <strong>
+                <a
+                  style={{ fontWeight: "bold", fontSize: "1.2em" }}
+                  href="https://seiu503signup.org"
+                >
+                  seiu503signup.org
+                </a>
+              </strong>
+            </div>
           )}
 
           <Typography

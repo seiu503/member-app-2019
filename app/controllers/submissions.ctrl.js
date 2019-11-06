@@ -1,4 +1,4 @@
-var request = require("request");
+const request = require("request");
 
 /*
    Route handlers for fetching and updating submissions.
@@ -40,9 +40,11 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  // console.log("submissions.ctrl.js > 43: createSubmission");
+  const ip = req.clientIp;
+  console.log("submissions.ctrl.js > 43: createSubmission");
+  console.log(ip);
+  console.log(req.body);
   let {
-    ip_address,
     submission_date,
     agency_number,
     birthdate,
@@ -107,7 +109,7 @@ const createSubmission = async (req, res, next) => {
 
   const createSubmissionResult = await submissions
     .createSubmission(
-      ip_address,
+      ip,
       submission_date,
       agency_number,
       birthdate,
@@ -307,8 +309,9 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = async (req, res) => {
-  // console.log(`verifyHumanity`);
-  const { token, ip_address } = req.body;
+  const ip = req.clientIp;
+  console.log(`verifyHumanity: ${ip}`);
+  const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
   return request.post(
     "https://www.google.com/recaptcha/api/siteverify",
@@ -316,7 +319,7 @@ const verifyHumanity = async (req, res) => {
       form: {
         secret: key,
         response: token,
-        remoteip: ip_address
+        remoteip: ip
       }
     },
     (err, httpResponse, body) => {

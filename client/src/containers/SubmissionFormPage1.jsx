@@ -1,5 +1,4 @@
 import React from "react";
-import localIpUrl from "local-ip-url";
 import {
   getFormValues,
   submit,
@@ -500,7 +499,6 @@ export class SubmissionFormPage1Container extends React.Component {
     } = secondValues;
 
     return {
-      ip_address: localIpUrl(),
       submission_date: new Date(),
       agency_number: agencyNumber,
       birthdate,
@@ -540,7 +538,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues);
-    // console.log(body.submission_date);
+    // console.log(body.ip_address);
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
@@ -899,7 +897,6 @@ export class SubmissionFormPage1Container extends React.Component {
     await this.props.recaptcha.execute();
 
     // then verify
-    const ip_address = localIpUrl();
     const token = this.props.submission.formPage1.reCaptchaValue;
 
     // check for token every 200ms until returned to avoid race condition
@@ -909,14 +906,12 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      const result = await this.props.apiSubmission
-        .verify(token, ip_address)
-        .catch(err => {
-          console.error(err);
-          return handleError(
-            "ReCaptcha verification failed, please reload the page and try again."
-          );
-        });
+      const result = await this.props.apiSubmission.verify(token).catch(err => {
+        console.error(err);
+        return handleError(
+          "ReCaptcha verification failed, please reload the page and try again."
+        );
+      });
 
       if (result) {
         // console.log(`recaptcha score: ${result.payload.score}`);
@@ -1389,7 +1384,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // generate body
     const body = {
-      ip_address: localIpUrl(),
       submission_date: utils.formatDate(new Date()),
       contact_id: this.props.submission.salesforceId,
       first_name: formValues.firstName,
