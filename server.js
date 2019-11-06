@@ -5,10 +5,10 @@ const express = require("express");
 const app = express();
 const middleware = require("./middleware");
 app.use(middleware);
+app.set("trust proxy", true);
 const favicon = require("serve-favicon");
 const dotenv = require("dotenv").config();
 const path = require("path");
-app.set("trust proxy", true);
 
 // initialize passport
 

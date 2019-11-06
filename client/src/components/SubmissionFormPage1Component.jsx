@@ -33,7 +33,7 @@ export class SubmissionFormPage1Component extends React.Component {
       .getSFEmployers()
       .then(result => {
         console.log(result);
-        console.log(result.payload);
+        // console.log(result.payload);
         this.loadEmployersPicklist();
       })
       .catch(err => {

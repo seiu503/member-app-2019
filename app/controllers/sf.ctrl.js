@@ -9,6 +9,7 @@ const {
   paymentFields,
   formatDate
 } = require("../utils/fieldConfigs");
+const utils = require("../utils");
 
 // staging setup for with prod URL/user/pwd for now
 // switch to dev when prod deployed
@@ -342,7 +343,7 @@ exports.updateSFContact = async (req, res, next) => {
  */
 
 exports.createSFOnlineMemberApp = async (req, res, next) => {
-  const ip = req.clientIp;
+  const ip = utils.getClientIp(req);
   console.log(`sf.ctrl.js > 332: ${ip}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {

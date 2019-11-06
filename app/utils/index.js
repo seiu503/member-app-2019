@@ -37,9 +37,13 @@ generateToken = user => {
   });
 };
 
+/** Get client IP from req */
+getClientIp = req => req.ip.split(":").pop();
+
 module.exports = {
   randomText,
   handleError,
   setUserInfo,
-  generateToken
+  generateToken,
+  getClientIp
 };
