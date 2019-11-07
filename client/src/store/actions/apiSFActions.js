@@ -604,7 +604,7 @@ export function getSFEmployers() {
             if (contentType && ~contentType.indexOf("json")) {
               console.log("604");
               return res.json().then(data => {
-                console.log(data);
+                // console.log(data);
                 return data;
               });
             } else {

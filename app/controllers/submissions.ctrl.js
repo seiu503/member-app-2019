@@ -8,6 +8,7 @@ const request = require("request");
 
 // import models
 const submissions = require("../../db/models/submissions");
+const utils = require("../utils");
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -40,7 +41,7 @@ const submissions = require("../../db/models/submissions");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  const ip = req.clientIp;
+  const ip = utils.getClientIp(req);
   console.log("submissions.ctrl.js > 43: createSubmission");
   console.log(ip);
   console.log(req.body);
@@ -309,7 +310,7 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = async (req, res) => {
-  const ip = req.clientIp;
+  const ip = utils.getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;

@@ -8,6 +8,7 @@ const request = require("request");
 
 // import models
 const cape = require("../../db/models/cape");
+const utils = require("../utils");
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -34,7 +35,7 @@ const cape = require("../../db/models/cape");
  *  @returns  {Array}    Array of 1 newly-created CAPE Object.
  */
 const createCAPE = async (req, res, next) => {
-  const ip = req.clientIp;
+  const ip = utils.getClientIp(req);
   console.log(`cape.ctrl.js > 38: ${ip}`);
   // console.log("cape.ctrl.js > 38: createCAPE");
   // console.log(req.body);

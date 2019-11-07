@@ -7,8 +7,8 @@ const s3config = require("../config/aws");
 let S3 = new aws.S3(s3config);
 
 const checkFile = (file, cb) => {
-  // console.log(`multer.js > 32`);
-  // console.log(file);
+  console.log(`multer.js > 32`);
+  console.log(file);
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext
@@ -59,8 +59,8 @@ class Uploader {
       await upload(req, res);
       return;
     } catch (err) {
-      // console.log(`multer.js > 62: ${err}`);
-      return res.status(500).json({ message: err.message });
+      console.log(`multer.js > 62: ${err}`);
+      return next(err);
     }
   }
 }
