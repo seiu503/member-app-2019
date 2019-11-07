@@ -66,6 +66,15 @@ if (!module.parent) {
         process.env.NODE_CONFIG_ENV
       }`
     );
+    console.log(
+      `process.env.AWS_S3_ACCESS_KEY: ${process.env.AWS_S3_ACCESS_KEY}`
+    );
+    const result = dotenv;
+    if (result.error) {
+      console.log(`dotenv error`);
+      console.log(result.error);
+    }
+    console.log(result.parsed);
   });
 }
 
