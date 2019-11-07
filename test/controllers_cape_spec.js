@@ -57,7 +57,9 @@ suite("cape.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           body: generateCAPEValidateBackEnd(),
-          clientIp: "1.1.1.1"
+          headers: {
+            "x-real-ip": "1.1.1.1"
+          }
         });
         next = sinon.stub();
         resolve();
@@ -86,7 +88,10 @@ suite("cape.ctrl.js", function() {
 
     test("returns 422 if required field missing", async function() {
       req = mockReq({
-        body: capeBody
+        body: capeBody,
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
       });
       delete req.body.first_name;
       responseStub = {

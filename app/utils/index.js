@@ -38,7 +38,7 @@ generateToken = user => {
 };
 
 /** Get client IP from req */
-getClientIp = req => (req.ip ? req.ip.split(":").pop() : "unknown");
+getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 module.exports = {
   randomText,
