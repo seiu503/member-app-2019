@@ -11,7 +11,7 @@ const aws = require("aws-sdk");
 const s3config = require("../config/aws");
 let S3 = new aws.S3(s3config);
 
-console.log(`s3config`);
+console.log(`image.ctrl.js > s3config`);
 console.log(s3config);
 
 /** Upload a single image
