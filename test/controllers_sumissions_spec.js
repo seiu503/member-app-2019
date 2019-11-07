@@ -58,7 +58,9 @@ suite("sumissions.ctrl.js", function() {
         submissionBody.salesforce_id = "123";
         req = mockReq({
           body: { userType: "admin", ...submissionBody },
-          clientIp: "1.1.1.1"
+          headers: {
+            "x-real-ip": "1.1.1.1"
+          }
         });
         next = sinon.stub();
         resolve();
@@ -102,7 +104,10 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 422 if other required field missing", async function() {
       req = mockReq({
-        body: submissionBody
+        body: submissionBody,
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
       });
       delete req.body.first_name;
       req.body.terms_agree = true;
@@ -121,7 +126,10 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if db method error", async function() {
       req = mockReq({
-        body: generateSampleSubmission()
+        body: generateSampleSubmission(),
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
       });
       errorMsg = "There was an error saving the submission";
       submissionModelsStub = sinon
@@ -140,7 +148,10 @@ suite("sumissions.ctrl.js", function() {
 
     test("returns 500 if server error", async function() {
       req = mockReq({
-        body: generateSampleSubmission()
+        body: generateSampleSubmission(),
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
       });
       errorMsg = "There was an error saving the submission";
       submissionModelsStub = sinon
@@ -503,7 +514,12 @@ suite("sumissions.ctrl.js", function() {
 
     test("when called with valid token, verifyHumanity returns success", async function() {
       const app = require("../server");
-      const req = mockReq({ body: { token }, ip: "1.1.1.1" });
+      const req = mockReq({
+        body: { token },
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
+      });
       const res = mockRes();
       const requestStub = sinon
         .stub(request, "post")
@@ -519,7 +535,12 @@ suite("sumissions.ctrl.js", function() {
     });
     test("verifyHumanity returns error to client if recaptcha siteverify throws", async function() {
       const app = require("../server");
-      const req = mockReq({ body: { token }, ip: "1.1.1.1" });
+      const req = mockReq({
+        body: { token },
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
+      });
       const res = mockRes();
       const requestStub = sinon
         .stub(request, "post")
@@ -534,7 +555,12 @@ suite("sumissions.ctrl.js", function() {
     });
     test("verifyHumanity returns error to client if recaptcha siteverify returns error code", async function() {
       const app = require("../server");
-      const req = mockReq({ body: { token }, ip: "1.1.1.1" });
+      const req = mockReq({
+        body: { token },
+        headers: {
+          "x-real-ip": "1.1.1.1"
+        }
+      });
       const res = mockRes();
       const requestStub = sinon
         .stub(request, "post")

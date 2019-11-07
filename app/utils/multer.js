@@ -7,8 +7,8 @@ const s3config = require("../config/aws");
 let S3 = new aws.S3(s3config);
 
 const checkFile = (file, cb) => {
-  console.log(`multer.js > 32`);
-  console.log(file);
+  // console.log(`multer.js > 32`);
+  // console.log(file);
   // Allowed ext
   const filetypes = /jpeg|jpg|png|gif/;
   // Check ext

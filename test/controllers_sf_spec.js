@@ -514,6 +514,31 @@ suite("sf.ctrl.js", function() {
       }
     });
 
+    test("updates a SF contact (no submission_id in res.locals)", async function() {
+      responseStub = {
+        salesforce_id: "sfid0035500000VFkjOAAT",
+        submission_id: "submid0035500000VFkjOAAT"
+      };
+      req.params = {
+        id: "sfid0035500000VFkjOAAT"
+      };
+      res.locals = {
+        sf_contact_id: "sfid0035500000VFkjOAAT"
+      };
+      jsforceConnectionStub = sinon
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        await sfCtrl.updateSFContact(req, res);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
     test("returns next if res.locals.next is set", async function() {
       next = sinon.stub();
       jsforceConnectionStub = sinon
@@ -675,7 +700,9 @@ suite("sf.ctrl.js", function() {
       return new Promise(resolve => {
         req = mockReq({
           body: submissionBody,
-          clientIp: "1.1.1.1"
+          headers: {
+            "x-real-ip": "1.1.1.1"
+          }
         });
         res.locals = {
           sf_contact_id: "0035500000VFkjOAAT",
@@ -970,10 +997,36 @@ suite("sf.ctrl.js", function() {
         .returns(jsforceStub);
 
       try {
-        await sfCtrl.updateSFDJR(req, res);
+        const result = await sfCtrl.updateSFDJR(req, res);
         assert.called(jsforceConnectionStub);
         assert.called(jsforceStub.login);
         assert.calledWith(res.json, responseStub);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+
+    test("returns next if res.locals.next", async function() {
+      responseStub = {
+        sf_djr_id: "sfid0035500000VFkjOAAT"
+      };
+      req.params = {
+        id: "sfid0035500000VFkjOAAT"
+      };
+      res.locals = {
+        sf_djr_id: "sfid0035500000VFkjOAAT",
+        next: sinon.stub()
+      };
+      jsforceConnectionStub = sinon
+        .stub(jsforce, "Connection")
+        .returns(jsforceStub);
+
+      try {
+        const next = sinon.stub();
+        await sfCtrl.updateSFDJR(req, res, next);
+        assert.called(jsforceConnectionStub);
+        assert.called(jsforceStub.login);
+        assert.notCalled(res.json);
       } catch (err) {
         console.log(err);
       }
@@ -1378,6 +1431,21 @@ suite("sf.ctrl.js", function() {
         }
       });
 
+      test("ignores request and returns 200 if req.body.category !== `payment`", async function() {
+        req.body.category = null;
+        responseStub = { message: "Ignoring non-payment event type" };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.calledWith(res.json, responseStub);
+          assert.calledWith(res.status, 200);
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
       test("returns error if login fails", async function() {
         loginError =
           "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
@@ -1431,6 +1499,42 @@ suite("sf.ctrl.js", function() {
           assert.calledWith(jsforceStub.sobject, "CAPE__c");
           assert.calledWith(res.status, 404);
           assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update returns empty", async function() {
+        jsforceSObjectUpdateStub = sinon.stub().returns({});
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            find: sinon.stub().returns({
+              update: jsforceSObjectUpdateStub
+            })
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            info: {
+              paymentRequestId: "123"
+            },
+            eventType: "finish",
+            category: "payment"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.called(res.json);
         } catch (err) {
           console.log(err);
         }
@@ -1704,6 +1808,40 @@ suite("sf.ctrl.js", function() {
           assert.calledWith(jsforceStub.sobject, "CAPE__c");
           assert.calledWith(res.status, 404);
           assert.calledWith(res.json, { message: sobjectError });
+        } catch (err) {
+          console.log(err);
+        }
+      });
+
+      test("returns error if sobject update returns empty", async function() {
+        const contactErrorStub = {};
+        jsforceSObjectUpdateStub = sinon
+          .stub()
+          .returns((null, contactErrorStub));
+        jsforceStub = {
+          login: loginStub,
+          sobject: sinon.stub().returns({
+            update: jsforceSObjectUpdateStub
+          })
+        };
+        jsforceConnectionStub = sinon
+          .stub(jsforce, "Connection")
+          .returns(jsforceStub);
+
+        const res = mockRes();
+        const req = mockReq({
+          body: {
+            Id: "123",
+            One_Time_Payment_Id__c: "456"
+          }
+        });
+        try {
+          await sfCtrl.updateSFCAPE(req, res);
+          assert.called(jsforceConnectionStub);
+          assert.called(jsforceStub.login);
+          assert.calledWith(jsforceStub.sobject, "CAPE__c");
+          assert.calledWith(res.status, 404);
+          assert.called(res.json);
         } catch (err) {
           console.log(err);
         }
