@@ -134,6 +134,25 @@ export class SubmissionFormPage2Component extends React.Component {
 
     let id = this.props.submission.submissionId;
 
+    if (!id) {
+      const result = await this.props.apiSubmission
+        .createPartialSubmission(cleanBody)
+        .catch(err => {
+          console.error(err);
+          return formElements.handleError(err);
+        });
+
+      if (
+        (result &&
+          result.type &&
+          result.type === "CREATE_PARTIAL_SUBMISSION_FAILURE") ||
+        this.props.submission.error
+      ) {
+        console.error(this.props.submission.error);
+        return formElements.handleError(this.props.submission.error);
+      }
+    }
+
     const result = await this.props.apiSubmission
       .updateSubmission(id, cleanBody)
       .catch(err => {

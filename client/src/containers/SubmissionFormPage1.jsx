@@ -149,10 +149,12 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   closeDialog() {
+    const params = queryString.parse(this.props.location.search);
+    const embed = params.embed ? "&embed=true" : "";
     this.props.history.push(
       `/page2/?cId=${this.props.submission.salesforceId}&sId=${
         this.props.submission.submissionId
-      }`
+      }${embed}`
     );
     this.handleCAPEClose();
   }
@@ -1599,10 +1601,12 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     if (!standAlone) {
+      const params = queryString.parse(this.props.location.search);
+      const embed = params.embed ? "&embed=true" : "";
       this.props.history.push(
         `/page2/?cId=${this.props.submission.salesforceId}&sId=${
           this.props.submission.submissionId
-        }`
+        }${embed}`
       );
     } else {
       openSnackbar("success", "Thank you. Your CAPE submission was processed.");
