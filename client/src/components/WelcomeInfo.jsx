@@ -80,7 +80,7 @@ export class WelcomeInfoUnconnected extends React.Component {
     return (
       <div className={classes.root} data-test="component-welcome-info">
         <Card className={classes.welcomeCard}>
-          {imageUrl && (
+          {imageUrl && !this.props.embed && (
             <CardMedia
               className={classes.media}
               title="Welcome Photo"

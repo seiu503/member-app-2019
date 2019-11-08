@@ -331,6 +331,17 @@ export const stylesPage1 = theme => ({
       margin: "36px auto"
     }
   },
+  formContainerEmbed: {
+    padding: "80px 0 140px 0",
+    margin: "auto",
+    [theme.breakpoints.only("xs")]: {
+      width: "100vw",
+      position: "absolute",
+      left: 0,
+      top: 0,
+      margin: "auto"
+    }
+  },
   sectionContainer: {},
   head: {
     color: theme.palette.primary.light,

@@ -64,6 +64,13 @@ describe("utils/index", () => {
     });
     it("buildquery returns query string (edge case test)", () => {
       expect(utils.buildQuery(null)).toEqual("");
+      expect(utils.buildQuery({ a: 1, b: null })).toEqual("a=1");
+    });
+    it("ordinalSuffix returns correct suffix for input", () => {
+      expect(utils.ordinalSuffix(1)).toEqual("st");
+      expect(utils.ordinalSuffix(2)).toEqual("nd");
+      expect(utils.ordinalSuffix(3)).toEqual("rd");
+      expect(utils.ordinalSuffix(4)).toEqual("th");
     });
   });
 });

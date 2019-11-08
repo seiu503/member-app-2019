@@ -516,8 +516,7 @@ suite("sf.ctrl.js", function() {
 
     test("updates a SF contact (no submission_id in res.locals)", async function() {
       responseStub = {
-        salesforce_id: "sfid0035500000VFkjOAAT",
-        submission_id: "submid0035500000VFkjOAAT"
+        salesforce_id: "sfid0035500000VFkjOAAT"
       };
       req.params = {
         id: "sfid0035500000VFkjOAAT"
