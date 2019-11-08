@@ -34,12 +34,7 @@ module.exports = {
   },
   staging: {
     client: "pg",
-    connection: {
-      host: process.env.STG_DATABASE_ENDPOINT,
-      user: process.env.STG_DATABASE_USER,
-      password: process.env.STG_DATABASE_PASSWORD,
-      database: process.env.STG_DATABASE_NAME
-    },
+    connection: process.env.STG_DATABASE_ENDPOINT,
     migrations: {
       directory: "./db/migrations/production"
     },
