@@ -19,8 +19,7 @@ install:
 deploy:
 - provider: s3
   access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: &3
-    secure: $AWS_SECRET_KEY
+  secret_access_key: $AWS_SECRET_KEY
   local_dir: dpl_cd_upload
   skip_cleanup: true
   on:
@@ -32,7 +31,7 @@ deploy:
   edge: true
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: *3
+  secret_access_key: $AWS_SECRET_KEY
   bucket: code-deploy-builds
   key: latest.zip
   bundle_type: zip
@@ -45,7 +44,7 @@ deploy:
     condition: $TRAVIS_BRANCH = master
 - provider: s3
   access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: *3
+  secret_access_key: $AWS_SECRET_KEY
   local_dir: dpl_cd_upload
   skip_cleanup: true
   on:
@@ -57,7 +56,7 @@ deploy:
   edge: true
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: *3
+  secret_access_key: $AWS_SECRET_KEY
   bucket: code-deploy-builds
   key: latest.zip
   bundle_type: zip
