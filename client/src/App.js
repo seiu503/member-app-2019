@@ -63,7 +63,6 @@ const styles = theme => ({
     width: "100vw",
     height: "100%",
     minHeight: "80vh",
-    // backgroundImage: `url("${SamplePhoto}")`,
     backgroundAttachment: "fixed",
     backgroundPosition: "bottom",
     [theme.breakpoints.down("sm")]: {
@@ -373,20 +372,24 @@ export class AppUnconnected extends Component {
   // move prepForSubmission method up to App, possibly updateSubmission too?
 
   render() {
+    const values = queryString.parse(this.props.location.search);
+    const embed = values.embed;
     const { classes } = this.props;
     const { loggedIn, userType, loading } = this.props.appState;
+    const backgroundImage = embed
+      ? "none"
+      : `url(${
+          this.state.image && this.state.image.url
+            ? this.state.image.url
+            : SamplePhoto
+        })`;
+    const backgroundImageStyle = { backgroundImage };
     // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
       <div
         data-test="component-app"
         className={classes.appRoot}
-        style={{
-          backgroundImage: `url(${
-            this.state.image && this.state.image.url
-              ? this.state.image.url
-              : SamplePhoto
-          })`
-        }}
+        style={backgroundImageStyle}
       >
         <CssBaseline />
         <Recaptcha
@@ -394,7 +397,7 @@ export class AppUnconnected extends Component {
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           onResolved={this.onResolved}
         />
-        <NavBar main_ref={this.main_ref} />
+        {!embed && <NavBar main_ref={this.main_ref} />}
         <Notifier />
         {loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
@@ -404,6 +407,7 @@ export class AppUnconnected extends Component {
               path="/"
               render={routeProps => (
                 <SubmissionFormPage1
+                  embed={embed}
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
                   cape_legal={this.cape_legal}

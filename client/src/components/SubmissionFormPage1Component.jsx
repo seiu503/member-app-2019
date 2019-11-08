@@ -498,7 +498,9 @@ export class SubmissionFormPage1Component extends React.Component {
     return (
       <div
         data-test="component-submissionformpage1"
-        className={classes.formContainer}
+        className={
+          this.props.embed ? classes.formContainerEmbed : classes.formContainer
+        }
       >
         {values.cape ? (
           <CAPEForm
@@ -526,13 +528,7 @@ export class SubmissionFormPage1Component extends React.Component {
           <React.Fragment>
             {typeof this.props.tab !== "number" && (
               <WelcomeInfo
-                location={this.props.location}
-                history={this.props.history}
-                handleTab={this.props.handleTab}
-                headline={this.props.headline}
-                image={this.props.image}
-                body={this.props.body}
-                renderBodyCopy={this.props.renderBodyCopy}
+                {...this.props}
                 style={
                   typeof this.props.tab !== "number"
                     ? { display: "block" }
