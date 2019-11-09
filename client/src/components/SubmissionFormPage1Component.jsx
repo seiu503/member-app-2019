@@ -528,7 +528,14 @@ export class SubmissionFormPage1Component extends React.Component {
           <React.Fragment>
             {typeof this.props.tab !== "number" && (
               <WelcomeInfo
-                {...this.props}
+                embed={this.props.embed}
+                location={this.props.location}
+                history={this.props.history}
+                handleTab={this.props.handleTab}
+                headline={this.props.headline}
+                image={this.props.image}
+                body={this.props.body}
+                renderBodyCopy={this.props.renderBodyCopy}
                 style={
                   typeof this.props.tab !== "number"
                     ? { display: "block" }

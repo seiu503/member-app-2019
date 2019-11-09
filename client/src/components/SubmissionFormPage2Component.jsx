@@ -9,6 +9,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 import CheckCircleOutline from "@material-ui/icons/CheckCircleOutline";
 import Divider from "@material-ui/core/Divider";
+import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
@@ -135,8 +136,13 @@ export class SubmissionFormPage2Component extends React.Component {
     let id = this.props.submission.submissionId;
 
     if (!id) {
+      // lookup sf contact by FLE
+      // need to move lookup, create, and update contact methods up to App
+      // every time they're called, from P1 or P2, pass in formValues as argument
+      // also possibly createSubmission, updateSubmission, prep4Contact, and prep4Submission should be moved up ???
+      // then create submission
       const result = await this.props.apiSubmission
-        .createPartialSubmission(cleanBody)
+        .createSubmission(cleanBody)
         .catch(err => {
           console.error(err);
           return formElements.handleError(err);
@@ -145,27 +151,29 @@ export class SubmissionFormPage2Component extends React.Component {
       if (
         (result &&
           result.type &&
-          result.type === "CREATE_PARTIAL_SUBMISSION_FAILURE") ||
+          result.type === "CREATE_SUBMISSION_FAILURE") ||
         this.props.submission.error
       ) {
         console.error(this.props.submission.error);
         return formElements.handleError(this.props.submission.error);
       }
-    }
+    } else {
+      const result = await this.props.apiSubmission
+        .updateSubmission(id, cleanBody)
+        .catch(err => {
+          console.error(err);
+          return formElements.handleError(err);
+        });
 
-    const result = await this.props.apiSubmission
-      .updateSubmission(id, cleanBody)
-      .catch(err => {
-        console.error(err);
-        return formElements.handleError(err);
-      });
-
-    if (
-      (result && result.type && result.type === "UPDATE_SUBMISSION_FAILURE") ||
-      this.props.submission.error
-    ) {
-      console.error(this.props.submission.error);
-      return formElements.handleError(this.props.submission.error);
+      if (
+        (result &&
+          result.type &&
+          result.type === "UPDATE_SUBMISSION_FAILURE") ||
+        this.props.submission.error
+      ) {
+        console.error(this.props.submission.error);
+        return formElements.handleError(this.props.submission.error);
+      }
     }
 
     this.props.apiSF
@@ -189,6 +197,7 @@ export class SubmissionFormPage2Component extends React.Component {
   };
 
   render() {
+    const id = this.props.submission.submissionId;
     return (
       <div
         className={this.classes.formContainer}
@@ -213,6 +222,41 @@ export class SubmissionFormPage2Component extends React.Component {
             </FormHelperText>
           </div>
           <Divider style={{ margin: 20 }} />
+          {!id && (
+            <React.Fragment>
+              <FormGroup row classes={{ root: this.classes.formGroup2Col }}>
+                <Field
+                  twocol
+                  mobile={!isWidthUp("sm", this.props.width)}
+                  label="First Name"
+                  name="firstName"
+                  id="firstName"
+                  type="text"
+                  classes={{ input2col: this.classes.input2col }}
+                  component={this.renderTextField}
+                />
+
+                <Field
+                  twocol
+                  mobile={!isWidthUp("sm", this.props.width)}
+                  name="lastName"
+                  id="lastName"
+                  label="Last Name"
+                  classes={{ input2col: this.classes.input2col }}
+                  component={this.renderTextField}
+                  type="text"
+                />
+              </FormGroup>
+              <Field
+                label="Home Email"
+                name="homeEmail"
+                id="homeEmail"
+                type="email"
+                classes={classes}
+                component={this.renderTextField}
+              />
+            </React.Fragment>
+          )}
           <FormLabel className={this.classes.formLabel} component="legend">
             <Translate id="raceEthnicityHelperText" />
           </FormLabel>
@@ -503,4 +547,4 @@ export const SubmissionFormPage2Wrap = reduxForm({
   enableReinitialize: true
 })(SubmissionFormPage2Component);
 
-export default SubmissionFormPage2Wrap;
+export default withWidth()(SubmissionFormPage2Wrap);
