@@ -13,7 +13,7 @@ exports.up = function(knex) {
           table.string("preferred_language").alter();
           table.string("terms_agree").alter();
           table.string("signature").alter();
-          table.string("legal_language").alter();
+          table.text("legal_language").alter();
           table.date("maintenance_of_effort").alter();
           table.date("seiu503_cba_app_date").alter();
         });
@@ -56,7 +56,7 @@ exports.down = function(knex) {
             .notNullable()
             .alter();
           table
-            .string("preferred_language")
+            .text("preferred_language")
             .notNullable()
             .alter();
           table

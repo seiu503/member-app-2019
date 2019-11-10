@@ -782,6 +782,22 @@ export const stylesPage2 = theme => ({
   formHelperText: {
     margin: "0 0 10px",
     fontSize: "15px"
+  },
+  formGroup2Col: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
+    [theme.breakpoints.down("xs")]: {
+      flexWrap: "wrap"
+    }
+  },
+  input2Col: {
+    width: "48%",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      display: "block"
+    }
   }
 });
 

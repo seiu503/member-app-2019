@@ -134,14 +134,15 @@ export class SubmissionFormPage2Component extends React.Component {
       }
     }
     cleanBody.salesforce_id = salesforceId;
-    // console.log("CLEANBODY", cleanBody);
 
     let id = this.props.submission.submissionId;
 
     if (!id) {
-      cleanBody.first_name = values.firstName;
-      cleanBody.last_name = values.lastName;
-      cleanBody.home_email = values.homeEmail;
+      cleanBody.first_name = firstName;
+      cleanBody.last_name = lastName;
+      cleanBody.home_email = homeEmail;
+
+      console.log("CLEANBODY", cleanBody);
 
       await this.props
         .createSubmission(cleanBody, true) // partial submission = true
@@ -204,7 +205,11 @@ export class SubmissionFormPage2Component extends React.Component {
           <Divider style={{ margin: 20 }} />
           {!id && (
             <React.Fragment>
-              <FormGroup row classes={{ root: this.classes.formGroup2Col }}>
+              <FormGroup
+                className={this.classes.formGroup}
+                row
+                classes={{ root: this.classes.formGroup2Col }}
+              >
                 <Field
                   twocol
                   mobile={!isWidthUp("sm", this.props.width)}

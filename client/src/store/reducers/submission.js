@@ -109,10 +109,14 @@ export const INITIAL_STATE = {
     capeAmount: "",
     donationFrequency: "Monthly",
     checkoff: true,
-    prefillEmployerChanged: false
+    prefillEmployerChanged: false,
+    howManyTabs: 3
   },
   formPage2: {
-    gender: ""
+    gender: "",
+    firstName: "",
+    lastName: "",
+    homeEmail: ""
   },
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
@@ -371,7 +375,10 @@ function Submission(state = INITIAL_STATE, action) {
             },
             workEmail: { $set: action.payload.Work_Email__c },
             workPhone: { $set: action.payload.Work_Phone__c },
-            hireDate: { $set: action.payload.Hire_Date__c }
+            hireDate: { $set: action.payload.Hire_Date__c },
+            firstName: { $set: action.payload.FirstName },
+            lastName: { $set: action.payload.LastName },
+            homeEmail: { $set: action.payload.Home_Email__c }
           },
           payment: {
             currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }

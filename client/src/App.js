@@ -16,6 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import * as Actions from "./store/actions";
 import * as apiContentActions from "./store/actions/apiContentActions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
+import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
 import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
 
@@ -180,11 +181,13 @@ export class AppUnconnected extends Component {
         text: defaultWelcomeInfo.body,
         id: 0
       },
-      image: {}
+      image: {},
+      tab: undefined
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
     this.onResolved = this.onResolved.bind(this);
+    this.createSubmission = this.createSubmission.bind(this);
     this.updateSubmission = this.updateSubmission.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
     this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
@@ -192,6 +195,7 @@ export class AppUnconnected extends Component {
     this.prepForSubmission = this.prepForSubmission.bind(this);
     this.createSFContact = this.createSFContact.bind(this);
     this.updateSFContact = this.updateSFContact.bind(this);
+    this.changeTab = this.changeTab.bind(this);
   }
 
   componentDidMount() {
@@ -408,12 +412,12 @@ export class AppUnconnected extends Component {
           this.props.submission.error
         ) {
           console.log(this.props.submission.error);
-          return this.props.handleError(this.props.submission.error);
+          return handleError(this.props.submission.error);
         }
       })
       .catch(err => {
         console.error(err);
-        return this.props.handleError(err);
+        return handleError(err);
       });
   }
 
@@ -489,10 +493,14 @@ export class AppUnconnected extends Component {
 
       returnValues.birthdate = birthdate;
       // find employer object and set employer-related fields
-      let employerObject = findEmployerObject(
-        this.props.submission.employerObjects,
-        values.employerName
-      );
+      let employerObject;
+
+      if (values.employerName) {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          values.employerName
+        );
+      }
 
       if (employerObject) {
         returnValues.agencyNumber = employerObject.Agency_Number__c;
@@ -571,7 +579,9 @@ export class AppUnconnected extends Component {
 
   async generateSubmissionBody(values) {
     const firstValues = await this.prepForContact(values);
+    console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues);
+    console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = this.props.submission.formPage1.signature;
     secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
@@ -602,6 +612,12 @@ export class AppUnconnected extends Component {
       signature,
       reCaptchaValue
     } = secondValues;
+
+    if (!firstName) {
+      firstName = values.first_name;
+      lastName = values.last_name;
+      homeEmail = values.home_email;
+    }
 
     return {
       submission_date: new Date(),
@@ -635,14 +651,14 @@ export class AppUnconnected extends Component {
 
   async createSubmission(formValues, partial) {
     console.log("createSubmission");
-
+    console.log(formValues, partial);
     // create initial submission using data in tabs 1 & 2
     // for afh/retiree/comm, submission will not be
     // finalized and written to salesforce
     // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues);
-    // console.log(body.ip_address);
+    console.log(body);
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
       .addSubmission(body)
@@ -673,7 +689,7 @@ export class AppUnconnected extends Component {
               this.props.submission.error
             );
             // goto CAPE tab
-            this.changeTab(this.props.howManyTabs - 1);
+            this.changeTab(this.props.submission.formPage1.howManyTabs - 1);
           } else if (!this.props.submission.error) {
             // update submission status and redirect to CAPE tab
             // console.log("updating submission status");
@@ -804,6 +820,32 @@ export class AppUnconnected extends Component {
     });
   }
 
+  // just navigate to tab, don't run validation on current tab
+  changeTab = newValue => {
+    const newState = { ...this.state };
+    newState.tab = newValue;
+
+    if (newValue === 2) {
+      const { formPage1 } = this.props.submission;
+
+      if (
+        formPage1.paymentType === "Card" &&
+        formPage1.newCardNeeded &&
+        formPage1.paymentRequired
+      ) {
+        // need to set spinner on transition to payment tab
+        // while iframe loads
+        // this.props.actions.setSpinner();
+        return this.setState({ ...newState }, () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+    }
+    this.setState({ ...newState }, () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  };
+
   // resubmit submission and deleteSubmission methods here, to be passed to submission table
 
   render() {
@@ -842,6 +884,7 @@ export class AppUnconnected extends Component {
               path="/"
               render={routeProps => (
                 <SubmissionFormPage1
+                  tab={this.state.tab}
                   embed={embed}
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
@@ -855,6 +898,7 @@ export class AppUnconnected extends Component {
                   body={this.state.body}
                   image={this.state.image}
                   renderBodyCopy={this.renderBodyCopy}
+                  createSubmission={this.createSubmission}
                   updateSubmission={this.updateSubmission}
                   lookupSFContact={this.lookupSFContact}
                   saveSubmissionErrors={this.saveSubmissionErrors}
@@ -862,6 +906,7 @@ export class AppUnconnected extends Component {
                   prepForSubmission={this.prepForSubmission}
                   createSFContact={this.createSFContact}
                   updateSFContact={this.updateSFContact}
+                  changeTab={this.changeTab}
                   {...routeProps}
                 />
               )}
@@ -967,6 +1012,7 @@ export class AppUnconnected extends Component {
               render={routeProps => (
                 <SubmissionFormPage2
                   setRedirect={this.setRedirect}
+                  createSubmission={this.createSubmission}
                   updateSubmission={this.updateSubmission}
                   lookupSFContact={this.lookupSFContact}
                   saveSubmissionErrors={this.saveSubmissionErrors}
@@ -1049,6 +1095,7 @@ const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
+  apiSF: bindActionCreators(apiSFActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });
 

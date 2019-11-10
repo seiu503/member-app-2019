@@ -43,15 +43,12 @@ export class SubmissionFormPage1Container extends React.Component {
     this.state = {
       open: false,
       capeOpen: false,
-      tab: undefined,
       legalLanguage: "",
       signatureType: "draw",
-      howManyTabs: 3,
       displayCAPEPaymentFields: false
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleTab = this.handleTab.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
     this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
@@ -68,6 +65,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.closeDialog = this.closeDialog.bind(this);
     this.mobilePhoneOnBlur = this.mobilePhoneOnBlur.bind(this);
     this.handleCloseAndClear = this.handleCloseAndClear.bind(this);
+    this.handleTab = this.handleTab.bind(this);
   }
 
   componentDidMount() {
@@ -1227,7 +1225,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.saveLegalLanguage();
 
     // save partial submission (need to do this before generating iframe URL)
-    await this.createSubmission().catch(err => {
+    await this.props.createSubmission(formValues).catch(err => {
       console.error(err);
       return handleError(err);
     });
@@ -1267,7 +1265,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // move to next tab
-    return this.changeTab(2);
+    return this.props.changeTab(2);
   }
 
   async handleTab1() {
@@ -1287,13 +1285,15 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      const newState = { ...this.state };
-      newState.howManyTabs = 4;
-      this.setState(newState);
+      this.props.apiSubmission.handleInput({
+        target: "howManyTabs",
+        value: 4
+      });
     } else {
-      const newState = { ...this.state };
-      newState.howManyTabs = 3;
-      this.setState(newState);
+      this.props.apiSubmission.handleInput({
+        target: "howManyTabs",
+        value: 3
+      });
     }
 
     // check if SF contact id already exists (prefill case)
@@ -1303,7 +1303,7 @@ export class SubmissionFormPage1Container extends React.Component {
         console.error(err);
         return handleError(err);
       });
-      return this.changeTab(1);
+      return this.props.changeTab(1);
     }
 
     // otherwise, lookup contact by first/last/email
@@ -1318,7 +1318,7 @@ export class SubmissionFormPage1Container extends React.Component {
         console.error(err);
         return handleError(err);
       });
-      return this.changeTab(1);
+      return this.props.changeTab(1);
     }
 
     // otherwise, create new contact with submission data,
@@ -1327,7 +1327,7 @@ export class SubmissionFormPage1Container extends React.Component {
       console.error(err);
       return handleError(err);
     });
-    return this.changeTab(1);
+    return this.props.changeTab(1);
   }
 
   handleTab(newValue) {
@@ -1343,35 +1343,9 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(err);
       });
     } else {
-      return this.changeTab(newValue);
+      return this.props.changeTab(newValue);
     }
   }
-
-  // just navigate to tab, don't run validation on current tab
-  changeTab = newValue => {
-    const newState = { ...this.state };
-    newState.tab = newValue;
-
-    if (newValue === 2) {
-      const { formPage1 } = this.props.submission;
-
-      if (
-        formPage1.paymentType === "Card" &&
-        formPage1.newCardNeeded &&
-        formPage1.paymentRequired
-      ) {
-        // need to set spinner on transition to payment tab
-        // while iframe loads
-        // this.props.actions.setSpinner();
-        return this.setState({ ...newState }, () => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-      }
-    }
-    this.setState({ ...newState }, () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  };
 
   render() {
     const fullName = `${
@@ -1403,10 +1377,10 @@ export class SubmissionFormPage1Container extends React.Component {
         <SubmissionFormPage1Wrap
           {...this.props}
           change={change}
-          tab={this.state.tab}
-          howManyTabs={this.state.howManyTabs}
+          tab={this.props.tab}
+          howManyTabs={this.props.submission.formPage1.howManyTabs}
           handleTab={this.handleTab}
-          back={this.changeTab}
+          back={this.props.changeTab}
           handleUpload={this.handleUpload}
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}

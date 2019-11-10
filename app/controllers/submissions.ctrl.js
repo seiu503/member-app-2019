@@ -43,7 +43,6 @@ const utils = require("../utils");
 const createSubmission = async (req, res, next) => {
   const ip = utils.getClientIp(req);
   console.log("submissions.ctrl.js > 43: createSubmission");
-  console.log(ip);
   console.log(req.body);
   let {
     submission_date,
@@ -69,38 +68,18 @@ const createSubmission = async (req, res, next) => {
     direct_pay_auth,
     direct_deposit_auth,
     immediate_past_member_status,
-    salesforce_id,
-    reCaptchaValue
+    salesforce_id
   } = req.body;
 
   const requiredFields = [
     "submission_date",
-    "birthdate",
-    "cell_phone",
-    "employer_name",
     "first_name",
     "last_name",
-    "home_street",
-    "home_city",
-    "home_state",
-    "home_zip",
-    "home_email",
-    "preferred_language",
-    "terms_agree",
-    "signature",
-    "legal_language",
-    "maintenance_of_effort",
-    "seiu503_cba_app_date"
+    "home_email"
   ];
 
   const missingField = requiredFields.find(field => !(field in req.body));
-  if (!terms_agree) {
-    console.error(`submissions.ctrl.js > 99: !termsAgree`);
-    return res.status(422).json({
-      reason: "ValidationError",
-      message: "Must agree to terms of service"
-    });
-  } else if (missingField) {
+  if (missingField) {
     console.error(`submissions.ctrl.js > 105: missing ${missingField}`);
     return res.status(422).json({
       reason: "ValidationError",
@@ -137,7 +116,7 @@ const createSubmission = async (req, res, next) => {
       salesforce_id
     )
     .catch(err => {
-      console.error(`submissions.ctrl.js > 136: ${err.message}`);
+      console.error(`submissions.ctrl.js > 129: ${err.message}`);
       return res.status(500).json({ message: err.message });
     });
 
@@ -147,8 +126,11 @@ const createSubmission = async (req, res, next) => {
     createSubmissionResult.message
   ) {
     console.error(
-      `submissions.ctrl.js > 142: ${createSubmissionResult.message ||
-        "There was an error saving the submission"}`
+      `submissions.ctrl.js > 139: ${
+        createSubmissionResult && createSubmissionResult.message
+          ? createSubmissionResult.message
+          : "There was an error saving the submission"
+      }`
     );
     return res.status(500).json({
       message:
