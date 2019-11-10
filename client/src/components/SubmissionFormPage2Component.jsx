@@ -99,7 +99,10 @@ export class SubmissionFormPage2Component extends React.Component {
       worksite,
       workEmail,
       workPhone,
-      hireDate
+      hireDate,
+      firstName,
+      lastName,
+      homeEmail
     } = values;
     const ethnicity = this.calcEthnicity(values);
     const body = {
@@ -136,44 +139,21 @@ export class SubmissionFormPage2Component extends React.Component {
     let id = this.props.submission.submissionId;
 
     if (!id) {
-      // lookup sf contact by FLE
-      // need to move lookup, create, and update contact methods up to App
-      // every time they're called, from P1 or P2, pass in formValues as argument
-      // also possibly createSubmission, updateSubmission, prep4Contact, and prep4Submission should be moved up ???
-      // then create submission
-      const result = await this.props.apiSubmission
-        .createSubmission(cleanBody)
+      cleanBody.first_name = values.firstName;
+      cleanBody.last_name = values.lastName;
+      cleanBody.home_email = values.homeEmail;
+
+      await this.props
+        .createSubmission(cleanBody, true) // partial submission = true
         .catch(err => {
           console.error(err);
           return formElements.handleError(err);
         });
-
-      if (
-        (result &&
-          result.type &&
-          result.type === "CREATE_SUBMISSION_FAILURE") ||
-        this.props.submission.error
-      ) {
-        console.error(this.props.submission.error);
-        return formElements.handleError(this.props.submission.error);
-      }
     } else {
-      const result = await this.props.apiSubmission
-        .updateSubmission(id, cleanBody)
-        .catch(err => {
-          console.error(err);
-          return formElements.handleError(err);
-        });
-
-      if (
-        (result &&
-          result.type &&
-          result.type === "UPDATE_SUBMISSION_FAILURE") ||
-        this.props.submission.error
-      ) {
-        console.error(this.props.submission.error);
-        return formElements.handleError(this.props.submission.error);
-      }
+      await this.props.updateSubmission(id, cleanBody).catch(err => {
+        console.error(err);
+        return formElements.handleError(err);
+      });
     }
 
     this.props.apiSF
@@ -252,7 +232,7 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="homeEmail"
                 id="homeEmail"
                 type="email"
-                classes={classes}
+                classes={this.classes}
                 component={this.renderTextField}
               />
             </React.Fragment>
