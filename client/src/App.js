@@ -39,7 +39,9 @@ import {
   handleError,
   formatBirthdate,
   findEmployerObject,
-  formatSFDate
+  formatSFDate,
+  calcEthnicity,
+  removeFalsy
 } from "./components/SubmissionFormElements";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
@@ -548,19 +550,21 @@ export class AppUnconnected extends Component {
     });
   }
 
-  prepForSubmission(values) {
+  prepForSubmission(values, partial) {
     return new Promise(resolve => {
       let returnValues = { ...values };
 
-      // set default date values for DPA & DDA if relevant
-      returnValues.direct_pay_auth = values.directPayAuth
-        ? formatSFDate(new Date())
-        : null;
-      returnValues.direct_deposit_auth = values.directDepositAuth
-        ? formatSFDate(new Date())
-        : null;
-      // set legal language
-      returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+      if (!partial) {
+        // set default date values for DPA & DDA if relevant
+        returnValues.direct_pay_auth = values.directPayAuth
+          ? formatSFDate(new Date())
+          : null;
+        returnValues.direct_deposit_auth = values.directDepositAuth
+          ? formatSFDate(new Date())
+          : null;
+        // set legal language
+        returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+      }
       // set campaign source
       const q = queryString.parse(this.props.location.search);
       returnValues.campaignSource = q && q.s ? q.s : "NewMemberForm_201910";
@@ -577,10 +581,10 @@ export class AppUnconnected extends Component {
     });
   }
 
-  async generateSubmissionBody(values) {
+  async generateSubmissionBody(values, partial) {
     const firstValues = await this.prepForContact(values);
     console.log("firstValues", firstValues);
-    const secondValues = await this.prepForSubmission(firstValues);
+    const secondValues = await this.prepForSubmission(firstValues, partial);
     console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = this.props.submission.formPage1.signature;
@@ -610,7 +614,24 @@ export class AppUnconnected extends Component {
       campaignSource,
       legalLanguage,
       signature,
-      reCaptchaValue
+      reCaptchaValue,
+      mail_to_city,
+      mail_to_state,
+      mail_to_street,
+      mail_to_zip,
+      lgbtq_id,
+      trans_id,
+      disability_id,
+      deaf_or_hard_of_hearing,
+      blind_or_visually_impaired,
+      gender,
+      gender_other_description,
+      gender_pronoun,
+      job_title,
+      worksite,
+      work_email,
+      work_phone,
+      hire_date
     } = secondValues;
 
     if (!firstName) {
@@ -618,6 +639,10 @@ export class AppUnconnected extends Component {
       lastName = values.last_name;
       homeEmail = values.home_email;
     }
+
+    const ethnicity = calcEthnicity(values);
+    const maintenance_of_effort = partial ? null : new Date();
+    const seiu503_cba_app_date = partial ? null : new Date();
 
     return {
       submission_date: new Date(),
@@ -639,13 +664,31 @@ export class AppUnconnected extends Component {
       text_auth_opt_out: textAuthOptOut,
       online_campaign_source: campaignSource,
       legal_language: legalLanguage,
-      maintenance_of_effort: new Date(),
-      seiu503_cba_app_date: new Date(),
+      maintenance_of_effort,
+      seiu503_cba_app_date,
       direct_pay_auth,
       direct_deposit_auth,
       immediate_past_member_status: immediatePastMemberStatus,
       salesforce_id: salesforceId || this.props.submission.salesforceId,
-      reCaptchaValue
+      reCaptchaValue,
+      mail_to_city,
+      mail_to_state,
+      mail_to_street,
+      mail_to_zip,
+      ethnicity,
+      lgbtq_id,
+      trans_id,
+      disability_id,
+      deaf_or_hard_of_hearing,
+      blind_or_visually_impaired,
+      gender,
+      gender_other_description,
+      gender_pronoun,
+      job_title,
+      hire_date,
+      worksite,
+      work_email,
+      work_phone
     };
   }
 
@@ -657,11 +700,13 @@ export class AppUnconnected extends Component {
     // finalized and written to salesforce
     // until payment method added in tab 3
 
-    const body = await this.generateSubmissionBody(formValues);
+    const body = await this.generateSubmissionBody(formValues, partial);
     console.log(body);
+    const cleanBody = removeFalsy(body);
+    console.log(cleanBody);
     await this.props.apiSubmission
       // const result = await this.props.apiSubmission
-      .addSubmission(body)
+      .addSubmission(cleanBody)
       .then(() => {
         // console.log('453');
       })

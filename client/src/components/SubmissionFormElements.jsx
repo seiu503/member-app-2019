@@ -75,6 +75,16 @@ export const handleError = err => {
   );
 };
 
+export const removeFalsy = obj => {
+  let newObj = {};
+  Object.keys(obj).forEach(prop => {
+    if (obj[prop]) {
+      newObj[prop] = obj[prop];
+    }
+  });
+  return newObj;
+};
+
 // hardcoded select options
 export const stateList = [
   "",
@@ -296,6 +306,45 @@ export const formatSFDate = date => {
 export const formatBirthdate = formValues => {
   const dobRaw = `${formValues.mm}/${formValues.dd}/${formValues.yyyy}`;
   return formatSFDate(dobRaw);
+};
+
+export const calcEthnicity = values => {
+  const {
+    africanOrAfricanAmerican,
+    arabAmericanMiddleEasternOrNorthAfrican,
+    asianOrAsianAmerican,
+    hispanicOrLatinx,
+    nativeAmericanOrIndigenous,
+    nativeHawaiianOrOtherPacificIslander,
+    white,
+    other,
+    declined
+  } = values;
+  if (declined) {
+    return "declined";
+  }
+  let combinedEthnicities = "";
+  const ethnicities = {
+    africanOrAfricanAmerican,
+    arabAmericanMiddleEasternOrNorthAfrican,
+    asianOrAsianAmerican,
+    hispanicOrLatinx,
+    nativeAmericanOrIndigenous,
+    nativeHawaiianOrOtherPacificIslander,
+    white,
+    other
+  };
+  const ethnicitiesArray = Object.entries(ethnicities);
+  ethnicitiesArray.forEach(i => {
+    if (i[1]) {
+      if (combinedEthnicities === "") {
+        combinedEthnicities = i[0];
+      } else {
+        combinedEthnicities += `, ${i[0]}`;
+      }
+    }
+  });
+  return combinedEthnicities;
 };
 
 // find matching employer object from redux store

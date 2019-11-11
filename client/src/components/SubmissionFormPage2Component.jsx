@@ -32,55 +32,6 @@ export class SubmissionFormPage2Component extends React.Component {
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
 
-  calcEthnicity = values => {
-    const {
-      africanOrAfricanAmerican,
-      arabAmericanMiddleEasternOrNorthAfrican,
-      asianOrAsianAmerican,
-      hispanicOrLatinx,
-      nativeAmericanOrIndigenous,
-      nativeHawaiianOrOtherPacificIslander,
-      white,
-      other,
-      declined
-    } = values;
-    if (declined) {
-      return "declined";
-    }
-    let combinedEthnicities = "";
-    const ethnicities = {
-      africanOrAfricanAmerican,
-      arabAmericanMiddleEasternOrNorthAfrican,
-      asianOrAsianAmerican,
-      hispanicOrLatinx,
-      nativeAmericanOrIndigenous,
-      nativeHawaiianOrOtherPacificIslander,
-      white,
-      other
-    };
-    const ethnicitiesArray = Object.entries(ethnicities);
-    ethnicitiesArray.forEach(i => {
-      if (i[1]) {
-        if (combinedEthnicities === "") {
-          combinedEthnicities = i[0];
-        } else {
-          combinedEthnicities += `, ${i[0]}`;
-        }
-      }
-    });
-    return combinedEthnicities;
-  };
-
-  removeFalsy = obj => {
-    let newObj = {};
-    Object.keys(obj).forEach(prop => {
-      if (obj[prop]) {
-        newObj[prop] = obj[prop];
-      }
-    });
-    return newObj;
-  };
-
   handleSubmit = async values => {
     const {
       mailToCity,
@@ -104,12 +55,12 @@ export class SubmissionFormPage2Component extends React.Component {
       lastName,
       homeEmail
     } = values;
-    const ethnicity = this.calcEthnicity(values);
+    const ethnicity = formElements.calcEthnicity(values);
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
-      mail_to_postal_code: mailToZip,
+      mail_to_zip: mailToZip,
       ethnicity,
       lgbtq_id: lgbtqId,
       trans_id: transId,
@@ -125,7 +76,7 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-    const cleanBody = this.removeFalsy(body);
+    const cleanBody = formElements.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
       const params = queryString.parse(this.props.location.search);
