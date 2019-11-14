@@ -97,6 +97,7 @@ describe("submissions model tests", () => {
         salesforce_id
       )
       .then(result => {
+        // console.log(result[0]);
         submission_id = result[0].id;
         test_salesforce_id = result[0].salesforce_id;
         assert.deepEqual(result[0].ip_address, ip_address);
@@ -119,7 +120,7 @@ describe("submissions model tests", () => {
         assert.deepEqual(result[0].home_zip, home_zip);
         assert.deepEqual(result[0].home_email, home_email);
         assert.deepEqual(result[0].preferred_language, preferred_language);
-        assert.deepEqual(result[0].terms_agree, terms_agree);
+        assert.equal(result[0].terms_agree, terms_agree);
         assert.deepEqual(result[0].signature, signature);
         assert.deepEqual(result[0].text_auth_opt_out, text_auth_opt_out);
         assert.deepEqual(

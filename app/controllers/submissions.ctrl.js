@@ -43,7 +43,6 @@ const utils = require("../utils");
 const createSubmission = async (req, res, next) => {
   const ip = utils.getClientIp(req);
   console.log("submissions.ctrl.js > 43: createSubmission");
-  console.log(ip);
   console.log(req.body);
   let {
     submission_date,
