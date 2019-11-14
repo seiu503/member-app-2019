@@ -108,19 +108,11 @@ export class SubmissionFormPage2Component extends React.Component {
       });
     }
 
-    this.props.apiSF
+    this.props
       .updateSFContact(salesforceId, cleanBody)
-      .then(result => {
-        if (
-          result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
-          !this.props.submission.error
-        ) {
-          openSnackbar("success", "Your information was updated!");
-          this.props.history.push(`/thankyou`);
-        } else {
-          // console.log(this.props.submission.error);
-          return formElements.handleError(this.props.submission.error);
-        }
+      .then(() => {
+        openSnackbar("success", "Your information was updated!");
+        this.props.history.push(`/thankyou`);
       })
       .catch(err => {
         console.error(err);
