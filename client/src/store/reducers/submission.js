@@ -108,7 +108,8 @@ export const INITIAL_STATE = {
     whichCard: "",
     capeAmount: "",
     donationFrequency: "Monthly",
-    checkoff: true
+    checkoff: true,
+    textAuthOptOut: false
   },
   formPage2: {
     gender: ""
