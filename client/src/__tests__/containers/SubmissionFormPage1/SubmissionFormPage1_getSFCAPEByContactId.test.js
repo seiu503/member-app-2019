@@ -222,7 +222,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {},
           cape: {
             activeMethodLast4: "1234"
-          }
+          },
+          formPage1: {}
         },
         apiSF: {
           getSFCAPEByContactId: getSFCAPEByContactIdSuccess
@@ -265,7 +266,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {},
           cape: {
             activeMethodLast4: "1234"
-          }
+          },
+          formPage1: {}
         },
         apiSF: {
           getSFCAPEByContactId: getSFCAPEByContactIdError
@@ -308,7 +310,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {},
           cape: {
             activeMethodLast4: "1234"
-          }
+          },
+          formPage1: {}
         },
         apiSF: {
           getSFCAPEByContactId: getSFCAPEByContactIdError

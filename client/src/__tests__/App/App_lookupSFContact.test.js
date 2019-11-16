@@ -195,7 +195,7 @@ const setup = (props = {}) => {
   return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
