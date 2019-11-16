@@ -228,7 +228,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           submissionId: null,
           employerObjects: [{ id: "1", Name: "test" }],
-          cape: {}
+          cape: {},
+          formPage1: {}
         },
         apiSF: {
           getIframeURL: getIframeNewSuccess
@@ -265,7 +266,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          submissionId: "123"
+          submissionId: "123",
+          formPage1: {}
         },
         apiSF: {
           getIframeURL: getIframeNewError
@@ -306,7 +308,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          submissionId: "123"
+          submissionId: "123",
+          formPage1: {}
         },
         apiSF: {
           getIframeURL: getIframeNewError
