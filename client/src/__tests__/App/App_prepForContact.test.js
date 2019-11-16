@@ -2,9 +2,9 @@ import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
+import * as formElements from "../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import { AppUnconnected } from "../../App";
 
 let wrapper;
 
@@ -106,6 +106,11 @@ const defaultProps = {
     cape: {},
     payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -168,10 +173,10 @@ const defaultProps = {
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     formValues = {
       firstName: "firstName",
@@ -251,7 +256,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           salesforceId: "123",
           formPage1: {
-            prefillEmployerId: "1"
+            prefillEmployerId: "2",
+            prefillEmployerChanged: true
           },
           employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
         },
@@ -261,13 +267,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
       const result = await wrapper
         .instance()
         .prepForContact(formValues)
         .catch(err => console.log(err));
-
       expect(result.agencyNumber).toBe(0);
       expect(result.employerId).toBe("0016100000WERGeAAP");
     });

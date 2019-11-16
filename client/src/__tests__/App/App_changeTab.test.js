@@ -2,18 +2,15 @@ import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
+import * as formElements from "../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import { AppUnconnected } from "../../App";
 
-import { handleInput } from "../../../store/actions/apiSubmissionActions";
-
-let wrapper, addSubmissionMock, handleUploadMock;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
@@ -79,7 +76,6 @@ let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
-let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
 const clearSigBoxMock = jest.fn();
@@ -121,6 +117,11 @@ const defaultProps = {
     cape: {},
     payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -185,10 +186,10 @@ const defaultProps = {
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });

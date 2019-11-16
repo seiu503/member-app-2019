@@ -2,11 +2,11 @@ import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
+import * as formElements from "../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import { AppUnconnected } from "../../App";
 
-let wrapper, handleUploadMock;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -108,13 +108,6 @@ const sigBox = {
   }
 };
 
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -144,6 +137,11 @@ const defaultProps = {
     cape: {},
     payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -201,15 +199,16 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  createSubmission: createSubmissionSuccess
 };
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
@@ -262,7 +261,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .createSubmission()
+        .createSubmission(formValues)
         .then(async () => {
           await generateSubmissionBodyMock;
           await addSubmissionError;
@@ -305,7 +304,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .createSubmission()
+        .createSubmission(formValues)
         .then(async () => {
           await createSFOMAError;
           expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
@@ -352,7 +351,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .createSubmission()
+        .createSubmission(formValues)
         .then(async () => {
           await createSFOMAError;
           expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
