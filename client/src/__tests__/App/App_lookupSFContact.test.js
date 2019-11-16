@@ -3,12 +3,9 @@ import { shallow } from "enzyme";
 import moment from "moment";
 
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
+import * as formElements from "../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
+import { AppUnconnected } from "../../App";
 
 let wrapper;
 
@@ -99,13 +96,6 @@ const sigBox = {
   }
 };
 
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -135,6 +125,11 @@ const defaultProps = {
     cape: {},
     payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -197,7 +192,7 @@ const defaultProps = {
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
@@ -221,7 +216,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: { ...defaultProps.formPage1 }
         },
         apiSF: {
           createSFContact: createSFContactSuccess,
@@ -234,7 +230,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
+        .lookupSFContact(formValues)
         .then(() => {
           expect(lookupSFContactSuccess.mock.calls.length).toBe(1);
         })
@@ -270,7 +266,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       // wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
+        .lookupSFContact(formValues)
         .then(() => {
           expect(handleErrorMock.mock.calls.length).toBe(1);
         })
@@ -309,7 +305,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
+        .lookupSFContact(formValues)
         .then(async () => {
           await lookupSFContactSuccess;
           expect(createSFContactMock.mock.calls.length).toBe(1);
@@ -349,7 +345,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
+        .lookupSFContact(formValues)
         .then(async () => {
           await lookupSFContactSuccess;
           await createSFContactMock;
@@ -390,7 +386,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
+        .lookupSFContact(formValues)
         .then(async () => {
           await lookupSFContactSuccess;
           expect(createSFContactMock.mock.calls.length).toBe(0);

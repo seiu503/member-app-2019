@@ -452,7 +452,7 @@ export class AppUnconnected extends Component {
 
       // if nothing found on lookup, need to create new contact
       if (!this.props.submission.salesforceId) {
-        await this.createSFContact()
+        await this.createSFContact(formValues)
           .then(() => {
             // console.log(this.props.submission.salesforceId);
           })
