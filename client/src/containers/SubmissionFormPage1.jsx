@@ -1286,13 +1286,11 @@ export class SubmissionFormPage1Container extends React.Component {
         target: { name: "paymentRequired", value: true }
       });
       this.props.apiSubmission.handleInput({
-        target: "howManyTabs",
-        value: 4
+        target: { name: "howManyTabs", value: 4 }
       });
     } else {
       this.props.apiSubmission.handleInput({
-        target: "howManyTabs",
-        value: 3
+        target: { name: "howManyTabs", value: 3 }
       });
     }
 

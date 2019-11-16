@@ -104,6 +104,8 @@ const sigBox = {
   }
 };
 
+const changeTabMock = jest.fn();
+
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -190,7 +192,11 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  updateSFContact: updateSFContactSuccess,
+  changeTab: changeTabMock,
+  lookupSFContact: lookupSFContactSuccess,
+  createSFContact: createSFContactSuccess
 };
 
 const setup = (props = {}) => {
@@ -201,6 +207,7 @@ const setup = (props = {}) => {
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     // console.log = jest.fn();
+    changeTabMock.mockClear();
   });
   afterEach(() => {
     jest.restoreAllMocks();
@@ -223,7 +230,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {}
         },
         apiSF: {
           updateSFContact: updateSFContactError,
@@ -244,6 +252,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .then(async () => {
           await verifyRecaptchaScoreError();
           expect(formElements.handleError.mock.calls.length).toBe(1);
+          changeTabMock.mockClear();
         })
         .catch(err => {
           console.log(err);
@@ -266,7 +275,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {}
         },
         apiSF: {
           updateSFContact: updateSFContactError,
@@ -284,7 +294,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab1()
         .then(async () => {
           await verifyRecaptchaScoreMock();
-          expect(wrapper.instance().state.howManyTabs).toBe(3);
+          expect(handleInputMock.mock.calls[0][0]).toEqual({
+            target: { name: "howManyTabs", value: 3 }
+          });
+          changeTabMock.mockClear();
         })
         .catch(err => {
           console.log(err);
@@ -307,7 +320,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: "123"
+          salesforceId: "123",
+          formPage1: {}
         },
         apiSF: {
           updateSFContact: updateSFContactError,
@@ -329,6 +343,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           await handleInputMock();
           return updateSFContactError().then(() => {
             expect(formElements.handleError.mock.calls.length).toBe(1);
+            changeTabMock.mockClear();
           });
         })
         .catch(err => {
@@ -352,7 +367,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: null,
+          formPage1: {}
         },
         apiSF: {
           createSFContact: createSFContactSuccess,
@@ -376,6 +392,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           await updateSFContactSuccess();
           return lookupSFContactError().then(() => {
             expect(formElements.handleError.mock.calls.length).toBe(1);
+            changeTabMock.mockClear();
           });
         })
         .catch(err => {
@@ -424,9 +441,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = setup(props);
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
       wrapper.instance().updateSFContact = updateSFContactSuccess;
-      const changeTabMock = jest.fn();
-      wrapper.instance().changeTab = changeTabMock;
-      wrapper.update();
+
       wrapper
         .instance()
         .handleTab1()
@@ -435,6 +450,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           await handleInputMock();
           return updateSFContactSuccess().then(() => {
             expect(changeTabMock.mock.calls.length).toBe(1);
+            changeTabMock.mockClear();
           });
         })
         .catch(err => console.log(err));
@@ -499,6 +515,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       await lookupSFContactSuccess();
       wrapper.instance().props.submission.salesforceId = "1";
       await updateSFContactError().catch(err => console.log(err));
+      changeTabMock.mockClear();
       // expect(formElements.handleError.mock.calls.length).toBe(1);
     });
   });

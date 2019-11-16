@@ -219,7 +219,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: "123",
           payment: {
             activeMethodLast4: "1234"
-          }
+          },
+          formPage1: {}
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,
@@ -261,7 +262,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         submission: {
           salesforceId: "123",
-          payment: {}
+          payment: {},
+          formPage1: {}
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,
@@ -302,7 +304,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         submission: {
           salesforceId: "123",
-          payment: {}
+          payment: {},
+          formPage1: {}
         },
         apiSF: {
           updateSFContact: updateSFContactSuccess,

@@ -219,10 +219,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(wrapper.instance().state.open).toBe(false);
     });
 
-    test("`handleEmployerChange` sets prefillEmployerChanged state to true", () => {
+    test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", () => {
       wrapper = setup();
       wrapper.instance().handleEmployerChange();
-      expect(wrapper.instance().state.prefillEmployerChanged).toBe(true);
+      expect(handleInputMock.mock.calls[0][0]).toEqual({
+        target: { name: "prefillEmployerChanged", value: true }
+      });
     });
 
     test("`handleCloseAndClear` closes modal, clears form, resets window.location", async () => {
