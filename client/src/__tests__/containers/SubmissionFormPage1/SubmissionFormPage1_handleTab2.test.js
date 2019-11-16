@@ -6,15 +6,13 @@ import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-import { handleInput } from "../../../store/actions/apiSubmissionActions";
-
 let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve()),
-  handleUploadMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+  handleUploadMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
   .fn()
@@ -96,19 +94,13 @@ global.scrollTo = jest.fn();
 
 const flushPromises = () => new Promise(setImmediate);
 const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
+let toDataURLMock = jest.fn(),
+  createSubmissionMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -199,7 +191,9 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  createSubmission: createSubmissionMock,
+  changeTab: jest.fn()
 };
 
 const setup = (props = {}) => {
@@ -233,7 +227,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
-        });
+        })
+        .catch(err => console.log(err));
     });
 
     test("`handleTab2` handles error if getIframeURL fails", () => {
@@ -246,11 +241,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const getIframeURLMock = jest
         .fn()
         .mockImplementation(() => Promise.reject("Error"));
-      formElements.handleError = jest.fn();
+      const handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
       let props = {
         formValues: {
           employerType: "community member"
-        }
+        },
+        createSubmission: jest.fn().mockImplementation(() => Promise.resolve()),
+        changeTab: jest.fn()
       };
 
       wrapper = setup(props);
@@ -262,10 +260,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .instance()
         .handleTab2()
         .then(() => {
-          return getIframeURLMock().then(async function() {
-            await flushPromises();
-            expect(formElements.handleError.mock.calls.length).toBe(1);
-          });
+          return getIframeURLMock()
+            .then(async function() {
+              await flushPromises();
+              expect(handleErrorMock.mock.calls.length).toBe(1);
+            })
+            .catch(err => console.log(err));
         })
         .catch(err => {
           console.log(err);
@@ -285,7 +285,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         formValues: {
           employerType: "adult foster home",
           preferredLanguage: "Spanish"
-        }
+        },
+        createSubmission: createSubmissionMock
       };
 
       wrapper = setup(props);
@@ -297,7 +298,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(calculateAFHDuesRateMock.mock.calls.length).toBe(1);
-        });
+        })
+        .catch(err => console.log(err));
     });
 
     test("`handleTab2` calls getSFDJRById if paymentRequired === true", () => {
@@ -341,7 +343,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(getSFDJRByIdMock.mock.calls.length).toBe(1);
-        });
+        })
+        .catch(err => console.log(err));
     });
 
     test("`handleTab2` handles error if getSFDJRById throws", () => {
@@ -385,7 +388,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(getSFDJRByIdMock.mock.calls.length).toBe(1);
-        });
+        })
+        .catch(err => console.log(err));
     });
 
     test("`handleTab2` handles error if getIframeURL throws", () => {
@@ -415,7 +419,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: "1234"
           }
-        }
+        },
+        createSubmission: jest.fn().mockImplementation(() => Promise.resolve()),
+        changeTab: jest.fn()
       };
 
       wrapper = setup(props);
@@ -429,7 +435,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(getSFDJRByIdMock.mock.calls.length).toBe(1);
-        });
+        })
+        .catch(err => console.log(err));
     });
 
     test("`handleTab2` handles error if createSubmission throws", () => {
@@ -462,7 +469,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: "1234"
           }
-        }
+        },
+        createSubmission: createSubmissionMock
       };
 
       wrapper = setup(props);
@@ -477,7 +485,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab2()
         .then(() => {
           expect(createSubmissionMock.mock.calls.length).toBe(1);
-        });
+        })
+        .catch(err => console.log(err));
     });
   });
 });

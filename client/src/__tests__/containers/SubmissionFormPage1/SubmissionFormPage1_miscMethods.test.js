@@ -177,7 +177,8 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  lookupSFContact: lookupSFContactSuccess
 };
 
 const setup = (props = {}) => {
@@ -220,7 +221,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", () => {
-      wrapper = setup();
+      const props = {
+        apiSubmission: {
+          handleInput: handleInputMock
+        }
+      };
+      wrapper = setup(props);
       wrapper.instance().handleEmployerChange();
       expect(handleInputMock.mock.calls[0][0]).toEqual({
         target: { name: "prefillEmployerChanged", value: true }
@@ -276,72 +282,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           payment: {
             currentCAPEFromSF: 20
-          }
+          },
+          formPage1: {}
         }
       };
       wrapper = setup(props);
       wrapper.instance().setCAPEOptions();
       expect(setCAPEOptionsMock).toHaveBeenCalled();
-    });
-
-    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
-      const props = {
-        submission: {
-          formPage1: {
-            prefillEmployerId: "1234"
-          }
-        }
-      };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
-      wrapper.instance().prepForContact(body);
-    });
-
-    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          }
-        },
-        location: {
-          search: "&cId=1234"
-        }
-      };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().prepForSubmission(body);
     });
 
     test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {

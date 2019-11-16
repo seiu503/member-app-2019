@@ -231,7 +231,7 @@ describe("<App />", () => {
       wrapper = setup(props);
       wrapper
         .instance()
-        .createSFContact()
+        .createSFContact(formValues)
         .then(() => {
           expect(formElements.handleError.mock.calls.length).toBe(1);
         })

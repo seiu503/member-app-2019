@@ -490,7 +490,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             innerHTML: ""
           }
         },
-        reset: jest.fn()
+        reset: jest.fn(),
+        lookupSFContact: lookupSFContactSuccess
       };
 
       wrapper = setup(props);

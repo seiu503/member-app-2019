@@ -1,7 +1,9 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
+
 import "jest-canvas-mock";
+import * as formElements from "../../components/SubmissionFormElements";
 
 import { AppUnconnected } from "../../App";
 
@@ -148,9 +150,7 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
-    updateSubmission: () =>
-      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -180,7 +180,8 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  lookupSFContact: lookupSFContactSuccess
 };
 
 const setup = (props = {}) => {
@@ -196,21 +197,72 @@ describe("<App />", () => {
     jest.restoreAllMocks();
   });
 
-  describe("changeTab", () => {
-    test("`changeTab` changes tab if newValue === 2 & paymentType === `Card`", async function() {
-      let props = {
+  describe("misc methods", () => {
+    beforeEach(() => {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve(""));
+    });
+    afterEach(() => {
+      handleInputMock.mockClear();
+    });
+
+    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
+      const props = {
         submission: {
           formPage1: {
-            paymentType: "Card",
-            newCardNeeded: true,
-            paymentRequired: true
+            prefillEmployerId: "1234"
           }
         }
       };
-
+      const body = {
+        firstName: "firstName",
+        lastName: "lastName",
+        homeStreet: "homeStreet",
+        homeCity: "city",
+        homeState: "state",
+        homeZip: "zip",
+        birthdate: new Date(),
+        homeEmail: "test@test.com",
+        mobilePhone: "1234567890",
+        preferredLanguage: "Spanish",
+        textAuthOptOut: false,
+        capeAmountOther: 11,
+        employerName: "homecare"
+      };
       wrapper = setup(props);
-      wrapper.instance().changeTab(2);
-      expect(wrapper.instance().state.tab).toBe(2);
+      wrapper.instance().state.prefillEmployerChanged = true;
+      wrapper.update();
+      wrapper.instance().prepForContact(body);
+    });
+
+    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          }
+        },
+        location: {
+          search: "&cId=1234"
+        }
+      };
+      const body = {
+        firstName: "firstName",
+        lastName: "lastName",
+        homeStreet: "homeStreet",
+        homeCity: "city",
+        homeState: "state",
+        homeZip: "zip",
+        birthdate: new Date(),
+        homeEmail: "test@test.com",
+        mobilePhone: "1234567890",
+        preferredLanguage: "Spanish",
+        textAuthOptOut: false,
+        capeAmountOther: 11,
+        employerName: "homecare"
+      };
+      wrapper = setup(props);
+      wrapper.instance().prepForSubmission(body);
     });
   });
 });
