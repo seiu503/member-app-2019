@@ -450,7 +450,12 @@ export class SubmissionFormPage1Container extends React.Component {
       returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
       // set campaign source
       const q = queryString.parse(this.props.location.search);
-      returnValues.campaignSource = q && q.s ? q.s : "NewMemberForm_201910";
+      console.log(q);
+      const campaignSource =
+        q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
+      returnValues.campaignSource = campaignSource;
+
+      console.log(campaignSource);
       // set salesforce id
       if (!values.salesforceId) {
         if (q && q.cId) {
@@ -1358,7 +1363,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
-    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+    console.log(q);
+    const campaignSource =
+      q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
+
+    console.log(campaignSource);
 
     // set body fields
     const checkoff = this.props.submission.formPage1.checkoff;
