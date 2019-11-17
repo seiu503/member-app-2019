@@ -93,7 +93,11 @@ const createSubmission = (
       salesforce_id
     })
     .into(TABLES.SUBMISSIONS)
-    .returning("*");
+    .returning("*")
+    .catch(err => {
+      console.log(`models/submissions.js > 98`);
+      console.log(err);
+    });
 };
 
 /** Update a Submission

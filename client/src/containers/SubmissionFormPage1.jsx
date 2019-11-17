@@ -43,28 +43,19 @@ export class SubmissionFormPage1Container extends React.Component {
     this.state = {
       open: false,
       capeOpen: false,
-      tab: undefined,
       legalLanguage: "",
       signatureType: "draw",
-      howManyTabs: 3,
-      displayCAPEPaymentFields: false,
-      prefillEmployerChanged: false
+      displayCAPEPaymentFields: false
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleTab = this.handleTab.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
-    this.prepForContact = this.prepForContact.bind(this);
-    this.prepForSubmission = this.prepForSubmission.bind(this);
-    this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.toggleCardAddingFrame = this.toggleCardAddingFrame.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.suggestedAmountOnChange = this.suggestedAmountOnChange.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
-    this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
     this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
     this.handleEmployerChange = this.handleEmployerChange.bind(this);
-    this.lookupSFContact = this.lookupSFContact.bind(this);
     this.handleDonationFrequencyChange = this.handleDonationFrequencyChange.bind(
       this
     );
@@ -74,6 +65,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.closeDialog = this.closeDialog.bind(this);
     this.mobilePhoneOnBlur = this.mobilePhoneOnBlur.bind(this);
     this.handleCloseAndClear = this.handleCloseAndClear.bind(this);
+    this.handleTab = this.handleTab.bind(this);
   }
 
   componentDidMount() {
@@ -149,10 +141,12 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   closeDialog() {
+    const params = queryString.parse(this.props.location.search);
+    const embed = params.embed ? "&embed=true" : "";
     this.props.history.push(
       `/page2/?cId=${this.props.submission.salesforceId}&sId=${
         this.props.submission.submissionId
-      }`
+      }${embed}`
     );
     this.handleCAPEClose();
   }
@@ -256,9 +250,9 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log("handleEmployerChange");
     // track that employer has been manually changed after prefill
     // to send the prefilled value back to SF on submit if no change
-    const newState = { ...this.state };
-    newState.prefillEmployerChanged = true;
-    this.setState({ ...newState });
+    this.props.apiSubmission.handleInput({
+      target: { name: "prefillEmployerChanged", value: true }
+    });
   }
 
   async handleDonationFrequencyChange(frequency) {
@@ -339,412 +333,6 @@ export class SubmissionFormPage1Container extends React.Component {
       return blobData;
     }
   };
-
-  async saveSubmissionErrors(submission_id, method, error) {
-    // 1. retrieve existing errors array from current submission
-    let { submission_errors } = this.props.submission.currentSubmission;
-    if (submission_errors === null) {
-      submission_errors = "";
-    }
-    // 2. add new data to string
-    submission_errors += `Attempted method: ${method}, Error: ${error}. `;
-    // 3. update submission_errors and submission_status on submission by id
-    const updates = {
-      submission_errors,
-      submission_status: "error"
-    };
-    this.props.apiSubmission
-      .updateSubmission(submission_id, updates)
-      .then(result => {
-        // console.log(result.type);
-        if (
-          result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          // console.log(this.props.submission.error);
-          return handleError(this.props.submission.error);
-        }
-        // console.log(result.type);
-      })
-      .catch(err => {
-        console.error(err);
-        return handleError(err);
-      });
-  }
-
-  async prepForContact(values) {
-    return new Promise(resolve => {
-      let returnValues = { ...values };
-
-      // format birthdate
-      let birthdate;
-      if (values.mm && values.dd && values.yyyy) {
-        birthdate = formatBirthdate(values);
-      }
-
-      returnValues.birthdate = birthdate;
-      // find employer object and set employer-related fields
-      let employerObject = findEmployerObject(
-        this.props.submission.employerObjects,
-        values.employerName
-      );
-
-      if (employerObject) {
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
-      } else if (values.employerName === "SEIU 503 Staff") {
-        employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
-          "SEIU LOCAL 503 OPEU"
-        );
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
-      } else {
-        console.log(`no agency number found for ${values.employerName}`);
-        returnValues.agencyNumber = 0;
-      }
-
-      if (
-        this.props.submission.formPage1 &&
-        this.props.submission.formPage1.prefillEmployerId
-      ) {
-        if (!this.state.prefillEmployerChanged) {
-          // if this is a prefill and employer has not been changed manually,
-          // return original prefilled employer Id
-          // this will be a worksite-level account id in most cases
-          returnValues.employerId = this.props.submission.formPage1.prefillEmployerId;
-        } else {
-          // if employer has been manually changed since prefill, or if
-          // this is a blank-slate form, find id in employer object
-          // this will be an agency-level employer Id
-          returnValues.employerId = employerObject
-            ? employerObject.Id
-            : "0016100000WERGeAAP"; // <= unknown employer
-        }
-      } else {
-        // if employer has been manually changed since prefill, or if
-        // this is a blank-slate form, find id in employer object
-        // this will be an agency-level employer Id
-        returnValues.employerId = employerObject
-          ? employerObject.Id
-          : "0016100000WERGeAAP"; // <= unknown employer
-      }
-      // save employerId to redux store for later
-      this.props.apiSubmission.handleInput({
-        target: { name: "employerId", value: returnValues.employerId }
-      });
-      resolve(returnValues);
-    });
-  }
-
-  prepForSubmission(values) {
-    return new Promise(resolve => {
-      let returnValues = { ...values };
-
-      // set default date values for DPA & DDA if relevant
-      returnValues.direct_pay_auth = values.directPayAuth
-        ? formatSFDate(new Date())
-        : null;
-      returnValues.direct_deposit_auth = values.directDepositAuth
-        ? formatSFDate(new Date())
-        : null;
-      // set legal language
-      returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
-      // set campaign source
-      const q = queryString.parse(this.props.location.search);
-      console.log(q);
-      const campaignSource =
-        q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
-      returnValues.campaignSource = campaignSource;
-
-      console.log(campaignSource);
-      // set salesforce id
-      if (!values.salesforceId) {
-        if (q && q.cId) {
-          returnValues.salesforceId = q.cId;
-        }
-        if (this.props.submission.salesforce_id) {
-          returnValues.salesforceId = this.props.submission.salesforce_id;
-        }
-      }
-      resolve(returnValues);
-    });
-  }
-
-  async generateSubmissionBody(values) {
-    const firstValues = await this.prepForContact(values);
-    const secondValues = await this.prepForSubmission(firstValues);
-    secondValues.termsAgree = values.termsAgree;
-    secondValues.signature = this.props.submission.formPage1.signature;
-    secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
-    secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
-
-    let {
-      firstName,
-      lastName,
-      birthdate,
-      employerId,
-      agencyNumber,
-      preferredLanguage,
-      homeStreet,
-      homeZip,
-      homeState,
-      homeCity,
-      homeEmail,
-      mobilePhone,
-      employerName,
-      textAuthOptOut,
-      immediatePastMemberStatus,
-      direct_pay_auth,
-      direct_deposit_auth,
-      salesforceId,
-      termsAgree,
-      campaignSource,
-      legalLanguage,
-      signature,
-      reCaptchaValue
-    } = secondValues;
-
-    return {
-      submission_date: new Date(),
-      agency_number: agencyNumber,
-      birthdate,
-      cell_phone: mobilePhone,
-      employer_name: employerName,
-      employer_id: employerId,
-      first_name: firstName,
-      last_name: lastName,
-      home_street: homeStreet,
-      home_city: homeCity,
-      home_state: homeState,
-      home_zip: homeZip,
-      home_email: homeEmail,
-      preferred_language: preferredLanguage,
-      terms_agree: termsAgree,
-      signature: signature,
-      text_auth_opt_out: textAuthOptOut,
-      online_campaign_source: campaignSource,
-      legal_language: legalLanguage,
-      maintenance_of_effort: new Date(),
-      seiu503_cba_app_date: new Date(),
-      direct_pay_auth,
-      direct_deposit_auth,
-      immediate_past_member_status: immediatePastMemberStatus,
-      salesforce_id: salesforceId || this.props.submission.salesforceId,
-      reCaptchaValue
-    };
-  }
-
-  async createSubmission() {
-    // console.log("createSubmission");
-    const { formValues } = this.props;
-
-    // create initial submission using data in tabs 1 & 2
-    // for afh/retiree/comm, submission will not be
-    // finalized and written to salesforce
-    // until payment method added in tab 3
-
-    const body = await this.generateSubmissionBody(formValues);
-    // console.log(body.ip_address);
-    await this.props.apiSubmission
-      // const result = await this.props.apiSubmission
-      .addSubmission(body)
-      .then(() => {
-        // console.log('453');
-      })
-      .catch(err => {
-        console.error(err);
-        return handleError(err);
-      });
-
-    // if no payment is required, we're done with saving the submission
-    // we can write the OMA to SF and then move on to the CAPE ask
-    if (!this.props.submission.formPage1.paymentRequired) {
-      // console.log("no payment required, writing OMA to SF and on to CAPE");
-      body.Worker__c = this.props.submission.salesforceId;
-      return this.props.apiSF
-        .createSFOMA(body)
-        .then(result => {
-          // console.log(result.type);
-          if (
-            result.type !== "CREATE_SF_OMA_SUCCESS" ||
-            this.props.submission.error
-          ) {
-            this.saveSubmissionErrors(
-              this.props.submission.submissionId,
-              "createSFOMA",
-              this.props.submission.error
-            );
-            // goto CAPE tab
-            this.changeTab(this.props.howManyTabs - 1);
-          } else if (!this.props.submission.error) {
-            // update submission status and redirect to CAPE tab
-            // console.log("updating submission status");
-            this.props.apiSubmission
-              .updateSubmission(this.props.submission.submissionId, {
-                submission_status: "Success"
-              })
-              .then(result => {
-                console.log(result.type);
-                if (
-                  result.type === "UPDATE_SUBMISSION_FAILURE" ||
-                  this.props.submission.error
-                ) {
-                  console.log(this.props.submission.error);
-                  return this.props.handleError(this.props.submission.error);
-                } else {
-                  this.changeTab(2);
-                }
-              })
-              .catch(err => {
-                console.error(err);
-                return this.props.handleError(err);
-              });
-          }
-        })
-        .catch(err => {
-          this.saveSubmissionErrors(
-            this.props.submission.submissionId,
-            "createSFOMA",
-            err
-          );
-          console.error(err);
-          return handleError(err);
-        });
-    }
-    // if payment required, return out of this function and move to next tab
-    return;
-  }
-
-  // lookup SF Contact by first, last, email; if none found then create new
-  async lookupSFContact() {
-    const { formValues } = this.props;
-    if (
-      formValues.firstName &&
-      formValues.lastName &&
-      formValues.homeEmail &&
-      formValues.employerName &&
-      !this.props.submission.salesforceId
-    ) {
-      // lookup contact by first/last/email
-      const lookupBody = {
-        first_name: formValues.firstName,
-        last_name: formValues.lastName,
-        home_email: formValues.homeEmail
-        // employer_id: this.props.submission.formPage1.employerId
-      };
-      await this.props.apiSF
-        .lookupSFContact(lookupBody)
-        .then(() => {
-          this.setCAPEOptions();
-        })
-        .catch(err => {
-          console.error(err);
-          return handleError(err);
-        });
-
-      // if nothing found on lookup, need to create new contact
-      if (!this.props.submission.salesforceId) {
-        await this.createSFContact()
-          .then(() => {
-            // console.log(this.props.submission.salesforceId);
-          })
-          .catch(err => {
-            console.error(err);
-            return handleError(err);
-          });
-      }
-    }
-  }
-
-  async createSFContact() {
-    // console.log("createSFContact");
-    const values = await this.prepForContact(this.props.formValues);
-    let {
-      firstName,
-      lastName,
-      birthdate,
-      employerId,
-      agencyNumber,
-      preferredLanguage,
-      homeStreet,
-      homeZip,
-      homeState,
-      homeCity,
-      homeEmail,
-      mobilePhone,
-      employerName,
-      textAuthOptOut,
-      reCaptchaValue
-    } = values;
-
-    const body = {
-      agency_number: agencyNumber,
-      birthdate,
-      cell_phone: mobilePhone,
-      employer_name: employerName,
-      employer_id: employerId,
-      first_name: firstName,
-      last_name: lastName,
-      home_street: homeStreet,
-      home_city: homeCity,
-      home_state: homeState,
-      home_zip: homeZip,
-      home_email: homeEmail,
-      preferred_language: preferredLanguage,
-      text_auth_opt_out: textAuthOptOut,
-      reCaptchaValue
-    };
-
-    await this.props.apiSF.createSFContact(body).catch(err => {
-      console.error(err);
-      return handleError(err);
-    });
-  }
-
-  async updateSFContact() {
-    const values = await this.prepForContact(this.props.formValues);
-    let {
-      firstName,
-      lastName,
-      birthdate,
-      employerId,
-      agencyNumber,
-      preferredLanguage,
-      homeStreet,
-      homeZip,
-      homeState,
-      homeCity,
-      homeEmail,
-      mobilePhone,
-      employerName,
-      textAuthOptOut,
-      reCaptchaValue
-    } = values;
-
-    let id = this.props.submission.salesforceId;
-
-    const body = {
-      agency_number: agencyNumber,
-      birthdate,
-      cell_phone: mobilePhone,
-      employer_name: employerName,
-      employer_id: employerId,
-      first_name: firstName,
-      last_name: lastName,
-      home_street: homeStreet,
-      home_city: homeCity,
-      home_state: homeState,
-      home_zip: homeZip,
-      home_email: homeEmail,
-      preferred_language: preferredLanguage,
-      text_auth_opt_out: textAuthOptOut,
-      reCaptchaValue
-    };
-
-    await this.props.apiSF.updateSFContact(id, body).catch(err => {
-      console.error(err);
-      return handleError(err);
-    });
-  }
 
   async getCAPEBySFId() {
     const id = this.props.submission.salesforceId;
@@ -1123,7 +711,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     if (!this.props.submission.salesforceId) {
       // console.log("lookup sf contact");
-      await this.lookupSFContact();
+      await this.props.lookupSFContact(formValues);
     }
     if (!memberShortId && cape && this.props.submission.salesforceId) {
       // check if existing postgres CAPE OR SFDJR to fetch memberShortId
@@ -1314,7 +902,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      await this.lookupSFContact();
+      await this.props.lookupSFContact(formValues);
     }
 
     // find employer object
@@ -1343,7 +931,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.formPage1 &&
       this.props.submission.formPage1.prefillEmployerId
     ) {
-      if (!this.state.prefillEmployerChanged) {
+      if (!this.props.submission.formPage1.prefillEmployerChanged) {
         // if this is a prefill and employer has not been changed manually,
         // return original prefilled employer Id
         // this will be a worksite-level account id in most cases
@@ -1608,10 +1196,12 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     if (!standAlone) {
+      const params = queryString.parse(this.props.location.search);
+      const embed = params.embed ? "&embed=true" : "";
       this.props.history.push(
         `/page2/?cId=${this.props.submission.salesforceId}&sId=${
           this.props.submission.submissionId
-        }`
+        }${embed}`
       );
     } else {
       openSnackbar("success", "Thank you. Your CAPE submission was processed.");
@@ -1639,7 +1229,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.saveLegalLanguage();
 
     // save partial submission (need to do this before generating iframe URL)
-    await this.createSubmission().catch(err => {
+    await this.props.createSubmission(formValues).catch(err => {
       console.error(err);
       return handleError(err);
     });
@@ -1679,7 +1269,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // move to next tab
-    return this.changeTab(2);
+    return this.props.changeTab(2);
   }
 
   async handleTab1() {
@@ -1699,47 +1289,47 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      const newState = { ...this.state };
-      newState.howManyTabs = 4;
-      this.setState(newState);
+      this.props.apiSubmission.handleInput({
+        target: { name: "howManyTabs", value: 4 }
+      });
     } else {
-      const newState = { ...this.state };
-      newState.howManyTabs = 3;
-      this.setState(newState);
+      this.props.apiSubmission.handleInput({
+        target: { name: "howManyTabs", value: 3 }
+      });
     }
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {
       // update existing contact, move to next tab
-      await this.updateSFContact().catch(err => {
+      await this.props.updateSFContact(formValues).catch(err => {
         console.error(err);
         return handleError(err);
       });
-      return this.changeTab(1);
+      return this.props.changeTab(1);
     }
 
     // otherwise, lookup contact by first/last/email
-    await this.lookupSFContact().catch(err => {
+    await this.props.lookupSFContact(formValues).catch(err => {
       console.error(err);
       return handleError(err);
     });
 
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
-      await this.updateSFContact().catch(err => {
+      await this.props.updateSFContact(formValues).catch(err => {
         console.error(err);
         return handleError(err);
       });
-      return this.changeTab(1);
+      return this.props.changeTab(1);
     }
 
     // otherwise, create new contact with submission data,
     // then move to next tab
-    await this.createSFContact().catch(err => {
+    await this.props.createSFContact(formValues).catch(err => {
       console.error(err);
       return handleError(err);
     });
-    return this.changeTab(1);
+    return this.props.changeTab(1);
   }
 
   handleTab(newValue) {
@@ -1755,35 +1345,9 @@ export class SubmissionFormPage1Container extends React.Component {
         return handleError(err);
       });
     } else {
-      return this.changeTab(newValue);
+      return this.props.changeTab(newValue);
     }
   }
-
-  // just navigate to tab, don't run validation on current tab
-  changeTab = newValue => {
-    const newState = { ...this.state };
-    newState.tab = newValue;
-
-    if (newValue === 2) {
-      const { formPage1 } = this.props.submission;
-
-      if (
-        formPage1.paymentType === "Card" &&
-        formPage1.newCardNeeded &&
-        formPage1.paymentRequired
-      ) {
-        // need to set spinner on transition to payment tab
-        // while iframe loads
-        // this.props.actions.setSpinner();
-        return this.setState({ ...newState }, () => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-      }
-    }
-    this.setState({ ...newState }, () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  };
 
   render() {
     const fullName = `${
@@ -1815,10 +1379,10 @@ export class SubmissionFormPage1Container extends React.Component {
         <SubmissionFormPage1Wrap
           {...this.props}
           change={change}
-          tab={this.state.tab}
-          howManyTabs={this.state.howManyTabs}
+          tab={this.props.tab}
+          howManyTabs={this.props.submission.formPage1.howManyTabs}
           handleTab={this.handleTab}
-          back={this.changeTab}
+          back={this.props.changeTab}
           handleUpload={this.handleUpload}
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}
@@ -1832,7 +1396,6 @@ export class SubmissionFormPage1Container extends React.Component {
           saveSubmissionErrors={this.saveSubmissionErrors}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           handleEmployerChange={this.handleEmployerChange}
-          lookupSFContact={this.lookupSFContact}
           handleDonationFrequencyChange={this.handleDonationFrequencyChange}
           checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}
           displayCAPEPaymentFields={this.state.displayCAPEPaymentFields}

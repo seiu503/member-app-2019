@@ -79,6 +79,12 @@ let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
+let createSubmissionSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+  );
+
 let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
@@ -110,6 +116,8 @@ const formValues = {
   preferredLanguage: "English",
   textAuthOptOut: false
 };
+
+const changeTabMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 const defaultProps = {
   submission: {
@@ -180,7 +188,9 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  createSubmission: createSubmissionSuccess,
+  changeTab: changeTabMock
 };
 
 const setup = (props = {}) => {
@@ -227,31 +237,30 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .then(() => {
           expect(saveLegalLanguageMock.mock.calls.length).toBe(1);
           expect(saveSignatureMock.mock.calls.length).toBe(1);
+          changeTabMock.mockClear();
         });
     });
 
-    test("`handleTab` sets state.tab - 2", () => {
-      const createSubmissionSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-        );
-
+    test("`handleTab` called with 2 calls handleTab2", () => {
       wrapper = setup();
       wrapper.instance().state.signatureType = "write";
-      wrapper.instance().createSubmission = createSubmissionSuccess;
+      const handleTab2Mock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().handleTab2 = handleTab2Mock;
       wrapper
         .instance()
         .handleTab(2)
         .then(() => {
           return createSubmissionSuccess().then(() => {
-            expect(wrapper.instance().state.tab).toBe(2);
+            expect(handleTab2Mock.mock.calls.length).toBe(1);
+            changeTabMock.mockClear();
           });
         })
         .catch(err => console.log(err));
     });
 
-    test("`handleTab` sets state.tab - 0", () => {
+    test("`handleTab` called with 0 calls changeTab prop", () => {
       handleUploadMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(sigUrl));
@@ -259,8 +268,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = setup();
       wrapper.instance().state.signatureType = "write";
       wrapper.instance().handleUpload = handleUploadMock();
-      wrapper.instance().handleTab(0);
-      expect(wrapper.instance().state.tab).toBe(0);
+      wrapper
+        .instance()
+        .handleTab(0)
+        .then(() => {
+          expect(changeTabMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
     });
 
     test("`handleTab` called with 1 calls handleTab1", () => {

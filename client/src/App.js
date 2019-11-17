@@ -16,6 +16,7 @@ import Typography from "@material-ui/core/Typography";
 import * as Actions from "./store/actions";
 import * as apiContentActions from "./store/actions/apiContentActions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
+import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
 import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
 
@@ -34,6 +35,14 @@ import Notifier from "./containers/Notifier";
 import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
 import UserForm from "./containers/UserForm";
+import {
+  handleError,
+  formatBirthdate,
+  findEmployerObject,
+  formatSFDate,
+  calcEthnicity,
+  removeFalsy
+} from "./components/SubmissionFormElements";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
@@ -174,11 +183,21 @@ export class AppUnconnected extends Component {
         text: defaultWelcomeInfo.body,
         id: 0
       },
-      image: {}
+      image: {},
+      tab: undefined
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
     this.onResolved = this.onResolved.bind(this);
+    this.createSubmission = this.createSubmission.bind(this);
+    this.updateSubmission = this.updateSubmission.bind(this);
+    this.lookupSFContact = this.lookupSFContact.bind(this);
+    this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
+    this.prepForContact = this.prepForContact.bind(this);
+    this.prepForSubmission = this.prepForSubmission.bind(this);
+    this.createSFContact = this.createSFContact.bind(this);
+    this.updateSFContact = this.updateSFContact.bind(this);
+    this.changeTab = this.changeTab.bind(this);
   }
 
   componentDidMount() {
@@ -368,8 +387,511 @@ export class AppUnconnected extends Component {
     window.localStorage.setItem("redirect", currentPath);
   }
 
+  async updateSubmission(passedUpdates) {
+    // console.log("updateSubmission");
+    this.props.actions.setSpinner();
+    const id = this.props.submission.submissionId;
+    const { formPage1, payment } = this.props.submission;
+    const pmtUpdates = {
+      payment_type: formPage1.paymentType,
+      payment_method_added: formPage1.paymentMethodAdded,
+      medicaid_residents: formPage1.medicaidResidents,
+      card_adding_url: payment.cardAddingUrl,
+      member_id: payment.memberId,
+      stripe_customer_id: payment.stripeCustomerId,
+      member_short_id: payment.memberShortId,
+      active_method_last_four: payment.activeMethodLast4,
+      card_brand: payment.cardBrand
+    };
+    const updates = passedUpdates ? passedUpdates : pmtUpdates;
+    console.log(updates);
+    this.props.apiSubmission
+      .updateSubmission(id, updates)
+      .then(result => {
+        console.log(result.type);
+        if (
+          result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          this.props.submission.error
+        ) {
+          console.log(this.props.submission.error);
+          return handleError(this.props.submission.error);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        return handleError(err);
+      });
+  }
+
+  // lookup SF Contact by first, last, email; if none found then create new
+  async lookupSFContact(formValues) {
+    console.log(`formValues: ${formValues}`);
+    if (
+      formValues.firstName &&
+      formValues.lastName &&
+      formValues.homeEmail &&
+      formValues.employerName &&
+      !this.props.submission.salesforceId
+    ) {
+      // lookup contact by first/last/email
+      const lookupBody = {
+        first_name: formValues.firstName,
+        last_name: formValues.lastName,
+        home_email: formValues.homeEmail
+        // employer_id: this.props.submission.formPage1.employerId
+      };
+      await this.props.apiSF
+        .lookupSFContact(lookupBody)
+        .then(() => {
+          this.setCAPEOptions();
+        })
+        .catch(err => {
+          console.error(err);
+          return handleError(err);
+        });
+
+      // if nothing found on lookup, need to create new contact
+      if (!this.props.submission.salesforceId) {
+        await this.createSFContact(formValues)
+          .then(() => {
+            // console.log(this.props.submission.salesforceId);
+          })
+          .catch(err => {
+            console.error(err);
+            return handleError(err);
+          });
+      }
+    }
+  }
+
+  async saveSubmissionErrors(submission_id, method, error) {
+    // 1. retrieve existing errors array from current submission
+    let { submission_errors } = this.props.submission.currentSubmission;
+    if (submission_errors === null) {
+      submission_errors = "";
+    }
+    // 2. add new data to string
+    submission_errors += `Attempted method: ${method}, Error: ${error}. `;
+    // 3. update submission_errors and submission_status on submission by id
+    const updates = {
+      submission_errors,
+      submission_status: "error"
+    };
+    this.updateSubmission(updates).catch(err => {
+      console.error(err);
+      return handleError(err);
+    });
+  }
+
+  async prepForContact(values) {
+    return new Promise(resolve => {
+      let returnValues = { ...values };
+
+      // format birthdate
+      let birthdate;
+      if (values.mm && values.dd && values.yyyy) {
+        birthdate = formatBirthdate(values);
+      }
+
+      returnValues.birthdate = birthdate;
+      // find employer object and set employer-related fields
+      let employerObject;
+
+      if (values.employerName) {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          values.employerName
+        );
+      }
+
+      if (employerObject) {
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else if (values.employerName === "SEIU 503 Staff") {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          "SEIU LOCAL 503 OPEU"
+        );
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else {
+        console.log(`no agency number found for ${values.employerName}`);
+        returnValues.agencyNumber = 0;
+      }
+
+      if (
+        this.props.submission.formPage1 &&
+        this.props.submission.formPage1.prefillEmployerId
+      ) {
+        if (!this.props.submission.formPage1.prefillEmployerChanged) {
+          // if this is a prefill and employer has not been changed manually,
+          // return original prefilled employer Id
+          // this will be a worksite-level account id in most cases
+          returnValues.employerId = this.props.submission.formPage1.prefillEmployerId;
+        } else {
+          // if employer has been manually changed since prefill, or if
+          // this is a blank-slate form, find id in employer object
+          // this will be an agency-level employer Id
+          returnValues.employerId = employerObject
+            ? employerObject.Id
+            : "0016100000WERGeAAP"; // <= unknown employer
+        }
+      } else {
+        // if employer has been manually changed since prefill, or if
+        // this is a blank-slate form, find id in employer object
+        // this will be an agency-level employer Id
+        returnValues.employerId = employerObject
+          ? employerObject.Id
+          : "0016100000WERGeAAP"; // <= unknown employer
+      }
+      // save employerId to redux store for later
+      this.props.apiSubmission.handleInput({
+        target: { name: "employerId", value: returnValues.employerId }
+      });
+      resolve(returnValues);
+    });
+  }
+
+  prepForSubmission(values, partial) {
+    return new Promise(resolve => {
+      let returnValues = { ...values };
+
+      if (!partial) {
+        // set default date values for DPA & DDA if relevant
+        returnValues.direct_pay_auth = values.directPayAuth
+          ? formatSFDate(new Date())
+          : null;
+        returnValues.direct_deposit_auth = values.directDepositAuth
+          ? formatSFDate(new Date())
+          : null;
+        // set legal language
+        returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+      }
+      // set campaign source
+      const q = queryString.parse(this.props.location.search);
+      returnValues.campaignSource = q && q.s ? q.s : "NewMemberForm_201910";
+      // set salesforce id
+      if (!values.salesforceId) {
+        if (q && q.cId) {
+          returnValues.salesforceId = q.cId;
+        }
+        if (this.props.submission.salesforce_id) {
+          returnValues.salesforceId = this.props.submission.salesforce_id;
+        }
+      }
+      resolve(returnValues);
+    });
+  }
+
+  async generateSubmissionBody(values, partial) {
+    const firstValues = await this.prepForContact(values);
+    console.log("firstValues", firstValues);
+    const secondValues = await this.prepForSubmission(firstValues, partial);
+    console.log("secondValues", secondValues);
+    secondValues.termsAgree = values.termsAgree;
+    secondValues.signature = this.props.submission.formPage1.signature;
+    secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+    secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
+
+    let {
+      firstName,
+      lastName,
+      birthdate,
+      employerId,
+      agencyNumber,
+      preferredLanguage,
+      homeStreet,
+      homeZip,
+      homeState,
+      homeCity,
+      homeEmail,
+      mobilePhone,
+      employerName,
+      textAuthOptOut,
+      immediatePastMemberStatus,
+      direct_pay_auth,
+      direct_deposit_auth,
+      salesforceId,
+      termsAgree,
+      campaignSource,
+      legalLanguage,
+      signature,
+      reCaptchaValue,
+      mail_to_city,
+      mail_to_state,
+      mail_to_street,
+      mail_to_zip,
+      lgbtq_id,
+      trans_id,
+      disability_id,
+      deaf_or_hard_of_hearing,
+      blind_or_visually_impaired,
+      gender,
+      gender_other_description,
+      gender_pronoun,
+      job_title,
+      worksite,
+      work_email,
+      work_phone,
+      hire_date
+    } = secondValues;
+
+    if (!firstName) {
+      firstName = values.first_name;
+      lastName = values.last_name;
+      homeEmail = values.home_email;
+    }
+
+    const ethnicity = calcEthnicity(values);
+    const maintenance_of_effort = partial ? null : new Date();
+    const seiu503_cba_app_date = partial ? null : new Date();
+
+    return {
+      submission_date: new Date(),
+      agency_number: agencyNumber,
+      birthdate,
+      cell_phone: mobilePhone,
+      employer_name: employerName,
+      employer_id: employerId,
+      first_name: firstName,
+      last_name: lastName,
+      home_street: homeStreet,
+      home_city: homeCity,
+      home_state: homeState,
+      home_zip: homeZip,
+      home_email: homeEmail,
+      preferred_language: preferredLanguage,
+      terms_agree: termsAgree,
+      signature: signature,
+      text_auth_opt_out: textAuthOptOut,
+      online_campaign_source: campaignSource,
+      legal_language: legalLanguage,
+      maintenance_of_effort,
+      seiu503_cba_app_date,
+      direct_pay_auth,
+      direct_deposit_auth,
+      immediate_past_member_status: immediatePastMemberStatus,
+      salesforce_id: salesforceId || this.props.submission.salesforceId,
+      reCaptchaValue,
+      mail_to_city,
+      mail_to_state,
+      mail_to_street,
+      mail_to_zip,
+      ethnicity,
+      lgbtq_id,
+      trans_id,
+      disability_id,
+      deaf_or_hard_of_hearing,
+      blind_or_visually_impaired,
+      gender,
+      gender_other_description,
+      gender_pronoun,
+      job_title,
+      hire_date,
+      worksite,
+      work_email,
+      work_phone
+    };
+  }
+
+  async createSubmission(formValues, partial) {
+    console.log("createSubmission");
+    console.log(formValues, partial);
+    // create initial submission using data in tabs 1 & 2
+    // for afh/retiree/comm, submission will not be
+    // finalized and written to salesforce
+    // until payment method added in tab 3
+
+    const body = await this.generateSubmissionBody(formValues, partial);
+    console.log(body);
+    const cleanBody = removeFalsy(body);
+    console.log(cleanBody);
+    await this.props.apiSubmission
+      // const result = await this.props.apiSubmission
+      .addSubmission(cleanBody)
+      .then(() => {
+        // console.log('453');
+      })
+      .catch(err => {
+        console.error(err);
+        return handleError(err);
+      });
+
+    // if no payment is required, we're done with saving the submission
+    // we can write the OMA to SF and then move on to the CAPE ask
+    if (!this.props.submission.formPage1.paymentRequired && !partial) {
+      // console.log("no payment required, writing OMA to SF and on to CAPE");
+      body.Worker__c = this.props.submission.salesforceId;
+      return this.props.apiSF
+        .createSFOMA(body)
+        .then(result => {
+          // console.log(result.type);
+          if (
+            result.type !== "CREATE_SF_OMA_SUCCESS" ||
+            this.props.submission.error
+          ) {
+            this.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "createSFOMA",
+              this.props.submission.error
+            );
+            // goto CAPE tab
+            this.changeTab(this.props.submission.formPage1.howManyTabs - 1);
+          } else if (!this.props.submission.error) {
+            // update submission status and redirect to CAPE tab
+            // console.log("updating submission status");
+            this.props.apiSubmission
+              .updateSubmission(this.props.submission.submissionId, {
+                submission_status: "Success"
+              })
+              .then(result => {
+                console.log(result.type);
+                if (
+                  result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                  this.props.submission.error
+                ) {
+                  console.log(this.props.submission.error);
+                  return handleError(this.props.submission.error);
+                } else {
+                  this.changeTab(2);
+                }
+              })
+              .catch(err => {
+                console.error(err);
+                return handleError(err);
+              });
+          }
+        })
+        .catch(err => {
+          this.saveSubmissionErrors(
+            this.props.submission.submissionId,
+            "createSFOMA",
+            err
+          );
+          console.error(err);
+          return handleError(err);
+        });
+    }
+    // if payment required, or if partial submission from p2:
+    return;
+  }
+
+  async createSFContact(formValues) {
+    // console.log("createSFContact");
+    const values = await this.prepForContact(formValues);
+    let {
+      firstName,
+      lastName,
+      birthdate,
+      employerId,
+      agencyNumber,
+      preferredLanguage,
+      homeStreet,
+      homeZip,
+      homeState,
+      homeCity,
+      homeEmail,
+      mobilePhone,
+      employerName,
+      textAuthOptOut,
+      reCaptchaValue
+    } = values;
+
+    const body = {
+      agency_number: agencyNumber,
+      birthdate,
+      cell_phone: mobilePhone,
+      employer_name: employerName,
+      employer_id: employerId,
+      first_name: firstName,
+      last_name: lastName,
+      home_street: homeStreet,
+      home_city: homeCity,
+      home_state: homeState,
+      home_zip: homeZip,
+      home_email: homeEmail,
+      preferred_language: preferredLanguage,
+      text_auth_opt_out: textAuthOptOut,
+      reCaptchaValue
+    };
+
+    await this.props.apiSF.createSFContact(body).catch(err => {
+      console.error(err);
+      return handleError(err);
+    });
+  }
+
+  async updateSFContact(formValues) {
+    const values = await this.prepForContact(formValues);
+    let {
+      firstName,
+      lastName,
+      birthdate,
+      employerId,
+      agencyNumber,
+      preferredLanguage,
+      homeStreet,
+      homeZip,
+      homeState,
+      homeCity,
+      homeEmail,
+      mobilePhone,
+      employerName,
+      textAuthOptOut,
+      reCaptchaValue
+    } = values;
+
+    let id = this.props.submission.salesforceId;
+
+    const body = {
+      agency_number: agencyNumber,
+      birthdate,
+      cell_phone: mobilePhone,
+      employer_name: employerName,
+      employer_id: employerId,
+      first_name: firstName,
+      last_name: lastName,
+      home_street: homeStreet,
+      home_city: homeCity,
+      home_state: homeState,
+      home_zip: homeZip,
+      home_email: homeEmail,
+      preferred_language: preferredLanguage,
+      text_auth_opt_out: textAuthOptOut,
+      reCaptchaValue
+    };
+
+    await this.props.apiSF.updateSFContact(id, body).catch(err => {
+      console.error(err);
+      return handleError(err);
+    });
+  }
+
+  // just navigate to tab, don't run validation on current tab
+  changeTab = newValue => {
+    const newState = { ...this.state };
+    newState.tab = newValue;
+
+    if (newValue === 2) {
+      const { formPage1 } = this.props.submission;
+
+      if (
+        formPage1.paymentType === "Card" &&
+        formPage1.newCardNeeded &&
+        formPage1.paymentRequired
+      ) {
+        // need to set spinner on transition to payment tab
+        // while iframe loads
+        // this.props.actions.setSpinner();
+        return this.setState({ ...newState }, () => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+    }
+    this.setState({ ...newState }, () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  };
+
   // resubmit submission and deleteSubmission methods here, to be passed to submission table
-  // move prepForSubmission method up to App, possibly updateSubmission too?
 
   render() {
     const values = queryString.parse(this.props.location.search);
@@ -407,6 +929,7 @@ export class AppUnconnected extends Component {
               path="/"
               render={routeProps => (
                 <SubmissionFormPage1
+                  tab={this.state.tab}
                   embed={embed}
                   setRedirect={this.setRedirect}
                   legal_language={this.legal_language}
@@ -420,6 +943,15 @@ export class AppUnconnected extends Component {
                   body={this.state.body}
                   image={this.state.image}
                   renderBodyCopy={this.renderBodyCopy}
+                  createSubmission={this.createSubmission}
+                  updateSubmission={this.updateSubmission}
+                  lookupSFContact={this.lookupSFContact}
+                  saveSubmissionErrors={this.saveSubmissionErrors}
+                  prepForContact={this.prepForContact}
+                  prepForSubmission={this.prepForSubmission}
+                  createSFContact={this.createSFContact}
+                  updateSFContact={this.updateSFContact}
+                  changeTab={this.changeTab}
                   {...routeProps}
                 />
               )}
@@ -525,6 +1057,14 @@ export class AppUnconnected extends Component {
               render={routeProps => (
                 <SubmissionFormPage2
                   setRedirect={this.setRedirect}
+                  createSubmission={this.createSubmission}
+                  updateSubmission={this.updateSubmission}
+                  lookupSFContact={this.lookupSFContact}
+                  saveSubmissionErrors={this.saveSubmissionErrors}
+                  prepForContact={this.prepForContact}
+                  prepForSubmission={this.prepForSubmission}
+                  createSFContact={this.createSFContact}
+                  updateSFContact={this.updateSFContact}
                   {...routeProps}
                 />
               )}
@@ -600,6 +1140,7 @@ const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
   apiProfile: bindActionCreators(apiProfileActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
+  apiSF: bindActionCreators(apiSFActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });
 

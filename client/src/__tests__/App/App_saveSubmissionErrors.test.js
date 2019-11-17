@@ -2,24 +2,33 @@ import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
+import * as formElements from "../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import { AppUnconnected } from "../../App";
 
-import { handleInput } from "../../../store/actions/apiSubmissionActions";
-
-let wrapper, addSubmissionMock, handleUploadMock;
+let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
+  );
+
+let updateSubmissionSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS", payload: {} })
+  );
+
+let updateSubmissionError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
   );
 
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
@@ -79,7 +88,6 @@ let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
-let sigUrl = "http://www.example.com/png";
 global.scrollTo = jest.fn();
 
 const clearSigBoxMock = jest.fn();
@@ -121,6 +129,11 @@ const defaultProps = {
     cape: {},
     payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -148,9 +161,7 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
-    updateSubmission: () =>
-      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -185,10 +196,10 @@ const defaultProps = {
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
@@ -196,21 +207,86 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     jest.restoreAllMocks();
   });
 
-  describe("changeTab", () => {
-    test("`changeTab` changes tab if newValue === 2 & paymentType === `Card`", async function() {
+  describe("saveSubmissionErrors", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    test("`saveSubmissionErrors` calls updateSubmission prop", async function() {
       let props = {
+        apiSubmission: {
+          updateSubmission: updateSubmissionSuccess
+        },
         submission: {
-          formPage1: {
-            paymentType: "Card",
-            newCardNeeded: true,
-            paymentRequired: true
-          }
+          currentSubmission: {
+            submission_errors: "blah"
+          },
+          formPage1: {},
+          payment: {}
         }
       };
 
       wrapper = setup(props);
-      wrapper.instance().changeTab(2);
-      expect(wrapper.instance().state.tab).toBe(2);
+
+      wrapper
+        .instance()
+        .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
+      expect(updateSubmissionSuccess.mock.calls.length).toBe(1);
+    });
+
+    test("`saveSubmissionErrors` handles error if updateSubmission fails", async function() {
+      let props = {
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        submission: {
+          currentSubmission: {
+            submission_errors: null
+          },
+          formPage1: {},
+          payment: {}
+        }
+      };
+      formElements.handleError = jest.fn();
+      wrapper = setup(props);
+
+      wrapper
+        .instance()
+        .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
+      expect(updateSubmissionError.mock.calls.length).toBe(1);
+      await updateSubmissionError().catch(err => {
+        console.log(err);
+      });
+      expect(formElements.handleError.mock.calls.length).toBe(1);
+    });
+
+    test("`saveSubmissionErrors` handles error if updateSubmission throws", async function() {
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
+      let props = {
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        submission: {
+          currentSubmission: {
+            submission_errors: null
+          },
+          formPage1: {},
+          payment: {}
+        }
+      };
+      formElements.handleError = jest.fn();
+      wrapper = setup(props);
+
+      wrapper
+        .instance()
+        .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
+      await updateSubmissionError().catch(err => {
+        console.log(err);
+      });
+      expect(formElements.handleError.mock.calls.length).toBe(1);
     });
   });
 });

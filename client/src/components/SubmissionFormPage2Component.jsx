@@ -9,6 +9,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormGroup from "@material-ui/core/FormGroup";
 import CheckCircleOutline from "@material-ui/icons/CheckCircleOutline";
 import Divider from "@material-ui/core/Divider";
+import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 import * as formElements from "./SubmissionFormElements";
 import { openSnackbar } from "../containers/Notifier";
@@ -31,55 +32,6 @@ export class SubmissionFormPage2Component extends React.Component {
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
 
-  calcEthnicity = values => {
-    const {
-      africanOrAfricanAmerican,
-      arabAmericanMiddleEasternOrNorthAfrican,
-      asianOrAsianAmerican,
-      hispanicOrLatinx,
-      nativeAmericanOrIndigenous,
-      nativeHawaiianOrOtherPacificIslander,
-      white,
-      other,
-      declined
-    } = values;
-    if (declined) {
-      return "declined";
-    }
-    let combinedEthnicities = "";
-    const ethnicities = {
-      africanOrAfricanAmerican,
-      arabAmericanMiddleEasternOrNorthAfrican,
-      asianOrAsianAmerican,
-      hispanicOrLatinx,
-      nativeAmericanOrIndigenous,
-      nativeHawaiianOrOtherPacificIslander,
-      white,
-      other
-    };
-    const ethnicitiesArray = Object.entries(ethnicities);
-    ethnicitiesArray.forEach(i => {
-      if (i[1]) {
-        if (combinedEthnicities === "") {
-          combinedEthnicities = i[0];
-        } else {
-          combinedEthnicities += `, ${i[0]}`;
-        }
-      }
-    });
-    return combinedEthnicities;
-  };
-
-  removeFalsy = obj => {
-    let newObj = {};
-    Object.keys(obj).forEach(prop => {
-      if (obj[prop]) {
-        newObj[prop] = obj[prop];
-      }
-    });
-    return newObj;
-  };
-
   handleSubmit = async values => {
     const {
       mailToCity,
@@ -98,14 +50,17 @@ export class SubmissionFormPage2Component extends React.Component {
       worksite,
       workEmail,
       workPhone,
-      hireDate
+      hireDate,
+      firstName,
+      lastName,
+      homeEmail
     } = values;
-    const ethnicity = this.calcEthnicity(values);
+    const ethnicity = formElements.calcEthnicity(values);
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
-      mail_to_postal_code: mailToZip,
+      mail_to_zip: mailToZip,
       ethnicity,
       lgbtq_id: lgbtqId,
       trans_id: transId,
@@ -121,7 +76,7 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-    const cleanBody = this.removeFalsy(body);
+    const cleanBody = formElements.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
       const params = queryString.parse(this.props.location.search);
@@ -130,38 +85,34 @@ export class SubmissionFormPage2Component extends React.Component {
       }
     }
     cleanBody.salesforce_id = salesforceId;
-    // console.log("CLEANBODY", cleanBody);
 
     let id = this.props.submission.submissionId;
 
-    const result = await this.props.apiSubmission
-      .updateSubmission(id, cleanBody)
-      .catch(err => {
+    if (!id) {
+      cleanBody.first_name = firstName;
+      cleanBody.last_name = lastName;
+      cleanBody.home_email = homeEmail;
+
+      console.log("CLEANBODY", cleanBody);
+
+      await this.props
+        .createSubmission(cleanBody, true) // partial submission = true
+        .catch(err => {
+          console.error(err);
+          return formElements.handleError(err);
+        });
+    } else {
+      await this.props.updateSubmission(id, cleanBody).catch(err => {
         console.error(err);
         return formElements.handleError(err);
       });
-
-    if (
-      (result && result.type && result.type === "UPDATE_SUBMISSION_FAILURE") ||
-      this.props.submission.error
-    ) {
-      console.error(this.props.submission.error);
-      return formElements.handleError(this.props.submission.error);
     }
 
-    this.props.apiSF
+    this.props
       .updateSFContact(salesforceId, cleanBody)
-      .then(result => {
-        if (
-          result.type !== "UPDATE_SF_CONTACT_FAILURE" &&
-          !this.props.submission.error
-        ) {
-          openSnackbar("success", "Your information was updated!");
-          this.props.history.push(`/thankyou`);
-        } else {
-          // console.log(this.props.submission.error);
-          return formElements.handleError(this.props.submission.error);
-        }
+      .then(() => {
+        openSnackbar("success", "Your information was updated!");
+        this.props.history.push(`/thankyou`);
       })
       .catch(err => {
         console.error(err);
@@ -170,6 +121,7 @@ export class SubmissionFormPage2Component extends React.Component {
   };
 
   render() {
+    const id = this.props.submission.submissionId;
     return (
       <div
         className={this.classes.formContainer}
@@ -194,6 +146,45 @@ export class SubmissionFormPage2Component extends React.Component {
             </FormHelperText>
           </div>
           <Divider style={{ margin: 20 }} />
+          {!id && (
+            <React.Fragment>
+              <FormGroup
+                className={this.classes.formGroup}
+                row
+                classes={{ root: this.classes.formGroup2Col }}
+              >
+                <Field
+                  twocol
+                  mobile={!isWidthUp("sm", this.props.width)}
+                  label="First Name"
+                  name="firstName"
+                  id="firstName"
+                  type="text"
+                  classes={{ input2col: this.classes.input2col }}
+                  component={this.renderTextField}
+                />
+
+                <Field
+                  twocol
+                  mobile={!isWidthUp("sm", this.props.width)}
+                  name="lastName"
+                  id="lastName"
+                  label="Last Name"
+                  classes={{ input2col: this.classes.input2col }}
+                  component={this.renderTextField}
+                  type="text"
+                />
+              </FormGroup>
+              <Field
+                label="Home Email"
+                name="homeEmail"
+                id="homeEmail"
+                type="email"
+                classes={this.classes}
+                component={this.renderTextField}
+              />
+            </React.Fragment>
+          )}
           <FormLabel className={this.classes.formLabel} component="legend">
             <Translate id="raceEthnicityHelperText" />
           </FormLabel>
@@ -484,4 +475,4 @@ export const SubmissionFormPage2Wrap = reduxForm({
   enableReinitialize: true
 })(SubmissionFormPage2Component);
 
-export default SubmissionFormPage2Wrap;
+export default withWidth()(SubmissionFormPage2Wrap);

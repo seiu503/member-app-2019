@@ -2,9 +2,9 @@ import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
+import * as formElements from "../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import { AppUnconnected } from "../../App";
 
 let wrapper;
 
@@ -104,8 +104,14 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {}
+    payment: {},
+    employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -168,10 +174,10 @@ const defaultProps = {
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     formValues = {
       firstName: "firstName",
@@ -196,44 +202,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     jest.restoreAllMocks();
   });
 
-  describe("prepForContact", () => {
-    test("`prepForContact` handles edge case if no matching employer object found", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "SEIU 503 Staff",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
-
-      expect(result.agencyNumber).toBe(0);
-      expect(result.employerId).toBe("0016100000WERGeAAP");
-    });
-    test("`prepForContact` handles edge case if prefill employer id & employer changed", async function() {
+  describe("prepForSubmission", () => {
+    test("`prepForSubmission` pulls campaign source from query string", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
       let props = {
@@ -252,29 +222,27 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           salesforceId: "123",
           formPage1: {
             prefillEmployerId: "1"
-          },
-          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+          }
         },
         apiSF: {
           createSFContact: createSFContactError,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        },
+        location: {
+          search: "&s=test"
         }
       };
       wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
       const result = await wrapper
         .instance()
-        .prepForContact(formValues)
+        .prepForSubmission(formValues)
         .catch(err => console.log(err));
 
-      expect(result.agencyNumber).toBe(0);
-      expect(result.employerId).toBe("0016100000WERGeAAP");
+      expect(result.campaignSource).toBe("test");
     });
-    test("`prepForContact` handles SEIU 503 Staff edge case", async function() {
+    test("`prepForSubmission` finds SF contact ID in formValues", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
-      formValues.employerName = "SEIU 503 Staff";
       let props = {
         formValues: {
           directPayAuth: true,
@@ -290,11 +258,42 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           salesforceId: "123",
           formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [
-            { id: "1", Name: "SEIU LOCAL 503 OPEU", Agency_Number__c: 700 }
-          ]
+            prefillEmployerId: "1"
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      formValues.salesforceId = "12345";
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForSubmission(formValues)
+        .catch(err => console.log(err));
+      expect(result.salesforceId).toBe("12345");
+    });
+    test("`prepForSubmission` finds SF contact ID in redux store", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "SEIU 503 Staff",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforce_id: "123456",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
         },
         apiSF: {
           createSFContact: createSFContactError,
@@ -304,10 +303,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       wrapper = setup(props);
       const result = await wrapper
         .instance()
-        .prepForContact(formValues)
+        .prepForSubmission(formValues)
         .catch(err => console.log(err));
 
-      expect(result.agencyNumber).toBe(700);
+      expect(result.salesforceId).toBe("123456");
     });
   });
 });
