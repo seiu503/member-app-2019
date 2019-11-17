@@ -951,7 +951,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
-    const campaignSource = q && q.s ? q.s : "Direct seiu503signup";
+    console.log(q);
+    const campaignSource =
+      q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
+
+    console.log(campaignSource);
 
     // set body fields
     const checkoff = this.props.submission.formPage1.checkoff;

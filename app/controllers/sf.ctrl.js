@@ -145,11 +145,11 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
  *  @returns  {Object}        { sf_contact_id } or error message
  */
 exports.createSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 62: createSFContact`);
+  console.log(`sf.ctrl.js > 148: createSFContact`);
 
   const bodyRaw = { ...req.body };
-  // console.log(`sf.ctrl.js > 64`);
-  // console.log(bodyRaw);
+  console.log(`sf.ctrl.js > 151`);
+  console.log(bodyRaw);
   const body = {};
 
   // convert raw body to key/value pairs using SF API field names
@@ -165,7 +165,8 @@ exports.createSFContact = async (req, res, next) => {
   delete body["Account.Agency_Number__c"];
   delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
-
+  console.log("sf.ctrl.js > 168");
+  console.log(body);
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -700,7 +701,8 @@ exports.getAllEmployers = async (req, res, next) => {
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
   // (these 2 do not fit the query in any other way
   // so have to be SELECTed for separately)
-  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR Id = '0016100000PZDmOAAX' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
+  // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR Id = '0016100000PZDmOAAX' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
+  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0016100000PZDmOAAX' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Id != '0014N00001iFKWWQA4')`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

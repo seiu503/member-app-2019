@@ -110,7 +110,8 @@ export const INITIAL_STATE = {
     donationFrequency: "Monthly",
     checkoff: true,
     prefillEmployerChanged: false,
-    howManyTabs: 3
+    howManyTabs: 3,
+    textAuthOptOut: false
   },
   formPage2: {
     gender: "",
