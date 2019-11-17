@@ -1,9 +1,8 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
-import { Provider } from "react-redux";
+import { shallow } from "enzyme";
 import "jest-canvas-mock";
 
-import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import { findByTestAttr } from "../../utils/testUtils";
 import {
   generateSampleValidate,
   generateSubmissionBody
@@ -35,13 +34,6 @@ let wrapper,
   verifySuccess;
 
 let resetMock = jest.fn();
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
-  }
-};
 
 const saveSubmissionErrorsMock = jest
   .fn()
@@ -400,7 +392,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  describe("submit functionality", () => {
+  describe("handleSubmit", () => {
     beforeEach(done => {
       props = {
         reCaptchaRef: {
@@ -722,6 +714,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.apiSubmission.updateSubmission = updateSubmissionError;
       const handleInputMock = jest.fn();
       props.apiSubmission.handleInput = handleInputMock;
+      const updateSubmissionMethodSuccess = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve());
+      props.updateSubmission = updateSubmissionMethodSuccess;
       wrapper = setup(props);
       createSFOMASuccess = jest
         .fn()
@@ -731,10 +727,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().createOrUpdateSFDJR = createOrUpdateSFDJRSuccess;
-      const updateSubmissionMethodSuccess = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve());
-      wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
       wrapper.instance().props.submission.error = null;
 
       // simulate submit with dummy data
@@ -773,6 +765,15 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.apiSubmission.updateSubmission = updateSubmissionError;
       const handleInputMock = jest.fn();
       props.apiSubmission.handleInput = handleInputMock;
+      const updateSubmissionMethodSuccess = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve());
+      props.updateSubmission = updateSubmissionMethodSuccess;
+      props.submission.error = null;
+      props.location = {
+        search: ""
+      }; // coverage for !CAPE
+      props.embed = true; // coverage for embed render edge case
       wrapper = setup(props);
       createSFOMASuccess = jest
         .fn()
@@ -782,13 +783,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().createOrUpdateSFDJR = createOrUpdateSFDJRSuccess;
-      const updateSubmissionMethodSuccess = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve());
-      wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
-      wrapper.instance().props.submission.error = null;
-
-      // simulate submit with dummy data
       // simulate submit with dummy data
       wrapper
         .instance()
