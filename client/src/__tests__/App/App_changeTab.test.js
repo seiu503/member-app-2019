@@ -2,9 +2,8 @@ import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import { AppUnconnected } from "../../App";
 
 let wrapper;
 
@@ -32,12 +31,6 @@ let createSFContactSuccess = jest.fn().mockImplementation(() =>
     payload: { salesforce_id: "123" }
   })
 );
-
-let createSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "CREATE_SF_CONTACT_FAILURE", payload: {} })
-  );
 
 let getSFContactByIdSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -123,6 +116,11 @@ const defaultProps = {
     cape: {},
     payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -150,7 +148,9 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -185,10 +185,10 @@ const defaultProps = {
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
@@ -196,41 +196,21 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     jest.restoreAllMocks();
   });
 
-  describe("createSFContact", () => {
-    test("`createSFContact` handles error if prop function fails", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+  describe("changeTab", () => {
+    test("`changeTab` changes tab if newValue === 2 & paymentType === `Card`", async function() {
       let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
         submission: {
-          salesforceId: "123",
           formPage1: {
-            prefillEmployerId: "1"
+            paymentType: "Card",
+            newCardNeeded: true,
+            paymentRequired: true
           }
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
         }
       };
+
       wrapper = setup(props);
-      wrapper
-        .instance()
-        .createSFContact()
-        .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
+      wrapper.instance().changeTab(2);
+      expect(wrapper.instance().state.tab).toBe(2);
     });
   });
 });

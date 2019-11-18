@@ -1,10 +1,11 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
 
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+import "jest-canvas-mock";
+import * as formElements from "../../components/SubmissionFormElements";
+
+import { AppUnconnected } from "../../App";
 
 let wrapper;
 
@@ -23,13 +24,6 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "LOOKUP_SF_CONTACT_SUCCESS",
     payload: { salesforce_id: "123" }
-  })
-);
-
-let getSFDJRSuccess = jest.fn().mockImplementation(() =>
-  Promise.resolve({
-    type: "GET_SF_DJR_SUCCESS",
-    payload: { djr_id: "123" }
   })
 );
 
@@ -61,6 +55,12 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let getSFDJRSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
+  );
+
 let createSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
@@ -86,13 +86,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -123,10 +116,13 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {
-      activeMethodLast4: ""
-    }
+    payment: {}
   },
+  appState: {},
+  apiProfile: {},
+  initialize: jest.fn(),
+  addTranslation: jest.fn(),
+  profile: {},
   initialValues: {
     mm: "",
     onlineCampaignSource: null
@@ -184,15 +180,16 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  lookupSFContact: lookupSFContactSuccess
 };
 
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  return shallow(<AppUnconnected {...setupProps} />);
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe("<App />", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
@@ -200,128 +197,72 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     jest.restoreAllMocks();
   });
 
-  describe("getSFDJRById", () => {
-    test("`getSFDJRById` calls getSFDJRById prop function", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
+  describe("misc methods", () => {
+    beforeEach(() => {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve(""));
+    });
+    afterEach(() => {
+      handleInputMock.mockClear();
+    });
+
+    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
+      const props = {
         submission: {
-          salesforceId: "123",
-          payment: {
-            activeMethodLast4: "1234"
-          },
-          formPage1: {}
-        },
-        apiSF: {
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
-          getSFDJRById: getSFDJRSuccess
+          formPage1: {
+            prefillEmployerId: "1234"
+          }
         }
       };
+      const body = {
+        firstName: "firstName",
+        lastName: "lastName",
+        homeStreet: "homeStreet",
+        homeCity: "city",
+        homeState: "state",
+        homeZip: "zip",
+        birthdate: new Date(),
+        homeEmail: "test@test.com",
+        mobilePhone: "1234567890",
+        preferredLanguage: "Spanish",
+        textAuthOptOut: false,
+        capeAmountOther: 11,
+        employerName: "homecare"
+      };
       wrapper = setup(props);
-
+      wrapper.instance().state.prefillEmployerChanged = true;
       wrapper.update();
-      wrapper
-        .instance()
-        .getSFDJRById()
-        .then(() => {
-          expect(getSFDJRSuccess.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
+      wrapper.instance().prepForContact(body);
     });
 
-    test("`getSFDJRById` handles error if prop function throws", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      const getSFDJRError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "GET_SF_DJR_FAILURE" })
-        );
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
+    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
+      const props = {
         submission: {
-          salesforceId: "123",
-          payment: {},
-          formPage1: {}
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          }
         },
-        apiSF: {
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
-          getSFDJRById: getSFDJRError
+        location: {
+          search: "&cId=1234"
         }
       };
-      wrapper = setup(props);
-
-      wrapper
-        .instance()
-        .getSFDJRById()
-        .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
-    });
-
-    test("`getSFDJRById` handles error if prop function fails", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      const getSFDJRError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_DJR_FAILURE", payload: {} })
-        );
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          payment: {},
-          formPage1: {}
-        },
-        apiSF: {
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
-          getSFDJRById: getSFDJRError
-        }
+      const body = {
+        firstName: "firstName",
+        lastName: "lastName",
+        homeStreet: "homeStreet",
+        homeCity: "city",
+        homeState: "state",
+        homeZip: "zip",
+        birthdate: new Date(),
+        homeEmail: "test@test.com",
+        mobilePhone: "1234567890",
+        preferredLanguage: "Spanish",
+        textAuthOptOut: false,
+        capeAmountOther: 11,
+        employerName: "homecare"
       };
       wrapper = setup(props);
-
-      wrapper
-        .instance()
-        .getSFDJRById()
-        .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
+      wrapper.instance().prepForSubmission(body);
     });
   });
 });

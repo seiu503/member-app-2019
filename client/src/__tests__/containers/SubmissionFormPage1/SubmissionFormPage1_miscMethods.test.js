@@ -177,7 +177,8 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  lookupSFContact: lookupSFContactSuccess
 };
 
 const setup = (props = {}) => {
@@ -219,10 +220,17 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(wrapper.instance().state.open).toBe(false);
     });
 
-    test("`handleEmployerChange` sets prefillEmployerChanged state to true", () => {
-      wrapper = setup();
+    test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", () => {
+      const props = {
+        apiSubmission: {
+          handleInput: handleInputMock
+        }
+      };
+      wrapper = setup(props);
       wrapper.instance().handleEmployerChange();
-      expect(wrapper.instance().state.prefillEmployerChanged).toBe(true);
+      expect(handleInputMock.mock.calls[0][0]).toEqual({
+        target: { name: "prefillEmployerChanged", value: true }
+      });
     });
 
     test("`handleCloseAndClear` closes modal, clears form, resets window.location", async () => {
@@ -274,72 +282,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           payment: {
             currentCAPEFromSF: 20
-          }
+          },
+          formPage1: {}
         }
       };
       wrapper = setup(props);
       wrapper.instance().setCAPEOptions();
       expect(setCAPEOptionsMock).toHaveBeenCalled();
-    });
-
-    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
-      const props = {
-        submission: {
-          formPage1: {
-            prefillEmployerId: "1234"
-          }
-        }
-      };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
-      wrapper.instance().prepForContact(body);
-    });
-
-    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          }
-        },
-        location: {
-          search: "&cId=1234"
-        }
-      };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().prepForSubmission(body);
     });
 
     test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {

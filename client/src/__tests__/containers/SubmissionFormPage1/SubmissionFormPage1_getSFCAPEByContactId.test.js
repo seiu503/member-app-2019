@@ -1,21 +1,16 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-import configureMockStore from "redux-mock-store";
-const mockStore = configureMockStore();
 
 let wrapper;
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
 let updateSFContactSuccess = jest
@@ -31,11 +26,12 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let lookupSFContactError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
-  );
+let getSFDJRSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_DJR_SUCCESS",
+    payload: { djr_id: "123" }
+  })
+);
 
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -65,12 +61,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let createSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
@@ -81,6 +71,12 @@ let updateSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
+  );
+
+let getSFCAPEByContactIdSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_SF_CAPE_BY_CONTACT_ID_SUCCESS", payload: {} })
   );
 
 let refreshRecaptchaMock = jest
@@ -96,13 +92,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -132,8 +121,12 @@ const defaultProps = {
     formPage1: {
       signature: ""
     },
-    cape: {},
-    payment: {}
+    cape: {
+      activeMethodLast4: "1234"
+    },
+    payment: {
+      activeMethodLast4: ""
+    }
   },
   initialValues: {
     mm: "",
@@ -154,6 +147,7 @@ const defaultProps = {
     createSFDJR: createSFDJRSuccess,
     updateSFDJR: updateSFDJRSuccess,
     getSFDJRById: getSFDJRSuccess,
+    getSFCAPEByContactId: getSFCAPEByContactIdSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -204,196 +198,134 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
 
-  describe("lookupSFContact", () => {
-    test("`lookupSFContact` calls lookupSFContact prop if required fields populated", async function() {
+  describe("getSFCAPEByContactId", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    test("`getSFCAPEByContactId` updates whichCard if getSFCAPEByContactId prop succeeds", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       let props = {
         formValues: {
-          firstName: "string",
-          lastName: "string",
+          directPayAuth: true,
+          directDepositAuth: true,
           employerName: "homecare",
-          homeEmail: "test@test.com"
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
         },
         apiSubmission: {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null
+          salesforceId: "123",
+          payment: {},
+          cape: {
+            activeMethodLast4: "1234"
+          },
+          formPage1: {}
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
+          getSFCAPEByContactId: getSFCAPEByContactIdSuccess
         }
       };
       wrapper = setup(props);
-      wrapper.instance().setCAPEOptions = jest.fn();
 
       wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
-        .then(() => {
-          expect(lookupSFContactSuccess.mock.calls.length).toBe(1);
+        .getSFCAPEByContactId()
+        .then(async () => {
+          await getSFCAPEByContactIdSuccess();
+          expect(handleInputMock.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });
-    test("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
-      handleErrorMock.mockClear();
+    test("`getSFCAPEByContactId` handles error if getSFCAPEByContactId prop fails", async function() {
+      const handleErrorMock = jest.fn();
       formElements.handleError = handleErrorMock;
+      const getSFCAPEByContactIdError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" })
+        );
       let props = {
         formValues: {
-          firstName: "string",
-          lastName: "string",
+          directPayAuth: true,
+          directDepositAuth: true,
           employerName: "homecare",
-          homeEmail: "test@test.com"
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
         },
         apiSubmission: {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null,
-          formPage1: {
-            prefillEmployerId: "123"
-          }
+          salesforceId: "123",
+          payment: {},
+          cape: {
+            activeMethodLast4: "1234"
+          },
+          formPage1: {}
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactError
+          getSFCAPEByContactId: getSFCAPEByContactIdError
         }
       };
       wrapper = setup(props);
-      wrapper.instance().setCAPEOptions = jest.fn();
 
-      // wrapper.update();
+      wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
-        .then(() => {
+        .getSFCAPEByContactId()
+        .then(async () => {
+          await getSFCAPEByContactIdError();
           expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });
-    test("`lookupSFContact` calls createSFContact if lookupSFContact finds no match", async function() {
-      formElements.handleError = jest.fn();
+    test("`getSFCAPEByContactId` handles error if getSFCAPEByContactId prop throws", async function() {
+      const handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
+      const getSFCAPEByContactIdError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE" })
+        );
       let props = {
         formValues: {
-          firstName: "string",
-          lastName: "string",
+          directPayAuth: true,
+          directDepositAuth: true,
           employerName: "homecare",
-          homeEmail: "test@test.com"
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
         },
         apiSubmission: {
           handleInput: handleInputMock
         },
         submission: {
-          salesforceId: null,
-          formPage1: {
-            prefillEmployerId: null
-          }
+          salesforceId: "123",
+          payment: {},
+          cape: {
+            activeMethodLast4: "1234"
+          },
+          formPage1: {}
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
+          getSFCAPEByContactId: getSFCAPEByContactIdError
         }
       };
       wrapper = setup(props);
-      let createSFContactMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper.instance().setCAPEOptions = jest.fn();
-      wrapper.instance().createSFContact = createSFContactMock;
 
       wrapper.update();
       wrapper
         .instance()
-        .lookupSFContact()
+        .getSFCAPEByContactId()
         .then(async () => {
-          await lookupSFContactSuccess;
-          expect(createSFContactMock.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
-    });
-    test("`lookupSFContact` handles error if createSFContact throws", async function() {
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          firstName: "string",
-          lastName: "string",
-          employerName: "homecare",
-          homeEmail: "test@test.com"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: null,
-          formPage1: {
-            prefillEmployerId: "123"
-          }
-        },
-        apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
-        }
-      };
-      wrapper = setup(props);
-      let createSFContactMock = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-      wrapper.instance().setCAPEOptions = jest.fn();
-      wrapper.instance().createSFContact = createSFContactMock;
-
-      wrapper.update();
-      wrapper
-        .instance()
-        .lookupSFContact()
-        .then(async () => {
-          await lookupSFContactSuccess;
-          await createSFContactMock;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
-    });
-    test("`lookupSFContact` doesn't call createSFContact if salesforceId in redux store", async function() {
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          firstName: "string",
-          lastName: "string",
-          employerName: "homecare",
-          homeEmail: "test@test.com"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "1",
-          formPage1: {
-            prefillEmployerId: null
-          }
-        },
-        apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
-        }
-      };
-      wrapper = setup(props);
-      let createSFContactMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper.instance().setCAPEOptions = jest.fn();
-      wrapper.instance().createSFContact = createSFContactMock;
-
-      wrapper.update();
-      wrapper
-        .instance()
-        .lookupSFContact()
-        .then(async () => {
-          await lookupSFContactSuccess;
-          expect(createSFContactMock.mock.calls.length).toBe(0);
+          await getSFCAPEByContactIdError();
+          expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });

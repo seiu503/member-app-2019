@@ -203,41 +203,6 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.handleDonationFrequencyChange(value);
   }
 
-  async updateSubmission() {
-    // console.log("updateSubmission");
-    this.props.actions.setSpinner();
-    const id = this.props.submission.submissionId;
-    const { formPage1, payment } = this.props.submission;
-    const updates = {
-      payment_type: formPage1.paymentType,
-      payment_method_added: formPage1.paymentMethodAdded,
-      medicaid_residents: formPage1.medicaidResidents,
-      card_adding_url: payment.cardAddingUrl,
-      member_id: payment.memberId,
-      stripe_customer_id: payment.stripeCustomerId,
-      member_short_id: payment.memberShortId,
-      active_method_last_four: payment.activeMethodLast4,
-      card_brand: payment.cardBrand
-    };
-    console.log(updates);
-    this.props.apiSubmission
-      .updateSubmission(id, updates)
-      .then(result => {
-        console.log(result.type);
-        if (
-          result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          console.log(this.props.submission.error);
-          return this.props.handleError(this.props.submission.error);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
-  }
-
   async createSFOMA() {
     // console.log("createSFOMA");
     this.props.actions.setSpinner();
@@ -416,7 +381,7 @@ export class SubmissionFormPage1Component extends React.Component {
       );
     }
     return Promise.all([
-      this.updateSubmission(),
+      this.props.updateSubmission(),
       this.createSFOMA(),
       this.createOrUpdateSFDJR()
     ])

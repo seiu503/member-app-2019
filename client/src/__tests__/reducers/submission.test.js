@@ -241,9 +241,11 @@ describe("submission reducer", () => {
           homeCity: "string",
           homeState: "or",
           homeZip: "12345",
+          howManyTabs: 3,
           immediatePastMemberStatus: "Not a Member",
           homeEmail: "string@string.com",
           preferredLanguage: "string",
+          prefillEmployerChanged: false,
           paymentRequired: false,
           newCardNeeded: true,
           termsAgree: false,
@@ -276,6 +278,9 @@ describe("submission reducer", () => {
           lgbtqId: false,
           transId: false,
           disabilityId: false,
+          firstName: "string",
+          lastName: "string",
+          homeEmail: "string@string.com",
           deafOrHardOfHearing: false,
           blindOrVisuallyImpaired: false,
           gender: "female",
@@ -378,7 +383,9 @@ describe("submission reducer", () => {
           afhDuesRate: 0,
           capeAmount: "",
           donationFrequency: "Monthly",
-          checkoff: true
+          checkoff: true,
+          prefillEmployerChanged: false,
+          howManyTabs: 3
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -406,7 +413,10 @@ describe("submission reducer", () => {
           worksite: "string",
           workEmail: "string@string.com",
           workPhone: "123-456-7890",
-          hireDate: "2019-11-11"
+          hireDate: "2019-11-11",
+          firstName: "string",
+          lastName: "string",
+          homeEmail: "string@string.com"
         },
         salesforceId: "123",
         submissionId: null
@@ -498,7 +508,9 @@ describe("submission reducer", () => {
           afhDuesRate: 0,
           capeAmount: "",
           donationFrequency: "Monthly",
-          checkoff: true
+          checkoff: true,
+          prefillEmployerChanged: false,
+          howManyTabs: 3
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -510,6 +522,9 @@ describe("submission reducer", () => {
           white: false,
           other: false,
           declined: true,
+          firstName: "string",
+          lastName: "string",
+          homeEmail: "string@string.com",
           mailToCity: "string",
           mailToState: "or",
           mailToStreet: "string",

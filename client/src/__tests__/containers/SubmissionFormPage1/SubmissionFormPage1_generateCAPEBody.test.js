@@ -255,7 +255,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           salesforceId: "123",
           formPage1: {
-            prefillEmployerId: "1"
+            prefillEmployerId: "1",
+            prefillEmployerChanged: true
           },
           employerObjects: [{ Id: "2", Name: "SEIU LOCAL 503 OPEU" }]
         },
@@ -265,8 +266,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
       const result = await wrapper
         .instance()
         .generateCAPEBody("Other", 2)
