@@ -340,11 +340,12 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.Agency_Number__c"];
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
+    delete body["agencyNumber__c"];
     body.Birthdate__c = bodyRaw.birthdate;
     body.Worker__c = bodyRaw.Worker__c;
     body.IP_Address__c = ip;
-    // console.log(`sf.ctrl.js > 347`);
-    // console.log(body);
+    console.log(`sf.ctrl.js > 347`);
+    console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
       ...body
