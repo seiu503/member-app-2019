@@ -271,7 +271,10 @@ exports.updateSFContact = async (req, res, next) => {
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
-  updates.AccountId = updatesRaw.employer_id;
+  // don't make any changes to contact account/employer
+  // updates.AccountId = updatesRaw.employer_id;
+  console.log(`sf.ctrl.js > 276: UPDATE SFCONTACT updates`);
+  console.log(updates);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
