@@ -567,7 +567,8 @@ export class AppUnconnected extends Component {
       }
       // set campaign source
       const q = queryString.parse(this.props.location.search);
-      returnValues.campaignSource = q && q.s ? q.s : "NewMemberForm_201910";
+      returnValues.campaignSource =
+        q && q.s ? q.s : q.src ? q.src : "NewMemberForm_201910";
       // set salesforce id
       if (!values.salesforceId) {
         if (q && q.cId) {
