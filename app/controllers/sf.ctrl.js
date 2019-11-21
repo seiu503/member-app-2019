@@ -498,6 +498,8 @@ exports.createSFCAPE = async (req, res, next) => {
   let cape;
   try {
     const bodyRaw = { ...req.body };
+    // console.log(`createSFCAPE body (sf.ctrl.js > 501)`);
+    // console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (capeTableFields[key] && capeTableFields[key].SFAPIName) {
