@@ -3,7 +3,7 @@ import { shallow } from "enzyme";
 import moment from "moment";
 
 import "jest-canvas-mock";
-import * as formElements from "../../components/SubmissionFormElements";
+// import * as formElements from "../../components/SubmissionFormElements";
 
 import { AppUnconnected } from "../../App";
 
@@ -232,6 +232,24 @@ describe("<App />", () => {
       wrapper.instance().state.prefillEmployerChanged = true;
       wrapper.update();
       wrapper.instance().prepForContact(body);
+    });
+
+    test("`setCAPEOptions` calls this.props.apiSubmission.setCAPEOptions", () => {
+      const setCAPEOptionsMock = jest.fn();
+      const props = {
+        apiSubmission: {
+          setCAPEOptions: setCAPEOptionsMock
+        },
+        submission: {
+          payment: {
+            currentCAPEFromSF: 20
+          },
+          formPage1: {}
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().setCAPEOptions();
+      expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
 
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {

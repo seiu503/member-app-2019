@@ -41,7 +41,8 @@ import {
   findEmployerObject,
   formatSFDate,
   calcEthnicity,
-  removeFalsy
+  removeFalsy,
+  generateCAPEOptions
 } from "./components/SubmissionFormElements";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
@@ -198,6 +199,7 @@ export class AppUnconnected extends Component {
     this.createSFContact = this.createSFContact.bind(this);
     this.updateSFContact = this.updateSFContact.bind(this);
     this.changeTab = this.changeTab.bind(this);
+    this.setCAPEOptions = this.setCAPEOptions.bind(this);
   }
 
   componentDidMount() {
@@ -387,10 +389,10 @@ export class AppUnconnected extends Component {
     window.localStorage.setItem("redirect", currentPath);
   }
 
-  async updateSubmission(passedUpdates) {
+  async updateSubmission(passedId, passedUpdates) {
     // console.log("updateSubmission");
     this.props.actions.setSpinner();
-    const id = this.props.submission.submissionId;
+    const id = passedId ? passedId : this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
     const pmtUpdates = {
       payment_type: formPage1.paymentType,
@@ -421,6 +423,17 @@ export class AppUnconnected extends Component {
         console.error(err);
         return handleError(err);
       });
+  }
+
+  async setCAPEOptions() {
+    const existingCAPE = this.props.submission.payment.currentCAPEFromSF;
+    const { monthlyOptions, oneTimeOptions } = generateCAPEOptions(
+      existingCAPE
+    );
+    await this.props.apiSubmission.setCAPEOptions({
+      monthlyOptions,
+      oneTimeOptions
+    });
   }
 
   // lookup SF Contact by first, last, email; if none found then create new
@@ -957,6 +970,7 @@ export class AppUnconnected extends Component {
                   createSFContact={this.createSFContact}
                   updateSFContact={this.updateSFContact}
                   changeTab={this.changeTab}
+                  setCAPEOptions={this.setCAPEOptions}
                   {...routeProps}
                 />
               )}
