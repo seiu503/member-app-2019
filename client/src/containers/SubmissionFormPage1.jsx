@@ -31,8 +31,7 @@ import {
   formatSFDate,
   formatBirthdate,
   findEmployerObject,
-  handleError,
-  generateCAPEOptions
+  handleError
 } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 const uuid = require("uuid");
@@ -84,7 +83,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.formPage1.lastName
           ) {
             this.handleOpen();
-            this.setCAPEOptions();
+            this.props.setCAPEOptions();
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
@@ -291,17 +290,6 @@ export class SubmissionFormPage1Container extends React.Component {
         });
       }
     }
-  }
-
-  async setCAPEOptions() {
-    const existingCAPE = this.props.submission.payment.currentCAPEFromSF;
-    const { monthlyOptions, oneTimeOptions } = generateCAPEOptions(
-      existingCAPE
-    );
-    await this.props.apiSubmission.setCAPEOptions({
-      monthlyOptions,
-      oneTimeOptions
-    });
   }
 
   toggleSignatureInputType = () => {

@@ -273,24 +273,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
     });
 
-    test("`setCAPEOptions` calls this.props.apiSubmission.setCAPEOptions", () => {
-      const setCAPEOptionsMock = jest.fn();
-      const props = {
-        apiSubmission: {
-          setCAPEOptions: setCAPEOptionsMock
-        },
-        submission: {
-          payment: {
-            currentCAPEFromSF: 20
-          },
-          formPage1: {}
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().setCAPEOptions();
-      expect(setCAPEOptionsMock).toHaveBeenCalled();
-    });
-
     test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {
       const handleEmployerTypeChangeMock = jest
         .fn()
