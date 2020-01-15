@@ -135,12 +135,14 @@ const styles = theme => ({
   },
   languagePickerLabel: {
     color: "white",
-    marginTop: -14
+    marginTop: -14,
+    marginLeft: 25
   },
   languagePickerSelect: {
     color: "white",
-    width: 150,
-    border: "1px solid white"
+    width: 170,
+    border: "1px solid white",
+    paddingLeft: "7px !important"
   },
   lpInput: {
     // height: 30,
@@ -161,6 +163,9 @@ const styles = theme => ({
   labelFocused: {
     color: "white !important",
     marginTop: -8
+  },
+  adornedStart: {
+    paddingLeft: 10
   }
 });
 

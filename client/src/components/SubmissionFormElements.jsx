@@ -15,6 +15,9 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Icon from "@material-ui/core/Icon";
+import LanguageIcon from "@material-ui/icons/Language";
 
 import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
 
@@ -951,6 +954,12 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
           <Select
             native
             autoWidth={true}
+            classes={{ adornedStart: props.classes.adornedStart }}
+            startAdornment={
+              <InputAdornment position="start">
+                <LanguageIcon color="white" />
+              </InputAdornment>
+            }
             input={
               <OutlinedInput
                 ref={ref}
