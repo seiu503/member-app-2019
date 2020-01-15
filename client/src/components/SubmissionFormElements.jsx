@@ -930,6 +930,72 @@ export const renderTextField = ({
 
 const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 
+export const LanguagePicker = React.forwardRef((props, ref) => {
+  return (
+    <Translate>
+      {({ translate }) => (
+        <FormControl
+          variant="outlined"
+          className={props.classes.languagePicker}
+        >
+          <InputLabel
+            htmlFor={props.name}
+            className={props.classes.languagePickerLabel}
+            classes={{
+              shrink: props.classes.labelShrink,
+              focused: props.classes.labelFocused
+            }}
+          >
+            {inputLabelTranslateHelper(props.id, props.label, translate)}
+          </InputLabel>
+          <Select
+            native
+            autoWidth={true}
+            input={
+              <OutlinedInput
+                ref={ref}
+                classes={{ notchedOutline: props.classes.notched }}
+                className={props.classes.lpInput}
+                labelWidth={100}
+                size="small"
+                notched={false}
+                inputProps={{
+                  id: props.id,
+                  style: {
+                    height: 30,
+                    padding: "0px 15px",
+                    borderColor: "white",
+                    borderRadius: 4,
+                    "&:before": {
+                      borderColor: "white"
+                    },
+                    "&:after": {
+                      borderColor: "white"
+                    }
+                  },
+                  classes: {
+                    icon: props.classes.icon
+                  }
+                }}
+              />
+            }
+            className={props.classes.languagePickerSelect}
+            // value={props.input.value}
+            // onChange={props.input.onChange}
+            data-test="component-select"
+          >
+            {props.options.map(item => (
+              <option key={shortid()} value={item}>
+                {item}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+    </Translate>
+  );
+});
+
 // custom MUI friendly SELECT input with translated label
 export const renderSelect = ({
   input,

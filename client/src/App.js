@@ -151,7 +151,7 @@ const styles = theme => ({
 export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
-    // this.recaptcha = React.createRef();
+    this.language_picker = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
     this.cape_legal = React.createRef();
@@ -204,9 +204,12 @@ export class AppUnconnected extends Component {
 
   componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log("Thursday 11/7 4:26pm");
+    console.log("Wednesday 1/15 1:11pm");
+    // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
-    this.props.setActiveLanguage(defaultLanguage);
+    const userChosenLanguage =
+      // set form language based on detected default language
+      this.props.setActiveLanguage(defaultLanguage);
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
     if (!this.props.appState.loggedIn) {
@@ -937,7 +940,12 @@ export class AppUnconnected extends Component {
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           onResolved={this.onResolved}
         />
-        {!embed && <NavBar main_ref={this.main_ref} />}
+        {!embed && (
+          <NavBar
+            main_ref={this.main_ref}
+            language_picker={this.language_picker}
+          />
+        )}
         <Notifier />
         {loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>

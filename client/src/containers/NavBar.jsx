@@ -18,6 +18,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Slide from "@material-ui/core/Slide";
 
 import { skip } from "../utils";
+import { LanguagePicker } from "../components/SubmissionFormElements";
 import logo from "../img/seiu503_white.svg";
 
 const styles = theme => ({
@@ -127,6 +128,39 @@ const styles = theme => ({
   drawer: {
     boxShadow:
       "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
+  },
+  languagePicker: {
+    color: "white"
+    // height: 30
+  },
+  languagePickerLabel: {
+    color: "white",
+    marginTop: -14
+  },
+  languagePickerSelect: {
+    color: "white",
+    width: 150,
+    border: "1px solid white"
+  },
+  lpInput: {
+    // height: 30,
+  },
+  icon: {
+    display: "none"
+    // fill: 'white',
+  },
+  notched: {
+    borderColor: "transparent"
+    // borderRadius: 4,
+    // "&:hover": "white",
+    // "&:focused": "white",
+  },
+  labelShrink: {
+    color: "white"
+  },
+  labelFocused: {
+    color: "white !important",
+    marginTop: -8
   }
 });
 
@@ -246,6 +280,22 @@ export class NavBar extends React.Component {
                 </Translate>
               </Link>
             </Typography>
+            <LanguagePicker
+              id="languagePicker"
+              ref={this.props.language_picker}
+              classes={classes}
+              name="languagePicker"
+              label="Select Language"
+              labelWidth={200}
+              options={[
+                "",
+                "English",
+                "Español",
+                "Русский",
+                "Tiếng Việt",
+                "简体中文"
+              ]}
+            />
             {loggedIn && (
               <React.Fragment>
                 <IconButton
