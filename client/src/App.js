@@ -186,7 +186,8 @@ export class AppUnconnected extends Component {
         id: 0
       },
       image: {},
-      tab: undefined
+      tab: undefined,
+      userSelectedLanguage: ""
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
@@ -332,8 +333,13 @@ export class AppUnconnected extends Component {
     }
   }
 
-  updateLanguage = () => {
+  updateLanguage = e => {
     console.log("updateLanguage");
+    // update value of select
+    const newState = { ...this.state };
+    newState.userSelectedLanguage = e.target.value;
+    this.setState({ ...newState });
+
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
     const userChosenLanguage =
@@ -961,6 +967,7 @@ export class AppUnconnected extends Component {
             main_ref={this.main_ref}
             language_picker={this.language_picker}
             updateLanguage={this.updateLanguage}
+            userSelectedLanguage={this.state.userSelectedLanguage}
           />
         )}
         <Notifier />

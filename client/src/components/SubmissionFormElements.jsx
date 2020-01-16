@@ -941,7 +941,6 @@ export const languageMap = {
 };
 
 export const LanguagePicker = React.forwardRef((props, ref) => {
-  console.log(ref);
   return (
     <Translate>
       {({ translate }) => (
@@ -979,6 +978,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                 labelWidth={100}
                 size="small"
                 notched={false}
+                value={props.userSelectedLanguage}
                 inputProps={{
                   id: props.id,
                   style: {
