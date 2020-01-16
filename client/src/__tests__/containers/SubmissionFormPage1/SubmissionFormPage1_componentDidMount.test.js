@@ -95,13 +95,6 @@ const sigBox = {
   }
 };
 
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -200,7 +193,8 @@ const defaultProps = {
   body: {
     id: 3,
     text: ""
-  }
+  },
+  setCAPEOptions: jest.fn()
 };
 
 const setup = (props = {}) => {
@@ -278,7 +272,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         apiSF: {
           getSFContactByDoubleId: getSFContactByDoubleIdError,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
+        },
+        setCAPEOptions: jest.fn()
       };
 
       wrapper = setup(props);
