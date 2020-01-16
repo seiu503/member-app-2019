@@ -98,6 +98,11 @@ const getProfileMock = jest
   .mockImplementation(() =>
     Promise.resolve({ type: "GET_PROFILE_SUCCESS", payload: {} })
   );
+const getProfileFailure = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "GET_PROFILE_FAILURE", payload: {} })
+  );
 
 const getResponseMock = jest
   .fn()
@@ -285,6 +290,86 @@ describe("<App />", () => {
       expect(pushMock).toHaveBeenCalledWith("redirectpath");
       await pushMock();
       expect(localStorage).not.toHaveProperty("redirect");
+    });
+    it("`componentDidMount` checks url parameters for h, b, i, lang", async () => {
+      const setActiveLanguageMock = jest.fn();
+      const props = {
+        setActiveLanguage: setActiveLanguageMock,
+        match: {
+          params: {
+            id: undefined
+          }
+        },
+        location: {
+          search: "&lang=en"
+        },
+        appState: {
+          loggedIn: false
+        }
+      };
+      window.localStorage.setItem("userId", "undefined");
+      wrapper = setup(props);
+      wrapper.instance().componentDidMount();
+      await validateTokenMock();
+      window.localStorage.getItem = jest
+        .fn()
+        .mockImplementation(() => "undefined");
+      expect(setActiveLanguageMock).toHaveBeenCalled();
+    });
+    it("`componentDidMount` edge case branches: getProfileFailure", async () => {
+      const setActiveLanguageMock = jest.fn();
+      const props = {
+        setActiveLanguage: setActiveLanguageMock,
+        match: {
+          params: {
+            id: undefined
+          }
+        },
+        location: {
+          search: "&lang=en"
+        },
+        appState: {
+          loggedIn: false
+        },
+        apiProfile: {
+          getProfile: getProfileFailure,
+          validateToken: validateTokenMock
+        }
+      };
+      window.localStorage.setItem("userId", "1234");
+      window.localStorage.setItem("authToken", "5678");
+      wrapper = setup(props);
+      wrapper.instance().componentDidMount();
+      await validateTokenMock();
+      window.localStorage.getItem = jest
+        .fn()
+        .mockImplementation(() => "undefined");
+      expect(setActiveLanguageMock).toHaveBeenCalled();
+    });
+    it("`componentDidMount` edge case branches: match.params.id", async () => {
+      const setActiveLanguageMock = jest.fn();
+      const props = {
+        setActiveLanguage: setActiveLanguageMock,
+        match: {
+          params: {
+            id: 1234
+          }
+        },
+        location: {
+          search: "&lang=en"
+        },
+        appState: {
+          loggedIn: false
+        }
+      };
+      window.localStorage.setItem("userId", "undefined");
+      wrapper = setup(props);
+      wrapper.instance().componentDidMount();
+      await validateTokenMock();
+      window.localStorage.getItem = jest
+        .fn()
+        .mockImplementation(() => "undefined");
+      expect(setActiveLanguageMock).toHaveBeenCalled();
     });
     it("if !loggedIn, componentDidMount console logs error if `validateToken` throws", () => {
       localStorage.setItem("userId", "1234");

@@ -61,6 +61,12 @@ let getSFDJRSuccess = jest
     Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
   );
 
+let validateTokenSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "VALIDATE_TOKEN_SUCCESS", payload: {} })
+  );
+
 let createSFDJRSuccess = jest
   .fn()
   .mockImplementation(() =>
@@ -119,7 +125,6 @@ const defaultProps = {
     payment: {}
   },
   appState: {},
-  apiProfile: {},
   initialize: jest.fn(),
   addTranslation: jest.fn(),
   profile: {},
@@ -151,6 +156,9 @@ const defaultProps = {
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+  },
+  apiProfile: {
+    validateToken: validateTokenSuccess
   },
   history: {
     push: pushMock

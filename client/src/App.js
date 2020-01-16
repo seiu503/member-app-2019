@@ -220,7 +220,7 @@ export class AppUnconnected extends Component {
         // console.log("not logged in, looking for id & token in localStorage");
         const authToken = window.localStorage.getItem("authToken");
         const userId = window.localStorage.getItem("userId");
-        // console.log(`authToken: ${!!authToken}, userId: ${userId}`);
+        console.log(`authToken: ${authToken}, userId: ${userId}`);
         if (
           authToken &&
           authToken !== "undefined" &&
@@ -232,18 +232,11 @@ export class AppUnconnected extends Component {
           this.props.apiProfile
             .validateToken(authToken, userId)
             .then(result => {
-              // console.log(result.type);
+              console.log(result.type);
               if (result.type === "VALIDATE_TOKEN_FAILURE") {
                 // console.log("VALIDATE_TOKEN_FAILURE: clearing localStorage");
                 return window.localStorage.clear();
-              }
-              if (
-                result.type === "VALIDATE_TOKEN_SUCCESS" &&
-                authToken &&
-                authToken !== "undefined" &&
-                userId &&
-                userId !== "undefined"
-              ) {
+              } else {
                 // console.log(
                 //   `validate token success: ${!!authToken}, ${userId}`
                 // );
