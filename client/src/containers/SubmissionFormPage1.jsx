@@ -88,19 +88,23 @@ export class SubmissionFormPage1Container extends React.Component {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
             this.props.apiSubmission.clearForm();
-            // remove cId & aId from route params if no match
-            window.history.replaceState(
-              null,
-              null,
-              `${window.location.origin}/`
-            );
+            // remove cId & aId from route params if no match,
+            // but preserve other params
+            const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
+            console.log(cleanUrl1);
+            const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
+            console.log(cleanUrl2);
+            window.history.replaceState(null, null, cleanUrl2);
           }
         })
         .catch(err => {
           console.error(err);
           this.props.apiSubmission.clearForm();
-          // remove cId & aId from route params if no match
-          window.history.replaceState(null, null, `${window.location.origin}/`);
+          // remove cId & aId from route params if no match,
+          // but preserve other params
+          const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
+          const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
+          window.history.replaceState(null, null, cleanUrl2);
           return handleError(err);
         });
     }
