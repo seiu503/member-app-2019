@@ -252,6 +252,29 @@ describe("<App />", () => {
       expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
 
+    test("`updateLanguage` calls this.props.setActiveLanguage", () => {
+      const setActiveLanguageMock = jest.fn();
+      const props = {
+        setActiveLanguage: setActiveLanguageMock
+      };
+      wrapper = setup(props);
+      const fakeEvent = {
+        target: {
+          value: "English"
+        }
+      };
+      wrapper.instance().updateLanguage(fakeEvent);
+      const fakeRef = {
+        current: {
+          value: "Español"
+        }
+      };
+      wrapper.instance().language_picker = fakeRef;
+      wrapper.instance().updateLanguage(fakeEvent);
+      //^^ doing this twice to hit branches with userSelectedLanguage
+      expect(setActiveLanguageMock).toHaveBeenCalled();
+    });
+
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
       const props = {
         submission: {
