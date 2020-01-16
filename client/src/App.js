@@ -331,6 +331,9 @@ export class AppUnconnected extends Component {
           });
       });
     }
+    if (values.lang) {
+      this.props.setActiveLanguage(values.lang);
+    }
   }
 
   updateLanguage = e => {
