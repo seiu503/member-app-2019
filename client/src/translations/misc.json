@@ -215,6 +215,13 @@
 	"Đã xảy ra lỗi khi cố tìm nạp dữ liệu từ Salesforce.",
 	"尝试从 Salesforce 获取数据时发生错误。"
 ],
+"languagePicker": [
+	"Select Language",
+  "Seleccione el idioma",
+  "Выбрать язык",
+  "Chọn ngôn ngữ",
+  "选择语言"
+],
 "": [
   "",
   "",

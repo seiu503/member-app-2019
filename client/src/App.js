@@ -42,7 +42,8 @@ import {
   formatSFDate,
   calcEthnicity,
   removeFalsy,
-  generateCAPEOptions
+  generateCAPEOptions,
+  languageMap
 } from "./components/SubmissionFormElements";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
@@ -151,7 +152,7 @@ const styles = theme => ({
 export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
-    // this.recaptcha = React.createRef();
+    this.language_picker = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
     this.cape_legal = React.createRef();
@@ -185,7 +186,8 @@ export class AppUnconnected extends Component {
         id: 0
       },
       image: {},
-      tab: undefined
+      tab: undefined,
+      userSelectedLanguage: ""
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
@@ -204,8 +206,10 @@ export class AppUnconnected extends Component {
 
   componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log("Thursday 11/7 4:26pm");
+    console.log("Wednesday 1/15 1:11pm");
+    // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
+    // set form language based on detected default language
     this.props.setActiveLanguage(defaultLanguage);
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
@@ -327,7 +331,31 @@ export class AppUnconnected extends Component {
           });
       });
     }
+    if (values.lang) {
+      this.props.setActiveLanguage(values.lang);
+    }
   }
+
+  updateLanguage = e => {
+    console.log("updateLanguage");
+    // update value of select
+    const newState = { ...this.state };
+    newState.userSelectedLanguage = e.target.value;
+    this.setState({ ...newState });
+
+    // detect default language from browser
+    const defaultLanguage = detectDefaultLanguage();
+    const userChosenLanguage =
+      this.language_picker && this.language_picker.current
+        ? this.language_picker.current.value
+        : null;
+    console.log(userChosenLanguage);
+    const languageCode = languageMap[userChosenLanguage];
+    console.log(languageCode);
+    const language = languageCode ? languageCode : defaultLanguage;
+    // set form language based on detected default language
+    this.props.setActiveLanguage(language);
+  };
 
   renderBodyCopy = id => {
     let paragraphIds = [];
@@ -937,7 +965,14 @@ export class AppUnconnected extends Component {
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           onResolved={this.onResolved}
         />
-        {!embed && <NavBar main_ref={this.main_ref} />}
+        {!embed && (
+          <NavBar
+            main_ref={this.main_ref}
+            language_picker={this.language_picker}
+            updateLanguage={this.updateLanguage}
+            userSelectedLanguage={this.state.userSelectedLanguage}
+          />
+        )}
         <Notifier />
         {loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
