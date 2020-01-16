@@ -292,6 +292,7 @@ export class NavBar extends React.Component {
               name="languagePicker"
               label="Select Language"
               labelWidth={200}
+              onChange={this.props.updateLanguage}
               options={[
                 "",
                 "English",

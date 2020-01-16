@@ -16,7 +16,6 @@ import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import Icon from "@material-ui/core/Icon";
 import LanguageIcon from "@material-ui/icons/Language";
 
 import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
@@ -933,7 +932,16 @@ export const renderTextField = ({
 
 const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 
+export const languageMap = {
+  English: "en",
+  Español: "es",
+  Русский: "ru",
+  "Tiếng Việt": "vi",
+  简体中文: "zh"
+};
+
 export const LanguagePicker = React.forwardRef((props, ref) => {
+  console.log(ref);
   return (
     <Translate>
       {({ translate }) => (
@@ -954,16 +962,19 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
           <Select
             native
             autoWidth={true}
-            classes={{ adornedStart: props.classes.adornedStart }}
+            onChange={props.onChange}
             startAdornment={
               <InputAdornment position="start">
-                <LanguageIcon color="white" />
+                <LanguageIcon color="inherit" />
               </InputAdornment>
             }
             input={
               <OutlinedInput
-                ref={ref}
-                classes={{ notchedOutline: props.classes.notched }}
+                inputRef={ref}
+                classes={{
+                  notchedOutline: props.classes.notched,
+                  adornedStart: props.classes.adornedStart
+                }}
                 className={props.classes.lpInput}
                 labelWidth={100}
                 size="small"
