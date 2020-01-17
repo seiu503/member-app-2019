@@ -165,6 +165,8 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
     getAllSubmissions: () =>
       Promise.resolve({ type: "GET_ALL_SUBMISSIONS_SUCCESS" })
@@ -230,7 +232,8 @@ describe("<App />", () => {
         submission: {
           formPage1: {
             prefillEmployerId: "1234"
-          }
+          },
+          payment: {}
         }
       };
       const body = {
@@ -301,7 +304,8 @@ describe("<App />", () => {
           salesforceId: "1234",
           formPage1: {
             legalLanguage: "abc"
-          }
+          },
+          payment: {}
         },
         location: {
           search: "&cId=1234"
@@ -333,7 +337,8 @@ describe("<App />", () => {
           formPage1: {
             legalLanguage: "abc"
           },
-          submissionId: "5678"
+          submissionId: "5678",
+          payment: {}
         },
         location: {
           search: "&cId=1234"
@@ -351,7 +356,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         },
         location: {
           search: "&cId=1234"
@@ -370,7 +376,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         },
         location: {
           search: "&cId=1234"
@@ -390,7 +397,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         }
       };
       wrapper = setup(props);
@@ -406,7 +414,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         },
         apiSF: {
           ...defaultProps.apiSF,
@@ -427,7 +436,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         },
         apiSF: {
           ...defaultProps.apiSF,
@@ -452,7 +462,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         },
         apiSF: {
           ...defaultProps.apiSF,
@@ -482,7 +493,8 @@ describe("<App />", () => {
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {}
+          currentSubmission: {},
+          payment: {}
         },
         apiSubmission: {
           ...defaultProps.apiSubmission,
