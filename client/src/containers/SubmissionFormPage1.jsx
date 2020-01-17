@@ -1269,7 +1269,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
-      // console.log(`recaptcha failed: ${score}`);
+      console.log(`recaptcha failed: ${score}`);
       return handleError(
         "ReCaptcha validation failed, please reload the page and try again."
       );
@@ -1379,13 +1379,11 @@ export class SubmissionFormPage1Container extends React.Component {
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}
           clearSignature={this.clearSignature}
-          generateSubmissionBody={this.generateSubmissionBody}
           handleError={handleError}
           toggleCardAddingFrame={this.toggleCardAddingFrame}
           handleCAPESubmit={this.handleCAPESubmit}
           suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
-          saveSubmissionErrors={this.saveSubmissionErrors}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           handleEmployerChange={this.handleEmployerChange}
           handleDonationFrequencyChange={this.handleDonationFrequencyChange}

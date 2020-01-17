@@ -204,6 +204,7 @@ export class AppUnconnected extends Component {
     this.changeTab = this.changeTab.bind(this);
     this.setCAPEOptions = this.setCAPEOptions.bind(this);
     this.resubmitSubmission = this.resubmitSubmission.bind(this);
+    this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
   }
 
   componentDidMount() {
@@ -1054,6 +1055,7 @@ export class AppUnconnected extends Component {
                   updateSubmission={this.updateSubmission}
                   lookupSFContact={this.lookupSFContact}
                   saveSubmissionErrors={this.saveSubmissionErrors}
+                  generateSubmissionBody={this.generateSubmissionBody}
                   prepForContact={this.prepForContact}
                   prepForSubmission={this.prepForSubmission}
                   createSFContact={this.createSFContact}

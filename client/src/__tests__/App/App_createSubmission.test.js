@@ -399,10 +399,6 @@ describe("<App />", () => {
       wrapper
         .instance()
         .createSubmission(formValues, true)
-        .then(async () => {
-          await createSFOMAError;
-          expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
-        })
         .catch(err => console.log(err));
     });
   });
