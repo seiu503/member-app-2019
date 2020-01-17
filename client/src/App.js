@@ -45,6 +45,7 @@ import {
   generateCAPEOptions,
   languageMap
 } from "./components/SubmissionFormElements";
+import { openSnackbar } from "./containers/Notifier";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
@@ -202,6 +203,7 @@ export class AppUnconnected extends Component {
     this.updateSFContact = this.updateSFContact.bind(this);
     this.changeTab = this.changeTab.bind(this);
     this.setCAPEOptions = this.setCAPEOptions.bind(this);
+    this.resubmitSubmission = this.resubmitSubmission.bind(this);
   }
 
   componentDidMount() {
@@ -412,6 +414,7 @@ export class AppUnconnected extends Component {
 
   async updateSubmission(passedId, passedUpdates) {
     // console.log("updateSubmission");
+    console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
@@ -501,7 +504,7 @@ export class AppUnconnected extends Component {
   async saveSubmissionErrors(submission_id, method, error) {
     // 1. retrieve existing errors array from current submission
     let { submission_errors } = this.props.submission.currentSubmission;
-    if (submission_errors === null) {
+    if (submission_errors === null || submission_errors === undefined) {
       submission_errors = "";
     }
     // 2. add new data to string
@@ -511,7 +514,7 @@ export class AppUnconnected extends Component {
       submission_errors,
       submission_status: "error"
     };
-    this.updateSubmission(updates).catch(err => {
+    this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
       return handleError(err);
     });
@@ -931,6 +934,64 @@ export class AppUnconnected extends Component {
   };
 
   // resubmit submission and deleteSubmission methods here, to be passed to submission table
+  async resubmitSubmission(submissionData) {
+    console.log(submissionData);
+    // const body = await this.generateSubmissionBody(submissionData);
+    // console.log(body);
+    // const cleanBody = removeFalsy(body);
+    // console.log(cleanBody);
+    // cleanBody.Worker__c = submissionData.salesforceId;
+    // console.log(cleanBody)
+    submissionData.Worker__c = submissionData.salesforce_id;
+    if (!submissionData.text_auth_opt_out) {
+      submissionData.text_auth_opt_out = false;
+    }
+    delete submissionData.salesforce_id;
+    console.log(submissionData);
+    const resubmitResult = await this.props.apiSF
+      .createSFOMA(submissionData)
+      .catch(err => handleError(err));
+    if (
+      !resubmitResult ||
+      !resubmitResult.type ||
+      resubmitResult.type !== "CREATE_SF_OMA_SUCCESS"
+    ) {
+      this.saveSubmissionErrors(
+        submissionData.id,
+        "createSFOMA_RESUBMIT",
+        this.props.submission.error
+      );
+    } else if (resubmitResult.type === "CREATE_SF_OMA_SUCCESS") {
+      openSnackbar(
+        "success",
+        `Resubmitted submission from ${submissionData.first_name} ${
+          submissionData.last_name
+        }.`
+      );
+      // update submission status to success
+      this.props.apiSubmission
+        .updateSubmission(submissionData.id, {
+          submission_status: "Success",
+          submission_errors: null
+        })
+        .then(result => {
+          console.log(result.type);
+          if (
+            result.type === "UPDATE_SUBMISSION_FAILURE" ||
+            this.props.submission.error
+          ) {
+            console.log(this.props.submission.error);
+            return handleError(this.props.submission.error);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          return handleError(err);
+        });
+      const token = this.props.appState.authToken;
+      this.props.apiSubmission.getAllSubmissions(token);
+    }
+  }
 
   render() {
     const values = queryString.parse(this.props.location.search);
@@ -1017,7 +1078,11 @@ export class AppUnconnected extends Component {
             <Route
               path="/admin/:id?/:token?"
               render={routeProps => (
-                <Dashboard {...routeProps} setRedirect={this.setRedirect} />
+                <Dashboard
+                  {...routeProps}
+                  setRedirect={this.setRedirect}
+                  resubmitSubmission={this.resubmitSubmission}
+                />
               )}
             />
             <Route
