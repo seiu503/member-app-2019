@@ -202,6 +202,36 @@ describe("<App />", () => {
   });
 
   describe("prepForContact", () => {
+    test("`prepForContact` handles edge case if no employerName in formValues", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: undefined,
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().prepForContact(props.formValues);
+    });
     test("`prepForContact` handles edge case if no matching employer object found", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();

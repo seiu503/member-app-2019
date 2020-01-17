@@ -332,11 +332,15 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   let oma;
   try {
     const bodyRaw = { ...req.body };
+    console.log("sf.ctrl.js > 335");
+    console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
       if (submissionsTableFields[key]) {
         const sfFieldName = submissionsTableFields[key].SFAPIName;
-        body[sfFieldName] = bodyRaw[key];
+        if (sfFieldName) {
+          body[sfFieldName] = bodyRaw[key];
+        }
       }
     });
     delete body["Account.Id"];
@@ -348,6 +352,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     body.Worker__c = bodyRaw.Worker__c;
     body.IP_Address__c = ip;
     console.log(`sf.ctrl.js > 347`);
+    console.log(bodyRaw.Worker__c);
     console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({

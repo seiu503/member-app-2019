@@ -12,7 +12,9 @@ let wrapper;
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+  executeMock = jest.fn().mockImplementation(() => Promise.resolve()),
+  updateSubmissionError = jest.fn().mockImplementation(() => Promise.reject()),
+  handleErrorMock = jest.fn();
 
 let updateSFContactSuccess = jest
   .fn()
@@ -79,6 +81,14 @@ let updateSFDJRSuccess = jest
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
   );
 
+let createSFOMASuccess = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }));
+
+let createSFOMAError = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" }));
+
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -141,7 +151,7 @@ const defaultProps = {
     getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-    createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
+    createSFOMA: createSFOMASuccess,
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
     createSFDJR: createSFDJRSuccess,
@@ -155,7 +165,9 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    getAllSubmissions: () =>
+      Promise.resolve({ type: "GET_ALL_SUBMISSIONS_SUCCESS" })
   },
   apiProfile: {
     validateToken: validateTokenSuccess
@@ -312,6 +324,183 @@ describe("<App />", () => {
       };
       wrapper = setup(props);
       wrapper.instance().prepForSubmission(body);
+    });
+
+    test("`updateSubmission` uses defaults if no passedId or passedUpdates", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678"
+        },
+        location: {
+          search: "&cId=1234"
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().updateSubmission();
+    });
+
+    test("`saveSubmissionErrors` handles error if updateSubmission throws", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        },
+        location: {
+          search: "&cId=1234"
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().updateSubmission = updateSubmissionError;
+      wrapper.instance().saveSubmissionErrors();
+    });
+
+    test("`generateSubmissionBody` uses back end fieldnames if !firstName", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        },
+        location: {
+          search: "&cId=1234"
+        }
+      };
+      const values = {};
+      wrapper = setup(props);
+      wrapper.instance().updateSubmission = updateSubmissionError;
+      wrapper.instance().generateSubmissionBody(values, true);
+    });
+
+    test("`resubmitSubmission` calls createSFOMA prop", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().resubmitSubmission(formValues);
+      expect(createSFOMASuccess).toHaveBeenCalled();
+    });
+
+    test("`resubmitSubmission` handles error if createSFOMA fails", () => {
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFOMA: createSFOMAError
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().resubmitSubmission(formValues);
+      expect(createSFOMAError).toHaveBeenCalled();
+    });
+
+    test("`resubmitSubmission` handles error if createSFOMA throws", () => {
+      createSFOMAError = jest.fn().mockImplementation(() => Promise.reject());
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFOMA: createSFOMAError
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().resubmitSubmission(formValues);
+      expect(createSFOMAError).toHaveBeenCalled();
+    });
+
+    test("`resubmitSubmission` handles error if updateSubmission fails", async () => {
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFOMA: createSFOMASuccess
+        },
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          updateSubmission: updateSubmissionError
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().resubmitSubmission(formValues);
+      await createSFOMASuccess()
+        .then(async () => {
+          await updateSubmissionError().catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+    });
+    test("`resubmitSubmission` handles error if updateSubmission throws", async () => {
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject());
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {}
+        },
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          updateSubmission: updateSubmissionError
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFOMA: createSFOMASuccess
+        }
+      };
+      formValues.id = "1234";
+      wrapper = setup(props);
+      wrapper.instance().resubmitSubmission(formValues);
+      await createSFOMASuccess()
+        .then(async () => {
+          await updateSubmissionError().catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
     });
   });
 });

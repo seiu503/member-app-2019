@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
 import { withStyles } from "@material-ui/core/styles";
+import BackupIcon from "@material-ui/icons/Backup";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 
@@ -53,12 +54,12 @@ const warning = `You do not have access to the page you were trying to reach. Pl
 export class SubmissionsTableUnconnected extends React.Component {
   componentDidMount() {
     const { authToken } = this.props.appState;
-    // console.log(`authToken: ${!!authToken}`);
     const { userType } = this.props.appState;
     if (userType && authToken) {
       this.props.apiSubmission
         .getAllSubmissions(authToken, userType)
         .then(result => {
+          console.log(result.payload);
           if (
             result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
             this.props.submission.error
@@ -93,6 +94,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             this.props.appState.userType
           )
           .then(result => {
+            console.log(result.payload);
             if (
               result.type === "GET_ALL_SUBMISSIONS_FAILURE" ||
               this.props.submission.error
@@ -199,6 +201,17 @@ export class SubmissionsTableUnconnected extends React.Component {
                 })
               }}
               icons={tableIcons}
+              actions={[
+                {
+                  icon: BackupIcon,
+                  tooltip: "Resubmit",
+                  onClick: (event, rowData) => {
+                    console.log("resubmit");
+                    console.log(rowData);
+                    this.props.resubmitSubmission(rowData);
+                  }
+                }
+              ]}
             />
           </div>
         </div>

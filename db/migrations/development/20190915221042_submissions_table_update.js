@@ -5,11 +5,7 @@ exports.up = function(knex) {
         return knex.schema.table("submissions", function(table) {
           table.string("submission_status");
           table.text("submission_errors");
-          knex.schema.hasColumn("card_brand").then(function(exists) {
-            if (!exists) {
-              table.string("card_brand");
-            }
-          });
+          table.string("card_brand");
         });
       }
     })
