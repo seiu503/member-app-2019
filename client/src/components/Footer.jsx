@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Translate } from "react-localize-redux";
 
 const Footer = props => (
   <div className={props.classes.footer} data-test="component-footer">
@@ -9,7 +10,7 @@ const Footer = props => (
       target="_blank"
       style={{ color: "white" }}
     >
-      Report a problem with this form
+      <Translate id="reportProblem">Report a problem with this form</Translate>
     </a>
   </div>
 );

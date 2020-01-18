@@ -251,6 +251,13 @@
     "Gửi",
     "提交"
   ],
+  "submitButton": [
+    "Submit",
+    "Enviar",
+    "Подать",
+    "Gửi",
+    "提交"
+  ],
   "helpText": [
     "Help with this form",
     "Ayuda con este formulario",
@@ -285,5 +292,68 @@
     "Ежемесячные взносы составляют 10 долларов США и будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
     "Phí hàng tháng là $ 10 và sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
     "每月的会费是10美元，将从您提供的以下付款方式中扣除，每月的第10天。 费用由SEIU Local 503法规设置。"
+  ],
+  "Use existing": [
+    "Use existing",
+    "Usar tarjeta existente",
+    "Использовать существующую кредитную карту",
+    "Sử dụng thẻ tín dụng hiện có",
+    "使用现有的信用卡"
+  ],
+  "Add new card": [
+    "Add new card",
+    "Agregar nueva tarjeta",
+    "Добавить новую карту",
+    "Thêm thẻ mới",
+    "新增卡"
+  ],
+  "clearSig": [
+    "Clear Signature",
+    "Borrar firma",
+    "Удалить подпись",
+    "Xóa chữ ký",
+    "清除签名"
+  ],
+  "clickToType": [
+    "Click here to type your signature",
+    "Haga clic aquí para escribir su firma",
+    "Нажмите здесь, чтобы ввести подпись с помощью клавиатуры",
+    "Nhấp vào đây để gõ chữ ký của quý vị",
+    "单击此处键入您的签名"
+  ],
+  "drawSig": [
+    "Draw your signature in the box above.",
+    "Firme en el cuadro de arriba.",
+    "Поставьте подпись в поле выше.",
+    "Ký vào ô bên trên.",
+    "在上面的方框里签名。"
+  ],
+  "Other": [
+    "Other",
+    "Otro",
+    "Другое количество",
+    "Lượng khác",
+    "其他金额"
+  ],
+  "Monthly": [
+    "Monthly",
+    "Mensual",
+    "Ежемесячное",
+    "Hàng tháng",
+    "每月一次"
+  ],
+  "One-Time": [
+    "One-Time",
+    "Única",
+    "Только один раз",
+    "Chỉ một lần duy nhất",
+    "仅一次"
+  ],
+  "address": [
+    "Address",
+    "Dirección",
+    "Домашний адрес",
+    "Địa chỉ nhà",
+    "家庭地址"
   ]
 }

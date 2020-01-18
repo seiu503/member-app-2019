@@ -1,3 +1,5 @@
+import { Translate } from "react-localize-redux";
+import React from "react";
 export const validate = values => {
   const errors = {};
   const requiredFields = [
@@ -48,12 +50,12 @@ export const validate = values => {
       obj["controllingValues"].includes(matchValue) &&
       !values[obj["requiredField"]]
     ) {
-      errors[obj["requiredField"]] = "Required";
+      errors[obj["requiredField"]] = <Translate id="requiredError" />;
     }
   });
   requiredFields.forEach(field => {
     if (!values[field]) {
-      errors[field] = "Required";
+      errors[field] = <Translate id="requiredError" />;
     }
   });
   if (
@@ -64,26 +66,26 @@ export const validate = values => {
     values.paymentMethod === "Card" &&
     !values.paymentMethodAdded
   ) {
-    errors.paymentMethodAdded = `Please add a payment method.`;
+    errors.paymentMethodAdded = <Translate id="addPaymentError" />;
   }
   if (
     values.employerType &&
     values.employerType.toLowerCase() === "adult foster home" &&
     values.medicaidResidents < 1
   ) {
-    errors.medicaidResidents = `Please enter the number of Medicaid Residents in your home(s).`;
+    errors.medicaidResidents = <Translate id="medicaidResidentsError" />;
   }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
   ) {
-    errors.homeEmail = "Invalid email address (e.g. sample@email.com)";
+    errors.homeEmail = <Translate id="invalidEmailError" />;
   }
   if (
     values.workEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.workEmail)
   ) {
-    errors.workEmail = "Invalid email address (e.g. sample@email.com)";
+    errors.workEmail = <Translate id="invalidEmailError" />;
   }
   if (
     values.mobilePhone &&
@@ -91,33 +93,28 @@ export const validate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
+    errors.mobilePhone = <Translate id="invalidPhoneError" />;
   }
   if (
     values.workPhone &&
     !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(values.workPhone)
   ) {
-    errors.workPhone = "Invalid phone number (e.g. 555-123-4567)";
+    errors.workPhone = <Translate id="invalidPhoneError" />;
   }
   if (
     values.hireDate &&
     !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
   ) {
-    errors.hireDate = "Invalid Date (please us 'yyyy-mm-dd' format)";
+    errors.hireDate = <Translate id="invalidDateError" />;
   }
   if (values.homeZip && values.homeZip.length !== 5) {
-    errors.homeZip = `Must be at exactly 5 characters long`;
+    errors.homeZip = <Translate id="charLength5Error" />;
   }
   if (values.mailToZip && values.mailToZip.length !== 5) {
-    errors.mailToZip = `Must be at exactly 5 characters long`;
+    errors.mailToZip = <Translate id="charLength5Error" />;
   }
   return errors;
 };
-
-// when adding translations it may be easier to just import the translation array or object here and add a switch based on state's activeLanguage
-// rather than messing with adding translate callback function to an MUI error text for custom redux-form validation errors.
-// Not sure exactly what the best implementation would be.
-// Localization package author discusses solutions for redux-form live validation errors in this post: https://github.com/i18next/react-i18next/issues/306
 
 export const capeValidate = values => {
   // console.log('capeValidate');
@@ -154,16 +151,16 @@ export const capeValidate = values => {
       obj["controllingValues"].includes(matchValue) &&
       !values[obj["requiredField"]]
     ) {
-      errors[obj["requiredField"]] = "Required";
+      errors[obj["requiredField"]] = <Translate id="requiredError" />;
     }
   });
   requiredFields.forEach(field => {
     if (!values[field]) {
-      errors[field] = "Required";
+      errors[field] = <Translate id="requiredError" />;
     }
   });
   if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
-    errors.capeAmountOther = "Please enter a whole dollar amount.";
+    errors.capeAmountOther = <Translate id="wholeDollarError" />;
   }
   if (
     values.employerType &&
@@ -172,13 +169,13 @@ export const capeValidate = values => {
       values.employerType.toLowerCase() === "community member") &&
     !values.paymentMethodAdded
   ) {
-    errors.paymentMethodAdded = `Please add a payment method.`;
+    errors.paymentMethodAdded = <Translate id="addPaymentError" />;
   }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
   ) {
-    errors.homeEmail = "Invalid email address (e.g. sample@email.com)";
+    errors.homeEmail = <Translate id="invalidEmailError" />;
   }
   if (
     values.mobilePhone &&
@@ -186,10 +183,10 @@ export const capeValidate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = "Invalid phone number (e.g. 555-123-4567)";
+    errors.mobilePhone = <Translate id="invalidPhoneError" />;
   }
   if (values.homeZip && values.homeZip.length !== 5) {
-    errors.homeZip = `Must be at exactly 5 characters long`;
+    errors.homeZip = <Translate id="charLength5Error" />;
   }
   return errors;
 };

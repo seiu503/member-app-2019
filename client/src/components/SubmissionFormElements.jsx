@@ -70,11 +70,23 @@ export const tableIcons = {
 };
 
 export const handleError = err => {
+  if (typeof err === "string") {
+    return openSnackbar("error", err);
+  } else if (typeof err === "object") {
+    console.log("object");
+    const error = (
+      <Translate>{translate => <span>{translate(err.id)}</span>}</Translate>
+    );
+    console.log(error);
+    const errorText = error || "Sorry, something went wrong. Please try again.";
+    return openSnackbar("error", errorText);
+  } else {
+    return openSnackbar(
+      "error",
+      "Sorry, something went wrong. Please try again."
+    );
+  }
   // console.log(err);
-  return openSnackbar(
-    "error",
-    err || "Sorry, something went wrong. Please try again."
-  );
 };
 
 export const removeFalsy = obj => {
@@ -1157,6 +1169,7 @@ export const renderRadioGroup = ({
           }}
         >
           {options.map(item => {
+            console.log(item, label, id);
             return (
               <FormControlLabel
                 key={shortid()}
@@ -1170,7 +1183,7 @@ export const renderRadioGroup = ({
                     data-test="component-radio"
                   />
                 }
-                label={item}
+                label={inputLabelTranslateHelper(item, item, translate)}
               />
             );
           })}
@@ -1220,7 +1233,7 @@ export const renderCAPERadioGroup = ({
           {options.map(item => {
             let labelText = `$${item}`;
             if (item === "Other") {
-              labelText = item;
+              labelText = inputLabelTranslateHelper(item, item, translate);
             }
             return (
               <FormControlLabel
@@ -1437,7 +1450,11 @@ TextField.propTypes = {
   label: PropTypes.string,
   touched: PropTypes.bool,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  helperText: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+  helperText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.element
+  ])
 };
 Select.propTypes = {
   input: PropTypes.shape({

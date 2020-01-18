@@ -12,7 +12,6 @@ import Divider from "@material-ui/core/Divider";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 import * as formElements from "./SubmissionFormElements";
-import { openSnackbar } from "../containers/Notifier";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import { validate } from "../utils/validators";
 
@@ -111,7 +110,7 @@ export class SubmissionFormPage2Component extends React.Component {
     this.props
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
-        openSnackbar("success", "Your information was updated!");
+        formElements.handleError({ id: "snackBarSuccess" });
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {

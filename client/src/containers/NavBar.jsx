@@ -144,7 +144,7 @@ const styles = theme => ({
   },
   languagePickerSelect: {
     color: "white",
-    width: 170,
+    width: 195,
     border: "1px solid white",
     paddingLeft: "7px !important"
   },
