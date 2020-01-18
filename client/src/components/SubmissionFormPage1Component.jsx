@@ -376,7 +376,7 @@ export class SubmissionFormPage1Component extends React.Component {
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
       console.log("No payment method added");
-      return this.props.handleError({ id: "missingCardError" });
+      return this.props.handleError(this.props.translate("missingCardError"));
     }
     return Promise.all([
       this.props.updateSubmission(),

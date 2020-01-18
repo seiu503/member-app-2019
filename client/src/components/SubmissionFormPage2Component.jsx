@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { reduxForm, Field } from "redux-form";
-import { Translate } from "react-localize-redux";
+import { withLocalize, Translate } from "react-localize-redux";
 import queryString from "query-string";
 
 import FormLabel from "@material-ui/core/FormLabel";
@@ -110,7 +110,7 @@ export class SubmissionFormPage2Component extends React.Component {
     this.props
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
-        formElements.handleError({ id: "snackBarSuccess" });
+        formElements.handleError(this.props.translate("snackBarSuccess"));
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {
@@ -474,4 +474,4 @@ export const SubmissionFormPage2Wrap = reduxForm({
   enableReinitialize: true
 })(SubmissionFormPage2Component);
 
-export default withWidth()(SubmissionFormPage2Wrap);
+export default withLocalize(withWidth()(SubmissionFormPage2Wrap));

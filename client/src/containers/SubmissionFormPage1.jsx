@@ -24,7 +24,7 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
-// import { Translate } from "react-localize-redux";
+import { withLocalize } from "react-localize-redux";
 
 import {
   stylesPage1,
@@ -174,7 +174,7 @@ export class SubmissionFormPage1Container extends React.Component {
             result.type === "UPLOAD_IMAGE_FAILURE" ||
             this.props.content.error
           ) {
-            resolve(handleError({ id: "sigSaveError" }));
+            resolve(handleError(this.props.translate("sigSaveError")));
           } else {
             // console.log(result.payload.content);
             resolve(result.payload.content);
@@ -313,7 +313,7 @@ export class SubmissionFormPage1Container extends React.Component {
   trimSignature = () => {
     let dataURL = this.props.sigBox.current.toDataURL("image/jpeg");
     if (dataURL === blankSig) {
-      return handleError({ id: "sigSaveError2" });
+      return handleError(this.props.translate("sigSaveError2"));
     } else {
       let blobData = this.dataURItoBlob(dataURL);
       return blobData;
@@ -487,7 +487,7 @@ export class SubmissionFormPage1Container extends React.Component {
     if (token) {
       const result = await this.props.apiSubmission.verify(token).catch(err => {
         console.error(err);
-        return handleError({ id: "reCaptchaError" });
+        return handleError(this.props.translate("reCaptchaError"));
       });
 
       if (result) {
@@ -1036,7 +1036,7 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log(`score: ${score}`);
           if (!score || score <= 0.5) {
             // console.log(`recaptcha failed: ${score}`);
-            return handleError({ id: "reCaptchaError" });
+            return handleError(this.props.translate("reCaptchaError"));
           }
         })
         .catch(err => {
@@ -1050,7 +1050,7 @@ export class SubmissionFormPage1Container extends React.Component {
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
       // console.log("No payment method added");
-      return handleError({ id: "addPaymentError" });
+      return handleError(this.props.translate("addPaymentError"));
     }
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
@@ -1210,7 +1210,8 @@ export class SubmissionFormPage1Container extends React.Component {
       return handleError(err);
     });
     if (!signature) {
-      return handleError({ id: "provideSignatureError" });
+      console.log(this.props.translate("provideSignatureError"));
+      return handleError(this.props.translate("provideSignatureError"));
     }
     // for AFH, calculate dues rate:
     if (formValues.employerType.toLowerCase() === "adult foster home") {
@@ -1270,7 +1271,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.5) {
       console.log(`recaptcha failed: ${score}`);
-      return handleError({ id: "reCaptchaError" });
+      return handleError(this.props.translate("reCaptchaError"));
     }
     // handle moving from tab 1 to tab 2:
 
@@ -1424,4 +1425,6 @@ export const SubmissionFormPage1Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage1Container);
 
-export default withStyles(stylesPage1)(SubmissionFormPage1Connected);
+export default withLocalize(
+  withStyles(stylesPage1)(SubmissionFormPage1Connected)
+);

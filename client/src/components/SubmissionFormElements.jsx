@@ -70,22 +70,10 @@ export const tableIcons = {
 };
 
 export const handleError = err => {
-  if (typeof err === "string") {
-    return openSnackbar("error", err);
-  } else if (typeof err === "object") {
-    console.log("object");
-    const error = (
-      <Translate>{translate => <span>{translate(err.id)}</span>}</Translate>
-    );
-    console.log(error);
-    const errorText = error || "Sorry, something went wrong. Please try again.";
-    return openSnackbar("error", errorText);
-  } else {
-    return openSnackbar(
-      "error",
-      "Sorry, something went wrong. Please try again."
-    );
-  }
+  return openSnackbar(
+    "error",
+    err || "Sorry, something went wrong. Please try again."
+  );
   // console.log(err);
 };
 
