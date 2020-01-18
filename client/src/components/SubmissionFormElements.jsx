@@ -1157,7 +1157,6 @@ export const renderRadioGroup = ({
           }}
         >
           {options.map(item => {
-            console.log(item, label, id);
             return (
               <FormControlLabel
                 key={shortid()}

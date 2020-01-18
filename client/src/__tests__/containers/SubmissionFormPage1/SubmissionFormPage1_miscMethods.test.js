@@ -178,7 +178,8 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  lookupSFContact: lookupSFContactSuccess
+  lookupSFContact: lookupSFContactSuccess,
+  translate: jest.fn()
 };
 
 const setup = (props = {}) => {

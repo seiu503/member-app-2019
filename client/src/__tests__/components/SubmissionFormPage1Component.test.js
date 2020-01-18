@@ -122,7 +122,8 @@ const defaultProps = {
     text: ""
   },
   renderBodyCopy: jest.fn(),
-  updateSubmission: updateSubmissionSuccess
+  updateSubmission: updateSubmissionSuccess,
+  translate: jest.fn()
 };
 
 createSFDJRSuccess = jest
