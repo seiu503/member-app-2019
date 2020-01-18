@@ -358,5 +358,48 @@ describe("<App />", () => {
         })
         .catch(err => console.log(err));
     });
+    test("`createSubmission` handles edge case if !paymentRequired and partial", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionSuccess
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            paymentRequired: false
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: createSFOMAError
+        }
+      };
+      let saveSubmissionErrorsMock = jest.fn();
+      wrapper = setup(props);
+      wrapper.instance().saveSubmissionErrors = saveSubmissionErrorsMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission(formValues, true)
+        .catch(err => console.log(err));
+    });
   });
 });

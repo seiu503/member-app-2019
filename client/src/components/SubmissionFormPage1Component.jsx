@@ -334,20 +334,20 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("handleSubmit");
     this.props.actions.setSpinner();
 
-    await this.props
-      .verifyRecaptchaScore()
-      .then(score => {
-        console.log(`score: ${score}`);
-        if (!score || score <= 0.5) {
-          // console.log(`recaptcha failed: ${score}`);
-          return this.props.handleError(
-            "ReCaptcha validation failed, please reload the page and try again."
-          );
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    // await this.props
+    //   .verifyRecaptchaScore()
+    //   .then(score => {
+    //     console.log(`score: ${score}`);
+    //     if (!score || score <= 0.5) {
+    //       console.log(`recaptcha failed: ${score}`);
+    //       return this.props.handleError(
+    //         "ReCaptcha validation failed, please reload the page and try again."
+    //       );
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //   });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
@@ -376,9 +376,7 @@ export class SubmissionFormPage1Component extends React.Component {
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
       console.log("No payment method added");
-      return this.props.handleError(
-        "Please click 'Add a Card' to add a payment method"
-      );
+      return this.props.handleError(this.props.translate("missingCardError"));
     }
     return Promise.all([
       this.props.updateSubmission(),

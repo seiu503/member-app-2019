@@ -1,3 +1,6 @@
+import { Translate } from "react-localize-redux";
+import React from "react";
+
 import { validate, capeValidate } from "../../utils/validators";
 import {
   generateSampleValidate,
@@ -24,24 +27,26 @@ describe("Redux-Form custom Validators", () => {
   });
   test("adds required field to errors returned", () => {
     delete testData.firstName;
-    expect(validate(testData)).toStrictEqual({ firstName: "Required" });
+    expect(validate(testData)).toStrictEqual({
+      firstName: <Translate id="requiredError" />
+    });
   });
   test("validates properly formed phone numbers", () => {
     testData.mobilePhone = 55;
     expect(validate(testData)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-4567)"
+      mobilePhone: <Translate id="invalidPhoneError" />
     });
     testDataCAPE.mobilePhone = 55;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-4567)"
+      mobilePhone: <Translate id="invalidPhoneError" />
     });
     combinedData.workPhone = 55;
     expect(validate(combinedData)).toStrictEqual({
-      workPhone: "Invalid phone number (e.g. 555-123-4567)"
+      workPhone: <Translate id="invalidPhoneError" />
     });
     testData.mobilePhone = "phone number";
     expect(validate(testData)).toStrictEqual({
-      mobilePhone: "Invalid phone number (e.g. 555-123-4567)"
+      mobilePhone: <Translate id="invalidPhoneError" />
     });
     testData.mobilePhone = "5555555555";
     expect(validate(testData)).toStrictEqual({});
@@ -67,16 +72,16 @@ describe("Redux-Form custom Validators", () => {
   test("validates properly formed emails", () => {
     testData.homeEmail = "fake@email";
     expect(validate(testData)).toStrictEqual({
-      homeEmail: "Invalid email address (e.g. sample@email.com)"
+      homeEmail: <Translate id="invalidEmailError" />
     });
     testDataCAPE.homeEmail = "fake@email";
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      homeEmail: "Invalid email address (e.g. sample@email.com)"
+      homeEmail: <Translate id="invalidEmailError" />
     });
     combinedData.workEmail = "fake@email";
     combinedData.homeEmail = "fake@good.com";
     expect(validate(combinedData)).toStrictEqual({
-      workEmail: "Invalid email address (e.g. sample@email.com)"
+      workEmail: <Translate id="invalidEmailError" />
     });
     testData.homeEmail = "fake@email.co";
     expect(validate(testData)).toStrictEqual({});
@@ -94,33 +99,33 @@ describe("Redux-Form custom Validators", () => {
   test("validates properly formed zip codes", () => {
     testData.homeZip = 4444;
     expect(validate(testData)).toStrictEqual({
-      homeZip: "Must be at exactly 5 characters long"
+      homeZip: <Translate id="charLength5Error" />
     });
     testDataCAPE.homeZip = 4444;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      homeZip: "Must be at exactly 5 characters long"
+      homeZip: <Translate id="charLength5Error" />
     });
     combinedData.mailToZip = 4444;
     expect(validate(combinedData)).toStrictEqual({
-      mailToZip: "Must be at exactly 5 characters long"
+      mailToZip: <Translate id="charLength5Error" />
     });
   });
   test("validates properly formed hire dates", () => {
     combinedData.hireDate = "11/11/2019";
     expect(validate(combinedData)).toStrictEqual({
-      hireDate: "Invalid Date (please us 'yyyy-mm-dd' format)"
+      hireDate: <Translate id="invalidDateError" />
     });
     combinedData.hireDate = "11-11-2019";
     expect(validate(combinedData)).toStrictEqual({
-      hireDate: "Invalid Date (please us 'yyyy-mm-dd' format)"
+      hireDate: <Translate id="invalidDateError" />
     });
     combinedData.hireDate = "January, 10th 2019";
     expect(validate(combinedData)).toStrictEqual({
-      hireDate: "Invalid Date (please us 'yyyy-mm-dd' format)"
+      hireDate: <Translate id="invalidDateError" />
     });
     combinedData.hireDate = "2019-11-1";
     expect(validate(combinedData)).toStrictEqual({
-      hireDate: "Invalid Date (please us 'yyyy-mm-dd' format)"
+      hireDate: <Translate id="invalidDateError" />
     });
     combinedData.hireDate = "2019-11-11";
     expect(validate(combinedData)).toStrictEqual({});
@@ -130,38 +135,39 @@ describe("Redux-Form custom Validators", () => {
     combinedData.medicaidResidents = 1;
     combinedData.paymentMethodAdded = true;
     combinedData.directPayAuth = null;
-    expect(validate(combinedData)).toStrictEqual({ directPayAuth: "Required" });
+    expect(validate(combinedData)).toStrictEqual({
+      directPayAuth: <Translate id="requiredError" />
+    });
     combinedData.employerType = "adult foster home";
     combinedData.directPayAuth = "2019-11-1";
     combinedData.paymentType = "Card";
     combinedData.paymentMethodAdded = false;
     expect(validate(combinedData)).toStrictEqual({
-      paymentMethodAdded: "Required"
+      paymentMethodAdded: <Translate id="requiredError" />
     });
     combinedData.paymentMethodAdded = true;
     combinedData.medicaidResidents = 0;
     expect(validate(combinedData)).toStrictEqual({
-      medicaidResidents:
-        "Please enter the number of Medicaid Residents in your home(s)."
+      medicaidResidents: <Translate id="medicaidResidentsError" />
     });
     testDataCAPE.capeAmount = "Other";
     testDataCAPE.capeAmountOther = null;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      capeAmountOther: "Required"
+      capeAmountOther: <Translate id="requiredError" />
     });
     testDataCAPE.capeAmount = 10;
     testDataCAPE.employerType = "retired";
     testDataCAPE.paymentType = "Card";
     testDataCAPE.paymentMethodAdded = false;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      paymentMethodAdded: "Please add a payment method."
+      paymentMethodAdded: <Translate id="addPaymentError" />
     });
   });
   test("validates capeAmountOther as positive integer", () => {
     testDataCAPE.capeAmount = "Other";
     testDataCAPE.capeAmountOther = -12;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
-      capeAmountOther: "Please enter a whole dollar amount."
+      capeAmountOther: <Translate id="wholeDollarError" />
     });
   });
 });

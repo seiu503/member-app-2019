@@ -18,6 +18,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Slide from "@material-ui/core/Slide";
 
 import { skip } from "../utils";
+import { LanguagePicker } from "../components/SubmissionFormElements";
 import logo from "../img/seiu503_white.svg";
 
 const styles = theme => ({
@@ -127,6 +128,48 @@ const styles = theme => ({
   drawer: {
     boxShadow:
       "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
+  },
+  languagePicker: {
+    color: "white",
+    [theme.breakpoints.down("sm")]: {
+      position: "absolute",
+      top: 20,
+      right: 10
+    }
+  },
+  languagePickerLabel: {
+    color: "white",
+    marginTop: -14,
+    marginLeft: 25
+  },
+  languagePickerSelect: {
+    color: "white",
+    width: 195,
+    border: "1px solid white",
+    paddingLeft: "7px !important"
+  },
+  lpInput: {
+    // height: 30,
+  },
+  icon: {
+    display: "none"
+    // fill: 'white',
+  },
+  notched: {
+    borderColor: "transparent"
+    // borderRadius: 4,
+    // "&:hover": "white",
+    // "&:focused": "white",
+  },
+  labelShrink: {
+    color: "white"
+  },
+  labelFocused: {
+    color: "white !important",
+    marginTop: -8
+  },
+  adornedStart: {
+    paddingLeft: 10
   }
 });
 
@@ -246,6 +289,24 @@ export class NavBar extends React.Component {
                 </Translate>
               </Link>
             </Typography>
+            <LanguagePicker
+              id="languagePicker"
+              ref={this.props.language_picker}
+              classes={classes}
+              name="languagePicker"
+              label="Select Language"
+              userSelectedLanguage={this.props.userSelectedLanguage}
+              labelWidth={200}
+              onChange={this.props.updateLanguage}
+              options={[
+                "",
+                "English",
+                "Español",
+                "Русский",
+                "Tiếng Việt",
+                "简体中文"
+              ]}
+            />
             {loggedIn && (
               <React.Fragment>
                 <IconButton

@@ -95,11 +95,11 @@ export const CAPE = props => {
         <AlertDialog
           open={capeOpen}
           handleClose={handleCAPEClose}
-          title="Skip to next tab"
-          content={`If you move to the next tab without clicking Submit, your CAPE contribution will not be processed.`}
+          title={<Translate id="skipTab" />}
+          content={<Translate id="skipWarning" />}
           danger={true}
           action={closeDialog}
-          buttonText="Skip"
+          buttonText={<Translate id="skip" />}
           data-test="component-alert-dialog"
         />
       )}
@@ -308,7 +308,7 @@ export const CAPE = props => {
             </FormGroup>
 
             <FormLabel className={classes.formLabel} component="legend">
-              Address
+              <Translate id="address">Address</Translate>
             </FormLabel>
 
             <Field
@@ -595,7 +595,7 @@ export const CAPE = props => {
               className={classes.nextSmall}
               variant="contained"
             >
-              Skip
+              <Translate id="skip">Skip</Translate>
             </Button>
           </div>
         )}

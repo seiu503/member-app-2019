@@ -32,6 +32,25 @@ export const buildQuery = data => {
   return query.join("&");
 };
 
+export const removeURLParam = (url, param) => {
+  const urlParts = url.split("?");
+  if (urlParts.length >= 2) {
+    const prefix = `${encodeURIComponent(param)}=`;
+    const pars = urlParts[1].split(/[&;]/g);
+
+    //reverse iteration as may be destructive
+    for (let i = pars.length; i-- > 0; ) {
+      //idiom for string.startsWith
+      if (pars[i].lastIndexOf(prefix, 0) !== -1) {
+        pars.splice(i, 1);
+      }
+    }
+
+    return `${urlParts[0]}${pars.length > 0 ? `?${pars.join("&")}` : ""}`;
+  }
+  return url;
+};
+
 export const labelsObj = {
   headline: "headline",
   bodyCopy: "body copy",

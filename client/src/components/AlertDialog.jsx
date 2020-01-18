@@ -7,6 +7,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import { withStyles } from "@material-ui/core/styles";
+import { Translate } from "react-localize-redux";
 
 export const styles = theme => ({
   root: {
@@ -57,7 +58,7 @@ export const AlertDialogUnwrapped = props => (
           color="default"
           data-test="button-cancel"
         >
-          Cancel
+          <Translate id="cancel" />
         </Button>
         <Button
           onClick={props.action}
@@ -77,9 +78,9 @@ export const AlertDialogUnwrapped = props => (
 
 AlertDialogUnwrapped.propTypes = {
   open: PropTypes.bool,
-  title: PropTypes.string,
-  content: PropTypes.string,
-  buttonText: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  buttonText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   handleClose: PropTypes.func,
   action: PropTypes.func,
   classes: PropTypes.object

@@ -27,7 +27,8 @@ import {
   CLEAR_FORM,
   SET_CAPE_OPTIONS,
   SET_PAYMENT_DETAILS_CAPE,
-  SET_PAYMENT_DETAILS_DUES
+  SET_PAYMENT_DETAILS_DUES,
+  SET_CURRENT_SUBMISSION
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -199,6 +200,12 @@ function Submission(state = INITIAL_STATE, action) {
         formPage1: {
           paymentMethodAdded: { $set: true }
         }
+      });
+
+    case SET_CURRENT_SUBMISSION:
+      return update(state, {
+        currentSubmission: { $set: action.payload },
+        submissionId: { $set: action.payload.id }
       });
 
     case ADD_SUBMISSION_REQUEST:

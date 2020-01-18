@@ -29,6 +29,7 @@ export const CLEAR_FORM = "CLEAR_FORM";
 export const SET_CAPE_OPTIONS = "SET_CAPE_OPTIONS";
 export const SET_PAYMENT_DETAILS_CAPE = "SET_PAYMENT_DETAILS_CAPE";
 export const SET_PAYMENT_DETAILS_DUES = "SET_PAYMENT_DETAILS_DUES";
+export const SET_CURRENT_SUBMISSION = "SET_CURRENT_SUBMISSION";
 export const VERIFY_REQUEST = "VERIFY_REQUEST";
 export const VERIFY_SUCCESS = "VERIFY_SUCCESS";
 export const VERIFY_FAILURE = "VERIFY_FAILURE";
@@ -46,6 +47,13 @@ export function handleInput({ target: { name, value } }) {
 export function clearForm() {
   return {
     type: CLEAR_FORM
+  };
+}
+
+export function setCurrentSubmission(submissionData) {
+  return {
+    type: SET_CURRENT_SUBMISSION,
+    payload: submissionData
   };
 }
 

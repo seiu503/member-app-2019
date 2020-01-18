@@ -203,6 +203,84 @@ describe("<App />", () => {
   });
 
   describe("prepForSubmission", () => {
+    test("`prepForSubmission` sets directPayAuth and directDepositAuth dates", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "SEIU 503 Staff",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        },
+        location: {
+          search: "&src=test"
+        }
+      };
+      formValues.directPayAuth = true;
+      formValues.directDepositAuth = true;
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForSubmission(formValues)
+        .catch(err => console.log(err));
+
+      expect(result.campaignSource).toBe("test");
+    });
+    test("`prepForSubmission` handles partial submissions", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "SEIU 503 Staff",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: "1"
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        },
+        location: {
+          search: "&src=test"
+        }
+      };
+      formValues.directPayAuth = true;
+      formValues.directDepositAuth = true;
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForSubmission(formValues, true)
+        .catch(err => console.log(err));
+
+      expect(result.campaignSource).toBe("test");
+    });
     test("`prepForSubmission` pulls campaign source from query string", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();

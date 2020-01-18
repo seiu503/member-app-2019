@@ -42,8 +42,10 @@ import {
   formatSFDate,
   calcEthnicity,
   removeFalsy,
-  generateCAPEOptions
+  generateCAPEOptions,
+  languageMap
 } from "./components/SubmissionFormElements";
+import { openSnackbar } from "./containers/Notifier";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
@@ -151,7 +153,7 @@ const styles = theme => ({
 export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
-    // this.recaptcha = React.createRef();
+    this.language_picker = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
     this.cape_legal = React.createRef();
@@ -185,7 +187,8 @@ export class AppUnconnected extends Component {
         id: 0
       },
       image: {},
-      tab: undefined
+      tab: undefined,
+      userSelectedLanguage: ""
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
@@ -200,12 +203,16 @@ export class AppUnconnected extends Component {
     this.updateSFContact = this.updateSFContact.bind(this);
     this.changeTab = this.changeTab.bind(this);
     this.setCAPEOptions = this.setCAPEOptions.bind(this);
+    this.resubmitSubmission = this.resubmitSubmission.bind(this);
+    this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
   }
 
   componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log("Thursday 11/7 4:26pm");
+    console.log("Wednesday 1/15 1:11pm");
+    // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
+    // set form language based on detected default language
     this.props.setActiveLanguage(defaultLanguage);
     // If not logged in, check local storage for authToken
     // if it doesn't exist, it returns the string "undefined"
@@ -216,7 +223,7 @@ export class AppUnconnected extends Component {
         // console.log("not logged in, looking for id & token in localStorage");
         const authToken = window.localStorage.getItem("authToken");
         const userId = window.localStorage.getItem("userId");
-        // console.log(`authToken: ${!!authToken}, userId: ${userId}`);
+        console.log(`authToken: ${authToken}, userId: ${userId}`);
         if (
           authToken &&
           authToken !== "undefined" &&
@@ -228,18 +235,11 @@ export class AppUnconnected extends Component {
           this.props.apiProfile
             .validateToken(authToken, userId)
             .then(result => {
-              // console.log(result.type);
+              console.log(result.type);
               if (result.type === "VALIDATE_TOKEN_FAILURE") {
                 // console.log("VALIDATE_TOKEN_FAILURE: clearing localStorage");
                 return window.localStorage.clear();
-              }
-              if (
-                result.type === "VALIDATE_TOKEN_SUCCESS" &&
-                authToken &&
-                authToken !== "undefined" &&
-                userId &&
-                userId !== "undefined"
-              ) {
+              } else {
                 // console.log(
                 //   `validate token success: ${!!authToken}, ${userId}`
                 // );
@@ -327,7 +327,31 @@ export class AppUnconnected extends Component {
           });
       });
     }
+    if (values.lang) {
+      this.props.setActiveLanguage(values.lang);
+    }
   }
+
+  updateLanguage = e => {
+    console.log("updateLanguage");
+    // update value of select
+    const newState = { ...this.state };
+    newState.userSelectedLanguage = e.target.value;
+    this.setState({ ...newState });
+
+    // detect default language from browser
+    const defaultLanguage = detectDefaultLanguage();
+    const userChosenLanguage =
+      this.language_picker && this.language_picker.current
+        ? this.language_picker.current.value
+        : null;
+    console.log(userChosenLanguage);
+    const languageCode = languageMap[userChosenLanguage];
+    console.log(languageCode);
+    const language = languageCode ? languageCode : defaultLanguage;
+    // set form language based on detected default language
+    this.props.setActiveLanguage(language);
+  };
 
   renderBodyCopy = id => {
     let paragraphIds = [];
@@ -391,6 +415,7 @@ export class AppUnconnected extends Component {
 
   async updateSubmission(passedId, passedUpdates) {
     // console.log("updateSubmission");
+    console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
@@ -480,7 +505,7 @@ export class AppUnconnected extends Component {
   async saveSubmissionErrors(submission_id, method, error) {
     // 1. retrieve existing errors array from current submission
     let { submission_errors } = this.props.submission.currentSubmission;
-    if (submission_errors === null) {
+    if (submission_errors === null || submission_errors === undefined) {
       submission_errors = "";
     }
     // 2. add new data to string
@@ -490,7 +515,7 @@ export class AppUnconnected extends Component {
       submission_errors,
       submission_status: "error"
     };
-    this.updateSubmission(updates).catch(err => {
+    this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
       return handleError(err);
     });
@@ -910,6 +935,64 @@ export class AppUnconnected extends Component {
   };
 
   // resubmit submission and deleteSubmission methods here, to be passed to submission table
+  async resubmitSubmission(submissionData) {
+    console.log(submissionData);
+    // const body = await this.generateSubmissionBody(submissionData);
+    // console.log(body);
+    // const cleanBody = removeFalsy(body);
+    // console.log(cleanBody);
+    // cleanBody.Worker__c = submissionData.salesforceId;
+    // console.log(cleanBody)
+    submissionData.Worker__c = submissionData.salesforce_id;
+    if (!submissionData.text_auth_opt_out) {
+      submissionData.text_auth_opt_out = false;
+    }
+    delete submissionData.salesforce_id;
+    console.log(submissionData);
+    const resubmitResult = await this.props.apiSF
+      .createSFOMA(submissionData)
+      .catch(err => handleError(err));
+    if (
+      !resubmitResult ||
+      !resubmitResult.type ||
+      resubmitResult.type !== "CREATE_SF_OMA_SUCCESS"
+    ) {
+      this.saveSubmissionErrors(
+        submissionData.id,
+        "createSFOMA_RESUBMIT",
+        this.props.submission.error
+      );
+    } else if (resubmitResult.type === "CREATE_SF_OMA_SUCCESS") {
+      openSnackbar(
+        "success",
+        `Resubmitted submission from ${submissionData.first_name} ${
+          submissionData.last_name
+        }.`
+      );
+      // update submission status to success
+      this.props.apiSubmission
+        .updateSubmission(submissionData.id, {
+          submission_status: "Success",
+          submission_errors: null
+        })
+        .then(result => {
+          console.log(result.type);
+          if (
+            result.type === "UPDATE_SUBMISSION_FAILURE" ||
+            this.props.submission.error
+          ) {
+            console.log(this.props.submission.error);
+            return handleError(this.props.submission.error);
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          return handleError(err);
+        });
+      const token = this.props.appState.authToken;
+      this.props.apiSubmission.getAllSubmissions(token);
+    }
+  }
 
   render() {
     const values = queryString.parse(this.props.location.search);
@@ -937,7 +1020,14 @@ export class AppUnconnected extends Component {
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           onResolved={this.onResolved}
         />
-        {!embed && <NavBar main_ref={this.main_ref} />}
+        {!embed && (
+          <NavBar
+            main_ref={this.main_ref}
+            language_picker={this.language_picker}
+            updateLanguage={this.updateLanguage}
+            userSelectedLanguage={this.state.userSelectedLanguage}
+          />
+        )}
         <Notifier />
         {loading && <Spinner />}
         <main className={classes.container} id="main" ref={this.main_ref}>
@@ -965,6 +1055,7 @@ export class AppUnconnected extends Component {
                   updateSubmission={this.updateSubmission}
                   lookupSFContact={this.lookupSFContact}
                   saveSubmissionErrors={this.saveSubmissionErrors}
+                  generateSubmissionBody={this.generateSubmissionBody}
                   prepForContact={this.prepForContact}
                   prepForSubmission={this.prepForSubmission}
                   createSFContact={this.createSFContact}
@@ -989,7 +1080,11 @@ export class AppUnconnected extends Component {
             <Route
               path="/admin/:id?/:token?"
               render={routeProps => (
-                <Dashboard {...routeProps} setRedirect={this.setRedirect} />
+                <Dashboard
+                  {...routeProps}
+                  setRedirect={this.setRedirect}
+                  resubmitSubmission={this.resubmitSubmission}
+                />
               )}
             />
             <Route

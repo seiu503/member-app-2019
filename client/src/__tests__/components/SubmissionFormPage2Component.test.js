@@ -66,7 +66,8 @@ const defaultProps = {
     setSpinner: jest.fn()
   },
   createSubmission: createSubmissionSuccess,
-  updateSFContact: updateSFContactSuccess
+  updateSFContact: updateSFContactSuccess,
+  translate: jest.fn()
 };
 
 describe("Unconnected <SubmissionFormPage2 />", () => {

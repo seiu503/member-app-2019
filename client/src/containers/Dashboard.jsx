@@ -140,7 +140,9 @@ export class DashboardUnconnected extends React.Component {
     return (
       <div className={classes.container} data-test="component-dashboard">
         {loggedIn ? (
-          <SubmissionsTable />
+          <SubmissionsTable
+            resubmitSubmission={this.props.resubmitSubmission}
+          />
         ) : (
           <NoAccess setRedirect={this.props.setRedirect} classes={classes} />
         )}

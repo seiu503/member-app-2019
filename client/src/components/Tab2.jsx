@@ -210,11 +210,13 @@ export const Tab2 = props => {
                 className={classes.clearButton}
                 variant="contained"
               >
-                Clear Signature
+                <Translate id="clearSig">Clear Signature</Translate>
               </Button>
             </div>
             <FormHelperText className={classes.formHelperText}>
-              Draw your signature in the box above.&nbsp;
+              <Translate id="drawSig">
+                Draw your signature in the box above.&nbsp;
+              </Translate>
               <button
                 type="button"
                 data-test="button-sig-toggle"
@@ -223,7 +225,9 @@ export const Tab2 = props => {
                 name="signatureType"
                 onClick={() => toggleSignatureInputType()}
               >
-                Click here to type your signature
+                <Translate id="clickToType">
+                  Click here to type your signature
+                </Translate>
               </button>
             </FormHelperText>
           </React.Fragment>
@@ -237,7 +241,7 @@ export const Tab2 = props => {
             className={classes.back}
             variant="contained"
           >
-            Back
+            <Translate id="back">Back</Translate>
           </Button>
           <Button
             type="submit"
@@ -245,7 +249,7 @@ export const Tab2 = props => {
             className={classes.next}
             variant="contained"
           >
-            Next
+            <Translate id="next">Next</Translate>
           </Button>
         </div>
       </form>

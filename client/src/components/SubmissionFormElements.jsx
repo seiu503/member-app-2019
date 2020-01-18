@@ -15,6 +15,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormLabel from "@material-ui/core/FormLabel";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import LanguageIcon from "@material-ui/icons/Language";
 
 import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
 
@@ -68,11 +70,11 @@ export const tableIcons = {
 };
 
 export const handleError = err => {
-  // console.log(err);
   return openSnackbar(
     "error",
     err || "Sorry, something went wrong. Please try again."
   );
+  // console.log(err);
 };
 
 export const removeFalsy = obj => {
@@ -930,6 +932,90 @@ export const renderTextField = ({
 
 const selectStyle = align => (align === "right" ? { direction: "ltr" } : {});
 
+export const languageMap = {
+  English: "en",
+  Español: "es",
+  Русский: "ru",
+  "Tiếng Việt": "vi",
+  简体中文: "zh"
+};
+
+export const LanguagePicker = React.forwardRef((props, ref) => {
+  return (
+    <Translate>
+      {({ translate }) => (
+        <FormControl
+          variant="outlined"
+          className={props.classes.languagePicker}
+        >
+          <InputLabel
+            htmlFor={props.name}
+            className={props.classes.languagePickerLabel}
+            classes={{
+              shrink: props.classes.labelShrink,
+              focused: props.classes.labelFocused
+            }}
+          >
+            {inputLabelTranslateHelper(props.id, props.label, translate)}
+          </InputLabel>
+          <Select
+            native
+            autoWidth={true}
+            onChange={props.onChange}
+            startAdornment={
+              <InputAdornment position="start">
+                <LanguageIcon color="inherit" />
+              </InputAdornment>
+            }
+            input={
+              <OutlinedInput
+                inputRef={ref}
+                classes={{
+                  notchedOutline: props.classes.notched,
+                  adornedStart: props.classes.adornedStart
+                }}
+                className={props.classes.lpInput}
+                labelWidth={100}
+                size="small"
+                notched={false}
+                value={props.userSelectedLanguage}
+                inputProps={{
+                  id: props.id,
+                  style: {
+                    height: 30,
+                    padding: "0px 15px",
+                    borderColor: "white",
+                    borderRadius: 4,
+                    "&:before": {
+                      borderColor: "white"
+                    },
+                    "&:after": {
+                      borderColor: "white"
+                    }
+                  },
+                  classes: {
+                    icon: props.classes.icon
+                  }
+                }}
+              />
+            }
+            className={props.classes.languagePickerSelect}
+            // value={props.input.value}
+            // onChange={props.input.onChange}
+            data-test="component-select"
+          >
+            {props.options.map(item => (
+              <option key={shortid()} value={item}>
+                {item}
+              </option>
+            ))}
+          </Select>
+        </FormControl>
+      )}
+    </Translate>
+  );
+});
+
 // custom MUI friendly SELECT input with translated label
 export const renderSelect = ({
   input,
@@ -1084,7 +1170,7 @@ export const renderRadioGroup = ({
                     data-test="component-radio"
                   />
                 }
-                label={item}
+                label={inputLabelTranslateHelper(item, item, translate)}
               />
             );
           })}
@@ -1134,7 +1220,7 @@ export const renderCAPERadioGroup = ({
           {options.map(item => {
             let labelText = `$${item}`;
             if (item === "Other") {
-              labelText = item;
+              labelText = inputLabelTranslateHelper(item, item, translate);
             }
             return (
               <FormControlLabel
@@ -1351,7 +1437,11 @@ TextField.propTypes = {
   label: PropTypes.string,
   touched: PropTypes.bool,
   error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  helperText: PropTypes.oneOfType([PropTypes.string, PropTypes.bool])
+  helperText: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool,
+    PropTypes.element
+  ])
 };
 Select.propTypes = {
   input: PropTypes.shape({
