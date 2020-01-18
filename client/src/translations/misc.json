@@ -1,11 +1,11 @@
 {
-	"drawSignature": [
-		"Draw your signature in the box above.",
-  	"Firme en el cuadro de arriba.",
-  	"Поставьте подпись в поле выше.",
-  	"Ký vào ô bên trên.",
-  	"在上面的方框里签名。"
-	],
+"drawSignature": [
+	"Draw your signature in the box above.",
+	"Firme en el cuadro de arriba.",
+	"Поставьте подпись в поле выше.",
+	"Ký vào ô bên trên.",
+	"在上面的方框里签名。"
+],
 "clearSignature": [
 	"Clear Signature",
 	"Borrar firma",
@@ -54,6 +54,20 @@
 	"Чтобы оплатить свои отчисления чеком",
 	"Cách trả thuế bằng séc:",
 	"通过支票支付会费："
+],
+"Check": [
+	"Check",
+	"Cheque",
+	"чеком",
+	"Kiểm tra",
+	"支票"
+],
+"Card": [
+	"Card",
+	"Tarjeta de crédito",
+	"Кредитная карта",
+	"Thẻ tín dụng",
+	"信用卡"
 ],
 "payByCheck2": [
 	"Please mail your payment of $5 (monthly) or $60 (annually) to SEIU Local 503, PO Box 12159, Salem, OR 97309. Please write \u2018Retiree Dues\u2019 on your check. Dues are set by the SEIU Local 503 bylaws.",
@@ -190,9 +204,19 @@
 	"Phải gồm đúng 5 ký tự",
 	"必须恰好为 5 个字符的长度"
 ],
+"wholeDollarError": [
+	"Please enter a whole dollar amount",
+	"Por favor ingrese un monto en dólares enteros",
+	"Пожалуйста, введите сумму в долларах",
+	"Vui lòng nhập một số tiền bằng toàn bộ đô la",
+	"请输入完整金额"
+],
 "snackBarSuccess": [
-	"Success, Your information was updated", "Su información fue actualizada correctamente", "Ваша информация успешно обновлена",
-	"Đã cập nhật thành công thông tin của quý vị", "成功，您的信息已更新"
+	"Your information was updated",
+	"Su información fue actualizada correctamente",
+	"Ваша информация успешно обновлена",
+	"Đã cập nhật thành công thông tin của quý vị",
+	"成功，您的信息已更新"
 ],
 "captchaError": [
 	"Please verify you are human with Captcha",
@@ -208,6 +232,41 @@
 	"Vui lòng cung cấp chữ ký",
 	"请提供签名"
 ],
+"sigSaveError": [
+	"An error occurred while trying to save your signature. Please try typing it instead.",
+	"Se produjo un error al intentar guardar su firma. Intenta escribirlo en su lugar.",
+	"Произошла ошибка при попытке сохранить вашу подпись. Пожалуйста, попробуйте ввести это вместо этого.",
+	"Đã xảy ra lỗi trong khi cố gắng lưu chữ ký của bạn. Vui lòng thử gõ nó thay thế.",
+	"尝试保存签名时发生错误。 请尝试输入。"
+],
+"sigSaveError2": [
+	"Please draw your signature or click the link to type it instead",
+	"Dibuje su firma o haga clic en el enlace para escribirla.",
+	"Пожалуйста, нарисуйте свою подпись или нажмите на ссылку, чтобы ввести ее",
+	"Vui lòng vẽ chữ ký của bạn hoặc nhấp vào liên kết để nhập thay thế",
+	"请绘制您的签名或单击链接以键入它"
+],
+"reCaptchaError": [
+	"Sorry, your session timed out, please reload the page and try again.",
+	"Lo sentimos, su sesión se agotó, vuelva a cargar la página e intente nuevamente.",
+	"К сожалению, время сеанса истекло, пожалуйста, перезагрузите страницу и попробуйте снова.",
+	"Xin lỗi, phiên của bạn đã hết thời gian, vui lòng tải lại trang và thử lại.",
+	"抱歉，您的会话超时，请重新加载页面，然后重试。"
+],
+"genericError": [
+	"Sorry, something went wrong. Please try again.",
+	"Lo sentimos, algo salió mal. Inténtalo de nuevo.",
+	"Извините, что-то пошло не так. Пожалуйста, попробуйте еще раз.",
+	"Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.",
+	"抱歉，出了一些问题。 请再试一遍。"
+],
+"missingCardError": [
+	"Please click 'Add a Card' to add a payment method",
+	"Haga clic en 'Agregar una tarjeta' para agregar un método de pago",
+	"Пожалуйста, нажмите «Добавить карту», чтобы добавить способ оплаты.",
+	"Vui lòng nhấp vào 'Thêm thẻ' để thêm phương thức thanh toán",
+	"请点击“添加卡”以添加付款方式"
+],
 "fetchingSalesForceError": [
 	"An error occurred while trying to fetch data from Salesforce.",
 	"Ocurrió un error mientras se trataba de obtener la información de Salesforce.",
@@ -221,6 +280,35 @@
   "Выбрать язык",
   "Chọn ngôn ngữ",
   "选择语言"
+],
+"clickToVisit": [
+	"Click here to visit www.seiu503.org",
+	"Haga clic aquí para visitar www.seiu503.org",
+	"Нажмите здесь, чтобы посетить www.seiu503.org",
+	"Nhấn vào đây để truy cập www.seiu503.org",
+	"单击此处访问www.seiu503.org"
+],
+"reportProblem": [
+	"Report a problem with this form",
+	"Informar un problema con este formulario",
+	"Сообщить о проблеме с помощью этой формы",
+	"Báo cáo sự cố với mẫu này",
+	"报告此表单的问题"
+],
+"skip": ["Skip", "Saltar página", "Пропустить страницу", "Bỏ qua trang", "跳过页面"],
+"skipTab": [
+	"Skip to next tab",
+	"Saltar a la pestaña siguiente",
+	"Перейти к следующей вкладке",
+	"Chuyển sang tab tiếp theo",
+	"跳到下一个标签"
+],
+"skipWarning": [
+	"If you move to the next tab without clicking Submit, your CAPE contribution will not be processed.",
+	"Si pasa a la siguiente pestaña sin hacer clic en Enviar, su contribución CAPE no se procesará.",
+	"Если вы перейдете на следующую вкладку без нажатия кнопки «Отправить», ваш вклад CAPE не будет обработан.",
+	"Nếu bạn chuyển sang tab tiếp theo mà không nhấp vào Gửi, đóng góp CAPE của bạn sẽ không được xử lý.",
+	"如果您在未单击提交的情况下移至下一个选项卡，则不会处理您的CAPE贡献。"
 ],
 "": [
   "",

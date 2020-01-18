@@ -251,7 +251,8 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  translate: jest.fn()
 };
 
 const setup = (props = {}) => {

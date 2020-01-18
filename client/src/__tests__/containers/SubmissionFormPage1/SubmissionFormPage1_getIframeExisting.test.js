@@ -74,14 +74,12 @@ let updateSFDJRSuccess = jest
     Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
   );
 
-let getIframeExistingSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({
-      type: "GET_IFRAME_EXISTING_SUCCESS",
-      payload: { cardAddingUrl: "hkj" }
-    })
-  );
+let getIframeExistingSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_IFRAME_EXISTING_SUCCESS",
+    payload: { cardAddingUrl: "hkj" }
+  })
+);
 
 let getIframeExistingError = jest
   .fn()
@@ -197,7 +195,8 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  translate: jest.fn()
 };
 
 const setup = (props = {}) => {
@@ -259,14 +258,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve());
       handleErrorMock.mockClear();
       formElements.handleError = handleErrorMock;
-      getIframeExistingError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({
-            type: "GET_IFRAME_EXISTING_FAILURE",
-            payload: { message: "test" }
-          })
-        );
+      getIframeExistingError = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_IFRAME_EXISTING_FAILURE",
+          payload: { message: "test" }
+        })
+      );
       let props = {
         formValues: {
           directPayAuth: true,

@@ -178,7 +178,7 @@ export const Tab1 = props => {
           />
 
           <FormLabel className={classes.formLabel} component="legend">
-            Address
+            <Translate id="address">Address</Translate>
           </FormLabel>
 
           <Field
@@ -279,7 +279,7 @@ export const Tab1 = props => {
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
             >
-              Next
+              <Translate id="next">Next</Translate>
             </Button>
           </div>
         </div>

@@ -193,7 +193,8 @@ const defaultProps = {
     setSpinner: jest.fn()
   },
   createSubmission: createSubmissionMock,
-  changeTab: jest.fn()
+  changeTab: jest.fn(),
+  translate: jest.fn()
 };
 
 const setup = (props = {}) => {
@@ -217,7 +218,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const saveSignatureMock = jest
         .fn()
         .mockImplementation(() => Promise.reject("Error"));
-      formElements.handleError = jest.fn();
+      const handleErrorMock = jest.fn();
+      formElements.handleError = handleErrorMock;
 
       wrapper = setup();
       wrapper.instance().state.signatureType = "draw";
@@ -226,7 +228,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .instance()
         .handleTab2()
         .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+          expect(handleErrorMock).toHaveBeenCalled();
         })
         .catch(err => console.log(err));
     });
@@ -263,7 +265,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           return getIframeURLMock()
             .then(async function() {
               await flushPromises();
-              expect(handleErrorMock.mock.calls.length).toBe(1);
+              expect(handleErrorMock).toHaveBeenCalled();
             })
             .catch(err => console.log(err));
         })
