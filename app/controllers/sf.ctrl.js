@@ -416,9 +416,9 @@ exports.getSFDJRById = async (req, res, next) => {
  *  @returns  {Object}        { sf_djr_id } or error message
  */
 exports.createSFDJR = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 440: createSFDJR`);
+  console.log(`sf.ctrl.js > 440: createSFDJR`);
   const body = { ...req.body };
-  // console.log(body);
+  console.log(body);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -449,9 +449,10 @@ exports.createSFDJR = async (req, res, next) => {
  *  @returns  {Object}        Salesforce DJR id OR error message.
  */
 exports.updateSFDJR = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 488: updateSFDJR`);
+  console.log(`sf.ctrl.js > 488: updateSFDJR`);
   const { id } = req.params;
   const updates = { ...req.body };
+  console.log(updates);
   updates.Id = id;
 
   let conn = new jsforce.Connection({ loginUrl });
