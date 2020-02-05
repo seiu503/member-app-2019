@@ -591,6 +591,8 @@ export class AppUnconnected extends Component {
   prepForSubmission(values, partial) {
     return new Promise(resolve => {
       let returnValues = { ...values };
+      console.log("signature here???");
+      console.log(returnValues);
 
       if (!partial) {
         // set default date values for DPA & DDA if relevant
@@ -630,7 +632,10 @@ export class AppUnconnected extends Component {
     const secondValues = await this.prepForSubmission(firstValues, partial);
     console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
-    secondValues.signature = this.props.submission.formPage1.signature;
+    secondValues.signature = firstValues.signature
+      ? firstValues.signature
+      : this.props.submission.formPage1.signature;
+    console.log(`signature: ${secondValues.signature}`);
     secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
     secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
 

@@ -125,6 +125,13 @@
     "Tiếng Creole Haiti",
     "海地克里奥尔语"
   ],
+  "address": [
+    "Address",
+    "Dirección",
+    "Адрес",
+    "Địa chỉ",
+    "地址"
+  ],
   "homeStreet": [
     "Home Street",
     "Calle particular",
@@ -267,45 +274,45 @@
   ],
   "retireeDuesCopy": [
     "Monthly dues are $5 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.",
-    "Las cuotas mensuales son de $ 5 y se deducirán el día 10 de cada mes del método de pago que proporcione a continuación. Las cuotas son establecidas por los estatutos del Local 503 de SEIU.",
-    "Ежемесячные взносы составляют 5 долларов США и будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
-    "Phí hàng tháng là $ 5 và sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
-    "每月的会费是5美元，将从您提供的以下付款方式中扣除，每月的第10天。 费用由SEIU Local 503法规设置。"
+    "Las cuotas mensuales son de $5 y se deducen el día 10 de cada mes de la forma de pago que escoja a continuación. Los estatutos de SEIU Local 503 establecen las cuotas.",
+    "Размер ежемесячного членского взноса составляет 5 долларов, эта сумма списывается 10-го числа каждого месяца указанным вами способом оплаты. Размер отчислений устанавливается Уставом SEIU Local 503.",
+    "Công đoàn phí hàng tháng là $5 và sẽ được trừ vào ngày 10 hàng tháng từ phương thức thanh toán quý vị cung cấp bên dưới. Công đoàn phí được đặt theo nội quy của SEIU Local 503.",
+    "每月的会费是 5 美元，将于每月 10 日从下列您提供的付款方式中扣除。会费依据 SEIU Local 503 的细则而定。"
   ],
   "afhDuesCopy1": [
     "Monthly dues are",
-    "Las cuotas mensuales son",
-    "Ежемесячные взносы",
-    "Phí hàng tháng là",
-    "每月会费是"
+    "Las cuotas mensuales son de",
+    "Ежемесячный членский взнос составляет",
+    "Công đoàn phí hàng tháng là",
+    "每月的会费是"
   ],
   "afhDuesCopy2": [
     ", calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.",
-    ", calculado en $ 14.84 por residente de Medicaid en su (s) hogar (s), más $ 2.75 por mes. Las cuotas se deducirán el día 10 de cada mes del método de pago que proporcione a continuación. Las cuotas son establecidas por los estatutos del Local 503 de SEIU.",
-    ", из расчета 14,84 долл. США на каждого жителя Medicaid в вашем доме (ах), плюс 2,75 долл. США в месяц. Сборы будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
-    ", được tính ở mức 14,84 đô la cho mỗi cư dân Trợ cấp y tế tại nhà của bạn, cộng với 2,75 đô la mỗi tháng. Các khoản phí sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
-    "，按您住所中每个Medicaid居民的$ 14.84计算，加上每月$ 2.75。 费用会在每个月的10号从您提供的以下付款方式中扣除。 费用由SEIU Local 503法规设置。"
+    ", calculadas a $14.84 por residente de Medicaid en su(s) hogar(es), más $2.75 por mes. Las cuotas se deducirán el día 10 de cada mes de la forma de pago que escoja a continuación. Los estatutos de SEIU Local 503 establecen las cuotas.",
+    ", сумма рассчитывается по 14,84 доллара за резидента Medicaid в вашем доме(-ах), плюс 2,75 доллара в месяц. Суммы взносов списываются 10-го числа каждого месяца указанным вами способом оплаты. Размер отчислений устанавливается Уставом SEIU Local 503.",
+    ", được tính ở mức $14,84 mỗi người thường trú Medicaid tại (các) nhà của quý vị, cộng với $2,75 mỗi tháng. Công đoàn phí sẽ được trừ vào ngày 10 hàng tháng từ phương thức thanh toán quý vị cung cấp bên dưới. Công đoàn phí được đặt theo nội quy của SEIU Local 503.",
+    "，按照您家中的每个 Medicaid 居民 14.84 美元计算，外加每月 2.75 美元。会费将于每月 10 日从您提供的下列付款方式中扣除。会费依据 SEIU Local 503 的细则而定。"
   ],
   "commDuesCopy": [
     "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.",
-    "Las cuotas mensuales son de $ 10 y se deducirán el día 10 de cada mes del método de pago que proporcione a continuación. Las cuotas son establecidas por los estatutos del Local 503 de SEIU.",
-    "Ежемесячные взносы составляют 10 долларов США и будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
-    "Phí hàng tháng là $ 10 và sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
-    "每月的会费是10美元，将从您提供的以下付款方式中扣除，每月的第10天。 费用由SEIU Local 503法规设置。"
+    "Las cuotas mensuales son de $10 y se deducen el día 10 de cada mes de la forma de pago que escoja a continuación. Los estatutos de SEIU Local 503 establecen las cuotas.",
+    "Размер ежемесячного членского взноса составляет 10 долларов, эта сумма списывается 10-го числа каждого месяца указанным вами способом оплаты. Размер отчислений устанавливается Уставом SEIU Local 503.",
+    "Công đoàn phí hàng tháng là $10 và sẽ được trừ vào ngày 10 hàng tháng từ phương thức thanh toán quý vị cung cấp bên dưới. Công đoàn phí được đặt theo nội quy của SEIU Local 503.",
+    "每月的会费是 10 美元，将于每月 10 日从下列您提供的付款方式中扣除。会费依据 SEIU Local 503 的细则而定。"
   ],
   "Use existing": [
     "Use existing",
-    "Usar tarjeta existente",
-    "Использовать существующую кредитную карту",
-    "Sử dụng thẻ tín dụng hiện có",
-    "使用现有的信用卡"
+    "Usar la tarjeta actual",
+    "Использовать текущую",
+    "Sử dụng phương thức hiện có",
+    "使用现有的"
   ],
   "Add new card": [
     "Add new card",
-    "Agregar nueva tarjeta",
+    "Agregar una nueva tarjeta",
     "Добавить новую карту",
     "Thêm thẻ mới",
-    "新增卡"
+    "添加新卡"
   ],
   "clearSig": [
     "Clear Signature",
@@ -338,22 +345,15 @@
   "Monthly": [
     "Monthly",
     "Mensual",
-    "Ежемесячное",
+    "Ежемесячный",
     "Hàng tháng",
-    "每月一次"
-  ],
+    "每月"
+ ],
   "One-Time": [
     "One-Time",
     "Única",
-    "Только один раз",
-    "Chỉ một lần duy nhất",
-    "仅一次"
-  ],
-  "address": [
-    "Address",
-    "Dirección",
-    "Домашний адрес",
-    "Địa chỉ nhà",
-    "家庭地址"
-  ]
+    "Единовременный",
+    "Một lần",
+    "一次性"
+ ]
 }

@@ -71,39 +71,52 @@
    ],
   "capeAmountOneTime": [
     "One-time donation amount",
-    "Monto de la donación",
-    "Сумма взноса",
-    "Khoản đóng góp",
-    "捐款金额"
+    "Monto de la donación única",
+    "Сумма единовременного благотворительного взноса",
+    "Khoản đóng góp một lần",
+    "一次性捐款额"
    ],
   "capeAmountOther": [
     "Donation amount",
     "Monto de la donación",
-    "Сумма взноса",
+    "Сумма благотворительного взноса",
     "Khoản đóng góp",
-    "捐款金额"
+    "捐款额"
    ],
  "donationFrequency": [
-    "Monthly or One-Time Donation?",
+    "Monthly or one-time donation?",
     "¿Donación mensual o única?",
-    "Ежемесячное или разовое пожертвование?",
+    "Взнос ежемесячный или единовременный?",
     "Đóng góp hàng tháng hay một lần?",
-    "每月还是一次性捐赠？"
+    "每月捐款还是一次性捐款？"
+ ],
+  "Monthly": [
+    "Monthly",
+    "Mensual",
+    "Ежемесячный",
+    "Hàng tháng",
+    "每月"
+ ],
+  "One-Time": [
+    "One-Time",
+    "Única",
+    "Единовременный",
+    "Một lần",
+    "一次性"
  ],
  "currentContribution1": [
     "You are currently signed up to contribute",
-    "Actualmente estás registrado para contribuir",
-    "В настоящее время вы зарегистрированы, чтобы внести свой вклад",
-    "Bạn hiện đang đăng ký để đóng góp",
-    "您目前已注册以供稿"
-
+    "Actualmente está inscrito a contribuir",
+    "Вы подписаны на отправку ежемесячных",
+    "Quý vị hiện đã đăng ký để đóng góp",
+    "您目前签署的是"
  ],
  "currentContribution2": [
-    "per month. Would you like to increase your monthly contribution?",
-    "por mes. ¿Le gustaría aumentar su contribución mensual?",
-    "в месяц. Хотели бы вы увеличить свой ежемесячный взнос?",
-    "mỗi tháng. Bạn có muốn tăng đóng góp hàng tháng của bạn?",
-    "每月。 您想增加每月供款吗？"
+    "per month. Would you like to increase your monthly contribution? mensual.",
+    "al mes. ¿Le gustaría aumentar su aporte mensual?",
+    "взносов. Хотите увеличить ежемесячный взнос?",
+    "theo tháng. Quý vị có muốn tăng khoản đóng góp hàng tháng không?",
+    "每月捐款。您想增加每月捐款额吗？"
  ],
  "capeLegalCheckoff1": [
    "By submitting this form, I hereby authorize my Employer to deduct the designated amount from my monthly earnings as a contribution to SEIU Local 503, OPEU CAPE.",
