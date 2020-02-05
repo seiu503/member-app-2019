@@ -59,7 +59,8 @@
     "travis": "^0.1.1",
     "util": "^0.12.1",
     "uuid": "^3.3.2",
-    "yargs": "^13.2.4"
+    "yargs": "^13.2.4",
+    "snyk": "^1.278.2"
   },
   "devDependencies": {
     "aws-sdk-mock": "^4.4.0",
