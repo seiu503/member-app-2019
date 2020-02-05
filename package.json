@@ -59,7 +59,7 @@
     "util": "^0.12.1",
     "uuid": "^3.3.2",
     "yargs": "^13.2.4",
-    "snyk": "^1.278.2"
+    "snyk": "^1.290.1"
   },
   "devDependencies": {
     "aws-sdk-mock": "^4.4.0",
