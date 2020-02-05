@@ -125,6 +125,13 @@
     "Tiếng Creole Haiti",
     "海地克里奥尔语"
   ],
+  "address": [
+    "Address",
+    "Dirección",
+    "Адрес",
+    "Địa chỉ",
+    "地址"
+  ],
   "homeStreet": [
     "Home Street",
     "Calle particular",
@@ -190,7 +197,7 @@
   ],
   "phoneLegalLanguage": [
     "† By providing my phone number, I understand that the Service Employees International Union (SEIU), its local unions, and affiliates may use automated calling technologies and/or text message me on my cellular phone on a periodic basis. SEIU will never charge for text message alerts. Carrier message and data rates may apply to such alerts. Reply STOP to stop receiving messages; reply HELP for more information.",
-    "† Al proporcionar mi número de teléfono, entiendo que la Unión Internacional de Empleados de Servicios (SEIU, por sus siglas en inglés), sus unións locales y sus afiliados pueden usar tecnologías automatizadas para llamarme y/o para enviar mensajes de texto a mi celular periódicamente. SEIU nunca cobrará por las alertas de mensaje de texto. Pueden aplicar tarifas por el envío de mensaje y el uso de datos para dichas alertas. Responda con la palabra STOP para dejar de recibir mensajes; responda con la palabra HELP para obtener más información.",
+    "† Al proporcionar mi número de teléfono, entiendo que la Unión Internacional de Empleados de Servicios (SEIU, por sus siglas en inglés), sus uniones locales y sus afiliados pueden usar tecnologías automatizadas para llamarme y/o para enviar mensajes de texto a mi celular periódicamente. SEIU nunca cobrará por las alertas de mensaje de texto. Pueden aplicar tarifas por el envío de mensaje y el uso de datos para dichas alertas. Responda con la palabra STOP para dejar de recibir mensajes; responda con la palabra HELP para obtener más información.",
     "† Предоставляя номер своего телефона, я понимаю, что Международный профсоюз работников сферы обслуживания (SEIU), включая его местные отделения и филиалы, может применять автоматизированные технологии вызова и/или на периодической основе посылать на мой мобильный телефон текстовые сообщения. Профсоюз SEIU никоим образом не будет взыскивать плату за оповещения посредством текстовых сообщений. В отношении оповещений могут применяться расценки и тарифы оператора телефонной связи, установленные за предоставление таких услуг, как передача данных и текстовых сообщений. Отправьте сообщение со словом «STOP» (прекратить), чтобы прекратить отправку сообщений; отправьте сообщение со словом «HELP» (помощь), чтобы получить более подробную информацию.",
     "† Bằng cách cung cấp số điện thoại của tôi, tôi hiểu rằng Công đoàn Nhân viên Phục vụ Quốc tế (SEIU) và các chi nhánh cũng như tổ chức liên quan của công đoàn có thể sử dụng các công nghệ tự động để thỉnh thoảng gọi và/hoặc gửi tin nhắn đến điện thoại di động của tôi. SEIU sẽ không bao giờ tính tiền cho các tin nhắn báo động. Cước phí tin nhắn và dữ liệu của nhà cung cấp dịch vụ mạng di động có thể áp dụng cho những tin nhắn như vậy. Nhắn tin trả lời với từ khóa STOP để ngừng nhận tin nhắn, từ HELP để nhận thêm thông tin.",
     "†提供我的电话号码，即表示我明白服务行业雇员国际工会 (SEIU) 及其当地工会和附属工会可定期使用自动呼叫技术呼叫技术及／或发短信到我的手机。SEIU 绝不会对短信提醒收取费用。运营商讯息和数据收费可能适用于这些提醒。回复 STOP（停止）以停止接收讯息；回复 HELP（帮助）以获取更多信息。"
@@ -267,45 +274,45 @@
   ],
   "retireeDuesCopy": [
     "Monthly dues are $5 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.",
-    "Las cuotas mensuales son de $ 5 y se deducirán el día 10 de cada mes del método de pago que proporcione a continuación. Las cuotas son establecidas por los estatutos del Local 503 de SEIU.",
-    "Ежемесячные взносы составляют 5 долларов США и будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
-    "Phí hàng tháng là $ 5 và sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
-    "每月的会费是5美元，将从您提供的以下付款方式中扣除，每月的第10天。 费用由SEIU Local 503法规设置。"
+    "Las cuotas mensuales son de $5 y se deducen el día 10 de cada mes de la forma de pago que escoja a continuación. Los estatutos de SEIU Local 503 establecen las cuotas.",
+    "Размер ежемесячного членского взноса составляет 5 долларов, эта сумма списывается 10-го числа каждого месяца указанным вами способом оплаты. Размер отчислений устанавливается Уставом SEIU Local 503.",
+    "Công đoàn phí hàng tháng là $5 và sẽ được trừ vào ngày 10 hàng tháng từ phương thức thanh toán quý vị cung cấp bên dưới. Công đoàn phí được đặt theo nội quy của SEIU Local 503.",
+    "每月的会费是 5 美元，将于每月 10 日从下列您提供的付款方式中扣除。会费依据 SEIU Local 503 的细则而定。"
   ],
   "afhDuesCopy1": [
     "Monthly dues are",
-    "Las cuotas mensuales son",
-    "Ежемесячные взносы",
-    "Phí hàng tháng là",
-    "每月会费是"
+    "Las cuotas mensuales son de",
+    "Ежемесячный членский взнос составляет",
+    "Công đoàn phí hàng tháng là",
+    "每月的会费是"
   ],
   "afhDuesCopy2": [
     ", calculated at $14.84 per Medicaid resident in your home(s), plus $2.75 per month. Dues will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.",
-    ", calculado en $ 14.84 por residente de Medicaid en su (s) hogar (s), más $ 2.75 por mes. Las cuotas se deducirán el día 10 de cada mes del método de pago que proporcione a continuación. Las cuotas son establecidas por los estatutos del Local 503 de SEIU.",
-    ", из расчета 14,84 долл. США на каждого жителя Medicaid в вашем доме (ах), плюс 2,75 долл. США в месяц. Сборы будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
-    ", được tính ở mức 14,84 đô la cho mỗi cư dân Trợ cấp y tế tại nhà của bạn, cộng với 2,75 đô la mỗi tháng. Các khoản phí sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
-    "，按您住所中每个Medicaid居民的$ 14.84计算，加上每月$ 2.75。 费用会在每个月的10号从您提供的以下付款方式中扣除。 费用由SEIU Local 503法规设置。"
+    ", calculadas a $14.84 por residente de Medicaid en su(s) hogar(es), más $2.75 por mes. Las cuotas se deducirán el día 10 de cada mes de la forma de pago que escoja a continuación. Los estatutos de SEIU Local 503 establecen las cuotas.",
+    ", сумма рассчитывается по 14,84 доллара за резидента Medicaid в вашем доме(-ах), плюс 2,75 доллара в месяц. Суммы взносов списываются 10-го числа каждого месяца указанным вами способом оплаты. Размер отчислений устанавливается Уставом SEIU Local 503.",
+    ", được tính ở mức $14,84 mỗi người thường trú Medicaid tại (các) nhà của quý vị, cộng với $2,75 mỗi tháng. Công đoàn phí sẽ được trừ vào ngày 10 hàng tháng từ phương thức thanh toán quý vị cung cấp bên dưới. Công đoàn phí được đặt theo nội quy của SEIU Local 503.",
+    "，按照您家中的每个 Medicaid 居民 14.84 美元计算，外加每月 2.75 美元。会费将于每月 10 日从您提供的下列付款方式中扣除。会费依据 SEIU Local 503 的细则而定。"
   ],
   "commDuesCopy": [
     "Monthly dues are $10 and will be deducted on the 10th day of each month from the payment method you provide below. Dues are set by the SEIU Local 503 bylaws.",
-    "Las cuotas mensuales son de $ 10 y se deducirán el día 10 de cada mes del método de pago que proporcione a continuación. Las cuotas son establecidas por los estatutos del Local 503 de SEIU.",
-    "Ежемесячные взносы составляют 10 долларов США и будут вычитаться 10-го числа каждого месяца из способа оплаты, который вы указали ниже. Сборы устанавливаются Уставом SEIU Local 503.",
-    "Phí hàng tháng là $ 10 và sẽ được khấu trừ vào ngày thứ 10 mỗi tháng từ phương thức thanh toán bạn cung cấp dưới đây. Các khoản phí được đặt theo quy định của SEIU Local 503.",
-    "每月的会费是10美元，将从您提供的以下付款方式中扣除，每月的第10天。 费用由SEIU Local 503法规设置。"
+    "Las cuotas mensuales son de $10 y se deducen el día 10 de cada mes de la forma de pago que escoja a continuación. Los estatutos de SEIU Local 503 establecen las cuotas.",
+    "Размер ежемесячного членского взноса составляет 10 долларов, эта сумма списывается 10-го числа каждого месяца указанным вами способом оплаты. Размер отчислений устанавливается Уставом SEIU Local 503.",
+    "Công đoàn phí hàng tháng là $10 và sẽ được trừ vào ngày 10 hàng tháng từ phương thức thanh toán quý vị cung cấp bên dưới. Công đoàn phí được đặt theo nội quy của SEIU Local 503.",
+    "每月的会费是 10 美元，将于每月 10 日从下列您提供的付款方式中扣除。会费依据 SEIU Local 503 的细则而定。"
   ],
   "Use existing": [
     "Use existing",
-    "Usar tarjeta existente",
-    "Использовать существующую кредитную карту",
-    "Sử dụng thẻ tín dụng hiện có",
-    "使用现有的信用卡"
+    "Usar la tarjeta actual",
+    "Использовать текущую",
+    "Sử dụng phương thức hiện có",
+    "使用现有的"
   ],
   "Add new card": [
     "Add new card",
-    "Agregar nueva tarjeta",
+    "Agregar una nueva tarjeta",
     "Добавить новую карту",
     "Thêm thẻ mới",
-    "新增卡"
+    "添加新卡"
   ],
   "clearSig": [
     "Clear Signature",
@@ -338,22 +345,15 @@
   "Monthly": [
     "Monthly",
     "Mensual",
-    "Ежемесячное",
+    "Ежемесячный",
     "Hàng tháng",
-    "每月一次"
-  ],
+    "每月"
+ ],
   "One-Time": [
     "One-Time",
     "Única",
-    "Только один раз",
-    "Chỉ một lần duy nhất",
-    "仅一次"
-  ],
-  "address": [
-    "Address",
-    "Dirección",
-    "Домашний адрес",
-    "Địa chỉ nhà",
-    "家庭地址"
-  ]
+    "Единовременный",
+    "Một lần",
+    "一次性"
+ ]
 }

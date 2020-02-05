@@ -7,6 +7,7 @@ import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
 import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
+import moment from "moment";
 import { Translate } from "react-localize-redux";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -432,6 +433,15 @@ export class AppUnconnected extends Component {
     };
     const updates = passedUpdates ? passedUpdates : pmtUpdates;
     console.log(updates);
+    console.log(`updates.hire_date: ${updates.hire_date}`);
+
+    if (updates.hire_date) {
+      let hireDate = moment(new Date(updates.hire_date));
+      if (hireDate.isValid()) {
+        updates.hire_date = formatSFDate(hireDate);
+        console.log(`updates.hire_date: ${updates.hire_date}`);
+      }
+    }
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
@@ -591,6 +601,8 @@ export class AppUnconnected extends Component {
   prepForSubmission(values, partial) {
     return new Promise(resolve => {
       let returnValues = { ...values };
+      console.log("signature here???");
+      console.log(returnValues);
 
       if (!partial) {
         // set default date values for DPA & DDA if relevant
@@ -630,7 +642,10 @@ export class AppUnconnected extends Component {
     const secondValues = await this.prepForSubmission(firstValues, partial);
     console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
-    secondValues.signature = this.props.submission.formPage1.signature;
+    secondValues.signature = firstValues.signature
+      ? firstValues.signature
+      : this.props.submission.formPage1.signature;
+    console.log(`signature: ${secondValues.signature}`);
     secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
     secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
 
@@ -676,6 +691,15 @@ export class AppUnconnected extends Component {
       work_phone,
       hire_date
     } = secondValues;
+    console.log(`hire_date: ${hire_date}`);
+
+    if (hire_date) {
+      let hireDate = moment(new Date(hire_date));
+      if (hireDate.isValid()) {
+        hire_date = formatSFDate(hireDate);
+        console.log(`hire_date: ${hire_date}`);
+      }
+    }
 
     if (!firstName) {
       firstName = values.first_name;

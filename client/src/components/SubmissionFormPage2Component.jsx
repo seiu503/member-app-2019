@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { reduxForm, Field } from "redux-form";
 import { withLocalize, Translate } from "react-localize-redux";
 import queryString from "query-string";
+import moment from "moment";
 
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -84,6 +85,13 @@ export class SubmissionFormPage2Component extends React.Component {
       }
     }
     cleanBody.salesforce_id = salesforceId;
+    if (cleanBody.hire_date) {
+      let hireDate = moment(new Date(cleanBody.hire_date));
+      if (hireDate.isValid()) {
+        cleanBody.hire_date = formElements.formatSFDate(hireDate);
+        console.log(`cleanBody.hire_date: ${cleanBody.hire_date}`);
+      }
+    }
 
     let id = this.props.submission.submissionId;
 
