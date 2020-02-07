@@ -1155,6 +1155,7 @@ export const renderRadioGroup = ({
               additionalOnChange(value);
             }
           }}
+          id={id}
         >
           {options.map(item => {
             return (
@@ -1166,7 +1167,6 @@ export const renderRadioGroup = ({
                   <Radio
                     checked={item.toString() === input.value.toString()}
                     color="primary"
-                    inputProps={{ id: id }}
                     data-test="component-radio"
                   />
                 }

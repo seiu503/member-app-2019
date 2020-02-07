@@ -420,6 +420,11 @@ export class AppUnconnected extends Component {
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
     const { formPage1, payment } = this.props.submission;
+    console.log(`medicaidResidents: ${formPage1.medicaidResidents}`);
+    console.log(`medicaidResidents from passedUpdates:`);
+    console.log(passedUpdates);
+    console.log("formPage1");
+    console.log(formPage1);
     const pmtUpdates = {
       payment_type: formPage1.paymentType,
       payment_method_added: formPage1.paymentMethodAdded,

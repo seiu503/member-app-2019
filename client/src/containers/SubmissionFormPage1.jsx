@@ -418,6 +418,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async createSFDJR() {
     const medicaidResidents =
       this.props.submission.formPage1.medicaidResidents || 0;
+    console.log(`medicaidResidents: ${medicaidResidents}`);
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
@@ -445,6 +446,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const id = this.props.submission.salesforceId;
     const medicaidResidents =
       this.props.submission.formPage1.medicaidResidents || 0;
+    console.log(`medicaidResidents: ${medicaidResidents}`);
     const updates = {
       Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
       Payment_Method__c: this.props.submission.formPage1.paymentType,
@@ -747,7 +749,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async calculateAFHDuesRate(medicaidResidents) {
     // console.log("calculateAFHDuesRate");
-    // console.log(`medicaidResidents: ${medicaidResidents}`);
+    console.log(`medicaidResidents: ${medicaidResidents}`);
     let afhDuesRate = medicaidResidents * 14.84 + 2.75;
     // console.log(`afhDuesRate: ${afhDuesRate}`);
     this.props.apiSubmission.handleInput({

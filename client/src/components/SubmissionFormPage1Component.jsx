@@ -240,7 +240,7 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async createOrUpdateSFDJR() {
     this.props.actions.setSpinner();
-    // console.log("createOrUpdateSFDJR");
+    console.log("createOrUpdateSFDJR");
 
     const { formPage1, payment } = this.props.submission;
 
@@ -258,6 +258,8 @@ export class SubmissionFormPage1Component extends React.Component {
       Card_Brand__c: payment.cardBrand,
       Employer__c: formPage1.employerId
     };
+
+    console.log(body);
 
     // create a new record if one doesn't exist, OR
     // if existing DJR record is for a different employer
