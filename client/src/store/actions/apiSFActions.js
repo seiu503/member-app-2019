@@ -600,15 +600,15 @@ export function getSFEmployers() {
           type: GET_SF_EMPLOYERS_SUCCESS,
           payload: (action, state, res) => {
             const contentType = res.headers.get("Content-Type");
-            console.log(contentType);
+            // console.log(contentType);
             if (contentType && ~contentType.indexOf("json")) {
-              console.log("604");
+              // console.log("604");
               return res.json().then(data => {
                 // console.log(data);
                 return data;
               });
             } else {
-              console.log("612");
+              // console.log("612");
               return res.text().then(data => {
                 console.log(data);
                 return data;
