@@ -240,9 +240,11 @@ export class SubmissionFormPage1Component extends React.Component {
 
   async createOrUpdateSFDJR() {
     this.props.actions.setSpinner();
-    console.log("createOrUpdateSFDJR");
+    console.log("createOrUpdateSFDJR ###########");
 
     const { formPage1, payment } = this.props.submission;
+    const { formValues } = this.props;
+    console.log(`medicaidResidents: ${formValues.medicaidResidents}`);
 
     const id = this.props.submission.djrId;
     // console.log(`djrId: ${id}`);
@@ -252,7 +254,7 @@ export class SubmissionFormPage1Component extends React.Component {
     const body = {
       Worker__c: this.props.submission.salesforceId,
       Payment_Method__c: paymentMethod,
-      AFH_Number_of_Residents__c: formPage1.medicaidResidents,
+      AFH_Number_of_Residents__c: formValues.medicaidResidents,
       Unioni_se_MemberID__c: payment.memberShortId,
       Active_Account_Last_4__c: payment.activeMethodLast4,
       Card_Brand__c: payment.cardBrand,
@@ -358,30 +360,37 @@ export class SubmissionFormPage1Component extends React.Component {
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: true }
       });
+      console.log(
+        `paymentMethodAdded: ${
+          this.props.submission.formPage1.paymentMethodAdded
+        }`
+      );
     }
-    // console.log(
-    //   `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
-    // );
-    // console.log(
-    //   `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
-    // );
-    // console.log(`donationFrequency: ${formValues.donationFrequency}`);
-    // console.log(
-    //   `paymentMethodAdded: ${
-    //     this.props.submission.formPage1.paymentMethodAdded
-    //   }`
-    // );
+    console.log(
+      `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+    );
+    console.log(
+      `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+    );
+    console.log(`donationFrequency: ${formValues.donationFrequency}`);
+    console.log(
+      `paymentMethodAdded: ${
+        this.props.submission.formPage1.paymentMethodAdded
+      }`
+    );
+    console.log(`paymentType: ${this.props.submission.formPage1.paymentType}`);
+
     if (
       ((this.props.submission.formPage1.paymentRequired &&
         this.props.submission.formPage1.paymentType === "Card") ||
         this.props.submission.formPage1.newCardNeeded) &&
-      !this.props.submission.formPage1.paymentMethodAdded
+      !(this.props.submission.formPage1.paymentMethodAdded || validMethod)
     ) {
       console.log("No payment method added");
       return this.props.handleError(this.props.translate("missingCardError"));
     }
     return Promise.all([
-      this.props.updateSubmission(),
+      this.props.updateSubmission(null, null, formValues),
       this.createSFOMA(),
       this.createOrUpdateSFDJR()
     ])

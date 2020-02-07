@@ -414,31 +414,40 @@ export class AppUnconnected extends Component {
     window.localStorage.setItem("redirect", currentPath);
   }
 
-  async updateSubmission(passedId, passedUpdates) {
+  async updateSubmission(passedId, passedUpdates, formValues) {
     // console.log("updateSubmission");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
-    const { formPage1, payment } = this.props.submission;
-    console.log(`medicaidResidents: ${formPage1.medicaidResidents}`);
+    console.log(
+      `medicaidResidents: ${
+        formValues ? formValues.medicaidResidents : undefined
+      }`
+    );
     console.log(`medicaidResidents from passedUpdates:`);
     console.log(passedUpdates);
     console.log("formPage1");
-    console.log(formPage1);
+    console.log(this.props.submission.formPage1);
+    const medicaidResidents =
+      formValues && formValues.medicaidResidents
+        ? formValues.medicaidResidents
+        : passedUpdates && passedUpdates.medicaidResidents
+        ? passedUpdates.medicaidResidents
+        : 0;
     const pmtUpdates = {
-      payment_type: formPage1.paymentType,
-      payment_method_added: formPage1.paymentMethodAdded,
-      medicaid_residents: formPage1.medicaidResidents,
-      card_adding_url: payment.cardAddingUrl,
-      member_id: payment.memberId,
-      stripe_customer_id: payment.stripeCustomerId,
-      member_short_id: payment.memberShortId,
-      active_method_last_four: payment.activeMethodLast4,
-      card_brand: payment.cardBrand
+      payment_type: this.props.submission.formPage1.paymentType,
+      payment_method_added: this.props.submission.formPage1.paymentMethodAdded,
+      medicaid_residents: medicaidResidents,
+      card_adding_url: this.props.submission.payment.cardAddingUrl,
+      member_id: this.props.submission.payment.memberId,
+      stripe_customer_id: this.props.submission.payment.stripeCustomerId,
+      member_short_id: this.props.submission.payment.memberShortId,
+      active_method_last_four: this.props.submission.payment.activeMethodLast4,
+      card_brand: this.props.submission.payment.cardBrand
     };
     const updates = passedUpdates ? passedUpdates : pmtUpdates;
+    console.log("###############");
     console.log(updates);
-    console.log(`updates.hire_date: ${updates.hire_date}`);
 
     if (updates.hire_date) {
       let hireDate = moment(new Date(updates.hire_date));
@@ -518,6 +527,7 @@ export class AppUnconnected extends Component {
   }
 
   async saveSubmissionErrors(submission_id, method, error) {
+    console.log("520");
     // 1. retrieve existing errors array from current submission
     let { submission_errors } = this.props.submission.currentSubmission;
     if (submission_errors === null || submission_errors === undefined) {
@@ -530,6 +540,7 @@ export class AppUnconnected extends Component {
       submission_errors,
       submission_status: "error"
     };
+    console.log("533");
     this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
       return handleError(err);
@@ -606,8 +617,8 @@ export class AppUnconnected extends Component {
   prepForSubmission(values, partial) {
     return new Promise(resolve => {
       let returnValues = { ...values };
-      console.log("signature here???");
-      console.log(returnValues);
+      // console.log("signature here???");
+      // console.log(returnValues);
 
       if (!partial) {
         // set default date values for DPA & DDA if relevant

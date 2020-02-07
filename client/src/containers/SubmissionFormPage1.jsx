@@ -812,13 +812,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async saveSignature() {
-    console.log("saveSignature");
+    //   console.log("saveSignature");
     const { formValues } = this.props;
     // perform signature processing steps and save value to redux store
     // before ref disappears
 
     if (this.state.signatureType === "draw") {
-      console.log(`this.state.signagureType: ${this.state.signatureType}`);
+      // console.log(`this.state.signagureType: ${this.state.signatureType}`);
       const sigUrl = await this.handleUpload(
         formValues.firstName,
         formValues.lastName
@@ -826,14 +826,14 @@ export class SubmissionFormPage1Container extends React.Component {
         console.error(err);
         return handleError(err);
       });
-      console.log(`signature url: ${sigUrl}`);
+      // console.log(`signature url: ${sigUrl}`);
       this.props.apiSubmission.handleInput({
         target: { name: "signature", value: sigUrl }
       });
       return sigUrl;
     } else {
-      console.log(`this.state.signagureType: ${this.state.signatureType}`);
-      console.log(formValues.signature);
+      // console.log(`this.state.signatureType: ${this.state.signatureType}`);
+      // console.log(formValues.signature);
       return formValues.signature;
     }
   }

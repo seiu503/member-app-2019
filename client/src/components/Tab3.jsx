@@ -38,7 +38,7 @@ export const Tab3 = props => {
         duesCopy = (
           <React.Fragment>
             <Translate id="afhDuesCopy1">Monthly dues are</Translate>{" "}
-            {afhDuesRate ? `$${afhDuesRate.toFixed(2)},` : ""}
+            {afhDuesRate ? `$${afhDuesRate.toFixed(2)}, ` : ""}
             <Translate id="afhDuesCopy2">
               calculated at $14.84 per Medicaid resident in your home(s), plus
               $2.75 per month. Dues will be deducted on the 10th day of each
