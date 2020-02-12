@@ -581,6 +581,8 @@ export class AppUnconnected extends Component {
         returnValues.agencyNumber = 0;
       }
 
+      console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
+
       if (
         this.props.submission.formPage1 &&
         this.props.submission.formPage1.prefillEmployerId

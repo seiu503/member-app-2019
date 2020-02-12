@@ -343,6 +343,15 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
         }
       }
     });
+    console.log("#####################");
+    console.log(
+      `sf.ctrl.js: 346: bodyRaw.agency_number: ${bodyRaw.agency_number}`
+    );
+    console.log(
+      `sf.ctrl.js: 347: body.Agency_Number_from_Webform__c: ${
+        body.Agency_Number_from_Webform__c
+      }`
+    );
     delete body["Account.Id"];
     delete body["Account.Agency_Number__c"];
     delete body["Account.WS_Subdivision_from_Agency__c"];
@@ -711,10 +720,12 @@ exports.getAllEmployers = async (req, res, next) => {
   console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
-  // (these 2 do not fit the query in any other way
+  // 0016100001UoDg2AAF = Generic Parent
+  // 01261000000ksTuAAI = Record type ID for Agency level employer
+  // (Community members & Staff do not fit the query in any other way
   // so have to be SELECTed for separately)
   // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR Id = '0016100000PZDmOAAX' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
-  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0016100000PZDmOAAX' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Id != '0014N00001iFKWWQA4')`;
+  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0016100000PZDmOAAX' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Id != '0014N00001iFKWWQA4' AND ParentId != '0016100001UoDg2AAF')`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
