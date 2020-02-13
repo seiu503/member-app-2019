@@ -734,7 +734,7 @@ const submissionsTableFields = {
     HtmlInputType: "n/a (see Contacts)",
     SFTable: "OnlineMemberApp__c",
     SFFieldLabel: "Agency Number",
-    SFAPIName: "agencyNumber__c",
+    SFAPIName: "Agency_Number_from_Webform__c",
     SFDataType: "",
     SQLDataType: "",
     testingSample: "123456"
