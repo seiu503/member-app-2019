@@ -135,7 +135,7 @@ export class SubmissionFormPage1Component extends React.Component {
     } else {
       // console.log("no formValues in props");
     }
-    // console.log(employerTypeUserSelect);
+    // console.log(`employerType: ${employerTypeUserSelect}`);
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
@@ -160,6 +160,28 @@ export class SubmissionFormPage1Component extends React.Component {
       ) {
         employerList = ["SEIU 503 Staff"];
       }
+      // remove 'HCW Holding' from employer options for State HCWs, make user-friendly names for others
+      if (
+        employerTypeUserSelect &&
+        employerTypeUserSelect.toLowerCase() ===
+          "state homecare or personal support"
+      ) {
+        employerList = employerList.map(employer => {
+          if (employer === "PPL PSW") {
+            return "Personal Support Worker (paid by PPL)";
+          } else if (employer === "State PSW") {
+            return "Personal Support Worker (paid by State of Oregon)";
+          } else if (employer === "State APD") {
+            return "Homecare Worker (Aging and People with Disabilities)";
+          } else if (employer !== "HCW Holding") {
+            return employer;
+          }
+          return "";
+        });
+      }
+      // remove blank employers
+      employerList = employerList.filter(employer => employer !== "");
+      // add one blank line to top so placeholder text is visible
       employerList.unshift("");
       // set value of employer name field for single-child employer types
       if (

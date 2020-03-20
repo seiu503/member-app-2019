@@ -570,10 +570,43 @@ export class AppUnconnected extends Component {
 
       if (employerObject) {
         returnValues.agencyNumber = employerObject.Agency_Number__c;
-      } else if (values.employerName === "SEIU 503 Staff") {
+      } else if (
+        values.employerName &&
+        values.employerName.toLowerCase() === "seiu 503 staff"
+      ) {
         employerObject = findEmployerObject(
           this.props.submission.employerObjects,
           "SEIU LOCAL 503 OPEU"
+        );
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else if (
+        values.employerName &&
+        values.employerName.toLowerCase() ===
+          "personal support worker (paid by ppl)"
+      ) {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          "PPL PSW"
+        );
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else if (
+        values.employerName &&
+        values.employerName.toLowerCase() ===
+          "personal support worker (paid by state of oregon)"
+      ) {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          "State PSW"
+        );
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else if (
+        values.employerName &&
+        values.employerName.toLowerCase() ===
+          "homecare worker (aging and people with disabilities)"
+      ) {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          "State APD"
         );
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else {
