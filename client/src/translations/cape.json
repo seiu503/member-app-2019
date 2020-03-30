@@ -166,5 +166,61 @@
   "Настоящая передача полномочий сохраняет законную силу до своей отмены, оформленной мною в письменном виде. Настоящий взнос является дополнением к отчислениям и взносам, перечисляемым путем вычета из зарплаты / перевода ACH. Настоящий взнос не подлежит вычету из федерального налога на прибыль.",
   "Việc ủy quyền này sẽ vẫn có hiệu lực cho đến khi tôi hủy bỏ bằng văn bản. Khoản đóng góp này khác với khoản thuế và các khoản đóng góp hiện tại thông qua hình thức chiết khấu lương/chuyển ACH. Khoản đóng góp này không nhằm mục đích khấu trừ thuế thu nhập liên bang.",
   "该授权在我通过书面形式撤销前将一直有效。此捐款是通过薪资扣除/ACH 转账来支付会费和现有捐款的补充。此捐款不可从联邦所得税中扣除。"
+],
+"capeNewLegal1": [
+  "This contribution qualifies for the Oregon Political Tax Credit. Single filers are eligible for a credit up to $50/year; joint filers up to $100 per year.",
+  "Esta contribución califica para el Crédito Tributario Político de Oregon. Los contribuyentes individuales son elegibles para un crédito de hasta $ 50 / año; contribuyentes conjuntos de hasta $ 100 por año.",
+  "Этот взнос имеет право на Орегонский политический налоговый кредит. Отдельные заявители имеют право на кредит до 50 долларов США в год; совместные регистраторы до 100 долларов в год.",
+  "Đóng góp này đủ điều kiện cho Tín dụng Thuế Chính trị Oregon. Những người quay phim đơn lẻ đủ điều kiện nhận khoản tín dụng lên tới $ 50 / năm; quay phim chung lên tới $ 100 mỗi năm.",
+  "此捐款符合俄勒冈州政治税收抵免的资格。 单身报名者有资格获得每年最高$ 50的抵免额； 联合申报者，每年最高$ 100。"
+],
+"capeNewLegal2": [
+  "This authorization is made voluntarily based on my specific understanding that:",
+  "Esta autorización se realiza voluntariamente en base a mi entendimiento específico de que:",
+  "Это разрешение сделано добровольно на основании моего конкретного понимания того, что:",
+  "Việc ủy quyền này được thực hiện một cách tự nguyện dựa trên sự hiểu biết cụ thể của tôi rằng:",
+  "根据我的特定理解，该授权是自愿的："
+],
+"capeNewLegal3": [
+  "1) I am not required to sign this form or make voluntary contributions to SEIU Local 503, OPEU CAPE as a condition of my employment or membership in the union;",
+  "1) No estoy obligado a firmar este formulario o hacer contribuciones voluntarias a SEIU Local 503, OPEU CAPE como condición de mi empleo o membresía en el sindicato;",
+  "1) Я не обязан подписывать эту форму или делать добровольные взносы в SEIU Local 503, OPEU CAPE в качестве условия моей работы или членства в профсоюзе;",
+  "1) Tôi không bắt buộc phải ký vào mẫu đơn này hoặc đóng góp tự nguyện cho SEIU Local 503, OPEU CAPE như một điều kiện làm việc hoặc là thành viên của tôi trong công đoàn;",
+  "1）作为我受雇或加入工会的条件，我无需签署此表格或向SEIU Local 503，OPEU CAPE自愿捐款；"
+],
+"capeNewLegal4": [
+  "2) I may refuse to contribute without reprisal;",
+  "2) Puedo negarme a contribuir sin represalias;",
+  "2) я могу отказаться от участия без репрессий;",
+  "2) Tôi có thể từ chối đóng góp mà không trả thù;",
+  "2）我可以拒绝捐款而无需报复；"
+],
+"capeNewLegal5": [
+  "3) Under law, only union members and executive / administrative staff who are U.S. Citizens or lawful permanent residents are eligible to contribute to CAPE;",
+  "3) Según la ley, solo los miembros del sindicato y el personal ejecutivo / administrativo que son ciudadanos estadounidenses o residentes permanentes legales son elegibles para contribuir a CAPE;",
+  "3) По закону, только члены профсоюза и исполнительный / административный персонал, которые являются гражданами США или законными постоянными жителями, имеют право вносить вклад в CAPE;",
+  "3) Theo luật, chỉ có các thành viên công đoàn và nhân viên điều hành / hành chính là Công dân Hoa Kỳ hoặc thường trú nhân hợp pháp mới đủ điều kiện đóng góp cho CAPE;",
+  "3）根据法律，只有美国公民或合法永久居民的工会会员和执行人员/行政人员才有资格向CAPE供款；"
+],
+"capeNewLegal6": [
+  "4) The contribution amounts on this form are merely suggestions, and I may contribute more or less by this or other means without fear of favor or disadvantage from SEIU or my employer;",
+  "4) Los montos de las contribuciones en este formulario son meramente sugerencias, y puedo contribuir más o menos por este u otro medio sin temor al favor o desventaja de SEIU o mi empleador;",
+  "4) Суммы взносов в этой форме являются всего лишь предложениями, и я могу вносить более или менее взносы тем или иным способом, не опасаясь одолжения или невыгодности со стороны SEIU или моего работодателя;",
+  "4) Số tiền đóng góp trong mẫu đơn này chỉ là đề xuất và tôi có thể đóng góp ít nhiều bằng cách này hoặc phương tiện khác mà không sợ sự ủng hộ hay bất lợi từ SEIU hoặc chủ lao động của tôi;",
+  "4）此表格上的捐款金额仅是建议，我可以通过这种或其他方式或多或少地捐款，而不必担心SEIU或我的雇主的赞成或不利；"
+],
+"capeNewLegal7": [
+  "5) SEIU Local 503, OPEU CAPE uses the money it receives for political purposes – including, but not limited to, making contributions to and expenditures on behalf of candidates for federal, state, and local offices – and addressing political issues of public importance.",
+  "5) SEIU Local 503, OPEU CAPE utiliza el dinero que recibe con fines políticos, incluyendo, entre otros, hacer contribuciones y gastos en nombre de los candidatos para cargos federales, estatales y locales, y para abordar cuestiones políticas de importancia pública.",
+  "5) SEIU Local 503, OPEU CAPE использует деньги, которые он получает, в политических целях - включая, помимо прочего, внесение взносов и расходов от имени кандидатов в федеральные, штатные и местные органы власти - и решение политических вопросов, имеющих общественное значение.",
+  "5) SEIU Local 503, OPEU CAPE sử dụng số tiền nhận được cho các mục đích chính trị - bao gồm, nhưng không giới hạn, đóng góp và chi tiêu cho các ứng cử viên cho các văn phòng liên bang, tiểu bang và địa phương - và giải quyết các vấn đề chính trị quan trọng.",
+  "5）SEIU Local 503，OPEU CAPE将收到的款项用于政治目的-包括但不限于代表联邦，州和地方办公室的候选人捐款和支出-以及解决具有公共重要性的政治问题。"
+],
+"capeNewLegal8": [
+  "This authorization shall remain in effect until revoked by me in writing via U.S. mail to SEIU. Contributions or gifts to SEIU Local 503, OPEU CAPE are not tax deductible as charitable contributions.",
+  "Esta autorización permanecerá vigente hasta que sea revocada por mí por escrito a través de correo de EE. UU. A SEIU. Las contribuciones u obsequios a SEIU Local 503, OPEU CAPE no son deducibles de impuestos como contribuciones caritativas.",
+  "Это разрешение остается в силе до тех пор, пока оно не будет отозвано мною в письменной форме через почту США в SEIU. Взносы или подарки в SEIU Local 503, OPEU CAPE не облагаются налогом как благотворительные взносы.",
+  "Ủy quyền này sẽ vẫn có hiệu lực cho đến khi tôi bị thu hồi bằng văn bản qua thư của Hoa Kỳ gửi đến SEIU. Đóng góp hoặc quà tặng cho SEIU Local 503, OPEU CAPE không được khấu trừ thuế như các khoản đóng góp từ thiện.",
+  "该授权将一直有效，直到我通过美国发给SEIU的书面书面撤销。 向SEIU Local 503，OPEU CAPE的捐赠或礼物不能作为慈善捐赠减税。"
 ]
 }
