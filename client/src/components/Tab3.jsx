@@ -28,9 +28,9 @@ export const Tab3 = props => {
   } = props;
 
   let duesCopy = "";
-  if (payment.cardBrand) {
-    console.log(payment.cardBrand);
-  }
+  // if (payment.cardBrand) {
+  //   console.log(payment.cardBrand);
+  // }
 
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {
@@ -150,7 +150,7 @@ export const Tab3 = props => {
             </div>
           )}
         {formPage1.paymentType === "Check" && (
-          <div className={classes.paymentCopy}>
+          <div className={classes.paymentCopy} data-test="payByCheck">
             <Typography component="h2" className={classes.head}>
               <Translate id="payByCheck1">To pay your dues by check:</Translate>
             </Typography>

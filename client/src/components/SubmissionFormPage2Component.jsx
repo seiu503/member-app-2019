@@ -89,7 +89,7 @@ export class SubmissionFormPage2Component extends React.Component {
       let hireDate = moment(new Date(cleanBody.hire_date));
       if (hireDate.isValid()) {
         cleanBody.hire_date = formElements.formatSFDate(hireDate);
-        console.log(`cleanBody.hire_date: ${cleanBody.hire_date}`);
+        // console.log(`cleanBody.hire_date: ${cleanBody.hire_date}`);
       }
     }
 
@@ -100,7 +100,7 @@ export class SubmissionFormPage2Component extends React.Component {
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;
 
-      console.log("CLEANBODY", cleanBody);
+      // console.log("CLEANBODY", cleanBody);
 
       await this.props
         .createSubmission(cleanBody, true) // partial submission = true

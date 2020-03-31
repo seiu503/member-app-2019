@@ -534,30 +534,30 @@ export const CAPE = props => {
         )}
         <div className={classes.legalCopy} ref={cape_legal}>
           <p>
-            <Translate
-              id={
-                iFrameURL &&
-                ((!checkoff || formValues.donationFrequency === "One-Time") &&
-                  formPage1.newCardNeeded)
-                  ? "capeLegalStripe1"
-                  : "capeLegalCheckoff1"
-              }
-            />
+            <strong>
+              <Translate id="capeNewLegal1" />
+            </strong>
           </p>
           <p>
-            <Translate id="capeLegal2" />
+            <Translate id="capeNewLegal2" />
           </p>
           <p>
-            <Translate id="capeLegal3" />
+            <Translate id="capeNewLegal3" />
           </p>
           <p>
-            <Translate id="capeLegal4" />
+            <Translate id="capeNewLegal4" />
           </p>
           <p>
-            <Translate id="capeLegal5" />
+            <Translate id="capeNewLegal5" />
           </p>
           <p>
-            <Translate id="capeLegal6" />
+            <Translate id="capeNewLegal6" />
+          </p>
+          <p>
+            <Translate id="capeNewLegal7" />
+          </p>
+          <p>
+            <Translate id="capeNewLegal8" />
           </p>
         </div>
         <ButtonWithSpinner

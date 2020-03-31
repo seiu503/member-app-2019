@@ -152,6 +152,21 @@ describe("<Tab3 />", () => {
       component.simulate("change", "Add new card");
       // expect(toggleCardAddingFrameMock.mock.calls.length).toBe(1);
     });
+
+    it("edge case no employerType", async () => {
+      delete props.formValues.employerType;
+      wrapper = shallow(<Tab3 {...props} />);
+      handleSubmitMock = jest.fn();
+      handleSubmit = handleSubmitMock;
+
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+
+      wrapper.setProps({ handleSubmit: handleSubmitMock });
+      component = wrapper.find("form");
+      component.simulate("submit", { ...testData });
+      expect(handleSubmit.mock.calls.length).toBe(1);
+    });
   });
   describe("conditional render", () => {
     it("renders Payment Type radio for retirees", () => {
@@ -192,6 +207,21 @@ describe("<Tab3 />", () => {
       const radio = findByTestAttr(wrapper, "radio-payment-type");
       expect(iframe.length).toBe(0);
       expect(radio.length).toBe(0);
+    });
+
+    it("renders check info if paymentType == 'Check'", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "state homecare or personal support"
+        },
+        formPage1: {
+          paymentType: "Check"
+        }
+      };
+      wrapper = setup(props);
+      const payByCheck = findByTestAttr(wrapper, "payByCheck");
+      expect(payByCheck.length).toBe(1);
     });
   });
 });
