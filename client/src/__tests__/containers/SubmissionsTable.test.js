@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, MemoryRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { shallow, mount } from "enzyme";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
@@ -98,16 +98,16 @@ const setup = (props = {}) => {
   return shallow(<SubmissionsTableUnconnected {...setupProps} store={store} />);
 };
 
-const mountedSetup = route => {
-  store = storeFactory(initialState);
-  return mount(
-    <Provider store={store}>
-      <BrowserRouter initialEntries={[route]}>
-        <SubmissionsTableConnected {...defaultProps} />
-      </BrowserRouter>
-    </Provider>
-  );
-};
+// const mountedSetup = route => {
+//   store = storeFactory(initialState);
+//   return mount(
+//     <Provider store={store}>
+//       <BrowserRouter initialEntries={[route]}>
+//         <SubmissionsTableConnected {...defaultProps} />
+//       </BrowserRouter>
+//     </Provider>
+//   );
+// };
 
 describe("<SubmissionsTable />", () => {
   describe("basic setup", () => {
@@ -197,6 +197,16 @@ describe("<SubmissionsTable />", () => {
       expect(getAllSubmissionsMock.mock.calls.length).toBe(1);
     });
 
+    test("edge case no userType", () => {
+      const props = {
+        appState: {
+          userType: null
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().componentDidMount();
+    });
+
     test("`getAllSubmissions` handles error if API call fails", () => {
       // run lifecycle method
       const props = {
@@ -213,7 +223,7 @@ describe("<SubmissionsTable />", () => {
 
     test("`getAllSubmissions` handles error if API call throws", () => {
       getAllSubmissionsErrorMock = jest.fn().mockImplementation(() => {
-        return Promise.reject(new Error());
+        return Promise.reject({ type: "GET_ALL_SUBMISSIONS_FAILURE" });
       });
       // run lifecycle method
       const props = {
@@ -260,6 +270,31 @@ describe("<SubmissionsTable />", () => {
       const submData = { junkData: "that will fail" };
       wrapper.instance().deleteSubmission(submData);
       expect(deleteSubmissionErrorMock.mock.calls.length).toBe(1);
+    });
+  });
+
+  describe("handleDeleteDialogOpen", () => {
+    beforeEach(() => {
+      wrapper = setup();
+    });
+    afterEach(() => {
+      jest.clearAllMocks();
+      wrapper.instance().props.submission.error = "";
+    });
+    test("`this.handleDeleteDialogOpen` handles edge case if no userType", () => {
+      const submData = { ...defaultProps.submission.currentSubmission };
+      const props = {
+        appState: {
+          userType: null
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().handleDeleteDialogOpen(submData);
+      expect(deleteSubmissionMock.mock.calls.length).toBe(0);
+    });
+    test("`this.handleDeleteDialogOpen` handles edge case if no submission", () => {
+      wrapper.instance().handleDeleteDialogOpen();
+      expect(deleteSubmissionMock.mock.calls.length).toBe(0);
     });
   });
 
@@ -325,6 +360,42 @@ describe("<SubmissionsTable />", () => {
       expect(getAllSubmissionsErrorMock.mock.calls.length).toBe(1);
     });
 
+    test("`getAllSubmissions` handles error if API call throws", () => {
+      const prevProps = {
+        ...defaultProps,
+        appState: {
+          authToken: null
+        },
+        submission: {
+          allSubmissions: [
+            {
+              id: "1",
+              ...submissionData
+            },
+            {
+              id: "2",
+              ...submissionData
+            }
+          ]
+        }
+      };
+      getAllSubmissionsErrorMock = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "GET_ALL_SUBMISSIONS_FAILURE" })
+        );
+      const props = {
+        apiSubmission: {
+          getAllSubmissions: getAllSubmissionsErrorMock
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().componentDidUpdate(prevProps);
+
+      // expect the mock to have been called once
+      expect(getAllSubmissionsErrorMock.mock.calls.length).toBe(1);
+    });
+
     test("calls `getAllSubmissions` prop on component update (new submissions)", () => {
       const prevProps = {
         submission: {
@@ -375,6 +446,34 @@ describe("<SubmissionsTable />", () => {
 
       // expect the mock to have been called once
       expect(getAllSubmissionsErrorMock.mock.calls.length).toBe(1);
+    });
+
+    test("edge case no userType", () => {
+      const props = {
+        appState: {
+          userType: null
+        }
+      };
+      const prevProps = {
+        ...defaultProps,
+        appState: {
+          authToken: null
+        },
+        submission: {
+          allSubmissions: [
+            {
+              id: "1",
+              ...submissionData
+            },
+            {
+              id: "2",
+              ...submissionData
+            }
+          ]
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().componentDidUpdate(prevProps);
     });
   });
 
