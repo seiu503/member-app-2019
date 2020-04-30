@@ -34,7 +34,8 @@
     "redux-form": "^8.2.4",
     "sanitize-html": "^1.20.1",
     "shortid": "^2.2.14",
-    "typescript": "^3.5.1"
+    "typescript": "^3.5.1",
+    "snyk": "^1.316.1"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",
@@ -74,7 +75,9 @@
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "sass:build": "npm-run-all -p build-task:*",
     "sass:watch": "chokidar 'src/styles/scss/' -c 'npm run sass:build'",
-    "dev": "npm-run-all -p sass:*"
+    "dev": "npm-run-all -p sass:*",
+    "snyk-protect": "snyk protect",
+    "prepare": "yarn run snyk-protect"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -116,5 +119,6 @@
       "!src/serviceWorker.js"
     ]
   },
-  "homepage": "https://test.seiu503signup.org"
+  "homepage": "https://test.seiu503signup.org",
+  "snyk": true
 }
