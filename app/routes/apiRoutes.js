@@ -16,6 +16,7 @@ const submissionCtrl = require("../controllers/submissions.ctrl");
 const imageCtrl = require("../controllers/image.ctrl");
 const sfCtrl = require("../controllers/sf.ctrl");
 const capeCtrl = require("../controllers/cape.ctrl");
+const utils = require("../utils/index.js");
 
 /* ============================== AUTH ROUTES =========================== */
 
@@ -686,6 +687,12 @@ router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
 //   Returns: { id } or error message.
 //
 router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
+
+/* =========================== NOSCRIPT ROUTES =========================== */
+// routes created for noscript version of front-end and form
+// all data processing and sequential SF calls moved to server side
+
+router.post("/noscript", utils.handleTab1);
 
 /* ================================ EXPORT ================================= */
 
