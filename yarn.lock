@@ -7232,6 +7232,11 @@ websocket-extensions@>=0.1.1:
   resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.3.tgz#5d2ff22977003ec687a4b87073dfbbac146ccf29"
   integrity sha512-nqHUnMXmBzT0w570r2JpJxfiSD1IzoI+HGVdd3aZ0yNi3ngvQ4jv1dtHt5VGxfI2yj5yqImPhOK4vmIh2xMbGg==
 
+when@~2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/when/-/when-2.4.0.tgz#4b762170a4dee67135bd62ac3d22cc4fc64cf831"
+  integrity sha1-S3YhcKTe5nE1vWKsPSLMT8ZM+DE=
+
 which-module@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/which-module/-/which-module-1.0.0.tgz#bba63ca861948994ff307736089e3b96026c2a4f"
@@ -7248,6 +7253,13 @@ which@1, which@1.3.1, which@^1.2.10, which@^1.2.14, which@^1.2.9, which@^1.3.0:
   integrity sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==
   dependencies:
     isexe "^2.0.0"
+
+why@^0.1.12:
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/why/-/why-0.1.12.tgz#a37a0bfd2007767346a3a694d032d2b0e0549a40"
+  integrity sha1-o3oL/SAHdnNGo6aU0DLSsOBUmkA=
+  dependencies:
+    when "~2.4.0"
 
 wide-align@1.1.3, wide-align@^1.1.0:
   version "1.1.3"
