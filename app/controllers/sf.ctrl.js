@@ -148,7 +148,7 @@ exports.createSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 148: createSFContact`);
 
   const bodyRaw = { ...req.body };
-  console.log(`sf.ctrl.js > 151`);
+  console.log(`sf.ctrl.js > 151, req.body`);
   console.log(bodyRaw);
   const body = {};
 
@@ -159,14 +159,14 @@ exports.createSFContact = async (req, res, next) => {
       body[sfFieldName] = bodyRaw[key];
     }
   });
-  // console.log(`sf.ctrl.js > 74`);
+  // console.log(`sf.ctrl.js > 162, body`);
   // console.log(body);
   delete body["Account.Id"];
   delete body["Account.Agency_Number__c"];
   delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
-  console.log("sf.ctrl.js > 168");
-  console.log(body);
+  // console.log("sf.ctrl.js > 168, body");
+  // console.log(body);
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -178,11 +178,14 @@ exports.createSFContact = async (req, res, next) => {
   let contact;
   try {
     contact = await conn.sobject("Contact").create({ ...body });
-    if (res.locals.next) {
+    if (req.locals.next) {
+      console.log(`sf.ctrl.js > 182: returning next`);
+      console.log(`sf_contact_id: ${contact.Id || contact.id}`);
       res.locals.sf_contact_id = contact.Id || contact.id;
-      return next();
+      return contact.Id || contact.id;
+    } else {
+      return res.status(200).json({ salesforce_id: contact.Id || contact.id });
     }
-    return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
     console.error(`sf.ctrl.js > 185: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -208,6 +211,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
 
   if (!first_name || !last_name || !home_email) {
     console.error(`sf.ctrl.js > 206: Missing required fields`);
+    console.error(req.body);
     return res
       .status(500)
       .json({ message: "Please complete all required fields." });
@@ -231,16 +235,30 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
     if (contact.totalSize === 0 || !contact) {
       // if no contact found, return error message to client
       console.error(`sf.ctrl.js > 97: No matching record found.`);
-      return res.status(404).json({
-        message: "No matching record found."
+      if (req.locals.next) {
+        console.log(`sf.ctrl.js > 236: NEXT`);
+        return next();
+      } else {
+        return res.status(404).json({
+          message: "No matching record found."
+        });
+      }
+    }
+    if (req.locals.next) {
+      console.log(`sf.ctrl.js > 245: NEXT`);
+
+      return {
+        salesforce_id: contact.records[0].Id || contact.records[0].id,
+        Current_CAPE__c: contact.records[0].Current_CAPE__c
+      };
+    } else {
+      return res.status(200).json({
+        salesforce_id: contact.records[0].Id || contact.records[0].id,
+        Current_CAPE__c: contact.records[0].Current_CAPE__c
       });
     }
-    return res.status(200).json({
-      salesforce_id: contact.records[0].Id || contact.records[0].id,
-      Current_CAPE__c: contact.records[0].Current_CAPE__c
-    });
   } catch (err) {
-    console.error(`sf.ctrl.js > 239: ${err}`);
+    console.error(`sf.ctrl.js > 259: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -289,9 +307,9 @@ exports.updateSFContact = async (req, res, next) => {
       Id: id,
       ...updates
     });
-    if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 273: returning next`);
-      return next();
+    if (req.locals.next) {
+      console.log(`sf.ctrl.js > 313: returning next`);
+      return id;
     }
 
     let response = {
@@ -730,20 +748,25 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 720: ${err}`);
+    console.error(`sf.ctrl.js > 750: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
   try {
     accounts = await conn.query(query);
     if (!accounts || !accounts.records || !accounts.records.length) {
-      console.log(`sf.ctrl.js > 728: returning employers to client`);
+      console.log(`sf.ctrl.js > 757: returning employers to client`);
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
-    console.log(`sf.ctrl.js > 730: returning employers to client`);
-    return res.status(200).json(accounts.records);
+    if (req.locals.next) {
+      console.log(`sf.ctrl.js > 761: returning next`);
+      return accounts.records;
+    } else {
+      console.log(`sf.ctrl.js > 764: returning employers to client`);
+      return res.status(200).json(accounts.records);
+    }
   } catch (err) {
-    console.error(`sf.ctrl.js > 733: ${err}`);
+    console.error(`sf.ctrl.js > 769: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

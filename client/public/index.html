@@ -2251,9 +2251,9 @@
           <form id="membershipApplication" class="jss218" action="%REACT_APP_BASE_URL%/api/noscript" method="post">
             <div class="jss228">
               <div class="MuiFormControl-root jss236" data-test="select-employer-type" type="select">
-                <label class="MuiFormLabel-root jss239" for="employerName">Employer</label>
+                <label class="MuiFormLabel-root jss239" for="employer_name">Employer</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
-                  <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="employerName" required>
+                  <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="employer_name" name="employer_name" required>
                     <option value=""></option>
                     <option value="" disabled>=== === State Agencies === ===</option>
                     <option value="board of examiners for speech-lang path and audiology">Board of Examiners for Speech-Lang Path and Audiology</option>
@@ -2379,12 +2379,12 @@
               </div>
               <div class="MuiFormGroup-root jss243 MuiFormGroup-row">
                 <div class="MuiFormControl-root MuiTextField-root" style="width: 48%;" data-test="component-text-field">
-                  <label class="MuiFormLabel-root jss239" for="firstName">First Name</label>
+                  <label class="MuiFormLabel-root jss239" for="first_name">First Name</label>
                   <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                     <input
                       class="MuiInputBase-input MuiOutlinedInput-input"
-                      id="firstName"
-                      name="firstName"
+                      id="first_name"
+                      name="first_name"
                       type="text"
                       value=""
                       required
@@ -2398,9 +2398,9 @@
                   </div>
                 </div>
                 <div class="MuiFormControl-root MuiTextField-root" style="width: 48%;" data-test="component-text-field">
-                  <label class="MuiFormLabel-root jss239" for="lastName">Last Name</label>
+                  <label class="MuiFormLabel-root jss239" for="last_name">Last Name</label>
                   <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                    <input  class="MuiInputBase-input MuiOutlinedInput-input" id="lastName" name="lastName" type="text" value="" required>
+                    <input  class="MuiInputBase-input MuiOutlinedInput-input" id="last_name" name="last_name" type="text" value="" required>
                     <fieldset aria-hidden="true" style="padding-left: 38.625px;" class="jss205 MuiOutlinedInput-notchedOutline">
                       <legend class="jss206" style="width: 0.01px;">
                         <span>​</span>
@@ -2453,9 +2453,9 @@
               </div>
             </div>
             <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-              <label class="MuiFormLabel-root jss239" for="homeStreet">Home Street</label>
+              <label class="MuiFormLabel-root jss239" for="home_street">Home Street</label>
               <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                <input  class="MuiInputBase-input MuiOutlinedInput-input" id="homeStreet" name="homeStreet" type="text" value="" required>
+                <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_street" name="home_street" type="text" value="" required>
                 <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
                   <legend class="jss206" style="width: 0.01px;">
                     <span>​</span>
@@ -2466,9 +2466,9 @@
             <p class="MuiFormHelperText-root jss240">Please enter your physical street address here, not a P.O. box.</p>
             <div class="MuiFormGroup-root jss243 jss242 MuiFormGroup-row">
               <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 48%;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="homeCity">Home City</label>
+                <label class="MuiFormLabel-root jss239" for="home_city">Home City</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="homeCity" name="homeCity" type="text" value="" required>
+                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_city" name="home_city" type="text" value="" required>
                   <fieldset aria-hidden="true" style="padding-left: 37.875px;" class="jss205 MuiOutlinedInput-notchedOutline">
                     <legend class="jss206" style="width: 0.01px;">
                       <span>​</span>
@@ -2477,9 +2477,9 @@
                 </div>
               </div>
               <div class="MuiFormControl-root jss236" type="select" style="width: 80px;">
-                <label class="MuiFormLabel-root jss239" for="homeState">State</label>
+                <label class="MuiFormLabel-root jss239" for="home_state">State</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
-                  <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="homeState" required>
+                  <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="home_state" required>
                     <option value="">
                     </option>
                     <option value="al">AL</option>
@@ -2544,9 +2544,9 @@
                 </div>
               </div>
               <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 150px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="homeZip">ZIP Code</label>
+                <label class="MuiFormLabel-root jss239" for="home_zip">ZIP Code</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="homeZip" name="homeZip" type="text" value="" placeholder="12345" pattern="(^\d{5}$)" required>
+                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_zip" name="home_zip" type="text" value="" placeholder="12345" pattern="(^\d{5}$)" required>
                   <fieldset aria-hidden="true" style="padding-left: 49.875px;" class="jss205 MuiOutlinedInput-notchedOutline">
                     <legend class="jss206" style="width: 0.01px;">
                       <span>​</span>
@@ -2556,9 +2556,9 @@
               </div>
             </div>
             <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-              <label class="MuiFormLabel-root jss239" for="homeEmail">Home Email</label>
+              <label class="MuiFormLabel-root jss239" for="home_email">Home Email</label>
               <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                <input  class="MuiInputBase-input MuiOutlinedInput-input" id="homeEmail" name="homeEmail" type="email" value="" required>
+                <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_email" name="home_email" type="email" value="" required>
                 <fieldset aria-hidden="true" style="padding-left: 42.375px;" class="jss205 MuiOutlinedInput-notchedOutline">
                   <legend class="jss206" style="width: 0.01px;">
                     <span>​</span>
@@ -2569,9 +2569,9 @@
             <p class="MuiFormHelperText-root jss240">Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone.</p>
             <div class="MuiFormGroup-root">
               <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="mobilePhone">Mobile Phone†</label>
+                <label class="MuiFormLabel-root jss239" for="mobile_phone">Mobile Phone†</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="mobilePhone" name="mobilePhone" type="tel" value="">
+                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="mobile_phone" name="mobile_phone" type="tel" value="">
                     <fieldset aria-hidden="true" style="padding-left: 49.125px;" class="jss205 MuiOutlinedInput-notchedOutline">
                       <legend class="jss206" style="width: 0.01px;">
                         <span>​</span>
