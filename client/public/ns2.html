@@ -2,17 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="%PUBLIC_URL%/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="%PUBLIC_URL%/favicon-16x16.png">
-    <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest">
-    <link rel="mask-icon" href="%PUBLIC_URL%/safari-pinned-tab.svg" color="#510677">
+    <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="msapplication-TileColor" content="#510677">
     <meta name="theme-color" content="#510677">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" id="google-fonts-css" href="//fonts.googleapis.com/css?family=Source+Sans+Pro" type="text/css" media="all">
-    <link rel="stylesheet" href="%PUBLIC_URL%/css/index.css">
+    <link rel="stylesheet" href="/css/index.css">
 
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -52,6 +47,20 @@
       }
       body::backdrop {
         background-color: #fafafa;
+      }
+      .jss412 {
+        top: 0;
+        left: 0;
+        width: 100%;
+        cursor: inherit;
+        height: 100%;
+        margin: 0;
+        opacity: 0;
+        padding: 0;
+        position: absolute;
+      }
+      .jss239 {
+        margin: 0 0 3px 0;
       }
     </style>
     <style data-jss="" data-meta="MuiTypography">
@@ -192,7 +201,8 @@
       .MuiTypography-displayBlock {
         display: block;
       }
-      </style><style data-jss="" data-meta="MuiPaper">
+      </style>
+          <style data-jss="" data-meta="MuiPaper">
       .MuiPaper-root {
         color: rgba(0, 0, 0, 0.87);
         transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -276,7 +286,8 @@
       .MuiPaper-elevation24 {
         box-shadow: 0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12);
       }
-      </style><style data-jss="" data-meta="MuiAppBar">
+      </style>
+          <style data-jss="" data-meta="MuiAppBar">
       .MuiAppBar-root {
         width: 100%;
         display: flex;
@@ -354,7 +365,8 @@
       .MuiToolbar-dense {
         min-height: 48px;
       }
-      </style><style data-jss="" data-meta="MuiTouchRipple">
+      </style>
+          <style data-jss="" data-meta="MuiTouchRipple">
       .MuiTouchRipple-root {
         top: 0;
         left: 0;
@@ -619,7 +631,8 @@
       .MuiButton-fullWidth {
         width: 100%;
       }
-      </style><style data-jss="" data-meta="MuiIconButton">
+      </style>
+          <style data-jss="" data-meta="MuiIconButton">
       .MuiIconButton-root {
         flex: 0 0 auto;
         color: rgba(0, 0, 0, 0.54);
@@ -941,7 +954,8 @@
         -moz-appearance: textfield;
         -webkit-appearance: textfield;
       }
-      </style><style data-jss="" data-meta="PrivateNotchedOutline">
+      </style>
+          <style data-jss="" data-meta="PrivateNotchedOutline">
       .jss205 {
         top: -5px;
         left: 0;
@@ -1092,7 +1106,8 @@
       .MuiInputLabel-outlined.MuiInputLabel-shrink {
         transform: translate(14px, -6px) scale(0.75);
       }
-      </style><style data-jss="" data-meta="MuiFormControl">
+      </style>
+          <style data-jss="" data-meta="MuiFormControl">
       .MuiFormControl-root {
         border: 0;
         margin: 0;
@@ -2247,366 +2262,69 @@
   <body>
     <noscript>
       <div class="noscript-form">
-        <div data-test="component-tab1" class="jss216">
-          <form id="membershipApplication" class="jss218" action="%REACT_APP_BASE_URL%/api/noscript" method="post">
-            <div class="jss228">
-              <div class="MuiFormControl-root jss236" data-test="select-employer-type" type="select">
-                <label class="MuiFormLabel-root jss239" for="employer_name">Employer</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
-                  <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="employer_name" name="employer_name" required>
-                    <option value=""></option>
-                    <option value="" disabled>=== === State Agencies === ===</option>
-                    <option value="board of examiners for speech-lang path and audiology">Board of Examiners for Speech-Lang Path and Audiology</option>
-                    <option value="oregon advocacy commission">Oregon Advocacy Commission</option>
-                    <option value="department of geology and mineral industries (dogami)">Department of Geology and Mineral Industries (DOGAMI)</option>
-                    <option value="board of examiners for engineering and land surveying (osbeels)">Board of Examiners for Engineering and Land Surveying (OSBEELS)</option>
-                    <option value="oregon health authority">OREGON HEALTH AUTHORITY</option>
-                    <option value="board of licensed professional counselors and therapists">BOARD OF LICENSED PROFESSIONAL COUNSELORS AND THERAPISTS</option>
-                    <option value="oregon health related licensing board">OREGON HEALTH RELATED LICENSING BOARD</option>
-                    <option value="board of social workers">BOARD OF SOCIAL WORKERS</option>
-                    <option value="state board of massage therapists">State Board of Massage Therapists</option>
-                    <option value="health boards">Health Boards</option>
-                    <option value="board of medical imaging">Board of Medical Imaging</option>
-                    <option value="board of mortuary cemetery">Board of Mortuary Cemetery</option>
-                    <option value="state of oregon">State of Oregon</option>
-                    <option value="department of administrative services">DEPARTMENT OF ADMINISTRATIVE SERVICES</option>
-                    <option value="department of agriculture">DEPARTMENT OF AGRICULTURE</option>
-                    <option value="commission for the blind">COMMISSION FOR THE BLIND</option>
-                    <option value="department of consumer &amp; business services">DEPARTMENT OF CONSUMER &amp; BUSINESS SERVICES</option>
-                    <option value="department of education">DEPARTMENT OF EDUCATION</option>
-                    <option value="employment department">EMPLOYMENT DEPARTMENT</option>
-                    <option value="oregon department of fish and wildlife">OREGON DEPARTMENT OF FISH AND WILDLIFE</option>
-                    <option value="department of forestry">DEPARTMENT OF FORESTRY</option>
-                    <option value="hi ed coordinating comm">HI ED COORDINATING COMM</option>
-                    <option value="oregon housing &amp; community serv">OREGON HOUSING &amp; COMMUNITY SERV</option>
-                    <option value="department of justice">DEPARTMENT OF JUSTICE</option>
-                    <option value="public employees retirement services">PUBLIC EMPLOYEES RETIREMENT SERVICES</option>
-                    <option value="department of revenue">DEPARTMENT OF REVENUE</option>
-                    <option value="teacher standards &amp; practices">TEACHER STANDARDS &amp; PRACTICES</option>
-                    <option value="department of transportation">DEPARTMENT OF TRANSPORTATION</option>
-                    <option value="department of treasury">DEPARTMENT OF TREASURY</option>
-                    <option value="oregon youth authority">OREGON YOUTH AUTHORITY</option>
-                    <option value="department of human services">Department of Human Services</option>
-                    <option value="oregon department of aviation">OREGON DEPARTMENT OF AVIATION</option>
-                    <option value="psychologists examiners board">PSYCHOLOGISTS EXAMINERS BOARD</option>
-                    <option value="department of veterans affairs">DEPARTMENT OF VETERANS AFFAIRS</option>
-                    <option value="oregon state library">OREGON STATE LIBRARY</option>
-                    <option value="oregon student assistance commission">OREGON STUDENT ASSISTANCE COMMISSION</option>
-                    <option value="office of comm college services">OFFICE OF COMM COLLEGE SERVICES</option>
-                    <option value="community college board">COMMUNITY COLLEGE BOARD</option>
-                    <option value="oprd">OPRD</option>
-                    <option value="water resources department">WATER RESOURCES DEPARTMENT</option>
-                    <option value="dentistry board">DENTISTRY BOARD</option>
-                    <option value="bureau of labor &amp; industries">BUREAU OF LABOR &amp; INDUSTRIES</option>
-                    <option value="oregon medical board">OREGON MEDICAL BOARD</option>
-                    <option value="board of nursing">BOARD OF NURSING</option>
-                    <option value="board of pharmacy">BOARD OF PHARMACY</option>
-                    <option value="hi-ed coordinating committee">HI-ED COORDINATING COMMITTEE</option>
-                    <option value="health licensing agency">HEALTH LICENSING AGENCY</option>
-                    <option value="or watershed enhancement board (oweb)">OR Watershed Enhancement Board (OWEB)</option>
-                    <option value="higher education coordination committee (hecc)">Higher Education Coordination Committee (HECC)</option>
-                    <option value="" disabled>=== Local Government (City, County, School District) ===</option>
-                    <option value="city of springfield employees">CITY OF SPRINGFIELD EMPLOYEES</option>
-                    <option value="basin transit service">BASIN TRANSIT SERVICE</option>
-                    <option value="city of cannon beach">CITY OF CANNON BEACH</option>
-                    <option value="city of tigard employees">CITY OF TIGARD EMPLOYEES</option>
-                    <option value="city of wilsonville">CITY OF WILSONVILLE</option>
-                    <option value="coos bay-north bend water board">COOS BAY-NORTH BEND WATER BOARD</option>
-                    <option value="josephine county">JOSEPHINE COUNTY</option>
-                    <option value="curry county employees">CURRY COUNTY EMPLOYEES</option>
-                    <option value="portland public school employees">PORTLAND PUBLIC SCHOOL EMPLOYEES</option>
-                    <option value="baker county employees">BAKER COUNTY EMPLOYEES</option>
-                    <option value="central oregon irrig district">CENTRAL OREGON IRRIG DISTRICT</option>
-                    <option value="city of beaverton employees">CITY OF BEAVERTON EMPLOYEES</option>
-                    <option value="city of pendleton">CITY OF PENDLETON</option>
-                    <option value="jackson county employees">JACKSON COUNTY EMPLOYEES</option>
-                    <option value="linn county employees assn">LINN COUNTY EMPLOYEES ASSN</option>
-                    <option value="marion county employees">MARION COUNTY EMPLOYEES</option>
-                    <option value="oregon cascades west cog">OREGON CASCADES WEST COG</option>
-                    <option value="the dalles city of employees assn.">THE DALLES CITY OF EMPLOYEES ASSN.</option>
-                    <option value="wallowa co. roads dept.">WALLOWA CO. ROADS DEPT.</option>
-                    <option value="wallowa cty professional emps">WALLOWA CTY PROFESSIONAL EMPS</option>
-                    <option value="lcog sdsd">LCOG SDSD</option>
-                    <option value="" disabled>=== === Adult Foster Homes === ===</option>
-                    <option value="adult foster care">ADULT FOSTER CARE</option>
-                    <option value="" disabled>=== === Non Profit === ===</option>
-                    <option value="alvord taylor">ALVORD TAYLOR</option>
-                    <option value="cascade aids project">CASCADE AIDS PROJECT</option>
-                    <option value="oregon supported living program">OREGON SUPPORTED LIVING PROGRAM</option>
-                    <option value="the child center">THE CHILD CENTER</option>
-                    <option value="education northwest (formerly nwrel)">EDUCATION NORTHWEST (Formerly NWREL)</option>
-                    <option value="coda">CODA</option>
-                    <option value="parry center for children">PARRY CENTER FOR CHILDREN</option>
-                    <option value="public broadcasting comm">PUBLIC BROADCASTING COMM</option>
-                    <option value="" disabled>=== === Child Care === ===</option>
-                    <option value="family child care">FAMILY CHILD CARE</option>
-                    <option value="" disabled>=== === Nursing Homes === ===</option>
-                    <option value="avamere health services">AVAMERE HEALTH SERVICES</option>
-                    <option value="benicia senior care">BENICIA SENIOR CARE</option>
-                    <option value="dakavia health services">DAKAVIA HEALTH SERVICES</option>
-                    <option value="empres health care">EMPRES HEALTH CARE</option>
-                    <option value="cornerstone healthcare services">Cornerstone Healthcare Services</option>
-                    <option value="avalon health care">AVALON HEALTH CARE</option>
-                    <option value="prestige nursing homes">PRESTIGE NURSING HOMES</option>
-                    <option value="healthcare services group">HEALTHCARE SERVICES GROUP</option>
-                    <option value="" disabled>=== === Private Homecare Agency === ===</option>
-                    <option value="addus">ADDUS</option>
-                    <option value="" disabled>=== === Retired === ===</option>
-                    <option value="retirees">Retirees</option>
-                    <option value="" disabled>=== === Higher Education === ===</option>
-                    <option value="eastern oregon university">EASTERN OREGON UNIVERSITY</option>
-                    <option value="oregon institute of technology">OREGON INSTITUTE OF TECHNOLOGY</option>
-                    <option value="western oregon university">WESTERN OREGON UNIVERSITY</option>
-                    <option value="oregon state university">OREGON STATE UNIVERSITY</option>
-                    <option value="southern oregon university">SOUTHERN OREGON UNIVERSITY</option>
-                    <option value="university of oregon">UNIVERSITY OF OREGON</option>
-                    <option value="portland state university">PORTLAND STATE UNIVERSITY</option>
-                    <option value="" disabled>=== === State Homecare or Personal Support === ===</option>
-                    <option value="PPL PSW">Personal Support Worker (paid by PPL)</option>
-                    <option value="State PSW">Personal Support Worker (paid by State of Oregon)</option>
-                    <option value="State APD">Homecare Worker (Aging and People with Disabilities)</option>
-                  </select>
-                  <svg class="MuiSvgIcon-root MuiSelect-icon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
-                    <path d="M7 10l5 5 5-5z">
-                </path>
-                  </svg>
-                  <fieldset aria-hidden="true" style="padding-left: 49.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
-                      <span>​</span>
-                    </legend>
-                  </fieldset>
-                </div>
-              </div>
-              <div class="MuiFormGroup-root jss243 MuiFormGroup-row">
-                <div class="MuiFormControl-root MuiTextField-root" style="width: 48%;" data-test="component-text-field">
-                  <label class="MuiFormLabel-root jss239" for="first_name">First Name</label>
-                  <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                    <input
-                      class="MuiInputBase-input MuiOutlinedInput-input"
-                      id="first_name"
-                      name="first_name"
-                      type="text"
-                      value=""
-                      required
-                      style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;"
-                      >
-                    <fieldset aria-hidden="true" style="padding-left: 39px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                      <legend class="jss206" style="width: 0.01px;">
-                        <span>​</span>
-                      </legend>
-                    </fieldset>
-                  </div>
-                </div>
-                <div class="MuiFormControl-root MuiTextField-root" style="width: 48%;" data-test="component-text-field">
-                  <label class="MuiFormLabel-root jss239" for="last_name">Last Name</label>
-                  <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                    <input  class="MuiInputBase-input MuiOutlinedInput-input" id="last_name" name="last_name" type="text" value="" required>
-                    <fieldset aria-hidden="true" style="padding-left: 38.625px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                      <legend class="jss206" style="width: 0.01px;">
-                        <span>​</span>
-                      </legend>
-                    </fieldset>
-                  </div>
-                </div>
-              </div>
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px; margin-top: 30px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="dob">Birth Date (mm/dd/yyyy)</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input type="date" class="MuiInputBase-input MuiOutlinedInput-input" id="dob" name="dob" min="1920-01-01" max="2004-01-01" placeholder="mm/dd/yyyy" pattern="(^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d$)" required title="MM/DD/YYYY format only">
-                  <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
-                      <span>​</span>
-                    </legend>
-                  </fieldset>
-                </div>
-              </div>
-            </div>
-            <div class="MuiFormControl-root jss236" type="select">
-              <label class="MuiFormLabel-root jss239" for="preferredLanguage">
-                Preferred Language
-              </label>
-              <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
-                <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="preferredLanguage" required>
-                  <option value=""></option>
-                  <option value="english">English</option>
-                  <option value="asl (sign language)">ASL (Sign Language)</option>
-                  <option value="cantonese">Cantonese</option>
-                  <option value="cantonese and mandarin">Cantonese AND Mandarin</option>
-                  <option value="mandarin">Mandarin</option>
-                  <option value="russian">Russian</option>
-                  <option value="somali">Somali</option>
-                  <option value="spanish">Spanish</option>
-                  <option value="vietnamese">Vietnamese</option>
-                  <option value="amharic">Amharic</option>
-                  <option value="arabic">Arabic</option>
-                  <option value="haitian creole">Haitian Creole</option>
-                </select>
-                <svg class="MuiSvgIcon-root MuiSelect-icon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
-                  <path d="M7 10l5 5 5-5z">
-                </path>
-                </svg>
-                <fieldset aria-hidden="true" style="padding-left: 8px;" class="jss205 MuiOutlinedInput">
-                  <legend class="jss206">
-                    <span>​</span>
-                  </legend>
-                </fieldset>
-              </div>
-            </div>
-            <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-              <label class="MuiFormLabel-root jss239" for="home_street">Home Street</label>
-              <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_street" name="home_street" type="text" value="" required>
-                <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                  <legend class="jss206" style="width: 0.01px;">
-                    <span>​</span>
-                  </legend>
-                </fieldset>
-              </div>
-            </div>
-            <p class="MuiFormHelperText-root jss240">Please enter your physical street address here, not a P.O. box.</p>
-            <div class="MuiFormGroup-root jss243 jss242 MuiFormGroup-row">
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 48%;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="home_city">Home City</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_city" name="home_city" type="text" value="" required>
-                  <fieldset aria-hidden="true" style="padding-left: 37.875px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
-                      <span>​</span>
-                    </legend>
-                  </fieldset>
-                </div>
-              </div>
-              <div class="MuiFormControl-root jss236" type="select" style="width: 80px;">
-                <label class="MuiFormLabel-root jss239" for="home_state">State</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
-                  <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="home_state" required>
-                    <option value="">
-                    </option>
-                    <option value="al">AL</option>
-                    <option value="ak">AK</option>
-                    <option value="az">AZ</option>
-                    <option value="ar">AR</option>
-                    <option value="ca">CA</option>
-                    <option value="co">CO</option>
-                    <option value="ct">CT</option>
-                    <option value="de">DE</option>
-                    <option value="fl">FL</option>
-                    <option value="ga">GA</option>
-                    <option value="hi">HI</option>
-                    <option value="id">ID</option>
-                    <option value="il">IL</option>
-                    <option value="in">IN</option>
-                    <option value="ia">IA</option>
-                    <option value="ks">KS</option>
-                    <option value="ky">KY</option>
-                    <option value="la">LA</option>
-                    <option value="me">ME</option>
-                    <option value="md">MD</option>
-                    <option value="ma">MA</option>
-                    <option value="mi">MI</option>
-                    <option value="mn">MN</option>
-                    <option value="ms">MS</option>
-                    <option value="mo">MO</option>
-                    <option value="mt">MT</option>
-                    <option value="ne">NE</option>
-                    <option value="nv">NV</option>
-                    <option value="nh">NH</option>
-                    <option value="nj">NJ</option>
-                    <option value="nm">NM</option>
-                    <option value="ny">NY</option>
-                    <option value="nc">NC</option>
-                    <option value="nd">ND</option>
-                    <option value="oh">OH</option>
-                    <option value="ok">OK</option>
-                    <option value="or">OR</option>
-                    <option value="pa">PA</option>
-                    <option value="ri">RI</option>
-                    <option value="sc">SC</option>
-                    <option value="sd">SD</option>
-                    <option value="tn">TN</option>
-                    <option value="tx">TX</option>
-                    <option value="ut">UT</option>
-                    <option value="vt">VT</option>
-                    <option value="va">VA</option>
-                    <option value="wa">WA</option>
-                    <option value="wv">WV</option>
-                    <option value="wi">WI</option>
-                    <option value="wy">WY</option>
-                  </select>
-                  <svg class="MuiSvgIcon-root MuiSelect-icon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
-                    <path d="M7 10l5 5 5-5z"></path>
-                  </svg>
-                  <fieldset aria-hidden="true" style="padding-left: 8px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206">
-                      <span>​</span>
-                    </legend>
-                  </fieldset>
-                </div>
-              </div>
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 150px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="home_zip">ZIP Code</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_zip" name="home_zip" type="text" value="" placeholder="12345" pattern="(^\d{5}$)" required>
-                  <fieldset aria-hidden="true" style="padding-left: 49.875px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
-                      <span>​</span>
-                    </legend>
-                  </fieldset>
-                </div>
-              </div>
-            </div>
-            <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-              <label class="MuiFormLabel-root jss239" for="home_email">Home Email</label>
-              <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_email" name="home_email" type="email" value="" required>
-                <fieldset aria-hidden="true" style="padding-left: 42.375px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                  <legend class="jss206" style="width: 0.01px;">
-                    <span>​</span>
-                  </legend>
-                </fieldset>
-              </div>
-            </div>
-            <p class="MuiFormHelperText-root jss240">Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone.</p>
-            <div class="MuiFormGroup-root">
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="mobile_phone">Mobile Phone†</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
-                  <input  class="MuiInputBase-input MuiOutlinedInput-input" id="mobile_phone" name="mobile_phone" type="tel" value="">
-                    <fieldset aria-hidden="true" style="padding-left: 49.125px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                      <legend class="jss206" style="width: 0.01px;">
-                        <span>​</span>
-                      </legend>
-                    </fieldset>
-                </div>
-              </div>
-              <p class="MuiFormHelperText-root jss240">† By providing my phone number, I understand that the Service Employees International Union (SEIU), its local unions, and affiliates may use automated calling technologies and/or text message me on my cellular phone on a periodic basis. SEIU will never charge for text message alerts. Carrier message and data rates may apply to such alerts. Reply STOP to stop receiving messages; reply HELP for more information.</p>
-                <div class="MuiFormControl-root jss248">
-                  <label class="MuiFormControlLabel-root">
-                    <span class="MuiButtonBase-root MuiIconButton-root jss401 MuiCheckbox-root MuiCheckbox-colorPrimary MuiIconButton-colorPrimary" aria-disabled="false" data-test="component-checkbox">
-                      <span class="MuiIconButton-label">
-                        <input id="textAuthOptOut" name="checkbox" type="checkbox" data-indeterminate="false" value="false">
-                      </span>
-                      <span class="MuiTouchRipple-root">
-                      </span>
-                    </span>
-                    <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">OPT OUT OF RECEIVING MOBILE ALERTS†</span>
-                  </label>
-                </div>
-              </div>
-              <div class="jss219">
-                <button class="MuiButtonBase-root MuiButton-root jss222 g-recaptcha MuiButton-contained MuiButton-containedPrimary" tabindex="0" type="submit">
-                  <span class="MuiButton-label">Next</span>
+        <div data-test="component-tab2" class="jss216">
+          <form id="tab2" class="jss218" style="padding-top: 40px;" action="http://localhost:8080/api/noscript2" method="post">
+            <div class="MuiFormControl-root jss249">
+              <label class="MuiFormControlLabel-root">
+                <span class="MuiButtonBase-root MuiIconButton-root jss409 MuiCheckbox-root MuiCheckbox-colorPrimary MuiIconButton-colorPrimary" aria-disabled="false" data-test="component-checkbox">
+                  <span class="MuiIconButton-label">
+                    <input id="termsAgree" name="checkbox" type="checkbox" data-indeterminate="false" value="false" required>
+                  </span>
                   <span class="MuiTouchRipple-root">
                   </span>
-                </button>
+                </span>
+                <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">Membership Authorization</span>
+              </label>
+            </div>
+            <div class="jss250" id="termsOfServiceLegalLanguage">
+              <p><strong>Yes, I want to join with my fellow employees and become a member of SEIU Local 503 (“Local 503”).</strong>This means I will receive the benefits and abide by the obligations of membership set forth in the Constitutions and Bylaws of both Local 503 and the Service Employees International Union (“SEIU”). I authorize Local 503 to act as my representative in collective bargaining over wages, benefits, and other terms and conditions of employment with my employer, and as my exclusive representative where authorized by law. I know that membership in the union is voluntary and is not a condition of my employment, and that I can decline to join without reprisal.</p>
+            </div>
+            <div class="MuiFormControl-root jss249">
+              <label class="MuiFormControlLabel-root">
+                <span class="MuiButtonBase-root MuiIconButton-root jss409 MuiCheckbox-root MuiCheckbox-colorPrimary MuiIconButton-colorPrimary" aria-disabled="false" data-test="component-checkbox">
+                  <span class="MuiIconButton-label">
+                    <input id="checkoffAuth" name="checkbox" type="checkbox" data-indeterminate="false" value="false" required>
+                  </span>
+                  <span class="MuiTouchRipple-root">
+                  </span>
+                </span>
+                <span class="MuiTypography-root MuiFormControlLabel-label MuiTypography-body1">Dues Deduction/Checkoff Authorization</span>
+              </label>
+            </div>
+            <div class="jss250" id="checkoffLegalLanguage">
+              <p>I request and voluntarily authorize my employer to deduct from my earnings and to pay to Local 503 an amount equal to the regular monthly dues and other fees or assessments uniformly applicable to members of Local 503. This authorization shall remain in effect unless I revoke it by sending written notice via U.S. mail to Local 503 during the periods not less than 30 days and not more than 45 days before either (1) the annual anniversary date of this agreement, or (2) the date of termination of the applicable collective bargaining agreement between the employer and Local 503. This authorization shall be automatically renewed from year to year unless I revoke it in writing during a window period, even if I have resigned my membership.</p>
+              <p>
+              This authorization is voluntary and is not a condition of my employment, and I can decline to agree to it without reprisal. I understand that all members benefit from everyone’s commitments because they help to build a strong union that is able to plan for the future.
+              </p>
+            </div>
+            <h3 class="MuiTypography-root MuiTypography-body1">SIGNATURE</h3>
+            <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
+              <label class="MuiFormLabel-root jss239" for="signature">Your Full Legal Name</label>
+              <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
+                <input aria-invalid="false" class="MuiInputBase-input MuiOutlinedInput-input" id="signature" name="signature" type="text" value="" required>
+                  <fieldset aria-hidden="true" style="padding-left: 61.125px;" class="jss205 MuiOutlinedInput-notchedOutline">
+                    <legend class="jss206" style="width: 0.01px;">
+                      <span>​</span>
+                    </legend>
+                  </fieldset>
+                </div>
               </div>
+            <p class="MuiFormHelperText-root jss240">
+              Enter your full legal name. This will act as your signature.
+            </p>
+            <div class="jss219">
+              <button class="MuiButtonBase-root MuiButton-root jss222 MuiButton-contained MuiButton-containedPrimary" tabindex="0" type="submit">
+                <span class="MuiButton-label">Submit</span>
+                <span class="MuiTouchRipple-root">
+                </span>
+              </button>
             </div>
           </form>
-        </div>
+          </div>
       </div>
     </noscript>
     <div id="root">
-                </div>
+    </div>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

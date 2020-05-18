@@ -97,7 +97,7 @@ const handleTab1 = async (req, res, next) => {
         console.log(
           `utils/index.js > handleTab1 75 salesforceId: ${salesforce_id}`
         );
-        const redirect = `${CLIENT_URL}/ns2?salesforce_id=${salesforce_id}`;
+        const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}`;
         console.log(`utils/index.js > handleTab1 77 redirect: ${redirect}`);
         return res.status(200).redirect(redirect);
       })
@@ -138,9 +138,9 @@ const handleTab1 = async (req, res, next) => {
         console.log(
           `utils/index.js > handleTab1 132: salesforce_id: ${salesforce_id}`
         );
-        const redirect = `${CLIENT_URL}/ns2?salesforce_id=${salesforce_id}`;
+        const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}`;
         console.log(`utils/index.js > handleTab1 134: ${redirect}`);
-        return res.status(200).redirect(redirect);
+        return res.redirect(redirect);
       })
       .catch(err => {
         console.error(`utils/index.js > handleTab1 127: ${err}`);

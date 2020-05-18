@@ -178,7 +178,7 @@ exports.createSFContact = async (req, res, next) => {
   let contact;
   try {
     contact = await conn.sobject("Contact").create({ ...body });
-    if (req.locals.next) {
+    if (req.locals && req.locals.next) {
       console.log(`sf.ctrl.js > 182: returning next`);
       console.log(`sf_contact_id: ${contact.Id || contact.id}`);
       res.locals.sf_contact_id = contact.Id || contact.id;
@@ -235,16 +235,16 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
     if (contact.totalSize === 0 || !contact) {
       // if no contact found, return error message to client
       console.error(`sf.ctrl.js > 97: No matching record found.`);
-      if (req.locals.next) {
+      if (req.locals && req.locals.next) {
         console.log(`sf.ctrl.js > 236: NEXT`);
-        return next();
+        return null;
       } else {
         return res.status(404).json({
           message: "No matching record found."
         });
       }
     }
-    if (req.locals.next) {
+    if (req.locals && req.locals.next) {
       console.log(`sf.ctrl.js > 245: NEXT`);
 
       return {
@@ -307,7 +307,7 @@ exports.updateSFContact = async (req, res, next) => {
       Id: id,
       ...updates
     });
-    if (req.locals.next) {
+    if (req.locals && req.locals.next) {
       console.log(`sf.ctrl.js > 313: returning next`);
       return id;
     }
@@ -758,7 +758,7 @@ exports.getAllEmployers = async (req, res, next) => {
       console.log(`sf.ctrl.js > 757: returning employers to client`);
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
-    if (req.locals.next) {
+    if (req.locals && req.locals.next) {
       console.log(`sf.ctrl.js > 761: returning next`);
       return accounts.records;
     } else {
