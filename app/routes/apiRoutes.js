@@ -694,6 +694,8 @@ router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
 
 router.post("/noscript", utils.handleTab1);
 
+router.post("/noscript2", utils.handleTab2);
+
 /* ================================ EXPORT ================================= */
 
 module.exports = router;

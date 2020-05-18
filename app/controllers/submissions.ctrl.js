@@ -8,7 +8,14 @@ const request = require("request");
 
 // import models
 const submissions = require("../../db/models/submissions");
-const utils = require("../utils");
+const utils = require("../utils/index.js");
+
+// can't import this from utils for methods that are being imported into utils
+// eg createSubmission bc of circular imports problem
+getClientIp = req => {
+  console.log(`utils/index.js > getClientIp`);
+  return req.headers["x-real-ip"] || req.connection.remoteAddress;
+};
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -41,8 +48,8 @@ const utils = require("../utils");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  const ip = utils.getClientIp(req);
-  console.log("submissions.ctrl.js > 43: createSubmission");
+  const ip = getClientIp(req);
+  console.log("submissions.ctrl.js > 45: createSubmission");
   console.log(req.body);
   let {
     submission_date,
@@ -71,12 +78,11 @@ const createSubmission = async (req, res, next) => {
     salesforce_id
   } = req.body;
 
-  const requiredFields = [
-    "submission_date",
-    "first_name",
-    "last_name",
-    "home_email"
-  ];
+  const requiredFields = ["first_name", "last_name", "home_email"];
+
+  if (!submission_date) {
+    submission_date = new Date();
+  }
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (missingField) {
@@ -140,11 +146,15 @@ const createSubmission = async (req, res, next) => {
   } else {
     res.locals.submission_id = createSubmissionResult[0].id;
     res.locals.currentSubmission = createSubmissionResult[0];
-    return res.status(200).json({
-      salesforce_id,
-      submission_id: createSubmissionResult[0].id,
-      currentSubmission: createSubmissionResult[0]
-    });
+    if (req.locals && req.locals.next) {
+      return createSubmissionResult[0].id;
+    } else {
+      return res.status(200).json({
+        salesforce_id,
+        submission_id: createSubmissionResult[0].id,
+        currentSubmission: createSubmissionResult[0]
+      });
+    }
   }
 };
 

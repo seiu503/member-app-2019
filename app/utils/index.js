@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const http = require("http");
 const https = require("https");
 const sfCtrl = require("../controllers/sf.ctrl");
+const submissionCtrl = require("../controllers/submissions.ctrl");
 
 const CLIENT_URL =
   process.env.NODE_CONFIG_ENV === "production"
@@ -27,7 +28,7 @@ const randomText = () => {
 /** Error handler for route controllers */
 const handleError = (res, err) => {
   console.log(`utils/index.js > handleError`);
-  console.error(err.message ? err.message : err);
+  console.error(err && err.message ? err.message : err);
   return res.status(500).json({ message: err });
 };
 
@@ -48,7 +49,10 @@ generateToken = user => {
 };
 
 /** Get client IP from req */
-getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
+getClientIp = req => {
+  console.log(`utils/index.js > getClientIp`);
+  return req.headers["x-real-ip"] || req.connection.remoteAddress;
+};
 
 // find matching employer object from SF Employers array returned from API
 findEmployerObject = (employerObjects, employerName) =>
@@ -61,10 +65,16 @@ findEmployerObject = (employerObjects, employerName) =>
       })[0]
     : { Name: "" };
 
-/** Handle Tab1 submit from noscript form */
+/** Handle Tab1 Tab2 submissions from noscript form */
 // for users with javascript disabled, all front-end processing
 // has to be moved to back end
 
+// handleTab1 performs:
+// lookupSFContactByFLE
+// getSFEmployers
+// createSFContact
+// updateSFContact
+// createSumbission <== ???
 const handleTab1 = async (req, res, next) => {
   console.log(`utils/index.js > handleTab1 61: formValues`);
   const formValues = { ...req.body };
@@ -97,12 +107,25 @@ const handleTab1 = async (req, res, next) => {
         console.log(
           `utils/index.js > handleTab1 75 salesforceId: ${salesforce_id}`
         );
-        const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}`;
-        console.log(`utils/index.js > handleTab1 77 redirect: ${redirect}`);
-        return res.status(200).redirect(redirect);
+        req.body.salesforce_id = salesforce_id;
+        // create initial submission here
+        submissionCtrl
+          .createSubmission(req, res, next)
+          .then(submissionId => {
+            console.log(
+              `utils/index.js > handleTab1 156: submissionId: ${submissionId}`
+            );
+            const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
+            console.log(`utils/index.js > handleTab1 151: ${redirect}`);
+            return res.redirect(redirect);
+          })
+          .catch(err => {
+            console.error(`utils/index.js > handleTab1 160: ${err}`);
+            return handleError(err);
+          });
       })
       .catch(err => {
-        console.error(`utils/index.js > handleTab1 81: ${err}`);
+        console.error(`utils/index.js > handleTab1 111: ${err}`);
         return handleError(res, err);
       });
   } else {
@@ -113,12 +136,12 @@ const handleTab1 = async (req, res, next) => {
     const sfEmployers = await sfCtrl
       .getAllEmployers(req, res, next)
       .catch(err => {
-        console.error(`utils/index.js > handleTab1 112: ${err}`);
+        console.error(`utils/index.js > handleTab1 122: ${err}`);
         return handleError(err);
       });
 
     console.log(
-      `utils/index.js > handleTab1 118: sfEmployers: ${sfEmployers.length}`
+      `utils/index.js > handleTab1 127: sfEmployers: ${sfEmployers.length}`
     );
     console.log(formValues.employer_name);
     const employerObject = findEmployerObject(
@@ -126,27 +149,52 @@ const handleTab1 = async (req, res, next) => {
       formValues.employer_name
     );
     const employer_id = employerObject.Id;
-    console.log(`utils/index.js > handleTab1 122: employer_id: ${employer_id}`);
+    const agency_number = employerObject.Agency_Number__c;
+    console.log(
+      `utils/index.js > handleTab1 136: employer_id: ${employer_id}, agency_number: ${agency_number}`
+    );
     req.body.employer_id = employer_id;
+    req.body.agency_number = agency_number;
+    req.body.submission_date = new Date();
 
     sfCtrl
       .createSFContact(req, res, next)
       .then(salesforce_id => {
-        console.log(`utils/index.js > handleTab1 131`);
-        console.log(salesforce_id);
-
         console.log(
-          `utils/index.js > handleTab1 132: salesforce_id: ${salesforce_id}`
+          `utils/index.js > handleTab1 146: salesforce_id: ${salesforce_id}`
         );
-        const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}`;
-        console.log(`utils/index.js > handleTab1 134: ${redirect}`);
-        return res.redirect(redirect);
+
+        req.body.salesforce_id = salesforce_id;
+
+        // create initial submission here
+        submissionCtrl
+          .createSubmission(req, res, next)
+          .then(submissionId => {
+            console.log(
+              `utils/index.js > handleTab1 156: submissionId: ${submissionId}`
+            );
+            const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
+            console.log(`utils/index.js > handleTab1 151: ${redirect}`);
+            return res.redirect(redirect);
+          })
+          .catch(err => {
+            console.error(`utils/index.js > handleTab1 160: ${err}`);
+            return handleError(err);
+          });
       })
       .catch(err => {
-        console.error(`utils/index.js > handleTab1 127: ${err}`);
+        console.error(`utils/index.js > handleTab1 155: ${err}`);
         return handleError(err);
       });
   }
+};
+
+// handleTab2 performs:
+// updateSubmission
+// createSFOMA
+
+const handleTab2 = async (req, res, next) => {
+  console.log(`utils/index.js > 181 handleTab2`);
 };
 
 module.exports = {
@@ -155,5 +203,6 @@ module.exports = {
   setUserInfo,
   generateToken,
   getClientIp,
-  handleTab1
+  handleTab1,
+  handleTab2
 };
