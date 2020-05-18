@@ -1,4 +1,5 @@
 const request = require("request");
+const url = require("url");
 
 /*
    Route handlers for fetching and updating submissions.
@@ -165,9 +166,20 @@ const createSubmission = async (req, res, next) => {
  */
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
-  const { id } = req.params;
-  // console.log(`subm.ctrl.js > 173 - id: ${id} (updates below)`);
-  // console.log(updates);
+  delete updates.submission_id;
+  let { id } = req.params;
+  console.log(`subm.ctrl.js > 170 - id: ${id} (updates below)`);
+  console.log(updates);
+  console.log("=============");
+  console.log(`subm.ctrl.js > 172: referer: ${req.headers.referer}`);
+  const queryData = url.parse(req.headers.referer, true).query;
+  console.log(queryData);
+  if (queryData.submission_id) {
+    id = queryData.submission_id;
+  }
+  if (queryData.salesforce_id) {
+    updates.Worker__c = queryData.salesforce_id;
+  }
 
   if (!updates || !Object.keys(updates).length) {
     console.error("subm.ctrl.js > 173: !updates");
@@ -205,9 +217,13 @@ const updateSubmission = async (req, res, next) => {
     // console.log(updateSubmissionResult[0].id);
     // saving to res.locals to make id available for testing
     res.locals.submission_id = updateSubmissionResult[0].id;
-    return res
-      .status(200)
-      .json({ submission_id: updateSubmissionResult[0].id });
+    if (req.locals && req.locals.next) {
+      return updateSubmissionResult[0];
+    } else {
+      return res
+        .status(200)
+        .json({ submission_id: updateSubmissionResult[0].id });
+    }
   }
 };
 

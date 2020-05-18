@@ -68,6 +68,13 @@ const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
 
+// can't import this from utils for methods that are being imported into utils
+// eg createSFOnlineMemberApp bc of circular imports problem
+getClientIp = req => {
+  console.log(`utils/index.js > getClientIp`);
+  return req.headers["x-real-ip"] || req.connection.remoteAddress;
+};
+
 /* ================================ CONTACTS =============================== */
 
 /* ++++++++++++++++++++++++++++++++ CONTACTS: GET ++++++++++++++++++++++++++ */
@@ -337,7 +344,7 @@ exports.updateSFContact = async (req, res, next) => {
  */
 
 exports.createSFOnlineMemberApp = async (req, res, next) => {
-  const ip = utils.getClientIp(req);
+  const ip = getClientIp(req);
   console.log(`sf.ctrl.js > 332: ${ip}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {

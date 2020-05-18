@@ -53,6 +53,16 @@
       body::backdrop {
         background-color: #fafafa;
       }
+      .js-required {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        padding: 20px;
+        background: red;
+        color: #fff;
+        text-align: center;
+        font-weight: 700;
+        font-size: 1em;
+      }
     </style>
     <style data-jss="" data-meta="MuiTypography">
       .MuiTypography-root {
@@ -2246,6 +2256,9 @@
   </head>
   <body>
     <noscript>
+      <div class="js-required">
+        This site requires javascript to work as intended. For a better user experience, please <a href="https://enable-javascript.com/">click here to enable javascript in your browser.</a>
+      </div>
       <div class="noscript-form">
         <div data-test="component-tab1" class="jss216">
           <form id="membershipApplication" class="jss218" action="%REACT_APP_BASE_URL%/api/noscript" method="post">

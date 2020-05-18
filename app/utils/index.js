@@ -194,7 +194,30 @@ const handleTab1 = async (req, res, next) => {
 // createSFOMA
 
 const handleTab2 = async (req, res, next) => {
-  console.log(`utils/index.js > 181 handleTab2`);
+  console.log(`utils/index.js > 197 handleTab2: formValues`);
+  const formValues = { ...req.body };
+  console.log(formValues);
+  req.locals = {
+    next: true
+  };
+  req.params = {
+    id: req.body.submission_id
+  };
+  submissionCtrl
+    .updateSubmission(req, res, next)
+    .then(submissionBody => {
+      req.body = { ...formValues, ...submissionBody.body };
+      console.log(`utils.index.js > 210 handleTab2: req.body`);
+      console.log(req.body);
+      sfCtrl.createSFOnlineMemberApp(req, res, next).then(sf_OMA_id => {
+        console.log(`utils/index.js > 211 handleTab2 sfOMA success`);
+        return res.redirect("https://seiu503.org/members/thank-you/");
+      });
+    })
+    .catch(err => {
+      console.error(`utils/index.js > handleTab2 209: ${err}`);
+      return handleError(err);
+    });
 };
 
 module.exports = {
