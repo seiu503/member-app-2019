@@ -86,8 +86,12 @@ formatSFDate = date => {
 // updateSFContact
 // createSumbission <== ???
 const handleTab1 = async (req, res, next) => {
-  console.log(`utils/index.js > handleTab1 61: formValues`);
+  req.body.birthdate = formatSFDate(req.body.birthdate);
+  if (!req.body.text_auth_opt_out) {
+    req.body.text_auth_opt_out = false;
+  }
   const formValues = { ...req.body };
+  console.log(`utils/index.js > handleTab1 94: formValues`);
   console.log(formValues);
   req.locals = {
     next: true
@@ -101,41 +105,35 @@ const handleTab1 = async (req, res, next) => {
       return handleError(err);
     });
 
-  console.log(`utils/index.js > handleTab1 66: lookupRes.status`);
-  console.log(lookupRes ? lookupRes : "lookupRes is undefined");
-
   let salesforce_id =
     lookupRes && lookupRes.salesforce_id ? lookupRes.salesforce_id : null;
 
   // if lookup was successful, update existing contact and move to next tab
   if (salesforce_id) {
-    console.log(`utils/index.js > handleTab1 77`);
+    console.log(`utils/index.js > handleTab1 113 update contact`);
     req.params.id = salesforce_id;
     await sfCtrl
       .updateSFContact(req, res, next)
       .then(salesforce_id => {
-        console.log(
-          `utils/index.js > handleTab1 75 salesforceId: ${salesforce_id}`
-        );
         req.body.salesforce_id = salesforce_id;
         // create initial submission here
         submissionCtrl
           .createSubmission(req, res, next)
           .then(submissionId => {
             console.log(
-              `utils/index.js > handleTab1 156: submissionId: ${submissionId}`
+              `utils/index.js > handleTab1 124: submissionId: ${submissionId}`
             );
             const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
-            console.log(`utils/index.js > handleTab1 151: ${redirect}`);
+            console.log(`utils/index.js > handleTab1 127: ${redirect}`);
             return res.redirect(redirect);
           })
           .catch(err => {
-            console.error(`utils/index.js > handleTab1 160: ${err}`);
+            console.error(`utils/index.js > handleTab1 131: ${err}`);
             return handleError(err);
           });
       })
       .catch(err => {
-        console.error(`utils/index.js > handleTab1 111: ${err}`);
+        console.error(`utils/index.js > handleTab1 136: ${err}`);
         return handleError(res, err);
       });
   } else {
@@ -166,8 +164,6 @@ const handleTab1 = async (req, res, next) => {
     req.body.employer_id = employer_id;
     req.body.agency_number = agency_number;
     req.body.submission_date = formatSFDate(new Date());
-    const tempDOB = req.body.birthdate;
-    req.body.birthdate = formatSFDate(tempDOB);
 
     sfCtrl
       .createSFContact(req, res, next)

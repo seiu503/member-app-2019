@@ -173,13 +173,13 @@ const updateSubmission = async (req, res, next) => {
   if (queryData.salesforce_id) {
     updates.salesforce_id = queryData.salesforce_id;
   }
-  if ((updates.checkoff_auth = "on")) {
+  if (updates.checkoff_auth === "on") {
     updates.checkoff_auth = new Date();
   }
-  if ((updates.terms_agree = "on")) {
-    updates.terms_agree = new Date();
+  if (updates.terms_agree === "on") {
+    updates.terms_agree = true;
   }
-  if ((updates.scholarship_flag = "on")) {
+  if (updates.scholarship_flag === "on") {
     updates.scholarship_flag = true;
   }
   console.log(`subm.ctrl.js > 170 - id: ${id} (updates below)`);

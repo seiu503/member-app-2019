@@ -68,8 +68,20 @@ const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
 
-// can't import this from utils bc it would be a circular import
+// can't import these 2 funcs from utils bc circular imports
 getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
+
+formatSFDate = date => {
+  let d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
 
 /* ================================ CONTACTS =============================== */
 
@@ -292,6 +304,9 @@ exports.updateSFContact = async (req, res, next) => {
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
+  if (updates.Birthdate__c) {
+    updates.Birthdate__c = formatSFDate(updates.birthdate);
+  }
   // don't make any changes to contact account/employer
   // updates.AccountId = updatesRaw.employer_id;
   console.log(`sf.ctrl.js > 276: UPDATE SFCONTACT updates`);
@@ -377,17 +392,13 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    body.Birthdate__c = bodyRaw.birthdate || bodyRaw.dob;
+    body.Birthdate__c = formatSFDate(bodyRaw.birthdate);
+    body.Submission_Date__c = formatSFDate(new Date());
     body.Worker__c = bodyRaw.Worker__c || bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
     console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
-    if ((bodyRaw.checkoff_auth = "on")) {
-      body.Checkoff_Auth__c = new Date();
-    }
-    if ((bodyRaw.terms_agree = "on")) {
-      body.termsagree__c = new Date();
-    }
-    if ((bodyRaw.scholarship_flag = "on")) {
+    body.Checkoff_Auth__c = formatSFDate(body.Checkoff_Auth__c);
+    if (bodyRaw.scholarship_flag === "on") {
       body.Scholarship_Flag__c = true;
     }
     console.log(`sf.ctrl.js > 393: sfOMA body`);
