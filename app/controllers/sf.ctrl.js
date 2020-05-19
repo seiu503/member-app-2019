@@ -68,12 +68,8 @@ const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
 
-// can't import this from utils for methods that are being imported into utils
-// eg createSFOnlineMemberApp bc of circular imports problem
-getClientIp = req => {
-  console.log(`utils/index.js > getClientIp`);
-  return req.headers["x-real-ip"] || req.connection.remoteAddress;
-};
+// can't import this from utils bc it would be a circular import
+getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 /* ================================ CONTACTS =============================== */
 
@@ -368,12 +364,11 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
         }
       }
     });
-    console.log("#####################");
     console.log(
-      `sf.ctrl.js: 346: bodyRaw.agency_number: ${bodyRaw.agency_number}`
+      `sf.ctrl.js: 369: bodyRaw.agency_number: ${bodyRaw.agency_number}`
     );
     console.log(
-      `sf.ctrl.js: 347: body.Agency_Number_from_Webform__c: ${
+      `sf.ctrl.js: 372: body.Agency_Number_from_Webform__c: ${
         body.Agency_Number_from_Webform__c
       }`
     );
@@ -382,22 +377,35 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    body.Birthdate__c = bodyRaw.birthdate;
-    body.Worker__c = bodyRaw.Worker__c;
+    body.Birthdate__c = bodyRaw.birthdate || bodyRaw.dob;
+    body.Worker__c = bodyRaw.Worker__c || bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
-    console.log(`sf.ctrl.js > 347`);
-    console.log(bodyRaw.Worker__c);
+    console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
+    if ((bodyRaw.checkoff_auth = "on")) {
+      body.Checkoff_Auth__c = new Date();
+    }
+    if ((bodyRaw.terms_agree = "on")) {
+      body.termsagree__c = new Date();
+    }
+    if ((bodyRaw.scholarship_flag = "on")) {
+      body.Scholarship_Flag__c = true;
+    }
+    console.log(`sf.ctrl.js > 393: sfOMA body`);
     console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
       ...body
     });
 
-    return res.status(200).json({
-      salesforce_id: res.locals.sf_contact_id,
-      submission_id: res.locals.submission_id,
-      sf_OMA_id: OMA.id || OMA.Id
-    });
+    if (req.locals && req.locals.next) {
+      return OMA.id || OMA.Id;
+    } else {
+      return res.status(200).json({
+        salesforce_id: res.locals.sf_contact_id,
+        submission_id: res.locals.submission_id,
+        sf_OMA_id: OMA.id || OMA.Id
+      });
+    }
   } catch (err) {
     console.error(`sf.ctrl.js > 352: ${err}`);
     return res.status(500).json({ message: err.message });

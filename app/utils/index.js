@@ -49,10 +49,7 @@ generateToken = user => {
 };
 
 /** Get client IP from req */
-getClientIp = req => {
-  console.log(`utils/index.js > getClientIp`);
-  return req.headers["x-real-ip"] || req.connection.remoteAddress;
-};
+getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 // find matching employer object from SF Employers array returned from API
 findEmployerObject = (employerObjects, employerName) =>
@@ -64,6 +61,19 @@ findEmployerObject = (employerObjects, employerName) =>
         return obj.Name.toLowerCase() === employerName.toLowerCase();
       })[0]
     : { Name: "" };
+
+// format date for submission to SF
+formatSFDate = date => {
+  let d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
 
 /** Handle Tab1 Tab2 submissions from noscript form */
 // for users with javascript disabled, all front-end processing
@@ -155,7 +165,9 @@ const handleTab1 = async (req, res, next) => {
     );
     req.body.employer_id = employer_id;
     req.body.agency_number = agency_number;
-    req.body.submission_date = new Date();
+    req.body.submission_date = formatSFDate(new Date());
+    const tempDOB = req.body.birthdate;
+    req.body.birthdate = formatSFDate(tempDOB);
 
     sfCtrl
       .createSFContact(req, res, next)
@@ -206,7 +218,9 @@ const handleTab2 = async (req, res, next) => {
   submissionCtrl
     .updateSubmission(req, res, next)
     .then(submissionBody => {
-      req.body = { ...formValues, ...submissionBody.body };
+      console.log(`@@@@ Is this the updated submission body?`);
+      console.log(submissionBody);
+      req.body = { ...formValues, ...submissionBody };
       console.log(`utils.index.js > 210 handleTab2: req.body`);
       console.log(req.body);
       sfCtrl.createSFOnlineMemberApp(req, res, next).then(sf_OMA_id => {
@@ -226,6 +240,7 @@ module.exports = {
   setUserInfo,
   generateToken,
   getClientIp,
+  formatSFDate,
   handleTab1,
   handleTab2
 };

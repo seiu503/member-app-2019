@@ -11,12 +11,8 @@ const url = require("url");
 const submissions = require("../../db/models/submissions");
 const utils = require("../utils/index.js");
 
-// can't import this from utils for methods that are being imported into utils
-// eg createSubmission bc of circular imports problem
-getClientIp = req => {
-  console.log(`utils/index.js > getClientIp`);
-  return req.headers["x-real-ip"] || req.connection.remoteAddress;
-};
+// can't import this from utils bc it would be a circular import
+getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -168,9 +164,6 @@ const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   delete updates.submission_id;
   let { id } = req.params;
-  console.log(`subm.ctrl.js > 170 - id: ${id} (updates below)`);
-  console.log(updates);
-  console.log("=============");
   console.log(`subm.ctrl.js > 172: referer: ${req.headers.referer}`);
   const queryData = url.parse(req.headers.referer, true).query;
   console.log(queryData);
@@ -178,8 +171,19 @@ const updateSubmission = async (req, res, next) => {
     id = queryData.submission_id;
   }
   if (queryData.salesforce_id) {
-    updates.Worker__c = queryData.salesforce_id;
+    updates.salesforce_id = queryData.salesforce_id;
   }
+  if ((updates.checkoff_auth = "on")) {
+    updates.checkoff_auth = new Date();
+  }
+  if ((updates.terms_agree = "on")) {
+    updates.terms_agree = new Date();
+  }
+  if ((updates.scholarship_flag = "on")) {
+    updates.scholarship_flag = true;
+  }
+  console.log(`subm.ctrl.js > 170 - id: ${id} (updates below)`);
+  console.log(updates);
 
   if (!updates || !Object.keys(updates).length) {
     console.error("subm.ctrl.js > 173: !updates");
@@ -218,6 +222,8 @@ const updateSubmission = async (req, res, next) => {
     // saving to res.locals to make id available for testing
     res.locals.submission_id = updateSubmissionResult[0].id;
     if (req.locals && req.locals.next) {
+      console.log("submissions.ctrl.js > 229: updateSubmissionResult");
+      console.log(updateSubmissionResult[0]);
       return updateSubmissionResult[0];
     } else {
       return res
