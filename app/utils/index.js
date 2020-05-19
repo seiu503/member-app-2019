@@ -96,8 +96,8 @@ const handleTab1 = async (req, res, next) => {
     req.body.text_auth_opt_out = true;
   }
   const formValues = { ...req.body };
-  console.log(`utils/index.js > handleTab1 94: formValues`);
-  console.log(formValues);
+  // console.log(`utils/index.js > handleTab1 94: formValues`);
+  // console.log(formValues);
   req.locals = {
     next: true
   };
@@ -207,7 +207,18 @@ const handleTab1 = async (req, res, next) => {
 // createSFOMA
 
 const handleTab2 = async (req, res, next) => {
-  console.log(`utils/index.js > 197 handleTab2: formValues`);
+  req.body.online_campaign_source = "NoJavascript";
+  req.body.legal_language = legal_language;
+  if (req.body.terms_agree === "on") {
+    req.body.terms_agree = true;
+  }
+  if (req.body.scholarship_flag === "on") {
+    req.body.scholarship_flag = true;
+  }
+  if (req.body.checkoff_auth === "on") {
+    req.body.checkoff_auth = true;
+  }
+  console.log(`utils/index.js > 212 handleTab2: formValues`);
   const formValues = { ...req.body };
   console.log(formValues);
   req.locals = {
@@ -216,12 +227,11 @@ const handleTab2 = async (req, res, next) => {
   req.params = {
     id: req.body.submission_id
   };
+
   submissionCtrl
     .updateSubmission(req, res, next)
     .then(submissionBody => {
       req.body = { ...formValues, ...submissionBody };
-      req.body.online_campaign_source = "NoJavascript";
-      req.body.legal_language = legal_language;
       req.body.maintenance_of_effort = formatSFDate(new Date());
       req.body.seiu503_cba_app_date = formatSFDate(new Date());
       req.body.immediate_past_member_status = "Not a Member";

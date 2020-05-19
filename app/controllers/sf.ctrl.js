@@ -163,8 +163,8 @@ exports.createSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 148: createSFContact`);
 
   const bodyRaw = { ...req.body };
-  console.log(`sf.ctrl.js > 151, req.body`);
-  console.log(bodyRaw);
+  // console.log(`sf.ctrl.js > 151, req.body`);
+  // console.log(bodyRaw);
   const body = {};
 
   // convert raw body to key/value pairs using SF API field names
@@ -393,7 +393,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
     body.Birthdate__c = formatSFDate(bodyRaw.birthdate);
-    body.Submission_Date__c = formatSFDate(new Date());
+    body.Submission_Date__c = new Date(); // this one can be a datetime
     body.Worker__c = bodyRaw.Worker__c || bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
     console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);

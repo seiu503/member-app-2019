@@ -93,7 +93,7 @@ const createSubmission = async (req, res, next) => {
   const createSubmissionResult = await submissions
     .createSubmission(
       ip,
-      submission_date,
+      new Date(), // submission date can be datetime
       agency_number,
       birthdate,
       cell_phone,
