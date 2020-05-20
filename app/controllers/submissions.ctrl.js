@@ -324,7 +324,7 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = async (req, res) => {
-  const ip = utils.getClientIp(req);
+  const ip = getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
