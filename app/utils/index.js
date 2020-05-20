@@ -31,7 +31,7 @@ const randomText = () => {
 /** Error handler for route controllers */
 const handleError = (res, err) => {
   console.log(`utils/index.js > handleError`);
-  console.error(err && err.message ? err.message : err);
+  // console.error(err && err.message ? err.message : err);
   return res.status(500).json({ message: err });
 };
 
@@ -55,8 +55,8 @@ generateToken = user => {
 getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 // find matching employer object from SF Employers array returned from API
-findEmployerObject = (employerObjects, employerName) =>
-  employerObjects
+findEmployerObject = (employerObjects, employerName) => {
+  employerObjects && Array.isArray(employerObjects)
     ? employerObjects.filter(obj => {
         if (employerName.toLowerCase() === "community member") {
           return obj.Name.toLowerCase() === "community members";
@@ -64,6 +64,7 @@ findEmployerObject = (employerObjects, employerName) =>
         return obj.Name.toLowerCase() === employerName.toLowerCase();
       })[0]
     : { Name: "" };
+};
 
 // format date for submission to SF
 formatSFDate = date => {
@@ -84,7 +85,7 @@ formatSFDate = date => {
 
 // handleTab1 performs:
 // lookupSFContactByFLE
-// getSFEmployers
+// getAllEmployers
 // createSFContact
 // updateSFContact
 // createSumbission
@@ -107,7 +108,7 @@ const handleTab1 = async (req, res, next) => {
     .lookupSFContactByFLE(req, res, next)
     .catch(err => {
       console.log(`index/utils.js > 109`);
-      console.error(err);
+      // console.error(err);
       return handleError(err);
     });
 
@@ -159,11 +160,13 @@ const handleTab1 = async (req, res, next) => {
     );
     console.log(formValues.employer_name);
     const employerObject = findEmployerObject(
-      sfEmployers,
-      formValues.employer_name
+      Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }],
+      formValues.employer_name || ""
     );
-    const employer_id = employerObject.Id;
-    const agency_number = employerObject.Agency_Number__c;
+    const employer_id = employerObject
+      ? employerObject.Id
+      : "0016100000WERGeAAP"; // <== 'Unknown Employer'
+    const agency_number = employerObject ? employerObject.Agency_Number__c : 0;
     console.log(
       `utils/index.js > handleTab1 136: employer_id: ${employer_id}, agency_number: ${agency_number}`
     );
@@ -236,15 +239,21 @@ const handleTab2 = async (req, res, next) => {
       req.body.maintenance_of_effort = formatSFDate(new Date());
       req.body.seiu503_cba_app_date = formatSFDate(new Date());
       req.body.immediate_past_member_status = "Not a Member";
-      console.log(`utils.index.js > 228 handleTab2: req.body`);
+      console.log(`utils.index.js > 240 handleTab2: req.body`);
       console.log(req.body);
-      sfCtrl.createSFOnlineMemberApp(req, res, next).then(sf_OMA_id => {
-        console.log(`utils/index.js > 231 handleTab2 sfOMA success`);
-        return res.redirect("https://seiu503.org/members/thank-you/");
-      });
+      sfCtrl
+        .createSFOnlineMemberApp(req, res, next)
+        .then(sf_OMA_id => {
+          console.log(`utils/index.js > 244 handleTab2 sfOMA success`);
+          return res.redirect("https://seiu503.org/members/thank-you/");
+        })
+        .catch(err => {
+          console.error(`utils/index.js > handleTab2 248: ${err}`);
+          return handleError(res, err);
+        });
     })
     .catch(err => {
-      console.error(`utils/index.js > handleTab2 236: ${err}`);
+      console.error(`utils/index.js > handleTab2 253: ${err}`);
       return handleError(res, err);
     });
 };

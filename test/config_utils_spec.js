@@ -47,6 +47,15 @@ suite("fieldConfig.js", function() {
 });
 
 suite("utils/index.js", function() {
+  before(() => {
+    const sfCtrlOrig = { ...sfCtrl };
+    const submCtrlOrig = { ...submissionCtrl };
+  });
+  after(() => {
+    sinon.restore();
+    sfCtrl = { ...sfCtrlOrig };
+    submissionCtrl = { ...submCtrlOrig };
+  });
   test("formats date as YYYY-MM-DD for salesforce", () => {
     const result = formatDate("1/1/2000");
     assert.equal(result, "2000-01-01");
@@ -80,9 +89,10 @@ suite("utils/index.js", function() {
     assert.equal(result, token);
   });
 
-  suite.only("handleTab1", () => {
+  suite("handleTab1", () => {
     after(() => {
       return knexCleaner.clean(db);
+      sinon.restore();
     });
     afterEach(function() {
       res = mockRes();
@@ -93,9 +103,7 @@ suite("utils/index.js", function() {
         body: submissionBody
       });
       const LookupError = "LookupError (Test)";
-      const lookupSFContactByFLEError = sinon
-        .stub()
-        .throws(new Error(LookupError));
+      const lookupSFContactByFLEError = sinon.stub().rejects(LookupError);
       sfCtrl.lookupSFContactByFLE = lookupSFContactByFLEError;
       try {
         result = await utils.handleTab1(req, res);
@@ -150,7 +158,7 @@ suite("utils/index.js", function() {
       const createError = "CreateError (Test)";
       const lookupSFContactByFLESuccess = sinon.stub().resolves(LookupStub);
       const updateSFContactSuccess = sinon.stub().resolves(updateStub);
-      const createSubmissionError = sinon.stub().throws(new Error(createError));
+      const createSubmissionError = sinon.stub().rejects(createError);
       sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
       sfCtrl.updateSFContact = updateSFContactSuccess;
       submissionCtrl.createSubmission = createSubmissionError;
@@ -178,7 +186,7 @@ suite("utils/index.js", function() {
       });
       const LookupStub = { salesforce_id: "0035500000VFkjOAAT" };
       const UpdateError = "UpdateError (Test)";
-      const updateSFContactError = sinon.stub().throws(new Error(UpdateError));
+      const updateSFContactError = sinon.stub().rejects(UpdateError);
       const lookupSFContactByFLESuccess = sinon.stub().resolves(LookupStub);
       sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
       sfCtrl.updateSFContact = updateSFContactError;
@@ -193,8 +201,7 @@ suite("utils/index.js", function() {
                 assert.calledWith(res.json, { message: UpdateError });
               })
               .catch(err => {
-                console.log(`is this the error (test line 201`);
-                console.log(err);
+                // console.log(err);
               });
           })
           .catch(err => {
@@ -239,6 +246,169 @@ suite("utils/index.js", function() {
               .catch(err => console.log(err));
           })
           .catch(err => console.log(err));
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    test("handles error if getSFEmployers throws", async () => {
+      req = mockReq({
+        body: submissionBody
+      });
+      res = mockRes();
+      const LookupStub = null;
+      const getEmployersError = "getEmployersError";
+      const lookupSFContactByFLESuccess = sinon.stub().resolves(LookupStub);
+      const getSFEmployersError = sinon.stub().rejects(getEmployersError);
+      sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
+      sfCtrl.getAllEmployers = getSFEmployersError;
+      try {
+        result = await utils
+          .handleTab1(req, res)
+          .then(async () => {
+            await lookupSFContactByFLESuccess(req, res);
+            await getSFEmpoyersError(req, res)
+              .then(() => {
+                assert.calledWith(res.status, 500);
+                assert.calledWith(res.json, { message: getSFEmployersError });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+    test("handles error if createSFContact throws", async () => {
+      req = mockReq({
+        body: submissionBody
+      });
+      res = mockRes();
+      const LookupStub = null;
+      const getEmployersStub = [
+        { Name: "employer_name", Id: "0035500000VFkjOAAT" }
+      ];
+      const createContactErrorMsg = "CreateContactError";
+      const lookupSFContactByFLESuccess = sinon.stub().resolves(LookupStub);
+      const getSFEmpoyersSuccess = sinon.stub().resolves(getEmployersStub);
+      const createContactError = sinon.stub().rejects(createContactErrorMsg);
+      sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
+      sfCtrl.getAllEmployers = getSFEmpoyersSuccess;
+      sfCtrl.createSFContact = createContactError;
+      try {
+        result = await utils
+          .handleTab1(req, res)
+          .then(async () => {
+            await lookupSFContactByFLESuccess(req, res);
+            await getSFEmpoyersSuccess(req, res)
+              .then(getEmployersResult => {
+                chai.assert.equal(getEmployersResult, getEmployersStub);
+                sinon.assert.called(createContactError);
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    test("handles error if createSubmission throws", async () => {
+      req = mockReq({
+        body: submissionBody
+      });
+      res = mockRes();
+      const LookupStub = null;
+      const getEmployersStub = [
+        { Name: "employer_name", Id: "0035500000VFkjOAAT" }
+      ];
+      const createContactStub = { salesforce_id: "0035500000VFkjOAAT" };
+      const createSubmissionErrorMsg = "CreateSubmissionError";
+      const lookupSFContactByFLESuccess = sinon.stub().resolves(LookupStub);
+      const getSFEmpoyersSuccess = sinon.stub().resolves(getEmployersStub);
+      const createContactSuccess = sinon.stub().resolves(createContactStub);
+      const createSubmissionError = sinon
+        .stub()
+        .rejects(createSubmissionErrorMsg);
+      sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
+      sfCtrl.getAllEmployers = getSFEmpoyersSuccess;
+      sfCtrl.createSFContact = createContactSuccess;
+      submissionCtrl.createSubmission = createSubmissionError;
+      try {
+        result = await utils
+          .handleTab1(req, res)
+          .then(async () => {
+            await lookupSFContactByFLESuccess(req, res);
+            await getSFEmpoyersSuccess(req, res)
+              .then(async () => {
+                chai.assert.equal(getEmployersResult, getEmployersStub);
+                await createContactSuccess(req, res)
+                  .then(() => {
+                    sinon.assert.called(createSubmissionError);
+                  })
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(err => console.log(err));
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  });
+
+  suite("handleTab2", () => {
+    after(() => {
+      return knexCleaner.clean(db);
+      sinon.restore();
+    });
+    afterEach(function() {
+      res = mockRes();
+      sinon.restore();
+    });
+    test("handles error if updateSubmission throws", async () => {
+      req = mockReq({
+        body: submissionBody
+      });
+      const updateError = "LookupError (Test)";
+      const updateSubmissionError = sinon.stub().rejects(updateError);
+      submissionCtrl.updateSubmission = updateSubmissionError;
+      try {
+        result = await utils.handleTab2(req, res);
+        sinon.assert.called(updateSubmissionError);
+        sinon.assert.calledWith(res.status, 500);
+        sinon.assert.calledWith(res.json, { message: updateError });
+      } catch (err) {
+        // console.log(err);
+      }
+    });
+    test("handles error if createSFOMA throws", async () => {
+      req = mockReq({
+        body: submissionBody
+      });
+      const updateStub = submissionBody;
+      const updateSubmissionSuccess = sinon.stub().resolves(submissionBody);
+      const updateSFOMAErrorMsg = "UpdateSFOMAError";
+      const updateSFOMAError = sinon.stub().rejects(updateSFOMAErrorMsg);
+      submissionCtrl.updateSubmission = updateSubmissionSuccess;
+      sfCtrl.createSFOnlineMemberApp = updateSFOMAError;
+      try {
+        result = await utils
+          .handleTab2(req, res)
+          .then(async () => {
+            await updateSubmissionSuccess()
+              .then(async () => {
+                sinon.assert.called(updateSFOMAError);
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          })
+          .catch(err => {
+            console.log(err);
+          });
       } catch (err) {
         console.log(err);
       }
