@@ -106,6 +106,7 @@ const handleTab1 = async (req, res, next) => {
   const lookupRes = await sfCtrl
     .lookupSFContactByFLE(req, res, next)
     .catch(err => {
+      console.log(`index/utils.js > 109`);
       console.error(err);
       return handleError(err);
     });
@@ -134,7 +135,7 @@ const handleTab1 = async (req, res, next) => {
           })
           .catch(err => {
             console.error(`utils/index.js > handleTab1 131: ${err}`);
-            return handleError(err);
+            return handleError(res, err);
           });
       })
       .catch(err => {
@@ -150,7 +151,7 @@ const handleTab1 = async (req, res, next) => {
       .getAllEmployers(req, res, next)
       .catch(err => {
         console.error(`utils/index.js > handleTab1 122: ${err}`);
-        return handleError(err);
+        return handleError(res, err);
       });
 
     console.log(
@@ -192,12 +193,12 @@ const handleTab1 = async (req, res, next) => {
           })
           .catch(err => {
             console.error(`utils/index.js > handleTab1 160: ${err}`);
-            return handleError(err);
+            return handleError(res, err);
           });
       })
       .catch(err => {
         console.error(`utils/index.js > handleTab1 155: ${err}`);
-        return handleError(err);
+        return handleError(res, err);
       });
   }
 };
@@ -244,7 +245,7 @@ const handleTab2 = async (req, res, next) => {
     })
     .catch(err => {
       console.error(`utils/index.js > handleTab2 236: ${err}`);
-      return handleError(err);
+      return handleError(res, err);
     });
 };
 
