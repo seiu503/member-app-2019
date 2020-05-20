@@ -71,7 +71,7 @@ let loginError,
   home_email = "fake@email.com";
 contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
 
-suite.only("sf.ctrl.js", function() {
+suite("sf.ctrl.js", function() {
   after(() => {
     return knexCleaner.clean(db);
   });
