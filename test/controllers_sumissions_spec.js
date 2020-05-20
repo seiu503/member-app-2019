@@ -87,22 +87,7 @@ suite("sumissions.ctrl.js", function() {
       }
     });
 
-    test("returns 422 if terms_agree missing", async function() {
-      delete req.body.terms_agree;
-      responseStub = {
-        reason: "ValidationError",
-        message: "Must agree to terms of service"
-      };
-      try {
-        await submCtrl.createSubmission(req, res, next);
-        assert.calledWith(res.status, 422);
-        assert.calledWith(res.json, responseStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns 422 if other required field missing", async function() {
+    test("returns 422 if required field missing", async function() {
       req = mockReq({
         body: submissionBody,
         headers: {

@@ -692,9 +692,9 @@ router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
 // routes created for noscript version of front-end and form
 // all data processing and sequential SF calls moved to server side
 
-router.post("/noscript", utils.handleTab1);
+router.post("/noscript", sfCtrl.handleTab1);
 
-router.post("/noscript2", utils.handleTab2);
+router.post("/noscript2", sfCtrl.handleTab2);
 
 /* ================================ EXPORT ================================= */
 

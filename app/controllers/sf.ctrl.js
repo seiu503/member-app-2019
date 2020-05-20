@@ -10,6 +10,7 @@ const {
   formatDate
 } = require("../utils/fieldConfigs");
 const utils = require("../utils");
+const submissionCtrl = require("../controllers/submissions.ctrl.js");
 
 // staging setup for with prod URL/user/pwd for now
 // switch to dev when prod deployed
@@ -935,5 +936,188 @@ exports.postPaymentRequest = async (req, res, next) => {
     .catch(err => {
       console.error(`sf.ctrl.js > 820: ${err}`);
       return res.status(500).json({ message: err.message });
+    });
+};
+
+// updated May 18, 2020, PS only (for no-js form)
+const legal_language = `<div><h3>Membership Authorization</h3><p><strong>Yes, I want to join with my fellow employees and become a member of SEIU Local 503 (“Local 503”).</strong>This means I will receive the benefits and abide by the obligations of membership set forth in the Constitutions and Bylaws of both Local 503 and the Service Employees International Union (“SEIU”). I authorize Local 503 to act as my representative in collective bargaining over wages, benefits, and other terms and conditions of employment with my employer, and as my exclusive representative where authorized by law. I know that membership in the union is voluntary and is not a condition of my employment, and that I can decline to join without reprisal.</p><h3>Dues Deduction/Checkoff Authorization</h3><p>I request and voluntarily authorize my employer to deduct from my earnings and to pay to Local 503 an amount equal to the regular monthly dues and other fees or assessments uniformly applicable to members of Local 503. This authorization shall remain in effect unless I revoke it by sending written notice via U.S. mail to Local 503 during the periods not less than 30 days and not more than 45 days before either (1) the annual anniversary date of this agreement, or (2) the date of termination of the applicable collective bargaining agreement between the employer and Local 503. This authorization shall be automatically renewed from year to year unless I revoke it in writing during a window period, even if I have resigned my membership.</p><p>This authorization is voluntary and is not a condition of my employment, and I can decline to agree to it without reprisal. I understand that all members benefit from everyone’s commitments because they help to build a strong union that is able to plan for the future.</p></div>`;
+
+/* +++++++++++++++++++++++++ NO-JS METHODS: HANDLETAB1 +++++++++++++++++++++ */
+
+/** Post a submission from a client with javascript disabled
+(all front-end processign and sequential API calls moved to back end)
+ *  @param    {Object}   body
+ *  @returns  {Object}   redirect to page 2 or error message
+ */
+
+/** Handle Tab1 & Tab2 submissions from noscript form */
+// for users with javascript disabled, all front-end processing
+// moved to back end
+
+// handleTab1 performs:
+// lookupSFContactByFLE
+// getAllEmployers
+// createSFContact
+// updateSFContact
+// createSumbission
+exports.handleTab1 = async (req, res, next) => {
+  req.body.birthdate = formatSFDate(req.body.birthdate);
+  if (!req.body.text_auth_opt_out) {
+    req.body.text_auth_opt_out = false;
+  } else if (req.body.text_auth_opt_out) {
+    req.body.text_auth_opt_out = true;
+  }
+  const formValues = { ...req.body };
+  // console.log(`sf.ctrl.js > handleTab1 972: formValues`);
+  // console.log(formValues);
+  req.locals = {
+    next: true
+  };
+
+  // lookup contact by first/last/email
+  const lookupRes = await lookupSFContactByFLE(req, res, next).catch(err => {
+    console.log(`index/utils.js > 109`);
+    // console.error(err);
+    return handleError(err);
+  });
+
+  let salesforce_id =
+    lookupRes && lookupRes.salesforce_id ? lookupRes.salesforce_id : null;
+
+  // if lookup was successful, update existing contact and move to next tab
+  if (salesforce_id) {
+    console.log(`sf.ctrl.js > handleTab1 991 update contact`);
+    req.params.id = salesforce_id;
+    await updateSFContact(req, res, next)
+      .then(salesforce_id => {
+        req.body.salesforce_id = salesforce_id;
+        // create initial submission here
+        submissionCtrl
+          .createSubmission(req, res, next)
+          .then(submissionId => {
+            console.log(
+              `sf.ctrl.js > handleTab1 1001: submissionId: ${submissionId}`
+            );
+            const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
+            console.log(`sf.ctrl.js > handleTab1 1004: ${redirect}`);
+            return res.redirect(redirect);
+          })
+          .catch(err => {
+            console.error(`sf.ctrl.js > handleTab1 1008: ${err}`);
+            return handleError(res, err);
+          });
+      })
+      .catch(err => {
+        console.error(`sf.ctrl.js > handleTab1 1013: ${err}`);
+        return handleError(res, err);
+      });
+  } else {
+    // otherwise, lookupSFEmployers to get accountId, then
+    // create new contact with submission data,
+    // then move to next tab
+
+    const sfEmployers = await getAllEmployers(req, res, next).catch(err => {
+      console.error(`sf.ctrl.js > handleTab1 1023: ${err}`);
+      return handleError(res, err);
+    });
+
+    console.log(
+      `sf.ctrl.js > handleTab1 1028: sfEmployers: ${sfEmployers.length}`
+    );
+    console.log(formValues.employer_name);
+    const employerObject = findEmployerObject(
+      Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }],
+      formValues.employer_name || ""
+    );
+    const employer_id = employerObject
+      ? employerObject.Id
+      : "0016100000WERGeAAP"; // <== 'Unknown Employer'
+    const agency_number = employerObject ? employerObject.Agency_Number__c : 0;
+    console.log(
+      `sf.ctrl.js > handleTab1 1040: employer_id: ${employer_id}, agency_number: ${agency_number}`
+    );
+    req.body.employer_id = employer_id;
+    req.body.agency_number = agency_number;
+    req.body.submission_date = formatSFDate(new Date());
+
+    createSFContact(req, res, next)
+      .then(salesforce_id => {
+        console.log(
+          `sf.ctrl.js > handleTab1 1049: salesforce_id: ${salesforce_id}`
+        );
+
+        req.body.salesforce_id = salesforce_id;
+
+        // create initial submission here
+        submissionCtrl
+          .createSubmission(req, res, next)
+          .then(submissionId => {
+            console.log(
+              `sf.ctrl.js > handleTab1 1059: submissionId: ${submissionId}`
+            );
+            const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
+            console.log(`sf.ctrl.js > handleTab1 1062: ${redirect}`);
+            return res.redirect(redirect);
+          })
+          .catch(err => {
+            console.error(`sf.ctrl.js > handleTab1 1066: ${err}`);
+            return handleError(res, err);
+          });
+      })
+      .catch(err => {
+        console.error(`sf.ctrl.js > handleTab1 1071: ${err}`);
+        return handleError(res, err);
+      });
+  }
+};
+
+// handleTab2 performs:
+// updateSubmission
+// createSFOMA
+
+exports.handleTab2 = async (req, res, next) => {
+  req.body.online_campaign_source = "NoJavascript";
+  req.body.legal_language = legal_language;
+  if (req.body.terms_agree === "on") {
+    req.body.terms_agree = true;
+  }
+  if (req.body.scholarship_flag === "on") {
+    req.body.scholarship_flag = true;
+  }
+  if (req.body.checkoff_auth === "on") {
+    req.body.checkoff_auth = true;
+  }
+  console.log(`sf.ctrl.js > 1093 handleTab2: formValues`);
+  const formValues = { ...req.body };
+  console.log(formValues);
+  req.locals = {
+    next: true
+  };
+  req.params = {
+    id: req.body.submission_id
+  };
+
+  submissionCtrl
+    .updateSubmission(req, res, next)
+    .then(submissionBody => {
+      req.body = { ...formValues, ...submissionBody };
+      req.body.maintenance_of_effort = formatSFDate(new Date());
+      req.body.seiu503_cba_app_date = formatSFDate(new Date());
+      req.body.immediate_past_member_status = "Not a Member";
+      console.log(`sf.ctrl.js > 1110 handleTab2: req.body`);
+      console.log(req.body);
+      createSFOnlineMemberApp(req, res, next)
+        .then(sf_OMA_id => {
+          console.log(`sf.ctrl.js > 1114 handleTab2 sfOMA success`);
+          return res.redirect("https://seiu503.org/members/thank-you/");
+        })
+        .catch(err => {
+          console.error(`sf.ctrl.js > handleTab2 1118: ${err}`);
+          return handleError(res, err);
+        });
+    })
+    .catch(err => {
+      console.error(`sf.ctrl.js > handleTab2 1123: ${err}`);
+      return handleError(res, err);
     });
 };
