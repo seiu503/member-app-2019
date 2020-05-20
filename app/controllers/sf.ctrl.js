@@ -12,6 +12,13 @@ const {
 const utils = require("../utils");
 const submissionCtrl = require("../controllers/submissions.ctrl.js");
 
+const CLIENT_URL =
+  process.env.NODE_CONFIG_ENV === "production"
+    ? process.env.APP_HOST_PROD
+    : process.env.NODE_CONFIG_ENV === "staging"
+    ? process.env.APP_HOST_STAGING
+    : process.env.CLIENT_URL;
+
 // staging setup for with prod URL/user/pwd for now
 // switch to dev when prod deployed
 const loginUrl =
@@ -187,7 +194,7 @@ exports.createSFContact = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 172: ${err}`);
+    console.error(`sf.ctrl.js > 190: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
@@ -195,7 +202,7 @@ exports.createSFContact = async (req, res, next) => {
   try {
     contact = await conn.sobject("Contact").create({ ...body });
     if (req.locals && req.locals.next) {
-      console.log(`sf.ctrl.js > 182: returning next`);
+      console.log(`sf.ctrl.js > 198: returning next`);
       console.log(`sf_contact_id: ${contact.Id || contact.id}`);
       res.locals.sf_contact_id = contact.Id || contact.id;
       return contact.Id || contact.id;
@@ -203,7 +210,7 @@ exports.createSFContact = async (req, res, next) => {
       return res.status(200).json({ salesforce_id: contact.Id || contact.id });
     }
   } catch (err) {
-    console.error(`sf.ctrl.js > 185: ${err}`);
+    console.error(`sf.ctrl.js > 206: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -975,11 +982,12 @@ exports.handleTab1 = async (req, res, next) => {
   };
 
   // lookup contact by first/last/email
-  const lookupRes = await lookupSFContactByFLE(req, res, next).catch(err => {
-    console.log(`index/utils.js > 109`);
-    // console.error(err);
-    return handleError(err);
-  });
+  const lookupRes = await this.lookupSFContactByFLE(req, res, next).catch(
+    err => {
+      console.error(`sf.ctrl.js > 981: ${err}`);
+      return res.status(500).json({ message: err.message });
+    }
+  );
 
   let salesforce_id =
     lookupRes && lookupRes.salesforce_id ? lookupRes.salesforce_id : null;
@@ -988,7 +996,7 @@ exports.handleTab1 = async (req, res, next) => {
   if (salesforce_id) {
     console.log(`sf.ctrl.js > handleTab1 991 update contact`);
     req.params.id = salesforce_id;
-    await updateSFContact(req, res, next)
+    await this.updateSFContact(req, res, next)
       .then(salesforce_id => {
         req.body.salesforce_id = salesforce_id;
         // create initial submission here
@@ -999,27 +1007,29 @@ exports.handleTab1 = async (req, res, next) => {
               `sf.ctrl.js > handleTab1 1001: submissionId: ${submissionId}`
             );
             const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
-            console.log(`sf.ctrl.js > handleTab1 1004: ${redirect}`);
+            // console.log(`sf.ctrl.js > handleTab1 1004: ${redirect}`);
             return res.redirect(redirect);
           })
           .catch(err => {
-            console.error(`sf.ctrl.js > handleTab1 1008: ${err}`);
-            return handleError(res, err);
+            console.error(`sf.ctrl.js > 1005: ${err}`);
+            return res.status(500).json({ message: err.message });
           });
       })
       .catch(err => {
         console.error(`sf.ctrl.js > handleTab1 1013: ${err}`);
-        return handleError(res, err);
+        return res.status(500).json({ message: err.message });
       });
   } else {
     // otherwise, lookupSFEmployers to get accountId, then
     // create new contact with submission data,
     // then move to next tab
 
-    const sfEmployers = await getAllEmployers(req, res, next).catch(err => {
-      console.error(`sf.ctrl.js > handleTab1 1023: ${err}`);
-      return handleError(res, err);
-    });
+    const sfEmployers = await this.getAllEmployers(req, res, next).catch(
+      err => {
+        console.error(`sf.ctrl.js > handleTab1 1023: ${err}`);
+        return res.status(500).json({ message: err.message });
+      }
+    );
 
     console.log(
       `sf.ctrl.js > handleTab1 1028: sfEmployers: ${sfEmployers.length}`
@@ -1034,16 +1044,16 @@ exports.handleTab1 = async (req, res, next) => {
       : "0016100000WERGeAAP"; // <== 'Unknown Employer'
     const agency_number = employerObject ? employerObject.Agency_Number__c : 0;
     console.log(
-      `sf.ctrl.js > handleTab1 1040: employer_id: ${employer_id}, agency_number: ${agency_number}`
+      `sf.ctrl.js > handleTab1 1036: employer_id: ${employer_id}, agency_number: ${agency_number}`
     );
     req.body.employer_id = employer_id;
     req.body.agency_number = agency_number;
     req.body.submission_date = formatSFDate(new Date());
 
-    createSFContact(req, res, next)
+    this.createSFContact(req, res, next)
       .then(salesforce_id => {
         console.log(
-          `sf.ctrl.js > handleTab1 1049: salesforce_id: ${salesforce_id}`
+          `sf.ctrl.js > handleTab1 1045: salesforce_id: ${salesforce_id}`
         );
 
         req.body.salesforce_id = salesforce_id;
@@ -1053,20 +1063,20 @@ exports.handleTab1 = async (req, res, next) => {
           .createSubmission(req, res, next)
           .then(submissionId => {
             console.log(
-              `sf.ctrl.js > handleTab1 1059: submissionId: ${submissionId}`
+              `sf.ctrl.js > handleTab1 1055: submissionId: ${submissionId}`
             );
             const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
-            console.log(`sf.ctrl.js > handleTab1 1062: ${redirect}`);
+            // console.log(`sf.ctrl.js > handleTab1 1058: ${redirect}`);
             return res.redirect(redirect);
           })
           .catch(err => {
-            console.error(`sf.ctrl.js > handleTab1 1066: ${err}`);
-            return handleError(res, err);
+            console.error(`sf.ctrl.js > handleTab1 1062: ${err}`);
+            return res.status(500).json({ message: err.message });
           });
       })
       .catch(err => {
-        console.error(`sf.ctrl.js > handleTab1 1071: ${err}`);
-        return handleError(res, err);
+        console.error(`sf.ctrl.js > handleTab1 1067: ${err}`);
+        return res.status(500).json({ message: err.message });
       });
   }
 };
@@ -1106,18 +1116,18 @@ exports.handleTab2 = async (req, res, next) => {
       req.body.immediate_past_member_status = "Not a Member";
       console.log(`sf.ctrl.js > 1110 handleTab2: req.body`);
       console.log(req.body);
-      createSFOnlineMemberApp(req, res, next)
+      this.createSFOnlineMemberApp(req, res, next)
         .then(sf_OMA_id => {
           console.log(`sf.ctrl.js > 1114 handleTab2 sfOMA success`);
           return res.redirect("https://seiu503.org/members/thank-you/");
         })
         .catch(err => {
           console.error(`sf.ctrl.js > handleTab2 1118: ${err}`);
-          return handleError(res, err);
+          return res.status(500).json({ message: err.message });
         });
     })
     .catch(err => {
       console.error(`sf.ctrl.js > handleTab2 1123: ${err}`);
-      return handleError(res, err);
+      return res.status(500).json({ message: err.message });
     });
 };

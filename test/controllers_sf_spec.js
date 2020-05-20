@@ -11,6 +11,8 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 const sfCtrl = require("../app/controllers/sf.ctrl.js");
+const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
+const utils = require("../app/utils/index.js");
 const jsforce = require("jsforce");
 const { upload } = require("../app/controllers/image.ctrl");
 const {
@@ -35,8 +37,9 @@ const lookupSFContactByFLEOrig = sfCtrl.lookupSFContactByFLE,
   getAllEmployersOrig = sfCtrl.getAllEmployers,
   getSFEmployersOrig = sfCtrl.getAllEmployers,
   createSFOnlineMemberAppOrig = sfCtrl.createSFOnlineMemberApp,
+  createSFOMAOrig = sfCtrl.createSFOnlineMemberApp,
   createSubmissionOrig = submissionCtrl.createSubmission,
-  updateSubissionOrig = submissionCtrl.updateSubmission;
+  updateSubmissionOrig = submissionCtrl.updateSubmission;
 
 const djrBody = {
   Worker__c: "0035500000VFkjOAAT",
@@ -118,8 +121,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
 
@@ -135,7 +137,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryError = "queryError";
       queryStub = sinon.stub().throws(new Error(queryError));
       jsforceStub.query = queryStub;
 
@@ -223,8 +225,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
 
@@ -240,7 +241,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryError = "queryError";
       queryStub = sinon.stub().throws(new Error(queryError));
       jsforceStub.query = queryStub;
 
@@ -295,8 +296,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
       jsforceConnectionStub = sinon
@@ -319,8 +319,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if sobject create fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      sobjectError = "sobjectError";
       jsforceSObjectCreateStub = sinon.stub().throws(new Error(sobjectError));
       jsforceStub = {
         login: loginStub,
@@ -426,8 +425,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
 
@@ -443,7 +441,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryError = "queryError";
       queryStub = sinon.stub().throws(new Error(queryError));
       jsforceStub.query = queryStub;
 
@@ -532,8 +530,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
       jsforceConnectionStub = sinon
@@ -556,8 +553,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if sobject update fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      sobjectError = "sobjectError";
       jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
       jsforceStub = {
         login: loginStub,
@@ -636,8 +632,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
 
@@ -653,7 +648,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryError = "queryError";
       queryStub = sinon.stub().throws(new Error(queryError));
       jsforceStub.query = queryStub;
 
@@ -720,8 +715,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
       jsforceConnectionStub = sinon
@@ -740,8 +734,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if sobject create fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      sobjectError = "sobjectError";
       jsforceSObjectCreateStub = sinon.stub().throws(new Error(sobjectError));
       jsforceStub = {
         login: loginStub,
@@ -806,8 +799,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
 
@@ -823,7 +815,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryError = "queryError";
       queryStub = sinon.stub().throws(new Error(queryError));
       jsforceStub.query = queryStub;
 
@@ -880,8 +872,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
       jsforceConnectionStub = sinon
@@ -904,8 +895,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if sobject create fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      sobjectError = "sobjectError";
       jsforceSObjectCreateStub = sinon.stub().throws(new Error(sobjectError));
       jsforceStub = {
         login: loginStub,
@@ -1007,8 +997,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
       jsforceConnectionStub = sinon
@@ -1031,8 +1020,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if sobject update fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      sobjectError = "sobjectError";
       jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
       jsforceStub = {
         login: loginStub,
@@ -1310,8 +1298,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
       jsforceConnectionStub = sinon
@@ -1330,8 +1317,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if sobject create fails", async function() {
-      sobjectError =
-        "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+      sobjectError = "sobjectError";
       jsforceSObjectCreateStub = sinon.stub().throws(new Error(sobjectError));
       jsforceStub = {
         login: loginStub,
@@ -1421,8 +1407,7 @@ suite.only("sf.ctrl.js", function() {
       });
 
       test("returns error if login fails", async function() {
-        loginError =
-          "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+        loginError = "loginError";
         loginStub = sinon.stub().throws(new Error(loginError));
         jsforceStub.login = loginStub;
         jsforceConnectionStub = sinon
@@ -1441,8 +1426,7 @@ suite.only("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject update fails", async function() {
-        sobjectError =
-          "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+        sobjectError = "sobjectError";
         jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
         jsforceStub = {
           login: loginStub,
@@ -1617,7 +1601,8 @@ suite.only("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject find returns no record", async function() {
-        sobjectError = `No matching record found for paymentRequestId 123, Error0`;
+        sobjectError =
+          "No matching record found for paymentRequestId 123, Error0";
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;
@@ -1700,8 +1685,7 @@ suite.only("sf.ctrl.js", function() {
       });
 
       test("returns error if login fails", async function() {
-        loginError =
-          "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+        loginError = "loginError";
         loginStub = sinon.stub().throws(new Error(loginError));
         jsforceStub.login = loginStub;
         jsforceConnectionStub = sinon
@@ -1720,8 +1704,7 @@ suite.only("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject update fails", async function() {
-        sobjectError =
-          "NOT_FOUND: Provided external ID field does not exist or is not accessible: 123456789";
+        sobjectError = "sobjectError";
         jsforceSObjectUpdateStub = sinon.stub().throws(new Error(sobjectError));
         jsforceStub = {
           login: loginStub,
@@ -1751,7 +1734,8 @@ suite.only("sf.ctrl.js", function() {
       });
 
       test("returns error if sobject update returns no record", async function() {
-        sobjectError = `No matching record found for CAPE sObject Id 123, Error0`;
+        sobjectError =
+          "No matching record found for CAPE sObject Id 123, Error0";
         const contactErrorStub = { ...contactStub };
         contactErrorStub.errors = ["Error0"];
         contactErrorStub.success = false;
@@ -1863,8 +1847,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if login fails", async function() {
-      loginError =
-        "Error: INVALID_LOGIN: Invalid username, password, security token; or user locked out.";
+      loginError = "loginError";
       loginStub = sinon.stub().throws(new Error(loginError));
       jsforceStub.login = loginStub;
 
@@ -1880,7 +1863,7 @@ suite.only("sf.ctrl.js", function() {
     });
 
     test("returns error if query fails", async function() {
-      queryError = "Error: MALFORMED_QUERY: unexpected token: query";
+      queryError = "queryError";
       queryStub = sinon.stub().throws(new Error(queryError));
       jsforceStub.query = queryStub;
 
@@ -1913,7 +1896,7 @@ suite.only("sf.ctrl.js", function() {
       const lookupSFContactByFLEError = sinon.stub().rejects(LookupError);
       sfCtrl.lookupSFContactByFLE = lookupSFContactByFLEError;
       try {
-        result = await utils.handleTab1(req, res);
+        result = await sfCtrl.handleTab1(req, res);
         sinon.assert.called(lookupSFContactByFLEError);
         sinon.assert.calledWith(res.status, 500);
         sinon.assert.calledWith(res.json, { message: LookupError });
@@ -1940,7 +1923,7 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.updateSFContact = updateSFContactSuccess;
       submissionCtrl.createSubmission = createSubmissionSuccess;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
@@ -1975,21 +1958,28 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.updateSFContact = updateSFContactSuccess;
       submissionCtrl.createSubmission = createSubmissionError;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
             await updateSFContactSuccess(req, res)
-              .then(updateResult => {
+              .then(async updateResult => {
                 chai.assert.equal(updateResult, updateStub);
                 sinon.assert.called(createSubmissionError);
+                await createSubmissionError().catch(err => {
+                  // console.log(err)
+                });
                 sfCtrl.lookupSFContactByFLE = lookupSFContactByFLEOrig;
                 sfCtrl.updateSFContact = updateSFContactOrig;
                 submissionCtrl.createSubmission = createSubmissionOrig;
               })
-              .catch(err => console.log(err));
+              .catch(err => {
+                console.log(err);
+              });
           })
-          .catch(err => console.log(err));
+          .catch(err => {
+            console.log(err);
+          });
       } catch (err) {
         console.log(err);
       }
@@ -2006,7 +1996,7 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
       sfCtrl.updateSFContact = updateSFContactError;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
@@ -2051,7 +2041,7 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.createSFContact = createContactSuccess;
       submissionCtrl.createSubmission = createSubmissionSuccess;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
@@ -2083,7 +2073,7 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.lookupSFContactByFLE = lookupSFContactByFLESuccess;
       sfCtrl.getAllEmployers = getSFEmployersError;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
@@ -2095,7 +2085,7 @@ suite.only("sf.ctrl.js", function() {
                 sfCtrl.getAllEmployers = getSFEmployersOrig;
               })
               .catch(err => {
-                console.log(err);
+                // console.log(err);
               });
           })
           .catch(err => {
@@ -2122,7 +2112,7 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.getAllEmployers = getSFEmployersSuccess;
       sfCtrl.createSFContact = createContactError;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
@@ -2163,7 +2153,7 @@ suite.only("sf.ctrl.js", function() {
       sfCtrl.createSFContact = createContactSuccess;
       submissionCtrl.createSubmission = createSubmissionError;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab1(req, res)
           .then(async () => {
             await lookupSFContactByFLESuccess(req, res);
@@ -2178,7 +2168,9 @@ suite.only("sf.ctrl.js", function() {
                     sfCtrl.createSFContact = createContactOrig;
                     submissionCtrl.createSubmission = createSubmissionOrig;
                   })
-                  .catch(err => console.log(err));
+                  .catch(err => {
+                    console.log(err);
+                  });
               })
               .catch(err => console.log(err));
           })
@@ -2206,7 +2198,7 @@ suite.only("sf.ctrl.js", function() {
       const updateSubmissionError = sinon.stub().rejects(updateError);
       submissionCtrl.updateSubmission = updateSubmissionError;
       try {
-        result = await utils.handleTab2(req, res);
+        result = await sfCtrl.handleTab2(req, res);
         sinon.assert.called(updateSubmissionError);
         sinon.assert.calledWith(res.status, 500);
         sinon.assert.calledWith(res.json, { message: updateError });
@@ -2221,19 +2213,19 @@ suite.only("sf.ctrl.js", function() {
       });
       const updateStub = submissionBody;
       const updateSubmissionSuccess = sinon.stub().resolves(submissionBody);
-      const updateSFOMAErrorMsg = "UpdateSFOMAError";
-      const updateSFOMAError = sinon.stub().rejects(updateSFOMAErrorMsg);
+      const createSFOMAErrorMsg = "CreateSFOMAError";
+      const createSFOMAError = sinon.stub().rejects(createSFOMAErrorMsg);
       submissionCtrl.updateSubmission = updateSubmissionSuccess;
-      sfCtrl.createSFOnlineMemberApp = updateSFOMAError;
+      sfCtrl.createSFOnlineMemberApp = createSFOMAError;
       try {
-        result = await utils
+        result = await sfCtrl
           .handleTab2(req, res)
           .then(async () => {
             await updateSubmissionSuccess()
               .then(async () => {
-                sinon.assert.called(updateSFOMAError);
+                sinon.assert.called(createSFOMAError);
                 submissionCtrl.updateSubmission = updateSubmissionOrig;
-                sfCtrl.createSFOnlineMemberApp = updateSFOMAOrig;
+                sfCtrl.createSFOnlineMemberApp = createSFOMAOrig;
               })
               .catch(err => {
                 console.log(err);
