@@ -1276,11 +1276,11 @@ export class SubmissionFormPage1Container extends React.Component {
   async handleTab1() {
     const { formValues } = this.props;
     // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    if (!score || score <= 0.5) {
-      console.log(`recaptcha failed: ${score}`);
-      return handleError(this.props.translate("reCaptchaError"));
-    }
+    // const score = await this.verifyRecaptchaScore();
+    // if (!score || score <= 0.3) {
+    //   console.log(`recaptcha failed: ${score}`);
+    //   return handleError(this.props.translate("reCaptchaError"));
+    // }
     // handle moving from tab 1 to tab 2:
 
     // check if payment is required and store this in redux store for later
