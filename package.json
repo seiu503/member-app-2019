@@ -35,6 +35,7 @@
     "express": "^4.17.0",
     "express-session": "^1.16.1",
     "fs": "^0.0.1-security",
+    "graphlib": "^2.1.8",
     "helmet": "^3.21.1",
     "http": "^0.0.0",
     "https": "^1.0.0",
@@ -44,6 +45,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "multer-s3": "^2.9.0",
+    "node-fetch": "^2.6.0",
     "nodemailer": "^6.4.2",
     "passport": "^0.4.0",
     "passport-google-oauth": "^2.0.0",
@@ -59,6 +61,7 @@
     "travis": "^0.1.1",
     "util": "^0.12.1",
     "uuid": "^3.3.2",
+    "why": "^0.1.12",
     "yargs": "^13.2.4"
   },
   "devDependencies": {

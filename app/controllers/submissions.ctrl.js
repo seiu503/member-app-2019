@@ -1,4 +1,5 @@
 const request = require("request");
+const url = require("url");
 
 /*
    Route handlers for fetching and updating submissions.
@@ -8,7 +9,10 @@ const request = require("request");
 
 // import models
 const submissions = require("../../db/models/submissions");
-const utils = require("../utils");
+const utils = require("../utils/index.js");
+
+// can't import this from utils bc it would be a circular import
+getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -41,8 +45,8 @@ const utils = require("../utils");
  *  @returns  {Object}    New Submission Object or error message.
  */
 const createSubmission = async (req, res, next) => {
-  const ip = utils.getClientIp(req);
-  console.log("submissions.ctrl.js > 43: createSubmission");
+  const ip = getClientIp(req);
+  console.log("submissions.ctrl.js > 45: createSubmission");
   console.log(req.body);
   let {
     submission_date,
@@ -71,12 +75,11 @@ const createSubmission = async (req, res, next) => {
     salesforce_id
   } = req.body;
 
-  const requiredFields = [
-    "submission_date",
-    "first_name",
-    "last_name",
-    "home_email"
-  ];
+  const requiredFields = ["first_name", "last_name", "home_email"];
+
+  if (!submission_date) {
+    submission_date = new Date();
+  }
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (missingField) {
@@ -90,7 +93,7 @@ const createSubmission = async (req, res, next) => {
   const createSubmissionResult = await submissions
     .createSubmission(
       ip,
-      submission_date,
+      new Date(), // submission date can be datetime
       agency_number,
       birthdate,
       cell_phone,
@@ -140,11 +143,15 @@ const createSubmission = async (req, res, next) => {
   } else {
     res.locals.submission_id = createSubmissionResult[0].id;
     res.locals.currentSubmission = createSubmissionResult[0];
-    return res.status(200).json({
-      salesforce_id,
-      submission_id: createSubmissionResult[0].id,
-      currentSubmission: createSubmissionResult[0]
-    });
+    if (req.locals && req.locals.next) {
+      return createSubmissionResult[0].id;
+    } else {
+      return res.status(200).json({
+        salesforce_id,
+        submission_id: createSubmissionResult[0].id,
+        currentSubmission: createSubmissionResult[0]
+      });
+    }
   }
 };
 
@@ -155,9 +162,38 @@ const createSubmission = async (req, res, next) => {
  */
 const updateSubmission = async (req, res, next) => {
   const updates = req.body;
-  const { id } = req.params;
-  // console.log(`subm.ctrl.js > 173 - id: ${id} (updates below)`);
-  // console.log(updates);
+  delete updates.submission_id;
+  let { id } = req.params;
+  // console.log(
+  //   `subm.ctrl.js > 172: referer: ${
+  //     req.headers && req.headers.referer
+  //       ? req.headers.referer
+  //       : "testing, no referer"
+  //   }`
+  // );
+  const queryData = url.parse(
+    req.headers && req.headers.referer ? req.headers.referer : "www.test.com",
+    true
+  ).query;
+  console.log(queryData);
+  if (queryData.submission_id) {
+    id = queryData.submission_id;
+  }
+  if (queryData.salesforce_id) {
+    updates.salesforce_id = queryData.salesforce_id;
+  }
+  // if (updates.checkoff_auth === "on") {
+  //   updates.checkoff_auth = new Date();
+  // }
+  delete updates.checkoff_auth;
+  if (updates.terms_agree === "on") {
+    updates.terms_agree = true;
+  }
+  if (updates.scholarship_flag === "on") {
+    updates.scholarship_flag = true;
+  }
+  console.log(`subm.ctrl.js > 170 - id: ${id} (updates below)`);
+  console.log(updates);
 
   if (!updates || !Object.keys(updates).length) {
     console.error("subm.ctrl.js > 173: !updates");
@@ -195,9 +231,15 @@ const updateSubmission = async (req, res, next) => {
     // console.log(updateSubmissionResult[0].id);
     // saving to res.locals to make id available for testing
     res.locals.submission_id = updateSubmissionResult[0].id;
-    return res
-      .status(200)
-      .json({ submission_id: updateSubmissionResult[0].id });
+    if (req.locals && req.locals.next) {
+      console.log("submissions.ctrl.js > 229: updateSubmissionResult");
+      console.log(updateSubmissionResult[0]);
+      return updateSubmissionResult[0];
+    } else {
+      return res
+        .status(200)
+        .json({ submission_id: updateSubmissionResult[0].id });
+    }
   }
 };
 
@@ -292,7 +334,7 @@ const getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 const verifyHumanity = async (req, res) => {
-  const ip = utils.getClientIp(req);
+  const ip = getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;

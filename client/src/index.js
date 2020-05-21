@@ -11,6 +11,8 @@ import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
 import { LocalizeProvider } from "react-localize-redux";
 
+global.fetch = require("node-fetch");
+
 render(
   <Provider store={store}>
     <BrowserRouter>

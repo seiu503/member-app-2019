@@ -4,17 +4,26 @@ const sinon = require("sinon");
 const { mockReq, mockRes } = require("sinon-express-mock");
 const { assert } = chai;
 const jwt = require("jsonwebtoken");
+const knexCleaner = require("knex-cleaner");
+const { db, TABLES } = require("../app/config/knex");
 const {
   generateSampleValidate,
   generatePage2Validate,
   generateCAPEValidateBackEnd,
   generateCAPEValidateFrontEnd,
-  formatDate
+  formatDate,
+  generateSampleSubmission
 } = require("../app/utils/fieldConfigs");
 const utils = require("../app/utils/index");
 const staticCtrl = require("../app/static.ctrl.js");
+const sfCtrl = require("../app/controllers/sf.ctrl.js");
+const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
+let res = mockRes(),
+  req = mockReq(),
+  submissionBody = generateSampleSubmission();
+// console.log(submissionBody);
 
-suite("fieldConfig.js / utils.js", function() {
+suite("fieldConfig.js", function() {
   test("generates sample validate page 1", () => {
     const result = generateSampleValidate();
     assert.notProperty(result, "cellPhone");
@@ -35,10 +44,19 @@ suite("fieldConfig.js / utils.js", function() {
     const result = generateCAPEValidateFrontEnd();
     assert.equal(result.employerId, "employer_id");
   });
+});
 
+suite("utils/index.js", function() {
+  after(() => {
+    sinon.restore();
+  });
   test("formats date as YYYY-MM-DD for salesforce", () => {
-    const result = formatDate("1/1/2000");
-    assert.equal(result, "2000-01-01");
+    const result1 = formatDate("1/1/2000");
+    const result2 = utils.formatSFDate("1/1/2000");
+    const result3 = utils.formatSFDate("12/12/2000");
+    assert.equal(result1, "2000-01-01");
+    assert.equal(result2, "2000-01-01");
+    assert.equal(result3, "2000-12-12");
   });
 
   test("handleError returns 500 status and error to client", () => {
@@ -67,6 +85,15 @@ suite("fieldConfig.js / utils.js", function() {
       expiresIn: "7d"
     });
     assert.equal(result, token);
+  });
+
+  test("findEmployerObject handles edge cases", () => {
+    const obj = { Name: "community members", Id: "1234" };
+    const obj2 = { Name: "" };
+    const result1 = sfCtrl.findEmployerObject([obj], "community member");
+    const result2 = sfCtrl.findEmployerObject(null, "test");
+    assert.equal(result1, obj);
+    assert.equal(JSON.stringify(result2), JSON.stringify(obj2));
   });
 });
 

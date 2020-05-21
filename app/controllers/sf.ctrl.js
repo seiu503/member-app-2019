@@ -10,6 +10,14 @@ const {
   formatDate
 } = require("../utils/fieldConfigs");
 const utils = require("../utils");
+const submissionCtrl = require("../controllers/submissions.ctrl.js");
+
+const CLIENT_URL =
+  process.env.NODE_CONFIG_ENV === "production"
+    ? process.env.APP_HOST_PROD
+    : process.env.NODE_CONFIG_ENV === "staging"
+    ? process.env.APP_HOST_STAGING
+    : process.env.CLIENT_URL;
 
 // staging setup for with prod URL/user/pwd for now
 // switch to dev when prod deployed
@@ -67,6 +75,33 @@ const unioniseClientSecret =
 const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
+
+// can't import these funcs from utils bc circular imports
+exports.getClientIp = req =>
+  req.headers["x-real-ip"] || req.connection.remoteAddress;
+
+exports.formatSFDate = date => {
+  let d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
+
+// find matching employer object from SF Employers array returned from API
+exports.findEmployerObject = (employerObjects, employerName) =>
+  employerObjects
+    ? employerObjects.filter(obj => {
+        if (employerName.toLowerCase() === "community member") {
+          return obj.Name.toLowerCase() === "community members";
+        }
+        return obj.Name.toLowerCase() === employerName.toLowerCase();
+      })[0]
+    : { Name: "" };
 
 /* ================================ CONTACTS =============================== */
 
@@ -148,8 +183,8 @@ exports.createSFContact = async (req, res, next) => {
   console.log(`sf.ctrl.js > 148: createSFContact`);
 
   const bodyRaw = { ...req.body };
-  console.log(`sf.ctrl.js > 151`);
-  console.log(bodyRaw);
+  // console.log(`sf.ctrl.js > 151, req.body`);
+  // console.log(bodyRaw);
   const body = {};
 
   // convert raw body to key/value pairs using SF API field names
@@ -159,32 +194,35 @@ exports.createSFContact = async (req, res, next) => {
       body[sfFieldName] = bodyRaw[key];
     }
   });
-  // console.log(`sf.ctrl.js > 74`);
+  // console.log(`sf.ctrl.js > 162, body`);
   // console.log(body);
   delete body["Account.Id"];
   delete body["Account.Agency_Number__c"];
   delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
-  console.log("sf.ctrl.js > 168");
-  console.log(body);
+  // console.log("sf.ctrl.js > 168, body");
+  // console.log(body);
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 172: ${err}`);
+    console.error(`sf.ctrl.js > 190: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 
   let contact;
   try {
     contact = await conn.sobject("Contact").create({ ...body });
-    if (res.locals.next) {
+    if (req.locals && req.locals.next) {
+      console.log(`sf.ctrl.js > 198: returning next`);
+      console.log(`sf_contact_id: ${contact.Id || contact.id}`);
       res.locals.sf_contact_id = contact.Id || contact.id;
-      return next();
+      return contact.Id || contact.id;
+    } else {
+      return res.status(200).json({ salesforce_id: contact.Id || contact.id });
     }
-    return res.status(200).json({ salesforce_id: contact.Id || contact.id });
   } catch (err) {
-    console.error(`sf.ctrl.js > 185: ${err}`);
+    console.error(`sf.ctrl.js > 206: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -208,6 +246,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
 
   if (!first_name || !last_name || !home_email) {
     console.error(`sf.ctrl.js > 206: Missing required fields`);
+    console.error(req.body);
     return res
       .status(500)
       .json({ message: "Please complete all required fields." });
@@ -231,16 +270,30 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
     if (contact.totalSize === 0 || !contact) {
       // if no contact found, return error message to client
       console.error(`sf.ctrl.js > 97: No matching record found.`);
-      return res.status(404).json({
-        message: "No matching record found."
+      if (req.locals && req.locals.next) {
+        console.log(`sf.ctrl.js > 236: NEXT`);
+        return null;
+      } else {
+        return res.status(404).json({
+          message: "No matching record found."
+        });
+      }
+    }
+    if (req.locals && req.locals.next) {
+      console.log(`sf.ctrl.js > 245: NEXT`);
+
+      return {
+        salesforce_id: contact.records[0].Id || contact.records[0].id,
+        Current_CAPE__c: contact.records[0].Current_CAPE__c
+      };
+    } else {
+      return res.status(200).json({
+        salesforce_id: contact.records[0].Id || contact.records[0].id,
+        Current_CAPE__c: contact.records[0].Current_CAPE__c
       });
     }
-    return res.status(200).json({
-      salesforce_id: contact.records[0].Id || contact.records[0].id,
-      Current_CAPE__c: contact.records[0].Current_CAPE__c
-    });
   } catch (err) {
-    console.error(`sf.ctrl.js > 239: ${err}`);
+    console.error(`sf.ctrl.js > 259: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -271,6 +324,9 @@ exports.updateSFContact = async (req, res, next) => {
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
+  if (updates.Birthdate__c) {
+    updates.Birthdate__c = this.formatSFDate(updates.birthdate);
+  }
   // don't make any changes to contact account/employer
   // updates.AccountId = updatesRaw.employer_id;
   console.log(`sf.ctrl.js > 276: UPDATE SFCONTACT updates`);
@@ -289,9 +345,9 @@ exports.updateSFContact = async (req, res, next) => {
       Id: id,
       ...updates
     });
-    if (res.locals.next) {
-      // console.log(`sf.ctrl.js > 273: returning next`);
-      return next();
+    if (req.locals && req.locals.next) {
+      console.log(`sf.ctrl.js > 313: returning next`);
+      return id;
     }
 
     let response = {
@@ -319,7 +375,7 @@ exports.updateSFContact = async (req, res, next) => {
  */
 
 exports.createSFOnlineMemberApp = async (req, res, next) => {
-  const ip = utils.getClientIp(req);
+  const ip = this.getClientIp(req);
   console.log(`sf.ctrl.js > 332: ${ip}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -343,12 +399,11 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
         }
       }
     });
-    console.log("#####################");
     console.log(
-      `sf.ctrl.js: 346: bodyRaw.agency_number: ${bodyRaw.agency_number}`
+      `sf.ctrl.js: 369: bodyRaw.agency_number: ${bodyRaw.agency_number}`
     );
     console.log(
-      `sf.ctrl.js: 347: body.Agency_Number_from_Webform__c: ${
+      `sf.ctrl.js: 372: body.Agency_Number_from_Webform__c: ${
         body.Agency_Number_from_Webform__c
       }`
     );
@@ -357,22 +412,35 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    body.Birthdate__c = bodyRaw.birthdate;
-    body.Worker__c = bodyRaw.Worker__c;
+    body.Birthdate__c = this.formatSFDate(new Date(bodyRaw.birthdate));
+    body.Submission_Date__c = new Date(); // this one can be a datetime
+    body.Worker__c = bodyRaw.Worker__c
+      ? bodyRaw.Worker__c
+      : bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
-    console.log(`sf.ctrl.js > 347`);
-    console.log(bodyRaw.Worker__c);
+    console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
+    // body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
+    if (bodyRaw.scholarship_flag === "on") {
+      body.Scholarship_Flag__c = true;
+    } else {
+      body.Scholarship_Flag__c = false;
+    }
+    console.log(`sf.ctrl.js > 393: sfOMA body`);
     console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
       ...body
     });
 
-    return res.status(200).json({
-      salesforce_id: res.locals.sf_contact_id,
-      submission_id: res.locals.submission_id,
-      sf_OMA_id: OMA.id || OMA.Id
-    });
+    if (req.locals && req.locals.next) {
+      return OMA.id || OMA.Id;
+    } else {
+      return res.status(200).json({
+        salesforce_id: res.locals.sf_contact_id,
+        submission_id: res.locals.submission_id,
+        sf_OMA_id: OMA.id || OMA.Id
+      });
+    }
   } catch (err) {
     console.error(`sf.ctrl.js > 352: ${err}`);
     return res.status(500).json({ message: err.message });
@@ -730,20 +798,25 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 720: ${err}`);
+    console.error(`sf.ctrl.js > 750: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
   try {
     accounts = await conn.query(query);
     if (!accounts || !accounts.records || !accounts.records.length) {
-      console.log(`sf.ctrl.js > 728: returning employers to client`);
+      console.log(`sf.ctrl.js > 757: returning employers to client`);
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
-    console.log(`sf.ctrl.js > 730: returning employers to client`);
-    return res.status(200).json(accounts.records);
+    if (req.locals && req.locals.next) {
+      console.log(`sf.ctrl.js > 761: returning next`);
+      return accounts.records;
+    } else {
+      console.log(`sf.ctrl.js > 764: returning employers to client`);
+      return res.status(200).json(accounts.records);
+    }
   } catch (err) {
-    console.error(`sf.ctrl.js > 733: ${err}`);
+    console.error(`sf.ctrl.js > 769: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -885,6 +958,205 @@ exports.postPaymentRequest = async (req, res, next) => {
     })
     .catch(err => {
       console.error(`sf.ctrl.js > 820: ${err}`);
+      return res.status(500).json({ message: err.message });
+    });
+};
+
+// updated May 18, 2020, PS only (for no-js form)
+const legal_language = `<div><h3>Membership Authorization</h3><p><strong>Yes, I want to join with my fellow employees and become a member of SEIU Local 503 (“Local 503”).</strong>This means I will receive the benefits and abide by the obligations of membership set forth in the Constitutions and Bylaws of both Local 503 and the Service Employees International Union (“SEIU”). I authorize Local 503 to act as my representative in collective bargaining over wages, benefits, and other terms and conditions of employment with my employer, and as my exclusive representative where authorized by law. I know that membership in the union is voluntary and is not a condition of my employment, and that I can decline to join without reprisal.</p><h3>Dues Deduction/Checkoff Authorization</h3><p>I request and voluntarily authorize my employer to deduct from my earnings and to pay to Local 503 an amount equal to the regular monthly dues and other fees or assessments uniformly applicable to members of Local 503. This authorization shall remain in effect unless I revoke it by sending written notice via U.S. mail to Local 503 during the periods not less than 30 days and not more than 45 days before either (1) the annual anniversary date of this agreement, or (2) the date of termination of the applicable collective bargaining agreement between the employer and Local 503. This authorization shall be automatically renewed from year to year unless I revoke it in writing during a window period, even if I have resigned my membership.</p><p>This authorization is voluntary and is not a condition of my employment, and I can decline to agree to it without reprisal. I understand that all members benefit from everyone’s commitments because they help to build a strong union that is able to plan for the future.</p></div>`;
+
+/* +++++++++++++++++++++++++ NO-JS METHODS: HANDLETAB1 +++++++++++++++++++++ */
+
+/** Post a submission from a client with javascript disabled
+(all front-end processign and sequential API calls moved to back end)
+ *  @param    {Object}   body
+ *  @returns  {Object}   redirect to page 2 or error message
+ */
+
+/** Handle Tab1 & Tab2 submissions from noscript form */
+// for users with javascript disabled, all front-end processing
+// moved to back end
+
+// handleTab1 performs:
+// lookupSFContactByFLE
+// getAllEmployers
+// createSFContact
+// updateSFContact
+// createSumbission
+exports.handleTab1 = async (req, res, next) => {
+  req.body.birthdate = this.formatSFDate(req.body.birthdate);
+  if (!req.body.text_auth_opt_out) {
+    req.body.text_auth_opt_out = false;
+  } else if (req.body.text_auth_opt_out) {
+    req.body.text_auth_opt_out = true;
+  }
+  delete req.body.checkoff_auth;
+  const formValues = { ...req.body };
+  // console.log(`sf.ctrl.js > handleTab1 972: formValues`);
+  // console.log(formValues);
+  req.locals = {
+    next: true
+  };
+
+  // lookup contact by first/last/email
+  const lookupRes = await this.lookupSFContactByFLE(req, res, next).catch(
+    err => {
+      console.error(`sf.ctrl.js > 981: ${err}`);
+      return res.status(500).json({ message: err.message });
+    }
+  );
+
+  let salesforce_id =
+    lookupRes && lookupRes.salesforce_id ? lookupRes.salesforce_id : null;
+
+  // if lookup was successful, update existing contact and move to next tab
+  if (salesforce_id) {
+    console.log(`sf.ctrl.js > handleTab1 991 update contact`);
+    req.params.id = salesforce_id;
+    await this.updateSFContact(req, res, next)
+      .then(salesforce_id => {
+        req.body.salesforce_id = salesforce_id;
+        // create initial submission here
+        submissionCtrl
+          .createSubmission(req, res, next)
+          .then(submissionId => {
+            console.log(
+              `sf.ctrl.js > handleTab1 1001: submissionId: ${submissionId}`
+            );
+            const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
+            // console.log(`sf.ctrl.js > handleTab1 1004: ${redirect}`);
+            return res.redirect(redirect);
+          })
+          .catch(err => {
+            console.error(`sf.ctrl.js > 1005: ${err}`);
+            return res.status(500).json({ message: err.message });
+          });
+      })
+      .catch(err => {
+        console.error(`sf.ctrl.js > handleTab1 1013: ${err}`);
+        return res.status(500).json({ message: err.message });
+      });
+  } else {
+    // otherwise, lookupSFEmployers to get accountId, then
+    // create new contact with submission data,
+    // then move to next tab
+
+    const sfEmployers = await this.getAllEmployers(req, res, next).catch(
+      err => {
+        console.error(`sf.ctrl.js > handleTab1 1023: ${err}`);
+        return res.status(500).json({ message: err.message });
+      }
+    );
+
+    console.log(
+      `sf.ctrl.js > handleTab1 1048: sfEmployers: ${sfEmployers.length}`
+    );
+    console.log(formValues.employer_name);
+    const employers = Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }];
+    const empoyerName = formValues.employer_name
+      ? formValues.employer_name
+      : "";
+    const employerObject = this.findEmployerObject(employers, empoyerName);
+    console.log(`sf.ctrl.js > handleTab1 1054: employerObject`);
+    console.log(employerObject);
+    const employer_id = employerObject
+      ? employerObject.Id
+      : "0016100000WERGeAAP"; // <== 'Unknown Employer'
+    const agency_number =
+      employerObject && employerObject.Agency_Number__c
+        ? employerObject.Agency_Number__c
+        : employerObject &&
+          employerObject.Parent &&
+          employerObject.Parent.Agency_Number__c
+        ? employerObject.Parent.Agency_Number__c
+        : 0;
+    console.log(
+      `sf.ctrl.js > handleTab1 1061: employer_id: ${employer_id}, agency_number: ${agency_number}`
+    );
+
+    req.body.employer_id = employer_id;
+    req.body.agency_number = agency_number;
+    req.body.submission_date = this.formatSFDate(new Date());
+
+    this.createSFContact(req, res, next)
+      .then(salesforce_id => {
+        console.log(
+          `sf.ctrl.js > handleTab1 1071: salesforce_id: ${salesforce_id}`
+        );
+
+        req.body.salesforce_id = salesforce_id;
+
+        // create initial submission here
+        submissionCtrl
+          .createSubmission(req, res, next)
+          .then(submissionId => {
+            console.log(
+              `sf.ctrl.js > handleTab1 1081: submissionId: ${submissionId}`
+            );
+            const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
+            // console.log(`sf.ctrl.js > handleTab1 1058: ${redirect}`);
+            return res.redirect(redirect);
+          })
+          .catch(err => {
+            console.error(`sf.ctrl.js > handleTab1 1088: ${err}`);
+            return res.status(500).json({ message: err.message });
+          });
+      })
+      .catch(err => {
+        console.error(`sf.ctrl.js > handleTab1 1093: ${err}`);
+        return res.status(500).json({ message: err.message });
+      });
+  }
+};
+
+// handleTab2 performs:
+// updateSubmission
+// createSFOMA
+
+exports.handleTab2 = async (req, res, next) => {
+  req.body.online_campaign_source = "NoJavascript";
+  req.body.legal_language = legal_language;
+  if (req.body.terms_agree === "on") {
+    req.body.terms_agree = true;
+  }
+  if (req.body.scholarship_flag === "on") {
+    req.body.scholarship_flag = true;
+  }
+  // if (req.body.checkoff_auth === "on") {
+  //   req.body.checkoff_auth = true;
+  // }
+  console.log(`sf.ctrl.js > 1115 handleTab2: formValues`);
+  const formValues = { ...req.body };
+  console.log(formValues);
+  req.locals = {
+    next: true
+  };
+  req.params = {
+    id: req.body.submission_id
+  };
+
+  submissionCtrl
+    .updateSubmission(req, res, next)
+    .then(submissionBody => {
+      req.body = { ...formValues, ...submissionBody };
+      req.body.maintenance_of_effort = this.formatSFDate(new Date());
+      req.body.seiu503_cba_app_date = this.formatSFDate(new Date());
+      req.body.immediate_past_member_status = "Not a Member";
+      console.log(`sf.ctrl.js > 1132 handleTab2: req.body`);
+      delete req.body.checkoff_auth;
+      console.log(req.body);
+      this.createSFOnlineMemberApp(req, res, next)
+        .then(sf_OMA_id => {
+          console.log(`sf.ctrl.js > 1137 handleTab2 sfOMA success`);
+          return res.redirect("https://seiu503.org/members/thank-you/");
+        })
+        .catch(err => {
+          console.error(`sf.ctrl.js > handleTab2 1141: ${err}`);
+          return res.status(500).json({ message: err.message });
+        });
+    })
+    .catch(err => {
+      console.error(`sf.ctrl.js > handleTab2 1146: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };
