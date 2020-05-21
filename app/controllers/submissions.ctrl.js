@@ -119,8 +119,9 @@ const createSubmission = async (req, res, next) => {
       salesforce_id
     )
     .catch(err => {
-      console.error(`submissions.ctrl.js > 129: ${err.message}`);
-      return res.status(500).json({ message: err.message });
+      console.error(`submissions.ctrl.js > 129`);
+      console.error(err);
+      return res.status(500).json({ message: err.message ? err.message : err });
     });
 
   if (
@@ -137,8 +138,9 @@ const createSubmission = async (req, res, next) => {
     );
     return res.status(500).json({
       message:
-        createSubmissionResult.message ||
-        "There was an error saving the submission"
+        createSubmissionResult && createSubmissionResult.message
+          ? createSubmissionResult.message
+          : "There was an error saving the submission"
     });
   } else {
     res.locals.submission_id = createSubmissionResult[0].id;
