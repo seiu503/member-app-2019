@@ -1138,6 +1138,13 @@ exports.handleTab2 = async (req, res, next) => {
   submissionCtrl
     .updateSubmission(req, res, next)
     .then(submissionBody => {
+      if (submissionBody.req) {
+        return res.json({
+          message:
+            submissionBody.statusMessage ||
+            "There was an error processing the submission"
+        });
+      }
       req.body = { ...formValues, ...submissionBody };
       req.body.maintenance_of_effort = this.formatSFDate(new Date());
       req.body.seiu503_cba_app_date = this.formatSFDate(new Date());
