@@ -2162,6 +2162,8 @@ suite("sumissions.ctrl.js", function() {
         delete submissionBody.submission_id;
         delete submissionBody.account_subdivision;
         delete submissionBody.contact_id;
+        delete submissionBody.birthdate;
+        delete submissionBody.Birthdate__c;
         // test that reponse matches data submitted
         // for each key that exists in the response
         Object.keys(submissionBody).forEach(key => {
@@ -2367,6 +2369,8 @@ suite("sumissions.ctrl.js", function() {
     test("gets all submissions and returns 200", async function() {
       responseStub = [{ ...submissionBody }];
       responseStub[0].first_name = "firstname";
+      delete submissionBody.birthdate;
+      delete submissionBody.Birthdate__c;
       try {
         await submissionCtrl.getSubmissions(req, res, next);
         assert.calledWith(res.status, 200);

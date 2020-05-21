@@ -86,6 +86,15 @@ suite("utils/index.js", function() {
     });
     assert.equal(result, token);
   });
+
+  test("findEmployerObject handles edge cases", () => {
+    const obj = { Name: "community members", Id: "1234" };
+    const obj2 = { Name: "" };
+    const result1 = sfCtrl.findEmployerObject([obj], "community member");
+    const result2 = sfCtrl.findEmployerObject(null, "test");
+    assert.equal(result1, obj);
+    assert.equal(JSON.stringify(result2), JSON.stringify(obj2));
+  });
 });
 
 suite("static.ctrl.js", function() {
