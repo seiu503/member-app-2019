@@ -412,14 +412,18 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    body.Birthdate__c = this.formatSFDate(bodyRaw.birthdate);
+    body.Birthdate__c = this.formatSFDate(new Date(bodyRaw.birthdate));
     body.Submission_Date__c = new Date(); // this one can be a datetime
-    body.Worker__c = bodyRaw.Worker__c || bodyRaw.salesforce_id;
+    body.Worker__c = bodyRaw.Worker__c
+      ? bodyRaw.Worker__c
+      : bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
     console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
-    body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
+    // body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
     if (bodyRaw.scholarship_flag === "on") {
       body.Scholarship_Flag__c = true;
+    } else {
+      body.Scholarship_Flag__c = false;
     }
     console.log(`sf.ctrl.js > 393: sfOMA body`);
     console.log(body);
@@ -986,6 +990,7 @@ exports.handleTab1 = async (req, res, next) => {
   } else if (req.body.text_auth_opt_out) {
     req.body.text_auth_opt_out = true;
   }
+  delete req.body.checkoff_auth;
   const formValues = { ...req.body };
   // console.log(`sf.ctrl.js > handleTab1 972: formValues`);
   // console.log(formValues);
@@ -1044,20 +1049,31 @@ exports.handleTab1 = async (req, res, next) => {
     );
 
     console.log(
-      `sf.ctrl.js > handleTab1 1028: sfEmployers: ${sfEmployers.length}`
+      `sf.ctrl.js > handleTab1 1048: sfEmployers: ${sfEmployers.length}`
     );
     console.log(formValues.employer_name);
-    const employerObject = this.findEmployerObject(
-      Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }],
-      formValues.employer_name || ""
-    );
+    const employers = Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }];
+    const empoyerName = formValues.employer_name
+      ? formValues.employer_name
+      : "";
+    const employerObject = this.findEmployerObject(employers, empoyerName);
+    console.log(`sf.ctrl.js > handleTab1 1054: employerObject`);
+    console.log(employerObject);
     const employer_id = employerObject
       ? employerObject.Id
       : "0016100000WERGeAAP"; // <== 'Unknown Employer'
-    const agency_number = employerObject ? employerObject.Agency_Number__c : 0;
+    const agency_number =
+      employerObject && employerObject.Agency_Number__c
+        ? employerObject.Agency_Number__c
+        : employerObject &&
+          employerObject.Parent &&
+          employerObject.Parent.Agency_Number__c
+        ? employerObject.Parent.Agency_Number__c
+        : 0;
     console.log(
-      `sf.ctrl.js > handleTab1 1036: employer_id: ${employer_id}, agency_number: ${agency_number}`
+      `sf.ctrl.js > handleTab1 1061: employer_id: ${employer_id}, agency_number: ${agency_number}`
     );
+
     req.body.employer_id = employer_id;
     req.body.agency_number = agency_number;
     req.body.submission_date = this.formatSFDate(new Date());
@@ -1065,7 +1081,7 @@ exports.handleTab1 = async (req, res, next) => {
     this.createSFContact(req, res, next)
       .then(salesforce_id => {
         console.log(
-          `sf.ctrl.js > handleTab1 1045: salesforce_id: ${salesforce_id}`
+          `sf.ctrl.js > handleTab1 1071: salesforce_id: ${salesforce_id}`
         );
 
         req.body.salesforce_id = salesforce_id;
@@ -1075,19 +1091,19 @@ exports.handleTab1 = async (req, res, next) => {
           .createSubmission(req, res, next)
           .then(submissionId => {
             console.log(
-              `sf.ctrl.js > handleTab1 1055: submissionId: ${submissionId}`
+              `sf.ctrl.js > handleTab1 1081: submissionId: ${submissionId}`
             );
             const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
             // console.log(`sf.ctrl.js > handleTab1 1058: ${redirect}`);
             return res.redirect(redirect);
           })
           .catch(err => {
-            console.error(`sf.ctrl.js > handleTab1 1062: ${err}`);
+            console.error(`sf.ctrl.js > handleTab1 1088: ${err}`);
             return res.status(500).json({ message: err.message });
           });
       })
       .catch(err => {
-        console.error(`sf.ctrl.js > handleTab1 1067: ${err}`);
+        console.error(`sf.ctrl.js > handleTab1 1093: ${err}`);
         return res.status(500).json({ message: err.message });
       });
   }
@@ -1106,10 +1122,10 @@ exports.handleTab2 = async (req, res, next) => {
   if (req.body.scholarship_flag === "on") {
     req.body.scholarship_flag = true;
   }
-  if (req.body.checkoff_auth === "on") {
-    req.body.checkoff_auth = true;
-  }
-  console.log(`sf.ctrl.js > 1093 handleTab2: formValues`);
+  // if (req.body.checkoff_auth === "on") {
+  //   req.body.checkoff_auth = true;
+  // }
+  console.log(`sf.ctrl.js > 1115 handleTab2: formValues`);
   const formValues = { ...req.body };
   console.log(formValues);
   req.locals = {
@@ -1126,20 +1142,21 @@ exports.handleTab2 = async (req, res, next) => {
       req.body.maintenance_of_effort = this.formatSFDate(new Date());
       req.body.seiu503_cba_app_date = this.formatSFDate(new Date());
       req.body.immediate_past_member_status = "Not a Member";
-      console.log(`sf.ctrl.js > 1110 handleTab2: req.body`);
+      console.log(`sf.ctrl.js > 1132 handleTab2: req.body`);
+      delete req.body.checkoff_auth;
       console.log(req.body);
       this.createSFOnlineMemberApp(req, res, next)
         .then(sf_OMA_id => {
-          console.log(`sf.ctrl.js > 1114 handleTab2 sfOMA success`);
+          console.log(`sf.ctrl.js > 1137 handleTab2 sfOMA success`);
           return res.redirect("https://seiu503.org/members/thank-you/");
         })
         .catch(err => {
-          console.error(`sf.ctrl.js > handleTab2 1118: ${err}`);
+          console.error(`sf.ctrl.js > handleTab2 1141: ${err}`);
           return res.status(500).json({ message: err.message });
         });
     })
     .catch(err => {
-      console.error(`sf.ctrl.js > handleTab2 1123: ${err}`);
+      console.error(`sf.ctrl.js > handleTab2 1146: ${err}`);
       return res.status(500).json({ message: err.message });
     });
 };

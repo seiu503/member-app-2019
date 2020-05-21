@@ -182,9 +182,10 @@ const updateSubmission = async (req, res, next) => {
   if (queryData.salesforce_id) {
     updates.salesforce_id = queryData.salesforce_id;
   }
-  if (updates.checkoff_auth === "on") {
-    updates.checkoff_auth = new Date();
-  }
+  // if (updates.checkoff_auth === "on") {
+  //   updates.checkoff_auth = new Date();
+  // }
+  delete updates.checkoff_auth;
   if (updates.terms_agree === "on") {
     updates.terms_agree = true;
   }

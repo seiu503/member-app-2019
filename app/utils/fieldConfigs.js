@@ -937,17 +937,17 @@ const submissionsTableFields = {
     SQLDataType: "Date",
     testingSample: formatDate(new Date())
   },
-  checkoff_auth: {
-    postgresFieldName: "checkoff_auth",
-    clientFieldName: "checkoffAuth",
-    HtmlInputType: "(formula; no user-facing input)",
-    SFTable: "OnlineMemberApp__c",
-    SFFieldLabel: "Checkoff Auth",
-    SFAPIName: "Checkoff_Auth__c",
-    SFDataType: "Date",
-    SQLDataType: "Date",
-    testingSample: formatDate(new Date())
-  },
+  // checkoff_auth: {
+  //   postgresFieldName: "checkoff_auth",
+  //   clientFieldName: "checkoffAuth",
+  //   HtmlInputType: "(formula; no user-facing input)",
+  //   SFTable: "OnlineMemberApp__c",
+  //   SFFieldLabel: "Checkoff Auth",
+  //   SFAPIName: "Checkoff_Auth__c",
+  //   SFDataType: "Date",
+  //   SQLDataType: "Date",
+  //   testingSample: formatDate(new Date())
+  // },
   direct_pay_auth: {
     tableDisplay: false,
     newFormTab: 1,
