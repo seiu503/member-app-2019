@@ -12,7 +12,8 @@ const submissions = require("../../db/models/submissions");
 const utils = require("../utils/index.js");
 
 // can't import this from utils bc it would be a circular import
-getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
+exports.getClientIp = req =>
+  req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -44,7 +45,7 @@ getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
  *  @param    {String}   immediate_past_member_status   Immediate past member status (populated from SF for existing contact matches)
  *  @returns  {Object}    New Submission Object or error message.
  */
-const createSubmission = async (req, res, next) => {
+exports.createSubmission = async (req, res, next) => {
   const ip = getClientIp(req);
   console.log("submissions.ctrl.js > 45: createSubmission");
   console.log(req.body);
@@ -162,10 +163,14 @@ const createSubmission = async (req, res, next) => {
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = async (req, res, next) => {
+exports.updateSubmission = async (req, res, next) => {
   const updates = req.body;
   delete updates.submission_id;
   let { id } = req.params;
+  console.log(`subm.ctrl.js > 169 -- req.params:`);
+  console.log(req.params);
+  console.log(`subm.ctrl.js > 171 -- req.headers:`);
+  console.log(req.headers);
   // console.log(
   //   `subm.ctrl.js > 172: referer: ${
   //     req.headers && req.headers.referer
@@ -177,6 +182,7 @@ const updateSubmission = async (req, res, next) => {
     req.headers && req.headers.referer ? req.headers.referer : "www.test.com",
     true
   ).query;
+  console.log(`subm.ctrl.js > 184 -- queryData:`);
   console.log(queryData);
   if (queryData.submission_id) {
     id = queryData.submission_id;
@@ -194,22 +200,22 @@ const updateSubmission = async (req, res, next) => {
   if (updates.scholarship_flag === "on") {
     updates.scholarship_flag = true;
   }
-  console.log(`subm.ctrl.js > 170 - id: ${id} (updates below)`);
+  console.log(`subm.ctrl.js > 202 - id: ${id} (updates below)`);
   console.log(updates);
 
   if (!updates || !Object.keys(updates).length) {
-    console.error("subm.ctrl.js > 173: !updates");
+    console.error("subm.ctrl.js > 206: !updates");
     return res.status(422).json({ message: "No updates submitted" });
   }
   if (!id) {
-    console.error("subm.ctrl.js > 177: !id");
+    console.error("subm.ctrl.js > 210: !id");
     return res.status(422).json({ message: "No Id Provided in URL" });
   }
 
   const updateSubmissionResult = await submissions
     .updateSubmission(id, updates)
     .catch(err => {
-      console.error(`subm.ctrl.js > 188: ${err.message}`);
+      console.error(`subm.ctrl.js > 217: ${err.message}`);
       return res.status(500).json({
         message: err.message
       });
@@ -224,7 +230,7 @@ const updateSubmission = async (req, res, next) => {
       updateSubmissionResult && updateSubmissionResult.message
         ? updateSubmissionResult.message
         : "There was an error updating the submission";
-    console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+    console.error(`submissions.ctrl.js > 232: ${errmsg}`);
     return res.status(404).json({
       message: errmsg
     });
@@ -234,7 +240,7 @@ const updateSubmission = async (req, res, next) => {
     // saving to res.locals to make id available for testing
     res.locals.submission_id = updateSubmissionResult[0].id;
     if (req.locals && req.locals.next) {
-      console.log("submissions.ctrl.js > 229: updateSubmissionResult");
+      console.log("submissions.ctrl.js > 242: updateSubmissionResult");
       console.log(updateSubmissionResult[0]);
       return updateSubmissionResult[0];
     } else {
@@ -249,7 +255,7 @@ const updateSubmission = async (req, res, next) => {
  *  @param    {String}   id   Id of the submission to delete.
  *  @returns  Success or error message.
  */
-const deleteSubmission = async (req, res, next) => {
+exports.deleteSubmission = async (req, res, next) => {
   let result;
   const userType = req.user.type;
   if (userType != "admin" || !userType) {
@@ -263,12 +269,12 @@ const deleteSubmission = async (req, res, next) => {
     if (result.message === "Submission deleted successfully") {
       return res.status(200).json({ message: result.message });
     }
-    console.error(`submissions.ctrl.js > 225: ${result.message}`);
+    console.error(`submissions.ctrl.js > 271: ${result.message}`);
     return res.status(500).json({
       message: "An error occurred and the submission was not deleted."
     });
   } catch (err) {
-    console.error(`submissions.ctrl.js > 229: ${err.message}`);
+    console.error(`submissions.ctrl.js > 276: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -276,7 +282,7 @@ const deleteSubmission = async (req, res, next) => {
 /** Get all submissions
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
-const getSubmissions = (req, res, next) => {
+exports.getSubmissions = (req, res, next) => {
   const userType = req.user.type;
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
@@ -292,7 +298,7 @@ const getSubmissions = (req, res, next) => {
       return res.status(200).json(submissions);
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 247: ${err.message}`);
+      console.error(`submissions.ctrl.js > 300: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -301,7 +307,7 @@ const getSubmissions = (req, res, next) => {
  *  @param    {String}   id   Id of the requested submission.
  *  @returns  {Object}        Submission object OR error message.
  */
-const getSubmissionById = (req, res, next) => {
+exports.getSubmissionById = (req, res, next) => {
   const userType = req.user.type;
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
@@ -313,7 +319,7 @@ const getSubmissionById = (req, res, next) => {
     .getSubmissionById(req.params.id)
     .then(submission => {
       if (!submission || submission.message) {
-        console.error(`submissions.ctrl.js > 261: ${submission.message}`);
+        console.error(`submissions.ctrl.js > 321: ${submission.message}`);
         return res
           .status(404)
           .json({ message: submission.message || "Submission not found" });
@@ -324,7 +330,7 @@ const getSubmissionById = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 272: ${err.message}`);
+      console.error(`submissions.ctrl.js > 332: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -335,8 +341,8 @@ const getSubmissionById = (req, res, next) => {
  * @param {String} ip_address users ipAdress
  * @returns {Bool} returns true for human, false for bot
  */
-const verifyHumanity = async (req, res) => {
-  const ip = getClientIp(req);
+exports.verifyHumanity = async (req, res) => {
+  const ip = this.getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
@@ -351,7 +357,7 @@ const verifyHumanity = async (req, res) => {
     },
     (err, httpResponse, body) => {
       if (err) {
-        console.error(`submissions.ctrl.js > 298: ${err}`);
+        console.error(`submissions.ctrl.js > 359: ${err}`);
         return res.status(500).json({ message: err.message });
       } else {
         const r = JSON.parse(body);
@@ -359,22 +365,11 @@ const verifyHumanity = async (req, res) => {
           // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
           return res.status(200).json({ score: r.score });
         } else {
-          console.error(`submissions.ctrl.js > 306: recaptcha failure`);
+          console.error(`submissions.ctrl.js > 367: recaptcha failure`);
           console.error(r["error-codes"][0]);
           return res.status(500).json({ message: r["error-codes"][0] });
         }
       }
     }
   );
-};
-
-/* ================================ EXPORT ================================= */
-
-module.exports = {
-  createSubmission,
-  updateSubmission,
-  deleteSubmission,
-  getSubmissionById,
-  getSubmissions,
-  verifyHumanity
 };
