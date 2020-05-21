@@ -51,8 +51,12 @@ suite("utils/index.js", function() {
     sinon.restore();
   });
   test("formats date as YYYY-MM-DD for salesforce", () => {
-    const result = formatDate("1/1/2000");
-    assert.equal(result, "2000-01-01");
+    const result1 = formatDate("1/1/2000");
+    const result2 = utils.formatSFDate("1/1/2000");
+    const result3 = utils.formatSFDate("12/12/2000");
+    assert.equal(result1, "2000-01-01");
+    assert.equal(result2, "2000-01-01");
+    assert.equal(result3, "2000-12-12");
   });
 
   test("handleError returns 500 status and error to client", () => {

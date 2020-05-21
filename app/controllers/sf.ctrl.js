@@ -77,9 +77,10 @@ const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
 
 // can't import these 2 funcs from utils bc circular imports
-getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
+exports.getClientIp = req =>
+  req.headers["x-real-ip"] || req.connection.remoteAddress;
 
-formatSFDate = date => {
+exports.formatSFDate = date => {
   let d = new Date(date),
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
@@ -313,7 +314,7 @@ exports.updateSFContact = async (req, res, next) => {
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
   if (updates.Birthdate__c) {
-    updates.Birthdate__c = formatSFDate(updates.birthdate);
+    updates.Birthdate__c = this.formatSFDate(updates.birthdate);
   }
   // don't make any changes to contact account/employer
   // updates.AccountId = updatesRaw.employer_id;
@@ -363,7 +364,7 @@ exports.updateSFContact = async (req, res, next) => {
  */
 
 exports.createSFOnlineMemberApp = async (req, res, next) => {
-  const ip = getClientIp(req);
+  const ip = this.getClientIp(req);
   console.log(`sf.ctrl.js > 332: ${ip}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -400,12 +401,12 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    body.Birthdate__c = formatSFDate(bodyRaw.birthdate);
+    body.Birthdate__c = this.formatSFDate(bodyRaw.birthdate);
     body.Submission_Date__c = new Date(); // this one can be a datetime
     body.Worker__c = bodyRaw.Worker__c || bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
     console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
-    body.Checkoff_Auth__c = formatSFDate(body.Checkoff_Auth__c);
+    body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
     if (bodyRaw.scholarship_flag === "on") {
       body.Scholarship_Flag__c = true;
     }
@@ -968,7 +969,7 @@ const legal_language = `<div><h3>Membership Authorization</h3><p><strong>Yes, I 
 // updateSFContact
 // createSumbission
 exports.handleTab1 = async (req, res, next) => {
-  req.body.birthdate = formatSFDate(req.body.birthdate);
+  req.body.birthdate = this.formatSFDate(req.body.birthdate);
   if (!req.body.text_auth_opt_out) {
     req.body.text_auth_opt_out = false;
   } else if (req.body.text_auth_opt_out) {
@@ -1048,7 +1049,7 @@ exports.handleTab1 = async (req, res, next) => {
     );
     req.body.employer_id = employer_id;
     req.body.agency_number = agency_number;
-    req.body.submission_date = formatSFDate(new Date());
+    req.body.submission_date = this.formatSFDate(new Date());
 
     this.createSFContact(req, res, next)
       .then(salesforce_id => {
@@ -1111,8 +1112,8 @@ exports.handleTab2 = async (req, res, next) => {
     .updateSubmission(req, res, next)
     .then(submissionBody => {
       req.body = { ...formValues, ...submissionBody };
-      req.body.maintenance_of_effort = formatSFDate(new Date());
-      req.body.seiu503_cba_app_date = formatSFDate(new Date());
+      req.body.maintenance_of_effort = this.formatSFDate(new Date());
+      req.body.seiu503_cba_app_date = this.formatSFDate(new Date());
       req.body.immediate_past_member_status = "Not a Member";
       console.log(`sf.ctrl.js > 1110 handleTab2: req.body`);
       console.log(req.body);

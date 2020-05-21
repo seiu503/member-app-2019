@@ -51,18 +51,6 @@ generateToken = user => {
 /** Get client IP from req */
 getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
-// find matching employer object from SF Employers array returned from API
-findEmployerObject = (employerObjects, employerName) => {
-  employerObjects && Array.isArray(employerObjects)
-    ? employerObjects.filter(obj => {
-        if (employerName.toLowerCase() === "community member") {
-          return obj.Name.toLowerCase() === "community members";
-        }
-        return obj.Name.toLowerCase() === employerName.toLowerCase();
-      })[0]
-    : { Name: "" };
-};
-
 // format date for submission to SF
 formatSFDate = date => {
   let d = new Date(date),
