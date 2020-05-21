@@ -2586,7 +2586,7 @@ suite("noscript > handleTab1", () => {
     res = mockRes();
     sinon.restore();
   });
-  test("handles error if lookupSFContactByFLE throws", async () => {
+  test.only("handles error if lookupSFContactByFLE throws", async () => {
     req = mockReq({
       body: submissionBody,
       locals: {
@@ -2594,14 +2594,27 @@ suite("noscript > handleTab1", () => {
       }
     });
     const LookupError = "LookupError (Test)";
-    const lookupSFContactByFLEError = sinon.stub().rejects(LookupError);
-    sfCtrl.lookupSFContactByFLE = lookupSFContactByFLEError;
+    let lookupSFContactByFLEError = sinon
+      .stub(sfCtrl, "lookupSFContactByFLE")
+      .rejects(LookupError);
+    let getAllEmployersSuccess = sinon
+      .stub(sfCtrl, "getAllEmployers")
+      .resolves([{ Name: "test", Id: "0016100000PZDmOAAX" }]);
+    let createSFContactStub = sinon
+      .stub(sfCtrl, "createSFContact")
+      .resolves({});
+    let createSubmissionStub = sinon
+      .stub(submissionCtrl, "createSubmission")
+      .resolves({});
     try {
       result = await sfCtrl.handleTab1(req, res);
       sinon.assert.called(lookupSFContactByFLEError);
       sinon.assert.calledWith(res.status, 500);
       sinon.assert.calledWith(res.json, { message: LookupError });
-      sfCtrl.lookupSFContactByFLE = lookupSFContactByFLEOrig;
+      lookupSFContactByFLEError.restore();
+      getAllEmployersSuccess.restore();
+      createSFContactStub.restore();
+      createsSubmissionStub.restore();
     } catch (err) {
       // console.log(err);
     }
