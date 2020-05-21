@@ -164,13 +164,13 @@ const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   delete updates.submission_id;
   let { id } = req.params;
-  console.log(
-    `subm.ctrl.js > 172: referer: ${
-      req.headers && req.headers.referer
-        ? req.headers.referer
-        : "testing, no referer"
-    }`
-  );
+  // console.log(
+  //   `subm.ctrl.js > 172: referer: ${
+  //     req.headers && req.headers.referer
+  //       ? req.headers.referer
+  //       : "testing, no referer"
+  //   }`
+  // );
   const queryData = url.parse(
     req.headers && req.headers.referer ? req.headers.referer : "www.test.com",
     true

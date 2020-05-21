@@ -76,7 +76,7 @@ const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 const paymentFieldList = generateSFDJRFieldList();
 
-// can't import these 2 funcs from utils bc circular imports
+// can't import these funcs from utils bc circular imports
 exports.getClientIp = req =>
   req.headers["x-real-ip"] || req.connection.remoteAddress;
 
@@ -91,6 +91,17 @@ exports.formatSFDate = date => {
 
   return [year, month, day].join("-");
 };
+
+// find matching employer object from SF Employers array returned from API
+exports.findEmployerObject = (employerObjects, employerName) =>
+  employerObjects
+    ? employerObjects.filter(obj => {
+        if (employerName.toLowerCase() === "community member") {
+          return obj.Name.toLowerCase() === "community members";
+        }
+        return obj.Name.toLowerCase() === employerName.toLowerCase();
+      })[0]
+    : { Name: "" };
 
 /* ================================ CONTACTS =============================== */
 
@@ -1036,7 +1047,7 @@ exports.handleTab1 = async (req, res, next) => {
       `sf.ctrl.js > handleTab1 1028: sfEmployers: ${sfEmployers.length}`
     );
     console.log(formValues.employer_name);
-    const employerObject = findEmployerObject(
+    const employerObject = this.findEmployerObject(
       Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }],
       formValues.employer_name || ""
     );
