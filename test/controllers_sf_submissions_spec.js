@@ -2586,7 +2586,7 @@ suite("noscript > handleTab1", () => {
     res = mockRes();
     sinon.restore();
   });
-  test.only("handles error if lookupSFContactByFLE throws", async () => {
+  test("handles error if lookupSFContactByFLE throws", async () => {
     req = mockReq({
       body: submissionBody,
       locals: {
