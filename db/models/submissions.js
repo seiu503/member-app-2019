@@ -25,6 +25,7 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {Boolean}  terms_agree            Agreement to membership terms
  *  @param    {String}   Signature              URL of signature image
  *  @param    {Boolean}  text_auth_opt_out      Text authorization opt out
+ *  @param    {Boolean}  scholarship_flag       Scholarship checkbox
  *  @param    {String}   online_campaign_source Online campaign source
  *  @param    {String}   salesforce_id             salesforce id
  *  @param    {String}   legal_language         Dynamic dump of html legal language on form at time of submision
@@ -32,6 +33,7 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {Date}   seiu503_cba_app_date     Date of submission; confirmation of submitting membership form
  *  @param    {Date}   direct_pay_auth          Date of submission; confirmation of direct pay authorization
  *  @param    {Date}   direct_deposit_auth      Date of submission; confirmation of direct deposit authorization
+ *  @param    {Date}  checkoff_auth              Date of submission; confirmation of Checkoff checkbox
  *  @param    {String}   immediate_past_member_status   Immediate past member status (populated from SF for existing contact matches)
  *  @returns  {Array}    Array of 1 newly-created Submission Object.
  */

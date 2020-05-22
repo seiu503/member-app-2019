@@ -120,7 +120,7 @@ describe("submissions model tests", () => {
         assert.deepEqual(result[0].home_zip, home_zip);
         assert.deepEqual(result[0].home_email, home_email);
         assert.deepEqual(result[0].preferred_language, preferred_language);
-        assert.equal(result[0].terms_agree, terms_agree);
+        assert.equal(!!result[0].terms_agree, !!terms_agree);
         assert.deepEqual(result[0].signature, signature);
         assert.deepEqual(result[0].text_auth_opt_out, text_auth_opt_out);
         assert.deepEqual(
@@ -174,7 +174,7 @@ describe("submissions model tests", () => {
         assert.equal(result.home_zip, home_zip);
         assert.equal(result.home_email, home_email);
         assert.equal(result.preferred_language, preferred_language);
-        assert.equal(result.terms_agree, terms_agree);
+        assert.equal(!!result.terms_agree, !!terms_agree);
         assert.equal(result.signature, signature);
         assert.equal(result.text_auth_opt_out, text_auth_opt_out);
         assert.equal(result.online_campaign_source, online_campaign_source);
@@ -264,7 +264,10 @@ describe("submissions model tests", () => {
         assert.include(arrayOfKeys("home_zip"), home_zip);
         assert.include(arrayOfKeys("home_email"), home_email);
         assert.include(arrayOfKeys("preferred_language"), preferred_language);
-        assert.include(arrayOfKeys("terms_agree"), terms_agree);
+        assert.oneOf(arrayOfKeys("terms_agree")[0], [
+          terms_agree.toString(),
+          !!terms_agree
+        ]);
         assert.include(arrayOfKeys("legal_language"), legal_language);
         assert.include(
           arrayOfKeys("maintenance_of_effort").toString(),
@@ -294,7 +297,10 @@ describe("submissions model tests", () => {
         assert.equal(result.home_zip, home_zip);
         assert.equal(result.home_email, home_email);
         assert.equal(result.preferred_language, preferred_language);
-        assert.equal(result.terms_agree, terms_agree);
+        assert.oneOf(result.terms_agree, [
+          terms_agree.toString(),
+          !!terms_agree
+        ]);
         assert.equal(result.legal_language, legal_language);
         assert.equal(
           result.maintenance_of_effort.toString(),
@@ -327,7 +333,10 @@ describe("submissions model tests", () => {
           assert.equal(result.home_zip, home_zip);
           assert.equal(result.home_email, home_email);
           assert.equal(result.preferred_language, preferred_language);
-          assert.equal(result.terms_agree, terms_agree);
+          assert.oneOf(result.terms_agree, [
+            terms_agree.toString(),
+            !!terms_agree
+          ]);
           assert.equal(result.legal_language, legal_language);
           assert.equal(
             result.maintenance_of_effort.toString(),

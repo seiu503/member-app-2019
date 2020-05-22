@@ -24,12 +24,13 @@ exports.up = function(knex) {
           table.string("contact_id");
           table.string("legal_language").notNullable();
           table.date("maintenance_of_effort").notNullable();
-          table.date("503_cba_app_date").notNullable();
+          table.date("seiu503_cba_app_date").notNullable();
           table.date("direct_pay_auth");
           table.date("direct_deposit_auth");
           table.string("immediate_past_member_status");
           table.timestamp("created_at").defaultTo(knex.fn.now());
           table.timestamp("updated_at").defaultTo(knex.fn.now());
+          table.uuid("submission_id").primary();
         });
       }
     })

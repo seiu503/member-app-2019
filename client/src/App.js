@@ -1021,6 +1021,8 @@ export class AppUnconnected extends Component {
     submissionData.Worker__c = submissionData.salesforce_id;
     if (!submissionData.text_auth_opt_out) {
       submissionData.text_auth_opt_out = false;
+    } else {
+      submissionData.text_auth_opt_out = true;
     }
     delete submissionData.salesforce_id;
     console.log(submissionData);

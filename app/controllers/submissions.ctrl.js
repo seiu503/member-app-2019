@@ -1,4 +1,5 @@
 const request = require("request");
+const url = require("url");
 
 /*
    Route handlers for fetching and updating submissions.
@@ -8,7 +9,11 @@ const request = require("request");
 
 // import models
 const submissions = require("../../db/models/submissions");
-const utils = require("../utils");
+const utils = require("../utils/index.js");
+
+// can't import this from utils bc it would be a circular import
+exports.getClientIp = req =>
+  req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -40,9 +45,9 @@ const utils = require("../utils");
  *  @param    {String}   immediate_past_member_status   Immediate past member status (populated from SF for existing contact matches)
  *  @returns  {Object}    New Submission Object or error message.
  */
-const createSubmission = async (req, res, next) => {
-  const ip = utils.getClientIp(req);
-  console.log("submissions.ctrl.js > 43: createSubmission");
+exports.createSubmission = async (req, res, next) => {
+  const ip = getClientIp(req);
+  console.log("submissions.ctrl.js > 45: createSubmission");
   console.log(req.body);
   let {
     submission_date,
@@ -71,12 +76,11 @@ const createSubmission = async (req, res, next) => {
     salesforce_id
   } = req.body;
 
-  const requiredFields = [
-    "submission_date",
-    "first_name",
-    "last_name",
-    "home_email"
-  ];
+  const requiredFields = ["first_name", "last_name", "home_email"];
+
+  if (!submission_date) {
+    submission_date = new Date();
+  }
 
   const missingField = requiredFields.find(field => !(field in req.body));
   if (missingField) {
@@ -90,7 +94,7 @@ const createSubmission = async (req, res, next) => {
   const createSubmissionResult = await submissions
     .createSubmission(
       ip,
-      submission_date,
+      new Date(), // submission date can be datetime
       agency_number,
       birthdate,
       cell_phone,
@@ -116,8 +120,9 @@ const createSubmission = async (req, res, next) => {
       salesforce_id
     )
     .catch(err => {
-      console.error(`submissions.ctrl.js > 129: ${err.message}`);
-      return res.status(500).json({ message: err.message });
+      console.error(`submissions.ctrl.js > 129`);
+      console.error(err);
+      return res.status(500).json({ message: err.message ? err.message : err });
     });
 
   if (
@@ -134,17 +139,22 @@ const createSubmission = async (req, res, next) => {
     );
     return res.status(500).json({
       message:
-        createSubmissionResult.message ||
-        "There was an error saving the submission"
+        createSubmissionResult && createSubmissionResult.message
+          ? createSubmissionResult.message
+          : "There was an error saving the submission"
     });
   } else {
     res.locals.submission_id = createSubmissionResult[0].id;
     res.locals.currentSubmission = createSubmissionResult[0];
-    return res.status(200).json({
-      salesforce_id,
-      submission_id: createSubmissionResult[0].id,
-      currentSubmission: createSubmissionResult[0]
-    });
+    if (req.locals && req.locals.next) {
+      return createSubmissionResult[0].id;
+    } else {
+      return res.status(200).json({
+        salesforce_id,
+        submission_id: createSubmissionResult[0].id,
+        currentSubmission: createSubmissionResult[0]
+      });
+    }
   }
 };
 
@@ -153,25 +163,60 @@ const createSubmission = async (req, res, next) => {
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-const updateSubmission = async (req, res, next) => {
+exports.updateSubmission = async (req, res, next) => {
   const updates = req.body;
-  const { id } = req.params;
-  // console.log(`subm.ctrl.js > 173 - id: ${id} (updates below)`);
-  // console.log(updates);
+  delete updates.submission_id;
+  let { id } = req.params;
+  console.log(`subm.ctrl.js > 169 -- req.params:`);
+  console.log(req.params);
+  console.log(`subm.ctrl.js > 172 -- req.headers:`);
+  console.log(req.headers);
+  console.log(`subm.ctrl.js > 171 -- referer:`);
+  const referer = req.get("Referrer");
+  if (typeof referer === "string") {
+    console.log(referer);
+  } else {
+    console.log(`subm.ctrl.js > 177 -- referer is NOT a string`);
+  }
+
+  const queryData = url.parse(
+    referer && typeof referer === "string" ? referer : "www.test.com",
+    true
+  ).query;
+  console.log(`subm.ctrl.js > 184 -- queryData:`);
+  console.log(queryData);
+  if (queryData.submission_id) {
+    id = queryData.submission_id;
+  }
+  if (queryData.salesforce_id) {
+    updates.salesforce_id = queryData.salesforce_id;
+  }
+  // if (updates.checkoff_auth === "on") {
+  //   updates.checkoff_auth = new Date();
+  // }
+  delete updates.checkoff_auth;
+  if (updates.terms_agree === "on") {
+    updates.terms_agree = true;
+  }
+  if (updates.scholarship_flag === "on") {
+    updates.scholarship_flag = true;
+  }
+  console.log(`subm.ctrl.js > 202 - id: ${id} (updates below)`);
+  console.log(updates);
 
   if (!updates || !Object.keys(updates).length) {
-    console.error("subm.ctrl.js > 173: !updates");
+    console.error("subm.ctrl.js > 206: !updates");
     return res.status(422).json({ message: "No updates submitted" });
   }
   if (!id) {
-    console.error("subm.ctrl.js > 177: !id");
+    console.error("subm.ctrl.js > 210: !id");
     return res.status(422).json({ message: "No Id Provided in URL" });
   }
 
   const updateSubmissionResult = await submissions
     .updateSubmission(id, updates)
     .catch(err => {
-      console.error(`subm.ctrl.js > 188: ${err.message}`);
+      console.error(`subm.ctrl.js > 217: ${err.message}`);
       return res.status(500).json({
         message: err.message
       });
@@ -186,7 +231,7 @@ const updateSubmission = async (req, res, next) => {
       updateSubmissionResult && updateSubmissionResult.message
         ? updateSubmissionResult.message
         : "There was an error updating the submission";
-    console.error(`submissions.ctrl.js > 205: ${errmsg}`);
+    console.error(`submissions.ctrl.js > 232: ${errmsg}`);
     return res.status(404).json({
       message: errmsg
     });
@@ -195,9 +240,15 @@ const updateSubmission = async (req, res, next) => {
     // console.log(updateSubmissionResult[0].id);
     // saving to res.locals to make id available for testing
     res.locals.submission_id = updateSubmissionResult[0].id;
-    return res
-      .status(200)
-      .json({ submission_id: updateSubmissionResult[0].id });
+    if (req.locals && req.locals.next) {
+      console.log("submissions.ctrl.js > 242: updateSubmissionResult");
+      console.log(updateSubmissionResult[0]);
+      return updateSubmissionResult[0];
+    } else {
+      return res
+        .status(200)
+        .json({ submission_id: updateSubmissionResult[0].id });
+    }
   }
 };
 
@@ -205,7 +256,7 @@ const updateSubmission = async (req, res, next) => {
  *  @param    {String}   id   Id of the submission to delete.
  *  @returns  Success or error message.
  */
-const deleteSubmission = async (req, res, next) => {
+exports.deleteSubmission = async (req, res, next) => {
   let result;
   const userType = req.user.type;
   if (userType != "admin" || !userType) {
@@ -219,12 +270,12 @@ const deleteSubmission = async (req, res, next) => {
     if (result.message === "Submission deleted successfully") {
       return res.status(200).json({ message: result.message });
     }
-    console.error(`submissions.ctrl.js > 225: ${result.message}`);
+    console.error(`submissions.ctrl.js > 271: ${result.message}`);
     return res.status(500).json({
       message: "An error occurred and the submission was not deleted."
     });
   } catch (err) {
-    console.error(`submissions.ctrl.js > 229: ${err.message}`);
+    console.error(`submissions.ctrl.js > 276: ${err.message}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -232,7 +283,7 @@ const deleteSubmission = async (req, res, next) => {
 /** Get all submissions
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
-const getSubmissions = (req, res, next) => {
+exports.getSubmissions = (req, res, next) => {
   const userType = req.user.type;
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
@@ -248,7 +299,7 @@ const getSubmissions = (req, res, next) => {
       return res.status(200).json(submissions);
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 247: ${err.message}`);
+      console.error(`submissions.ctrl.js > 300: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -257,7 +308,7 @@ const getSubmissions = (req, res, next) => {
  *  @param    {String}   id   Id of the requested submission.
  *  @returns  {Object}        Submission object OR error message.
  */
-const getSubmissionById = (req, res, next) => {
+exports.getSubmissionById = (req, res, next) => {
   const userType = req.user.type;
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
@@ -269,7 +320,7 @@ const getSubmissionById = (req, res, next) => {
     .getSubmissionById(req.params.id)
     .then(submission => {
       if (!submission || submission.message) {
-        console.error(`submissions.ctrl.js > 261: ${submission.message}`);
+        console.error(`submissions.ctrl.js > 321: ${submission.message}`);
         return res
           .status(404)
           .json({ message: submission.message || "Submission not found" });
@@ -280,7 +331,7 @@ const getSubmissionById = (req, res, next) => {
       }
     })
     .catch(err => {
-      console.error(`submissions.ctrl.js > 272: ${err.message}`);
+      console.error(`submissions.ctrl.js > 332: ${err.message}`);
       res.status(500).json({ message: err.message });
     });
 };
@@ -291,8 +342,8 @@ const getSubmissionById = (req, res, next) => {
  * @param {String} ip_address users ipAdress
  * @returns {Bool} returns true for human, false for bot
  */
-const verifyHumanity = async (req, res) => {
-  const ip = utils.getClientIp(req);
+exports.verifyHumanity = async (req, res) => {
+  const ip = this.getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
@@ -307,7 +358,7 @@ const verifyHumanity = async (req, res) => {
     },
     (err, httpResponse, body) => {
       if (err) {
-        console.error(`submissions.ctrl.js > 298: ${err}`);
+        console.error(`submissions.ctrl.js > 359: ${err}`);
         return res.status(500).json({ message: err.message });
       } else {
         const r = JSON.parse(body);
@@ -315,22 +366,11 @@ const verifyHumanity = async (req, res) => {
           // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
           return res.status(200).json({ score: r.score });
         } else {
-          console.error(`submissions.ctrl.js > 306: recaptcha failure`);
+          console.error(`submissions.ctrl.js > 367: recaptcha failure`);
           console.error(r["error-codes"][0]);
           return res.status(500).json({ message: r["error-codes"][0] });
         }
       }
     }
   );
-};
-
-/* ================================ EXPORT ================================= */
-
-module.exports = {
-  createSubmission,
-  updateSubmission,
-  deleteSubmission,
-  getSubmissionById,
-  getSubmissions,
-  verifyHumanity
 };

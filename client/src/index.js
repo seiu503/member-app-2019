@@ -1,3 +1,5 @@
+import "react-app-polyfill/ie11";
+import "react-app-polyfill/stable";
 import React from "react";
 import { render } from "react-dom";
 import { BrowserRouter } from "react-router-dom";
@@ -10,6 +12,8 @@ import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
 import { LocalizeProvider } from "react-localize-redux";
+
+global.fetch = require("node-fetch");
 
 render(
   <Provider store={store}>
