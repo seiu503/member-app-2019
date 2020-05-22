@@ -63,7 +63,7 @@
         font-weight: 700;
         font-size: 1em;
       }
-      .jss8 {
+      .jss8-static {
         color: white;
         width: 100vw;
         bottom: 0;
@@ -77,6 +77,95 @@
         align-items: middle;
         justify-content: center;
         background-color: #2c0940;
+      }
+      .jss3-static {
+        height: 100%;
+        margin: auto;
+        display: flex;
+        max-width: 1200px;
+        min-height: 100vh;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .jss214-static {
+        margin: auto 0;
+        padding: 40px 0 140px 0;
+      }
+      .jss18-static {
+        color: #ffffff;
+        flex-grow: 1;
+        font-size: 1.7em;
+        font-family: "Source Sans Pro", sans-serif;
+        font-weight: 200;
+        padding-left: 10px;
+        text-decoration: none;
+      }
+      @media (max-width:959.95px) {
+        .jss18-static {
+          font-size: 1.1rem;
+          font-weight: 400;
+        }
+      }
+      @media (max-width:449.95px) {
+        .jss18-static {
+          display: none;
+        }
+      }
+      .jss14-static {
+        background-color: #2c0940;
+      }
+      .jss22-static {
+        top: -1000px;
+        left: -1000px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        text-align: left;
+      }
+      .jss22-static:focus {
+        top: 0;
+        left: -13px;
+        width: auto;
+        height: auto;
+        z-index: 1000;
+        overflow: visible;
+        position: relative;
+        text-align: center;
+      }
+      .jss25-static {
+        width: auto;
+        height: 60px;
+        margin-right: 10px;
+      }
+      @media (max-width:599.95px) {
+        .jss25-static {
+          height: 40px;
+        }
+      }
+      @media (min-width:0px) {
+        .jss214-static {
+          margin: auto;
+        }
+      }
+      @media (max-width:1279.95px) {
+        .jss214-static {
+          padding: 20px 0;
+        }
+      }
+      @media (max-width:959.95px) {
+        .jss214-static {
+          margin: auto;
+        }
+      }
+      @media (min-width:0px) and (max-width:449.95px) {
+        .jss214-static {
+          top: 0;
+          left: 0;
+          width: 100vw;
+          margin: auto;
+          position: absolute;
+        }
       }
     </style>
     <style data-jss="" data-meta="MuiTypography">
@@ -967,7 +1056,7 @@
         -webkit-appearance: textfield;
       }
       </style><style data-jss="" data-meta="PrivateNotchedOutline">
-      .jss205 {
+      .jss205-static {
         top: -5px;
         left: 0;
         right: 0;
@@ -981,7 +1070,7 @@
         border-radius: 4px;
         pointer-events: none;
       }
-      .jss206 {
+      .jss206-static {
         padding: 0;
         text-align: left;
         transition: width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
@@ -1207,23 +1296,9 @@
         pointer-events: none;
       }
     </style>
-    <style data-jss="" data-meta="MuiTextField">
-
-    </style>
     <style data-jss="" data-meta="PrivateSwitchBase">
-      .jss401 {
+      .jss401-static {
         padding: 9px;
-      }
-      .jss404 {
-        top: 0;
-        left: 0;
-        width: 100%;
-        cursor: inherit;
-        height: 100%;
-        margin: 0;
-        opacity: 0;
-        padding: 0;
-        position: absolute;
       }
     </style>
     <style data-jss="" data-meta="MuiCheckbox">
@@ -1317,154 +1392,6 @@
       }
       .MuiInputAdornment-disablePointerEvents {
         pointer-events: none;
-      }
-    </style>
-    <style data-jss="" data-meta="Connect(t)">
-      .jss12 {
-        color: #2c0940;
-        width: 100vw;
-        flex-grow: 1;
-      }
-      .jss13 {
-        flex-grow: 1;
-      }
-      .jss14 {
-        position: fixed;
-        background-color: #2c0940;
-      }
-      .jss15 {
-        display: none;
-      }
-      @media (max-width:599.95px) {
-        .jss15 {
-          right: 20px;
-          display: block;
-          position: absolute;
-        }
-      }
-      @media (max-width:599.95px) {
-        .jss16 {
-          display: none;
-        }
-      }
-      .jss17 {
-        color: #ffce04;
-        font-size: 1em;
-        text-transform: capitalize;
-      }
-      .jss18 {
-        color: #ffffff;
-        flex-grow: 1;
-        font-size: 1.7em;
-        font-family: "Source Sans Pro", sans-serif;
-        font-weight: 200;
-        padding-left: 10px;
-        text-decoration: none;
-      }
-      @media (max-width:959.95px) {
-        .jss18 {
-          font-size: 1.1rem;
-          font-weight: 400;
-        }
-      }
-      @media (max-width:449.95px) {
-        .jss18 {
-          display: none;
-        }
-      }
-      .jss19 {
-        text-decoration: none;
-      }
-      .jss20 {
-        margin-right: 20px;
-      }
-      @media (max-width:449.95px) {
-        .jss20 {
-          display: none;
-        }
-      }
-      .jss21 {
-        display: flex;
-      }
-      .jss22 {
-        top: -1000px;
-        left: -1000px;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        position: absolute;
-        text-align: left;
-      }
-      .jss22:focus {
-        top: 0;
-        left: -13px;
-        width: auto;
-        height: auto;
-        z-index: 1000;
-        overflow: visible;
-        position: relative;
-        text-align: center;
-      }
-      .jss23 {
-        color: #ffce04;
-        padding: 24px 16px;
-        text-align: center;
-        font-family: "Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif;
-        font-weight: 400;
-        text-transform: capitalize;
-      }
-      .jss24 {
-        color: #ffce04;
-      }
-      .jss25 {
-        width: auto;
-        height: 60px;
-        margin-right: 10px;
-      }
-      @media (max-width:599.95px) {
-        .jss25 {
-          height: 40px;
-        }
-      }
-      .jss26 {
-        box-shadow: inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2);
-      }
-      .jss27 {
-        color: white;
-      }
-      @media (max-width:599.95px) {
-        .jss27 {
-          top: 20px;
-          right: 10px;
-          position: absolute;
-        }
-      }
-      .jss28 {
-        color: white;
-        margin-top: -14px;
-        margin-left: 25px;
-      }
-      .jss29 {
-        color: white;
-        width: 195px;
-        border: 1px solid white;
-        padding-left: 7px !important;
-      }
-      .jss31 {
-        display: none;
-      }
-      .jss32 {
-        border-color: transparent;
-      }
-      .jss33 {
-        color: white;
-      }
-      .jss34 {
-        color: white !important;
-        margin-top: -8px;
-      }
-      .jss35 {
-        padding-left: 10px;
       }
     </style>
     <style data-jss="" data-meta="MuiDialog">
@@ -1656,26 +1583,6 @@
         justify-content: center;
       }
     </style>
-    <style data-jss="" data-meta="PrivateTabIndicator">
-      .jss374 {
-        width: 100%;
-        bottom: 0;
-        height: 2px;
-        position: absolute;
-        transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-      }
-      .jss375 {
-        background-color: #2c0940;
-      }
-      .jss376 {
-        background-color: #ffce04;
-      }
-      .jss377 {
-        right: 0;
-        width: 2px;
-        height: 100%;
-      }
-    </style>
     <style data-jss="" data-meta="MuiTabs">
       .MuiTabs-root {
         display: flex;
@@ -1718,96 +1625,8 @@
         }
       }
     </style>
-    <style data-jss="" data-meta="makeStyles">
-      .jss352 {
-        margin: auto;
-        flex-grow: 1;
-        max-width: 600px;
-        border-radius: 4px 4px 0 0;
-      }
-    </style>
-    <style data-jss="" data-meta="makeStyles">
-      .jss277 {
-        color: white;
-        width: 100%;
-        display: block;
-        padding: 15px;
-        font-size: 1.2em;
-        margin-bottom: 20px;
-        text-transform: none;
-        background-color: #b71c1c;
-      }
-      .jss277:hover {
-        background-color: #d32f2f;
-      }
-      .jss278 {
-        color: white;
-        width: 100%;
-        display: block;
-        padding: 15px;
-        font-size: 1.2em;
-        margin-left: 0;
-        text-transform: none;
-        background-color: #43A047;
-      }
-      .jss278:hover {
-        background-color: #66BB6A;
-      }
-      .jss279 {
-        display: block;
-        padding: 15px;
-      }
-    </style>
-    <style data-jss="" data-meta="Connect(t)">
-      .jss214 {
-        margin: auto 0 auto 50%;
-        padding: 80px 0 140px 0;
-      }
-      @media (min-width:0px) {
-        .jss214 {
-          margin: 44px 0 auto 50%;
-        }
-      }
-      @media (max-width:1279.95px) {
-        .jss214 {
-          padding: 20px 0;
-        }
-      }
-      @media (max-width:959.95px) {
-        .jss214 {
-          margin: 44px auto;
-        }
-      }
-      @media (min-width:0px) and (max-width:449.95px) {
-        .jss214 {
-          top: 0;
-          left: 0;
-          width: 100vw;
-          margin: 36px auto;
-          position: absolute;
-        }
-      }
-      .jss215 {
-        margin: auto;
-        padding: 80px 0 140px 0;
-      }
-      @media (min-width:0px) and (max-width:449.95px) {
-        .jss215 {
-          top: 0;
-          left: 0;
-          width: 100vw;
-          margin: auto;
-          position: absolute;
-        }
-      }
-      .jss217 {
-        color: #531078;
-        font-size: 2em;
-        font-weight: 700;
-        line-height: 1.1;
-        margin-bottom: 15px;
-      }
-      .jss218 {
+    <style>
+      .jss218-static {
         margin: auto;
         padding: 20px 20px 40px 20px;
         max-width: 600px;
@@ -1815,418 +1634,72 @@
         border-radius: 0 0 4px 4px;
       }
       @media (min-width:0px) and (max-width:449.95px) {
-        .jss218 {
+        .jss218-static {
           padding: 15px 15px 40px 15px;
         }
       }
-      .jss219 {
+      .jss219-static {
         width: 100%;
         display: flex;
         padding: 0 20px 40px 0;
         margin-top: 20px;
         justify-content: flex-end;
       }
-      .jss220 {
-        width: 100%;
-        display: flex;
-        padding: 40px 20px 0 0;
-        justify-content: flex-start;
-      }
-      .jss221 {
-        width: 100%;
-        display: flex;
-        padding: 0 20px 40px 0;
-        justify-content: space-between;
-      }
-      .jss222 {
+      .jss222-static {
         color: #ffce04;
         padding: 6px 20px;
         font-size: 1.3rem;
         text-transform: none;
       }
-      .jss222:hover {
+      .jss222-static:hover {
         background-color: #531078;
       }
-      .jss223 {
-        color: #ffffff;
-        padding: 3px 10px;
-        font-size: .8rem;
-        text-transform: none;
-      }
-      .jss223:hover {
-        background-color: #531078;
-      }
-      .jss224 {
-        color: #ffffff;
-        padding: 3px 10px;
-        font-size: .8rem;
-        text-transform: none;
-      }
-      .jss224:hover {
-        background-color: #531078;
-      }
-      .jss225 {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-      }
-      .jss226 {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-      .jss227 {
-        color: #ffce04;
-        padding: 6px 20px;
-        font-size: 1.3rem;
-        margin-right: 40px;
-        text-transform: none;
-      }
-      .jss227:hover {
-        background-color: #531078;
-      }
-      .jss228 {
+      .jss228-static {
         padding-top: 20px;
       }
-      .jss229 {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-      }
-      .jss230 {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
-      }
-      .jss231 {
+      .jss231-static {
         width: 100%;
         margin: 0 0 30px 0;
       }
-      .jss232 {
-        width: 100%;
-        margin: 0 0 30px 0;
-        direction: rtl;
-        text-align: right;
-      }
-      .jss233 {
-        color: red;
-      }
-      .jss234 {
-        width: 100%;
-        margin: 25px 0 40px;
-        padding: 20px;
-      }
-      .jss235 {
-        width: 100%;
-        margin: 0;
-        padding: 10px;
-      }
-      .jss236 {
+      .jss236-static {
         width: 100%;
       }
-      .jss237 {
-        width: 100%;
-      }
-      .jss238 {
-        width: 15%;
-        min-width: 80px;
-      }
-      .jss239 {
+      .jss239-static {
         margin: 0 0 3px 0;
       }
-      .jss240 {
+      .jss240-static {
         margin: -25px 0 30px 0;
       }
       .jss241 {
         margin: -10px 0 10px 0;
       }
-      .jss242 {
+      .jss242-static {
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
         justify-content: flex-start;
       }
-      .jss243 {
+      .jss243-static {
         display: flex;
         flex-wrap: nowrap;
         flex-direction: row;
         justify-content: space-between;
       }
       @media (max-width:449.95px) {
-        .jss243 {
+        .jss243-static {
           flex-wrap: wrap;
         }
       }
-      .jss244 {
-        width: 280px;
-        display: flex;
-        flex-wrap: nowrap;
-        flex-direction: row;
-        justify-content: space-between;
-      }
-      .jss245 {
-        margin-top: 30px;
-      }
-      .jss246 {
+      .jss246-static {
         width: 100%;
         margin: 0 0 30px 0;
       }
-      .jss247 {
-        width: 48%;
-      }
-      @media (max-width:449.95px) {
-        .jss247 {
-          width: 100%;
-          display: block;
-        }
-      }
-      .jss248 {
+      .jss248-static {
         margin: -35px 0 0 0;
-      }
-      .jss249 {
-        margin: -35px 0 40px 0;
-      }
-      .jss250 {
-        margin: -50px 0 50px 0;
-        font-size: 14px;
-        line-height: 1.2em;
-      }
-      .jss251 {
-        width: 100%;
-        border: 1px solid lightgrey;
-        margin: 0 0 32px;
-        border-radius: 5px;
-      }
-      .jss252 {
-        font:  inherit;
-        color: blue;
-        border: none;
-        cursor:  pointer;
-        padding: 0;
-        background: none;
-        border-bottom: 1px solid blue;
-      }
-      .jss253 {
-        display: flex;
-        flex-direction: row;
-      }
-      .jss254 {
-        margin: auto;
-        display: flex;
-        text-align: center;
-        flex-direction: row;
-        justify-content: space-around;
-      }
-      .jss255 {
-        font-weight: 700;
-      }
-      .jss256 {
-        color: #531078;
-        font-size: 1.5em;
-        font-weight: 400;
-        padding-bottom: 20px;
-      }
-      .jss257 {
-        padding-bottom: 1.5em;
-      }
-      .jss258 {
-        display: flex;
-      }
-      @media (max-width:449.95px) {
-        .jss258 {
-          flex-direction: column;
-        }
-      }
-      .jss259 {
-        display: flex;
-        flex-direction: column;
-      }
-      .jss260 {
-        flex: 1 0 auto;
-      }
-      .jss261 {
-        min-width: 200px;
-        min-height: 200px;
-      }
-      .jss262 {
-        color: #531078;
-        font-weight: 400;
-        padding-bottom: 10px;
-      }
-      .jss263 {
-        color: #531078;
-        font-style: italic;
-        padding-top: 10px;
-      }
-      .jss264 {
-        text-indent: 20px;
-      }
-      .jss265 {
-        margin: 0 -1.666666666666667% 13px;
-        display: block;
-        flex-wrap: wrap;
-        margin-top: 15px;
-        padding-top: 20px;
-        background-color: #FBE796;
-      }
-      .jss266 {
-        flex-wrap: nowrap;
-        flex-direction: row;
-      }
-      .jss267 {
-        width: 21%;
-        height: 60px;
-        margin: 13px 1.666666666666667% 0;
-        display: inline-block;
-      }
-      .jss268 {
-        color: #4C4C4C;
-        border: 1px solid #C4C3C3;
-        cursor: pointer;
-        height: 100%;
-        margin: 0;
-        display: block;
-        position: relative;
-        font-size: 20px;
-        text-align: center;
-        transition: color 0.1s, background-color 0.1s, border-color 0.1s, font-weight 0.1s;
-        font-weight: 300;
-        line-height: 60px;
-        border-radius: 3px;
-      }
-      .jss269 {
-        float: left;
-        width: 0;
-        border: 0;
-        height: 0;
-        margin: 0;
-        opacity: 0;
-        padding: 0;
-        position: absolute;
-      }
-      .jss269:focus + label {
-        outline: rgba(83,16,120, 0.5) auto 3px;
-      }
-      .jss269:checked + label {
-        color: #531078;
-        font-weight: 700;
-        border-color: #531078;
-        border-width: 2px;
-      }
-      .jss269:checked + .jss268 {
-        color: #531078;
-        font-weight: 700;
-        border-color: #531078;
-        border-width: 2px;
-      }
-      .jss270 {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-      }
-      .jss271 {
-        top: 22px;
-        left: -22px;
-        position: absolute;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 14px;
-        white-space: nowrap;
-        vertical-align: text-top;
-      }
-      .jss272 {
-        height: 100%;
-        position: absolute;
-      }
-      .jss273 {
-        left: -10px;
-        position: relative;
-      }
-      .jss274 {
-        text-align: center;
-      }
-      .jss275 {
-        width: 100%;
-        text-align: center;
-      }
-      .jss276 {
-        color: #531078;
-        font-size: 1.2em;
-        text-align: center;
-        font-weight: 700;
       }
     </style>
     <style data-jss="" data-meta="withRouter(n)">
-      .jss1 {
-        flex-grow: 1;
-        box-sizing: border-box;
-      }
-      .jss2 {
-        width: auto;
-        height: 80vh;
-        margin-top: -60px;
-      }
-      .jss3 {
-        height: 100%;
-        margin: auto;
-        display: flex;
-        max-width: 1200px;
-        min-height: 100vh;
-        flex-direction: column;
-        justify-content: center;
-      }
-      .jss4 {
-        width: 100vw;
-        height: 100%;
-        min-height: 80vh;
-        background-position: bottom;
-        background-attachment: fixed;
-      }
-      @media (max-width:599.95px) {
-        .jss4 {
-          background-image: none;
-        }
-      }
-      @media (min-width:1280px) {
-        .jss4 {
-          background-size: cover;
-        }
-      }
-      .jss5 {
-        width: 50%;
-        height: 50%;
-        margin: auto;
-        padding: 60px;
-        font-size: 1.2em;
-        background: white;
-        text-align: center;
-        line-height: 2em;
-        border-radius: 4px;
-      }
-      @media (max-width:599.95px) {
-        .jss5 {
-          width: 100%;
-          height: 100%;
-        }
-      }
-      .jss6 {
-        display: flex;
-        justify-content: center;
-      }
-      @media (max-width:959.95px) {
-        .jss6 {
-          flex-wrap: wrap;
-        }
-      }
-      .jss7 {
-        width: 100px;
-        height: 100px;
-        margin: 20px auto;
-      }
-      .jss8 {
+      .jss8-static {
         color: white;
         width: 100vw;
         bottom: 0;
@@ -2242,30 +1715,9 @@
         background-color: #2c0940;
       }
       @media (max-width:599.95px) {
-        .jss8 {
+        .jss8-static {
           height: 53px;
         }
-      }
-      .jss9 {
-        fill: #ffce04;
-        width: 30px;
-        height: auto;
-        margin-top: 15px;
-      }
-      @media (max-width:599.95px) {
-        .jss9 {
-          margin-top: 5px;
-        }
-      }
-      .jss10 {
-        top: 50%;
-        left: 50%;
-        display: block;
-        position: absolute;
-        transform: translate(-50%, -50%);
-      }
-      .jss11 {
-        background: white;
       }
     </style>
   </head>
@@ -2274,13 +1726,25 @@
       <div class="js-required">
         This site requires javascript to work as intended. For a better user experience, please <a href="https://enable-javascript.com/">click here to enable javascript in your browser.</a>
       </div>
-      <div class="noscript-form">
-        <div data-test="component-tab1" class="jss216">
-          <form id="membershipApplication" class="jss218" action="%REACT_APP_BASE_URL%/api/noscript" method="post">
-            <div class="jss228">
-              <div class="MuiFormControl-root jss236" data-test="select-employer-type" type="select">
-                <label class="MuiFormLabel-root jss239" for="employer_name">Employer</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
+      <div class="noscript-form jss214-static">
+          <form id="membershipApplication" class="jss218-static" action="%REACT_APP_BASE_URL%/api/noscript" method="post">
+            <div data-test="component-tab1" class="jss216-static">
+              <div class="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters jss14-static">
+                <button class="MuiButtonBase-root MuiButton-root jss22-static MuiButton-contained MuiButton-containedPrimary" tabindex="0" type="button" data-test="skiplink-button">
+                  <span class="MuiButton-label">Skip to content ›</span>
+                  <span class="MuiTouchRipple-root"></span>
+                </button>
+                <a data-test="logo-link" href="/">
+                  <img src="/static/media/seiu503_white.76473b62.svg" alt="SEIU 503" class="jss25-static" data-test="logo-image">
+                </a>
+                <h6 class="MuiTypography-root jss18-static MuiTypography-h6 MuiTypography-colorInherit" data-test="title">
+                  <a class="jss18-static" href="/">Membership Application</a>
+                </h6>
+              </div>
+            <div class="jss228-static">
+              <div class="MuiFormControl-root jss236-static" data-test="select-employer-type" type="select">
+                <label class="MuiFormLabel-root jss239-static" for="employer_name">Employer</label>
+                <div class="MuiInputBase-root MuiOutlinedInput-root jss231-static MuiInputBase-formControl" data-test="component-select">
                   <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="employer_name" name="employer_name" required>
                     <option value=""></option>
                     <option value="" disabled>=== === State Agencies === ===</option>
@@ -2398,16 +1862,16 @@
                     <path d="M7 10l5 5 5-5z">
                 </path>
                   </svg>
-                  <fieldset aria-hidden="true" style="padding-left: 49.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
+                  <fieldset aria-hidden="true" style="padding-left: 49.5px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                    <legend class="jss206-static" style="width: 0.01px;">
                       <span>​</span>
                     </legend>
                   </fieldset>
                 </div>
               </div>
-              <div class="MuiFormGroup-root jss243 MuiFormGroup-row">
+              <div class="MuiFormGroup-root jss243-static MuiFormGroup-row">
                 <div class="MuiFormControl-root MuiTextField-root" style="width: 48%;" data-test="component-text-field">
-                  <label class="MuiFormLabel-root jss239" for="first_name">First Name</label>
+                  <label class="MuiFormLabel-root jss239-static" for="first_name">First Name</label>
                   <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                     <input
                       class="MuiInputBase-input MuiOutlinedInput-input"
@@ -2418,42 +1882,42 @@
                       required
                       style="background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==&quot;); background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;"
                       >
-                    <fieldset aria-hidden="true" style="padding-left: 39px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                      <legend class="jss206" style="width: 0.01px;">
+                    <fieldset aria-hidden="true" style="padding-left: 39px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                      <legend class="jss206-static" style="width: 0.01px;">
                         <span>​</span>
                       </legend>
                     </fieldset>
                   </div>
                 </div>
                 <div class="MuiFormControl-root MuiTextField-root" style="width: 48%;" data-test="component-text-field">
-                  <label class="MuiFormLabel-root jss239" for="last_name">Last Name</label>
+                  <label class="MuiFormLabel-root jss239-static" for="last_name">Last Name</label>
                   <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                     <input  class="MuiInputBase-input MuiOutlinedInput-input" id="last_name" name="last_name" type="text" value="" required>
-                    <fieldset aria-hidden="true" style="padding-left: 38.625px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                      <legend class="jss206" style="width: 0.01px;">
+                    <fieldset aria-hidden="true" style="padding-left: 38.625px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                      <legend class="jss206-static" style="width: 0.01px;">
                         <span>​</span>
                       </legend>
                     </fieldset>
                   </div>
                 </div>
               </div>
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px; margin-top: 30px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="birthdate">Birth Date (mm/dd/yyyy)</label>
+              <div class="MuiFormControl-root MuiTextField-root jss246-static" style="width: 100%; margin-bottom: 30px; margin-top: 30px;" data-test="component-text-field">
+                <label class="MuiFormLabel-root jss239-static" for="birthdate">Birth Date (mm/dd/yyyy)</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                   <input type="date" class="MuiInputBase-input MuiOutlinedInput-input" id="birthdate" name="birthdate" min="1920-01-01" max="2004-01-01" placeholder="mm/dd/yyyy" pattern="(^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d$)" required title="MM/DD/YYYY format only">
-                  <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
+                  <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                    <legend class="jss206-static" style="width: 0.01px;">
                       <span>​</span>
                     </legend>
                   </fieldset>
                 </div>
               </div>
             </div>
-            <div class="MuiFormControl-root jss236" type="select">
-              <label class="MuiFormLabel-root jss239" for="preferred_language">
+            <div class="MuiFormControl-root jss236-static" type="select">
+              <label class="MuiFormLabel-root jss239-static" for="preferred_language">
                 Preferred Language
               </label>
-              <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
+              <div class="MuiInputBase-root MuiOutlinedInput-root jss231-static MuiInputBase-formControl" data-test="component-select">
                 <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="preferred_language" name="preferred_language" required>
                   <option value=""></option>
                   <option value="english">English</option>
@@ -2473,40 +1937,40 @@
                   <path d="M7 10l5 5 5-5z">
                 </path>
                 </svg>
-                <fieldset aria-hidden="true" style="padding-left: 8px;" class="jss205 MuiOutlinedInput">
-                  <legend class="jss206">
+                <fieldset aria-hidden="true" style="padding-left: 8px;" class="jss205-static MuiOutlinedInput">
+                  <legend class="jss206-static">
                     <span>​</span>
                   </legend>
                 </fieldset>
               </div>
             </div>
-            <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-              <label class="MuiFormLabel-root jss239" for="home_street">Home Street</label>
+            <div class="MuiFormControl-root MuiTextField-root jss246-static" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
+              <label class="MuiFormLabel-root jss239-static" for="home_street">Home Street</label>
               <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                 <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_street" name="home_street" type="text" value="" required>
-                <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                  <legend class="jss206" style="width: 0.01px;">
+                <fieldset aria-hidden="true" style="padding-left: 43.5px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                  <legend class="jss206-static" style="width: 0.01px;">
                     <span>​</span>
                   </legend>
                 </fieldset>
               </div>
             </div>
-            <p class="MuiFormHelperText-root jss240">Please enter your physical street address here, not a P.O. box.</p>
-            <div class="MuiFormGroup-root jss243 jss242 MuiFormGroup-row">
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 48%;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="home_city">Home City</label>
+            <p class="MuiFormHelperText-root jss240-static">Please enter your physical street address here, not a P.O. box.</p>
+            <div class="MuiFormGroup-root jss243-static jss242-static MuiFormGroup-row">
+              <div class="MuiFormControl-root MuiTextField-root jss246-static" style="width: 48%;" data-test="component-text-field">
+                <label class="MuiFormLabel-root jss239-static" for="home_city">Home City</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                   <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_city" name="home_city" type="text" value="" required>
-                  <fieldset aria-hidden="true" style="padding-left: 37.875px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
+                  <fieldset aria-hidden="true" style="padding-left: 37.875px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                    <legend class="jss206-static" style="width: 0.01px;">
                       <span>​</span>
                     </legend>
                   </fieldset>
                 </div>
               </div>
-              <div class="MuiFormControl-root jss236" type="select" style="width: 80px;">
-                <label class="MuiFormLabel-root jss239" for="home_state">State</label>
-                <div class="MuiInputBase-root MuiOutlinedInput-root jss231 MuiInputBase-formControl" data-test="component-select">
+              <div class="MuiFormControl-root jss236-static" type="select" style="width: 80px;">
+                <label class="MuiFormLabel-root jss239-static" for="home_state">State</label>
+                <div class="MuiInputBase-root MuiOutlinedInput-root jss231-static MuiInputBase-formControl" data-test="component-select">
                   <select class="MuiSelect-root MuiSelect-select MuiInputBase-input MuiOutlinedInput-input MuiInputBase-inputSelect MuiOutlinedInput-inputSelect MuiSelect-outlined"  id="home_state" name="home_state" required>
                     <option value="">
                     </option>
@@ -2564,53 +2028,53 @@
                   <svg class="MuiSvgIcon-root MuiSelect-icon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="presentation">
                     <path d="M7 10l5 5 5-5z"></path>
                   </svg>
-                  <fieldset aria-hidden="true" style="padding-left: 8px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206">
+                  <fieldset aria-hidden="true" style="padding-left: 8px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                    <legend class="jss206-static">
                       <span>​</span>
                     </legend>
                   </fieldset>
                 </div>
               </div>
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 150px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="home_zip">ZIP Code</label>
+              <div class="MuiFormControl-root MuiTextField-root jss246-static" style="width: 150px;" data-test="component-text-field">
+                <label class="MuiFormLabel-root jss239-static" for="home_zip">ZIP Code</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                   <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_zip" name="home_zip" type="text" value="" placeholder="12345" pattern="(^\d{5}$)" required>
-                  <fieldset aria-hidden="true" style="padding-left: 49.875px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                    <legend class="jss206" style="width: 0.01px;">
+                  <fieldset aria-hidden="true" style="padding-left: 49.875px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                    <legend class="jss206-static" style="width: 0.01px;">
                       <span>​</span>
                     </legend>
                   </fieldset>
                 </div>
               </div>
             </div>
-            <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-              <label class="MuiFormLabel-root jss239" for="home_email">Home Email</label>
+            <div class="MuiFormControl-root MuiTextField-root jss246-static" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
+              <label class="MuiFormLabel-root jss239-static" for="home_email">Home Email</label>
               <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                 <input  class="MuiInputBase-input MuiOutlinedInput-input" id="home_email" name="home_email" type="email" value="" required>
-                <fieldset aria-hidden="true" style="padding-left: 42.375px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                  <legend class="jss206" style="width: 0.01px;">
+                <fieldset aria-hidden="true" style="padding-left: 42.375px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                  <legend class="jss206-static" style="width: 0.01px;">
                     <span>​</span>
                   </legend>
                 </fieldset>
               </div>
             </div>
-            <p class="MuiFormHelperText-root jss240">Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone.</p>
+            <p class="MuiFormHelperText-root jss240-static">Please use your personal email if you have one, since some employers limit union communication via work email. If you don't have a personal email, work email is fine. If you don't have an email address, call us at 1.844.503.7348 to sign up over the phone.</p>
             <div class="MuiFormGroup-root">
-              <div class="MuiFormControl-root MuiTextField-root jss246" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
-                <label class="MuiFormLabel-root jss239" for="cell_phone">Mobile Phone†</label>
+              <div class="MuiFormControl-root MuiTextField-root jss246-static" style="width: 100%; margin-bottom: 30px;" data-test="component-text-field">
+                <label class="MuiFormLabel-root jss239-static" for="cell_phone">Mobile Phone†</label>
                 <div class="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl">
                   <input  class="MuiInputBase-input MuiOutlinedInput-input" id="cell_phone" name="cell_phone" type="tel" value="">
-                    <fieldset aria-hidden="true" style="padding-left: 49.125px;" class="jss205 MuiOutlinedInput-notchedOutline">
-                      <legend class="jss206" style="width: 0.01px;">
+                    <fieldset aria-hidden="true" style="padding-left: 49.125px;" class="jss205-static MuiOutlinedInput-notchedOutline">
+                      <legend class="jss206-static" style="width: 0.01px;">
                         <span>​</span>
                       </legend>
                     </fieldset>
                 </div>
               </div>
-              <p class="MuiFormHelperText-root jss240">† By providing my phone number, I understand that the Service Employees International Union (SEIU), its local unions, and affiliates may use automated calling technologies and/or text message me on my cellular phone on a periodic basis. SEIU will never charge for text message alerts. Carrier message and data rates may apply to such alerts. Reply STOP to stop receiving messages; reply HELP for more information.</p>
-                <div class="MuiFormControl-root jss248">
+              <p class="MuiFormHelperText-root jss240-static">† By providing my phone number, I understand that the Service Employees International Union (SEIU), its local unions, and affiliates may use automated calling technologies and/or text message me on my cellular phone on a periodic basis. SEIU will never charge for text message alerts. Carrier message and data rates may apply to such alerts. Reply STOP to stop receiving messages; reply HELP for more information.</p>
+                <div class="MuiFormControl-root jss248-static">
                   <label class="MuiFormControlLabel-root">
-                    <span class="MuiButtonBase-root MuiIconButton-root jss401 MuiCheckbox-root MuiCheckbox-colorPrimary MuiIconButton-colorPrimary" aria-disabled="false" data-test="component-checkbox">
+                    <span class="MuiButtonBase-root MuiIconButton-root jss401-static MuiCheckbox-root MuiCheckbox-colorPrimary MuiIconButton-colorPrimary" aria-disabled="false" data-test="component-checkbox">
                       <span class="MuiIconButton-label">
                         <input id="text_auth_opt_out" name="text_auth_opt_out" type="checkbox" data-indeterminate="false" value="false">
                       </span>
@@ -2621,11 +2085,11 @@
                   </label>
                 </div>
               </div>
-              <p class="MuiFormHelperText-root jss240" style="margin-top: 20px; font-size: 1.5em;">
+              <p class="MuiFormHelperText-root jss240-static" style="margin-top: 20px; font-size: 1.5em;">
                 Please be patient after clicking 'Next.' Because you have javascript disabled in your browser, communication with the server is slowed down and it may take several seconds for the next page to load. Your membership application is not complete until you sign and submit it on the next page.
               </p>
-              <div class="jss219">
-                <button class="MuiButtonBase-root MuiButton-root jss222 g-recaptcha MuiButton-contained MuiButton-containedPrimary" tabindex="0" type="submit">
+              <div class="jss219-static">
+                <button class="MuiButtonBase-root MuiButton-root jss222-static g-recaptcha MuiButton-contained MuiButton-containedPrimary" tabindex="0" type="submit">
                   <span class="MuiButton-label">Next</span>
                   <span class="MuiTouchRipple-root">
                   </span>
@@ -2635,7 +2099,7 @@
           </form>
         </div>
       </div>
-      <div class="jss8" data-test="component-footer">
+      <div class="jss8-static" data-test="component-footer">
         <a href="https://seiu503.tfaforms.net/490" rel="noopener noreferrer" target="_blank" style="color: white;">Report a problem with this form</a>
       </div>
     </noscript>
