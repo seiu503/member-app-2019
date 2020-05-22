@@ -169,17 +169,16 @@ exports.updateSubmission = async (req, res, next) => {
   let { id } = req.params;
   console.log(`subm.ctrl.js > 169 -- req.params:`);
   console.log(req.params);
-  console.log(`subm.ctrl.js > 171 -- req.headers:`);
-  console.log(req.headers);
-  // console.log(
-  //   `subm.ctrl.js > 172: referer: ${
-  //     req.headers && req.headers.referer
-  //       ? req.headers.referer
-  //       : "testing, no referer"
-  //   }`
-  // );
+  console.log(`subm.ctrl.js > 171 -- referer:`);
+  const referer = req.get("Referrer");
+  if (typeof referer === "string") {
+    console.log(referer);
+  } else {
+    console.log(`subm.ctrl.js > 177 -- referer is NOT a string`);
+  }
+
   const queryData = url.parse(
-    req.headers && req.headers.referer ? req.headers.referer : "www.test.com",
+    referer && typeof referer === "string" ? referer : "www.test.com",
     true
   ).query;
   console.log(`subm.ctrl.js > 184 -- queryData:`);
