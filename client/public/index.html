@@ -78,6 +78,95 @@
         justify-content: center;
         background-color: #2c0940;
       }
+      .jss3-static {
+        height: 100%;
+        margin: auto;
+        display: flex;
+        max-width: 1200px;
+        min-height: 100vh;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .jss214-static {
+        margin: auto 0;
+        padding: 40px 0 140px 0;
+      }
+      .jss18-static {
+        color: #ffffff;
+        flex-grow: 1;
+        font-size: 1.7em;
+        font-family: "Source Sans Pro", sans-serif;
+        font-weight: 200;
+        padding-left: 10px;
+        text-decoration: none;
+      }
+      @media (max-width:959.95px) {
+        .jss18-static {
+          font-size: 1.1rem;
+          font-weight: 400;
+        }
+      }
+      @media (max-width:449.95px) {
+        .jss18-static {
+          display: none;
+        }
+      }
+      .jss14-static {
+        background-color: #2c0940;
+      }
+      .jss22-static {
+        top: -1000px;
+        left: -1000px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        text-align: left;
+      }
+      .jss22-static:focus {
+        top: 0;
+        left: -13px;
+        width: auto;
+        height: auto;
+        z-index: 1000;
+        overflow: visible;
+        position: relative;
+        text-align: center;
+      }
+      .jss25-static {
+        width: auto;
+        height: 60px;
+        margin-right: 10px;
+      }
+      @media (max-width:599.95px) {
+        .jss25-static {
+          height: 40px;
+        }
+      }
+      @media (min-width:0px) {
+        .jss214-static {
+          margin: auto;
+        }
+      }
+      @media (max-width:1279.95px) {
+        .jss214-static {
+          padding: 20px 0;
+        }
+      }
+      @media (max-width:959.95px) {
+        .jss214-static {
+          margin: auto;
+        }
+      }
+      @media (min-width:0px) and (max-width:449.95px) {
+        .jss214-static {
+          top: 0;
+          left: 0;
+          width: 100vw;
+          margin: auto;
+          position: absolute;
+        }
+      }
     </style>
     <style data-jss="" data-meta="MuiTypography">
       .MuiTypography-root {
@@ -1537,7 +1626,6 @@
       }
     </style>
     <style>
-      @media (min-width:0px) and (max-width:449.95px) {
       .jss218-static {
         margin: auto;
         padding: 20px 20px 40px 20px;
@@ -1638,9 +1726,21 @@
       <div class="js-required">
         This site requires javascript to work as intended. For a better user experience, please <a href="https://enable-javascript.com/">click here to enable javascript in your browser.</a>
       </div>
-      <div class="noscript-form">
-        <div data-test="component-tab1" class="jss216-static">
+      <div class="noscript-form jss214-static">
           <form id="membershipApplication" class="jss218-static" action="%REACT_APP_BASE_URL%/api/noscript" method="post">
+            <div data-test="component-tab1" class="jss216-static">
+              <div class="MuiToolbar-root MuiToolbar-regular MuiToolbar-gutters jss14-static">
+                <button class="MuiButtonBase-root MuiButton-root jss22-static MuiButton-contained MuiButton-containedPrimary" tabindex="0" type="button" data-test="skiplink-button">
+                  <span class="MuiButton-label">Skip to content ›</span>
+                  <span class="MuiTouchRipple-root"></span>
+                </button>
+                <a data-test="logo-link" href="/">
+                  <img src="/static/media/seiu503_white.76473b62.svg" alt="SEIU 503" class="jss25-static" data-test="logo-image">
+                </a>
+                <h6 class="MuiTypography-root jss18-static MuiTypography-h6 MuiTypography-colorInherit" data-test="title">
+                  <a class="jss18-static" href="/">Membership Application</a>
+                </h6>
+              </div>
             <div class="jss228-static">
               <div class="MuiFormControl-root jss236-static" data-test="select-employer-type" type="select">
                 <label class="MuiFormLabel-root jss239-static" for="employer_name">Employer</label>
