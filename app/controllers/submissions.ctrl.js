@@ -169,6 +169,8 @@ exports.updateSubmission = async (req, res, next) => {
   let { id } = req.params;
   console.log(`subm.ctrl.js > 169 -- req.params:`);
   console.log(req.params);
+  console.log(`subm.ctrl.js > 172 -- req.headers:`);
+  console.log(req.headers);
   console.log(`subm.ctrl.js > 171 -- referer:`);
   const referer = req.get("Referrer");
   if (typeof referer === "string") {
