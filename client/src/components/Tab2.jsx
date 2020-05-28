@@ -60,10 +60,14 @@ export const Tab2 = props => {
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
+          <h3>
+            <Translate id="membershipTerms0" />
+          </h3>
           <p>
-            <Translate id="membershipTerms1" />
-          </p>
-          <p>
+            <strong>
+              <Translate id="membershipTerms1" />
+            </strong>
+            &nbsp;
             <Translate
               id={
                 community || retiree
@@ -73,9 +77,17 @@ export const Tab2 = props => {
             />
           </p>
           {!community && !retiree && !afh && (
-            <p>
-              <Translate id="membershipTermsMOE" />
-            </p>
+            <div>
+              <h3>
+                <Translate id="membershipTerms3" />
+              </h3>
+              <p>
+                <Translate id="membershipTerms4" />
+              </p>
+              <p>
+                <Translate id="membershipTerms5" />
+              </p>
+            </div>
           )}
         </div>
 
