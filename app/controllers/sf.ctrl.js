@@ -420,7 +420,10 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     body.IP_Address__c = ip;
     console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
     // body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
-    if (bodyRaw.scholarship_flag === "on") {
+    if (
+      bodyRaw.scholarship_flag === "on" ||
+      bodyRaw.scholarship_flag === true
+    ) {
       body.Scholarship_Flag__c = true;
     } else {
       body.Scholarship_Flag__c = false;

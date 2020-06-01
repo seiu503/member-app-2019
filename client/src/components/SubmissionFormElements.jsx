@@ -577,6 +577,14 @@ export const stylesPage1 = theme => ({
   controlCheckboxMargin: {
     margin: "-35px 0 40px 0"
   },
+  controlCheckboxMarginBold: {
+    margin: "-35px 0 40px 0",
+    fontWeight: 700
+  },
+  controlCheckboxMarginBoldSpacer: {
+    margin: "0 0",
+    fontWeight: 700
+  },
   formHelperTextLegal: {
     margin: "-50px 0 50px 0",
     fontSize: "14px",
@@ -744,6 +752,17 @@ export const stylesPage1 = theme => ({
     color: theme.palette.primary.light,
     fontWeight: 700,
     textAlign: "center"
+  },
+  checkboxLabelBold: {
+    "& span": {
+      fontWeight: "700 !important"
+    }
+  },
+  checkboxLabelMini: {
+    "& span": {
+      fontWeight: "400 !important",
+      fontSize: 14
+    }
   }
 });
 export const stylesPage2 = theme => ({
@@ -1081,36 +1100,46 @@ export const renderCheckbox = ({
   meta: { touched, error },
   formControlName,
   localize,
+  bold,
+  mini,
   ...custom
 }) => (
   <Translate>
-    {({ translate }) => (
-      <FormControl
-        error={!!(touched && error)}
-        className={classes[formControlName] || classes.formControl}
-      >
-        <FormControlLabel
-          label={inputLabelTranslateHelper(id, label, translate)}
-          control={
-            <Checkbox
-              color="primary"
-              checked={input.value ? true : false}
-              {...custom}
-              {...input}
-              className={classes.checkbox}
-              data-test="component-checkbox"
-              name="checkbox"
-              inputProps={{ id: id }}
-            />
-          }
-        />
-        {touched && error && (
-          <FormHelperText className={classes.checkboxErrorText}>
-            {error}
-          </FormHelperText>
-        )}
-      </FormControl>
-    )}
+    {({ translate }) => {
+      const classStyle = bold
+        ? classes.checkboxLabelBold
+        : mini
+        ? classes.checkboxLabelMini
+        : "";
+      return (
+        <FormControl
+          error={!!(touched && error)}
+          className={classes[formControlName] || classes.formControl}
+        >
+          <FormControlLabel
+            label={inputLabelTranslateHelper(id, label, translate)}
+            className={classStyle}
+            control={
+              <Checkbox
+                color="primary"
+                checked={input.value ? true : false}
+                {...custom}
+                {...input}
+                className={classes.checkbox}
+                data-test="component-checkbox"
+                name="checkbox"
+                inputProps={{ id: id }}
+              />
+            }
+          />
+          {touched && error && (
+            <FormHelperText className={classes.checkboxErrorText}>
+              {error}
+            </FormHelperText>
+          )}
+        </FormControl>
+      );
+    }}
   </Translate>
 );
 
