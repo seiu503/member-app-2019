@@ -62,7 +62,7 @@ if (!module.parent) {
   app.listen(port, function() {
     console.log("Node.js listening on port " + port + "...");
     console.log(
-      `################## server.js > NODE_CONFIG_ENV: ${
+      `################## 20200601 server.js > NODE_CONFIG_ENV: ${
         process.env.NODE_CONFIG_ENV
       }`
     );
