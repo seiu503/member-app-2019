@@ -186,6 +186,17 @@ export const Tab2 = props => {
             </div>
           </React.Fragment>
         )}
+        <Field
+          formControlName="controlCheckboxMargin"
+          data-test="checkbox-ScholarshipBox"
+          label="Scholarship Fund"
+          name="scholarshipBox"
+          id="scholarshipBox"
+          type="checkbox"
+          mini={true}
+          classes={classes}
+          component={renderCheckbox}
+        />
         <Typography component="h3" className={classes.fieldLabel}>
           <Translate id="signatureTitle" />
         </Typography>

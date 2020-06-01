@@ -757,6 +757,12 @@ export const stylesPage1 = theme => ({
     "& span": {
       fontWeight: "700 !important"
     }
+  },
+  checkboxLabelMini: {
+    "& span": {
+      fontWeight: "400 !important",
+      fontSize: 14
+    }
   }
 });
 export const stylesPage2 = theme => ({
@@ -1095,11 +1101,16 @@ export const renderCheckbox = ({
   formControlName,
   localize,
   bold,
+  mini,
   ...custom
 }) => (
   <Translate>
     {({ translate }) => {
-      const classStyle = bold ? classes.checkboxLabelBold : "";
+      const classStyle = bold
+        ? classes.checkboxLabelBold
+        : mini
+        ? classes.checkboxLabelMini
+        : "";
       return (
         <FormControl
           error={!!(touched && error)}
