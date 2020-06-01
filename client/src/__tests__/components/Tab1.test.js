@@ -108,6 +108,7 @@ describe("<Tab1 />", () => {
     });
 
     it("renders connected component", () => {
+      defaultProps.formValues.employerType = "adult foster home";
       const setUpProps = {
         ...defaultProps,
         handleSubmit,

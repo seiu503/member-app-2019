@@ -731,14 +731,17 @@ export class SubmissionFormPage1Container extends React.Component {
     // save legal_language to redux store before ref disappears
     let legalLanguage =
       this.props.legal_language.current.textContent ||
-      this.props.legal_language.current.innerText;
+      this.props.legal_language.current.innerText ||
+      "";
     // console.log(legalLanguage);
     if (formValues.directDepositAuth && this.props.direct_deposit.current) {
       console.log("directDepositAuth");
-      legalLanguage = legalLanguage.concat(
-        "<hr>",
-        this.props.direct_deposit.current.innerHTML
-      );
+      legalLanguage = legalLanguage
+        ? legalLanguage.concat(
+            "<hr>",
+            this.props.direct_deposit.current.innerHTML
+          )
+        : "";
     }
     if (formValues.directPayAuth && this.props.direct_pay.current) {
       console.log("directPayAuth");

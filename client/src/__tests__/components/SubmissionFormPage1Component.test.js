@@ -567,6 +567,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.apiSubmission.handleInput = handleInputMock;
       props.submission.payment.activeMethodLast4 = "1234";
       props.submission.payment.paymentErrorHold = false;
+      props.updateSubmission = updateSubmissionError;
       wrapper = setup(props);
       formElements.handleError = handleErrorMock;
 

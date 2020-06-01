@@ -1728,6 +1728,7 @@ const requiredFields = [
   "employerType",
   "agencyNumber",
   "termsAgree",
+  "MOECheckbox",
   "signature"
 ];
 
