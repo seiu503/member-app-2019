@@ -18,6 +18,7 @@ export const validate = values => {
     "employerName",
     "employerType",
     "termsAgree",
+    "MOECheckbox",
     "signature"
   ];
   const conditionalRequiredFields = [

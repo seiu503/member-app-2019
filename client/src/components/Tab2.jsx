@@ -47,12 +47,13 @@ export const Tab2 = props => {
         style={{ paddingTop: 40 }}
       >
         <Field
-          formControlName="controlCheckboxMargin"
+          formControlName="controlCheckboxMarginBold"
           label="Agree to Terms of Membership"
           name="termsAgree"
           id="termsAgree"
           type="checkbox"
           classes={classes}
+          bold={true}
           component={renderCheckbox}
         />
         <div
@@ -60,9 +61,6 @@ export const Tab2 = props => {
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
-          <h3>
-            <Translate id="membershipTerms0" />
-          </h3>
           <p>
             <strong>
               <Translate id="membershipTerms1" />
@@ -78,9 +76,16 @@ export const Tab2 = props => {
           </p>
           {!community && !retiree && !afh && (
             <div>
-              <h3>
-                <Translate id="membershipTerms3" />
-              </h3>
+              <Field
+                formControlName="controlCheckboxMarginBoldSpacer"
+                label="Agree to Dues Authorization"
+                name="MOECheckbox"
+                id="MOECheckbox"
+                type="checkbox"
+                classes={classes}
+                bold={true}
+                component={renderCheckbox}
+              />
               <p>
                 <Translate id="membershipTerms4" />
               </p>
@@ -94,13 +99,14 @@ export const Tab2 = props => {
         {(hcw || afh || community || retiree) && (
           <React.Fragment>
             <Field
-              formControlName="controlCheckboxMargin"
+              formControlName="controlCheckboxMarginBold"
               data-test="checkbox-DPA"
               label="Direct Pay Authorization"
               name="directPayAuth"
               id="directPayAuth"
               type="checkbox"
               classes={classes}
+              bold={true}
               component={renderCheckbox}
             />
             <div
@@ -142,10 +148,7 @@ export const Tab2 = props => {
                 <Translate id={afh ? "afhDPA3" : "DPA3"} />
               </p>
               <p>
-                <Translate id="DPA_amountChange" />
-              </p>
-              <p>
-                <Translate id="DPA_failToPay" />
+                <Translate id="DPA4" />
               </p>
             </div>
           </React.Fragment>
@@ -153,13 +156,14 @@ export const Tab2 = props => {
         {hcw && (
           <React.Fragment>
             <Field
-              formControlName="controlCheckboxMargin"
+              formControlName="controlCheckboxMarginBold"
               data-test="checkbox-DDA"
               label="Direct Deposit Authorization"
               name="directDepositAuth"
               id="directDepositAuth"
               type="checkbox"
               classes={classes}
+              bold={true}
               component={renderCheckbox}
             />
             <div
@@ -175,6 +179,9 @@ export const Tab2 = props => {
               </p>
               <p>
                 <Translate id="hcwDDA3" />
+              </p>
+              <p>
+                <Translate id="hcwDDA4" />
               </p>
             </div>
           </React.Fragment>

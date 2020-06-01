@@ -203,11 +203,11 @@
     "†提供我的电话号码，即表示我明白服务行业雇员国际工会 (SEIU) 及其当地工会和附属工会可定期使用自动呼叫技术呼叫技术及／或发短信到我的手机。SEIU 绝不会对短信提醒收取费用。运营商讯息和数据收费可能适用于这些提醒。回复 STOP（停止）以停止接收讯息；回复 HELP（帮助）以获取更多信息。"
   ],
   "termsAgree": [
-    "I agree to the membership terms",
-    "Acepto los términos de la membresía",
-    "Я соглашаюсь с условиями членства в профсоюзе",
-    "Tôi đồng ý với các điều khoản về tư cách thành viên",
-    "我同意会员资格条款"
+    "Membership Authorization",
+    "Autorización para recibir la membresía",
+    "Авторизация участника",
+    "Ủy Quyền Thành Viên",
+    "会员授权"
   ],
   "legalLanguage": [
     "Your full name, the network address you are accessing this page from, and the timestamp of submission will serve as signature indicating: I hereby designate SEIU Local 503, OPEU (or any successor Union entity) as my desired collective bargaining agent. I also hereby authorize my employer to deduct from my wages, commencing with the next payroll period, all Union dues and other fees or assessments as shall be certified by SEIU Local 503, OPEU (or any successor Union entity) and to remit those amounts to such Union. This authorization/delegation is unconditional, made in consideration for the cost of representation and other actions in my behalf by the Union and is made irrespective of my membership in the Union. This authorization is irrevocable for a period of one year from the date of execution and from year to year thereafter unless not less than thirty (30) and not more than forty-five (45) days prior to the end of any annual period or the termination of the contract between my employer and the Union, whichever occurs first, I notify the Union and my employer in writing, with my valid signature, of my desire to revoke this authorization.",
@@ -238,18 +238,18 @@
     "输入您的合法姓名。这将作为您的签名。"
   ],
   "directPayAuth": [
-    "DIRECT PAY AUTHORIZATION",
-    "Autorización de pago directo",
-    "Разрешение на производство прямых платежей",
-    "Ủy quyền Thu tiền Trực tiếp",
-    "直接支付授权"
+    "Direct Pay Authorization (DPA)",
+    "Autorización de pago directo (por su sigla en inglés DPA)",
+    "Разрешение на прямую оплату (DPA)",
+    "Ủy Quyền Thanh Toán Trực Tiếp (DPA)",
+    "直接付款授权 (DPA)"
   ],
   "directDepositAuth": [
-    "DIRECT DEPOSIT AUTHORIZATION",
+    "Direct Deposit Authorization",
     "Autorización de depósito directo",
-    "Разрешение на осуществление прямого перевода средств",
-    "Giấy Cho phép Chuyển Khoản",
-    "直接存款账户信息授权"
+    "Разрешение на прямое зачисление на счет",
+    "Ủy Quyền Đối Với Tiền Gửi Trực Tiếp",
+    "直接存款授权"
   ],
   "submit": [
     "Submit",
