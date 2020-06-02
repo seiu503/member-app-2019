@@ -162,7 +162,8 @@ const defaultProps = {
   },
   legal_language: {
     current: {
-      innerHTML: "legal"
+      innerHTML: "legal",
+      innerText: "legal"
     }
   },
   direct_deposit: {

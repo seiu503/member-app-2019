@@ -166,6 +166,26 @@ describe("<SubmissionsTable />", () => {
       expect(handleDeleteOpenMock.mock.calls.length).toBe(1);
     });
 
+    test("`handleDeleteDialogOpen` displays error if userType is not admin and does not call prop func", () => {
+      // create a mock function so we can see whether it's called on click
+      const handleDeleteOpenMock = jest.fn();
+
+      wrapper.instance().props.apiSubmission.handleDeleteOpen = handleDeleteOpenMock;
+      const submData = { ...defaultProps.submission.currentSubmission };
+
+      wrapper.setProps({
+        appState: {
+          ...defaultProps.appState,
+          userType: "view"
+        }
+      });
+
+      wrapper.instance().handleDeleteDialogOpen(submData);
+
+      // expect the mock not to be called
+      expect(handleDeleteOpenMock.mock.calls.length).toBe(0);
+    });
+
     test("`deleteAndClose` method calls handleDeleteClose prop", () => {
       // create a mock function so we can see whether it's called on click
       const handleDeleteCloseMock = jest.fn();

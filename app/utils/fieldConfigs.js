@@ -996,6 +996,7 @@ const submissionsTableFields = {
     fieldLabel: "Submission Errors"
   },
   scholarship_flag: {
+    clientFieldName: "scholarshipBox",
     postgresFieldName: "scholarship_flag",
     SFTable: "OnlineMemberApp__c",
     SFAPIName: "Scholarship_Flag__c",
@@ -1727,6 +1728,7 @@ const requiredFields = [
   "employerType",
   "agencyNumber",
   "termsAgree",
+  "MOECheckbox",
   "signature"
 ];
 

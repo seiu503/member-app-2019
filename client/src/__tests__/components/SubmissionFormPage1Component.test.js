@@ -567,6 +567,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.apiSubmission.handleInput = handleInputMock;
       props.submission.payment.activeMethodLast4 = "1234";
       props.submission.payment.paymentErrorHold = false;
+      props.updateSubmission = updateSubmissionError;
       wrapper = setup(props);
       formElements.handleError = handleErrorMock;
 
@@ -1443,7 +1444,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     wrapper = setup(props);
 
     const list = wrapper.instance().loadEmployersPicklist();
-    expect(list).toContain("SEIU 503 Staff");
+    expect(list).toEqual(["", ""]);
   });
 
   test("`updateEmployersPicklist` handles Retirees edge case", () => {

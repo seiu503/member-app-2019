@@ -15,6 +15,7 @@ import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 import * as formElements from "./SubmissionFormElements";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import { validate } from "../utils/validators";
+import { openSnackbar } from "../containers/Notifier";
 
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
@@ -60,7 +61,7 @@ export class SubmissionFormPage2Component extends React.Component {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
       mail_to_street: mailToStreet,
-      mail_to_zip: mailToZip,
+      mail_to_postal_code: mailToZip,
       ethnicity,
       lgbtq_id: lgbtqId,
       trans_id: transId,
@@ -118,7 +119,7 @@ export class SubmissionFormPage2Component extends React.Component {
     this.props
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
-        formElements.handleError(this.props.translate("snackBarSuccess"));
+        openSnackbar("success", this.props.translate("snackBarSuccess"));
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {

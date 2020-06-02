@@ -22,6 +22,20 @@ export const validate = values => {
   ];
   const conditionalRequiredFields = [
     {
+      requiredField: "MOECheckbox",
+      controllingField: "employerType",
+      controllingValues: [
+        "non-profit",
+        "state agency",
+        "nursing home",
+        "state homecare or personal support",
+        "higher education",
+        "local government (city, county, school district)",
+        "child care",
+        "private homecare agency"
+      ]
+    },
+    {
       requiredField: "directPayAuth",
       controllingField: "employerType",
       controllingValues: ["adult foster home", "retired", "community member"]

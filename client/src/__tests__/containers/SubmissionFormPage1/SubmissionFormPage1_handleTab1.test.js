@@ -215,50 +215,50 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("handleTab1", () => {
-    test("`handleTab1` handles error if verifyRecaptchaScore fails", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {}
-        },
-        apiSF: {
-          updateSFContact: updateSFContactError,
-          createSFContact: createSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      const verifyRecaptchaScoreError = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(0));
-      wrapper = setup(props);
-      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreError;
+    // test("`handleTab1` handles error if verifyRecaptchaScore fails", async function() {
+    //   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+    //   formElements.handleError = jest.fn();
+    //   let props = {
+    //     formValues: {
+    //       directPayAuth: true,
+    //       directDepositAuth: true,
+    //       employerName: "homecare",
+    //       paymentType: "card",
+    //       employerType: "retired",
+    //       preferredLanguage: "English"
+    //     },
+    //     apiSubmission: {
+    //       handleInput: handleInputMock
+    //     },
+    //     submission: {
+    //       salesforceId: "123",
+    //       formPage1: {}
+    //     },
+    //     apiSF: {
+    //       updateSFContact: updateSFContactError,
+    //       createSFContact: createSFContactSuccess,
+    //       createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+    //     }
+    //   };
+    //   const verifyRecaptchaScoreError = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve(0));
+    //   wrapper = setup(props);
+    //   wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreError;
 
-      wrapper.update();
-      wrapper
-        .instance()
-        .handleTab1()
-        .then(async () => {
-          await verifyRecaptchaScoreError();
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-          changeTabMock.mockClear();
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
+    //   wrapper.update();
+    //   wrapper
+    //     .instance()
+    //     .handleTab1()
+    //     .then(async () => {
+    //       await verifyRecaptchaScoreError();
+    //       expect(formElements.handleError.mock.calls.length).toBe(1);
+    //       changeTabMock.mockClear();
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
 
     test("`handleTab1` sets howManyTabs to 3 if no payment required", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
