@@ -257,6 +257,7 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_DID_SUCCESS:
       // console.log(action.payload);
       if (action.payload && action.payload.Account) {
+        console.log("GET_SF_CONTACT_DID_SUCCESS");
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
         // attached account/employer type is "Parent Employer" or "Agency"
@@ -284,13 +285,20 @@ function Submission(state = INITIAL_STATE, action) {
 
         // if employer attached to contact record is 'Employer' record type,
         // use Account Name. if it's 'Worksite' record type, use Parent Name
+        // if it's an 'orphaned' employer name
+        // (employer a parent that was removed from the query), set it to
+        // blank string
         let employerName = "";
         if (action.payload.Account.RecordTypeId === "01261000000ksTuAAI") {
           employerName = action.payload.Account.Name;
         } else if (action.payload.Account.CVRSOS__ParentName__c) {
           employerName = action.payload.Account.CVRSOS__ParentName__c;
         }
-
+        if (action.payload.Account.Name === "SEIU LOCAL 503 OPEU") {
+          console.log("staff edge case");
+          employerName = "";
+        }
+        console.log(`employerName: ${employerName}`);
         // split ethinicity string, provide true value for each ethnicity returned
         let ethnicities = [""];
         if (action.payload.Ethnicity__c) {

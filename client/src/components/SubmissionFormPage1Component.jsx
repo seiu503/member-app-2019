@@ -109,7 +109,9 @@ export class SubmissionFormPage1Component extends React.Component {
             employer.Name &&
             employer.Name.toLowerCase() === "seiu local 503 opeu"
           ) {
-            return "SEIU LOCAL 503 OPEU";
+            // removing staff option from prefill list
+            // return "SEIU LOCAL 503 OPEU";
+            return "";
           } else {
             return employer.Sub_Division__c;
           }
