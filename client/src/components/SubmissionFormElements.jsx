@@ -281,7 +281,9 @@ export const employerTypeMap = {
   "Private Homecare": "Private Homecare Agency",
   "Community Members": "Community Member",
   "COMMUNITY MEMBERS": "Community Member",
-  "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
+  "SEIU LOCAL 503 OPEU": ""
+  // "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
+  // removing staff from picklist options
 };
 
 // helper function for reverse lookup from above object
