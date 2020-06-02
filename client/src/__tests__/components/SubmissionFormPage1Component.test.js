@@ -1444,7 +1444,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     wrapper = setup(props);
 
     const list = wrapper.instance().loadEmployersPicklist();
-    expect(list).toContain("SEIU 503 Staff");
+    expect(list).toEqual(["", ""]);
   });
 
   test("`updateEmployersPicklist` handles Retirees edge case", () => {
