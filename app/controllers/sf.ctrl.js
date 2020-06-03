@@ -388,7 +388,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   let oma;
   try {
     const bodyRaw = { ...req.body };
-    console.log("sf.ctrl.js > 335");
+    console.log("sf.ctrl.js > 391");
     console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
@@ -400,10 +400,10 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       }
     });
     console.log(
-      `sf.ctrl.js: 369: bodyRaw.agency_number: ${bodyRaw.agency_number}`
+      `sf.ctrl.js: 403: bodyRaw.agency_number: ${bodyRaw.agency_number}`
     );
     console.log(
-      `sf.ctrl.js: 372: body.Agency_Number_from_Webform__c: ${
+      `sf.ctrl.js: 406: body.Agency_Number_from_Webform__c: ${
         body.Agency_Number_from_Webform__c
       }`
     );
@@ -418,17 +418,19 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       ? bodyRaw.Worker__c
       : bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
-    console.log(`sf.ctrl.js > 383: body.Worker__c: ${body.Worker__c}`);
+    console.log(`sf.ctrl.js > 421: body.Worker__c: ${body.Worker__c}`);
     // body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
     if (
       bodyRaw.scholarship_flag === "on" ||
-      bodyRaw.scholarship_flag === true
+      bodyRaw.scholarship_flag === true ||
+      bodyRaw.scholarship_flag === "true" ||
+      bodyRaw.scholarship_flag === "True"
     ) {
       body.Scholarship_Flag__c = true;
     } else {
       body.Scholarship_Flag__c = false;
     }
-    console.log(`sf.ctrl.js > 393: sfOMA body`);
+    console.log(`sf.ctrl.js > 433: sfOMA body`);
     console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
@@ -445,7 +447,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       });
     }
   } catch (err) {
-    console.error(`sf.ctrl.js > 352: ${err}`);
+    console.error(`sf.ctrl.js > 450: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
