@@ -820,32 +820,32 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
-  async saveSignature() {
-    //   console.log("saveSignature");
-    const { formValues } = this.props;
-    // perform signature processing steps and save value to redux store
-    // before ref disappears
+  // async saveSignature() {
+  //   //   console.log("saveSignature");
+  //   const { formValues } = this.props;
+  //   // perform signature processing steps and save value to redux store
+  //   // before ref disappears
 
-    if (this.state.signatureType === "draw") {
-      // console.log(`this.state.signagureType: ${this.state.signatureType}`);
-      const sigUrl = await this.handleUpload(
-        formValues.firstName,
-        formValues.lastName
-      ).catch(err => {
-        console.error(err);
-        return handleError(err);
-      });
-      // console.log(`signature url: ${sigUrl}`);
-      this.props.apiSubmission.handleInput({
-        target: { name: "signature", value: sigUrl }
-      });
-      return sigUrl;
-    } else {
-      // console.log(`this.state.signatureType: ${this.state.signatureType}`);
-      // console.log(formValues.signature);
-      return formValues.signature;
-    }
-  }
+  //   if (this.state.signatureType === "draw") {
+  //     // console.log(`this.state.signagureType: ${this.state.signatureType}`);
+  //     const sigUrl = await this.handleUpload(
+  //       formValues.firstName,
+  //       formValues.lastName
+  //     ).catch(err => {
+  //       console.error(err);
+  //       return handleError(err);
+  //     });
+  //     // console.log(`signature url: ${sigUrl}`);
+  //     this.props.apiSubmission.handleInput({
+  //       target: { name: "signature", value: sigUrl }
+  //     });
+  //     return sigUrl;
+  //   } else {
+  //     // console.log(`this.state.signatureType: ${this.state.signatureType}`);
+  //     // console.log(formValues.signature);
+  //     return formValues.signature;
+  //   }
+  // }
 
   async postOneTimePayment() {
     // console.log("postOneTimePayment");
@@ -1222,11 +1222,11 @@ export class SubmissionFormPage1Container extends React.Component {
   async handleTab2() {
     const { formValues } = this.props;
     // submit validation: signature
-    const signature = await this.saveSignature().catch(err => {
-      // console.log(err);
-      return handleError(err);
-    });
-    if (!signature) {
+    // const signature = await this.saveSignature().catch(err => {
+    //   // console.log(err);
+    //   return handleError(err);
+    // });
+    if (!formValues.signature) {
       console.log(this.props.translate("provideSignatureError"));
       return handleError(this.props.translate("provideSignatureError"));
     }
