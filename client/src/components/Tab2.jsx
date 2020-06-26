@@ -1,7 +1,6 @@
 import React from "react";
 import { Field } from "redux-form";
 import { reduxForm } from "redux-form";
-import SignatureCanvas from "react-signature-canvas";
 
 import FormHelperText from "@material-ui/core/FormHelperText";
 import Button from "@material-ui/core/Button";
@@ -22,11 +21,6 @@ export const Tab2 = props => {
     legal_language,
     direct_pay,
     direct_deposit,
-    sigBox,
-    clearSignature,
-    handleInput,
-    signatureType,
-    toggleSignatureInputType,
     formValues
   } = props;
   // console.log(formValues.employerType);
@@ -200,68 +194,22 @@ export const Tab2 = props => {
         <Typography component="h3" className={classes.fieldLabel}>
           <Translate id="signatureTitle" />
         </Typography>
-        {signatureType === "write" && (
-          <React.Fragment>
-            <Field
-              label="Signature"
-              data-test="input-signature"
-              name="signature"
-              id="signature"
-              type="text"
-              classes={classes}
-              component={renderTextField}
-            />
-            <FormHelperText className={classes.formHelperText}>
-              <Translate id="signatureHint" />
-            </FormHelperText>
-          </React.Fragment>
-        )}
-        {signatureType === "draw" && (
-          <React.Fragment>
-            <div className={classes.sigBox}>
-              <SignatureCanvas
-                ref={sigBox}
-                penColor="black"
-                canvasProps={{
-                  width: 594,
-                  height: 100,
-                  className: "sigCanvas"
-                }}
-                backgroundColor="rgb(255,255,255)"
-                label="Signature"
-                name="signature"
-                id="signature"
-                onChange={handleInput}
-              />
-              <Button
-                type="button"
-                onClick={clearSignature}
-                color="secondary"
-                className={classes.clearButton}
-                variant="contained"
-              >
-                <Translate id="clearSig">Clear Signature</Translate>
-              </Button>
-            </div>
-            <FormHelperText className={classes.formHelperText}>
-              <Translate id="drawSig">
-                Draw your signature in the box above.&nbsp;
-              </Translate>
-              <button
-                type="button"
-                data-test="button-sig-toggle"
-                className={classes.buttonLink}
-                aria-label="Change Signature Input Method"
-                name="signatureType"
-                onClick={() => toggleSignatureInputType()}
-              >
-                <Translate id="clickToType">
-                  Click here to type your signature
-                </Translate>
-              </button>
-            </FormHelperText>
-          </React.Fragment>
-        )}
+
+        <React.Fragment>
+          <Field
+            label="Signature"
+            data-test="input-signature"
+            name="signature"
+            id="signature"
+            type="text"
+            classes={classes}
+            component={renderTextField}
+          />
+          <FormHelperText className={classes.formHelperText}>
+            <Translate id="signatureHint" />
+          </FormHelperText>
+        </React.Fragment>
+
         <div className={classes.buttonWrap}>
           <Button
             type="button"
@@ -294,12 +242,7 @@ Tab2.propTypes = {
   renderCheckbox: PropTypes.func,
   handleTab: PropTypes.func,
   legal_language: PropTypes.object,
-  sigBox: PropTypes.object,
-  clearSignature: PropTypes.func,
-  handleInput: PropTypes.func,
-  formPage1: PropTypes.object,
-  signatureType: PropTypes.string,
-  toggleSignatureInputType: PropTypes.func
+  formPage1: PropTypes.object
 };
 
 // add reduxForm to component
