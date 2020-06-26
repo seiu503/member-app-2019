@@ -14,8 +14,6 @@ let wrapper,
   apiSubmission,
   apiSF,
   handleSubmitMock,
-  toggleSignatureInputType,
-  handleToggleSigTypeMock,
   testData,
   component;
 
@@ -40,7 +38,6 @@ const defaultProps = {
   formPage1: {},
   formValues: { employerType: "" },
   signatureType: "draw",
-  toggleSignatureInputType: jest.fn(),
   back: backMock
 };
 
@@ -97,20 +94,6 @@ describe("<Tab2 />", () => {
       component = wrapper.find("form");
       component.simulate("submit", { ...testData });
       expect(handleSubmit.mock.calls.length).toBe(1);
-    });
-
-    it("calls toggleSignatureInputType on button click", () => {
-      wrapper = shallow(<Tab2 {...props} />);
-      handleToggleSigTypeMock = jest.fn();
-      toggleSignatureInputType = handleToggleSigTypeMock;
-
-      // imported function that creates dummy data for form
-      testData = generateSampleValidate();
-
-      wrapper.setProps({ toggleSignatureInputType: handleToggleSigTypeMock });
-      component = findByTestAttr(wrapper, "button-sig-toggle");
-      component.simulate("click");
-      expect(toggleSignatureInputType.mock.calls.length).toBe(1);
     });
 
     it("calls `back` on back button click", () => {
