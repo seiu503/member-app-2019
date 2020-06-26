@@ -211,27 +211,27 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("handleTab2", () => {
-    test("`handleTab2` handles error if saveSignature fails", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-      const saveSignatureMock = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-      const handleErrorMock = jest.fn();
-      formElements.handleError = handleErrorMock;
+    // test("`handleTab2` handles error if saveSignature fails", () => {
+    //   handleUploadMock = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve(sigUrl));
+    //   const saveSignatureMock = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.reject("Error"));
+    //   const handleErrorMock = jest.fn();
+    //   formElements.handleError = handleErrorMock;
 
-      wrapper = setup();
-      wrapper.instance().state.signatureType = "draw";
-      wrapper.instance().saveSignature = saveSignatureMock;
-      wrapper
-        .instance()
-        .handleTab2()
-        .then(() => {
-          expect(handleErrorMock).toHaveBeenCalled();
-        })
-        .catch(err => console.log(err));
-    });
+    //   wrapper = setup();
+    //   wrapper.instance().state.signatureType = "draw";
+    //   wrapper.instance().saveSignature = saveSignatureMock;
+    //   wrapper
+    //     .instance()
+    //     .handleTab2()
+    //     .then(() => {
+    //       expect(handleErrorMock).toHaveBeenCalled();
+    //     })
+    //     .catch(err => console.log(err));
+    // });
 
     test("`handleTab2` handles error if getIframeURL fails", () => {
       handleUploadMock = jest
@@ -278,22 +278,24 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       handleUploadMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(sigUrl));
-      const saveSignatureMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
+      // const saveSignatureMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
       const calculateAFHDuesRateMock = jest.fn();
       formElements.handleError = jest.fn();
       let props = {
         formValues: {
           employerType: "adult foster home",
-          preferredLanguage: "Spanish"
+          preferredLanguage: "Spanish",
+          signature: "test"
         },
-        createSubmission: createSubmissionMock
+        createSubmission: createSubmissionMock,
+        translate: jest.fn()
       };
 
       wrapper = setup(props);
-      wrapper.instance().state.signatureType = "draw";
-      wrapper.instance().saveSignature = saveSignatureMock;
+      // wrapper.instance().state.signatureType = "draw";
+      // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
       wrapper
         .instance()
@@ -305,12 +307,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleTab2` calls getSFDJRById if paymentRequired === true", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-      const saveSignatureMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
+      // handleUploadMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
+      // const saveSignatureMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
       const calculateAFHDuesRateMock = jest.fn();
       formElements.handleError = jest.fn();
       const getIframeURLMock = jest
@@ -322,7 +324,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           employerType: "adult foster home",
-          preferredLanguage: "Spanish"
+          preferredLanguage: "Spanish",
+          signature: "test"
         },
         submission: {
           formPage1: {
@@ -331,12 +334,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           payment: {
             memberShortId: "1234"
           }
-        }
+        },
+        translate: jest.fn()
       };
 
       wrapper = setup(props);
-      wrapper.instance().state.signatureType = "draw";
-      wrapper.instance().saveSignature = saveSignatureMock;
+      // wrapper.instance().state.signatureType = "draw";
+      // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
       wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().getSFDJRById = getSFDJRByIdMock;
@@ -350,12 +354,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleTab2` handles error if getSFDJRById throws", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-      const saveSignatureMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
+      // handleUploadMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
+      // const saveSignatureMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
       const calculateAFHDuesRateMock = jest.fn();
       formElements.handleError = jest.fn();
       const getIframeURLMock = jest
@@ -367,21 +371,24 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           employerType: "adult foster home",
-          preferredLanguage: "Spanish"
+          preferredLanguage: "Spanish",
+          signature: "test"
         },
         submission: {
           formPage1: {
-            paymentRequired: true
+            paymentRequired: true,
+            signature: "test"
           },
           payment: {
             memberShortId: "1234"
           }
-        }
+        },
+        translate: jest.fn()
       };
 
       wrapper = setup(props);
-      wrapper.instance().state.signatureType = "draw";
-      wrapper.instance().saveSignature = saveSignatureMock;
+      // wrapper.instance().state.signatureType = "draw";
+      // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
       wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().getSFDJRById = getSFDJRByIdMock;
@@ -395,12 +402,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleTab2` handles error if getIframeURL throws", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-      const saveSignatureMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
+      // handleUploadMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
+      // const saveSignatureMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
       const calculateAFHDuesRateMock = jest.fn();
       formElements.handleError = jest.fn();
       const getIframeURLMock = jest
@@ -412,23 +419,26 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           employerType: "adult foster home",
-          preferredLanguage: "Spanish"
+          preferredLanguage: "Spanish",
+          signature: "test"
         },
         submission: {
           formPage1: {
-            paymentRequired: true
+            paymentRequired: true,
+            signature: "test"
           },
           payment: {
             memberShortId: "1234"
           }
         },
         createSubmission: jest.fn().mockImplementation(() => Promise.resolve()),
-        changeTab: jest.fn()
+        changeTab: jest.fn(),
+        translate: jest.fn()
       };
 
       wrapper = setup(props);
-      wrapper.instance().state.signatureType = "draw";
-      wrapper.instance().saveSignature = saveSignatureMock;
+      // wrapper.instance().state.signatureType = "draw";
+      // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
       wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().getSFDJRById = getSFDJRByIdMock;
@@ -442,12 +452,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleTab2` handles error if createSubmission throws", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-      const saveSignatureMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
+      // handleUploadMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
+      // const saveSignatureMock = jest
+      //   .fn()
+      //   .mockImplementation(() => Promise.resolve(sigUrl));
       const calculateAFHDuesRateMock = jest.fn();
       formElements.handleError = jest.fn();
       const getIframeURLMock = jest
@@ -462,22 +472,25 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           employerType: "adult foster home",
-          preferredLanguage: "Spanish"
+          preferredLanguage: "Spanish",
+          signature: "test"
         },
         submission: {
           formPage1: {
-            paymentRequired: true
+            paymentRequired: true,
+            signature: "test"
           },
           payment: {
             memberShortId: "1234"
           }
         },
+        translate: jest.fn(),
         createSubmission: createSubmissionMock
       };
 
       wrapper = setup(props);
-      wrapper.instance().state.signatureType = "draw";
-      wrapper.instance().saveSignature = saveSignatureMock;
+      // wrapper.instance().state.signatureType = "draw";
+      // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
       wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().getSFDJRById = getSFDJRByIdMock;

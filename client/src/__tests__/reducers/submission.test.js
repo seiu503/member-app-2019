@@ -15,7 +15,7 @@ describe("submission reducer", () => {
       error: null
     });
   });
-  it("should handle all api FAILURE actions", () => {
+  it("should handle general api FAILURE actions", () => {
     expect(
       reducer(INITIAL_STATE, {
         type: "ADD_SUBMISSION_FAILURE",
@@ -33,6 +33,34 @@ describe("submission reducer", () => {
     ).toEqual({
       ...INITIAL_STATE,
       error: "Sorry, something went wrong :(\nPlease try again."
+    });
+  });
+  it("should handle payment info FAILURE actions", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE",
+        payload: { message: "Some error" }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      error: "Some error",
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        whichCard: "Add new card"
+      }
+    });
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "GET_SF_DJR_FAILURE",
+        payload: { message: null }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      error: "Sorry, something went wrong :(\nPlease try again.",
+      formPage1: {
+        ...INITIAL_STATE.formPage1,
+        whichCard: "Add new card"
+      }
     });
   });
   it("should handle `handleInput`", () => {
@@ -108,6 +136,22 @@ describe("submission reducer", () => {
         type: "CLEAR_FORM"
       })
     ).toEqual(INITIAL_STATE);
+  });
+  it("should handle `setCurrentSubmission`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_CURRENT_SUBMISSION",
+        payload: {
+          id: "1"
+        }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      currentSubmission: {
+        id: "1"
+      },
+      submissionId: "1"
+    });
   });
 
   describe("successful actions return correct state", () => {
@@ -548,6 +592,251 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
+    test("getSFContact edge cases 3", () => {
+      const payload = {
+        Id: "123",
+        Display_Name_for_forms__c: "string",
+        Account: {
+          CVRSOS__ParentName__c: "SEIU LOCAL 503 OPEU",
+          Name: "string",
+          Id: "string",
+          RecordTypeId: "01261000000ksTuAAI",
+          Parent: {
+            Id: "string"
+          }
+        },
+        OtherCity: "string",
+        OtherState: "or",
+        OtherStreet: "string",
+        OtherPostalCode: "12345",
+        FirstName: "string",
+        LastName: "string",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
+        Preferred_Language__c: "string",
+        MailingStreet: "string",
+        MailingPostalCode: "12345",
+        MailingState: "or",
+        MailingCity: "string",
+        Home_Email__c: "string@string.com",
+        MobilePhone: "123-456-7890",
+        Text_Authorization_Opt_Out__c: false,
+        termsagree__c: true,
+        Signature__c: "string",
+        Online_Campaign_Source__c: "string",
+        Signed_Card__c: "string",
+        Ethnicity__c: "Declined",
+        LGBTQ_ID__c: false,
+        Trans_ID__c: false,
+        Disability_ID__c: false,
+        Deaf_or_hearing_impaired__c: false,
+        Blind_or_visually_impaired__c: false,
+        Gender__c: "female",
+        Gender_Other_Description__c: "",
+        Prounoun__c: "other",
+        Title: "",
+        Hire_Date__c: "2019-11-11",
+        Worksite_manual_entry_from_webform__c: "string",
+        Work_Email__c: "string@string.com",
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
+      };
+      const action = {
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        formPage1: {
+          mm: "",
+          mobilePhone: "123-456-7890",
+          employerName: "string",
+          employerId: "",
+          employerType: "",
+          prefillEmployerId: "string",
+          prefillEmployerParentId: "string",
+          firstName: "string",
+          lastName: "string",
+          homeStreet: "string",
+          homeCity: "string",
+          homeState: "or",
+          homeZip: "12345",
+          immediatePastMemberStatus: "Not a Member",
+          homeEmail: "string@string.com",
+          preferredLanguage: "string",
+          paymentRequired: false,
+          newCardNeeded: true,
+          termsAgree: false,
+          signature: null,
+          textAuthOptOut: false,
+          legalLanguage: "",
+          paymentType: "Card",
+          whichCard: "",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly",
+          checkoff: true,
+          prefillEmployerChanged: false,
+          howManyTabs: 3
+        },
+        formPage2: {
+          africanOrAfricanAmerican: false,
+          arabAmericanMiddleEasternOrNorthAfrican: false,
+          asianOrAsianAmerican: false,
+          hispanicOrLatinx: false,
+          nativeAmericanOrIndigenous: false,
+          nativeHawaiianOrOtherPacificIslander: false,
+          white: false,
+          other: false,
+          declined: true,
+          firstName: "string",
+          lastName: "string",
+          homeEmail: "string@string.com",
+          mailToCity: "string",
+          mailToState: "or",
+          mailToStreet: "string",
+          mailToZip: "12345",
+          lgbtqId: false,
+          transId: false,
+          disabilityId: false,
+          deafOrHardOfHearing: false,
+          blindOrVisuallyImpaired: false,
+          gender: "female",
+          genderOtherDescription: "",
+          genderPronoun: "other",
+          jobTitle: "",
+          worksite: "string",
+          workEmail: "string@string.com",
+          workPhone: "123-456-7890",
+          hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFContact edge cases 4", () => {
+      const payload = {
+        Id: "123",
+        Display_Name_for_forms__c: "string",
+        Account: {
+          CVRSOS__ParentName__c: "string",
+          Name: "string",
+          Id: "string",
+          RecordTypeId: "string"
+        },
+        OtherCity: "string",
+        OtherState: "or",
+        OtherStreet: "string",
+        OtherPostalCode: "12345",
+        FirstName: "string",
+        LastName: "string",
+        Birthdate: moment("01-01-1999", "MM-DD-YYYY"),
+        Preferred_Language__c: "string",
+        MailingStreet: "string",
+        MailingState: "or",
+        MailingCity: "string",
+        Home_Email__c: "string@string.com",
+        MobilePhone: "123-456-7890",
+        Text_Authorization_Opt_Out__c: false,
+        termsagree__c: true,
+        Signature__c: "string",
+        Online_Campaign_Source__c: "string",
+        Signed_Card__c: "string",
+        LGBTQ_ID__c: false,
+        Trans_ID__c: false,
+        Disability_ID__c: false,
+        Deaf_or_hearing_impaired__c: false,
+        Blind_or_visually_impaired__c: false,
+        Gender__c: "female",
+        Gender_Other_Description__c: "",
+        Prounoun__c: "other",
+        Title: "",
+        Hire_Date__c: "2019-11-11",
+        Worksite_manual_entry_from_webform__c: "string",
+        Work_Email__c: "string@string.com",
+        Work_Phone__c: "123-456-7890",
+        Binary_Membership__c: "Not a Member",
+        Current_CAPE__c: 0
+      };
+      const action = {
+        type: "GET_SF_CONTACT_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        formPage1: {
+          mm: "",
+          mobilePhone: "123-456-7890",
+          employerName: "string",
+          employerId: "",
+          employerType: undefined,
+          prefillEmployerId: "string",
+          prefillEmployerParentId: null,
+          firstName: "string",
+          lastName: "string",
+          homeStreet: "string",
+          homeCity: "string",
+          homeState: "or",
+          homeZip: "",
+          howManyTabs: 3,
+          immediatePastMemberStatus: "Not a Member",
+          homeEmail: "string@string.com",
+          preferredLanguage: "string",
+          prefillEmployerChanged: false,
+          paymentRequired: false,
+          newCardNeeded: true,
+          termsAgree: false,
+          signature: null,
+          textAuthOptOut: false,
+          legalLanguage: "",
+          paymentType: "Card",
+          whichCard: "",
+          medicaidResidents: 0,
+          paymentMethodAdded: false,
+          afhDuesRate: 0,
+          capeAmount: "",
+          donationFrequency: "Monthly",
+          checkoff: true
+        },
+        formPage2: {
+          africanOrAfricanAmerican: false,
+          arabAmericanMiddleEasternOrNorthAfrican: false,
+          asianOrAsianAmerican: false,
+          hispanicOrLatinx: false,
+          nativeAmericanOrIndigenous: false,
+          nativeHawaiianOrOtherPacificIslander: false,
+          white: false,
+          other: false,
+          declined: false,
+          mailToCity: "string",
+          mailToState: "or",
+          mailToStreet: "string",
+          mailToZip: "12345",
+          lgbtqId: false,
+          transId: false,
+          disabilityId: false,
+          firstName: "string",
+          lastName: "string",
+          homeEmail: "string@string.com",
+          deafOrHardOfHearing: false,
+          blindOrVisuallyImpaired: false,
+          gender: "female",
+          genderOtherDescription: "",
+          genderPronoun: "other",
+          jobTitle: "",
+          worksite: "string",
+          workEmail: "string@string.com",
+          workPhone: "123-456-7890",
+          hireDate: "2019-11-11"
+        },
+        salesforceId: "123",
+        submissionId: null
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
     test("getSFEmployers", () => {
       const payload = [
         {
@@ -584,6 +873,19 @@ describe("submission reducer", () => {
           }
         ],
         employerNames: ["test", "test2"]
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFEmployers edge case: no payload", () => {
+      const payload = null;
+      const action = {
+        type: "GET_SF_EMPLOYERS_SUCCESS",
+        payload: payload
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        employerObjects: null,
+        employerNames: [""]
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
@@ -766,6 +1068,28 @@ describe("submission reducer", () => {
           paymentMethod: "Unionise",
           donationFrequency: "Monthly",
           activeMethodLast4: "1234",
+          cardBrand: "Visa"
+        }
+      };
+      expect(reducer(undefined, action)).toEqual(expectedState);
+    });
+    test("getSFCAPEByContactId", () => {
+      const action = {
+        type: "GET_SF_CAPE_BY_CONTACT_ID_SUCCESS",
+        payload: {
+          Active_Account_Last_4__c: "1234",
+          Payment_Error_Hold__c: false,
+          Unioni_se_MemberID__c: "5678",
+          Card_Brand__c: "Visa"
+        }
+      };
+      const expectedState = {
+        ...INITIAL_STATE,
+        cape: {
+          ...INITIAL_STATE.cape,
+          activeMethodLast4: "1234",
+          paymentErrorHold: false,
+          memberShortId: "5678",
           cardBrand: "Visa"
         }
       };
