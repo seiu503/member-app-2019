@@ -413,7 +413,8 @@ function Submission(state = INITIAL_STATE, action) {
           paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
           memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
           djrEmployerId: { $set: action.payload.Employer__c },
-          cardBrand: { $set: action.payload.Card_Brand__c }
+          cardBrand: { $set: action.payload.Card_Brand__c },
+          memberProviderId: { $set: action.payload.Unioni_se_ProviderID__c }
         },
         djrId: { $set: action.payload.Id || action.payload.id }
       });
@@ -504,14 +505,16 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         payment: {
           cardAddingUrl: { $set: action.payload.cardAddingUrl },
-          memberShortId: { $set: action.payload.memberShortId }
+          memberShortId: { $set: action.payload.memberShortId },
+          memberProviderId: { $set: action.payload.memberProviderId }
         }
       });
 
     case GET_IFRAME_EXISTING_SUCCESS:
       return update(state, {
         payment: {
-          cardAddingUrl: { $set: action.payload.cardAddingUrl }
+          cardAddingUrl: { $set: action.payload.cardAddingUrl },
+          memberProviderId: { $set: action.payload.memberProviderId }
         }
       });
 

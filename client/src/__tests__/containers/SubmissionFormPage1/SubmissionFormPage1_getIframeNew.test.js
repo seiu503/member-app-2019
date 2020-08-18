@@ -229,7 +229,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           submissionId: null,
           employerObjects: [{ id: "1", Name: "test" }],
           cape: {},
-          formPage1: {}
+          formPage1: {},
+          payment: {}
         },
         apiSF: {
           getIframeURL: getIframeNewSuccess
@@ -267,7 +268,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         submission: {
           submissionId: "123",
-          formPage1: {}
+          formPage1: {},
+          payment: {}
         },
         apiSF: {
           getIframeURL: getIframeNewError
@@ -309,7 +311,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         submission: {
           submissionId: "123",
-          formPage1: {}
+          formPage1: {},
+          payment: {}
         },
         apiSF: {
           getIframeURL: getIframeNewError
