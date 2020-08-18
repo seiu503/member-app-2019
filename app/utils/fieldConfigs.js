@@ -1441,6 +1441,15 @@ const paymentFields = {
     // postgresFieldName: "payment_error_hold", // not saved to postgres
     clientFieldName: "paymentErrorHold",
     testingSample: false
+  },
+  memberProviderId: {
+    SFTable: "Direct_join_rate__c",
+    SFFieldLabel: "Member Provider Id",
+    SFAPIName: "Unioni_se_ProviderID__c",
+    SFDataType: "Text(255)",
+    // postgresFieldName: // not saved to postgres
+    clientFieldName: "memberProviderId",
+    testingSample: uuid.v4()
   }
 };
 
