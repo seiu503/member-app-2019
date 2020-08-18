@@ -423,7 +423,8 @@ export class SubmissionFormPage1Container extends React.Component {
       Worker__c: this.props.submission.salesforceId,
       Unioni_se_MemberID__c: this.props.submission.payment.memberShortId,
       Payment_Method__c: this.props.submission.formPage1.paymentType,
-      AFH_Number_of_Residents__c: medicaidResidents
+      AFH_Number_of_Residents__c: medicaidResidents,
+      Unioni_se_ProviderID__c: this.props.submission.payment.memberProviderId
     };
     this.props.apiSF
       .createSFDJR(body)
@@ -452,7 +453,8 @@ export class SubmissionFormPage1Container extends React.Component {
       Payment_Method__c: this.props.submission.formPage1.paymentType,
       AFH_Number_of_Residents__c: medicaidResidents,
       Active_Account_Last_4__c: this.props.submission.payment.activeMethodLast4,
-      Card_Brand__c: this.props.submission.payment.cardBrand
+      Card_Brand__c: this.props.submission.payment.cardBrand,
+      Unioni_se_ProviderID__c: this.props.submission.payment.memberProviderId
     };
     // console.log("is Card_Brand__c populated here?");
     // console.log(updates);
@@ -631,6 +633,11 @@ export class SubmissionFormPage1Container extends React.Component {
         //   console.log('unionise acct already exists, trying again to fetch new');
         //   return this.getIframeURL(cape);
         // }
+        console.log(`getIframeURL result:`);
+        console.log(result.payload);
+        console.log(
+          `memberProviderId: ${this.props.submission.payment.memberProviderId}`
+        );
         if (
           !result.payload.cardAddingUrl ||
           result.payload.message ||
@@ -682,6 +689,9 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
     console.log(`memberShortId: ${memberShortId}`);
+    console.log(
+      `memberProviderId: ${this.props.submission.payment.memberProviderId}`
+    );
     const { formValues } = this.props;
     let capeAmount;
     if (cape) {
@@ -703,6 +713,9 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.submission.payment.memberShortId ||
         this.props.submission.cape.memberShortId;
       console.log(`memberShortId: ${memberShortId}`);
+      console.log(
+        `memberProviderId: ${this.props.submission.payment.memberProviderId}`
+      );
     }
     if (memberShortId) {
       // console.log("found memberShortId, getting unionise auth token");
