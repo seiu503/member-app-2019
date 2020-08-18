@@ -29,7 +29,7 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
 let getSFDJRSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "GET_SF_DJR_SUCCESS",
-    payload: { djr_id: "123" }
+    payload: { djr_id: "123", memberProviderId: "456" }
   })
 );
 
@@ -124,7 +124,8 @@ const defaultProps = {
     },
     cape: {},
     payment: {
-      activeMethodLast4: ""
+      activeMethodLast4: "",
+      memberProviderId: "000"
     }
   },
   initialValues: {
@@ -218,7 +219,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           salesforceId: "123",
           payment: {
-            activeMethodLast4: "1234"
+            activeMethodLast4: "1234",
+            memberProviderId: "000"
           },
           formPage1: {}
         },
