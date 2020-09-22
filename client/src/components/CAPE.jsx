@@ -534,6 +534,11 @@ export const CAPE = props => {
         )}
         <div className={classes.legalCopy} ref={cape_legal}>
           <p>
+            <Translate
+              id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+            />
+          </p>
+          <p>
             <strong>
               <Translate id="capeNewLegal1" />
             </strong>
