@@ -18,6 +18,13 @@ const formatDate = date => {
 // Contacts table that includes a lookup to Accounts
 // so i'm leaving them here to avoid having to rewrite
 // the generateSFContactFieldList function
+//
+//
+//
+// Signed_Card__c on Contact is set in process builder
+// (OnlineMemberApp CREATE v2, as of 9/30/2020),
+// and NOT in this application
+
 const contactsTableFields = {
   display_name: {
     oldFormPage: "none",
