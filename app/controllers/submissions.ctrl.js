@@ -358,15 +358,15 @@ exports.verifyHumanity = async (req, res) => {
     },
     (err, httpResponse, body) => {
       if (err) {
-        console.error(`submissions.ctrl.js > 359: ${err}`);
+        console.error(`submissions.ctrl.js > 361: ${err}`);
         return res.status(500).json({ message: err.message });
       } else {
         const r = JSON.parse(body);
         if (r.success) {
-          // console.log(`submissions.ctrl.js > 297: recaptcha score: ${r.score}`);
+          console.log(`submissions.ctrl.js > 366: recaptcha score: ${r.score}`);
           return res.status(200).json({ score: r.score });
         } else {
-          console.error(`submissions.ctrl.js > 367: recaptcha failure`);
+          console.error(`submissions.ctrl.js > 369: recaptcha failure`);
           console.error(r["error-codes"][0]);
           return res.status(500).json({ message: r["error-codes"][0] });
         }
