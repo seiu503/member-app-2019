@@ -363,20 +363,20 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("handleSubmit");
     this.props.actions.setSpinner();
 
-    await this.props
-      .verifyRecaptchaScore()
-      .then(score => {
-        console.log(`score: ${score}`);
-        if (!score || score <= 0.5) {
-          console.log(`recaptcha failed: ${score}`);
-          return this.props.handleError(
-            "ReCaptcha validation failed, please reload the page and try again."
-          );
-        }
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    // await this.props
+    //   .verifyRecaptchaScore()
+    //   .then(score => {
+    //     console.log(`score: ${score}`);
+    //     if (!score || score <= 0.5) {
+    //       console.log(`recaptcha failed: ${score}`);
+    //       return this.props.handleError(
+    //         "ReCaptcha validation failed, please reload the page and try again."
+    //       );
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //   });
     const validMethod =
       !!this.props.submission.payment.activeMethodLast4 &&
       !this.props.submission.payment.paymentErrorHold;
