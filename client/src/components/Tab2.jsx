@@ -20,13 +20,9 @@ export const Tab2 = props => {
     back,
     legal_language,
     direct_pay,
-    direct_deposit,
     formValues
   } = props;
   // console.log(formValues.employerType);
-  const hcw =
-    formValues.employerType.toLowerCase() ===
-    "state homecare or personal support";
   const afh = formValues.employerType.toLowerCase() === "adult foster home";
   const retiree = formValues.employerType.toLowerCase() === "retired";
   const community =
@@ -56,17 +52,7 @@ export const Tab2 = props => {
           ref={legal_language}
         >
           <p>
-            <strong>
-              <Translate id="membershipTerms1" />
-            </strong>
-            &nbsp;
-            <Translate
-              id={
-                community || retiree
-                  ? "nonRepMembershipTerms2"
-                  : "membershipTerms2"
-              }
-            />
+            <Translate id="membershipTerms2021" />
           </p>
           {!community && !retiree && !afh && (
             <div>
@@ -81,16 +67,13 @@ export const Tab2 = props => {
                 component={renderCheckbox}
               />
               <p>
-                <Translate id="membershipTerms4" />
-              </p>
-              <p>
-                <Translate id="membershipTerms5" />
+                <Translate id="checkoff2021" />
               </p>
             </div>
           )}
         </div>
 
-        {(hcw || afh || community || retiree) && (
+        {(afh || community || retiree) && (
           <React.Fragment>
             <Field
               formControlName="controlCheckboxMarginBold"
@@ -108,16 +91,6 @@ export const Tab2 = props => {
               id="directPayAuthLegalLanguage"
               ref={direct_pay}
             >
-              {hcw && (
-                <React.Fragment>
-                  <p>
-                    <Translate id="hcwDPA1" />
-                  </p>
-                  <p>
-                    <Translate id="hcwDPA2" />
-                  </p>
-                </React.Fragment>
-              )}
               {afh && (
                 <React.Fragment>
                   <p>
@@ -143,39 +116,6 @@ export const Tab2 = props => {
               </p>
               <p>
                 <Translate id="DPA4" />
-              </p>
-            </div>
-          </React.Fragment>
-        )}
-        {hcw && (
-          <React.Fragment>
-            <Field
-              formControlName="controlCheckboxMarginBold"
-              data-test="checkbox-DDA"
-              label="Direct Deposit Authorization"
-              name="directDepositAuth"
-              id="directDepositAuth"
-              type="checkbox"
-              classes={classes}
-              bold={true}
-              component={renderCheckbox}
-            />
-            <div
-              className={classes.formHelperTextLegal}
-              id="directDepositAuthLegalLanguage"
-              ref={direct_deposit}
-            >
-              <p>
-                <Translate id="hcwDDA1" />
-              </p>
-              <p>
-                <Translate id="hcwDDA2" />
-              </p>
-              <p>
-                <Translate id="hcwDDA3" />
-              </p>
-              <p>
-                <Translate id="hcwDDA4" />
               </p>
             </div>
           </React.Fragment>
