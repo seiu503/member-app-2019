@@ -122,17 +122,17 @@ describe("<Tab2 />", () => {
       expect(component.length).toBeGreaterThan(1);
     });
 
-    it("renders DDA checkbox for hcw", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          employerType: "state homecare or personal support"
-        }
-      };
-      wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "checkbox-DDA");
-      expect(component.length).toBeGreaterThan(1);
-    });
+    // it("renders DDA checkbox for hcw", () => {
+    //   handleSubmit = fn => fn;
+    //   const props = {
+    //     formValues: {
+    //       employerType: "state homecare or personal support"
+    //     }
+    //   };
+    //   wrapper = setup(props);
+    //   const component = findByTestAttr(wrapper, "checkbox-DDA");
+    //   expect(component.length).toBeGreaterThan(1);
+    // });
 
     it("renders standard signature input for sig type === `write`", () => {
       handleSubmit = fn => fn;
