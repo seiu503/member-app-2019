@@ -31,6 +31,11 @@ export const Tab3 = props => {
   // if (payment.cardBrand) {
   //   console.log(payment.cardBrand);
   // }
+  //
+  // console.log('########','iframe conditions',`iFrameURL: ${iFrameURL}`,`formPage1.paymentType === "Card": ${formPage1.paymentType === "Card"}`,`
+  //   formPage1.newCardNeeded: ${formPage1.newCardNeeded}`,`
+  //   formPage1.paymentRequired: ${formPage1.paymentRequired}`
+  //   )
 
   if (formValues.employerType) {
     switch (formValues.employerType.toLowerCase()) {

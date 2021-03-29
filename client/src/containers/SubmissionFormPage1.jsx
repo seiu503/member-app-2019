@@ -782,6 +782,14 @@ export class SubmissionFormPage1Container extends React.Component {
   async toggleCardAddingFrame(value) {
     // console.log("toggleCardAddingFrame");
     // console.log(value);
+    if (value === "Card" || value === "Check") {
+      this.props.apiSubmission.handleInput({
+        target: { name: "paymentType", value }
+      });
+      // console.log('#########################################');
+      // console.log(this.props.submission.formPage1.paymentType);
+      // console.log('#########################################');
+    }
     const addCardArray = [
       "Add new card",
       "Agregar nueva tarjeta",
@@ -797,10 +805,9 @@ export class SubmissionFormPage1Container extends React.Component {
       "信用卡"
     ];
     const cardValues = [...addCardArray, ...cardArray];
-    console.log(cardValues);
     if (cardValues.includes(value)) {
       await this.getIframeURL()
-        // .then(() => console.log("got iFrameURL"))
+        .then(() => console.log("got iFrameURL"))
         .catch(err => {
           console.error(err);
           return handleError(err);
@@ -808,23 +815,19 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSubmission.handleInput({
         target: { name: "paymentMethodAdded", value: false }
       });
-      // console.log(
-      //   `paymentMethodAdded 1058: ${
-      //     this.props.submission.formPage1.paymentMethodAdded
-      //   }`
-      // );
+      console.log(
+        `paymentMethodAdded 1058: ${
+          this.props.submission.formPage1.paymentMethodAdded
+        }`
+      );
       return this.props.apiSubmission.handleInput({
         target: { name: "newCardNeeded", value: true }
       });
     }
-    this.props.apiSubmission.handleInput({
-      target: { name: "paymentMethodAdded", value: true }
-    });
-    if (value === "Card" || value === "Check") {
-      this.props.apiSubmission.handleInput({
-        target: { name: "paymentType", value }
-      });
-    }
+    // this.props.apiSubmission.handleInput({
+    //   target: { name: "paymentMethodAdded", value: true }
+    // });
+
     if (value === "Use Existing" || value === "Check") {
       console.log("setting nCN to false, hiding iframe");
       return this.props.apiSubmission.handleInput({
