@@ -62,7 +62,7 @@
     "util": "^0.12.1",
     "uuid": "^3.3.2",
     "why": "^0.1.12",
-    "yargs": "^13.2.4"
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
     "aws-sdk-mock": "^4.4.0",
