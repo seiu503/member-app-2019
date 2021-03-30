@@ -37,8 +37,6 @@ const utils = require("../utils");
 const createCAPE = async (req, res, next) => {
   const ip = utils.getClientIp(req);
   console.log(`cape.ctrl.js > 38: ${ip}`);
-  // console.log("cape.ctrl.js > 38: createCAPE");
-  // console.log(req.body);
   let {
     submission_date,
     contact_id,
@@ -91,7 +89,6 @@ const createCAPE = async (req, res, next) => {
       message: `Missing required field ${missingField}`
     });
   }
-
   const createCAPEResult = await cape
     .createCAPE(
       ip,
@@ -121,7 +118,6 @@ const createCAPE = async (req, res, next) => {
       let message = `There was an error saving the CAPE record: ${err.message}`;
       return res.status(500).json({ message });
     });
-
   if (!createCAPEResult || !!createCAPEResult.message) {
     let message = "There was an error saving the CAPE record";
     if (createCAPEResult && createCAPEResult.message) {
