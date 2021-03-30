@@ -26,8 +26,8 @@
   },
   "homepage": "https://github.com/seiu503/member-app-2019.github.io#readme",
   "dependencies": {
-    "aws-sdk": "^2.467.0",
-    "axios": "^0.19.0",
+    "aws-sdk": "^2.876.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "concurrently": "^4.1.0",
     "cors": "^2.8.5",
@@ -46,13 +46,14 @@
     "multer": "^1.4.1",
     "multer-s3": "^2.9.0",
     "node-fetch": "^2.6.1",
-    "nodemailer": "^6.4.2",
+    "node-pg": "^1.0.1",
+    "nodemailer": "^6.4.16",
     "passport": "^0.4.0",
     "passport-google-oauth": "^2.0.0",
     "passport-google-oauth2": "^0.2.0",
     "passport-jwt": "^4.0.0",
     "path": "^0.12.7",
-    "pg": "^7.11.0",
+    "pg": "^8.5.1",
     "request": "^2.88.0",
     "request-ip": "^2.1.3",
     "serve-favicon": "^2.5.0",
@@ -62,7 +63,7 @@
     "util": "^0.12.1",
     "uuid": "^3.3.2",
     "why": "^0.1.12",
-    "yargs": "^13.2.4"
+    "yargs": "^16.0.0"
   },
   "devDependencies": {
     "aws-sdk-mock": "^4.4.0",
