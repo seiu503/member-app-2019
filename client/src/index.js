@@ -8,7 +8,7 @@ import "./styles/css/index.css";
 import App from "./App";
 import store from "./store/store";
 import { unregister } from "./serviceWorker";
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
+import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
 import { LocalizeProvider } from "react-localize-redux";

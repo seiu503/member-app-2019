@@ -16,6 +16,10 @@ const defaultProps = {
 // mock setTimeout
 jest.useFakeTimers();
 
+// keep a copy of the window object to restore
+// it at the end of the tests
+const oldWindowLocation = window.location;
+
 /**
  * Factory function to create a ShallowWrapper for the Logout component
  * @function setup
@@ -29,8 +33,29 @@ const setup = (props = {}) => {
 };
 
 describe("<Logout />", () => {
+  beforeAll(() => {
+    delete window.location;
+
+    window.location = Object.defineProperties(
+      {},
+      {
+        ...Object.getOwnPropertyDescriptors(oldWindowLocation),
+        assign: {
+          configurable: true,
+          value: jest.fn()
+        }
+      }
+    );
+  });
+
   afterAll(() => {
     localStorage.clear();
+    // restore `window.location` to the `jsdom` `Location` object
+    window.location = oldWindowLocation;
+  });
+
+  beforeEach(() => {
+    window.location.assign.mockReset();
   });
 
   it("renders without error", () => {
@@ -99,7 +124,6 @@ describe("<Logout />", () => {
   });
 
   test("redirects to home route 1 second after component mount", () => {
-    window.location.assign = jest.fn();
     const wrapper = shallow(<Logout {...defaultProps} />);
 
     // clear mock since componentDidMount is called in other tests
@@ -114,8 +138,6 @@ describe("<Logout />", () => {
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
     expect(window.location.assign).toBeCalledWith("/");
 
-    // restore mocks
-    window.location.assign.mockRestore();
     setTimeout.mockRestore();
   });
 });
