@@ -30,6 +30,8 @@ const mockStore = configureMockStore();
 let store;
 let wrapper;
 
+const oldWindowLocation = window.location;
+
 const initialState = {
   appState: {
     loggedIn: false,
@@ -645,9 +647,27 @@ describe("<App />", () => {
     // });
   });
   describe("Protected route tests: admin", () => {
+    beforeAll(() => {
+      delete window.location;
+
+      window.location = Object.defineProperties(
+        {},
+        {
+          ...Object.getOwnPropertyDescriptors(oldWindowLocation),
+          assign: {
+            configurable: true,
+            value: jest.fn()
+          }
+        }
+      );
+    });
+    afterAll(() => {
+      window.location = oldWindowLocation;
+    });
+
     beforeEach(() => {
       store = storeFactory(initialStateLoggedIn);
-      window.location.assign = jest.fn();
+      window.location.assign.mockReset();
     });
     afterEach(() => {
       jest.restoreAllMocks();
