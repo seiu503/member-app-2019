@@ -1119,7 +1119,12 @@ exports.handleTab1 = async (req, res, next) => {
 // updateSubmission
 // createSFOMA
 
+// ONLY for nojs submissions??? do not remember lol...
 exports.handleTab2 = async (req, res, next) => {
+  console.log(`sf.ctrl.js > 1123: handleTab2: req.body.legal_language`);
+  console.log(req.body.legal_language);
+  console.log(`sf.ctrl.js > 1123: handleTab2: legal_language`);
+  console.log(legal_language);
   req.body.online_campaign_source = "NoJavascript";
   req.body.legal_language = legal_language;
   if (req.body.terms_agree === "on") {
