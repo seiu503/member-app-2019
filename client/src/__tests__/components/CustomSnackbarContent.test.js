@@ -3,6 +3,11 @@ import { shallow, mount } from "enzyme";
 import { unwrap, createShallow } from "@material-ui/core/test-utils";
 import { findByTestAttr } from "../../utils/testUtils";
 import CustomSnackbarContent from "../../components/CustomSnackbarContent";
+import CloseIcon from "@material-ui/icons/Close";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import WarningIcon from "@material-ui/icons/Warning";
+import ErrorIcon from "@material-ui/icons/Error";
+import InfoIcon from "@material-ui/icons/Info";
 
 const CustomSnackbarContentNaked = unwrap(CustomSnackbarContent);
 const defaultProps = {
@@ -59,8 +64,8 @@ describe("<CustomSnackbarContent />", () => {
 
   test("renders a close icon", () => {
     const wrapper = mount(<CustomSnackbarContentNaked {...defaultProps} />);
-    const component = wrapper.find("CloseIcon");
-    expect(component.length).toBe(1);
+    const icon = wrapper.find(CloseIcon);
+    expect(icon.length).toBe(1);
   });
 
   describe("`variant` = 'success'", () => {
@@ -68,8 +73,7 @@ describe("<CustomSnackbarContent />", () => {
       <CustomSnackbarContentNaked {...defaultProps} variant="success" />
     );
     test("renders a CheckCircleIcon", () => {
-      const component = findByTestAttr(wrapper, "message-icon");
-      const icon = component.find("CheckCircleIcon");
+      const icon = wrapper.find(CheckCircleIcon);
       expect(icon.length).toBe(1);
     });
     test("has 'success' class", () => {
@@ -86,8 +90,7 @@ describe("<CustomSnackbarContent />", () => {
       const wrapper = mount(
         <CustomSnackbarContentNaked {...defaultProps} variant="error" />
       );
-      const component = findByTestAttr(wrapper, "message-icon");
-      const icon = component.find("ErrorIcon");
+      const icon = wrapper.find(ErrorIcon);
       expect(icon.length).toBe(1);
     });
     test("has 'error' class", () => {
@@ -104,8 +107,7 @@ describe("<CustomSnackbarContent />", () => {
       const wrapper = mount(
         <CustomSnackbarContentNaked {...defaultProps} variant="warning" />
       );
-      const component = findByTestAttr(wrapper, "message-icon");
-      const icon = component.find("WarningIcon");
+      const icon = wrapper.find(WarningIcon);
       expect(icon.length).toBe(1);
     });
     test("has 'warning' class", () => {
@@ -122,8 +124,7 @@ describe("<CustomSnackbarContent />", () => {
       const wrapper = mount(
         <CustomSnackbarContentNaked {...defaultProps} variant="info" />
       );
-      const component = findByTestAttr(wrapper, "message-icon");
-      const icon = component.find("InfoIcon");
+      const icon = wrapper.find(InfoIcon);
       expect(icon.length).toBe(1);
     });
     test("has 'info' class", () => {

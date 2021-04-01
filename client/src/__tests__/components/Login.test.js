@@ -18,11 +18,28 @@ const setup = (props = {}) => {
   return shallow(<Login {...setupProps} />);
 };
 
-const assignMock = jest.fn();
+const oldWindowLocation = window.location;
 
 describe.only("<Login />", () => {
+  beforeAll(() => {
+    delete window.location;
+
+    window.location = Object.defineProperties(
+      {},
+      {
+        ...Object.getOwnPropertyDescriptors(oldWindowLocation),
+        assign: {
+          configurable: true,
+          value: jest.fn()
+        }
+      }
+    );
+  });
+  afterAll(() => {
+    window.location = oldWindowLocation;
+  });
   beforeEach(() => {
-    window.location.assign = assignMock;
+    window.location.assign.mockReset();
   });
   afterEach(() => {
     jest.restoreAllMocks();
@@ -36,6 +53,6 @@ describe.only("<Login />", () => {
     const wrapper = setup();
     // run lifecycle method
     wrapper.instance().componentDidMount();
-    expect(assignMock.mock.calls.length).toBe(1);
+    expect(window.location.assign.mock.calls.length).toBe(1);
   });
 });
