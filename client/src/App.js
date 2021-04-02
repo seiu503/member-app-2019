@@ -208,7 +208,7 @@ export class AppUnconnected extends Component {
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
     console.log("Wednesday 1/15 1:11pm");
     // detect default language from browser
@@ -294,7 +294,7 @@ export class AppUnconnected extends Component {
               !result.payload ||
               (result.payload && result.payload.message)
             ) {
-              console.log(message);
+              // console.log(message);
             } else {
               switch (result.payload.content_type) {
                 case "headline":
