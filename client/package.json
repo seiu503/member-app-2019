@@ -30,7 +30,7 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "^4.0.3",
     "redux": "^4.0.1",
-    "redux-api-middleware": "^3.0.1",
+    "redux-api-middleware": "^3.2.1",
     "redux-form": "^8.3.7",
     "sanitize-html": "^2.3.3",
     "shortid": "^2.2.14",

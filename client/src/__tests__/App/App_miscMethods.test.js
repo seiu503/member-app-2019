@@ -455,6 +455,11 @@ describe("<App />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
+      createSFOMASuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+        );
       const props = {
         submission: {
           salesforceId: "1234",
@@ -483,6 +488,11 @@ describe("<App />", () => {
         .catch(err => console.log(err));
     });
     test("`resubmitSubmission` handles error if updateSubmission throws", async () => {
+      createSFOMASuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+        );
       updateSubmissionError = jest
         .fn()
         .mockImplementation(() => Promise.reject());
