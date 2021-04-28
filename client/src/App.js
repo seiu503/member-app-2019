@@ -294,7 +294,7 @@ export class AppUnconnected extends Component {
               !result.payload ||
               (result.payload && result.payload.message)
             ) {
-              // console.log(message);
+              console.log(message);
             } else {
               switch (result.payload.content_type) {
                 case "headline":
