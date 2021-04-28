@@ -215,6 +215,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       // let handleUploadMock = jest
       //   .fn()
       //   .mockImplementation(() => Promise.resolve(sigUrl));
+      createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
       let props = {
         translate: jest.fn(),
         formValues: {
@@ -225,13 +230,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           paymentType: "card",
           employerType: "retired",
           preferredLanguage: "English"
-        }
+        },
+        createSubmission: createSubmissionSuccess
       };
 
       wrapper = setup(props);
       wrapper.instance().saveLegalLanguage = saveLegalLanguageMock;
       // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().handleUpload = handleUploadMock;
+
       wrapper.update();
       wrapper
         .instance()
@@ -247,6 +254,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleTab` called with 2 calls handleTab2", () => {
+      createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
       wrapper = setup();
       // wrapper.instance().state.signatureType = "write";
       const handleTab2Mock = jest
@@ -261,23 +273,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             expect(handleTab2Mock.mock.calls.length).toBe(1);
             changeTabMock.mockClear();
           });
-        })
-        .catch(err => console.log(err));
-    });
-
-    test("`handleTab` called with 0 calls changeTab prop", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-
-      wrapper = setup();
-      // wrapper.instance().state.signatureType = "write";
-      // wrapper.instance().handleUpload = handleUploadMock();
-      wrapper
-        .instance()
-        .handleTab(0)
-        .then(() => {
-          expect(changeTabMock.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });
@@ -394,11 +389,45 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .instance()
         .handleTab(2)
         .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBeGreaterThan(1);
+          expect(formElements.handleError.mock.calls.length).toEqual(1);
         })
         .catch(err => {
           console.log(err);
         });
+    });
+    test("`handleTab` called with 0 calls changeTab prop", async () => {
+      handleUploadMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(sigUrl));
+
+      let props = {
+        translate: jest.fn(),
+        formValues: {
+          signature: "test",
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        createSubmission: createSubmissionSuccess,
+        handleUpload: handleUploadMock
+      };
+
+      wrapper = await setup(props);
+      // wrapper.instance().state.signatureType = "write";
+      wrapper.instance().handleUpload = handleUploadMock();
+      handleErrorMock.mockClear();
+      formElements.handleError = handleErrorMock;
+      await wrapper.update();
+      await wrapper
+        .instance()
+        .handleTab(0)
+        .then(() => {
+          expect(changeTabMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
     });
   });
 });

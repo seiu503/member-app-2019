@@ -234,6 +234,11 @@ describe("<App />", () => {
     });
 
     test("`saveSubmissionErrors` handles error if updateSubmission fails", async function() {
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
       let props = {
         apiSubmission: {
           updateSubmission: updateSubmissionError

@@ -138,7 +138,7 @@ export class EditUserFormUnconnected extends React.Component {
 
   dialogAction = () => {
     this.deleteUser(this.props.user.currentUser);
-    this.props.apiUser.handleDeleteClose();
+    this.props.apiUser.handleDeleteClose().catch(err => console.log(err));
   };
 
   async deleteUser(user) {

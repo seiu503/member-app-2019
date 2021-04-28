@@ -45,13 +45,13 @@ const addUserMock = jest
   .mockImplementation(() =>
     Promise.resolve({ type: "ADD_USER_SUCCESS", payload: { email: "string" } })
   );
-const updateUserMock = jest.fn().mockImplementation(() =>
+let updateUserMock = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "UPDATE_USER_SUCCESS",
     payload: { email: "string" }
   })
 );
-const getUserByEmailMock = jest.fn().mockImplementation(() =>
+let getUserByEmailMock = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "GET_USER_BY_EMAIL_SUCCESS",
     payload: { email: "string" }
@@ -60,10 +60,10 @@ const getUserByEmailMock = jest.fn().mockImplementation(() =>
 const handleDeleteOpenMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "HANDLE_DELETE_OPEN" }));
-const handleDeleteCloseMock = jest
+let handleDeleteCloseMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "HANDLE_DELETE_CLOSE" }));
-const deleteUserSuccess = jest
+let deleteUserSuccess = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "DELETE_USER_SUCCESS" }));
 
@@ -199,14 +199,12 @@ describe("<EditUser />", () => {
       jest.restoreAllMocks();
     });
     it("findUserByEmail handles error if api call fails", () => {
-      const getUserByEmailError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({
-            type: "GET_USER_BY_EMAIL_FAILURE",
-            payload: { message: "Error message" }
-          })
-        );
+      const getUserByEmailError = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_USER_BY_EMAIL_FAILURE",
+          payload: { message: "Error message" }
+        })
+      );
       formElements.handleError = handleErrorMock;
       const props = {
         apiUser: {
@@ -251,10 +249,21 @@ describe("<EditUser />", () => {
       jest.restoreAllMocks();
     });
     it("calls deleteUser api prop and redirects to dashboard on success", async () => {
-      wrapper = setup();
-      wrapper.instance().deleteUser({ id: 1 });
+      deleteUserSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "DELETE_USER_SUCCESS" })
+        );
+      let props = {
+        apiUser: {
+          deleteUser: deleteUserSuccess
+        }
+      };
+
+      wrapper = setup(props);
+      await wrapper.instance().deleteUser({ id: 1 });
       expect(deleteUserSuccess.mock.calls.length).toBe(1);
-      await deleteUserSuccess();
+      await deleteUserSuccess().catch(err => console.log(err));
       expect(pushMock.mock.calls.length).toBe(1);
     });
     it("handles error if deleteUser api prop fails", async () => {
@@ -276,14 +285,12 @@ describe("<EditUser />", () => {
     });
     it("handles error if deleteUser api prop throws", async () => {
       formElements.handleError = handleErrorMock;
-      const deleteUserError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({
-            type: "DELETE_USER_FAILURE",
-            payload: { message: "Error message" }
-          })
-        );
+      const deleteUserError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "DELETE_USER_FAILURE",
+          payload: { message: "Error message" }
+        })
+      );
       const props = {
         apiUser: {
           deleteUser: deleteUserError
@@ -307,6 +314,12 @@ describe("<EditUser />", () => {
       jest.restoreAllMocks();
     });
     test("calls `updateUser` on submit", () => {
+      updateUserMock = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "UPDATE_USER_SUCCESS",
+          payload: { email: "string" }
+        })
+      );
       let props = {
         apiUser: {
           ...defaultProps.apiUser,
@@ -449,6 +462,12 @@ describe("<EditUser />", () => {
     });
 
     test("if no currentUser calls `findUserByEmail` on submit ", () => {
+      getUserByEmailMock = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_USER_BY_EMAIL_SUCCESS",
+          payload: { email: "string" }
+        })
+      );
       let props = {
         user: {
           form: {
@@ -465,12 +484,18 @@ describe("<EditUser />", () => {
             created_at: "",
             updated_at: ""
           }
+        },
+        apiUser: {
+          getUserByEmail: getUserByEmailMock
         }
       };
 
       wrapper = setup(props);
 
-      wrapper.instance().findUserByEmail(fakeEvent);
+      wrapper
+        .instance()
+        .findUserByEmail(fakeEvent)
+        .catch(err => console.log(err));
 
       expect(getUserByEmailMock.mock.calls.length).toBe(1);
     });
@@ -564,7 +589,23 @@ describe("<EditUser />", () => {
       expect(handleDeleteOpenMock.mock.calls.length).toBe(1);
     });
     it("dialogAction calls `deleteUser` and `handleDeleteClose` prop", () => {
-      wrapper = setup();
+      deleteUserSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "DELETE_USER_SUCCESS" })
+        );
+      handleDeleteCloseMock = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "HANDLE_DELETE_CLOSE" })
+        );
+      const props = {
+        apiUser: {
+          handleDeleteClose: handleDeleteCloseMock,
+          deleteUser: deleteUserSuccess
+        }
+      };
+      wrapper = setup(props);
       wrapper.instance().dialogAction();
       expect(handleDeleteCloseMock.mock.calls.length).toBe(1);
     });

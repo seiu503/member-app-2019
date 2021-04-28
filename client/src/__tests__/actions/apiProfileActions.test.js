@@ -8,6 +8,7 @@ import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiProfileActions";
 import * as profileReducer from "../../store/reducers/profile";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
+console.log(BASE_URL);
 
 const createStore = configureMockStore([apiMiddleware]);
 const store = createStore(profileReducer.initialState);
@@ -16,8 +17,17 @@ const token = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
 describe("apiProfileActions", () => {
   describe("api actions", () => {
+    beforeAll(() => {
+      jest.useFakeTimers();
+      if (!nock.isActive()) {
+        nock.activate();
+      }
+      nock.enableNetConnect();
+    });
+    beforeEach(() => nock.cleanAll());
+
     afterEach(() => {
-      nock.cleanAll();
+      nock.restore(); // Avoids memory-leaks
       nock.enableNetConnect();
       // expect at least one expect in async code:
       expect.hasAssertions();
@@ -27,12 +37,16 @@ describe("apiProfileActions", () => {
       const response = {
         id: id,
         name: "Emma Goldman",
-        avatar_url: "http://www.example.com/avatar.png"
+        avatar_url: "http://www.example.com/avatar.png",
+        ok: true
       };
 
       nock(`${BASE_URL}`)
         .get(`/api/user/${response.id}`)
-        .reply(200, response);
+        // .reply(200, response);
+        .reply((uri, requestBody) => {
+          return [200, response];
+        });
 
       const expectedResult = {
         meta: undefined,
@@ -45,6 +59,8 @@ describe("apiProfileActions", () => {
       const result = await store.dispatch(
         actions.validateToken(token, response.id)
       );
+      console.log(`#############################`);
+      console.log(result);
       expect(result).toEqual(expectedResult);
     });
 

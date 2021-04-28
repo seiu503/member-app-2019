@@ -52,7 +52,7 @@ const loginLink = loginLinkStr.link(`${BASE_URL}/api/auth/google`);
 const warning = `You do not have access to the page you were trying to reach. Please ${loginLink} or contact an admin to request access.`;
 
 export class SubmissionsTableUnconnected extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     const { authToken } = this.props.appState;
     const { userType } = this.props.appState;
     if (userType && authToken) {
@@ -77,7 +77,7 @@ export class SubmissionsTableUnconnected extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (
       ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
         (this.props.appState.authToken && this.props.appState.userType)) ||

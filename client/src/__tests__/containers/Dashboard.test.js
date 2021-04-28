@@ -101,10 +101,13 @@ describe("<Dashboard />", () => {
 
   test("calls `getProfile` prop on componentDidMount", () => {
     wrapper = setup();
-    wrapper.instance().componentDidMount();
-
-    // expect the mock to have been called once during component mount
-    expect(getProfileMock.mock.calls.length).toBe(1);
+    wrapper
+      .instance()
+      .componentDidMount()
+      .then(() => {
+        // expect the mock to have been called once during component mount
+        expect(getProfileMock.mock.calls.length).toBe(1);
+      });
   });
 
   test("sets userId & authToken to localStorage on component mount if userId in route params", () => {
@@ -138,16 +141,20 @@ describe("<Dashboard />", () => {
     localStorage.setItem("redirect", "/test");
     wrapper = setup();
 
-    wrapper.instance().componentDidMount();
-    await getProfileMock()
+    wrapper
+      .instance()
+      .componentDidMount()
       .then(() => {
-        expect(pushMock).toHaveBeenCalledWith("/test");
-        expect(localStorage.getItem("redirect")).toBe(null);
-        localStorage.clear();
-      })
-      .catch(err => {
-        console.log(err);
-        localStorage.clear();
+        getProfileMock()
+          .then(() => {
+            expect(pushMock).toHaveBeenCalledWith("/test");
+            expect(localStorage.getItem("redirect")).toBe(null);
+            localStorage.clear();
+          })
+          .catch(err => {
+            console.log(err);
+            localStorage.clear();
+          });
       });
   });
 

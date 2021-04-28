@@ -55,7 +55,7 @@ const defaultProps = {
   }
 };
 
-const getSFContactByIdError = jest
+let getSFContactByIdError = jest
   .fn()
   .mockImplementation(() => Promise.reject({ type: "GET_SF_CONTACT_FAILURE" }));
 
@@ -119,6 +119,11 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
     expect(spyCall).toEqual("1");
   });
   test("handles error if `getSFContactById` throws", () => {
+    getSFContactByIdError = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.reject({ type: "GET_SF_CONTACT_FAILURE" })
+      );
     let props = {
       submission: {
         salesforceId: "1"
