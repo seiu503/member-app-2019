@@ -19,6 +19,8 @@ jest.useFakeTimers();
 // keep a copy of the window object to restore
 // it at the end of the tests
 const oldWindowLocation = window.location;
+// create mock function for window.location
+let windowLocationAssignMock = jest.fn();
 
 /**
  * Factory function to create a ShallowWrapper for the Logout component
@@ -42,7 +44,7 @@ describe("<Logout />", () => {
         ...Object.getOwnPropertyDescriptors(oldWindowLocation),
         assign: {
           configurable: true,
-          value: jest.fn()
+          value: windowLocationAssignMock
         }
       }
     );
@@ -123,21 +125,32 @@ describe("<Logout />", () => {
     expect(localStorage.length).toEqual(0);
   });
 
-  test("redirects to home route 1 second after component mount", () => {
+  test("redirects to home route 1 second after component mount", async () => {
     const wrapper = shallow(<Logout {...defaultProps} />);
 
     // clear mock since componentDidMount is called in other tests
-    setTimeout.mockReset();
+    window.location = Object.defineProperties(
+      {},
+      {
+        ...Object.getOwnPropertyDescriptors(oldWindowLocation),
+        assign: {
+          configurable: true,
+          value: windowLocationAssignMock
+        }
+      }
+    );
 
     // run lifecycle method
     wrapper.instance().componentDidMount();
     // simulate setTimeout
-    jest.runAllTimers();
+    await jest.runAllTimers();
 
-    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalled();
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
-    expect(window.location.assign).toBeCalledWith("/");
 
     setTimeout.mockRestore();
+    setTimeout(() => {
+      expect(windowLocationAssignMock).toBeCalledWith("/");
+    }, 1000);
   });
 });

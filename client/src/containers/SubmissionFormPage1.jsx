@@ -1356,7 +1356,7 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.changeTab(1);
   }
 
-  handleTab(newValue) {
+  async handleTab(newValue) {
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
         console.error(err);
