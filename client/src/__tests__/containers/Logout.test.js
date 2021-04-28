@@ -145,7 +145,7 @@ describe("<Logout />", () => {
     // simulate setTimeout
     await jest.runAllTimers();
 
-    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenCalled();
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
 
     setTimeout.mockRestore();
