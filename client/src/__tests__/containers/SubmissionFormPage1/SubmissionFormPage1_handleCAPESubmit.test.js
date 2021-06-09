@@ -1182,7 +1182,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test.only("`handleCAPESubmit` handles error if updateSFCAPE prop fails", async () => {
+    test("`handleCAPESubmit` handles error if updateSFCAPE prop fails", async () => {
       handleErrorMock = jest
         .fn()
         .mockImplementation(() => console.log("handleError"));
