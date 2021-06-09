@@ -145,7 +145,7 @@ export const Tab3 = props => {
                 <Iframe
                   url={iFrameURL}
                   width="100%"
-                  height="280px"
+                  height="430px"
                   id="iFrame"
                   className={classes.iframe}
                   display="initial"

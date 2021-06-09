@@ -20,7 +20,7 @@ const setup = (props = {}) => {
 
 const oldWindowLocation = window.location;
 
-describe.only("<Login />", () => {
+describe("<Login />", () => {
   beforeAll(() => {
     delete window.location;
 
