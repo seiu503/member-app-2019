@@ -66,7 +66,7 @@ const styles = theme => ({
 });
 
 export class DashboardUnconnected extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     let userId, token;
     // check route params for user id and token
     if (this.props.match && this.props.match.params.id) {

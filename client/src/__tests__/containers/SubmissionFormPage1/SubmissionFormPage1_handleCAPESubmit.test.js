@@ -279,11 +279,86 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleCAPESubmit` calls createCAPE if !capeid", async () => {
+      let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "LOOKUP_SF_CONTACT_SUCCESS",
+          payload: { salesforce_id: "123" }
+        })
+      );
+
+      let getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_UNIONISE_TOKEN_SUCCESS",
+          payload: { access_token: "1234" }
+        })
+      );
+
+      let verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+
+      let createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
+
+      let createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+
+      let updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
+
+      let updateSFCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SF_CAPE_SUCCESS" })
+        );
+
+      let postOneTimePaymentSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+          payload: { access_token: 123 }
+        })
+      );
       formElements.handleError = jest.fn();
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+      postOneTimePaymentSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "POST_ONE_TIME_PAYMENT_SUCCESS",
+          payload: { access_token: 123 }
+        })
+      );
+      getUnioniseTokenSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_UNIONISE_TOKEN_SUCCESS",
+          payload: { access_token: "1234" }
+        })
+      );
       createCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
           Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
         );
       let props = {
         formValues: {
@@ -406,6 +481,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() =>
           Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
         );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
       let props = {
         formValues: {
           capeAmount: 10
@@ -456,70 +536,98 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("`handleCAPESubmit` handles error if createSFContact method throws", () => {
-      formElements.handleError = jest.fn();
-      lookupSFContactError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
-        );
-      let props = {
-        formValues: {
-          capeAmount: 10
-        },
-        submission: {
-          formPage1: {
-            paymentRequired: true,
-            paymentMethodAdded: true
-          },
-          salesforceId: null,
-          payment: {
-            memberShortId: "123"
-          },
-          cape: {}
-        },
-        apiSF: {
-          lookupSFContact: lookupSFContactSuccess,
-          createSFCAPE: createSFCAPESuccess
-        },
-        apiSubmission: {
-          createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPESuccess
-        },
-        cape_legal: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        reset: jest.fn(),
-        lookupSFContact: lookupSFContactSuccess
-      };
+    // is createSFContact even called by handleCAPESubmit?? if so, where/how??
+    // test("`handleCAPESubmit` handles error if createSFContact method throws", () => {
+    //   formElements.handleError = jest.fn();
+    //   verifyRecaptchaScoreMock = jest
+    //   .fn()
+    //   .mockImplementation(() => Promise.resolve(0.9));
+    //   lookupSFContactError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
+    //     );
+    //   createSFCAPESuccess = jest.fn().mockImplementation(() =>
+    //     Promise.resolve({
+    //       type: "CREATE_SF_CAPE_SUCCESS",
+    //       payload: { sf_cape_id: 123 }
+    //     })
+    //   );
+    //   createCAPESuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+    //     );
+    //   updateCAPESuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+    //     );
+    //   let props = {
+    //     formValues: {
+    //       capeAmount: 10
+    //     },
+    //     submission: {
+    //       formPage1: {
+    //         paymentRequired: true,
+    //         paymentMethodAdded: true
+    //       },
+    //       salesforceId: null,
+    //       payment: {
+    //         memberShortId: "123"
+    //       },
+    //       cape: {}
+    //     },
+    //     apiSF: {
+    //       lookupSFContact: lookupSFContactSuccess,
+    //       createSFCAPE: createSFCAPESuccess
+    //     },
+    //     apiSubmission: {
+    //       createCAPE: createCAPESuccess,
+    //       updateCAPE: updateCAPESuccess
+    //     },
+    //     cape_legal: {
+    //       current: {
+    //         innerHTML: ""
+    //       }
+    //     },
+    //     reset: jest.fn(),
+    //     lookupSFContact: lookupSFContactSuccess
+    //   };
 
-      wrapper = setup(props);
+    //   wrapper = setup(props);
 
-      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper.instance().createSFContact = createSFContactError;
-      wrapper
-        .instance()
-        .handleCAPESubmit()
-        .then(async () => {
-          await wrapper
-            .instance()
-            .verifyRecaptchaScore()
-            .catch(err => {
-              console.log(err);
-            });
-          await lookupSFContactSuccess();
-          await createSFContactError();
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
+    //   wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+    //   wrapper.instance().createSFContact = createSFContactError;
+    //   wrapper
+    //     .instance()
+    //     .handleCAPESubmit()
+    //     .then(async () => {
+    //       await wrapper
+    //         .instance()
+    //         .verifyRecaptchaScore()
+    //         .catch(err => {
+    //           console.log(err);
+    //         });
+    //       await lookupSFContactSuccess();
+    //       await createSFContactError();
+    //       expect(formElements.handleError.mock.calls.length).toBe(1);
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
 
     test("`handleCAPESubmit` handles error if createSFCape prop fails", () => {
       formElements.handleError = jest.fn();
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
       createSFCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -582,6 +690,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
     test("`handleCAPESubmit` handles error if createSFCape prop throws", () => {
       formElements.handleError = jest.fn();
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
       createSFCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -643,6 +761,20 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
     test("`handleCAPESubmit` handles error if createCAPE prop fails", () => {
       formElements.handleError = jest.fn();
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
       createCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -703,6 +835,20 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
     test("`handleCAPESubmit` handles error if createCAPE prop throws", () => {
       formElements.handleError = jest.fn();
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
       createCAPEError = jest
         .fn()
         .mockImplementation(() =>
@@ -768,6 +914,25 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`handleCAPESubmit` handles error if postOneTimePayment prop throws", () => {
       handleErrorMock = jest.fn();
       formElements.handleError = handleErrorMock;
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
       postOneTimePaymentError = jest
         .fn()
         .mockImplementation(() =>
@@ -834,11 +999,30 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("`handleCAPESubmit` handles error if updateCAPE prop throws", () => {
       handleErrorMock = jest.fn();
       formElements.handleError = handleErrorMock;
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
       updateCAPEError = jest
         .fn()
         .mockImplementation(() =>
           Promise.reject({ type: "UPDATE_CAPE_FAILURE" })
         );
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
       let props = {
         formValues: {
           capeAmount: 10
@@ -899,12 +1083,43 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("`handleCAPESubmit` handles error if updateSFCAPE prop throws", async () => {
+      createCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_SUCCESS" })
+        );
+
+      createCAPEError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_CAPE_FAILURE" })
+        );
       handleErrorMock = jest.fn();
       formElements.handleError = handleErrorMock;
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
       updateSFCAPEError = jest
         .fn()
         .mockImplementation(() =>
           Promise.reject({ type: "UPDATE_SF_CAPE_FAILURE" })
+        );
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
+
+      updateCAPEError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_FAILURE" })
         );
       let props = {
         formValues: {
@@ -971,12 +1186,26 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       handleErrorMock = jest
         .fn()
         .mockImplementation(() => console.log("handleError"));
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
       formElements.handleError = handleErrorMock;
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
       updateSFCAPEError = jest
         .fn()
         .mockImplementation(() =>
           Promise.resolve({ type: "UPDATE_SF_CAPE_FAILURE" })
         );
+      createSFCAPESuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_CAPE_SUCCESS",
+          payload: { sf_cape_id: 123 }
+        })
+      );
       let props = {
         formValues: {
           capeAmount: 10

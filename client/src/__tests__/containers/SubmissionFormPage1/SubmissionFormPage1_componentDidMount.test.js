@@ -212,6 +212,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       jest.restoreAllMocks();
     });
     test("calls `getSFContactByDoubleId` on componentDidMount if id in query", () => {
+      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            firstName: "test",
+            lastName: "test"
+          }
+        })
+      );
       let props = {
         location: {
           search: "cId=1&aId=2"
@@ -289,6 +298,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     });
 
     test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactByDoubleId", () => {
+      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            firstName: "test",
+            lastName: "test"
+          }
+        })
+      );
       let props = {
         location: {
           search: "cId=1&aId=2"
