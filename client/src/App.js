@@ -334,7 +334,7 @@ export class AppUnconnected extends Component {
   }
 
   updateLanguage = e => {
-    console.log("updateLanguage");
+    // console.log("updateLanguage");
     // update value of select
     const newState = { ...this.state };
     newState.userSelectedLanguage = e.target.value;
@@ -346,9 +346,9 @@ export class AppUnconnected extends Component {
       this.language_picker && this.language_picker.current
         ? this.language_picker.current.value
         : null;
-    console.log(userChosenLanguage);
+    // console.log(userChosenLanguage);
     const languageCode = languageMap[userChosenLanguage];
-    console.log(languageCode);
+    // console.log(languageCode);
     const language = languageCode ? languageCode : defaultLanguage;
     // set form language based on detected default language
     this.props.setActiveLanguage(language);
@@ -397,6 +397,45 @@ export class AppUnconnected extends Component {
         data-test="body"
       >
         {paragraphs}
+      </Typography>
+    );
+  };
+
+  renderHeadline = id => {
+    // console.log(`renderHeadline: ${id}`);
+    let headlineIds = [];
+    // check translation file for headlines belonging to this headline id
+    Object.keys(welcomeInfo).forEach(key => {
+      if (key.includes(`headline${id}`)) {
+        headlineIds.push(key);
+      }
+    });
+    // console.log(`headlineIds ${headlineIds}`);
+    // generate translated text in appropriate language rendered in a <h3> tag
+    let headline = (
+      <React.Fragment>
+        <Translate id={`headline${id}`} />
+        ))}
+      </React.Fragment>
+    );
+    console.log(`this.state.headline.text: ${this.state.headline.text}`);
+    // if this headline has not yet been translated there will be no
+    // translation ids in the welcomeInfo JSON object
+    // just render the raw copy in English
+    if (!headlineIds.length) {
+      headline = <React.Fragment>{this.state.headline.text}</React.Fragment>;
+    }
+    // wrap in MUI typography element and return
+    return (
+      <Typography
+        variant="h3"
+        align="left"
+        gutterBottom
+        className={this.props.classes.headline}
+        style={{ paddingTop: 20 }}
+        data-test="headline"
+      >
+        {headline}
       </Typography>
     );
   };
@@ -1044,9 +1083,7 @@ export class AppUnconnected extends Component {
     } else if (resubmitResult.type === "CREATE_SF_OMA_SUCCESS") {
       openSnackbar(
         "success",
-        `Resubmitted submission from ${submissionData.first_name} ${
-          submissionData.last_name
-        }.`
+        `Resubmitted submission from ${submissionData.first_name} ${submissionData.last_name}.`
       );
       // update submission status to success
       this.props.apiSubmission
@@ -1130,6 +1167,7 @@ export class AppUnconnected extends Component {
                   body={this.state.body}
                   image={this.state.image}
                   renderBodyCopy={this.renderBodyCopy}
+                  renderHeadline={this.renderHeadline}
                   createSubmission={this.createSubmission}
                   updateSubmission={this.updateSubmission}
                   lookupSFContact={this.lookupSFContact}
