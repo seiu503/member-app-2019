@@ -40,7 +40,8 @@ const defaultProps = {
     id: 3,
     text: ""
   },
-  renderBodyCopy: jest.fn()
+  renderBodyCopy: jest.fn(),
+  renderHeadline: jest.fn()
 };
 
 /**
