@@ -415,7 +415,6 @@ export class AppUnconnected extends Component {
     let headline = (
       <React.Fragment>
         <Translate id={`headline${id}`} />
-        ))}
       </React.Fragment>
     );
     console.log(`this.state.headline.text: ${this.state.headline.text}`);

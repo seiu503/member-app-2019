@@ -112,20 +112,6 @@ export class WelcomeInfoUnconnected extends React.Component {
               </strong>
             </div>
           )}
-
-          {/*          <Typography
-            variant="h3"
-            align="left"
-            gutterBottom
-            className={classes.headline}
-            style={{ paddingTop: 20 }}
-            data-test="headline"
-          >
-            <Translate id={`headline${this.props.headline.id}`}>
-              SEIU 503 Membership signup and Recommit form
-            </Translate>
-            {this.props.renderHeadline(this.props.headline.id)}
-          </Typography>*/}
           {this.props.renderHeadline(this.props.headline.id)}
           {this.props.renderBodyCopy(this.props.body.id)}
           <div className={classes.buttonWrap}>
