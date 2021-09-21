@@ -80,7 +80,7 @@ export const defaultWelcomeInfo = {
   body: `<p>Demonstrate your commitment to your co-workers and the people you serve in a few simple steps. To get started, click “Next.”</p>
 <p>Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories – including increasing our pay and benefits and improving our workplace conditions. </p>
 <p>We have strength in numbers. Please complete the following form to join tens of thousands of public service workers and care providers who make Oregon a great place to work and live. By doing so, you will commit to maintaining your membership for at least one year, or paying a non-member fee equivalent. No renewals are required. Dues are 1.7% of your salary + $2.75/month. Your full name, network address, and a timestamp of your submission will serve as your signature.</p>`,
-  headline: `SEIU 503: It’s about more than a better job – it’s about a better world.`
+  headline: `SEIU 503 Membership signup and Recommit form`
 };
 
 // detects browser settings defaultLanguage. If that language is one of the languages

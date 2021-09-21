@@ -69,8 +69,10 @@ exports.findUserByEmail = async (profile, token, done) => {
 exports.updateUser = async (profile, token, userId, done) => {
   const google_id = profile.id;
   const google_token = token;
-  const avatar_url = profile.picture;
-  updates = { google_id, google_token, avatar_url };
+  // Sept 2021 update: google profile.picture url has changed format; is now too long to fit a VarChar(255) field. If you want to use this in the future you need to run a knex migration and update the field data type. For now feels not worth it, just eliminating avatar url from updates.
+  // const avatar_url = profile.picture;
+  // updates = { google_id, google_token, avatar_url };
+  updates = { google_id, google_token };
   // update user on database
   User.updateUser(userId, updates)
     .then(user => {

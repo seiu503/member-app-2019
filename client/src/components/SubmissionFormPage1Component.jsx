@@ -387,9 +387,7 @@ export class SubmissionFormPage1Component extends React.Component {
         target: { name: "paymentMethodAdded", value: true }
       });
       console.log(
-        `paymentMethodAdded: ${
-          this.props.submission.formPage1.paymentMethodAdded
-        }`
+        `paymentMethodAdded: ${this.props.submission.formPage1.paymentMethodAdded}`
       );
     }
     console.log(
@@ -400,9 +398,7 @@ export class SubmissionFormPage1Component extends React.Component {
     );
     console.log(`donationFrequency: ${formValues.donationFrequency}`);
     console.log(
-      `paymentMethodAdded: ${
-        this.props.submission.formPage1.paymentMethodAdded
-      }`
+      `paymentMethodAdded: ${this.props.submission.formPage1.paymentMethodAdded}`
     );
     console.log(`paymentType: ${this.props.submission.formPage1.paymentType}`);
 
@@ -536,6 +532,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 image={this.props.image}
                 body={this.props.body}
                 renderBodyCopy={this.props.renderBodyCopy}
+                renderHeadline={this.props.renderHeadline}
                 style={
                   typeof this.props.tab !== "number"
                     ? { display: "block" }
