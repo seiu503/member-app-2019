@@ -37,7 +37,7 @@
 "bodyCopy0_2": [
   "Being a part of SEIU 503 means you are fighting for a better life for the people you serve and for yourself. SEIU 503 members have won incredible victories – including increasing our pay and benefits and improving our workplace conditions.",
   "Ser parte de SEIU 503 significa que usted está luchando para que las personas a las que les presta sus servicios y usted tengan una vida mejor. Los miembros de SEIU 503 han obtenido increíbles victorias, incluyendo incrementar nuestro sueldo y nuestros beneficios, además de mejorar las condiciones en nuestros lugares de trabajo.",
-  "Участвуя в SEIU 503, вы боретесь за лучшую жизнь для своих клиентов и для себя. Члены SEIU 503 одержали невероятные победы: добились увеличения заработной платы и льгот, а также улучшили условия труда. Gia nhập SEIU 503 đồng nghĩa với việc quý vị đang đấu tranh vì một cuộc sống tốt đẹp hơn cho những người quý vị phục vụ và cho bản thân.",
+  "Участвуя в SEIU 503, вы боретесь за лучшую жизнь для своих клиентов и для себя. Члены SEIU 503 одержали невероятные победы: добились увеличения заработной платы и льгот, а также улучшили условия труда.",
   "Thành viên của SEIU 503 đã đạt được những thắng lợi đáng kinh ngạc – bao gồm cả tăng tương và quyền lợi cũng như cải thiện điều kiện ở nơi làm việc của chúng ta.",
   "成为 SEIU 503 的一员意味着您在为您所服务的人员和您自己争取更好的生活。SEIU 503 会员赢得了许多伟大的胜利，包括加薪和提高福利，以及改善我们的工作环境。"
   ],
@@ -76,11 +76,32 @@
     "Mẫu Đăng ký Thành viên và Tái Cam kết SEIU 503",
     "SEIU 503 会员注册和重新申请表"
 ],
-  "headline1": [
-    "Test HCW TA Headline",
-    "Español Test HCW TA Headline",
-    "Русский Test HCW TA Headline",
-    "Tiếng Việt Test HCW TA Headline",
-    "简体中文 Test HCW TA Headline"
+"headline1": [
+  "Test HCW TA Headline",
+  "Español Test HCW TA Headline",
+  "Русский Test HCW TA Headline",
+  "Tiếng Việt Test HCW TA Headline",
+  "简体中文 Test HCW TA Headline"
+],
+"headline7": [
+  "With our new contract, now is the time to join or recommit!",
+  "Con nuestro nuevo contrato, ¡ahora es el momento de unirnos y volver a comprometernos!",
+  "С нашим новым контрактом пришло время присоединиться или вновь подтвердить членство!",
+  "Với hợp đồng mới của chúng tôi, bây giờ là lúc để tham gia hoặc đăng ký lại.",
+  "有了我们的新合同，现在是时候加入或重新提交申请了！"
+],
+"bodyCopy8_1": [
+  "SEIU 503 members stuck together and won raises, hazard pay and other advances in our new contract. After all the work union members did to win this agreement—lobbying the Legislature, pushing DHS to listen to our bargaining team, contacting the Governor, and more—now is the perfect time to join our union or recommit to being a member of SEIU 503. Together in union, we can continue winning for ourselves and our union.",
+  "Los miembros de SEIU 503 se mantuvieron unidos y ganaron aumentos salariales, pagos por condiciones de vida peligrosas y otros beneficios gracias a nuestro nuevo contrato. Después de todo el trabajo que hicieron los miembros del sindicato para ganar este acuerdo, presionando la Legislatura y el DHS para que escucharán a nuestro equipo de negociación, contactando con el gobernador y mucho más, ahora es el momento perfecto para unirse a nuestro sindicato o volver a comprometerse a través de su membresía con el SEIU 503. Juntos y unidos, podemos seguir sumando más victorias para nosotros mismos y nuestro sindicato.",
+  "Члены SEIU503 держались вместе и выиграли повышение заработной платы, надбавку за риск и другие улучшение в рамках нашего нового контракта. После всего, что сделали члены профсоюза, чтобы выиграть это соглашение - лоббирование законодательного собрания, принуждение DHS прислушиваться к мнению нашей переговорной команды, связь с губернатором и многое другое - сейчас идеальное время, чтобы присоединиться к нашему профсоюзу или вновь подтвердить свое членство в SEIU 503. Вместе в союзе мы можем продолжать побеждать для себя и своего союза.",
+  "Các thành viên của SEIU 503 đã gắn bó với nhau và giành được các khoản tăng lương, trả tiền rủi ro do Covid và các khoản tiến bộ khác trong hợp đồng mới của chúng tôi. Sau tất cả những gì các thành viên công đoàn đã làm để giành được thỏa thuận này — vận động ở hành lang trong Cơ quan lập pháp, thúc đẩy DHS lắng nghe nhóm thương lượng của chúng tôi, liên hệ với Thống đốc, v.v. - bây giờ là thời điểm hoàn hảo để tham gia công đoàn của chúng tôi hoặc đề nghị trở thành thành viên của SEIU 503 . Cùng nhau hợp tác, chúng ta có thể tiếp tục chiến thắng cho chính mình và cho công đoàn của chúng ta.",
+  "SEIU503成员团结一致，在我们的新合同中赢得了加薪，危险津贴和其他预付款的项目。在所有工会会员的努力之下赢得了这项协议——游说立法机关，推动DHS部门听取我们谈判团队的意见，联系州长,和其他更多等——现在是加入我们工会或重新提交申请成为SEIU 503 成员的最佳时机。团结一致，我们可以继续为我们自己和工会赢得胜利。"
+  ],
+"bodyCopy8_2": [
+  "Click “Next” to begin. By joining, you commit to maintaining your membership for at least one year, or paying a non-member fee equivalent. No renewals are required. Dues are 1.7% of your salary + $2.75/month.",
+  "Haga clic en “Siguiente” para comenzar su suscripción al sindicato. Al unirse, se compromete a mantener su membresía durante al menos un año o pagar una tarifa equivalente a no miembro. La membresía se renueva automáticamente cada año. Las cuotas son el 1.7% de su salario + $2.75 / mes.",
+  "Нажмите «Далее», чтобы начать. Присоединяясь, вы обязуетесь сохранять свое членство в течение как минимум одного года или уплачивать эквивалент членского взноса. Продление не требуется. Взносы составляют 1,7% от вашей зарплаты + 2,75 доллара в месяц.",
+  "Ấn vào “Tiếp theo” để bắt đầu. Bằng cách tham gia, bạn cam kết duy trì tư cách là thành viên của mình trong ít nhất một năm hoặc trả một khoản phí tương đương cho người không phải là thành viên. Bạn không cần phải gia hạn cho việc này. Lệ phí để trở thành thành viên là 1,7% lương của bạn + 2,75 đô la / tháng.",
+  "点击“下一步”即可开始。 加入工会即表示您承诺将维持您的会员资格至少一年，或支付相对应的非会员费用。没有续签要求。会费是您工资的1.7% 和每月$2.75."
   ]
 }
