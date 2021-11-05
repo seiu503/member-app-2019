@@ -70,10 +70,20 @@ export const CAPE = props => {
   const activeMethodLast4 =
     capeObject.activeMethodLast4 || payment.activeMethodLast4;
   const checkoff = formPage1.checkoff;
+  const amountSet =
+    !!formValues.capeAmountOther ||
+    (!!formValues.capeAmount && formValues.capeAmount !== "Other");
+  const displaySubmit =
+    validMethod ||
+    (!formPage1.paymentRequired && !standAlone) ||
+    (checkoff && formValues.donationFrequency === "Monthly" && !!amountSet);
+  // if (capeAmountOther) {amountSet = true};
+  //   else if (capeAmount && (capeAmount !== 'Other')) {amountSet = true};
+  //   else {amountSet = false};
   // console.log(`payment:`, payment);
   // console.log(`capeObject`, capeObject);
   // console.log(`paymentRequired: ${formPage1.paymentRequired}`);
-  // console.log(`validMethod: ${validMethod}`);
+  console.log(`validMethod: ${validMethod}`);
   // console.log(`whichCard: ${formValues.whichCard}`);
   // console.log(`paymentType: ${formPage1.paymentType}`);
   // console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
@@ -86,7 +96,8 @@ export const CAPE = props => {
   // console.log(`iFrameURL: ${iFrameURL}`);
   // console.log(`checkoff: ${checkoff}`);
   // console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
-  // console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
+  console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
+  console.log(`formPage1.newCardNeeded: ${formPage1.newCardNeeded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>
@@ -393,8 +404,20 @@ export const CAPE = props => {
           type="text"
           classes={classes}
           component={renderTextField}
-          onBlur={checkCAPEPaymentLogic}
         />
+        {!displayCAPEPaymentFields && (
+          <ButtonWithSpinner
+            type="button"
+            color="primary"
+            className={classes.formButton}
+            variant="contained"
+            loading={loading}
+            onClick={checkCAPEPaymentLogic}
+            data-test="button-next-upper"
+          >
+            <Translate id="next">Next</Translate>
+          </ButtonWithSpinner>
+        )}
         {displayCAPEPaymentFields && (
           <div data-test="component-cape-payment-fields">
             <div className={classes.paymentCopy}>
@@ -510,8 +533,8 @@ export const CAPE = props => {
               )}
             {iFrameURL &&
               (!checkoff || formValues.donationFrequency === "One-Time") &&
-                formPage1.newCardNeeded &&
-                formValues.whichCard !== "Use existing" && (
+              formPage1.newCardNeeded &&
+              formValues.whichCard !== "Use existing" && (
                 <div data-test="component-iframe">
                   <Typography component="h2" className={classes.head}>
                     <Translate id="addPayment">Add a payment method</Translate>
@@ -531,54 +554,59 @@ export const CAPE = props => {
               )}
           </div>
         )}
-        <div className={classes.legalCopy} ref={cape_legal}>
-          <p>
-            <Translate
-              id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
-            />
-          </p>
-          <p>
-            <strong>
-              <Translate id="capeNewLegal1" />
-            </strong>
-          </p>
-          <p>
-            <Translate id="capeNewLegal2" />
-          </p>
-          <p>
-            <Translate id="capeNewLegal3" />
-          </p>
-          <p>
-            <Translate id="capeNewLegal4" />
-          </p>
-          <p>
-            <Translate id="capeNewLegal5" />
-          </p>
-          <p>
-            <Translate id="capeNewLegal6" />
-          </p>
-          <p>
-            <Translate id="capeNewLegal7" />
-          </p>
-          <p>
-            <Translate id="capeNewLegal8" />
-          </p>
-        </div>
-        <ButtonWithSpinner
-          type="submit"
-          color="primary"
-          className={
-            standAlone
-              ? `${classes.formButton} g-recaptcha`
-              : classes.formButton
-          }
-          variant="contained"
-          loading={loading}
-          data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-          data-callback={verifyCallback}
-        >
-          <Translate id="submitButton">Submit</Translate>
-        </ButtonWithSpinner>
+
+        {displaySubmit && (
+          <>
+            <div className={classes.legalCopy} ref={cape_legal}>
+              <p>
+                <Translate
+                  id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+                />
+              </p>
+              <p>
+                <strong>
+                  <Translate id="capeNewLegal1" />
+                </strong>
+              </p>
+              <p>
+                <Translate id="capeNewLegal2" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal3" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal4" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal5" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal6" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal7" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal8" />
+              </p>
+            </div>
+            <ButtonWithSpinner
+              type="submit"
+              color="primary"
+              className={
+                standAlone
+                  ? `${classes.formButton} g-recaptcha`
+                  : classes.formButton
+              }
+              variant="contained"
+              loading={loading}
+              data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+              data-callback={verifyCallback}
+            >
+              <Translate id="submitButton">Submit</Translate>
+            </ButtonWithSpinner>
+          </>
+        )}
         {!standAlone && (
           <div className={classes.buttonWrapCAPE}>
             <Button
