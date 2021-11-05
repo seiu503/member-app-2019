@@ -75,7 +75,7 @@ export const CAPE = props => {
     (!!formValues.capeAmount && formValues.capeAmount !== "Other");
   const displaySubmit =
     validMethod ||
-    (!formPage1.paymentRequired && !standAlone) ||
+    (!formPage1.paymentRequired && !standAlone && displayCAPEPaymentFields) ||
     (checkoff && formValues.donationFrequency === "Monthly" && !!amountSet);
   // if (capeAmountOther) {amountSet = true};
   //   else if (capeAmount && (capeAmount !== 'Other')) {amountSet = true};
