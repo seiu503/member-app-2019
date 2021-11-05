@@ -148,9 +148,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const params = queryString.parse(this.props.location.search);
     const embed = params.embed ? "&embed=true" : "";
     this.props.history.push(
-      `/page2/?cId=${this.props.submission.salesforceId}&sId=${
-        this.props.submission.submissionId
-      }${embed}`
+      `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
     );
     this.handleCAPEClose();
   }
@@ -348,7 +346,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getSFCAPEByContactId() {
-    // console.log("getSFCAPEByContactId");
+    console.log("getSFCAPEByContactId");
     const id = this.props.submission.salesforceId;
     // console.log(id);
     await this.props.apiSF
@@ -371,6 +369,12 @@ export class SubmissionFormPage1Container extends React.Component {
         ) {
           this.props.apiSubmission.handleInput({
             target: { name: "whichCard", value: "Use existing" }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "newCardNeeded", value: false }
+          });
+          this.props.apiSubmission.handleInput({
+            target: { name: "paymentMethodAdded", value: true }
           });
         }
         return result;
@@ -503,7 +507,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async getIframeExisting() {
-    // console.log("getIframeExisting");
+    console.log("getIframeExisting");
     const memberShortId =
       this.props.submission.payment.memberShortId ||
       this.props.submission.cape.memberShortId;
@@ -718,7 +722,7 @@ export class SubmissionFormPage1Container extends React.Component {
       );
     }
     if (memberShortId) {
-      // console.log("found memberShortId, getting unionise auth token");
+      console.log("found memberShortId, getting unionise auth token");
       // first fetch an auth token to access secured unionise routes
       const access_token = await this.props.apiSF
         .getUnioniseToken()
@@ -729,7 +733,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // then get the card adding url for the existing account
       return this.getIframeExisting(access_token, memberShortId);
     } else {
-      // console.log("########  no memberShortId found");
+      console.log("########  no memberShortId found");
     }
 
     // if we don't have the memberShortId, then we need to create a new
@@ -816,9 +820,7 @@ export class SubmissionFormPage1Container extends React.Component {
         target: { name: "paymentMethodAdded", value: false }
       });
       console.log(
-        `paymentMethodAdded 1058: ${
-          this.props.submission.formPage1.paymentMethodAdded
-        }`
+        `paymentMethodAdded 1058: ${this.props.submission.formPage1.paymentMethodAdded}`
       );
       return this.props.apiSubmission.handleInput({
         target: { name: "newCardNeeded", value: true }
@@ -1082,7 +1084,20 @@ export class SubmissionFormPage1Container extends React.Component {
         formValues.donationFrequency === "One-Time") &&
       !this.props.submission.formPage1.paymentMethodAdded
     ) {
-      // console.log("No payment method added");
+      console.log(
+        `this.props.submission.formPage1.paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
+      );
+      console.log(
+        `this.props.submission.formPage1.newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+      );
+      console.log(
+        `formValues.donationFrequency: ${formValues.donationFrequency}`
+      );
+      console.log(
+        `this.props.submission.formPage1.paymentMethodAdded: ${this.props.submission.formPage1.paymentMethodAdded}`
+      );
+
+      console.log("No payment method added");
       return handleError(this.props.translate("addPaymentError"));
     }
     // if user clicks submit before the payment logic finishes loading,
@@ -1224,9 +1239,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const params = queryString.parse(this.props.location.search);
       const embed = params.embed ? "&embed=true" : "";
       this.props.history.push(
-        `/page2/?cId=${this.props.submission.salesforceId}&sId=${
-          this.props.submission.submissionId
-        }${embed}`
+        `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
       );
     } else {
       openSnackbar("success", "Thank you. Your CAPE submission was processed.");
