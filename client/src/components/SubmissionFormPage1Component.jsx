@@ -56,7 +56,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   // check for messages from iframe
-  receiveMessage = event => {
+  receiveMessage = async event => {
     // Do we trust the sender of this message?
     const unioniseEndpoint = process.env.REACT_APP_UNIONISE_ENDPOINT;
     if (event.origin !== unioniseEndpoint || !event.data.notification) {
@@ -73,11 +73,18 @@ export class SubmissionFormPage1Component extends React.Component {
       ) {
         // console.log("this iframe is for CAPE; setting CAPE details");
         // console.log(event.data.notification);
-        return this.props.apiSubmission.setPaymentDetailsCAPE(
+        await this.props.apiSubmission.setPaymentDetailsCAPE(
           true,
           cardBrand,
           cardLast4
         );
+        console.log("updating payment details CAPE");
+        this.props.apiSubmission.handleInput({
+          target: { name: "newCardNeeded", value: false }
+        });
+        this.props.apiSubmission.handleInput({
+          target: { name: "paymentMethodAdded", value: true }
+        });
       } else {
         // console.log("this iframe is for dues; setting dues payment details");
         // console.log(event.data.notification);
