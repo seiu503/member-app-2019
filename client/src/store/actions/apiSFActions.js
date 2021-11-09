@@ -1,4 +1,5 @@
 import { RSAA } from "redux-api-middleware";
+const uuid = require("uuid");
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 console.log(BASE_URL);
 
@@ -719,9 +720,7 @@ export const GET_IFRAME_URL_FAILURE = "GET_IFRAME_URL_FAILURE";
 export function getIframeURL(body) {
   return {
     [RSAA]: {
-      endpoint: `${
-        process.env.REACT_APP_UNIONISE_ENDPOINT
-      }/web/signup/create-member`,
+      endpoint: `${process.env.REACT_APP_UNIONISE_ENDPOINT}/web/signup/create-member`,
       method: "POST",
       types: [
         GET_IFRAME_URL_REQUEST,
@@ -826,9 +825,11 @@ export const POST_ONE_TIME_PAYMENT_FAILURE = "POST_ONE_TIME_PAYMENT_FAILURE";
  *     If database error, hides spinner, displays error toastr
  */
 export function postOneTimePayment(token, body) {
+  const key = uuid.v4();
   const headers = {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
+    idempotency_key: key
   };
   console.log(headers);
   return {

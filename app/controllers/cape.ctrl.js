@@ -118,7 +118,7 @@ const createCAPE = async (req, res, next) => {
       let message = `There was an error saving the CAPE record: ${err.message}`;
       return res.status(500).json({ message });
     });
-  if (!createCAPEResult || !!createCAPEResult.message) {
+  if (!createCAPEResult || !createCAPEResult[0] || !!createCAPEResult.message) {
     let message = "There was an error saving the CAPE record";
     if (createCAPEResult && createCAPEResult.message) {
       message += `, ${createCAPEResult.message}`;

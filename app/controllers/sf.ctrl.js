@@ -1,5 +1,6 @@
 const jsforce = require("jsforce");
 const axios = require("axios");
+const uuid = require("uuid");
 const {
   contactsTableFields,
   submissionsTableFields,
@@ -403,9 +404,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
       `sf.ctrl.js: 403: bodyRaw.agency_number: ${bodyRaw.agency_number}`
     );
     console.log(
-      `sf.ctrl.js: 406: body.Agency_Number_from_Webform__c: ${
-        body.Agency_Number_from_Webform__c
-      }`
+      `sf.ctrl.js: 406: body.Agency_Number_from_Webform__c: ${body.Agency_Number_from_Webform__c}`
     );
     delete body["Account.Id"];
     delete body["Account.Agency_Number__c"];
@@ -697,9 +696,7 @@ exports.updateSFCAPE = async (req, res, next) => {
       let error;
 
       if (!capeResult[0] || !capeResult[0].success) {
-        error = `No matching record found for paymentRequestId ${
-          req.body.info.paymentRequestId
-        }`;
+        error = `No matching record found for paymentRequestId ${req.body.info.paymentRequestId}`;
 
         if (capeResult[0] && capeResult[0].errors) {
           error += `, ${capeResult[0].errors[0]}`;
@@ -901,8 +898,8 @@ exports.getUnioniseToken = async (req, res, next) => {
   axios
     .post(url, data, { headers })
     .then(response => {
-      console.log(`sf.ctrl.js > 904`);
-      console.log(response.data);
+      // console.log(`sf.ctrl.js > 904`);
+      // console.log(response.data);
       if (!response.data || !response.data.access_token) {
         console.error(`sf.ctrl.js > 907: Error while fetching access token`);
         return res
@@ -941,13 +938,16 @@ exports.postPaymentRequest = async (req, res, next) => {
   const data = { ...req.body };
 
   // console.log(data);
-  // console.log(req.headers.authorization);
+  // console.log(`sf.ctrl.js > 945 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
+  // console.log(req.headers);
   const url = `${unioniseEndpoint}/api/v1/paymentRequests`;
 
   const headers = {
     "content-type": "application/json",
-    Authorization: req.headers.authorization
+    Authorization: req.headers.authorization,
+    idempotency_key: req.headers["idempotency_key"]
   };
+  // console.log(`sf.ctrl.js > 953 ######## idempotency_key: ${headers['idempotency_key']}`);
   axios
     .post(url, data, { headers })
     .then(response => {
