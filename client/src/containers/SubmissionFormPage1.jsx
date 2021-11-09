@@ -866,7 +866,7 @@ export class SubmissionFormPage1Container extends React.Component {
   // }
 
   async postOneTimePayment() {
-    // console.log("postOneTimePayment");
+    console.log("postOneTimePayment");
     const { formValues } = this.props;
     const donationAmount =
       formValues.capeAmount === "Other"
@@ -1168,7 +1168,13 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // if one-time payment, send API request to unioni.se to process it
-    if (formValues.donationFrequency === "One-Time") {
+    // but first check to see if another one-time payment has already been created by the same contact on the same day, to avoid duplicate payment requests
+
+    const { id, oneTimePaymentId } = this.props.submission.cape;
+    console.log(`########## oneTimePaymentId: ${oneTimePaymentId}`);
+
+    if (formValues.donationFrequency === "One-Time" && !oneTimePaymentId) {
+      console.log(`No previous oneTimePaymentId; posting oneTimePayment`);
       await this.postOneTimePayment().catch(err => {
         console.error(err);
         return handleError(err);
@@ -1177,7 +1183,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // collect updates to cape record (values returned from other API calls,
     // amount and frequency if not captured in initial iframe request)
-    const { id, oneTimePaymentId } = this.props.submission.cape;
     const donationAmount =
       formValues.capeAmount === "Other"
         ? parseFloat(formValues.capeAmountOther)
