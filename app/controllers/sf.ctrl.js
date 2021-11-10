@@ -945,7 +945,7 @@ exports.postPaymentRequest = async (req, res, next) => {
   const headers = {
     "content-type": "application/json",
     Authorization: req.headers.authorization,
-    idempotency_key: req.headers["idempotency_key"]
+    x_idempotency_key: req.headers["idempotency_key"]
   };
   // console.log(`sf.ctrl.js > 953 ######## idempotency_key: ${headers['idempotency_key']}`);
   axios
