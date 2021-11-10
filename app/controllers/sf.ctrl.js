@@ -939,7 +939,8 @@ exports.postPaymentRequest = async (req, res, next) => {
 
   // console.log(data);
   // console.log(`sf.ctrl.js > 945 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
-  // console.log(req.headers);
+  console.log(req.headers);
+  console.log(req.headers["idempotency_key"]);
   const url = `${unioniseEndpoint}/api/v1/paymentRequests`;
 
   const headers = {
@@ -947,6 +948,8 @@ exports.postPaymentRequest = async (req, res, next) => {
     Authorization: req.headers.authorization,
     x_idempotency_key: req.headers["idempotency_key"]
   };
+  console.log(`sf.ctrl.js > 950`);
+  console.log(headers);
   // console.log(`sf.ctrl.js > 953 ######## idempotency_key: ${headers['idempotency_key']}`);
   axios
     .post(url, data, { headers })
