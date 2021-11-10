@@ -826,12 +826,14 @@ export const POST_ONE_TIME_PAYMENT_FAILURE = "POST_ONE_TIME_PAYMENT_FAILURE";
  */
 export function postOneTimePayment(token, body) {
   const key = uuid.v4();
+  console.log(key);
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
     idempotency_key: key
   };
   console.log(headers);
+  console.log(headers["idempotency_key"]);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/unionise/oneTimePayment`,
