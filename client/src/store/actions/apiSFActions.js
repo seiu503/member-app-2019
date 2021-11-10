@@ -830,10 +830,10 @@ export function postOneTimePayment(token, body) {
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${token}`,
-    idempotency_key: key
+    "x-idempotency-key": key
   };
   console.log(headers);
-  console.log(headers["idempotency_key"]);
+  console.log(headers["x-idempotency-key"]);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/unionise/oneTimePayment`,
