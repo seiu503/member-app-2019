@@ -940,13 +940,13 @@ exports.postPaymentRequest = async (req, res, next) => {
   // console.log(data);
   // console.log(`sf.ctrl.js > 945 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%`);
   console.log(req.headers);
-  console.log(req.headers["idempotency_key"]);
+  console.log(req.headers["x-idempotency-key"]);
   const url = `${unioniseEndpoint}/api/v1/paymentRequests`;
 
   const headers = {
     "content-type": "application/json",
     Authorization: req.headers.authorization,
-    x_idempotency_key: req.headers["idempotency_key"]
+    "x-idempotency-key": req.headers["x-idempotency-key"]
   };
   console.log(`sf.ctrl.js > 950`);
   console.log(headers);
