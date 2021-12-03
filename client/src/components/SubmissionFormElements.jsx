@@ -169,6 +169,7 @@ export const languageOptions = [
   "Vietnamese",
   "Amharic",
   "Arabic",
+  "Farsi",
   "Haitian Creole"
 ];
 export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
