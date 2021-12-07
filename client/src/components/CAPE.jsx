@@ -83,7 +83,7 @@ export const CAPE = props => {
   // console.log(`payment:`, payment);
   // console.log(`capeObject`, capeObject);
   // console.log(`paymentRequired: ${formPage1.paymentRequired}`);
-  console.log(`validMethod: ${validMethod}`);
+  // console.log(`validMethod: ${validMethod}`);
   // console.log(`whichCard: ${formValues.whichCard}`);
   // console.log(`paymentType: ${formPage1.paymentType}`);
   // console.log(`displayCAPEPaymentFields: ${displayCAPEPaymentFields}`);
@@ -96,8 +96,8 @@ export const CAPE = props => {
   // console.log(`iFrameURL: ${iFrameURL}`);
   // console.log(`checkoff: ${checkoff}`);
   // console.log(`formValues.donationFrequencey: ${formValues.donationFrequency}`);
-  console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
-  console.log(`formPage1.newCardNeeded: ${formPage1.newCardNeeded}`);
+  // console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
+  // console.log(`formPage1.newCardNeeded: ${formPage1.newCardNeeded}`);
 
   return (
     <div data-test="component-cape" className={classes.sectionContainer}>

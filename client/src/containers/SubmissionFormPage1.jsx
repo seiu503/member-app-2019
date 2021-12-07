@@ -222,7 +222,10 @@ export class SubmissionFormPage1Container extends React.Component {
   async handleEmployerTypeChange(employerType) {
     console.log("handleEmployerTypeChange");
     console.log(employerType);
-    // render iframe if payment required
+    console.log(
+      `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
+    );
+    // set payment required to true, but only render iframe if 'next' button was already clicked and displayCAPEPaymentFields === true
     if (utils.isPaymentRequired(employerType)) {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
@@ -230,8 +233,13 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "checkoff", value: false }
       });
-      const params = queryString.parse(this.props.location.search);
-      return this.getIframeURL(params.cape);
+      if (this.state.displayCAPEPaymentFields) {
+        console.log(
+          `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
+        );
+        const params = queryString.parse(this.props.location.search);
+        return this.getIframeURL(params.cape);
+      }
     } else {
       console.log("setting paymentRequired to false");
       // hide iframe if already rendered if change to checkoff
@@ -911,16 +919,42 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async checkCAPEPaymentLogic() {
-    // console.log("checkCAPEPaymentLogic");
+    console.log("checkCAPEPaymentLogic");
     const { formValues } = this.props;
-
-    await this.handleEmployerTypeChange(formValues.employerType);
-    await this.handleDonationFrequencyChange(formValues.donationFrequency);
 
     const newState = { ...this.state };
     newState.displayCAPEPaymentFields = true;
-    this.setState(newState, () => {
-      // console.log(this.state.displayCAPEPaymentFields);
+    const validMethod =
+      (!!this.props.submission.payment.activeMethodLast4 &&
+        !this.props.submission.payment.paymentErrorHold) ||
+      (!!this.props.submission.cape.activeMethodLast4 &&
+        !this.props.submission.cape.paymentErrorHold);
+    this.setState(newState, async () => {
+      await this.handleEmployerTypeChange(formValues.employerType);
+      await this.handleDonationFrequencyChange(formValues.donationFrequency);
+      console.log(`validMethod: ${validMethod}`);
+      console.log(`whichCard: ${formValues.whichCard}`);
+      console.log(
+        `paymentType: ${this.props.submission.formPage1.paymentType}`
+      );
+      console.log(
+        `displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
+      );
+      console.log(
+        `{iFrameURL &&
+            ((!checkoff || formValues.donationFrequency === "One-Time") &&
+              formPage1.newCardNeeded &&
+              formValues.whichCard !== "Use existing") && (`
+      );
+      console.log(`iFrameURL: ${this.props.submission.payment.cardAddingUrl}`);
+      console.log(`checkoff: ${this.props.submission.formPage1.checkoff}`);
+      console.log(
+        `formValues.donationFrequencey: ${formValues.donationFrequency}`
+      );
+      console.log(`formValues.newCardNeeded: ${formValues.newCardNeeded}`);
+      console.log(
+        `formPage1.newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
+      );
     });
   }
 
