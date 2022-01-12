@@ -77,6 +77,9 @@ export const CAPE = props => {
     validMethod ||
     (!formPage1.paymentRequired && !standAlone && displayCAPEPaymentFields) ||
     (checkoff && formValues.donationFrequency === "Monthly" && !!amountSet);
+  const community = formValues.employerType === "community member";
+  console.log(formValues.employerType);
+  console.log(community);
   // if (capeAmountOther) {amountSet = true};
   //   else if (capeAmount && (capeAmount !== 'Other')) {amountSet = true};
   //   else {amountSet = false};
@@ -558,37 +561,45 @@ export const CAPE = props => {
         {displaySubmit && (
           <>
             <div className={classes.legalCopy} ref={cape_legal}>
-              <p>
-                <Translate
-                  id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
-                />
-              </p>
-              <p>
-                <strong>
-                  <Translate id="capeNewLegal1" />
-                </strong>
-              </p>
-              <p>
-                <Translate id="capeNewLegal2" />
-              </p>
-              <p>
-                <Translate id="capeNewLegal3" />
-              </p>
-              <p>
-                <Translate id="capeNewLegal4" />
-              </p>
-              <p>
-                <Translate id="capeNewLegal5" />
-              </p>
-              <p>
-                <Translate id="capeNewLegal6" />
-              </p>
-              <p>
-                <Translate id="capeNewLegal7" />
-              </p>
-              <p>
-                <Translate id="capeNewLegal8" />
-              </p>
+              {community ? (
+                <p>
+                  <Translate id="communityCAPE2022" />
+                </p>
+              ) : (
+                <>
+                  <p>
+                    <Translate
+                      id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+                    />
+                  </p>
+                  <p>
+                    <strong>
+                      <Translate id="capeNewLegal1" />
+                    </strong>
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal2" />
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal3" />
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal4" />
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal5" />
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal6" />
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal7" />
+                  </p>
+                  <p>
+                    <Translate id="capeNewLegal8" />
+                  </p>
+                </>
+              )}
             </div>
             <ButtonWithSpinner
               type="submit"
