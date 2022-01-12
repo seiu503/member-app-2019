@@ -602,6 +602,7 @@ export const CAPE = props => {
               loading={loading}
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
+              data-test="button-submit"
             >
               <Translate id="submitButton">Submit</Translate>
             </ButtonWithSpinner>

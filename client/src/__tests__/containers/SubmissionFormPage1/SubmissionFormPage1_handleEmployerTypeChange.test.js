@@ -193,7 +193,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
-    test("`handleEmployerTypeChange` calls getIframeNew if paymentRequired", async function() {
+    test("`handleEmployerTypeChange` calls getIframeNew if paymentRequired AND displayCAPEPaymentFields === true", async function() {
       let getIframeURLMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve({}));
@@ -218,6 +218,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().handleEmployerTypeChange("retired");
+      wrapper.instance().state.displayCAPEPaymentFields = true;
       expect(handleInputMock.mock.calls.length).toBe(1);
       await handleInputMock();
       await handleInputMock();

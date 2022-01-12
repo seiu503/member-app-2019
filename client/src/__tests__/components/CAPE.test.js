@@ -374,5 +374,95 @@ describe("<CAPE />", () => {
       const component = findByTestAttr(wrapper, "field-other-amount").first();
       expect(component.length).toBe(1);
     });
+
+    it("renders iframe if capeObject.activeMethodLast4 && !capeObject.paymentErrorHold", () => {
+      const props = {
+        formValues: {
+          capeAmount: "Other"
+        },
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6],
+          activeMethodLast4: 1234
+        },
+        payment: {
+          paymentErrorHold: true
+        },
+        donationFrequency: "Monthly"
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "field-other-amount").first();
+      expect(component.length).toBe(1);
+    });
+
+    it("displays submit button if capeObject.activeMethodLast4 && !capeObject.paymentErrorHold", () => {
+      const props = {
+        formValues: {
+          capeAmount: "Other"
+        },
+        formPage1: {
+          paymentRequired: false
+        },
+        standAlone: false,
+        displayCAPEPaymentFields: true
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "button-submit");
+      expect(component.length).toBe(1);
+    });
+
+    it("displays submit button if !paymentRequired, !standAlone, displayCAPEPaymentFields", () => {
+      const props = {
+        formPage1: {
+          paymentRequired: false
+        },
+        standAlone: false,
+        displayCAPEPaymentFields: true
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "button-submit");
+      expect(component.length).toBe(1);
+    });
+
+    it("does not display submit button if !displaySubmit", () => {
+      const props = {
+        formPage1: {
+          paymentRequired: true
+        },
+        payment: {
+          activeMethodLast4: undefined // !validMethod
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "button-submit");
+      expect(component.length).toBe(0);
+    });
+
+    it("displays submit button if checkoff, donationFreq = monthly, amountSet (other)", () => {
+      const props = {
+        checkoff: true,
+        donationFrequency: "Monthly",
+        formValues: {
+          capeAmountOther: 10
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "button-submit");
+      expect(component.length).toBe(1);
+    });
+
+    it("displays submit button if checkoff, donationFreq = monthly, amountSet (number)", () => {
+      const props = {
+        checkoff: true,
+        donationFrequency: "Monthly",
+        formValues: {
+          capeAmount: 10
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "button-submit");
+      expect(component.length).toBe(1);
+    });
   });
 });
