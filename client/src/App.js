@@ -43,7 +43,6 @@ import {
   formatSFDate,
   calcEthnicity,
   removeFalsy,
-  generateCAPEOptions,
   languageMap
 } from "./components/SubmissionFormElements";
 import { openSnackbar } from "./containers/Notifier";
@@ -207,7 +206,6 @@ export class AppUnconnected extends Component {
     this.createSFContact = this.createSFContact.bind(this);
     this.updateSFContact = this.updateSFContact.bind(this);
     this.changeTab = this.changeTab.bind(this);
-    this.setCAPEOptions = this.setCAPEOptions.bind(this);
     this.resubmitSubmission = this.resubmitSubmission.bind(this);
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
   }
@@ -421,7 +419,7 @@ export class AppUnconnected extends Component {
         <Translate id={`headline${id}`} />
       </React.Fragment>
     );
-    console.log(`this.state.headline.text: ${this.state.headline.text}`);
+    // console.log(`this.state.headline.text: ${this.state.headline.text}`);
     // if this headline has not yet been translated there will be no
     // translation ids in the welcomeInfo JSON object
     // just render the raw copy in English
@@ -478,14 +476,7 @@ export class AppUnconnected extends Component {
         : 0;
     const pmtUpdates = {
       payment_type: this.props.submission.formPage1.paymentType,
-      payment_method_added: this.props.submission.formPage1.paymentMethodAdded,
-      medicaid_residents: medicaidResidents,
-      card_adding_url: this.props.submission.payment.cardAddingUrl,
-      member_id: this.props.submission.payment.memberId,
-      stripe_customer_id: this.props.submission.payment.stripeCustomerId,
-      member_short_id: this.props.submission.payment.memberShortId,
-      active_method_last_four: this.props.submission.payment.activeMethodLast4,
-      card_brand: this.props.submission.payment.cardBrand
+      medicaid_residents: medicaidResidents
     };
     const updates = passedUpdates ? passedUpdates : pmtUpdates;
     console.log("###############");
@@ -516,17 +507,6 @@ export class AppUnconnected extends Component {
       });
   }
 
-  async setCAPEOptions() {
-    const existingCAPE = this.props.submission.payment.currentCAPEFromSF;
-    const { monthlyOptions, oneTimeOptions } = generateCAPEOptions(
-      existingCAPE
-    );
-    await this.props.apiSubmission.setCAPEOptions({
-      monthlyOptions,
-      oneTimeOptions
-    });
-  }
-
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
     console.log(`formValues: ${formValues}`);
@@ -544,15 +524,10 @@ export class AppUnconnected extends Component {
         home_email: formValues.homeEmail
         // employer_id: this.props.submission.formPage1.employerId
       };
-      await this.props.apiSF
-        .lookupSFContact(lookupBody)
-        .then(() => {
-          this.setCAPEOptions();
-        })
-        .catch(err => {
-          console.error(err);
-          return handleError(err);
-        });
+      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
+        console.error(err);
+        return handleError(err);
+      });
 
       // if nothing found on lookup, need to create new contact
       if (!this.props.submission.salesforceId) {
@@ -649,6 +624,15 @@ export class AppUnconnected extends Component {
         employerObject = findEmployerObject(
           this.props.submission.employerObjects,
           "State APD"
+        );
+        returnValues.agencyNumber = employerObject.Agency_Number__c;
+      } else if (
+        values.employerName &&
+        values.employerName.toLowerCase() === "community member"
+      ) {
+        employerObject = findEmployerObject(
+          this.props.submission.employerObjects,
+          "COMMUNITY MEMBERS"
         );
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else {
@@ -858,9 +842,6 @@ export class AppUnconnected extends Component {
     console.log("createSubmission");
     console.log(formValues, partial);
     // create initial submission using data in tabs 1 & 2
-    // for afh/retiree/comm, submission will not be
-    // finalized and written to salesforce
-    // until payment method added in tab 3
 
     const body = await this.generateSubmissionBody(formValues, partial);
     console.log(body);
@@ -879,61 +860,57 @@ export class AppUnconnected extends Component {
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
-    if (!this.props.submission.formPage1.paymentRequired && !partial) {
-      // console.log("no payment required, writing OMA to SF and on to CAPE");
-      body.Worker__c = this.props.submission.salesforceId;
-      return this.props.apiSF
-        .createSFOMA(body)
-        .then(result => {
-          // console.log(result.type);
-          if (
-            result.type !== "CREATE_SF_OMA_SUCCESS" ||
-            this.props.submission.error
-          ) {
-            this.saveSubmissionErrors(
-              this.props.submission.submissionId,
-              "createSFOMA",
-              this.props.submission.error
-            );
-            // goto CAPE tab
-            this.changeTab(this.props.submission.formPage1.howManyTabs - 1);
-          } else if (!this.props.submission.error) {
-            // update submission status and redirect to CAPE tab
-            // console.log("updating submission status");
-            this.props.apiSubmission
-              .updateSubmission(this.props.submission.submissionId, {
-                submission_status: "Success"
-              })
-              .then(result => {
-                console.log(result.type);
-                if (
-                  result.type === "UPDATE_SUBMISSION_FAILURE" ||
-                  this.props.submission.error
-                ) {
-                  console.log(this.props.submission.error);
-                  return handleError(this.props.submission.error);
-                } else {
-                  this.changeTab(2);
-                }
-              })
-              .catch(err => {
-                console.error(err);
-                return handleError(err);
-              });
-          }
-        })
-        .catch(err => {
+    // console.log("no payment required, writing OMA to SF and on to CAPE");
+    body.Worker__c = this.props.submission.salesforceId;
+    return this.props.apiSF
+      .createSFOMA(body)
+      .then(result => {
+        // console.log(result.type);
+        if (
+          result.type !== "CREATE_SF_OMA_SUCCESS" ||
+          this.props.submission.error
+        ) {
           this.saveSubmissionErrors(
             this.props.submission.submissionId,
             "createSFOMA",
-            err
+            this.props.submission.error
           );
-          console.error(err);
-          return handleError(err);
-        });
-    }
-    // if payment required, or if partial submission from p2:
-    return;
+          // goto CAPE tab
+          this.changeTab(this.props.submission.formPage1.howManyTabs - 1);
+        } else if (!this.props.submission.error) {
+          // update submission status and redirect to CAPE tab
+          // console.log("updating submission status");
+          this.props.apiSubmission
+            .updateSubmission(this.props.submission.submissionId, {
+              submission_status: "Success"
+            })
+            .then(result => {
+              console.log(result.type);
+              if (
+                result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                this.props.submission.error
+              ) {
+                console.log(this.props.submission.error);
+                return handleError(this.props.submission.error);
+              } else {
+                this.changeTab(2);
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              return handleError(err);
+            });
+        }
+      })
+      .catch(err => {
+        this.saveSubmissionErrors(
+          this.props.submission.submissionId,
+          "createSFOMA",
+          err
+        );
+        console.error(err);
+        return handleError(err);
+      });
   }
 
   async createSFContact(formValues) {
@@ -1031,7 +1008,6 @@ export class AppUnconnected extends Component {
   changeTab = newValue => {
     const newState = { ...this.state };
     newState.tab = newValue;
-
     this.setState({ ...newState }, () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
@@ -1165,7 +1141,6 @@ export class AppUnconnected extends Component {
                   createSFContact={this.createSFContact}
                   updateSFContact={this.updateSFContact}
                   changeTab={this.changeTab}
-                  setCAPEOptions={this.setCAPEOptions}
                   {...routeProps}
                 />
               )}

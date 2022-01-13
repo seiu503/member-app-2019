@@ -23,8 +23,6 @@ let wrapper,
   addSubmissionSuccess,
   updateSubmissionSuccess,
   updateSubmissionError,
-  createSFDJRSuccess,
-  createSFOMASuccess,
   props,
   testData,
   tab,
@@ -38,6 +36,11 @@ let resetMock = jest.fn();
 const saveSubmissionErrorsMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
+const createSFOMASuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "CREATE_SF_OMA_SUCCESS"
+  })
+);
 const handleTabMock = jest.fn().mockImplementation(() => Promise.resolve({}));
 const handleInputMock = jest.fn();
 const verifyRecaptchaSuccess = jest
@@ -126,13 +129,6 @@ const defaultProps = {
   translate: jest.fn()
 };
 
-createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }));
-createSFOMASuccess = jest
-  .fn()
-  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }));
-
 verifySuccess = jest
   .fn()
   .mockImplementation(() =>
@@ -158,7 +154,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     };
     apiSF = {
       getSFEmployers: jest.fn(),
-      createSFDJR: createSFDJRSuccess,
       createSFOMA: createSFOMASuccess
     };
   });
@@ -542,7 +537,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // testing that clearForm is called when handleSubmit receives Error message
       try {
         await updateSubmissionError();
-        await createSFDJRSuccess();
         await createSFOMASuccess();
         await saveSubmissionErrorsMock();
 
@@ -591,7 +585,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // testing that openSnackbar is called when handleSubmit receives Error message
       try {
         await updateSubmissionError();
-        await createSFDJRSuccess();
         await createSFOMASuccess();
         expect(formElements.handleError.mock.calls.length).toBe(1);
       } catch (err) {
@@ -621,16 +614,11 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().createSFOMA = createSFOMASuccess;
-      const createOrUpdateSFDJRSuccess = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve());
-      wrapper.instance().createOrUpdateSFDJR = createOrUpdateSFDJRSuccess;
       const updateSubmissionMethodSuccess = jest
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
 
-      // simulate submit with dummy data
       // simulate submit with dummy data
       wrapper
         .instance()
@@ -640,8 +628,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
             await verifyRecaptchaSuccess();
             await updateSubmissionMethodSuccess();
             await createSFOMASuccess();
-            await createOrUpdateSFDJRSuccess();
-            // expect(handleInputMock.mock.calls.length).toBe(3);
           } catch (err) {
             console.log(err);
           }
@@ -670,17 +656,12 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().createSFOMA = createSFOMASuccess;
-      const createOrUpdateSFDJRSuccess = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve());
-      wrapper.instance().createOrUpdateSFDJR = createOrUpdateSFDJRSuccess;
       const updateSubmissionMethodSuccess = jest
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
       wrapper.instance().props.submission.error = null;
 
-      // simulate submit with dummy data
       // simulate submit with dummy data
       wrapper
         .instance()
@@ -690,7 +671,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
             await verifyRecaptchaSuccess();
             await updateSubmissionMethodSuccess();
             await createSFOMASuccess();
-            await createOrUpdateSFDJRSuccess();
             await updateSubmissionSuccess();
             // expect(handleTabMock.mock.calls.length).toBe(1);
           } catch (err) {
@@ -725,13 +705,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().createSFOMA = createSFOMASuccess;
-      const createOrUpdateSFDJRSuccess = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve());
-      wrapper.instance().createOrUpdateSFDJR = createOrUpdateSFDJRSuccess;
       wrapper.instance().props.submission.error = null;
 
-      // simulate submit with dummy data
       // simulate submit with dummy data
       wrapper
         .instance()
@@ -741,7 +716,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
             await verifyRecaptchaSuccess();
             await updateSubmissionMethodSuccess();
             await createSFOMASuccess();
-            await createOrUpdateSFDJRSuccess();
             await updateSubmissionError();
             // expect(handleErrorMock.mock.calls.length).toBe(1);
           } catch (err) {
@@ -781,10 +755,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve());
       wrapper.instance().createSFOMA = createSFOMASuccess;
-      const createOrUpdateSFDJRSuccess = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve());
-      wrapper.instance().createOrUpdateSFDJR = createOrUpdateSFDJRSuccess;
       // simulate submit with dummy data
       wrapper
         .instance()
@@ -793,7 +763,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           try {
             await updateSubmissionMethodSuccess();
             await createSFOMASuccess();
-            await createOrUpdateSFDJRSuccess();
             await updateSubmissionError();
             expect(handleErrorMock.mock.calls.length).toBe(1);
           } catch (err) {
@@ -832,7 +801,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         handleError: handleErrorMock,
         apiSF: {
-          createSFDJR: createSFDJRSuccess,
           createSFOMA: createSFOMASuccess
         },
         updateSubmission: updateSubmissionError
@@ -880,7 +848,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         handleError: handleErrorMock,
         apiSF: {
-          createSFDJR: createSFDJRSuccess,
           createSFOMA: createSFOMASuccess
         },
         updateSubmission: updateSubmissionError
@@ -929,7 +896,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         handleError: handleErrorMock,
         apiSF: {
-          createSFDJR: createSFDJRSuccess,
           createSFOMA: createSFOMAError
         },
         formValues: {}
@@ -978,7 +944,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         handleError: handleErrorMock,
         apiSF: {
-          createSFDJR: createSFDJRSuccess,
           createSFOMA: createSFOMAError
         },
         formValues: {}
@@ -1005,387 +970,6 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       } catch (err) {
         console.log(err);
       }
-    });
-  });
-
-  describe("createOrUpdateSFDJR", () => {
-    it("calls `updateSFDJR` if djrId in redux store", async function() {
-      const updateSFDJRMock = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS" })
-        );
-
-      // replacing openSnackbar import with mock function
-      formElements.handleError = handleErrorMock;
-      // creating wrapper
-      const props = {
-        tab: 2,
-        submission: {
-          submissionId: "123",
-          djrId: "456",
-          formPage1: {},
-          payment: {}
-        },
-        apiSubmission: {
-          updateSubmission: updateSubmissionError
-        },
-        handleError: handleErrorMock,
-        apiSF: {
-          createSFDJR: createSFDJRSuccess,
-          createSFOMA: createSFOMASuccess,
-          updateSFDJR: updateSFDJRMock
-        }
-      };
-      wrapper = setup(props);
-
-      try {
-        await wrapper.instance().createOrUpdateSFDJR();
-        expect(updateSFDJRMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    it("handles error if `updateSFDJR` fails", async function() {
-      const updateSFDJRMock = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SF_DJR_FAILURE" })
-        );
-
-      // replacing openSnackbar import with mock function
-      formElements.handleError = handleErrorMock;
-      // creating wrapper
-      const props = {
-        tab: 2,
-        submission: {
-          submissionId: "123",
-          djrId: "456",
-          formPage1: {},
-          payment: {}
-        },
-        apiSubmission: {
-          updateSubmission: updateSubmissionError
-        },
-        handleError: handleErrorMock,
-        apiSF: {
-          createSFDJR: createSFDJRSuccess,
-          createSFOMA: createSFOMASuccess,
-          updateSFDJR: updateSFDJRMock
-        }
-      };
-      wrapper = setup(props);
-
-      try {
-        await wrapper.instance().createOrUpdateSFDJR();
-        await expect(updateSFDJRMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    it("handles error if `updateSFDJR` throws", async function() {
-      const updateSFDJRMock = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-
-      // replacing openSnackbar import with mock function
-      formElements.handleError = handleErrorMock;
-      // creating wrapper
-      const props = {
-        tab: 2,
-        submission: {
-          submissionId: "123",
-          djrId: "456",
-          formPage1: {},
-          payment: {}
-        },
-        apiSubmission: {
-          updateSubmission: updateSubmissionError
-        },
-        handleError: handleErrorMock,
-        apiSF: {
-          createSFDJR: createSFDJRSuccess,
-          createSFOMA: createSFOMASuccess,
-          updateSFDJR: updateSFDJRMock
-        }
-      };
-      wrapper = setup(props);
-
-      try {
-        await wrapper.instance().createOrUpdateSFDJR();
-        expect(updateSFDJRMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    it("calls `createSFDJR` if !id", async function() {
-      const createSFDJRMock = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        );
-
-      // creating wrapper
-      const props = {
-        tab: 2,
-        submission: {
-          submissionId: "123",
-          formPage1: {
-            paymentType: "Check"
-          },
-          payment: {},
-          error: "Error"
-        },
-        apiSubmission: {
-          updateSubmission: updateSubmissionError
-        },
-        handleError: handleErrorMock,
-        apiSF: {
-          createSFDJR: createSFDJRMock,
-          createSFOMA: createSFOMASuccess,
-          updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
-        }
-      };
-      wrapper = setup(props);
-
-      try {
-        await wrapper.instance().createOrUpdateSFDJR();
-        await expect(createSFDJRMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    it("handles error if `createSFDJR` fails", async function() {
-      const createSFDJRMock = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_SF_DJR_FAILURE" })
-        );
-
-      // replacing openSnackbar import with mock function
-      formElements.handleError = handleErrorMock;
-      // creating wrapper
-      const props = {
-        tab: 2,
-        submission: {
-          submissionId: "123",
-          formPage1: {},
-          payment: {},
-          error: "Error"
-        },
-        apiSubmission: {
-          updateSubmission: updateSubmissionError
-        },
-        handleError: handleErrorMock,
-        apiSF: {
-          createSFDJR: createSFDJRMock,
-          createSFOMA: createSFOMASuccess,
-          updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
-        }
-      };
-      wrapper = setup(props);
-
-      try {
-        await wrapper.instance().createOrUpdateSFDJR();
-        await expect(createSFDJRMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-    it("handles error if `createSFDJR` throws", async function() {
-      const createSFDJRMock = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-
-      // replacing openSnackbar import with mock function
-      formElements.handleError = handleErrorMock;
-      // creating wrapper
-      const props = {
-        tab: 2,
-        submission: {
-          submissionId: "123",
-          formPage1: {},
-          payment: {}
-        },
-        apiSubmission: {
-          updateSubmission: updateSubmissionError
-        },
-        handleError: handleErrorMock,
-        apiSF: {
-          createSFDJR: createSFDJRMock,
-          createSFOMA: createSFOMASuccess,
-          updateSFDJR: jest.fn().mockImplementation(() => Promise.resolve({}))
-        }
-      };
-      wrapper = setup(props);
-
-      try {
-        await wrapper.instance().createOrUpdateSFDJR();
-        expect(createSFDJRMock.mock.calls.length).toBe(1);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
-  describe("receiveMessage", () => {
-    it("receives messages from unioni.se card adding iframe (CAPE)", () => {
-      sfEmployerLookupSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-        );
-      const fakeEvent = {
-        data: {
-          notification: {
-            cardBrand: "Visa",
-            cardLast4: "4242",
-            message: "Card successfully added.",
-            type: "success"
-          }
-        },
-        origin: "https://lab.unioni.se"
-      };
-      let handleInputMock = jest.fn();
-      let setPaymentDetailsDuesMock = jest.fn();
-      let setPaymentDetailsCAPEMock = jest.fn();
-      const props = {
-        formValues: {
-          // to get code coverage for afh edge cases
-          employerType: "Adult Foster Home",
-          capeAmount: 10,
-          donationFrequency: "One-Time"
-        },
-        apiSF: {
-          getSFEmployers: sfEmployerLookupSuccess
-        },
-        apiSubmission: {
-          handleInput: handleInputMock,
-          setPaymentDetailsDues: setPaymentDetailsDuesMock,
-          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().receiveMessage(fakeEvent);
-
-      expect(
-        JSON.stringify(setPaymentDetailsCAPEMock.mock.calls[0])
-      ).toStrictEqual(JSON.stringify([true, "Visa", "4242"]));
-    });
-    it("receives messages from unioni.se card adding iframe (Dues)", () => {
-      sfEmployerLookupSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-        );
-      const fakeEvent = {
-        data: {
-          notification: {
-            cardBrand: "Visa",
-            cardLast4: "4242",
-            message: "Card successfully added.",
-            type: "success"
-          }
-        },
-        origin: "https://lab.unioni.se"
-      };
-      let handleInputMock = jest.fn();
-      let setPaymentDetailsDuesMock = jest.fn();
-      let setPaymentDetailsCAPEMock = jest.fn();
-      const props = {
-        formValues: {
-          // to get code coverage for afh edge cases
-          employerType: "Adult Foster Home",
-          capeAmount: null,
-          donationFrequency: null
-        },
-        apiSF: {
-          getSFEmployers: sfEmployerLookupSuccess
-        },
-        apiSubmission: {
-          handleInput: handleInputMock,
-          setPaymentDetailsDues: setPaymentDetailsDuesMock,
-          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().receiveMessage(fakeEvent);
-
-      expect(
-        JSON.stringify(setPaymentDetailsDuesMock.mock.calls[0])
-      ).toStrictEqual(JSON.stringify([true, "Visa", "4242"]));
-    });
-    it("ignores messages from non-unioni.se domains", () => {
-      sfEmployerLookupSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-        );
-      const fakeEvent = {
-        origin: "the wrong domain",
-        data: {}
-      };
-      let handleInputMock = jest.fn();
-      let setPaymentDetailsDuesMock = jest.fn();
-      let setPaymentDetailsCAPEMock = jest.fn();
-      const props = {
-        formValues: {
-          // to get code coverage for afh edge cases
-          employerType: "Adult Foster Home",
-          capeAmount: null,
-          donationFrequency: null
-        },
-        apiSF: {
-          getSFEmployers: sfEmployerLookupSuccess
-        },
-        apiSubmission: {
-          handleInput: handleInputMock,
-          setPaymentDetailsDues: setPaymentDetailsDuesMock,
-          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().receiveMessage(fakeEvent);
-
-      expect(setPaymentDetailsDuesMock.mock.calls.length).toBe(0);
-    });
-    it("ignores messages without type === 'success'", () => {
-      sfEmployerLookupSuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-        );
-      const fakeEvent = {
-        data: {
-          notification: {
-            type: "fail"
-          }
-        },
-        origin: "https://lab.unioni.se"
-      };
-      let handleInputMock = jest.fn();
-      let setPaymentDetailsDuesMock = jest.fn();
-      let setPaymentDetailsCAPEMock = jest.fn();
-      const props = {
-        formValues: {
-          // to get code coverage for afh edge cases
-          employerType: "Adult Foster Home",
-          capeAmount: null,
-          donationFrequency: null
-        },
-        apiSF: {
-          getSFEmployers: sfEmployerLookupSuccess
-        },
-        apiSubmission: {
-          handleInput: handleInputMock,
-          setPaymentDetailsDues: setPaymentDetailsDuesMock,
-          setPaymentDetailsCAPE: setPaymentDetailsCAPEMock
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().receiveMessage(fakeEvent);
-
-      expect(setPaymentDetailsDuesMock.mock.calls.length).toBe(0);
     });
   });
 

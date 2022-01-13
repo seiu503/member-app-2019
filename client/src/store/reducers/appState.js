@@ -244,12 +244,8 @@ function appState(state = INITIAL_STATE, action) {
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_SUCCESS:
     case UPDATE_CAPE_FAILURE:
-    case POST_ONE_TIME_PAYMENT_SUCCESS:
-    case POST_ONE_TIME_PAYMENT_FAILURE:
     case GET_SF_CONTACT_DID_SUCCESS:
     case GET_SF_CONTACT_DID_FAILURE:
-    case GET_SF_CAPE_BY_CONTACT_ID_SUCCESS:
-    case GET_SF_CAPE_BY_CONTACT_ID_FAILURE:
       return update(state, {
         loading: { $set: false }
       });

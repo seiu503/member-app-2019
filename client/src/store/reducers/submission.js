@@ -16,7 +16,6 @@ import {
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
   UPDATE_CAPE_REQUEST,
-  UPDATE_CAPE_SUCCESS,
   UPDATE_CAPE_FAILURE,
   GET_CAPE_BY_SFID_REQUEST,
   GET_CAPE_BY_SFID_SUCCESS,
@@ -114,7 +113,6 @@ export const INITIAL_STATE = {
     oneTimePaymentId: "",
     oneTimePaymentStatus: ""
   },
-  currentCAPE: {},
   allCAPE: []
 };
 
@@ -345,9 +343,6 @@ function Submission(state = INITIAL_STATE, action) {
             lastName: { $set: action.payload.LastName },
             homeEmail: { $set: action.payload.Home_Email__c }
           },
-          payment: {
-            currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
-          },
           error: { $set: null }
         });
       } else {
@@ -377,19 +372,9 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case CREATE_CAPE_SUCCESS:
-    case UPDATE_CAPE_SUCCESS:
       return update(state, {
         cape: {
           id: { $set: action.payload.cape_id }
-        },
-        currentCAPE: { $set: action.payload.currentCAPE },
-        error: { $set: null }
-      });
-
-    case POST_ONE_TIME_PAYMENT_SUCCESS:
-      return update(state, {
-        cape: {
-          oneTimePaymentId: { $set: action.payload.id }
         },
         error: { $set: null }
       });
@@ -409,9 +394,6 @@ function Submission(state = INITIAL_STATE, action) {
     case LOOKUP_SF_CONTACT_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
-        payment: {
-          currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
-        },
         error: { $set: null },
         redirect: { $set: true }
       });

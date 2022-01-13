@@ -53,24 +53,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -130,11 +112,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -192,59 +169,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   describe("handleEmployerTypeChange", () => {
     afterEach(() => {
       jest.restoreAllMocks();
-    });
-    test("`handleEmployerTypeChange` calls getIframeNew if paymentRequired AND displayCAPEPaymentFields === true", async function() {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let handleInputMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
-        submission: {
-          formPage1: {
-            employerType: "fake"
-          }
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        location: {
-          search: "?cape=true"
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().handleEmployerTypeChange("retired");
-      wrapper.instance().state.displayCAPEPaymentFields = true;
-      expect(handleInputMock.mock.calls.length).toBe(1);
-      await handleInputMock();
-      await handleInputMock();
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
-
-    test("`handleEmployerTypeChange` does not call getIframeNew if !paymentRequired", () => {
-      let getIframeNewMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
-        submission: {
-          formPage1: {
-            employerType: "fake"
-          }
-        },
-        apiSubmission: {
-          handleInput: jest.fn().mockImplementation(() => Promise.resolve({}))
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().getIframeNew = getIframeNewMock;
-      wrapper.instance().handleEmployerTypeChange("homecare");
-      expect(getIframeNewMock.mock.calls.length).toBe(0);
     });
   });
 });

@@ -57,24 +57,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -134,11 +116,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -267,14 +244,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(pushMock).toHaveBeenCalled();
     });
 
-    test("`mobilePhoneOnBlur` calls handleEmployerTypeChange", () => {
-      wrapper = setup();
-      const handleEmployerTypeChangeMock = jest.fn();
-      wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
-      wrapper.instance().mobilePhoneOnBlur();
-      expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
-    });
-
     test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {
       const handleEmployerTypeChangeMock = jest
         .fn()
@@ -355,17 +324,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const testBlob = wrapper.instance().dataURItoBlob(fakeDataURI);
       expect(typeof testBlob).toBe("object");
       expect(testBlob.type).toBe("image/jpeg");
-    });
-
-    test("`toggleSignatureInputType` changes signature type in state", async function() {
-      wrapper = setup();
-      wrapper.instance().state.signatureType = "draw";
-      await wrapper.instance().toggleSignatureInputType();
-      await wrapper.update();
-      expect(wrapper.state("signatureType")).toEqual("write");
-      await wrapper.instance().toggleSignatureInputType();
-      await wrapper.update();
-      expect(wrapper.state("signatureType")).toEqual("draw");
     });
 
     test("`calculateAFHDuesRate` calls handleInput", async function() {

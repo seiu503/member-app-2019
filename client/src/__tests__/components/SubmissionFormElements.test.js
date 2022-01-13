@@ -1,5 +1,3 @@
-import React from "react";
-import { shallow, mount } from "enzyme";
 import checkPropTypes from "check-prop-types";
 
 import * as formElements from "../../components/SubmissionFormElements";

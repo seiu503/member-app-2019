@@ -53,24 +53,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -84,13 +66,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -137,11 +112,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -257,41 +227,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         target: { name: "newCardNeeded", value: false }
       });
     });
-    test("`handleDonationFrequencyChange` calls handleInput to set paymentRequired to `true` if donationFrequency === 'One-Time'", async () => {
-      const props = {
-        submission: {
-          formPage1: {
-            paymentRequired: true,
-            donationFrequency: "One-Time"
-          },
-          payment: {
-            activeMethodLast4: "1234",
-            paymentErrorHold: false
-          },
-          cape: {
-            activeMethodLast4: null
-          }
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        formValues: {
-          capeAmount: 10
-        }
-      };
-      wrapper = setup(props);
-      const getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => console.log("getIframeURLMock"));
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().handleDonationFrequencyChange("One-Time");
-      expect(handleInputMock.mock.calls[0][0]).toEqual({
-        target: { name: "newCardNeeded", value: false }
-      });
-      await handleInputMock();
-      await handleInputMock();
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
     test("`handleDonationFrequencyChange` calls handleInput to set paymentRequired to `false` if dFrequency === 'Monthly' && checkoff", async () => {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       const props = {
@@ -317,8 +252,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       wrapper = setup(props);
-      const getIframeURLMock = jest.fn();
-      wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().handleDonationFrequencyChange("Monthly");
       expect(handleInputMock.mock.calls[0][0]).toEqual({
         target: { name: "paymentRequired", value: false }
@@ -350,8 +283,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       }
     };
     wrapper = setup(props);
-    const getIframeURLMock = jest.fn();
-    wrapper.instance().getIframeURL = getIframeURLMock;
     wrapper.instance().handleDonationFrequencyChange("Monthly");
     expect(handleInputMock.mock.calls.length).toBe(0);
   });

@@ -13,7 +13,6 @@ import {
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
-import isoConv from "iso-language-converter";
 
 import { withStyles } from "@material-ui/core/styles";
 
@@ -29,13 +28,10 @@ import { withLocalize } from "react-localize-redux";
 import {
   stylesPage1,
   blankSig,
-  formatSFDate,
-  formatBirthdate,
   findEmployerObject,
   handleError
 } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
-const uuid = require("uuid");
 
 export class SubmissionFormPage1Container extends React.Component {
   constructor(props) {
@@ -49,7 +45,6 @@ export class SubmissionFormPage1Container extends React.Component {
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleUpload = this.handleUpload.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
     this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
@@ -434,7 +429,6 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log(campaignSource);
 
     // set body fields
-    const checkoff = this.props.submission.formPage1.checkoff;
     const paymentMethod = "Checkoff";
     let donationAmount =
       capeAmount === "Other"
@@ -620,6 +614,12 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // save legal language
     this.saveLegalLanguage();
+
+    // save partial submission (update later with demographics from p2)
+    await this.props.createSubmission(formValues).catch(err => {
+      console.error(err);
+      return handleError(err);
+    });
 
     // move to next tab
     return this.props.changeTab(2);

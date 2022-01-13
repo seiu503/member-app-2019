@@ -95,13 +95,14 @@ export class SubmissionFormPage2Component extends React.Component {
     }
 
     let id = this.props.submission.submissionId;
+    console.log(`SUBMISSION ID: ${id}`);
 
     if (!id) {
       cleanBody.first_name = firstName;
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;
 
-      // console.log("CLEANBODY", cleanBody);
+      console.log("CLEANBODY", cleanBody);
 
       await this.props
         .createSubmission(cleanBody, true) // partial submission = true

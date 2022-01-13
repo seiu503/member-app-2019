@@ -1,6 +1,5 @@
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
-import Iframe from "react-iframe";
 // import { ReCaptcha } from "react-recaptcha-v3";
 import { Translate } from "react-localize-redux";
 
@@ -35,8 +34,6 @@ export const CAPE = props => {
     loading,
     back,
     formValues,
-    formPage1,
-    payment,
     width,
     renderSelect,
     renderTextField,
@@ -58,8 +55,7 @@ export const CAPE = props => {
     capeOpen,
     closeDialog,
     mobilePhoneOnBlur,
-    checkoff,
-    displaySubmit
+    checkoff
   } = props;
 
   const community = formValues.employerType === "community member";
@@ -391,22 +387,6 @@ export const CAPE = props => {
                   Make your contribution today
                 </Translate>
               </Typography>
-              {payment.currentCAPEFromSF > 1 && (
-                <Typography
-                  component="p"
-                  className={classes.body}
-                  data-test="current-contribution"
-                >
-                  <Translate id="currentContribution1">
-                    You are currently signed up to contribute
-                  </Translate>
-                  {` $${payment.currentCAPEFromSF} `}
-                  <Translate id="currentContribution2">
-                    per month. Would you like to increase your monthly
-                    contribution?
-                  </Translate>
-                </Typography>
-              )}
               <div className={classes.suggestedAmounts}>
                 <div className={classes.suggestedAmountBoxes}>
                   <Field

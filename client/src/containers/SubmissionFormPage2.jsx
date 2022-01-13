@@ -20,6 +20,7 @@ export class SubmissionFormPage2Container extends React.Component {
     // check state for ids from page1
     let cId = this.props.submission.salesforceId,
       sId = this.props.submission.submissionId;
+    console.log(`previously saved sId: ${sId}`);
     // check for ids in query string
     const params = queryString.parse(this.props.location.search);
     if (!cId && params.cId) {
