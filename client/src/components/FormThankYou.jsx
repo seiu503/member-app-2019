@@ -5,9 +5,7 @@ const FormThankYou = props => (
   <div className={props.classes.message} data-test="component-thankyou">
     {!props.paymentRequired && (
       <p>
-        <Translate id="infoSubmitted">
-          Your information has been submitted.
-        </Translate>
+        <Translate id="infoSubmitted" />
         <br />
         <Translate id="thankYou" />
       </p>
@@ -18,7 +16,7 @@ const FormThankYou = props => (
       </p>
     )}
     <a href="https://www.seiu503.org">
-      <Translate id="clickToVisit">Click Here to visit SEIU503.org</Translate>
+      <Translate id="clickToVisit" />
     </a>
   </div>
 );

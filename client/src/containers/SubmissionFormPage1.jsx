@@ -1038,62 +1038,14 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab2() {
     const { formValues } = this.props;
-    // submit validation: signature
-    // const signature = await this.saveSignature().catch(err => {
-    //   // console.log(err);
-    //   return handleError(err);
-    // });
+
     if (!formValues.signature) {
       console.log(this.props.translate("provideSignatureError"));
       return handleError(this.props.translate("provideSignatureError"));
     }
-    // for AFH, calculate dues rate:
-    if (formValues.employerType.toLowerCase() === "adult foster home") {
-      this.calculateAFHDuesRate(formValues.medicaidResidents);
-    }
 
     // save legal language
     this.saveLegalLanguage();
-
-    // save partial submission (need to do this before generating iframe URL)
-    await this.props.createSubmission(formValues).catch(err => {
-      console.error(err);
-      return handleError(err);
-    });
-
-    // if payment required, check if existing payment method on file
-    if (this.props.submission.formPage1.paymentRequired) {
-      await this.getSFDJRById(this.props.submission.salesforceId)
-        .then(result => {
-          // console.log(result.type);
-          // console.log("SFDJR record: existing");
-          // console.log(result.payload);
-
-          const validMethod =
-            !!result.payload.Active_Account_Last_4__c &&
-            !result.payload.Payment_Error_Hold__c;
-
-          if (validMethod) {
-            // console.log("newCardNeeded");
-            this.props.apiSubmission.handleInput({
-              target: { name: "newCardNeeded", value: false }
-            });
-          }
-
-          // if payment required (and no existing payment method)
-          // preload iframe url for next tab
-          if (this.props.submission.formPage1.paymentRequired && !validMethod) {
-            this.getIframeURL().catch(err => {
-              console.error(err);
-              return handleError(err);
-            });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          return handleError(err);
-        });
-    }
 
     // move to next tab
     return this.props.changeTab(2);
@@ -1114,14 +1066,10 @@ export class SubmissionFormPage1Container extends React.Component {
       await this.props.apiSubmission.handleInput({
         target: { name: "paymentRequired", value: true }
       });
-      this.props.apiSubmission.handleInput({
-        target: { name: "howManyTabs", value: 4 }
-      });
-    } else {
-      this.props.apiSubmission.handleInput({
-        target: { name: "howManyTabs", value: 3 }
-      });
     }
+    this.props.apiSubmission.handleInput({
+      target: { name: "howManyTabs", value: 3 }
+    });
 
     // check if SF contact id already exists (prefill case)
     if (this.props.submission.salesforceId) {

@@ -1032,22 +1032,6 @@ export class AppUnconnected extends Component {
     const newState = { ...this.state };
     newState.tab = newValue;
 
-    if (newValue === 2) {
-      const { formPage1 } = this.props.submission;
-
-      if (
-        formPage1.paymentType === "Card" &&
-        formPage1.newCardNeeded &&
-        formPage1.paymentRequired
-      ) {
-        // need to set spinner on transition to payment tab
-        // while iframe loads
-        // this.props.actions.setSpinner();
-        return this.setState({ ...newState }, () => {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        });
-      }
-    }
     this.setState({ ...newState }, () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });

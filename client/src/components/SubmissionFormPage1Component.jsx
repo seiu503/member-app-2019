@@ -9,7 +9,6 @@ import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
-import Tab3Form from "./Tab3";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
 
@@ -581,26 +580,6 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
-                  />
-                )}
-                {this.props.tab === 2 && this.props.howManyTabs === 4 && (
-                  <Tab3Form
-                    {...this.props}
-                    onSubmit={this.handleSubmit}
-                    classes={classes}
-                    loading={this.props.submission.loading}
-                    formPage1={this.props.submission.formPage1}
-                    paymentRequired={
-                      this.props.submission.formPage1.paymentRequired
-                    }
-                    handleInput={this.props.submission.handleInput}
-                    iFrameURL={this.props.submission.payment.cardAddingUrl}
-                    afhDuesRate={this.props.submission.formPage1.afhDuesRate}
-                    payment={this.props.submission.payment}
-                    renderSelect={this.renderSelect}
-                    renderTextField={this.renderTextField}
-                    renderCheckbox={this.renderCheckbox}
-                    checkoff={checkoff}
                   />
                 )}
                 {(this.props.tab === 3 ||
