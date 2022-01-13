@@ -562,31 +562,6 @@ router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
 //
 router.post("/sfCAPE", sfCtrl.createSFCAPE);
 
-// UPDATE SF CAPE RECORD WITH PAYMENT STATUS BY ONE-TIME PAYMENT ID
-//   Example: PUT >> /api/sfCAPE
-//   Secured: no
-//   Expects:
-//     request body properties : {
-//        eventType       : String ('finish' || 'fail')
-//        info: {
-//            paymentId:  : String  ('809cc718-2075-4f5c-b3cd-1203fc3ae390'),
-//        },
-//      }
-//   Returns: JSON success or error message.
-//
-router.put("/sfCAPE", sfCtrl.updateSFCAPE);
-
-// GET SF CAPE RECORD BY SF CONTACT ID
-//   Example: GET >> /api/sfCAPE/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     params: {
-//        id             : String,
-//      }
-//   Returns: JSON SF CAPE record.
-//
-router.get("/sfCAPE/:id", sfCtrl.getSFCAPEByContactId);
-
 /* =============================== ACCOUNTS ================================ */
 
 // GET ALL ACTIVE EMPLOYER NAMES
@@ -597,96 +572,6 @@ router.get("/sfCAPE/:id", sfCtrl.getSFCAPEByContactId);
 //      Id, Name, Sub_Division__c, Agency_Number__c.
 //
 router.get("/sfaccts", sfCtrl.getAllEmployers);
-
-/* ========================== DIRECT JOIN RATES =========================== */
-
-// GET ONE SALESFORCE DJR RECORD BY SF CONTACT ID
-//   Example: GET >> /api/sfDJR/0036100001gYL0HAAW
-//   Secured: no
-//   Expects:
-//     1) request params : {
-//          id : String
-//        }
-//   Returns: JSON selected fields from salesforce DJR object on success.
-//
-router.get("/sfDJR/:id", sfCtrl.getSFDJRById);
-
-// CREATE SALESFORCE DJR RECORD
-//   Example: POST >> /api/sfDJR
-//   Secured: no
-//   Expects:
-//     1) request body properties : {
-//          Object {
-//              sf_contact_id                    : String
-//              memberShortId                    : String
-//              paymentMethod                    : String
-//             }
-//   Returns: { sf_djr_id } or error message.
-//
-router.post("/sfDJR", sfCtrl.createSFDJR);
-
-// UPDATE A SALESFORCE DJR RECORD BY SF CONTACT ID
-//   Example: PUT >> /api/sfDJR/0035500000VFAE9AAP
-//   Secured: no
-//   Expects:
-//     1) request body properties : {
-//          Object {
-//              memberShortId                    : String
-//              paymentMethod                    : String
-//             }
-//   Returns: { sf_djr_id } or error message.
-//   OR passes contact ID to next middleware.
-//
-router.put("/sfDJR/:id", sfCtrl.updateSFDJR);
-
-/* =========================== UNIONISE ROUTES ============================= */
-
-/* ================== GET IFRAME URL FOR EXISTING MEMBER =================== */
-
-// GET IFRAME URL FOR EXISTING MEMBER
-//   Example: POST >> /api/unionise/iframe
-//   Secured: no
-//   Expects:
-//     1) request body properties : {
-//          Object {
-//              memberShortId                    : String
-//             }
-//     2) request headers : {
-//          Authorization : Bearer ${token}
-//     }
-//   Returns: { cardAddingUrl } or error message.
-//
-router.post("/unionise/iframe", sfCtrl.getIframeExisting);
-
-/* ======================= GET UNIONISE ACCESS TOKEN ======================= */
-
-// GET UNIONISE ACCESS TOKEN
-//   Example: POST >> /api/unionise/gettoken
-//   Secured: no
-//   Expects: null
-//   Returns: { access_token } or error message.
-//
-router.post("/unionise/gettoken", sfCtrl.getUnioniseToken);
-
-/* ===================== POST ONE-TIME PAYMENT REQUEST ===================== */
-
-// POST ONE-TIME PAYMENT REQUEST
-//   Example: POST >> /api/unionise/oneTimePayment
-//   Secured: no
-//   Expects: request body: {
-//     Object {
-//       memberShortId       : String  // ('J7K5HYDQ')
-//       amount: {
-//         currency          : String  // ('USD')
-//         amount            : Numeric // (1.1)
-//       },
-//       paymentPartType     : String  // ('CAPE')
-//       description         : String  // ('One-time CAPE contribution')
-//       plannedDatetime     : Timestamp // 2019-09-10T17:20:44.143+03:00
-//   }
-//   Returns: { id } or error message.
-//
-router.post("/unionise/oneTimePayment", sfCtrl.postPaymentRequest);
 
 /* =========================== NOSCRIPT ROUTES =========================== */
 // routes created for noscript version of front-end and form

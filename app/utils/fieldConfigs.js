@@ -1797,17 +1797,6 @@ const generateSFContactFieldList = () => {
   return fieldList;
 };
 
-const generateSFDJRFieldList = () => {
-  const fieldList = [];
-  Object.keys(paymentFields).map(function(key, index) {
-    if (paymentFields[key].SFTable === "Direct_join_rate__c") {
-      fieldList.push(paymentFields[key].SFAPIName);
-    }
-  });
-  // console.log(`paymentFieldList: ${fieldList}`);
-  return fieldList;
-};
-
 // use this for one-time generation, copy console log and
 // save to submissionFormElements
 // can't be used to generate dynamically on client bc
@@ -1854,7 +1843,6 @@ module.exports = {
   generateCAPEValidateFrontEnd,
   generatePage2Validate,
   generateSFContactFieldList,
-  generateSFDJRFieldList,
   capeTableFields,
   // generateTableDisplayFields,
   formatDate
