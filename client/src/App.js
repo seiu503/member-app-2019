@@ -148,6 +148,10 @@ const styles = theme => ({
   },
   form: {
     background: "white"
+  },
+  thankYouCopy: {
+    lineHeight: 1.4,
+    textAlign: "left"
   }
 });
 
@@ -1189,6 +1193,9 @@ export class AppUnconnected extends Component {
                 <FormThankYou
                   setRedirect={this.setRedirect}
                   classes={this.props.classes}
+                  paymentRequired={
+                    this.props.submission.formPage1.paymentRequired
+                  }
                   {...routeProps}
                 />
               )}
