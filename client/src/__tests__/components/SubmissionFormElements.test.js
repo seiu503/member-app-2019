@@ -1,5 +1,5 @@
 import checkPropTypes from "check-prop-types";
-
+import { mount } from "enzyme";
 import * as formElements from "../../components/SubmissionFormElements";
 import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";

@@ -14,7 +14,6 @@ import * as Notifier from "../../containers/Notifier";
 
 // variables
 let wrapper,
-  store,
   handleSubmit,
   apiSubmission,
   apiSF = {},
@@ -36,7 +35,7 @@ let resetMock = jest.fn();
 const saveSubmissionErrorsMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
-const createSFOMASuccess = jest.fn().mockImplementation(() =>
+let createSFOMASuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "CREATE_SF_OMA_SUCCESS"
   })
@@ -731,20 +730,20 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
       // test function that will count calls as well as return error object
-      updateSubmissionError = jest
+      let createSubmissionError = jest
         .fn()
         .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+          Promise.reject({ type: "CREATE_SUBMISSION_FAILURE" })
         );
 
       // creating wrapper
-      props.apiSubmission.updateSubmission = updateSubmissionError;
+      props.apiSubmission.createSubmission = createSubmissionError;
       const handleInputMock = jest.fn();
       props.apiSubmission.handleInput = handleInputMock;
-      const updateSubmissionMethodSuccess = jest
+      const createSubmissionMethodSuccess = jest
         .fn()
         .mockImplementation(() => Promise.resolve());
-      props.updateSubmission = updateSubmissionMethodSuccess;
+      props.createSubmission = createSubmissionMethodSuccess;
       props.submission.error = null;
       props.location = {
         search: ""
@@ -761,9 +760,9 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         .handleSubmit(generateSampleValidate())
         .then(async () => {
           try {
-            await updateSubmissionMethodSuccess();
+            await createSubmissionMethodSuccess();
             await createSFOMASuccess();
-            await updateSubmissionError();
+            await createSubmissionError();
             expect(handleErrorMock.mock.calls.length).toBe(1);
           } catch (err) {
             console.log(err);

@@ -259,20 +259,6 @@ describe("<CAPE />", () => {
       expect(component.length).toBe(1);
     });
 
-    it("does not display submit button if !displaySubmit", () => {
-      const props = {
-        formPage1: {
-          paymentRequired: true
-        },
-        payment: {
-          activeMethodLast4: undefined // !validMethod
-        }
-      };
-      wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "button-submit");
-      expect(component.length).toBe(0);
-    });
-
     it("displays submit button if checkoff, donationFreq = monthly, amountSet (other)", () => {
       const props = {
         checkoff: true,

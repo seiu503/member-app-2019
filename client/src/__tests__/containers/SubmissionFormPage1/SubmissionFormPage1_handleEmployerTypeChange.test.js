@@ -5,8 +5,6 @@ import "jest-canvas-mock";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-let wrapper;
-
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -158,6 +156,8 @@ const setup = (props = {}) => {
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
 
+let wrapper;
+
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     // console.log = jest.fn();
@@ -169,6 +169,57 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   describe("handleEmployerTypeChange", () => {
     afterEach(() => {
       jest.restoreAllMocks();
+    });
+    test("`handleEmployerTypeChange` calls handleInput to set paymentRequired to `true` if isPaymentRequired returns true", () => {
+      const props = {
+        submission: {
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: false
+          },
+          formPage1: {
+            howManyTabs: 3
+          }
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: "Other",
+          capeAmountOther: 10
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().handleEmployerTypeChange("community member");
+      expect(handleInputMock).toHaveBeenCalledWith({
+        target: { name: "paymentRequired", value: true }
+      });
+    });
+
+    test("`handleEmployerTypeChange` calls handleInput to set paymentRequired to `false` if isPaymentRequired returns false", () => {
+      const props = {
+        submission: {
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: false
+          },
+          formPage1: {
+            howManyTabs: 3
+          }
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: "Other",
+          capeAmountOther: 10
+        }
+      };
+      wrapper = setup(props);
+      wrapper.instance().handleEmployerTypeChange("higher ed");
+      expect(handleInputMock).toHaveBeenCalledWith({
+        target: { name: "paymentRequired", value: false }
+      });
     });
   });
 });

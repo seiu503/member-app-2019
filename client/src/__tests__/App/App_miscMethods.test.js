@@ -164,7 +164,6 @@ const defaultProps = {
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
-    setCAPEOptions: jest.fn(),
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -255,24 +254,6 @@ describe("<App />", () => {
       wrapper.instance().state.prefillEmployerChanged = true;
       wrapper.update();
       wrapper.instance().prepForContact(body);
-    });
-
-    test("`setCAPEOptions` calls this.props.apiSubmission.setCAPEOptions", () => {
-      const setCAPEOptionsMock = jest.fn();
-      const props = {
-        apiSubmission: {
-          setCAPEOptions: setCAPEOptionsMock
-        },
-        submission: {
-          payment: {
-            currentCAPEFromSF: 20
-          },
-          formPage1: {}
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().setCAPEOptions();
-      expect(setCAPEOptionsMock).toHaveBeenCalled();
     });
 
     test("`updateLanguage` calls this.props.setActiveLanguage", () => {

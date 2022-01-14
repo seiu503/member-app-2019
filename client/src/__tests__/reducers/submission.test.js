@@ -35,21 +35,6 @@ describe("submission reducer", () => {
       error: "Sorry, something went wrong :(\nPlease try again."
     });
   });
-  it("should handle payment info FAILURE actions", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE",
-        payload: { message: "Some error" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      error: "Some error",
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        whichCard: "Add new card"
-      }
-    });
-  });
   it("should handle `handleInput`", () => {
     expect(
       reducer(INITIAL_STATE, {
@@ -74,25 +59,6 @@ describe("submission reducer", () => {
       ...INITIAL_STATE,
       cape: {
         ...INITIAL_STATE.cape,
-        activeMethodLast4: "1234",
-        cardBrand: "Visa"
-      },
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        paymentMethodAdded: true
-      }
-    });
-  });
-  it("should handle `setPaymentDetailsDues`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_PAYMENT_DETAILS_DUES",
-        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      payment: {
-        ...INITIAL_STATE.payment,
         activeMethodLast4: "1234",
         cardBrand: "Visa"
       },
@@ -937,8 +903,7 @@ describe("submission reducer", () => {
       const action = {
         type: "CREATE_CAPE_SUCCESS",
         payload: {
-          cape_id: "123",
-          currentCAPE: 5
+          cape_id: "123"
         }
       };
       const expectedState = {
@@ -947,7 +912,6 @@ describe("submission reducer", () => {
           ...INITIAL_STATE.cape,
           id: "123"
         },
-        currentCAPE: 5,
         error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);

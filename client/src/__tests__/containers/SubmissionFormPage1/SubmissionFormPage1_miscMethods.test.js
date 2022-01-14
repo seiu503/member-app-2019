@@ -123,7 +123,6 @@ const defaultProps = {
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
-    setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
@@ -248,9 +247,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const handleEmployerTypeChangeMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(""));
-      const handleDonationFrequencyChangeMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(""));
       const props = {
         formValues: {
           employerType: "retired",
@@ -259,11 +255,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       };
       wrapper = setup(props);
       wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
-      wrapper.instance().handleDonationFrequencyChange = handleDonationFrequencyChangeMock;
       wrapper.update();
       await wrapper.instance().checkCAPEPaymentLogic();
       expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
-      expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
       expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
     });
 
