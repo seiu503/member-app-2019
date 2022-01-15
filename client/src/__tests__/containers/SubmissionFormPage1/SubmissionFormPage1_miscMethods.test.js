@@ -1,10 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-import { fakeDataURI } from "../../../utils/testUtils";
 
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
@@ -259,65 +257,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       await wrapper.instance().checkCAPEPaymentLogic();
       expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
       expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
-    });
-
-    test("`clearSignature` calls sigBox.clear", () => {
-      wrapper = setup();
-      wrapper.instance().clearSignature();
-      expect(clearSigBoxMock.mock.calls.length).toBe(1);
-    });
-
-    test("`trimSignature` calls sigBox.toDataURL", () => {
-      const dataURItoBlobMock = jest.fn();
-      wrapper = setup();
-      wrapper.instance().dataURItoBlob = dataURItoBlobMock;
-      wrapper.instance().trimSignature();
-      expect(toDataURLMock.mock.calls.length).toBe(1);
-      expect(dataURItoBlobMock.mock.calls.length).toBe(1);
-    });
-
-    test("`trimSignature` handles error if sigbox is blank", async () => {
-      formElements.handleError = handleErrorMock;
-      toDataURLMock = jest.fn().mockImplementation(() => formElements.blankSig);
-      const dataURItoBlobMock = jest.fn();
-      const props = {
-        sigBox: {
-          current: {
-            toDataURL: toDataURLMock
-          }
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().dataURItoBlob = dataURItoBlobMock;
-      wrapper.instance().trimSignature();
-      expect(toDataURLMock.mock.calls.length).toBe(1);
-      expect(dataURItoBlobMock.mock.calls.length).toBe(0);
-      await toDataURLMock();
-      expect(handleErrorMock.mock.calls.length).toBe(1);
-    });
-
-    test("`dataURItoBlob` returns Blob", () => {
-      let props = {
-        legal_language: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        direct_deposit: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        direct_pay: {
-          current: {
-            innerHTML: ""
-          }
-        }
-      };
-      wrapper = setup(props);
-      const testBlob = wrapper.instance().dataURItoBlob(fakeDataURI);
-      expect(typeof testBlob).toBe("object");
-      expect(testBlob.type).toBe("image/jpeg");
     });
 
     test("`calculateAFHDuesRate` calls handleInput", async function() {

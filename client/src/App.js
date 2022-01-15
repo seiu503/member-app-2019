@@ -404,7 +404,7 @@ export class AppUnconnected extends Component {
   };
 
   renderHeadline = id => {
-    // console.log(`renderHeadline: ${id}`);
+    console.log(`renderHeadline: ${id}`);
     let headlineIds = [];
     // check translation file for headlines belonging to this headline id
     Object.keys(welcomeInfo).forEach(key => {
@@ -412,20 +412,21 @@ export class AppUnconnected extends Component {
         headlineIds.push(key);
       }
     });
-    // console.log(`headlineIds ${headlineIds}`);
+    console.log(`headlineIds ${headlineIds}`);
     // generate translated text in appropriate language rendered in a <h3> tag
     let headline = (
       <React.Fragment>
-        <Translate id={`headline${id}`} />
+        <Translate id={`headline${id}`} data-test="headline-translate" />
       </React.Fragment>
     );
-    // console.log(`this.state.headline.text: ${this.state.headline.text}`);
+    console.log(`this.state.headline.text: ${this.state.headline.text}`);
     // if this headline has not yet been translated there will be no
     // translation ids in the welcomeInfo JSON object
     // just render the raw copy in English
     if (!headlineIds.length) {
       headline = <React.Fragment>{this.state.headline.text}</React.Fragment>;
     }
+    console.log(headline);
     // wrap in MUI typography element and return
     return (
       <Typography
@@ -848,7 +849,6 @@ export class AppUnconnected extends Component {
     const cleanBody = removeFalsy(body);
     console.log(cleanBody);
     await this.props.apiSubmission
-      // const result = await this.props.apiSubmission
       .addSubmission(cleanBody)
       .then(() => {
         // console.log('453');

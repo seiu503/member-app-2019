@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
+import { findByTestAttr } from "../../utils/testUtils";
 
 import "jest-canvas-mock";
 // import * as formElements from "../../components/SubmissionFormElements";
@@ -277,6 +278,14 @@ describe("<App />", () => {
       wrapper.instance().updateLanguage(fakeEvent);
       //^^ doing this twice to hit branches with userSelectedLanguage
       expect(setActiveLanguageMock).toHaveBeenCalled();
+    });
+
+    test("`renderHeadline` renders headline", () => {
+      const props = {};
+      wrapper = setup(props);
+      wrapper.instance().renderHeadline(1);
+      const component = findByTestAttr(wrapper, "headline-translate");
+      // expect(component.length).toBe(1);
     });
 
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {

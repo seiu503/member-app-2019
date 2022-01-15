@@ -236,16 +236,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("`handleTab1` handles error if updateSFContact fails", async function() {
+    test("`handleTab1` sets 'paymentRequired' to true if payment required", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
       let props = {
         formValues: {
           directPayAuth: true,
           directDepositAuth: true,
-          employerName: "homecare",
+          employerName: "community member",
           paymentType: "card",
-          employerType: "retired",
+          employerType: "community member",
           preferredLanguage: "English"
         },
         apiSubmission: {
@@ -260,10 +260,58 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           createSFContact: createSFContactSuccess
         }
       };
-      updateSFContactError = () => Promise.reject();
+      let verifyRecaptchaScoreMock = jest.fn().mockImplementation(() => 1);
       wrapper = setup(props);
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper.instance().updateSFContact = updateSFContactError;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .handleTab1()
+        .then(async () => {
+          await verifyRecaptchaScoreMock();
+          expect(handleInputMock.mock.calls[0][0]).toEqual({
+            target: { name: "paymentRequired", value: true }
+          });
+          changeTabMock.mockClear();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
+    test("`handleTab1` handles error if updateSFContact fails", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      const updateSFContactError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "community member",
+          paymentType: "card",
+          employerType: "community member",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {}
+        },
+        apiSF: {
+          updateSFContact: updateSFContactError,
+          createSFContact: createSFContactSuccess
+        }
+      };
+      let verifyRecaptchaScoreMock = jest.fn().mockImplementation(() => 1);
+      wrapper = setup(props);
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
 
       wrapper.update();
       wrapper
@@ -272,10 +320,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .then(async () => {
           await verifyRecaptchaScoreMock();
           await handleInputMock();
-          return updateSFContactError().then(() => {
-            expect(formElements.handleError.mock.calls.length).toBe(1);
-            changeTabMock.mockClear();
-          });
+          await handleInputMock();
+          await updateSFContactError();
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+          changeTabMock.mockClear();
         })
         .catch(err => {
           console.log(err);
