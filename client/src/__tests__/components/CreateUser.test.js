@@ -133,7 +133,6 @@ describe("<TextInputForm />", () => {
       }
     };
     let handleInputMock = jest.fn();
-    handleInputMock = handleInputMock;
     store = storeFactory(initialState);
     wrapper = shallow(
       <CreateUserFormConnected {...defaultProps} {...props} store={store} />

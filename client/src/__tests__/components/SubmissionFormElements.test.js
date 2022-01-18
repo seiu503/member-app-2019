@@ -134,7 +134,7 @@ describe("Helper Functions", () => {
       Notifier.openSnackbar = openSnackbarMock;
       formElements.handleError("Error");
       formElements.handleError();
-      // Notifier code is fercockte, openSnackbar doesn't exist when it mounts
+      // Notifier code is farkockte, openSnackbar doesn't exist when it mounts
       // don't try to test this until fixing component code
       // expect(openSnackbarMock.mock.calls.length).toBe(2);
     });
@@ -166,6 +166,13 @@ describe("Helper Functions", () => {
         yyyy: "2000"
       });
       expect(result).toBe("2000-01-01");
+    });
+
+    it("calcEthnicity handles 'declined' edge case", () => {
+      const result = formElements.calcEthnicity({
+        declined: true
+      });
+      expect(result).toBe("declined");
     });
 
     it("renderText returns text content", () => {
@@ -213,20 +220,23 @@ describe("Helper Functions", () => {
 });
 
 const onChange = jest.fn();
+const onBlur = jest.fn();
+let additionalOnChange = jest.fn();
 const onChangeMock = jest.fn();
 const onClick = jest.fn();
 describe("Input Field Render functions", () => {
   afterEach(() => {
     onChangeMock.mockRestore();
     onChange.mockRestore();
+    onBlur.mockRestore();
   });
   describe("renderTextField", () => {
     let wrapper;
-
+    additionalOnChange = jest.fn();
     const initialProps = {
       input: {
         name: "testField",
-        onBlur: jest.fn(),
+        onBlur,
         onChange,
         onDragStart: jest.fn(),
         onDrop: jest.fn(),
@@ -252,7 +262,7 @@ describe("Input Field Render functions", () => {
     const errorProps = {
       input: {
         name: "testField",
-        onBlur: jest.fn(),
+        onBlur,
         onChange,
         onDragStart: jest.fn(),
         onDrop: jest.fn(),
@@ -263,6 +273,49 @@ describe("Input Field Render functions", () => {
       meta: {
         touched: true,
         error: "Required"
+      },
+      classes: {
+        input: "testInputClass"
+      },
+      label: "Test Field"
+    };
+
+    const addlOnChgProps = {
+      additionalOnChange: jest.fn(),
+      input: {
+        name: "testField",
+        onBlur,
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: ""
+      },
+      id: "testField",
+      meta: {
+        touched: true,
+        error: "Required"
+      },
+      classes: {
+        input: "testInputClass"
+      },
+      label: "Test Field"
+    };
+
+    const errorProps2 = {
+      input: {
+        name: "testField",
+        onBlur,
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: ""
+      },
+      id: "testField",
+      meta: {
+        touched: true,
+        error: ""
       },
       classes: {
         input: "testInputClass"
@@ -283,11 +336,21 @@ describe("Input Field Render functions", () => {
       component.prop("onChange")(event);
       expect(onChange).toHaveBeenCalledWith(event);
     });
+    it("handles onBlur function", () => {
+      const event = { target: { name: "testField", value: "Test" } };
+      component.prop("onBlur")(event);
+      expect(onBlur).toHaveBeenCalled();
+    });
     it("provides helperText and error class when touched and errored", () => {
       wrapper = mount(renderTextField(errorProps));
       component = findByTestAttr(wrapper, "component-text-field").first();
       expect(component.prop("error")).toBe(true);
       expect(component.prop("helperText")).toBe("Required");
+    });
+    it("does not provide helperText and error class when touched and not errored", () => {
+      wrapper = mount(renderTextField(errorProps2));
+      component = findByTestAttr(wrapper, "component-text-field").first();
+      expect(component.prop("error")).toBe(false);
     });
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderTextField, initialProps);
@@ -342,12 +405,21 @@ describe("Input Field Render functions", () => {
     it("handles edge cases", () => {
       const testProps = {
         meta: {
+          touched: true,
           error: "Required"
         },
         mobile: true,
         align: "right"
       };
-      const props = { ...initialProps, ...testProps };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        }
+      };
+      let props = { ...initialProps, ...testProps };
+      wrapper = mount(renderSelect(props));
+      props = { ...initialProps, ...testProps2 };
       wrapper = mount(renderSelect(props));
     });
   });
@@ -399,13 +471,25 @@ describe("Input Field Render functions", () => {
     it("handles edge cases", () => {
       const testProps = {
         meta: {
+          touched: true,
           error: "Required"
         },
         input: {
           value: "test"
         }
       };
-      const props = { ...initialProps, ...testProps };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        },
+        input: {
+          value: "test"
+        }
+      };
+      let props = { ...initialProps, ...testProps };
+      wrapper = mount(renderCheckbox(props));
+      props = { ...initialProps, ...testProps2 };
       wrapper = mount(renderCheckbox(props));
     });
   });
@@ -455,11 +539,21 @@ describe("Input Field Render functions", () => {
     it("handles edge cases", () => {
       const testProps = {
         meta: {
+          touched: true,
           error: "Required"
         },
         direction: "vert"
       };
-      const props = { ...initialProps, ...testProps };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        },
+        direction: "vert"
+      };
+      let props = { ...initialProps, ...testProps };
+      wrapper = mount(renderRadioGroup(props));
+      props = { ...initialProps, ...testProps2 };
       wrapper = mount(renderRadioGroup(props));
     });
   });
@@ -512,11 +606,21 @@ describe("Input Field Render functions", () => {
     it("handles edge cases", () => {
       const testProps = {
         meta: {
+          touched: true,
           error: "Required"
         },
         options: ["Other"]
       };
-      const props = { ...initialProps, ...testProps };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        },
+        options: ["Other"]
+      };
+      let props = { ...initialProps, ...testProps };
+      wrapper = mount(renderCAPERadioGroup(props));
+      props = { ...initialProps, ...testProps2 };
       wrapper = mount(renderCAPERadioGroup(props));
     });
   });
