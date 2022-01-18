@@ -223,6 +223,58 @@ describe("<App />", () => {
       addSubmissionError = jest
         .fn()
         .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionError,
+          updateSubmission: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve({}))
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            legalLanguage: "jjj"
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      let generateSubmissionBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission(formValues)
+        .then(async () => {
+          await generateSubmissionBodyMock;
+          await addSubmissionError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`createSubmission` handles error if prop function throws", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      addSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
           Promise.reject({ type: "ADD_SUBMISSION_FAILURE" })
         );
       let props = {
@@ -269,51 +321,19 @@ describe("<App />", () => {
         })
         .catch(err => console.log(err));
     });
-    test("`createSubmission` calls saveSubmissionErrors if !paymentRequired and createSFOMA throws", async function() {
+    test("`createSubmission` calls saveSubmissionErrors if createSFOMA fails", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock,
-          addSubmission: addSubmissionSuccess
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            paymentRequired: false
-          }
-        },
-        apiSF: {
-          createSFContact: createSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
-          createSFOMA: createSFOMAError
-        }
-      };
-      let saveSubmissionErrorsMock = jest.fn();
-      wrapper = setup(props);
-      wrapper.instance().saveSubmissionErrors = saveSubmissionErrorsMock;
-
-      wrapper.update();
-      wrapper
-        .instance()
-        .createSubmission(formValues)
-        .then(async () => {
-          await createSFOMAError;
-          expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
-    });
-    test("`createSubmission` calls saveSubmissionErrors if !paymentRequired and createSFOMA fails", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+      addSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+        );
+      const createSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
+        );
       createSFOMAError = jest
         .fn()
         .mockImplementation(() =>
@@ -330,7 +350,7 @@ describe("<App />", () => {
         },
         apiSubmission: {
           handleInput: handleInputMock,
-          addSubmission: addSubmissionSuccess
+          addSubmission: addSubmissionError
         },
         submission: {
           salesforceId: "123",
@@ -342,7 +362,8 @@ describe("<App />", () => {
           createSFContact: createSFContactSuccess,
           createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
           createSFOMA: createSFOMAError
-        }
+        },
+        createSubmission: createSubmissionError
       };
       let saveSubmissionErrorsMock = jest.fn();
       wrapper = setup(props);
@@ -355,6 +376,131 @@ describe("<App />", () => {
         .then(async () => {
           await createSFOMAError;
           expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`createSubmission` calls saveSubmissionErrors if createSFOMA throws", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      addSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+        );
+      const createSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
+        );
+      createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionError
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            paymentRequired: false
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: createSFOMAError
+        },
+        createSubmission: createSubmissionError
+      };
+      let saveSubmissionErrorsMock = jest.fn();
+      wrapper = setup(props);
+      wrapper.instance().saveSubmissionErrors = saveSubmissionErrorsMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission(formValues)
+        .then(async () => {
+          await createSFOMAError;
+          expect(saveSubmissionErrorsMock.mock.calls.length).toBe(1);
+        })
+        .catch(err => console.log(err));
+    });
+    test("`createSubmission` handles error if updateSubmission throws", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      addSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
+        );
+      const updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
+      const createSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
+        );
+      const createSFOMASuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SF_OMA_SUCCESS" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          addSubmission: addSubmissionError,
+          updateSubmission: updateSubmissionError
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            paymentRequired: false
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactSuccess,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" }),
+          createSFOMA: createSFOMASuccess
+        },
+        createSubmission: createSubmissionError,
+        updateSubmission: updateSubmissionError
+      };
+      let saveSubmissionErrorsMock = jest.fn();
+      wrapper = setup(props);
+      wrapper.instance().saveSubmissionErrors = saveSubmissionErrorsMock;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .createSubmission(formValues)
+        .then(async () => {
+          await addSubmissionSuccess;
+          await createSFOMASuccess;
+          await updateSubmissionError;
+          expect(formElements.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });

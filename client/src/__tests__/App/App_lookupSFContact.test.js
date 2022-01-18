@@ -239,6 +239,11 @@ describe("<App />", () => {
     test("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
       handleErrorMock.mockClear();
       formElements.handleError = handleErrorMock;
+      lookupSFContactError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
+        );
       let props = {
         formValues: {
           firstName: "string",
@@ -267,7 +272,8 @@ describe("<App />", () => {
       wrapper
         .instance()
         .lookupSFContact(formValues)
-        .then(() => {
+        .then(async () => {
+          await lookupSFContactError;
           expect(handleErrorMock.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));

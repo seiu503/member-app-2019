@@ -94,6 +94,17 @@ describe("<Dashboard />", () => {
     expect(component.length).toBe(1);
   });
 
+  it("renders noAccess component if not logged in", () => {
+    wrapper = setup({
+      appState: {
+        loggedIn: false,
+        authToken: undefined
+      }
+    });
+    const component = findByTestAttr(wrapper, "component-no-access");
+    // expect(component.length).toBe(1);
+  });
+
   it("should have access to expected props", () => {
     wrapper = setup();
     expect(wrapper.instance().props.appState.loggedIn).toBe(true);

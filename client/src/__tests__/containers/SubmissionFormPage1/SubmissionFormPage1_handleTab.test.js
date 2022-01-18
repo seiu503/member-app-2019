@@ -57,24 +57,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -143,11 +125,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -209,12 +186,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   describe("handleTab", () => {
     test("`handleTab` calls saveLegalLanguage if newValue === 2", async function() {
       let saveLegalLanguageMock = jest.fn();
-      // let saveSignatureMock = jest
-      //   .fn()
-      //   .mockImplementation(() => Promise.resolve(sigUrl));
-      // let handleUploadMock = jest
-      //   .fn()
-      //   .mockImplementation(() => Promise.resolve(sigUrl));
       createSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -236,7 +207,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       wrapper = setup(props);
       wrapper.instance().saveLegalLanguage = saveLegalLanguageMock;
-      // wrapper.instance().saveSignature = saveSignatureMock;
       wrapper.instance().handleUpload = handleUploadMock;
 
       wrapper.update();
@@ -245,7 +215,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .handleTab(2)
         .then(() => {
           expect(saveLegalLanguageMock.mock.calls.length).toBe(1);
-          // expect(saveSignatureMock.mock.calls.length).toBe(1);
           changeTabMock.mockClear();
         })
         .catch(err => {
@@ -291,8 +260,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
           createSFContact: createSFContactSuccess,
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactSuccess
         },
         formValues: {
           signature: "typed signature"
@@ -307,7 +275,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .fn()
         .mockImplementation(() => Promise.resolve({}));
       wrapper = setup(props);
-      // wrapper.instance().state.signatureType = "write";
       wrapper.instance().handleTab1 = handleTab1Mock;
       wrapper.update();
       wrapper
@@ -330,8 +297,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
           createSFContact: createSFContactSuccess,
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactSuccess
         },
         formValues: {
           signature: "typed signature"
@@ -343,7 +309,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       wrapper = setup(props);
-      // wrapper.instance().state.signatureType = "write";
       wrapper.instance().handleTab1 = handleTab1Mock;
       handleErrorMock.mockClear();
       formElements.handleError = handleErrorMock;
@@ -368,8 +333,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         apiSF: {
           lookupSFContact: lookupSFContactSuccess,
           createSFContact: createSFContactSuccess,
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactSuccess
         },
         formValues: {
           signature: "typed signature"
@@ -381,7 +345,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
       wrapper = setup(props);
-      // wrapper.instance().state.signatureType = "write";
       wrapper.instance().handleTab2 = handleTab2Mock;
       formElements.handleError = handleErrorMock;
       wrapper.update();
@@ -416,7 +379,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       };
 
       wrapper = await setup(props);
-      // wrapper.instance().state.signatureType = "write";
       wrapper.instance().handleUpload = handleUploadMock();
       handleErrorMock.mockClear();
       formElements.handleError = handleErrorMock;

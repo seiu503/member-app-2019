@@ -66,24 +66,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -149,11 +131,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -215,51 +192,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("handleTab1", () => {
-    // test("`handleTab1` handles error if verifyRecaptchaScore fails", async function() {
-    //   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-    //   formElements.handleError = jest.fn();
-    //   let props = {
-    //     formValues: {
-    //       directPayAuth: true,
-    //       directDepositAuth: true,
-    //       employerName: "homecare",
-    //       paymentType: "card",
-    //       employerType: "retired",
-    //       preferredLanguage: "English"
-    //     },
-    //     apiSubmission: {
-    //       handleInput: handleInputMock
-    //     },
-    //     submission: {
-    //       salesforceId: "123",
-    //       formPage1: {}
-    //     },
-    //     apiSF: {
-    //       updateSFContact: updateSFContactError,
-    //       createSFContact: createSFContactSuccess,
-    //       createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-    //     }
-    //   };
-    //   const verifyRecaptchaScoreError = jest
-    //     .fn()
-    //     .mockImplementation(() => Promise.resolve(0));
-    //   wrapper = setup(props);
-    //   wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreError;
-
-    //   wrapper.update();
-    //   wrapper
-    //     .instance()
-    //     .handleTab1()
-    //     .then(async () => {
-    //       await verifyRecaptchaScoreError();
-    //       expect(formElements.handleError.mock.calls.length).toBe(1);
-    //       changeTabMock.mockClear();
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // });
-
     test("`handleTab1` sets howManyTabs to 3 if no payment required", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
@@ -281,8 +213,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSF: {
           updateSFContact: updateSFContactError,
-          createSFContact: createSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          createSFContact: createSFContactSuccess
         }
       };
 
@@ -305,16 +236,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         });
     });
 
-    test("`handleTab1` handles error if updateSFContact fails", async function() {
+    test("`handleTab1` sets 'paymentRequired' to true if payment required", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
       let props = {
         formValues: {
           directPayAuth: true,
           directDepositAuth: true,
-          employerName: "homecare",
+          employerName: "community member",
           paymentType: "card",
-          employerType: "retired",
+          employerType: "community member",
           preferredLanguage: "English"
         },
         apiSubmission: {
@@ -326,14 +257,61 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSF: {
           updateSFContact: updateSFContactError,
-          createSFContact: createSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          createSFContact: createSFContactSuccess
         }
       };
-      updateSFContactError = () => Promise.reject();
+      let verifyRecaptchaScoreMock = jest.fn().mockImplementation(() => 1);
       wrapper = setup(props);
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      wrapper.instance().updateSFContact = updateSFContactError;
+
+      wrapper.update();
+      wrapper
+        .instance()
+        .handleTab1()
+        .then(async () => {
+          await verifyRecaptchaScoreMock();
+          expect(handleInputMock.mock.calls[0][0]).toEqual({
+            target: { name: "paymentRequired", value: true }
+          });
+          changeTabMock.mockClear();
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    });
+
+    test("`handleTab1` handles error if updateSFContact fails", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      const updateSFContactError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE" })
+        );
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "community member",
+          paymentType: "card",
+          employerType: "community member",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {}
+        },
+        apiSF: {
+          updateSFContact: updateSFContactError,
+          createSFContact: createSFContactSuccess
+        }
+      };
+      let verifyRecaptchaScoreMock = jest.fn().mockImplementation(() => 1);
+      wrapper = setup(props);
+      wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
 
       wrapper.update();
       wrapper
@@ -342,10 +320,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .then(async () => {
           await verifyRecaptchaScoreMock();
           await handleInputMock();
-          return updateSFContactError().then(() => {
-            expect(formElements.handleError.mock.calls.length).toBe(1);
-            changeTabMock.mockClear();
-          });
+          await handleInputMock();
+          await updateSFContactError();
+          expect(formElements.handleError.mock.calls.length).toBe(1);
+          changeTabMock.mockClear();
         })
         .catch(err => {
           console.log(err);
@@ -374,8 +352,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         apiSF: {
           createSFContact: createSFContactSuccess,
           updateSFContact: updateSFContactSuccess,
-          lookupSFContact: lookupSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          lookupSFContact: lookupSFContactError
         }
       };
       wrapper = setup(props);
@@ -432,8 +409,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSF: {
           createSFContact: createSFContactSuccess,
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactSuccess
         },
         recaptcha: {
           execute: jest.fn()
@@ -490,8 +466,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSF: {
           createSFContact: createSFContactSuccess,
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactSuccess
         },
         recaptcha: {
           execute: jest.fn()

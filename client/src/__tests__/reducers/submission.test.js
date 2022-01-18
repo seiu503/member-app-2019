@@ -35,34 +35,6 @@ describe("submission reducer", () => {
       error: "Sorry, something went wrong :(\nPlease try again."
     });
   });
-  it("should handle payment info FAILURE actions", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "GET_SF_CAPE_BY_CONTACT_ID_FAILURE",
-        payload: { message: "Some error" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      error: "Some error",
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        whichCard: "Add new card"
-      }
-    });
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "GET_SF_DJR_FAILURE",
-        payload: { message: null }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      error: "Sorry, something went wrong :(\nPlease try again.",
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        whichCard: "Add new card"
-      }
-    });
-  });
   it("should handle `handleInput`", () => {
     expect(
       reducer(INITIAL_STATE, {
@@ -77,21 +49,6 @@ describe("submission reducer", () => {
       }
     });
   });
-  it("should handle `setCAPEOptions`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_CAPE_OPTIONS",
-        payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      cape: {
-        ...INITIAL_STATE.cape,
-        monthlyOptions: [1, 2, 3],
-        oneTimeOptions: [4, 5, 6]
-      }
-    });
-  });
   it("should handle `setPaymentDetailsCAPE`", () => {
     expect(
       reducer(INITIAL_STATE, {
@@ -102,25 +59,6 @@ describe("submission reducer", () => {
       ...INITIAL_STATE,
       cape: {
         ...INITIAL_STATE.cape,
-        activeMethodLast4: "1234",
-        cardBrand: "Visa"
-      },
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        paymentMethodAdded: true
-      }
-    });
-  });
-  it("should handle `setPaymentDetailsDues`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_PAYMENT_DETAILS_DUES",
-        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      payment: {
-        ...INITIAL_STATE.payment,
         activeMethodLast4: "1234",
         cardBrand: "Visa"
       },
@@ -889,61 +827,6 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
-    test("getSFDJR", () => {
-      const payload = {
-        Active_Account_Last_4__c: "1234",
-        Payment_Error_Hold__c: false,
-        Unioni_se_MemberID__c: "5678",
-        Employer__c: "emloyerId",
-        Id: "theDjrId",
-        Card_Brand__c: "Visa"
-      };
-      const action = {
-        type: "GET_SF_DJR_SUCCESS",
-        payload: payload
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        payment: {
-          activeMethodLast4: "1234",
-          cardBrand: "Visa",
-          paymentErrorHold: false,
-          memberShortId: "5678",
-          djrEmployerId: "emloyerId",
-          cardAddingUrl: "",
-          unioniseRefreshToken: "",
-          unioniseToken: "",
-          currentCAPEFromSF: 0
-        },
-        djrId: "theDjrId"
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("getUnioniseToken", () => {
-      const payload = {
-        access_token: "1234",
-        refresh_token: "5678"
-      };
-      const action = {
-        type: "GET_UNIONISE_TOKEN_SUCCESS",
-        payload: payload
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        payment: {
-          unioniseToken: "1234",
-          unioniseRefreshToken: "5678",
-          activeMethodLast4: "",
-          cardBrand: "",
-          cardAddingUrl: "",
-          djrEmployerId: "",
-          memberShortId: "",
-          paymentErrorHold: false,
-          currentCAPEFromSF: 0
-        }
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
     test("saveSalesForceId", () => {
       const action = {
         type: "SAVE_SALESFORCEID",
@@ -954,48 +837,6 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         salesforceId: "1"
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("getIframeURL", () => {
-      const action = {
-        type: "GET_IFRAME_URL_SUCCESS",
-        payload: {
-          cardAddingUrl: "url",
-          memberId: "string",
-          stripeCustomerId: "string",
-          memberShortId: "string"
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        payment: {
-          activeMethodLast4: "",
-          cardBrand: "",
-          djrEmployerId: "",
-          paymentErrorHold: false,
-          unioniseToken: "",
-          unioniseRefreshToken: "",
-          cardAddingUrl: "url",
-          memberShortId: "string",
-          currentCAPEFromSF: 0
-        }
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("getIframeExisting", () => {
-      const action = {
-        type: "GET_IFRAME_EXISTING_SUCCESS",
-        payload: {
-          cardAddingUrl: "newUrl"
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        payment: {
-          ...INITIAL_STATE.payment,
-          cardAddingUrl: "newUrl"
-        }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
@@ -1010,21 +851,6 @@ describe("submission reducer", () => {
       };
       const expectedState = {
         ...INITIAL_STATE,
-        error: null
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("createSFDJR", () => {
-      const action = {
-        type: "CREATE_SF_DJR_SUCCESS",
-        payload: {
-          sf_djr_id: "string",
-          error: null
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        djrId: "string",
         error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
@@ -1073,34 +899,11 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
-    test("getSFCAPEByContactId", () => {
-      const action = {
-        type: "GET_SF_CAPE_BY_CONTACT_ID_SUCCESS",
-        payload: {
-          Active_Account_Last_4__c: "1234",
-          Payment_Error_Hold__c: false,
-          Unioni_se_MemberID__c: "5678",
-          Card_Brand__c: "Visa"
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        cape: {
-          ...INITIAL_STATE.cape,
-          activeMethodLast4: "1234",
-          paymentErrorHold: false,
-          memberShortId: "5678",
-          cardBrand: "Visa"
-        }
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
     test("createCAPE", () => {
       const action = {
         type: "CREATE_CAPE_SUCCESS",
         payload: {
-          cape_id: "123",
-          currentCAPE: 5
+          cape_id: "123"
         }
       };
       const expectedState = {
@@ -1108,24 +911,6 @@ describe("submission reducer", () => {
         cape: {
           ...INITIAL_STATE.cape,
           id: "123"
-        },
-        currentCAPE: 5,
-        error: null
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("postOneTimePayment", () => {
-      const action = {
-        type: "POST_ONE_TIME_PAYMENT_SUCCESS",
-        payload: {
-          id: "123"
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        cape: {
-          ...INITIAL_STATE.cape,
-          oneTimePaymentId: "123"
         },
         error: null
       };

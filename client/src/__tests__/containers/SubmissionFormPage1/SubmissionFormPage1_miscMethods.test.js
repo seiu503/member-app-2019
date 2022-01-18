@@ -1,10 +1,8 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
-import { fakeDataURI } from "../../../utils/testUtils";
 
 import "jest-canvas-mock";
-import * as formElements from "../../../components/SubmissionFormElements";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
@@ -56,24 +54,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
     }
   })
 );
-
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
 
 let refreshRecaptchaMock = jest
   .fn()
@@ -134,11 +114,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -146,7 +121,6 @@ const defaultProps = {
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
-    setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
@@ -267,19 +241,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(pushMock).toHaveBeenCalled();
     });
 
-    test("`mobilePhoneOnBlur` calls handleEmployerTypeChange", () => {
-      wrapper = setup();
-      const handleEmployerTypeChangeMock = jest.fn();
-      wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
-      wrapper.instance().mobilePhoneOnBlur();
-      expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
-    });
-
     test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {
       const handleEmployerTypeChangeMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(""));
-      const handleDonationFrequencyChangeMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(""));
       const props = {
@@ -290,82 +253,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       };
       wrapper = setup(props);
       wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
-      wrapper.instance().handleDonationFrequencyChange = handleDonationFrequencyChangeMock;
       wrapper.update();
       await wrapper.instance().checkCAPEPaymentLogic();
       expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
-      expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
       expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
-    });
-
-    test("`clearSignature` calls sigBox.clear", () => {
-      wrapper = setup();
-      wrapper.instance().clearSignature();
-      expect(clearSigBoxMock.mock.calls.length).toBe(1);
-    });
-
-    test("`trimSignature` calls sigBox.toDataURL", () => {
-      const dataURItoBlobMock = jest.fn();
-      wrapper = setup();
-      wrapper.instance().dataURItoBlob = dataURItoBlobMock;
-      wrapper.instance().trimSignature();
-      expect(toDataURLMock.mock.calls.length).toBe(1);
-      expect(dataURItoBlobMock.mock.calls.length).toBe(1);
-    });
-
-    test("`trimSignature` handles error if sigbox is blank", async () => {
-      formElements.handleError = handleErrorMock;
-      toDataURLMock = jest.fn().mockImplementation(() => formElements.blankSig);
-      const dataURItoBlobMock = jest.fn();
-      const props = {
-        sigBox: {
-          current: {
-            toDataURL: toDataURLMock
-          }
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().dataURItoBlob = dataURItoBlobMock;
-      wrapper.instance().trimSignature();
-      expect(toDataURLMock.mock.calls.length).toBe(1);
-      expect(dataURItoBlobMock.mock.calls.length).toBe(0);
-      await toDataURLMock();
-      expect(handleErrorMock.mock.calls.length).toBe(1);
-    });
-
-    test("`dataURItoBlob` returns Blob", () => {
-      let props = {
-        legal_language: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        direct_deposit: {
-          current: {
-            innerHTML: ""
-          }
-        },
-        direct_pay: {
-          current: {
-            innerHTML: ""
-          }
-        }
-      };
-      wrapper = setup(props);
-      const testBlob = wrapper.instance().dataURItoBlob(fakeDataURI);
-      expect(typeof testBlob).toBe("object");
-      expect(testBlob.type).toBe("image/jpeg");
-    });
-
-    test("`toggleSignatureInputType` changes signature type in state", async function() {
-      wrapper = setup();
-      wrapper.instance().state.signatureType = "draw";
-      await wrapper.instance().toggleSignatureInputType();
-      await wrapper.update();
-      expect(wrapper.state("signatureType")).toEqual("write");
-      await wrapper.instance().toggleSignatureInputType();
-      await wrapper.update();
-      expect(wrapper.state("signatureType")).toEqual("draw");
     });
 
     test("`calculateAFHDuesRate` calls handleInput", async function() {

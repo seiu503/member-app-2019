@@ -5,8 +5,6 @@ import "jest-canvas-mock";
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
-let wrapper;
-
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -52,24 +50,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
     }
   })
 );
-
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
 
 let refreshRecaptchaMock = jest
   .fn()
@@ -130,11 +110,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -181,6 +156,8 @@ const setup = (props = {}) => {
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
 
+let wrapper;
+
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     // console.log = jest.fn();
@@ -193,57 +170,56 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
-    test("`handleEmployerTypeChange` calls getIframeNew if paymentRequired", async function() {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let handleInputMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
+    test("`handleEmployerTypeChange` calls handleInput to set paymentRequired to `true` if isPaymentRequired returns true", () => {
+      const props = {
         submission: {
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: false
+          },
           formPage1: {
-            employerType: "fake"
+            howManyTabs: 3
           }
         },
         apiSubmission: {
           handleInput: handleInputMock
         },
-        location: {
-          search: "?cape=true"
+        formValues: {
+          capeAmount: "Other",
+          capeAmountOther: 10
         }
       };
-
       wrapper = setup(props);
-
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().handleEmployerTypeChange("retired");
-      expect(handleInputMock.mock.calls.length).toBe(1);
-      await handleInputMock();
-      await handleInputMock();
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
+      wrapper.instance().handleEmployerTypeChange("community member");
+      expect(handleInputMock).toHaveBeenCalledWith({
+        target: { name: "paymentRequired", value: true }
+      });
     });
 
-    test("`handleEmployerTypeChange` does not call getIframeNew if !paymentRequired", () => {
-      let getIframeNewMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
+    test("`handleEmployerTypeChange` calls handleInput to set paymentRequired to `false` if isPaymentRequired returns false", () => {
+      const props = {
         submission: {
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: false
+          },
           formPage1: {
-            employerType: "fake"
+            howManyTabs: 3
           }
         },
         apiSubmission: {
-          handleInput: jest.fn().mockImplementation(() => Promise.resolve({}))
+          handleInput: handleInputMock
+        },
+        formValues: {
+          capeAmount: "Other",
+          capeAmountOther: 10
         }
       };
-
       wrapper = setup(props);
-
-      wrapper.instance().getIframeNew = getIframeNewMock;
-      wrapper.instance().handleEmployerTypeChange("homecare");
-      expect(getIframeNewMock.mock.calls.length).toBe(0);
+      wrapper.instance().handleEmployerTypeChange("higher ed");
+      expect(handleInputMock).toHaveBeenCalledWith({
+        target: { name: "paymentRequired", value: false }
+      });
     });
   });
 });

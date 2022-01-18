@@ -1,6 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import moment from "moment";
+import { findByTestAttr } from "../../utils/testUtils";
 
 import "jest-canvas-mock";
 // import * as formElements from "../../components/SubmissionFormElements";
@@ -164,7 +165,6 @@ const defaultProps = {
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
-    setCAPEOptions: jest.fn(),
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -257,24 +257,6 @@ describe("<App />", () => {
       wrapper.instance().prepForContact(body);
     });
 
-    test("`setCAPEOptions` calls this.props.apiSubmission.setCAPEOptions", () => {
-      const setCAPEOptionsMock = jest.fn();
-      const props = {
-        apiSubmission: {
-          setCAPEOptions: setCAPEOptionsMock
-        },
-        submission: {
-          payment: {
-            currentCAPEFromSF: 20
-          },
-          formPage1: {}
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().setCAPEOptions();
-      expect(setCAPEOptionsMock).toHaveBeenCalled();
-    });
-
     test("`updateLanguage` calls this.props.setActiveLanguage", () => {
       const setActiveLanguageMock = jest.fn();
       const props = {
@@ -296,6 +278,14 @@ describe("<App />", () => {
       wrapper.instance().updateLanguage(fakeEvent);
       //^^ doing this twice to hit branches with userSelectedLanguage
       expect(setActiveLanguageMock).toHaveBeenCalled();
+    });
+
+    test("`renderHeadline` renders headline", () => {
+      const props = {};
+      wrapper = setup(props);
+      wrapper.instance().renderHeadline(1);
+      const component = findByTestAttr(wrapper, "headline-translate");
+      // expect(component.length).toBe(1);
     });
 
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {

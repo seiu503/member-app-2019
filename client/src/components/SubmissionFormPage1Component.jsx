@@ -9,7 +9,6 @@ import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
-import Tab3Form from "./Tab3";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
 
@@ -41,62 +40,13 @@ export class SubmissionFormPage1Component extends React.Component {
         // don't return this error to client, it's a background api call
         // this.props.handleError(err);
       });
-    // add event listener to listen for iframe message
-    // to confirm payment method added
-    window.addEventListener("message", this.receiveMessage, false);
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.submission.employerNames.length < 3) {
       this.loadEmployersPicklist();
     }
-    if (document.body.getAttribute("iframeListener") !== "true") {
-      window.addEventListener("message", this.receiveMessage, false);
-    }
   }
-
-  // check for messages from iframe
-  receiveMessage = async event => {
-    // Do we trust the sender of this message?
-    const unioniseEndpoint = process.env.REACT_APP_UNIONISE_ENDPOINT;
-    if (event.origin !== unioniseEndpoint || !event.data.notification) {
-      return;
-    }
-    // console.log('receiveMessage');
-    console.log(event.data.notification);
-    const { type, cardBrand, cardLast4 } = event.data.notification;
-    if (type === "success") {
-      console.log("success");
-      if (
-        this.props.formValues.capeAmount &&
-        this.props.formValues.donationFrequency
-      ) {
-        // console.log("this iframe is for CAPE; setting CAPE details");
-        // console.log(event.data.notification);
-        await this.props.apiSubmission.setPaymentDetailsCAPE(
-          true,
-          cardBrand,
-          cardLast4
-        );
-        console.log("updating payment details CAPE");
-        this.props.apiSubmission.handleInput({
-          target: { name: "newCardNeeded", value: false }
-        });
-        this.props.apiSubmission.handleInput({
-          target: { name: "paymentMethodAdded", value: true }
-        });
-      } else {
-        // console.log("this iframe is for dues; setting dues payment details");
-        // console.log(event.data.notification);
-        // console.log(cardBrand, cardLast4);
-        return this.props.apiSubmission.setPaymentDetailsDues(
-          true,
-          cardBrand,
-          cardLast4
-        );
-      }
-    }
-  };
 
   // reusable MUI form components
   renderTextField = formElements.renderTextField;
@@ -270,103 +220,6 @@ export class SubmissionFormPage1Component extends React.Component {
       });
   }
 
-  async createOrUpdateSFDJR() {
-    this.props.actions.setSpinner();
-    console.log("createOrUpdateSFDJR ###########");
-
-    const { formPage1, payment } = this.props.submission;
-    const { formValues } = this.props;
-    console.log(`medicaidResidents: ${formValues.medicaidResidents}`);
-
-    const id = this.props.submission.djrId;
-    // console.log(`djrId: ${id}`);
-
-    const paymentMethod =
-      formPage1.paymentType === "Check" ? "Paper Check" : "Unionise";
-    const body = {
-      Worker__c: this.props.submission.salesforceId,
-      Payment_Method__c: paymentMethod,
-      AFH_Number_of_Residents__c: formValues.medicaidResidents,
-      Unioni_se_MemberID__c: payment.memberShortId,
-      Active_Account_Last_4__c: payment.activeMethodLast4,
-      Card_Brand__c: payment.cardBrand,
-      Employer__c: formPage1.employerId,
-      Unioni_se_ProviderID__c: payment.memberProviderId
-    };
-
-    console.log(body);
-
-    // create a new record if one doesn't exist, OR
-    // if existing DJR record is for a different employer
-
-    // check if DJR employer matches employer submitted on form
-    // if no match, create new DJR even if already have id
-    if (!id || formPage1.employerId !== payment.djrEmployerId) {
-      // create new SFDJR record
-      // console.log("createSFDJR");
-      // console.log(body);
-      return this.props.apiSF
-        .createSFDJR(body)
-        .then(result => {
-          // console.log(result.type);
-          if (
-            result.type === "CREATE_SF_DJR_FAILURE" ||
-            this.props.submission.error
-          ) {
-            // console.log(this.props.submission.error);
-            this.props.saveSubmissionErrors(
-              this.props.submission.submissionId,
-              "createSFDJR",
-              this.props.submission.error
-            );
-            return this.props.handleError(this.props.submission.error);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          this.props.saveSubmissionErrors(
-            this.props.submission.submissionId,
-            "createSFDJR",
-            err
-          );
-          return this.props.handleError(err);
-        });
-    }
-
-    // if id exists and employer matches, update existing DJR record
-    // console.log("updateSFDJR");
-    body.Id = id;
-    delete body.Worker__c;
-    // console.log("updateSFDJR");
-    // console.log(body);
-    return this.props.apiSF
-      .updateSFDJR(id, body)
-      .then(result => {
-        // console.log(result.type);
-        if (
-          result.type === "UPDATE_SF_DJR_FAILURE" ||
-          this.props.submission.error
-        ) {
-          // console.log(this.props.submission.error);
-          this.props.saveSubmissionErrors(
-            this.props.submission.submissionId,
-            "updateSFDJR",
-            this.props.submission.error
-          );
-          return this.props.handleError(this.props.submission.error);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.saveSubmissionErrors(
-          this.props.submission.submissionId,
-          "updateSFDJR",
-          err
-        );
-        return this.props.handleError(err);
-      });
-  }
-
   async handleSubmit(formValues) {
     console.log("handleSubmit");
     this.props.actions.setSpinner();
@@ -385,66 +238,12 @@ export class SubmissionFormPage1Component extends React.Component {
     //   .catch(err => {
     //     console.error(err);
     //   });
-    const validMethod =
-      !!this.props.submission.payment.activeMethodLast4 &&
-      !this.props.submission.payment.paymentErrorHold;
-    if (validMethod) {
-      console.log("validMethod");
-      this.props.apiSubmission.handleInput({
-        target: { name: "paymentMethodAdded", value: true }
-      });
-      console.log(
-        `paymentMethodAdded: ${this.props.submission.formPage1.paymentMethodAdded}`
-      );
-    }
-    console.log(
-      `paymentRequired: ${this.props.submission.formPage1.paymentRequired}`
-    );
-    console.log(
-      `newCardNeeded: ${this.props.submission.formPage1.newCardNeeded}`
-    );
-    console.log(`donationFrequency: ${formValues.donationFrequency}`);
-    console.log(
-      `paymentMethodAdded: ${this.props.submission.formPage1.paymentMethodAdded}`
-    );
-    console.log(`paymentType: ${this.props.submission.formPage1.paymentType}`);
 
-    if (
-      ((this.props.submission.formPage1.paymentRequired &&
-        this.props.submission.formPage1.paymentType === "Card") ||
-        this.props.submission.formPage1.newCardNeeded) &&
-      !(this.props.submission.formPage1.paymentMethodAdded || validMethod)
-    ) {
-      console.log("No payment method added");
-      return this.props.handleError(this.props.translate("missingCardError"));
-    }
     return Promise.all([
-      this.props.updateSubmission(null, null, formValues),
-      this.createSFOMA(),
-      this.createOrUpdateSFDJR()
+      this.props.createSubmission(formValues),
+      this.createSFOMA()
     ])
       .then(() => {
-        // if retiree selected pay by check in dues tab
-        // need to reset paymentMethodAdded and paymentType
-        // bc 'check' is not an option for CAPE
-
-        if (
-          this.props.submission.formPage1.employerType &&
-          this.props.submission.formPage1.employerType.toLowerCase() ===
-            "retired" &&
-          this.props.submission.formPage1.paymentType === "Check"
-        ) {
-          this.props.apiSubmission.handleInput({
-            target: { name: "paymentMethodAdded", value: false }
-          });
-          this.props.apiSubmission.handleInput({
-            target: { name: "paymentType", value: "Card" }
-          });
-          this.props.apiSubmission.handleInput({
-            target: { name: "newCardNeeded", value: true }
-          });
-        }
-
         // update submission status and redirect to CAPE tab
         if (!this.props.submission.error) {
           console.log("updating submission status");
@@ -518,7 +317,6 @@ export class SubmissionFormPage1Component extends React.Component {
             loading={this.props.submission.loading}
             formPage1={this.props.submission.formPage1}
             handleInput={this.props.apiSubmission.handleInput}
-            iFrameURL={this.props.submission.payment.cardAddingUrl}
             payment={this.props.submission.payment}
             renderSelect={this.renderSelect}
             renderTextField={this.renderTextField}
@@ -583,26 +381,6 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderCheckbox={this.renderCheckbox}
                   />
                 )}
-                {this.props.tab === 2 && this.props.howManyTabs === 4 && (
-                  <Tab3Form
-                    {...this.props}
-                    onSubmit={this.handleSubmit}
-                    classes={classes}
-                    loading={this.props.submission.loading}
-                    formPage1={this.props.submission.formPage1}
-                    paymentRequired={
-                      this.props.submission.formPage1.paymentRequired
-                    }
-                    handleInput={this.props.submission.handleInput}
-                    iFrameURL={this.props.submission.payment.cardAddingUrl}
-                    afhDuesRate={this.props.submission.formPage1.afhDuesRate}
-                    payment={this.props.submission.payment}
-                    renderSelect={this.renderSelect}
-                    renderTextField={this.renderTextField}
-                    renderCheckbox={this.renderCheckbox}
-                    checkoff={checkoff}
-                  />
-                )}
                 {(this.props.tab === 3 ||
                   (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
                   <CAPEForm
@@ -611,7 +389,6 @@ export class SubmissionFormPage1Component extends React.Component {
                     loading={this.props.submission.loading}
                     formPage1={this.props.submission.formPage1}
                     handleInput={this.props.submission.handleInput}
-                    iFrameURL={this.props.submission.payment.cardAddingUrl}
                     payment={this.props.submission.payment}
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}

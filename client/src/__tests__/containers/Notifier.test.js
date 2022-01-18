@@ -100,7 +100,7 @@ describe("exported openSnackbar function", () => {
 
   test("if `openSnackbarFn` is undefined, call setTimeout for 50ms", () => {
     // clear mock since componentDidMount is called in other tests
-    setTimeout.mockReset();
+    jest.spyOn(global, "setTimeout");
 
     // mount component (ensure openSnackbarFn is undefined here)
     const wrapper = mount(<Notifier />);
@@ -118,7 +118,7 @@ describe("exported openSnackbar function", () => {
     expect(setTimeout).toHaveBeenCalled();
 
     // restore mocks
-    setTimeout.mockRestore();
+    jest.useRealTimers();
     openSnackbarFnMock.mockRestore();
   });
 });
