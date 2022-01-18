@@ -61,8 +61,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:dev": "env-path -p .env.development yarn node node_modules/react-scripts/scripts/build.js",
-    "build:staging": "env-path -p .env.staging yarn node node_modules/react-scripts/scripts/build.js",
+    "build:dev": "env-path -p .env.development yarn build",
+    "build:staging": "env-path -p .env.staging yarn build",
     "test": "react-scripts test --resetMocks=false",
     "test-cov": "DEBUG=nock.scope:localhost react-scripts test --coverage --no-cache --watchAll --coverageDirectory=output/coverage/jest",
     "eject": "react-scripts eject",
