@@ -201,11 +201,11 @@ describe("<CAPE />", () => {
       wrapper = setup(props);
       component = wrapper.find("form");
       component.simulate("submit", "");
-      const asyncCheck = setImmediate(() => {
+      const asyncCheck = setTimeout(() => {
         wrapper.update();
         expect(scrollToMock.mock.calls.length).toBe(1);
-      });
-      global.clearImmediate(asyncCheck);
+      }, 0);
+      global.clearTimeout(asyncCheck);
     });
 
     it("calls `back` on back button click", () => {
