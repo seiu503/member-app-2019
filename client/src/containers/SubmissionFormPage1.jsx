@@ -27,7 +27,6 @@ import { withLocalize } from "react-localize-redux";
 
 import {
   stylesPage1,
-  blankSig,
   findEmployerObject,
   handleError
 } from "../components/SubmissionFormElements";
