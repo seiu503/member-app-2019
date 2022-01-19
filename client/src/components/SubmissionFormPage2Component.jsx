@@ -131,6 +131,7 @@ export class SubmissionFormPage2Component extends React.Component {
 
   render() {
     const id = this.props.submission.submissionId;
+    const paymentRequired = this.props.submission.formPage1.paymentRequired;
     return (
       <div
         className={this.classes.formContainer}
@@ -151,9 +152,19 @@ export class SubmissionFormPage2Component extends React.Component {
               className={this.classes.page2IntroText}
               id="page2IntroText"
             >
-              <Translate id="introParagraph" />
+              {paymentRequired ? (
+                <Translate
+                  id="directPayNextSteps_2022"
+                  data-test="direct-pay-text"
+                />
+              ) : (
+                <Translate id="thankYouNoPayment" data-test="no-payment-text" />
+              )}
             </FormHelperText>
           </div>
+          <p>
+            <Translate id="introParagraph" />
+          </p>
           <Divider style={{ margin: 20 }} />
           {!id && (
             <React.Fragment>

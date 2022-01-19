@@ -46,7 +46,10 @@ const defaultProps = {
   handleSubmit,
   submission: {
     error: null,
-    loading: false
+    loading: false,
+    formPage1: {
+      paymentRequired: false
+    }
   },
   initialValues: { gender: "" },
   formValues: { gender: "" },
@@ -107,6 +110,18 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       );
       expect(component.length).toBe(1);
     });
+    it("renders specialized text if payment required", () => {
+      const props = {
+        submission: {
+          formPage1: {
+            paymentRequired: true
+          }
+        }
+      };
+      wrapper = unconnectedSetup(props);
+      const component = findByTestAttr(wrapper, "direct-pay-text");
+      expect(component.length).toBe(1);
+    });
     it("has access to `submission error` prop", () => {
       expect(wrapper.instance().props.submission.error).toBe(null);
     });
@@ -133,6 +148,9 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
           search: "id=1"
         },
         submission: {
+          formPage1: {
+            paymentRequired: false
+          },
           formPage2: {
             ...generatePage2Validate
           },

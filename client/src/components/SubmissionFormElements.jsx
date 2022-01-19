@@ -919,7 +919,6 @@ export const renderTextField = ({
   additionalOnChange,
   ...custom
 }) => {
-  console.log(additionalOnChange);
   return (
     <Translate>
       {({ translate }) => (

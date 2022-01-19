@@ -26,7 +26,7 @@ export class SubmissionFormPage1Component extends React.Component {
   }
   sigBox = {};
   componentDidMount() {
-    console.log("cDM");
+    // console.log("cDM");
     // API call to SF to populate employers picklist
     this.props.apiSF
       .getSFEmployers()
