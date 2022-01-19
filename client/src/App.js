@@ -212,7 +212,7 @@ export class AppUnconnected extends Component {
 
   async componentDidMount() {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log("Wednesday 1/15 1:11pm");
+    // console.log("Wednesday 1/15 1:11pm");
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
     // set form language based on detected default language
@@ -226,7 +226,7 @@ export class AppUnconnected extends Component {
         // console.log("not logged in, looking for id & token in localStorage");
         const authToken = window.localStorage.getItem("authToken");
         const userId = window.localStorage.getItem("userId");
-        console.log(`authToken: ${authToken}, userId: ${userId}`);
+        // console.log(`authToken: ${authToken}, userId: ${userId}`);
         if (
           authToken &&
           authToken !== "undefined" &&
@@ -404,7 +404,7 @@ export class AppUnconnected extends Component {
   };
 
   renderHeadline = id => {
-    console.log(`renderHeadline: ${id}`);
+    // console.log(`renderHeadline: ${id}`);
     let headlineIds = [];
     // check translation file for headlines belonging to this headline id
     Object.keys(welcomeInfo).forEach(key => {
@@ -412,21 +412,21 @@ export class AppUnconnected extends Component {
         headlineIds.push(key);
       }
     });
-    console.log(`headlineIds ${headlineIds}`);
+    // console.log(`headlineIds ${headlineIds}`);
     // generate translated text in appropriate language rendered in a <h3> tag
     let headline = (
       <React.Fragment>
         <Translate id={`headline${id}`} data-test="headline-translate" />
       </React.Fragment>
     );
-    console.log(`this.state.headline.text: ${this.state.headline.text}`);
+    // console.log(`this.state.headline.text: ${this.state.headline.text}`);
     // if this headline has not yet been translated there will be no
     // translation ids in the welcomeInfo JSON object
     // just render the raw copy in English
     if (!headlineIds.length) {
       headline = <React.Fragment>{this.state.headline.text}</React.Fragment>;
     }
-    console.log(headline);
+    // console.log(headline);
     // wrap in MUI typography element and return
     return (
       <Typography
