@@ -272,7 +272,7 @@ describe("<SubmissionsTable />", () => {
     });
   });
 
-  describe("deleteSubmission", async () => {
+  describe("deleteSubmission", () => {
     beforeEach(async () => {
       wrapper = await setup();
     });

@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+/* istanbul ignore file */
 
 import nock from "nock";
 import { apiMiddleware } from "redux-api-middleware";
@@ -20,7 +21,7 @@ const id = "0036100001bqfvxAAA";
 const cId = "0036100001bqfvxAAA";
 const aId = "0036100001bqfvxAAA";
 
-describe("apiSFActions", () => {
+describe.skip("apiSFActions", () => {
   describe("api actions", () => {
     afterEach(() => {
       nock.cleanAll();
@@ -320,11 +321,7 @@ describe("apiSFActions", () => {
 
     it("GET_UNIONISE_TOKEN: Dispatches success action after successful POST", async () => {
       nock(
-        `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=password&username=seiu503&password=${
-          process.env.UNIONISE_PASSWORD
-        }&client_id=unioni.se&client_secret=${
-          process.env.UNIONISE_CLIENT_SECRET
-        }`
+        `https://auth-dev.unioni.se/auth/realms/lab-api/protocol/openid-connect/token?grant_type=password&username=seiu503&password=${process.env.UNIONISE_PASSWORD}&client_id=unioni.se&client_secret=${process.env.UNIONISE_CLIENT_SECRET}`
       )
         .post(`/`)
         .reply(200);

@@ -54,24 +54,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -85,13 +67,6 @@ const sigBox = {
   current: {
     toDataURL: toDataURLMock,
     clear: clearSigBoxMock
-  }
-};
-
-const initialState = {
-  appState: {
-    loading: false,
-    error: ""
   }
 };
 
@@ -138,11 +113,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -202,109 +172,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       jest.restoreAllMocks();
       handleInputMock.mockClear();
     });
-    test("`suggestedAmountOnChange` calls getIframeNew if cape && paymentRequired", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
-        location: {
-          search: "?cape=true"
-        },
-        submission: {
-          formPage1: {
-            employerType: "retired"
-          },
-          payment: {
-            memberShortId: "123"
-          },
-          cape: {}
-        }
-      };
-      const fakeEvent = {
-        target: {
-          value: "test"
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().suggestedAmountOnChange(fakeEvent);
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
-
-    test("`suggestedAmountOnChange` calls getIframeURL if cape && donationFrequency == 'One-Time'", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
-        location: {
-          search: "?cape=true"
-        },
-        submission: {
-          formPage1: {
-            employerType: "homecare"
-          },
-          payment: {
-            memberShortId: "123"
-          },
-          cape: {}
-        },
-        formValues: {
-          donationFrequency: "One-Time"
-        }
-      };
-      const fakeEvent = {
-        target: {
-          value: "test"
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().suggestedAmountOnChange(fakeEvent);
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
-
-    test("`suggestedAmountOnChange` handles error if getIframeURL throws", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.reject({}));
-      let props = {
-        location: {
-          search: "?cape=true"
-        },
-        submission: {
-          formPage1: {
-            employerType: "homecare"
-          },
-          payment: {
-            memberShortId: "123"
-          },
-          cape: {}
-        },
-        formValues: {
-          donationFrequency: "One-Time"
-        }
-      };
-      const fakeEvent = {
-        target: {
-          value: "test"
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().getIframeURL = getIframeURLMock;
-      wrapper.instance().suggestedAmountOnChange(fakeEvent);
-      expect(getIframeURLMock.mock.calls.length).toBe(1);
-    });
 
     test("`suggestedAmountOnChange` sets paymentRequired to `false` if checkoff && Monthly donation", () => {
-      let getIframeURLMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
       let props = {
         location: {
           search: "?cape=true"
@@ -330,36 +199,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       wrapper = setup(props);
 
-      wrapper.instance().getIframeURL = getIframeURLMock;
       wrapper.instance().suggestedAmountOnChange(fakeEvent);
       expect(handleInputMock).toHaveBeenCalled();
-    });
-
-    test("`suggestedAmountOnChange` does not call getIframeURL if capeAmount ==='Other'", () => {
-      let getIframeNewMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      let props = {
-        location: {
-          search: "?cape=true"
-        },
-        submission: {
-          formPage1: {
-            employerType: "retired"
-          }
-        }
-      };
-      const fakeEvent = {
-        target: {
-          value: "Other"
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().getIframeNew = getIframeNewMock;
-      wrapper.instance().suggestedAmountOnChange(fakeEvent);
-      expect(getIframeNewMock.mock.calls.length).toBe(0);
     });
   });
 });

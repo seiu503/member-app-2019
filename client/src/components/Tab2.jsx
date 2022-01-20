@@ -51,9 +51,15 @@ export const Tab2 = props => {
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
-          <p>
-            <Translate id="membershipTerms2021" />
-          </p>
+          {community ? (
+            <p>
+              <Translate id="communityMembershipTerms2022" />
+            </p>
+          ) : (
+            <p>
+              <Translate id="membershipTerms2021" />
+            </p>
+          )}
           {!community && !retiree && !afh && (
             <div>
               <Field
@@ -102,9 +108,14 @@ export const Tab2 = props => {
                 </React.Fragment>
               )}
               {community && (
-                <p>
-                  <Translate id="communityDPA1" />
-                </p>
+                <>
+                  <p>
+                    <Translate id="communityDPA2022_1" />
+                  </p>
+                  <p>
+                    <Translate id="communityDPA2022_2" />
+                  </p>
+                </>
               )}
               {retiree && (
                 <p>
@@ -114,6 +125,11 @@ export const Tab2 = props => {
               <p>
                 <Translate id={afh ? "afhDPA3" : "DPA3"} />
               </p>
+              {community && (
+                <p>
+                  <Translate id="communityDPA2022_4" />
+                </p>
+              )}
               <p>
                 <Translate id="DPA4" />
               </p>

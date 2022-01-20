@@ -53,9 +53,6 @@ const defaultProps = {
   renderCheckbox: formElements.renderCheckbox,
   employerTypesList: ["test"],
   employerList: ["test"],
-  formValues: {
-    donationFrequency: "Monthly"
-  },
   checkoff: false,
   displayCAPEPaymentFields: true,
   capeObject: {
@@ -72,12 +69,6 @@ describe("<CAPE />", () => {
     handleSubmit = fn => fn;
   });
 
-  // create wrapper with default props and assigned values from above as props
-  // const unconnectedSetup = props => {
-  //   const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-  //   return shallow(<Tab3Form {...setUpProps} {...props} />);
-  // };
-  //
   const initialState = {};
 
   store = storeFactory(initialState);
@@ -88,11 +79,6 @@ describe("<CAPE />", () => {
         <CAPEForm {...setUpProps} {...props} />
       </Provider>
     );
-  };
-
-  const unconnectedSetup = props => {
-    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-    return shallow(<CAPEForm {...setUpProps} {...props} />);
   };
 
   // smoke test and making sure we have access to correct props
@@ -215,11 +201,11 @@ describe("<CAPE />", () => {
       wrapper = setup(props);
       component = wrapper.find("form");
       component.simulate("submit", "");
-      const asyncCheck = setImmediate(() => {
+      const asyncCheck = setTimeout(() => {
         wrapper.update();
         expect(scrollToMock.mock.calls.length).toBe(1);
-      });
-      global.clearImmediate(asyncCheck);
+      }, 0);
+      global.clearTimeout(asyncCheck);
     });
 
     it("calls `back` on back button click", () => {
@@ -233,34 +219,6 @@ describe("<CAPE />", () => {
       component.simulate("click");
       expect(backMock.mock.calls.length).toBe(1);
     });
-
-    it("calls `whichCardOnChange` on which card radio change", () => {
-      wrapper = shallow(<CAPE {...props} />);
-
-      let toggleCardAddingFrameMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(""));
-
-      wrapper.setProps({
-        toggleCardAddingFrame: toggleCardAddingFrameMock,
-        iFrameURL: "http://test.com",
-        formValues: {
-          donationFrequency: "One-Time"
-        },
-        formPage1: {
-          paymentRequired: true,
-          paymentType: "Card"
-        },
-        payment: {
-          activeMethodLast4: "1234"
-        },
-        displayCAPEPaymentFields: true
-      });
-      wrapper.update();
-      component = findByTestAttr(wrapper, "radio-which-card");
-      component.simulate("change", "Add new card");
-      // expect(toggleCardAddingFrameMock.mock.calls.length).toBe(1);
-    });
   });
   describe("conditional render", () => {
     it("renders alert dialog if capeOpen = `true`", () => {
@@ -273,63 +231,6 @@ describe("<CAPE />", () => {
       wrapper = shallow(<CAPE {...defaultProps} {...props} store={store} />);
       const component = findByTestAttr(wrapper, "component-alert-dialog");
       expect(component.length).toBe(1);
-    });
-
-    it("renders current contribution copy if currentCAPEFromSF > 0", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          donationFrequency: "One-Time"
-        },
-        displayCAPEPaymentFields: true,
-        payment: {
-          currentCAPEFromSF: 5
-        },
-        capeObject: {
-          monthlyOptions: [1, 2, 3],
-          oneTimeOptions: [4, 5, 6]
-        },
-        handleSubmit: fn => fn
-      };
-      store = storeFactory(initialState);
-      wrapper = shallow(<CAPE {...defaultProps} {...props} store={store} />);
-      const component = findByTestAttr(wrapper, "current-contribution");
-      expect(component.length).toBe(1);
-    });
-
-    it("renders card adding iframe if payment type = `Card`", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          paymentType: "Card",
-          donationFrequency: "One-Time"
-        },
-        checkoff: false,
-        iFrameURL: "example.com",
-        displayCAPEPaymentFields: true,
-        capeObject: {
-          oneTimeOptions: [1, 2, 3],
-          monthlyOptions: [4, 5, 6]
-        }
-      };
-      wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "component-iframe");
-      expect(component.length).toBe(1);
-    });
-
-    it("doesn't render iframe or payment type field for other employer types", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          employerType: "state homecare or personal support",
-          donationFrequency: "Monthly"
-        }
-      };
-      wrapper = setup(props);
-      const iframe = findByTestAttr(wrapper, "component-iframe");
-      const radio = findByTestAttr(wrapper, "radio-payment-type");
-      expect(iframe.length).toBe(0);
-      expect(radio.length).toBe(0);
     });
 
     it("renders contact info form if rendered as standalone component", () => {
@@ -358,20 +259,29 @@ describe("<CAPE />", () => {
       expect(component.length).toBe(1);
     });
 
-    it("renders iframe if donationFrequency === 'One-Time'", () => {
+    it("displays submit button if checkoff, donationFreq = monthly, amountSet (other)", () => {
       const props = {
+        checkoff: true,
+        donationFrequency: "Monthly",
         formValues: {
-          capeAmount: "Other"
-        },
-        displayCAPEPaymentFields: true,
-        capeObject: {
-          oneTimeOptions: [1, 2, 3],
-          monthlyOptions: [4, 5, 6]
-        },
-        donationFrequency: "One-Time"
+          capeAmountOther: 10
+        }
       };
       wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "field-other-amount").first();
+      const component = findByTestAttr(wrapper, "button-submit");
+      expect(component.length).toBe(1);
+    });
+
+    it("displays submit button if checkoff, donationFreq = monthly, amountSet (number)", () => {
+      const props = {
+        checkoff: true,
+        donationFrequency: "Monthly",
+        formValues: {
+          capeAmount: 10
+        }
+      };
+      wrapper = setup(props);
+      const component = findByTestAttr(wrapper, "button-submit");
       expect(component.length).toBe(1);
     });
   });

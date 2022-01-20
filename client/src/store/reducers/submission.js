@@ -16,7 +16,6 @@ import {
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
   UPDATE_CAPE_REQUEST,
-  UPDATE_CAPE_SUCCESS,
   UPDATE_CAPE_FAILURE,
   GET_CAPE_BY_SFID_REQUEST,
   GET_CAPE_BY_SFID_SUCCESS,
@@ -50,43 +49,18 @@ import {
   CREATE_SF_OMA_REQUEST,
   CREATE_SF_OMA_SUCCESS,
   CREATE_SF_OMA_FAILURE,
-  GET_SF_DJR_REQUEST,
-  GET_SF_DJR_SUCCESS,
-  GET_SF_DJR_FAILURE,
-  CREATE_SF_DJR_REQUEST,
-  CREATE_SF_DJR_SUCCESS,
-  CREATE_SF_DJR_FAILURE,
-  UPDATE_SF_DJR_SUCCESS,
-  UPDATE_SF_DJR_REQUEST,
-  UPDATE_SF_DJR_FAILURE,
   GET_SF_EMPLOYERS_REQUEST,
   GET_SF_EMPLOYERS_SUCCESS,
   GET_SF_EMPLOYERS_FAILURE,
-  GET_IFRAME_URL_REQUEST,
-  GET_IFRAME_URL_SUCCESS,
-  GET_IFRAME_URL_FAILURE,
-  GET_IFRAME_EXISTING_REQUEST,
-  GET_IFRAME_EXISTING_SUCCESS,
-  GET_IFRAME_EXISTING_FAILURE,
-  GET_UNIONISE_TOKEN_REQUEST,
-  GET_UNIONISE_TOKEN_SUCCESS,
-  GET_UNIONISE_TOKEN_FAILURE,
-  POST_ONE_TIME_PAYMENT_REQUEST,
-  POST_ONE_TIME_PAYMENT_SUCCESS,
-  POST_ONE_TIME_PAYMENT_FAILURE,
   CREATE_SF_CAPE_REQUEST,
   CREATE_SF_CAPE_SUCCESS,
-  CREATE_SF_CAPE_FAILURE,
-  GET_SF_CAPE_BY_CONTACT_ID_REQUEST,
-  GET_SF_CAPE_BY_CONTACT_ID_SUCCESS,
-  GET_SF_CAPE_BY_CONTACT_ID_FAILURE
+  CREATE_SF_CAPE_FAILURE
 } from "../actions/apiSFActions";
 
 export const INITIAL_STATE = {
   error: null,
   salesforceId: null,
   submissionId: null,
-  djrId: null,
   formPage1: {
     mm: "",
     homeState: "OR",
@@ -123,17 +97,6 @@ export const INITIAL_STATE = {
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
   redirect: false,
-  payment: {
-    cardAddingUrl: "",
-    memberShortId: "",
-    activeMethodLast4: "",
-    cardBrand: "",
-    paymentErrorHold: false,
-    unioniseToken: "",
-    unioniseRefreshToken: "",
-    djrEmployerId: "",
-    currentCAPEFromSF: 0
-  },
   allSubmissions: [],
   currentSubmission: {},
   cape: {
@@ -150,7 +113,6 @@ export const INITIAL_STATE = {
     oneTimePaymentId: "",
     oneTimePaymentStatus: ""
   },
-  currentCAPE: {},
   allCAPE: []
 };
 
@@ -213,34 +175,19 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_REQUEST:
     case GET_SF_EMPLOYERS_REQUEST:
     case LOOKUP_SF_CONTACT_REQUEST:
-    case GET_IFRAME_URL_REQUEST:
     case CREATE_SF_CONTACT_REQUEST:
     case CREATE_SF_OMA_REQUEST:
     case UPDATE_SF_CONTACT_REQUEST:
-    case GET_SF_DJR_REQUEST:
-    case CREATE_SF_DJR_REQUEST:
-    case UPDATE_SF_DJR_REQUEST:
     case CREATE_SF_OMA_SUCCESS:
-    case GET_UNIONISE_TOKEN_REQUEST:
-    case GET_IFRAME_EXISTING_REQUEST:
     case GET_ALL_SUBMISSIONS_REQUEST:
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
     case CREATE_SF_CAPE_SUCCESS:
     case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
-    case POST_ONE_TIME_PAYMENT_REQUEST:
     case GET_SF_CONTACT_DID_REQUEST:
-    case GET_SF_CAPE_BY_CONTACT_ID_REQUEST:
       return update(state, {
         error: { $set: null }
-      });
-
-    case CREATE_SF_DJR_SUCCESS:
-    case UPDATE_SF_DJR_SUCCESS:
-      return update(state, {
-        error: { $set: null },
-        djrId: { $set: action.payload.sf_djr_id }
       });
 
     case GET_SF_EMPLOYERS_SUCCESS:
@@ -396,41 +343,11 @@ function Submission(state = INITIAL_STATE, action) {
             lastName: { $set: action.payload.LastName },
             homeEmail: { $set: action.payload.Home_Email__c }
           },
-          payment: {
-            currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
-          },
           error: { $set: null }
         });
       } else {
         return INITIAL_STATE;
       }
-
-    case GET_SF_DJR_SUCCESS: {
-      // console.log(action.payload);
-      return update(state, {
-        payment: {
-          activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
-          paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
-          memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
-          djrEmployerId: { $set: action.payload.Employer__c },
-          cardBrand: { $set: action.payload.Card_Brand__c },
-          memberProviderId: { $set: action.payload.Unioni_se_ProviderID__c }
-        },
-        djrId: { $set: action.payload.Id || action.payload.id }
-      });
-    }
-
-    case GET_SF_CAPE_BY_CONTACT_ID_SUCCESS: {
-      console.log(action.payload);
-      return update(state, {
-        cape: {
-          activeMethodLast4: { $set: action.payload.Active_Account_Last_4__c },
-          paymentErrorHold: { $set: action.payload.Payment_Error_Hold__c },
-          memberShortId: { $set: action.payload.Unioni_se_MemberID__c },
-          cardBrand: { $set: action.payload.Card_Brand__c }
-        }
-      });
-    }
 
     case GET_CAPE_BY_SFID_SUCCESS: {
       return update(state, {
@@ -455,19 +372,9 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case CREATE_CAPE_SUCCESS:
-    case UPDATE_CAPE_SUCCESS:
       return update(state, {
         cape: {
           id: { $set: action.payload.cape_id }
-        },
-        currentCAPE: { $set: action.payload.currentCAPE },
-        error: { $set: null }
-      });
-
-    case POST_ONE_TIME_PAYMENT_SUCCESS:
-      return update(state, {
-        cape: {
-          oneTimePaymentId: { $set: action.payload.id }
         },
         error: { $set: null }
       });
@@ -487,9 +394,6 @@ function Submission(state = INITIAL_STATE, action) {
     case LOOKUP_SF_CONTACT_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
-        payment: {
-          currentCAPEFromSF: { $set: action.payload.Current_CAPE__c }
-        },
         error: { $set: null },
         redirect: { $set: true }
       });
@@ -501,51 +405,19 @@ function Submission(state = INITIAL_STATE, action) {
         error: { $set: null }
       });
 
-    case GET_IFRAME_URL_SUCCESS:
-      return update(state, {
-        payment: {
-          cardAddingUrl: { $set: action.payload.cardAddingUrl },
-          memberShortId: { $set: action.payload.memberShortId },
-          memberProviderId: { $set: action.payload.memberProviderId }
-        }
-      });
-
-    case GET_IFRAME_EXISTING_SUCCESS:
-      return update(state, {
-        payment: {
-          cardAddingUrl: { $set: action.payload.cardAddingUrl },
-          memberProviderId: { $set: action.payload.memberProviderId }
-        }
-      });
-
-    case GET_UNIONISE_TOKEN_SUCCESS:
-      // console.log(action.payload);
-      return update(state, {
-        payment: {
-          unioniseToken: { $set: action.payload.access_token },
-          unioniseRefreshToken: { $set: action.payload.refresh_token }
-        }
-      });
-
     case ADD_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_FAILURE:
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_EMPLOYERS_FAILURE:
     case LOOKUP_SF_CONTACT_FAILURE:
-    case GET_IFRAME_URL_FAILURE:
     case CREATE_SF_CONTACT_FAILURE:
     case CREATE_SF_OMA_FAILURE:
     case UPDATE_SF_CONTACT_FAILURE:
-    case CREATE_SF_DJR_FAILURE:
-    case UPDATE_SF_DJR_FAILURE:
-    case GET_IFRAME_EXISTING_FAILURE:
-    case GET_UNIONISE_TOKEN_FAILURE:
     case GET_ALL_SUBMISSIONS_FAILURE:
     case CREATE_SF_CAPE_FAILURE:
     case CREATE_CAPE_FAILURE:
     case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_FAILURE:
-    case POST_ONE_TIME_PAYMENT_FAILURE:
     case GET_SF_CONTACT_DID_FAILURE:
       if (typeof action.payload.message === "string") {
         error = action.payload.message;
@@ -555,21 +427,6 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         error: { $set: error }
       });
-
-    case GET_SF_CAPE_BY_CONTACT_ID_FAILURE:
-    case GET_SF_DJR_FAILURE: {
-      if (typeof action.payload.message === "string") {
-        error = action.payload.message;
-      } else {
-        error = "Sorry, something went wrong :(\nPlease try again.";
-      }
-      return update(state, {
-        error: { $set: error },
-        formPage1: {
-          whichCard: { $set: "Add new card" }
-        }
-      });
-    }
 
     case SAVE_SALESFORCEID:
       return update(state, {

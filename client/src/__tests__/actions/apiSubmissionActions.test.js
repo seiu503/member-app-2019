@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-
+/* istanbul ignore file */
 import nock from "nock";
 import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
@@ -18,7 +18,7 @@ const submissionBody = generateSampleSubmission();
 const capeBody = generateCAPEValidateFrontEnd();
 const token = "1234";
 
-describe("apiSubmissionActions", () => {
+describe.skip("apiSubmissionActions", () => {
   describe("api actions", () => {
     afterEach(() => {
       nock.cleanAll();

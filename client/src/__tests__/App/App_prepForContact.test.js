@@ -3,6 +3,7 @@ import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
+import { employersPayload } from "../../utils/testUtils";
 
 import { AppUnconnected } from "../../App";
 
@@ -194,7 +195,8 @@ describe("<App />", () => {
       dd: "01",
       yyyy: "1999",
       preferredLanguage: "English",
-      textAuthOptOut: false
+      textAuthOptOut: false,
+      hireDate: new Date()
     };
   });
   afterEach(() => {
@@ -341,6 +343,148 @@ describe("<App />", () => {
         .catch(err => console.log(err));
 
       expect(result.agencyNumber).toBe(700);
+    });
+    test("`prepForContact` handles PPL edge case", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      formValues.employerName = "personal support worker (paid by ppl)";
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "personal support worker (paid by ppl)",
+          paymentType: "card",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [...employersPayload]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
+
+      expect(result.agencyNumber).toBe(150);
+    });
+    test("`prepForContact` handles PSW edge case", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      formValues.employerName =
+        "personal support worker (paid by state of oregon)";
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "personal support worker (paid by state of oregon)",
+          paymentType: "card",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [...employersPayload]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
+
+      expect(result.agencyNumber).toBe(100);
+    });
+    test("`prepForContact` handles APD edge case", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      formValues.employerName =
+        "homecare worker (aging and people with disabilities)";
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "homecare worker (aging and people with disabilities)",
+          paymentType: "card",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [...employersPayload]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
+
+      expect(result.agencyNumber).toBe(988);
+    });
+    test("`prepForContact` handles community member edge case", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = jest.fn();
+      formValues.employerName = "community member";
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          directDepositAuth: true,
+          employerName: "community member",
+          paymentType: "card",
+          preferredLanguage: "English"
+        },
+        apiSubmission: {
+          handleInput: handleInputMock
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null
+          },
+          employerObjects: [...employersPayload]
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+        }
+      };
+      wrapper = setup(props);
+      const result = await wrapper
+        .instance()
+        .prepForContact(formValues)
+        .catch(err => console.log(err));
+
+      expect(result.agencyNumber).toBe(991);
     });
   });
 });
