@@ -72,7 +72,7 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.formPage1.lastName
           ) {
             this.handleOpen();
-            this.props.setCAPEOptions();
+            // this.props.setCAPEOptions();
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
