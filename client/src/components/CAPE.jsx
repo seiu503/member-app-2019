@@ -92,30 +92,17 @@ export const CAPE = props => {
             </Translate>
           </Typography>
           <Typography component="p" className={classes.body}>
-            <Translate id="capeBody1">
-              When workers unite, legislators listen. In 2019, SEIU Local 503
-              CAPE advocacy led to historic wins:
-            </Translate>
+            <Translate id="capeBody1" />
           </Typography>
           <ul className={classes.ul}>
             <li className={classes.li}>
-              <Translate id="capeBullet1">
-                Funding for raises and benefits for state employees and homecare
-                workers are double what they were in the last budget, setting
-                members up for strong contracts
-              </Translate>
+              <Translate id="capeBullet1" />
             </li>
             <li className={classes.li}>
-              <Translate id="capeBullet2">
-                Oregon passed the strongest Paid Family and Medical Leave law in
-                the nation
-              </Translate>
+              <Translate id="capeBullet2" />
             </li>
             <li className={classes.li}>
-              <Translate id="capeBullet3">
-                Our state became the first in the U.S. to pass statewide rent
-                stabilization and ban no-cause evictions
-              </Translate>
+              <Translate id="capeBullet3" />
             </li>
           </ul>
           <Card className={classes.card}>
