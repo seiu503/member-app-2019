@@ -306,6 +306,15 @@ export class SubmissionFormPage2Component extends React.Component {
               localize={this.props.localize}
             />
             <Field
+              label="I am a veteran or active military"
+              name="veteranId"
+              id="veteranId"
+              type="checkbox"
+              classes={this.classes}
+              component={this.renderCheckbox}
+              localize={this.props.localize}
+            />
+            <Field
               label="I identify as disabled or a person with a disability"
               name="disabilityId"
               id="disabilityId"
