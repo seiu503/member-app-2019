@@ -42,6 +42,7 @@ export class SubmissionFormPage2Component extends React.Component {
       lgbtqId,
       transId,
       disabilityId,
+      veteranId,
       deafOrHardOfHearing,
       blindOrVisuallyImpaired,
       gender,
@@ -65,6 +66,7 @@ export class SubmissionFormPage2Component extends React.Component {
       ethnicity,
       lgbtq_id: lgbtqId,
       trans_id: transId,
+      veteran_id: veteranId,
       disability_id: disabilityId,
       deaf_or_hard_of_hearing: deafOrHardOfHearing,
       blind_or_visually_impaired: blindOrVisuallyImpaired,
@@ -77,6 +79,7 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
+    console.log(body);
     const cleanBody = formElements.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
@@ -116,10 +119,12 @@ export class SubmissionFormPage2Component extends React.Component {
         return formElements.handleError(err);
       });
     }
-
-    this.props
+    console.log("CLEANBODY", cleanBody);
+    // the method in App.js only processes fields from page 1, need to jump direction to API action to make this work for page 2 fields
+    this.props.apiSF
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
+        console.log("updated SF contact");
         openSnackbar("success", this.props.translate("snackBarSuccess"));
         this.props.history.push(`/thankyou`);
       })
