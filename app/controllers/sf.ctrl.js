@@ -283,6 +283,8 @@ exports.updateSFContact = async (req, res, next) => {
   const { id } = req.params;
 
   const updatesRaw = { ...req.body };
+  console.log(`sf.ctrl.js > 286: updates`);
+  console.log(updatesRaw);
   const updates = {};
   // convert updates object to key/value pairs using
   // SF API field names

@@ -457,6 +457,19 @@ const contactsTableFields = {
     SQLDataType: "Boolean",
     testingSample: false
   },
+  veteran_id: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "veteran_id",
+    clientFieldName: "veteranId",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Active/Veteran US Military",
+    SFAPIName: "Active_Veteran_US_Military__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
   disability_id: {
     oldFormPage: "2",
     req: "N",
@@ -1543,11 +1556,24 @@ const Page2TableFields = {
     oldFormPage: "2",
     req: "N",
     postgresFieldName: "trans_id",
-    clientFieldName: "trandId",
+    clientFieldName: "transId",
     HtmlInputType: "checkbox",
     SFTable: "Worker (Contact)",
     SFFieldLabel: "Trans ID",
     SFAPIName: "Trans_ID__c",
+    SFDataType: "Checkbox",
+    SQLDataType: "Boolean",
+    testingSample: false
+  },
+  veteran_id: {
+    oldFormPage: "2",
+    req: "N",
+    postgresFieldName: "veteran_id",
+    clientFieldName: "veteranId",
+    HtmlInputType: "checkbox",
+    SFTable: "Worker (Contact)",
+    SFFieldLabel: "Active/Veteran US Military",
+    SFAPIName: "Active_Veteran_US_Military__c",
     SFDataType: "Checkbox",
     SQLDataType: "Boolean",
     testingSample: false
