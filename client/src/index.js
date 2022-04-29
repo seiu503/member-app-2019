@@ -1,7 +1,7 @@
 import "react-app-polyfill/ie11";
 import "react-app-polyfill/stable";
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "./styles/css/index.css";
@@ -15,7 +15,10 @@ import { LocalizeProvider } from "react-localize-redux";
 
 global.fetch = require("node-fetch");
 
-render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
   <Provider store={store}>
     <BrowserRouter>
       <ScrollToTop>
@@ -26,7 +29,6 @@ render(
         </MuiThemeProvider>
       </ScrollToTop>
     </BrowserRouter>
-  </Provider>,
-  document.getElementById("root")
+  </Provider>
 );
 unregister();
