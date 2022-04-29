@@ -3,6 +3,9 @@
 
 /* ================================= SETUP ================================= */
 
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 process.env.NODE_ENV = "testing";
 
 const { assert } = require("chai");
@@ -30,7 +33,7 @@ const google_token = "5678";
 let id;
 let userId;
 
-describe("user model tests", () => {
+describe.only("user model tests", () => {
   before(() => {
     return knexCleaner.clean(db);
   });

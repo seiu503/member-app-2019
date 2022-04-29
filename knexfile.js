@@ -19,12 +19,13 @@ module.exports = {
   },
   testing: {
     client: "pg",
-    connection: {
-      host: "127.0.0.1",
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.TEST_DATABASE_NAME
-    },
+    connection: process.env.TEST_DATABASE_ENDPOINT,
+    // connection: {
+    //   host: "127.0.0.1",
+    //   user: process.env.DATABASE_USER,
+    //   password: process.env.DATABASE_PASSWORD,
+    //   database: process.env.TEST_DATABASE_NAME
+    // },
     migrations: {
       directory: "./db/migrations/testing"
     },
