@@ -33,7 +33,7 @@ const google_token = "5678";
 let id;
 let userId;
 
-describe.only("user model tests", () => {
+describe("user model tests", () => {
   before(() => {
     return knexCleaner.clean(db);
   });

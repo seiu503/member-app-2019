@@ -52,6 +52,8 @@ import SamplePhoto from "./img/sample-form-photo.jpg";
 import globalTranslations from "./translations/globalTranslations";
 import welcomeInfo from "./translations/welcomeInfo.json";
 
+const refCaptcha = React.createRef();
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -208,6 +210,7 @@ export class AppUnconnected extends Component {
     this.changeTab = this.changeTab.bind(this);
     this.resubmitSubmission = this.resubmitSubmission.bind(this);
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
+    this.recaptcha = refCaptcha;
   }
 
   async componentDidMount() {
@@ -443,8 +446,9 @@ export class AppUnconnected extends Component {
   };
 
   async onResolved() {
-    const token = await this.recaptcha.getResponse();
-    // console.log(token);
+    const token = await this.recaptcha.current.getResponse();
+    console.log("reCaptcha Token");
+    console.log(token);
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
@@ -1095,7 +1099,7 @@ export class AppUnconnected extends Component {
       >
         <CssBaseline />
         <Recaptcha
-          ref={ref => (this.recaptcha = ref)}
+          ref={refCaptcha}
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           onResolved={this.onResolved}
         />
@@ -1124,7 +1128,7 @@ export class AppUnconnected extends Component {
                   direct_pay={this.direct_pay}
                   direct_deposit={this.direct_deposit}
                   sigBox={this.sigBox}
-                  recaptcha={this.recaptcha}
+                  recaptcha={refCaptcha}
                   onResolved={this.onResolved}
                   headline={this.state.headline}
                   body={this.state.body}

@@ -3,12 +3,14 @@ require("dotenv").config();
 module.exports = {
   development: {
     client: "pg",
-    connection: {
-      host: "127.0.0.1",
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME
-    },
+    // connection: process.env.DEV_DATABASE_ENDPOINT,
+    connection: "postgres://sarahschneider:@localhost:5432/seiu503_member_app",
+    // connection: {
+    //   host: "127.0.0.1",
+    //   user: process.env.DATABASE_USER,
+    //   password: process.env.DATABASE_PASSWORD,
+    //   database: process.env.DATABASE_NAME
+    // },
     migrations: {
       directory: "./db/migrations/development"
     },
@@ -19,7 +21,9 @@ module.exports = {
   },
   testing: {
     client: "pg",
-    connection: process.env.TEST_DATABASE_ENDPOINT,
+    // connection: process.env.TEST_DATABASE_ENDPOINT,
+    connection:
+      "postgres://sarahschneider:@localhost:5432/seiu503_member_app_test",
     // connection: {
     //   host: "127.0.0.1",
     //   user: process.env.DATABASE_USER,
@@ -59,3 +63,6 @@ module.exports = {
     }
   }
 };
+
+console.log(`knexfile.js: $$$$$$$$$$$$$$$$$$$$$$$$$$$$`);
+console.log(process.env.TEST_DATABASE_ENDPOINT);
