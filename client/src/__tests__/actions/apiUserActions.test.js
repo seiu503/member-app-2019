@@ -1,7 +1,5 @@
-/**
- * @jest-environment node
- */
 /* istanbul ignore file */
+
 import nock from "nock";
 import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
@@ -14,7 +12,7 @@ const store = createStore(userReducer.initialState);
 const token = "1234";
 const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
-describe.skip("apiUserActions", () => {
+describe("apiUserActions", () => {
   it("should create an action to handle form input", () => {
     const e = { target: { name: "type", value: "view" } };
     const expectedAction = {

@@ -29,36 +29,17 @@ const pg = require("pg");
 const configDB = require("./app/config/knex");
 const client = new pg.Client(configDB.configConnection);
 client.connect(err => {
-  console.log("@@@@@@@@@@@@@@@ client.connect 32 @@@@@@@@@@@@@@@@@@");
   if (err) {
-    console.log("@@@@@@@@@@@@@@@ client.connect 34 @@@@@@@@@@@@@@@@@@");
     return console.error("could not connect to postgres", err);
   }
   client.query('SELECT NOW() AS "theTime"', function(err, result) {
-    console.log("@@@@@@@@@@@@@@@ client.connect 38 @@@@@@@@@@@@@@@@@@");
     if (err) {
-      console.log("@@@@@@@@@@@@@@@ client.connect 40 @@@@@@@@@@@@@@@@@@");
       return console.error("error running query", err);
     }
     console.log(result.rows[0].theTime);
     // >> output: 2018-08-23T14:02:57.117Z
     // client.end();
   });
-
-  // client.query('SELECT datname FROM pg_database AS "theDatabaseName"', function(err, result) {
-  client.query(
-    "select pid as process_id, usename as username, datname as database_name, client_addr as client_address, backend_start,state, state_change from pg_stat_activity WHERE state = 'active'",
-    function(err, result) {
-      console.log("@@@@@@@@@@@@@@@ client.connect 50 @@@@@@@@@@@@@@@@@@");
-      if (err) {
-        console.log("@@@@@@@@@@@@@@@ client.connect 51 @@@@@@@@@@@@@@@@@@");
-        return console.error("error running query", err);
-      }
-      console.log(result.rows);
-      // >> output: 2018-08-23T14:02:57.117Z
-      client.end();
-    }
-  );
 });
 
 // routes ======================================================================

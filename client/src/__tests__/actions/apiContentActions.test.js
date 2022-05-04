@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 /* istanbul ignore file */
 
 import nock from "nock";
@@ -16,7 +13,7 @@ const id = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 const token = "1234";
 const key = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
-describe.skip("apiContentActions", () => {
+describe("apiContentActions", () => {
   it("should create an action to handle form input", () => {
     const e = { target: { name: "headline", value: "test headline content" } };
     const expectedAction = {

@@ -27,7 +27,7 @@ import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";
 import Clear from "@material-ui/icons/Clear";
-import DeleteOutline from "@material-ui/icons/DeleteOutline";
+import Delete from "@material-ui/icons/Delete";
 import Edit from "@material-ui/icons/Edit";
 import FilterList from "@material-ui/icons/FilterList";
 import FirstPage from "@material-ui/icons/FirstPage";
@@ -49,7 +49,7 @@ export const tableIcons = {
   CheckBoxChecked: forwardRef((props, ref) => (
     <CheckBoxIcon {...props} ref={ref} />
   )),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <Delete {...props} ref={ref} />),
   // DetailPanel: forwardRef((props, ref) => (
   //   <ChevronRight {...props} ref={ref} />
   // )),

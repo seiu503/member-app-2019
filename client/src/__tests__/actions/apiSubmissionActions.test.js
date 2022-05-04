@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 /* istanbul ignore file */
 import nock from "nock";
 import { apiMiddleware } from "redux-api-middleware";
@@ -18,7 +15,7 @@ const submissionBody = generateSampleSubmission();
 const capeBody = generateCAPEValidateFrontEnd();
 const token = "1234";
 
-describe.skip("apiSubmissionActions", () => {
+describe("apiSubmissionActions", () => {
   describe("api actions", () => {
     afterEach(() => {
       nock.cleanAll();

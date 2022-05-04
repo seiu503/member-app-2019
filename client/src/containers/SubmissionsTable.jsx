@@ -80,7 +80,7 @@ export class SubmissionsTableUnconnected extends React.Component {
   async componentDidUpdate(prevProps) {
     if (
       ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
-        (this.props.appState.authToken && this.props.appState.userType)) ||
+        this.props.appState.authToken && this.props.appState.userType) ||
       (this.props.submission &&
         this.props.submission.allSubmissions &&
         prevProps.submission.allSubmissions.length !==
@@ -141,9 +141,7 @@ export class SubmissionsTableUnconnected extends React.Component {
     } else if (submissionDeleteResult.type === "DELETE_SUBMISSION_SUCCESS") {
       openSnackbar(
         "success",
-        `Deleted submission from ${submissionData.firstName} ${
-          submissionData.lastName
-        }.`
+        `Deleted submission from ${submissionData.firstName} ${submissionData.lastName}.`
       );
       this.props.apiSubmission.getAllSubmissions(token);
     }
@@ -203,7 +201,7 @@ export class SubmissionsTableUnconnected extends React.Component {
               icons={tableIcons}
               actions={[
                 {
-                  icon: BackupIcon,
+                  icon: () => BackupIcon,
                   tooltip: "Resubmit",
                   onClick: (event, rowData) => {
                     console.log("resubmit");

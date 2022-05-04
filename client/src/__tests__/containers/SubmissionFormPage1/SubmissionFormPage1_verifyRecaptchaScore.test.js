@@ -169,10 +169,12 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("verifyRecaptchaScore", () => {
-    test("verifyRecaptchaScore calls `recaptcha.execute`", async function() {
+    test("verifyRecaptchaScore calls `recaptcha.current.execute()`", async function() {
       const props = {
         recaptcha: {
-          execute: executeMock
+          current: {
+            execute: executeMock
+          }
         }
       };
       wrapper = setup(props);
@@ -187,7 +189,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         );
       const props = {
         recaptcha: {
-          execute: executeMock
+          current: {
+            execute: executeMock
+          }
         },
         submission: {
           formPage1: {
@@ -208,7 +212,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() => Promise.reject({ type: "VERIFY_FAILURE" }));
       const props = {
         recaptcha: {
-          execute: executeMock
+          current: {
+            execute: executeMock
+          }
         },
         submission: {
           formPage1: {

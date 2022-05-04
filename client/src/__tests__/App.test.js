@@ -660,7 +660,9 @@ describe("<App />", () => {
         .fn()
         .mockImplementation(() => Promise.resolve("token"));
       wrapper.instance().recaptcha = {
-        getResponse: getResponseMock
+        current: {
+          getResponse: getResponseMock
+        }
       };
       await wrapper.update();
       await wrapper.instance().onResolved();

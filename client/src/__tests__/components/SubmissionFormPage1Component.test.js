@@ -19,7 +19,7 @@ let wrapper,
   apiSF = {},
   handleSubmitMock,
   handleErrorMock,
-  addSubmissionSuccess,
+  createSubmissionSuccess,
   updateSubmissionSuccess,
   updateSubmissionError,
   props,
@@ -143,6 +143,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     handleErrorMock = jest.fn();
     apiSubmission = {
       updateSubmission: updateSubmissionSuccess,
+      createSubmission: createSubmissionSuccess,
       verify: verifySuccess
     };
     apiSF = {
@@ -395,8 +396,9 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         },
         tab: 2,
         apiSubmission: {
-          addSubmission: addSubmissionSuccess,
+          createSubmission: createSubmissionSuccess,
           updateSubmission: updateSubmissionSuccess,
+          createSubmission: createSubmissionSuccess,
           verify: verifySuccess
         },
         submission: {
@@ -432,6 +434,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         verifyRecaptchaScore: verifyRecaptchaError,
         handleError: handleErrorMock,
         updateSubmission: updateSubmissionSuccess,
+        createSubmission: createSubmissionSuccess,
         formValues: {
           mm: "",
           onlineCampaignSource: null,
@@ -459,7 +462,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props = {
         verifyRecaptchaScore: verifyRecaptchaError,
         handleError: handleErrorMock,
-        updateSubmission: updateSubmissionSuccess
+        updateSubmission: updateSubmissionSuccess,
+        createSubmission: createSubmissionSuccess
       };
       wrapper = setup(props);
       wrapper
@@ -480,10 +484,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
         );
       testData = generateSampleValidate();
-      addSubmissionSuccess = jest
+      createSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
         );
 
       props.tab = 2;
@@ -517,10 +521,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         );
       testData = generateSampleValidate();
       formElements.handleError = jest.fn();
-      addSubmissionSuccess = jest
+      createSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
         );
 
       props.tab = 2;
@@ -528,6 +532,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props.submission.payment = { cardAddingUrl: "" };
       props.submission.error = "Error";
       props.saveSubmissionErrors = saveSubmissionErrorsMock;
+      props.createSubmission = createSubmissionSuccess;
       props.howManyTabs = 4;
       props.handleError = handleErrorMock;
       props.updateSubmission = updateSubmissionError;
@@ -609,6 +614,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
       // creating wrapper
       props.apiSubmission.updateSubmission = updateSubmissionSuccess;
+      props.createSubmission = createSubmissionSuccess;
       props.submission.formPage1.employerType = "retired";
       props.submission.formPage1.paymentType = "Check";
       props.updateSubmission = updateSubmissionSuccess;
@@ -654,6 +660,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
       // creating wrapper
       props.apiSubmission.updateSubmission = updateSubmissionSuccess;
+      props.createSubmission = createSubmissionSuccess;
       const handleInputMock = jest.fn();
       props.apiSubmission.handleInput = handleInputMock;
       wrapper = setup(props);
@@ -699,6 +706,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
       // creating wrapper
       props.apiSubmission.updateSubmission = updateSubmissionError;
+      props.apiSubmission.createSubmission = createSubmissionSuccess;
+      props.createSubmission = createSubmissionSuccess;
       const handleInputMock = jest.fn();
       props.apiSubmission.handleInput = handleInputMock;
       const updateSubmissionMethodSuccess = jest

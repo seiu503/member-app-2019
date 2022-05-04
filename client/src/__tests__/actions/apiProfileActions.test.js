@@ -1,6 +1,3 @@
-/**
- * @jest-environment node
- */
 /* istanbul ignore file */
 
 import nock from "nock";
@@ -16,7 +13,7 @@ const store = createStore(profileReducer.initialState);
 const id = "1234";
 const token = "1651a5d6-c2f7-453f-bdc7-13888041add6";
 
-describe.skip("apiProfileActions", () => {
+describe("apiProfileActions", () => {
   describe("api actions", () => {
     beforeAll(() => {
       jest.useFakeTimers();
