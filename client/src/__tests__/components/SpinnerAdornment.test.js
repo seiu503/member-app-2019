@@ -3,7 +3,8 @@ import { shallow } from "enzyme";
 import SpinnerAdornment, {
   SpinnerAdornmentBase
 } from "../../components/SpinnerAdornment";
-import CircularProgress from "@material-ui/core/CircularProgress";
+
+import { CircularProgress } from "@mui/icons-material";
 
 describe("<SpinnerAdornment />", () => {
   it("renders without error", () => {

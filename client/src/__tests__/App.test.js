@@ -203,22 +203,6 @@ const routeSetup = async route => {
   );
 };
 
-// const routeSetupWithMui = route => {
-//   return mount(
-//     <Provider store={store}>
-//       <MemoryRouter initialEntries={[route]}>
-//         <MuiThemeProvider theme={{
-//             primary: {
-//               main: "#fff"
-//             }
-//           }}>
-//           <AppConnected {...defaultProps} />
-//         </MuiThemeProvider>
-//       </MemoryRouter>
-//     </Provider>
-//   );
-// };
-
 describe("<App />", () => {
   it("renders unconnected component", async () => {
     wrapper = await setup();
@@ -761,19 +745,6 @@ describe("<App />", () => {
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
       expect(wrapper.find(Dashboard)).toHaveLength(1);
     });
-    // test(' "/content" path should render ContentLibrary component', () => {
-    //   // wrapper = mount(<Provider store={store}>
-    //   //       <MemoryRouter initialEntries={[ '/library' ]}>
-    //   //         <MuiThemeProvider theme={theme}>
-    //   //           <AppConnected {...defaultProps} />
-    //   //         </MuiThemeProvider>
-    //   //       </MemoryRouter>
-    //   //     </Provider>
-    //   // );
-    //   // wrapper = routeSetupWithMui("/content");
-    //   expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);
-    //   expect(wrapper.find(ContentLibrary)).toHaveLength(1);
-    // });
     test(' "/new" path should render TextInputForm component', async () => {
       wrapper = await routeSetup("/new");
       expect(wrapper.find(SubmissionFormPage1)).toHaveLength(0);

@@ -1,6 +1,6 @@
 // https://menubar.io/creating-a-material-ui-button-with-spinner-that-reflects-loading-state
 
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { CircularProgress } from "@mui/material";
 
 const spinnerStyle = {
   color: "#ffffff",

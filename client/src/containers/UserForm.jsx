@@ -6,12 +6,14 @@ import { connect } from "react-redux";
 import CreateUser from "../components/CreateUser";
 import EditUser from "../components/EditUser";
 
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
+import {
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel
+} from "@mui/material";
 
 const styles = theme => ({
   root: {},

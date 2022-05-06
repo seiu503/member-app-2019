@@ -4,12 +4,9 @@ import MaterialTable from "material-table";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 
-import Typography from "@material-ui/core/Typography";
-import FAB from "@material-ui/core/Fab";
-import Create from "@material-ui/icons/Create";
-import Tooltip from "@material-ui/core/Tooltip";
+import { FAB, Create, Tooltip, Typography } from "@mui/material";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
@@ -140,7 +137,7 @@ export class ContentLibraryUnconnected extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
       ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
-        (this.props.appState.authToken && this.props.appState.userType)) ||
+        this.props.appState.authToken && this.props.appState.userType) ||
       prevProps.content.allContent.length !==
         this.props.content.allContent.length ||
       prevProps.appState.userType !== this.props.appState.userType

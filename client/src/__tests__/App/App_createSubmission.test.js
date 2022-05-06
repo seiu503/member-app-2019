@@ -213,7 +213,7 @@ describe("<App />", () => {
     // console.log = jest.fn();
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    // jest.restoreAllMocks();
   });
 
   describe("createSubmission", () => {
@@ -264,8 +264,10 @@ describe("<App />", () => {
         .createSubmission(formValues)
         .then(async () => {
           await generateSubmissionBodyMock;
+          console.log("267");
           await addSubmissionError;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+          console.log("269");
+          expect(formElements.handleError).toHaveBeenCalled();
         })
         .catch(err => console.log(err));
     });
@@ -500,7 +502,7 @@ describe("<App />", () => {
           await addSubmissionSuccess;
           await createSFOMASuccess;
           await updateSubmissionError;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+          expect(formElements.handleError).toHaveBeenCalled();
         })
         .catch(err => console.log(err));
     });

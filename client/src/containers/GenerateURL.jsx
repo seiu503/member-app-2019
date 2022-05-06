@@ -2,11 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import FAB from "@material-ui/core/Fab";
-import Tooltip from "@material-ui/core/Tooltip";
-import FileCopy from "@material-ui/icons/FileCopy";
+import { withStyles } from "@mui/styles";
+
+import { FAB, TextField, Tooltip, FileCopy } from "@mui/material";
 
 import * as utils from "../utils";
 

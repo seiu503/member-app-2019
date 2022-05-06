@@ -5,17 +5,23 @@ import { Translate } from "react-localize-redux";
 
 import AlertDialog from "./AlertDialog";
 import ButtonWithSpinner from "./ButtonWithSpinner";
-import Button from "@material-ui/core/Button";
 import * as formElements from "./SubmissionFormElements";
-import Typography from "@material-ui/core/Typography";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormGroup from "@material-ui/core/FormGroup";
-import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
-import FormatQuote from "@material-ui/icons/FormatQuote";
+
+import {
+  Button,
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  FormLabel,
+  FormHelperText,
+  FormGroup,
+  FormatQuote
+} from "@mui/material";
+import { FormatQuote } from "@mui/icons-material";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+const matches = useMediaQuery("(min-width:450px)");
 
 import headshot from "../img/deffo_mebrat_300.png";
 
@@ -163,7 +169,7 @@ export const CAPE = props => {
             <FormGroup row classes={{ root: classes.formGroup2Col }}>
               <Field
                 twocol
-                mobile={!isWidthUp("sm", width)}
+                mobile={!matches}
                 label="First Name"
                 name="firstName"
                 id="firstName"
@@ -174,7 +180,7 @@ export const CAPE = props => {
 
               <Field
                 twocol
-                mobile={!isWidthUp("sm", width)}
+                mobile={!matches}
                 name="lastName"
                 id="lastName"
                 label="Last Name"
@@ -288,7 +294,7 @@ export const CAPE = props => {
                 id="homeCity"
                 type="text"
                 twocol
-                mobile={!isWidthUp("sm", width)}
+                mobile={!matches}
                 classes={classes}
                 component={renderTextField}
               />
@@ -299,7 +305,7 @@ export const CAPE = props => {
                 id="homeState"
                 type="select"
                 short
-                mobile={!isWidthUp("sm", width)}
+                mobile={!matches}
                 classes={classes}
                 component={renderSelect}
                 options={formElements.stateList}
@@ -311,7 +317,7 @@ export const CAPE = props => {
                 name="homeZip"
                 id="homeZip"
                 short
-                mobile={!isWidthUp("sm", width)}
+                mobile={!matches}
                 type="text"
                 classes={classes}
                 component={renderTextField}

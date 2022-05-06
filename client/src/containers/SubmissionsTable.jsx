@@ -4,8 +4,10 @@ import MaterialTable from "material-table";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { withRouter } from "react-router-dom";
-import { withStyles } from "@material-ui/core/styles";
-import BackupIcon from "@material-ui/icons/Backup";
+import { withStyles } from "@mui/styles";
+
+import { Typography } from "@mui/material";
+import { BackupIcon } from "@mui/icons-material";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 
@@ -15,8 +17,6 @@ import {
   submTableFieldList
 } from "../components/SubmissionFormElements";
 import { openSnackbar } from "./Notifier";
-
-import Typography from "@material-ui/core/Typography";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -80,7 +80,8 @@ export class SubmissionsTableUnconnected extends React.Component {
   async componentDidUpdate(prevProps) {
     if (
       ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
-        this.props.appState.authToken && this.props.appState.userType) ||
+        this.props.appState.authToken &&
+        this.props.appState.userType) ||
       (this.props.submission &&
         this.props.submission.allSubmissions &&
         prevProps.submission.allSubmissions.length !==

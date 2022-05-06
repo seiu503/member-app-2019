@@ -2,7 +2,7 @@ import React from "react";
 
 import CustomSnackbarContentWrapper from "../components/CustomSnackbarContent";
 
-import Snackbar from "@material-ui/core/Snackbar";
+import { Snackbar } from "@mui/material";
 
 let openSnackbarFn;
 

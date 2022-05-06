@@ -5,17 +5,17 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { Translate } from "react-localize-redux";
 
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Slide from "@material-ui/core/Slide";
+import { withStyles } from "@mui/styles";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import ListItemText from "@mui/material/ListItemText";
+import Slide from "@mui/material/Slide";
+import MenuOutlined from "@mui/icons-material/MenuOutlined";
 
 import { skip } from "../utils";
 import { LanguagePicker } from "../components/SubmissionFormElements";
@@ -318,7 +318,7 @@ export class NavBar extends React.Component {
                   onClick={e => this.handleClick(e)}
                   data-test="menu-button"
                 >
-                  <MenuIcon />
+                  <MenuOutlined />
                 </IconButton>
                 <Menu
                   id="nav-menu"

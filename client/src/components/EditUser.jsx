@@ -3,14 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import { withStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
+import { TextField, Typography } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 import * as apiUserActions from "../store/actions/apiUserActions";
 
 import ButtonWithSpinner from "../components/ButtonWithSpinner";
-// import Spinner from "../components/Spinner";
 import AlertDialog from "../components/AlertDialog";
 import * as formElements from "../components/SubmissionFormElements";
 
@@ -169,9 +167,7 @@ export class EditUserFormUnconnected extends React.Component {
             open={this.props.user.deleteDialogOpen}
             handleClose={this.props.apiUser.handleDeleteClose}
             title="Delete User"
-            content={`Are you sure you want to delete ${
-              this.props.user.currentUser.name
-            }? This action cannot be undone and all user data will be lost.`}
+            content={`Are you sure you want to delete ${this.props.user.currentUser.name}? This action cannot be undone and all user data will be lost.`}
             danger={true}
             action={this.dialogAction}
             buttonText="Delete"

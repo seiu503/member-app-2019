@@ -8,7 +8,7 @@ import { SubmissionFormPage1Container } from "../../../containers/SubmissionForm
 
 let wrapper, handleErrorMock;
 
-let pushMock = jest.fn(),
+let pushMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -155,16 +155,6 @@ let postOneTimePaymentError = jest
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -208,6 +198,7 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
+    createSFCAPE: () => Promise.resolve({ type: "CREATE_SF_CAPE_SUCCESS " }),
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -218,6 +209,9 @@ const defaultProps = {
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
+  lookupSFContact: lookupSFContactSuccess,
+  createSFContact: createSFContactSuccess,
+  updateSFContact: updateSFContactSuccess,
   history: {
     push: pushMock
   },
@@ -225,7 +219,6 @@ const defaultProps = {
     execute: executeMock
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -247,7 +240,12 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  translate: jest.fn()
+  translate: jest.fn(),
+  cape_legal: {
+    current: {
+      innerHTML: "cape"
+    }
+  }
 };
 
 const setup = (props = {}) => {
@@ -268,9 +266,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       handleErrorMock = jest.fn();
     });
     afterEach(() => {
-      pushMock.mockClear();
+      // pushMock.mockClear();
       createCAPESuccess.mockClear();
-      jest.restoreAllMocks();
+      // jest.restoreAllMocks();
     });
 
     test("`handleCAPESubmit` calls createCAPE if !capeid", async () => {
@@ -1297,14 +1295,15 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         reset: jest.fn(),
-        history: {
-          push: pushMock
-        }
+        history: {}
       };
 
       wrapper = setup(props);
 
       wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
+      wrapper.instance().props.history.push = pushMock;
+      wrapper.instance().forceUpdate();
+      wrapper.update();
       wrapper
         .instance()
         .handleCAPESubmit(true)
@@ -1315,11 +1314,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             .catch(err => {
               console.log(err);
             });
-          await createSFCAPESuccess;
-          await createCAPESuccess;
-          await updateCAPESuccess;
-          await updateSFCAPESuccess;
-          expect(pushMock.mock.calls.length).toBe(1);
+
+          expect(wrapper.instance().props.history.push.mock.calls[0]).toContain(
+            "/thankyou/?cape=true"
+          );
         })
         .catch(err => {
           console.log(err);

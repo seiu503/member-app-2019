@@ -10,9 +10,8 @@ import queryString from "query-string";
 import moment from "moment";
 import { Translate } from "react-localize-redux";
 
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import { Typography, CssBaseline } from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 import * as Actions from "./store/actions";
 import * as apiContentActions from "./store/actions/apiContentActions";
@@ -849,18 +848,32 @@ export class AppUnconnected extends Component {
     // create initial submission using data in tabs 1 & 2
 
     const body = await this.generateSubmissionBody(formValues, partial);
-    console.log(body);
+    // console.log(body);
     const cleanBody = removeFalsy(body);
     console.log(cleanBody);
     await this.props.apiSubmission
       .addSubmission(cleanBody)
-      .then(() => {
-        // console.log('453');
+      .then(result => {
+        console.log("858");
+        if (
+          result.type !== "ADD_SUBMISSION_SUCCESS" ||
+          this.props.submission.error
+        ) {
+          console.log("863");
+          const err =
+            this.props.submission.error ||
+            "An error occurred while saving your Submission";
+          console.error(err);
+          return handleError(err);
+        }
       })
       .catch(err => {
+        console.log("869");
         console.error(err);
         return handleError(err);
       });
+
+    console.log("874");
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask

@@ -8,7 +8,12 @@ import "./styles/css/index.css";
 import App from "./App";
 import store from "./store/store";
 import { unregister } from "./serviceWorker";
-import { ThemeProvider as MuiThemeProvider } from "@mui/material";
+import {
+  ThemeProvider,
+  createMuiTheme,
+  makeStyles,
+  StyledEngineProvider
+} from "@mui/material/styles";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
 import { LocalizeProvider } from "react-localize-redux";
@@ -16,16 +21,18 @@ import { LocalizeProvider } from "react-localize-redux";
 global.fetch = require("node-fetch");
 
 render(
-  <Provider store={store}>
-    <BrowserRouter>
-      <ScrollToTop>
-        <MuiThemeProvider theme={theme}>
-          <LocalizeProvider store={store}>
-            <App />
-          </LocalizeProvider>
-        </MuiThemeProvider>
-      </ScrollToTop>
-    </BrowserRouter>
-  </Provider>
+  <StyledEngineProvider injectFirst>
+    <Provider store={store}>
+      <BrowserRouter>
+        <ScrollToTop>
+          <ThemeProvider theme={theme}>
+            <LocalizeProvider store={store}>
+              <App />
+            </LocalizeProvider>
+          </ThemeProvider>
+        </ScrollToTop>
+      </BrowserRouter>
+    </Provider>
+  </StyledEngineProvider>
 );
 unregister();

@@ -1,7 +1,7 @@
 // https://menubar.io/creating-a-material-ui-button-with-spinner-that-reflects-loading-state
 
 import React from "react";
-import Button from "@material-ui/core/Button";
+import { Button } from "@mui/material";
 import SpinnerAdornment from "./SpinnerAdornment";
 
 type Props = {

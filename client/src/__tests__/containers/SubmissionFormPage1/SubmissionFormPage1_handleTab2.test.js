@@ -202,49 +202,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     // console.log = jest.fn();
   });
   afterEach(() => {
-    jest.restoreAllMocks();
+    // jest.restoreAllMocks();
   });
 
   describe("handleTab2", () => {
-    test("`handleTab2` calculates AFH dues rate if employerType === 'afh'", () => {
-      handleUploadMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(sigUrl));
-      // const saveSignatureMock = jest
-      //   .fn()
-      //   .mockImplementation(() => Promise.resolve(sigUrl));
-      const calculateAFHDuesRateMock = jest.fn();
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          employerType: "adult foster home",
-          preferredLanguage: "Spanish",
-          signature: "test"
-        },
-        createSubmission: createSubmissionMock,
-        translate: jest.fn()
-      };
-
-      wrapper = setup(props);
-      // wrapper.instance().state.signatureType = "draw";
-      // wrapper.instance().saveSignature = saveSignatureMock;
-      wrapper.instance().calculateAFHDuesRate = calculateAFHDuesRateMock;
-      wrapper
-        .instance()
-        .handleTab2()
-        .then(() => {
-          expect(calculateAFHDuesRateMock.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
-    });
-
     test("`handleTab2` handles error if createSubmission throws", () => {
-      // handleUploadMock = jest
-      //   .fn()
-      //   .mockImplementation(() => Promise.resolve(sigUrl));
-      // const saveSignatureMock = jest
-      //   .fn()
-      //   .mockImplementation(() => Promise.resolve(sigUrl));
       const calculateAFHDuesRateMock = jest.fn();
       formElements.handleError = jest.fn();
       const createSubmissionMock = jest

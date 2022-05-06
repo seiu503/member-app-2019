@@ -8,16 +8,15 @@ import {
 import { connect } from "react-redux";
 import { Translate } from "react-localize-redux";
 
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormGroup from "@material-ui/core/FormGroup";
-import Button from "@material-ui/core/Button";
-import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import { FormLabel, FormHelperText, FormGroup, Button } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
+
+const matches = useMediaQuery("(min-width:450px)");
 
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const {
@@ -103,7 +102,7 @@ export const Tab1 = props => {
           <FormGroup row classes={{ root: classes.formGroup2Col }}>
             <Field
               twocol
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               label="First Name"
               name="firstName"
               id="firstName"
@@ -114,7 +113,7 @@ export const Tab1 = props => {
 
             <Field
               twocol
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               name="lastName"
               id="lastName"
               label="Last Name"
@@ -203,7 +202,7 @@ export const Tab1 = props => {
               id="homeCity"
               type="text"
               twocol
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               classes={classes}
               component={renderTextField}
             />
@@ -214,7 +213,7 @@ export const Tab1 = props => {
               id="homeState"
               type="select"
               short
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               classes={classes}
               component={renderSelect}
               options={stateList}
@@ -226,7 +225,7 @@ export const Tab1 = props => {
               name="homeZip"
               id="homeZip"
               short
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               type="text"
               classes={classes}
               component={renderTextField}

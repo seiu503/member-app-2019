@@ -4,7 +4,7 @@ import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import * as Actions from "../store/actions";
 
-import Typography from "@material-ui/core/Typography";
+import { Typography } from "@mui/material";
 
 export class Logout extends React.Component {
   componentDidMount() {
@@ -44,7 +44,4 @@ export const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch)
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Logout);
+export default connect(null, mapDispatchToProps)(Logout);

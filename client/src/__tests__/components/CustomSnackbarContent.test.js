@@ -3,11 +3,15 @@ import { shallow, mount } from "enzyme";
 import { unwrap, createShallow } from "@material-ui/core/test-utils";
 import { findByTestAttr } from "../../utils/testUtils";
 import CustomSnackbarContent from "../../components/CustomSnackbarContent";
-import CloseIcon from "@material-ui/icons/Close";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import WarningIcon from "@material-ui/icons/Warning";
-import ErrorIcon from "@material-ui/icons/Error";
-import InfoIcon from "@material-ui/icons/Info";
+import { green, amber } from "@mui/material/colors";
+import { SnackbarContent, IconButton } from "@mui/material";
+import {
+  CheckCircleIcon,
+  WarningIcon,
+  ErrorIcon,
+  InfoIcon,
+  CloseIcon
+} from "@mui/icons-material";
 
 const CustomSnackbarContentNaked = unwrap(CustomSnackbarContent);
 const defaultProps = {

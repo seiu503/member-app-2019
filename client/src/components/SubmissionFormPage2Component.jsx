@@ -5,12 +5,11 @@ import { withLocalize, Translate } from "react-localize-redux";
 import queryString from "query-string";
 import moment from "moment";
 
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormGroup from "@material-ui/core/FormGroup";
-import CheckCircleOutline from "@material-ui/icons/CheckCircleOutline";
-import Divider from "@material-ui/core/Divider";
-import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import { FormLabel, FormHelperText, FormGroup, Divider } from "@mui/material";
+import { CheckCircleOutline } from "@mui/icons-material";
+
+import useMediaQuery from "@mui/material/useMediaQuery";
+const matches = useMediaQuery("(min-width:450px)");
 
 import * as formElements from "./SubmissionFormElements";
 import ButtonWithSpinner from "./ButtonWithSpinner";
@@ -180,7 +179,7 @@ export class SubmissionFormPage2Component extends React.Component {
               >
                 <Field
                   twocol
-                  mobile={!isWidthUp("sm", this.props.width)}
+                  mobile={!matches}
                   label="First Name"
                   name="firstName"
                   id="firstName"
@@ -191,7 +190,7 @@ export class SubmissionFormPage2Component extends React.Component {
 
                 <Field
                   twocol
-                  mobile={!isWidthUp("sm", this.props.width)}
+                  mobile={!matches}
                   name="lastName"
                   id="lastName"
                   label="Last Name"

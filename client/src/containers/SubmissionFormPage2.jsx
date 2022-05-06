@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import queryString from "query-string";
 import { withLocalize } from "react-localize-redux";
 
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 
 import SubmissionFormPage2Wrap from "../components/SubmissionFormPage2Component";
 

@@ -11,7 +11,7 @@ import NoAccess from "../components/NoAccess";
 import * as Actions from "../store/actions";
 import * as apiProfileActions from "../store/actions/apiProfileActions";
 
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 
 const styles = theme => ({
   root: {

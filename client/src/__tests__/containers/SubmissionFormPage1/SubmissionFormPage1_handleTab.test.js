@@ -352,7 +352,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .instance()
         .handleTab(2)
         .then(() => {
-          expect(formElements.handleError.mock.calls.length).toEqual(1);
+          expect(handleErrorMock).toHaveBeenCalled();
         })
         .catch(err => {
           console.log(err);

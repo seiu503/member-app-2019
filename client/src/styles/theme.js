@@ -1,6 +1,13 @@
-import { createTheme } from "@material-ui/core/styles";
-import red from "@material-ui/core/colors/red";
-import green from "@material-ui/core/colors/green";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText
+} from "@mui/material";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { red, green } from "@mui/material/colors";
 
 export const theme = {
   palette: {
@@ -44,56 +51,66 @@ export const theme = {
       "sans-serif"
     ].join(",")
   },
-  overrides: {
+  components: {
     MuiMenu: {
-      paper: {
-        position: "absolute",
-        top: "56px !important",
-        right: "0 !important",
-        left: "50% !important",
-        borderRadius: "0 !important",
-        bottom: "0 !important",
-        maxHeight: "calc(100vh - 109px) !important",
-        filter: "none !important"
+      styleOverrides: {
+        paper: {
+          position: "absolute",
+          top: "56px !important",
+          right: "0 !important",
+          left: "50% !important",
+          borderRadius: "0 !important",
+          bottom: "0 !important",
+          maxHeight: "calc(100vh - 109px) !important",
+          filter: "none !important"
+        }
       }
     },
     MuiButton: {
-      root: {
-        borderRadius: 0,
-        fontFamily: [
-          '"Source Sans Pro"',
-          '"Helvetica Neue"',
-          "Helvetica",
-          "Arial",
-          "sans-serif"
-        ].join(","),
-        fontWeight: 400,
-        textDecoration: "none"
+      styleOverrides: {
+        root: {
+          borderRadius: 0,
+          fontFamily: [
+            '"Source Sans Pro"',
+            '"Helvetica Neue"',
+            "Helvetica",
+            "Arial",
+            "sans-serif"
+          ].join(","),
+          fontWeight: 400,
+          textDecoration: "none"
+        }
       }
     },
     MuiFormLabel: {
-      root: {
-        "&$focused": {
+      styleOverrides: {
+        root: {
           "&$focused": {
-            color: "secondary"
+            "&$focused": {
+              color: "secondary"
+            }
           }
         }
       }
     },
     "MuiButton-outlinedSecondary": {
-      border: 2
+      styleOverrides: {
+        border: 2
+      }
     },
     MuiTypography: {
-      root: {
-        fontFamily: [
-          '"Source Sans Pro"',
-          '"Helvetica Neue"',
-          "Helvetica",
-          "Arial",
-          "sans-serif"
-        ].join(",")
+      styleOverrides: {
+        root: {
+          fontFamily: [
+            '"Source Sans Pro"',
+            '"Helvetica Neue"',
+            "Helvetica",
+            "Arial",
+            "sans-serif"
+          ].join(",")
+        }
       }
     }
   }
 };
-export default createTheme(theme);
+export default createTheme(adaptV4Theme(theme));

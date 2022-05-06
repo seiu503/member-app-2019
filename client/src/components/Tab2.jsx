@@ -2,9 +2,8 @@ import React from "react";
 import { Field } from "redux-form";
 import { reduxForm } from "redux-form";
 
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+import { Button, FormHelperText, Typography } from "@mui/material";
+
 import PropTypes from "prop-types";
 import { Translate } from "react-localize-redux";
 

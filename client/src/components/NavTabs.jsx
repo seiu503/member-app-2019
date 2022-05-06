@@ -1,14 +1,14 @@
 import PropTypes from "prop-types";
 import shortid from "shortid";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import Paper from "@material-ui/core/Paper";
-import LooksOneIcon from "@material-ui/icons/LooksOne";
-import LooksTwoIcon from "@material-ui/icons/LooksTwo";
-import Looks3Icon from "@material-ui/icons/Looks3";
-import Looks4Icon from "@material-ui/icons/Looks4";
+import { Tabs, Tab, Paper } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+import {
+  Looks4Icon,
+  Looks3Icon,
+  LooksTwoIcon,
+  LooksOneIcon
+} from "@mui/icons-material";
 
 const useStyles = makeStyles({
   root: {

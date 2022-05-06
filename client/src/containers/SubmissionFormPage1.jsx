@@ -14,7 +14,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 
-import { withStyles } from "@material-ui/core/styles";
+import { withStyles } from "@mui/styles";
 
 import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
@@ -297,33 +297,6 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  // async saveSignature() {
-  //   //   console.log("saveSignature");
-  //   const { formValues } = this.props;
-  //   // perform signature processing steps and save value to redux store
-  //   // before ref disappears
-
-  //   if (this.state.signatureType === "draw") {
-  //     // console.log(`this.state.signagureType: ${this.state.signatureType}`);
-  //     const sigUrl = await this.handleUpload(
-  //       formValues.firstName,
-  //       formValues.lastName
-  //     ).catch(err => {
-  //       console.error(err);
-  //       return handleError(err);
-  //     });
-  //     // console.log(`signature url: ${sigUrl}`);
-  //     this.props.apiSubmission.handleInput({
-  //       target: { name: "signature", value: sigUrl }
-  //     });
-  //     return sigUrl;
-  //   } else {
-  //     // console.log(`this.state.signatureType: ${this.state.signatureType}`);
-  //     // console.log(formValues.signature);
-  //     return formValues.signature;
-  //   }
-  // }
-
   async checkCAPEPaymentLogic() {
     console.log("checkCAPEPaymentLogic");
     const { formValues } = this.props;
@@ -473,7 +446,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    // console.log("handleCAPESubmit");
+    console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
 
     if (standAlone) {
@@ -556,7 +529,6 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_amount: donationAmount,
       donation_frequency: formValues.donationFrequency
     };
-
     // update CAPE record in postgres
     await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
       console.error(err);
@@ -572,7 +544,6 @@ export class SubmissionFormPage1Container extends React.Component {
       );
     } else {
       openSnackbar("success", "Thank you. Your CAPE submission was processed.");
-
       this.props.history.push(`/thankyou/?cape=true`);
     }
   }

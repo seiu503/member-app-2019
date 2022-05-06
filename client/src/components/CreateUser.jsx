@@ -4,13 +4,15 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import shortid from "shortid";
 
-import { withStyles } from "@material-ui/core/styles";
-import Select from "@material-ui/core/Select";
-import TextField from "@material-ui/core/TextField";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
+import {
+  Select,
+  TextField,
+  OutlinedInput,
+  Typography,
+  InputLabel,
+  FormControl
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
 
 import * as apiUserActions from "../store/actions/apiUserActions";
 
