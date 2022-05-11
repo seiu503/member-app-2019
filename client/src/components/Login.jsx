@@ -13,7 +13,7 @@ export class Login extends React.Component {
     return (
       <div
         className={this.props.classes.fullWidthContainer}
-        data-test="component-login"
+        data-testid="component-login"
       >
         <div className={this.props.classes.buttonWrap}>
           <Button

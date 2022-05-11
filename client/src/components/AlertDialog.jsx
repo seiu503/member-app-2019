@@ -29,9 +29,9 @@ export const styles = theme => ({
 });
 
 export const AlertDialogUnwrapped = props => (
-  <div data-test="component-alert-dialog">
+  <div data-testid="component-alert-dialog">
     <Dialog
-      data-test="dialog"
+      data-testid="dialog"
       open={props.open}
       onClose={props.handleClose}
       aria-labelledby={
@@ -41,14 +41,14 @@ export const AlertDialogUnwrapped = props => (
       PaperProps={{ style: { margin: 0 } }}
     >
       {props.title && (
-        <DialogTitle id="alert-dialog-title" data-test="dialog-title">
+        <DialogTitle id="alert-dialog-title" data-testid="dialog-title">
           {props.title}
         </DialogTitle>
       )}
       <DialogContent>
         <DialogContentText
           id="alert-dialog-description"
-          data-test="dialog-content"
+          data-testid="dialog-content"
         >
           {props.content}
         </DialogContentText>
@@ -58,7 +58,7 @@ export const AlertDialogUnwrapped = props => (
           onClick={props.handleClose}
           variant="outlined"
           color="default"
-          data-test="button-cancel"
+          data-testid="button-cancel"
         >
           <Translate id="cancel" />
         </Button>
@@ -69,7 +69,7 @@ export const AlertDialogUnwrapped = props => (
           }
           variant="contained"
           autoFocus
-          data-test="button-action"
+          data-testid="button-action"
         >
           {props.buttonText}
         </Button>

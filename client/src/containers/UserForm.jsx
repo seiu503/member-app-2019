@@ -73,7 +73,7 @@ export class UserFormUnconnected extends React.Component {
     const { classes } = this.props;
     const { loggedIn } = this.props.appState;
     return (
-      <div className={classes.container} data-test="user-form-container">
+      <div className={classes.container} data-testid="user-form-container">
         {loggedIn && (
           <form>
             <FormControl component="fieldset" className={classes.formControl}>

@@ -43,7 +43,7 @@ export default function NavTabs(props) {
     tabs.push(renderTab(i));
   }
   return (
-    <Paper className={classes.root} data-test="component-navtabs">
+    <Paper className={classes.root} data-testid="component-navtabs">
       <Tabs
         value={props.tab}
         variant="fullWidth"

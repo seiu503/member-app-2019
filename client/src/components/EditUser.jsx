@@ -161,7 +161,7 @@ export class EditUserFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div data-test="component-edit-user" className={classes.root}>
+      <div data-testid="component-edit-user" className={classes.root}>
         {this.props.user.deleteDialogOpen && (
           <AlertDialog
             open={this.props.user.deleteDialogOpen}
@@ -171,11 +171,11 @@ export class EditUserFormUnconnected extends React.Component {
             danger={true}
             action={this.dialogAction}
             buttonText="Delete"
-            data-test="alert-dialog"
+            data-testid="alert-dialog"
           />
         )}
         {this.props.user.currentUser.id && (
-          <div data-test="component-edit-user-form">
+          <div data-testid="component-edit-user-form">
             <Typography
               variant="h2"
               align="center"
@@ -187,7 +187,7 @@ export class EditUserFormUnconnected extends React.Component {
             </Typography>
             <form onSubmit={this.submit} className={classes.form} id="form">
               <TextField
-                data-test="fullName"
+                data-testid="fullName"
                 name="fullName"
                 id="fullName"
                 label="Name"
@@ -199,7 +199,7 @@ export class EditUserFormUnconnected extends React.Component {
                 className={classes.input}
               />
               <TextField
-                data-test="email"
+                data-testid="email"
                 name="email"
                 id="email"
                 label="Email"
@@ -211,7 +211,7 @@ export class EditUserFormUnconnected extends React.Component {
                 className={classes.input}
               />
               <TextField
-                data-test="type"
+                data-testid="type"
                 name="type"
                 id="type"
                 label="User Type"
@@ -235,7 +235,7 @@ export class EditUserFormUnconnected extends React.Component {
                 onClick={this.handleDeleteDialogOpen}
                 color="primary"
                 aria-label="Delete Content"
-                data-test="delete"
+                data-testid="delete"
                 className={classes.buttonDelete}
                 variant="contained"
                 loading={this.props.user.loading}
@@ -246,7 +246,7 @@ export class EditUserFormUnconnected extends React.Component {
           </div>
         )}
         {!this.props.user.currentUser.id && (
-          <div data-test="component-edit-user-find">
+          <div data-testid="component-edit-user-find">
             <Typography
               variant="h2"
               align="center"
@@ -262,7 +262,7 @@ export class EditUserFormUnconnected extends React.Component {
               id="form"
             >
               <TextField
-                data-test="existingUserEmail"
+                data-testid="existingUserEmail"
                 name="existingUserEmail"
                 id="existingUserEmail"
                 label="existingUserEmail"

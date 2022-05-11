@@ -50,7 +50,7 @@ export class SubmissionFormPage2Container extends React.Component {
   }
   render() {
     return (
-      <div data-test="container-submission-form-page-2">
+      <div data-testid="container-submission-form-page-2">
         <SubmissionFormPage2Wrap {...this.props} />
       </div>
     );

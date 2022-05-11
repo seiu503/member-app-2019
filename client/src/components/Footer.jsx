@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Translate } from "react-localize-redux";
 
 const Footer = props => (
-  <div className={props.classes.footer} data-test="component-footer">
+  <div className={props.classes.footer} data-testid="component-footer">
     <a
       href="https://seiu503.tfaforms.net/490"
       rel="noopener noreferrer"

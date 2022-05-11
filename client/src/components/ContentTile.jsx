@@ -96,20 +96,24 @@ const ContentTile = props => {
   const imageStyle = { backgroundImage: `url(${content})` };
 
   return (
-    <div data-test="component-content-tile">
+    <div data-testid="component-content-tile">
       {content_type === "image" && (
         <div
           className={classes.cardImage}
           style={imageStyle}
-          data-test="image"
+          data-testid="image"
         />
       )}
-      <div className={classes.cardContent} data-test="card-content">
-        <Typography component="h2" className={classes.title} data-test="title">
+      <div className={classes.cardContent} data-testid="card-content">
+        <Typography
+          component="h2"
+          className={classes.title}
+          data-testid="title"
+        >
           {content_type}
         </Typography>
         {content_type !== "image" && (
-          <Typography component="p" className={classes.body} data-test="body">
+          <Typography component="p" className={classes.body} data-testid="body">
             {content}
           </Typography>
         )}

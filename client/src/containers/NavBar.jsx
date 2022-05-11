@@ -217,7 +217,7 @@ export class NavBar extends React.Component {
             handleClose();
           }}
           className={classes.menuItem}
-          data-test="menu-item-mobile"
+          data-testid="menu-item-mobile"
         >
           <ListItemText
             primary={primary}
@@ -229,7 +229,7 @@ export class NavBar extends React.Component {
       );
     };
     const mobileLinks = (
-      <div data-test="mobile-links">
+      <div data-testid="mobile-links">
         {adminLinks.map((link, index) => {
           return (
             <ListItemLink
@@ -237,14 +237,14 @@ export class NavBar extends React.Component {
               primary={link}
               handleClose={this.handleClose}
               link={link}
-              data-test="mobile-link"
+              data-testid="mobile-link"
             />
           );
         })}
       </div>
     );
     const adminMenuLinks = (
-      <div data-test="admin-menu-links">
+      <div data-testid="admin-menu-links">
         {adminLinks.map((link, index) => {
           return (
             <Button key={index} className={classes.menuLink} href={`/${link}`}>
@@ -255,7 +255,7 @@ export class NavBar extends React.Component {
       </div>
     );
     return (
-      <div className={classes.root} data-test="component-navbar">
+      <div className={classes.root} data-testid="component-navbar">
         <AppBar position="fixed" className={classes.appBar}>
           <Toolbar>
             <Button
@@ -263,25 +263,25 @@ export class NavBar extends React.Component {
               variant="contained"
               className={classes.skip}
               onClick={this.skipToMain}
-              data-test="skiplink-button"
+              data-testid="skiplink-button"
             >
-              <Translate id="skipLink" data-test="skiplink">
+              <Translate id="skipLink" data-testid="skiplink">
                 Skip to content &rsaquo;
               </Translate>
             </Button>
-            <Link to="/" className={classes.logoLink} data-test="logo-link">
+            <Link to="/" className={classes.logoLink} data-testid="logo-link">
               <img
                 src={logo}
                 alt="SEIU 503"
                 className={classes.logo}
-                data-test="logo-image"
+                data-testid="logo-image"
               />
             </Link>
             <Typography
               variant="h6"
               color="inherit"
               className={classes.title}
-              data-test="title"
+              data-testid="title"
             >
               <Link to="/" className={classes.title}>
                 <Translate id={values.cape ? "capeBanner" : "siteBanner"}>
@@ -316,7 +316,7 @@ export class NavBar extends React.Component {
                   aria-owns={anchorEl ? "nav-menu" : null}
                   aria-haspopup="true"
                   onClick={e => this.handleClick(e)}
-                  data-test="menu-button"
+                  data-testid="menu-button"
                 >
                   <MenuOutlined />
                 </IconButton>
@@ -333,7 +333,7 @@ export class NavBar extends React.Component {
                   TransitionComponent={Slide}
                   TransitionProps={{ direction: "left" }}
                   PaperProps={{ className: classes.drawer }}
-                  data-test="menu"
+                  data-testid="menu"
                 >
                   {mobileLinks}
                 </Menu>

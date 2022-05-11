@@ -934,7 +934,7 @@ export const renderTextField = ({
           required={!!(touched && error)}
           {...input}
           {...custom}
-          data-test="component-text-field"
+          data-testid="component-text-field"
           inputProps={{ id: id }}
           onBlur={event => {
             input.onBlur();
@@ -1020,7 +1020,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
             className={props.classes.languagePickerSelect}
             // value={props.input.value}
             // onChange={props.input.onChange}
-            data-test="component-select"
+            data-testid="component-select"
           >
             {props.options.map(item => (
               <option key={shortid()} value={item}>
@@ -1072,7 +1072,7 @@ export const renderSelect = ({
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
           {...custom}
-          data-test="component-select"
+          data-testid="component-select"
         >
           {options.map(item => (
             <option
@@ -1125,7 +1125,7 @@ export const renderCheckbox = ({
                 {...custom}
                 {...input}
                 className={classes.checkbox}
-                data-test="component-checkbox"
+                data-testid="component-checkbox"
                 name="checkbox"
                 inputProps={{ id: id }}
               />
@@ -1169,7 +1169,7 @@ export const renderRadioGroup = ({
         </FormLabel>
 
         <RadioGroup
-          data-test="component-radio-group"
+          data-testid="component-radio-group"
           aria-label={formControlName}
           name={formControlName}
           className={
@@ -1197,7 +1197,7 @@ export const renderRadioGroup = ({
                   <Radio
                     checked={item.toString() === input.value.toString()}
                     color="primary"
-                    data-test="component-radio"
+                    data-testid="component-radio"
                   />
                 }
                 label={inputLabelTranslateHelper(item, item, translate)}
@@ -1240,7 +1240,7 @@ export const renderCAPERadioGroup = ({
         </FormLabel>
 
         <RadioGroup
-          data-test="component-cape-radio-group"
+          data-testid="component-cape-radio-group"
           aria-label={formControlName}
           name={formControlName}
           id={formControlName}
@@ -1264,7 +1264,7 @@ export const renderCAPERadioGroup = ({
                     checked={item.toString() === input.value.toString()}
                     color="primary"
                     inputProps={{ id: id }}
-                    data-test="component-radio"
+                    data-testid="component-radio"
                   />
                 }
               />

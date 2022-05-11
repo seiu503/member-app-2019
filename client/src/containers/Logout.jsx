@@ -19,12 +19,12 @@ export class Logout extends React.Component {
     return (
       <div
         className={this.props.classes.fullWidthContainer}
-        data-test="component-logout"
+        data-testid="component-logout"
       >
         <Typography
           variant="h5"
           className={this.props.classes.message}
-          data-test="message"
+          data-testid="message"
         >
           Goodbye!
         </Typography>

@@ -299,7 +299,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(employerList.length);
     return (
       <div
-        data-test="component-submissionformpage1"
+        data-testid="component-submissionformpage1"
         className={
           this.props.embed ? classes.formContainerEmbed : classes.formContainer
         }

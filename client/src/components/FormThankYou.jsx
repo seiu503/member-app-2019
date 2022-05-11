@@ -3,7 +3,7 @@ import { Translate } from "react-localize-redux";
 
 const FormThankYou = props => {
   return (
-    <div className={props.classes.message} data-test="component-thankyou">
+    <div className={props.classes.message} data-testid="component-thankyou">
       {!props.paymentRequired && (
         <p>
           <Translate id="infoSubmitted" />

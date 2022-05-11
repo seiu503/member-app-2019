@@ -232,7 +232,7 @@ describe("<ContentLibrary />", () => {
     //   wrapper.instance().handleDeleteDialogOpen = handleDeleteDialogOpenMock;
 
     //   // simulate click
-    //   const deleteButton = wrapper.find('[data-test="delete"]').first();
+    //   const deleteButton = wrapper.find('[data-testid="delete"]').first();
     //   deleteButton.simulate("click");
 
     //   // expect the mock to have been called once
@@ -249,7 +249,7 @@ describe("<ContentLibrary />", () => {
     //   wrapper.instance().props.history.push = pushMock;
 
     //   // simulate click
-    //   const editButton = wrapper.find('[data-test="edit"]').first();
+    //   const editButton = wrapper.find('[data-testid="edit"]').first();
     //   editButton.simulate("click");
 
     //   // expect the mock to have been called once

@@ -138,7 +138,7 @@ export class DashboardUnconnected extends React.Component {
     const { loggedIn } = this.props.appState;
 
     return (
-      <div className={classes.container} data-test="component-dashboard">
+      <div className={classes.container} data-testid="component-dashboard">
         {loggedIn ? (
           <SubmissionsTable
             resubmitSubmission={this.props.resubmitSubmission}

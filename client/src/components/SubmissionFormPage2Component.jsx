@@ -139,7 +139,7 @@ export class SubmissionFormPage2Component extends React.Component {
     return (
       <div
         className={this.classes.formContainer}
-        data-test="component-submissionformpage2"
+        data-testid="component-submissionformpage2"
       >
         <form
           id="submissionFormPage2"
@@ -159,10 +159,13 @@ export class SubmissionFormPage2Component extends React.Component {
               {paymentRequired ? (
                 <Translate
                   id="directPayNextSteps_2022"
-                  data-test="direct-pay-text"
+                  data-testid="direct-pay-text"
                 />
               ) : (
-                <Translate id="thankYouNoPayment" data-test="no-payment-text" />
+                <Translate
+                  id="thankYouNoPayment"
+                  data-testid="no-payment-text"
+                />
               )}
             </FormHelperText>
           </div>

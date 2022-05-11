@@ -23,7 +23,7 @@ const Spinner = props => (
       style={spin}
       color="primary"
       size={50}
-      data-test="component-spinner"
+      data-testid="component-spinner"
     />
   </div>
 );

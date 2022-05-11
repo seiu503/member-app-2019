@@ -28,7 +28,7 @@ export const Tab2 = props => {
     formValues.employerType.toLowerCase() === "community member";
 
   return (
-    <div data-test="component-tab2" className={classes.sectionContainer}>
+    <div data-testid="component-tab2" className={classes.sectionContainer}>
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
@@ -82,7 +82,7 @@ export const Tab2 = props => {
           <React.Fragment>
             <Field
               formControlName="controlCheckboxMarginBold"
-              data-test="checkbox-DPA"
+              data-testid="checkbox-DPA"
               label="Direct Pay Authorization"
               name="directPayAuth"
               id="directPayAuth"
@@ -137,7 +137,7 @@ export const Tab2 = props => {
         )}
         <Field
           formControlName="controlCheckboxMargin"
-          data-test="checkbox-ScholarshipBox"
+          data-testid="checkbox-ScholarshipBox"
           label="Scholarship Fund"
           name="scholarshipBox"
           id="scholarshipBox"
@@ -153,7 +153,7 @@ export const Tab2 = props => {
         <React.Fragment>
           <Field
             label="Signature"
-            data-test="input-signature"
+            data-testid="input-signature"
             name="signature"
             id="signature"
             type="text"
@@ -168,7 +168,7 @@ export const Tab2 = props => {
         <div className={classes.buttonWrap}>
           <Button
             type="button"
-            data-test="button-back"
+            data-testid="button-back"
             onClick={() => back(0)}
             color="primary"
             className={classes.back}

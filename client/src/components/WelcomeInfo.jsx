@@ -75,7 +75,7 @@ export class WelcomeInfoUnconnected extends React.Component {
         ? this.props.image.url
         : SamplePhoto;
     return (
-      <div className={classes.root} data-test="component-welcome-info">
+      <div className={classes.root} data-testid="component-welcome-info">
         <Card className={classes.welcomeCard}>
           {imageUrl && !this.props.embed && (
             <CardMedia
@@ -91,7 +91,7 @@ export class WelcomeInfoUnconnected extends React.Component {
               <Typography
                 variant="body1"
                 gutterBottom
-                data-test="testWarning"
+                data-testid="testWarning"
                 style={{ display: "inline" }}
               >
                 This form is for testing only. Membership data submitted through

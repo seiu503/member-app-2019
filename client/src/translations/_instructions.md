@@ -76,7 +76,7 @@ And then the new element may look something like this taken from LinkRequest.jsx
       <Translate>
         {({ translate }) => (
           <TextField
-            data-test="firstName"
+            data-testid="firstName"
             name="firstName"
             id="firstName"
             label={translate("firstName")}

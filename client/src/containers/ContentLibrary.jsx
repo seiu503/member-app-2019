@@ -137,7 +137,8 @@ export class ContentLibraryUnconnected extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
       ((!prevProps.appState.authToken || !prevProps.appState.userType) &&
-        this.props.appState.authToken && this.props.appState.userType) ||
+        this.props.appState.authToken &&
+        this.props.appState.userType) ||
       prevProps.content.allContent.length !==
         this.props.content.allContent.length ||
       prevProps.appState.userType !== this.props.appState.userType
@@ -265,7 +266,7 @@ export class ContentLibraryUnconnected extends React.Component {
     const contentType =
       utils.labelsObj[this.props.content.currentContent.content_type];
     return (
-      <div data-test="component-content-library" className={classes.root}>
+      <div data-testid="component-content-library" className={classes.root}>
         {loggedIn && this.props.content.deleteDialogOpen && (
           <AlertDialog
             open={this.props.content.deleteDialogOpen}
@@ -278,7 +279,7 @@ export class ContentLibraryUnconnected extends React.Component {
               this.props.apiContent.handleDeleteClose();
             }}
             buttonText="Delete"
-            data-test="alert-dialog"
+            data-testid="alert-dialog"
           />
         )}
         <div className={classes.section}>
@@ -288,7 +289,7 @@ export class ContentLibraryUnconnected extends React.Component {
             gutterBottom
             className={classes.head}
             style={{ paddingTop: 20 }}
-            data-test="headline"
+            data-testid="headline"
           >
             Content Library
           </Typography>
@@ -300,7 +301,7 @@ export class ContentLibraryUnconnected extends React.Component {
                 href="/new"
                 color="primary"
                 aria-label="New Content"
-                data-test="button-new"
+                data-testid="button-new"
               >
                 <Create />
               </FAB>

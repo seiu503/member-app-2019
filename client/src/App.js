@@ -398,7 +398,7 @@ export class AppUnconnected extends Component {
         align="left"
         gutterBottom
         className={this.props.classes.body}
-        data-test="body"
+        data-testid="body"
       >
         {paragraphs}
       </Typography>
@@ -418,7 +418,7 @@ export class AppUnconnected extends Component {
     // generate translated text in appropriate language rendered in a <h3> tag
     let headline = (
       <React.Fragment>
-        <Translate id={`headline${id}`} data-test="headline-translate" />
+        <Translate id={`headline${id}`} data-testid="headline-translate" />
       </React.Fragment>
     );
     // console.log(`this.state.headline.text: ${this.state.headline.text}`);
@@ -437,7 +437,7 @@ export class AppUnconnected extends Component {
         gutterBottom
         className={this.props.classes.headline}
         style={{ paddingTop: 20 }}
-        data-test="headline"
+        data-testid="headline"
       >
         {headline}
       </Typography>
@@ -1106,7 +1106,7 @@ export class AppUnconnected extends Component {
     // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
       <div
-        data-test="component-app"
+        data-testid="component-app"
         className={classes.appRoot}
         style={backgroundImageStyle}
       >

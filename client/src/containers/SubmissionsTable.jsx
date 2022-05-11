@@ -156,7 +156,7 @@ export class SubmissionsTableUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div data-test="component-submissions-table" className={classes.root}>
+      <div data-testid="component-submissions-table" className={classes.root}>
         {this.props.submission.deleteDialogOpen && (
           <AlertDialog
             open={this.props.submission.deleteDialogOpen}
@@ -166,7 +166,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             danger={true}
             action={this.deleteAndClose}
             buttonText="Delete"
-            data-test="alert-dialog"
+            data-testid="alert-dialog"
           />
         )}
         <div className={classes.section}>
@@ -176,7 +176,7 @@ export class SubmissionsTableUnconnected extends React.Component {
             gutterBottom
             className={classes.head}
             style={{ paddingTop: 20 }}
-            data-test="headline"
+            data-testid="headline"
           >
             Form Submissions
           </Typography>

@@ -11,7 +11,7 @@ const SpinnerAdornment = props => (
   <CircularProgress
     style={spinnerStyle}
     size={20}
-    data-test="component-spinner-adornment"
+    data-testid="component-spinner-adornment"
   />
 );
 

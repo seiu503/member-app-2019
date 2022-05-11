@@ -67,7 +67,7 @@ export const CAPE = props => {
   const community = formValues.employerType === "community member";
 
   return (
-    <div data-test="component-cape" className={classes.sectionContainer}>
+    <div data-testid="component-cape" className={classes.sectionContainer}>
       {capeOpen && (
         <AlertDialog
           open={capeOpen}
@@ -77,7 +77,7 @@ export const CAPE = props => {
           danger={true}
           action={closeDialog}
           buttonText={<Translate id="skip" />}
-          data-test="component-alert-dialog"
+          data-testid="component-alert-dialog"
         />
       )}
       <form
@@ -165,7 +165,7 @@ export const CAPE = props => {
           </Card>
         </div>
         {standAlone && (
-          <div data-test="form-contact-info">
+          <div data-testid="form-contact-info">
             <FormGroup row classes={{ root: classes.formGroup2Col }}>
               <Field
                 twocol
@@ -204,7 +204,7 @@ export const CAPE = props => {
             </FormHelperText>
             <FormGroup>
               <Field
-                data-test="select-employer-type"
+                data-testid="select-employer-type"
                 label="Employer Type"
                 name="employerType"
                 id="employerType"
@@ -367,13 +367,13 @@ export const CAPE = props => {
             variant="contained"
             loading={loading}
             onClick={checkCAPEPaymentLogic}
-            data-test="button-next-upper"
+            data-testid="button-next-upper"
           >
             <Translate id="next">Next</Translate>
           </ButtonWithSpinner>
         )}
         {displayCAPEPaymentFields && (
-          <div data-test="component-cape-payment-fields">
+          <div data-testid="component-cape-payment-fields">
             <div className={classes.paymentCopy}>
               <Typography component="h2" className={classes.head}>
                 <Translate id="capePaymentHead">
@@ -383,7 +383,7 @@ export const CAPE = props => {
               <div className={classes.suggestedAmounts}>
                 <div className={classes.suggestedAmountBoxes}>
                   <Field
-                    data-test="radio-cape-amount"
+                    data-testid="radio-cape-amount"
                     label="Donation amount"
                     name="capeAmount"
                     formControlName="capeAmount"
@@ -402,7 +402,7 @@ export const CAPE = props => {
               </div>
               {formValues.capeAmount === "Other" && (
                 <Field
-                  data-test="field-other-amount"
+                  data-testid="field-other-amount"
                   label="Monthly Donation Amount"
                   name="capeAmountOther"
                   id="capeAmountOther"
@@ -470,7 +470,7 @@ export const CAPE = props => {
               loading={loading}
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
-              data-test="button-submit"
+              data-testid="button-submit"
             >
               <Translate id="submitButton">Submit</Translate>
             </ButtonWithSpinner>
@@ -480,7 +480,7 @@ export const CAPE = props => {
           <div className={classes.buttonWrapCAPE}>
             <Button
               type="button"
-              data-test="button-back"
+              data-testid="button-back"
               onClick={() => back(1)}
               color="primary"
               className={classes.backSmall}
@@ -490,7 +490,7 @@ export const CAPE = props => {
             </Button>
             <Button
               type="button"
-              data-test="button-next"
+              data-testid="button-next"
               onClick={handleCAPEOpen}
               color="primary"
               className={classes.nextSmall}

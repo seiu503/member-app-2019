@@ -16,8 +16,6 @@ import * as formElements from "./SubmissionFormElements";
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
-const matches = useMediaQuery("(min-width:450px)");
-
 // helper functions these MAY NEED TO BE UPDATED with localization package
 const {
   stateList,
@@ -52,8 +50,10 @@ export const Tab1 = props => {
     handleEmployerChange();
   };
 
+  const matches = useMediaQuery("(min-width:450px)");
+
   return (
-    <div data-test="component-tab1" className={classes.sectionContainer}>
+    <div data-testid="component-tab1" className={classes.sectionContainer}>
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
@@ -61,7 +61,7 @@ export const Tab1 = props => {
       >
         <div className={classes.formSection}>
           <Field
-            data-test="select-employer-type"
+            data-testid="select-employer-type"
             label="Employer Type"
             name="employerType"
             id="employerType"

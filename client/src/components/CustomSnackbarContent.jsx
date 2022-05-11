@@ -66,17 +66,17 @@ export const CustomSnackbarContent = props => {
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
-      data-test="component-custom-snackbar"
+      data-testid="component-custom-snackbar"
       aria-describedby="client-snackbar"
       message={
         <span
           id="client-snackbar"
           className={classes.message}
-          data-test="message"
+          data-testid="message"
         >
           <Icon
             className={classNames(classes.icon, classes.iconVariant)}
-            data-test="message-icon"
+            data-testid="message-icon"
           />
           {message}
         </span>
@@ -89,9 +89,9 @@ export const CustomSnackbarContent = props => {
           color="inherit"
           className={classes.close}
           onClick={onClose}
-          data-test="icon-button"
+          data-testid="icon-button"
         >
-          <CloseIcon className={classes.icon} data-test="close-icon" />
+          <CloseIcon className={classes.icon} data-testid="close-icon" />
         </IconButton>
       ]}
       {...other}

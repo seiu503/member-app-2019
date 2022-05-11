@@ -102,7 +102,10 @@ export class CreateUserFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container} data-test="component-create-user-form">
+      <div
+        className={classes.container}
+        data-testid="component-create-user-form"
+      >
         <Typography
           variant="h2"
           align="center"
@@ -114,7 +117,7 @@ export class CreateUserFormUnconnected extends React.Component {
         </Typography>
         <form onSubmit={this.submit} className={classes.form} id="form">
           <TextField
-            data-test="component-name"
+            data-testid="component-name"
             name="name"
             id="name"
             label="Full Name"
@@ -126,7 +129,7 @@ export class CreateUserFormUnconnected extends React.Component {
             className={classes.input}
           />
           <TextField
-            data-test="email"
+            data-testid="email"
             name="email"
             id="email"
             label="email"
@@ -155,7 +158,7 @@ export class CreateUserFormUnconnected extends React.Component {
                 />
               }
               // className={align === "right" ? classes.selectRight : classes.select}
-              data-test="userType"
+              data-testid="userType"
             >
               <option
                 key={shortid()}

@@ -26,7 +26,7 @@ export class NoAccess extends React.Component {
     return (
       <div
         className={this.props.classes.message}
-        data-test="component-no-access"
+        data-testid="component-no-access"
       >
         <p>
           {this.state.message}

@@ -52,7 +52,7 @@ export class GenerateURLUnconnected extends React.Component {
     const query = utils.buildQuery(this.props.content.selectedContent);
     const url = query.length ? `${CLIENT_URL}?${query}` : CLIENT_URL;
     return (
-      <div className={classes.bannerStrip} data-test="component-generate-url">
+      <div className={classes.bannerStrip} data-testid="component-generate-url">
         <div className={classes.form}>
           <TextField
             inputRef={this.input}
@@ -71,7 +71,7 @@ export class GenerateURLUnconnected extends React.Component {
                 onClick={this.copyToClipboard}
                 color="primary"
                 aria-label="Copy to clipboard"
-                data-test="button-copy"
+                data-testid="button-copy"
               >
                 <FileCopy />
               </FAB>

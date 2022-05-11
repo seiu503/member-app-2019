@@ -655,7 +655,7 @@ export class SubmissionFormPage1Container extends React.Component {
         : ""
     }`;
     return (
-      <div data-test="container-submission-form-page-1">
+      <div data-testid="container-submission-form-page-1">
         <Modal
           open={
             this.state.open &&

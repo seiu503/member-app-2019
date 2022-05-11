@@ -239,7 +239,10 @@ export class TextInputFormUnconnected extends React.Component {
   render() {
     const { classes } = this.props;
     return (
-      <div className={classes.container} data-test="component-text-input-form">
+      <div
+        className={classes.container}
+        data-testid="component-text-input-form"
+      >
         <Typography
           variant="h2"
           align="center"
