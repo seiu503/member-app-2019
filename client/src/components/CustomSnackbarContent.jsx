@@ -3,20 +3,20 @@ import classNames from "classnames";
 
 import { green, amber } from "@mui/material/colors";
 import { SnackbarContent, IconButton } from "@mui/material";
-import {
-  CheckCircleIcon,
-  WarningIcon,
-  ErrorIcon,
-  InfoIcon,
-  CloseIcon
-} from "@mui/icons-material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import WarningIcon from "@mui/icons-material/Warning";
+import ErrorIcon from "@mui/icons-material/Error";
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { theme } from "../styles/theme";
 import { withStyles } from "@mui/styles";
 
 const variantIcon = {
-  success: CheckCircleIcon,
-  warning: WarningIcon,
-  error: ErrorIcon,
-  info: InfoIcon
+  success: () => <CheckCircleIcon />,
+  warning: () => <WarningIcon />,
+  error: () => <ErrorIcon />,
+  info: () => <InfoIcon />
 };
 
 const styles1 = theme => ({

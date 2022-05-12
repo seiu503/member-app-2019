@@ -993,7 +993,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                   adornedStart: props.classes.adornedStart
                 }}
                 className={props.classes.lpInput}
-                labelWidth={100}
+                // labelWidth={100}
                 size="small"
                 notched={false}
                 value={props.userSelectedLanguage}
@@ -1043,7 +1043,7 @@ export const renderSelect = ({
   classes,
   align,
   meta: { error, touched },
-  labelWidth,
+  // labelWidth,
   options,
   short,
   mobile,
@@ -1066,7 +1066,8 @@ export const renderSelect = ({
         <Select
           native
           input={
-            <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+            // <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+            <OutlinedInput inputProps={{ id: id }} />
           }
           className={align === "right" ? classes.selectRight : classes.select}
           value={input.value ? input.value.toLowerCase() : ""}

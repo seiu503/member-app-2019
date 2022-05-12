@@ -3,6 +3,7 @@ import React from "react";
 import CustomSnackbarContentWrapper from "../components/CustomSnackbarContent";
 
 import { Snackbar } from "@mui/material";
+import { theme } from "../styles/theme";
 
 let openSnackbarFn;
 

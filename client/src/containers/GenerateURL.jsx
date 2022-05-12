@@ -4,7 +4,9 @@ import { connect } from "react-redux";
 
 import { withStyles } from "@mui/styles";
 
-import { FAB, TextField, Tooltip, FileCopy } from "@mui/material";
+import { TextField, Tooltip } from "@mui/material";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import Fab from "@mui/material/Fab";
 
 import * as utils from "../utils";
 
@@ -66,15 +68,15 @@ export class GenerateURLUnconnected extends React.Component {
           />
           {document.queryCommandSupported("copy") && (
             <Tooltip title="Copy to clipboard" aria-label="Copy to clipboard">
-              <FAB
+              <Fab
                 className={classes.buttonCopy}
                 onClick={this.copyToClipboard}
                 color="primary"
                 aria-label="Copy to clipboard"
                 data-testid="button-copy"
               >
-                <FileCopy />
-              </FAB>
+                <FileCopyIcon />
+              </Fab>
             </Tooltip>
           )}
         </div>

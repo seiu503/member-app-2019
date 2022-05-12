@@ -6,10 +6,13 @@ import { Translate } from "react-localize-redux";
 
 import { Typography, CardMedia, Card, Button } from "@mui/material";
 import { withStyles } from "@mui/styles";
+import { useTheme } from "@mui/material/styles";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 
 import SamplePhoto from "../img/sample-form-photo.jpg";
+
+import { theme } from "../styles/theme";
 
 const styles = theme => ({
   root: {

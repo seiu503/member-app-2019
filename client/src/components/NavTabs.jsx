@@ -3,30 +3,27 @@ import shortid from "shortid";
 
 import { Tabs, Tab, Paper } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import {
-  Looks4Icon,
-  Looks3Icon,
-  LooksTwoIcon,
-  LooksOneIcon
-} from "@mui/icons-material";
+import { Looks4, Looks3, LooksTwo, LooksOne } from "@mui/icons-material";
 
-const useStyles = makeStyles({
+import { theme } from "../styles/theme";
+
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     maxWidth: 600,
     margin: "auto",
     borderRadius: "4px 4px 0 0"
   }
-});
+}));
 
 export default function NavTabs(props) {
   const classes = useStyles();
   const { howManyTabs } = props;
   const icons = [
-    <LooksOneIcon style={{ color: "#531078" }} />,
-    <LooksTwoIcon style={{ color: "#531078" }} />,
-    <Looks3Icon style={{ color: "#531078" }} />,
-    <Looks4Icon style={{ color: "#531078" }} />
+    <LooksOne style={{ color: "#531078" }} />,
+    <LooksTwo style={{ color: "#531078" }} />,
+    <Looks3 style={{ color: "#531078" }} />,
+    <Looks4 style={{ color: "#531078" }} />
   ];
   const renderTab = index => (
     <Tab

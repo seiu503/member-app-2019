@@ -8,12 +8,8 @@ import "./styles/css/index.css";
 import App from "./App";
 import store from "./store/store";
 import { unregister } from "./serviceWorker";
-import {
-  ThemeProvider,
-  createMuiTheme,
-  makeStyles,
-  StyledEngineProvider
-} from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { StyledEngineProvider } from "@mui/material";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
 import { LocalizeProvider } from "react-localize-redux";
