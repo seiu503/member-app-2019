@@ -1,7 +1,11 @@
 import React from "react";
-import { shallow } from "enzyme";
-import { findByTestAttr } from "../../utils/testUtils";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import ButtonWithSpinner from "../../components/ButtonWithSpinner";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/styles";
+
+const theme = createTheme();
 
 const defaultProps = {
   loading: false,
@@ -9,32 +13,36 @@ const defaultProps = {
 };
 
 /**
- * Factory function to create a ShallowWrapper for the ButtonWithSpinner component
+ * Rewriting setup function using React testing library instead of Enzyme
  * @function setup
  * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
+ * @return {render}
  */
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<ButtonWithSpinner {...setupProps} />);
+  return render(
+    <ThemeProvider theme={theme}>
+      <ButtonWithSpinner {...setupProps} />
+    </ThemeProvider>
+  );
 };
 
 describe("<ButtonWithSpinner />", () => {
   it("renders without error", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "component-button-with-spinner");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("component-button-with-spinner");
+    expect(component).toBeInTheDocument();
   });
 
   it("renders a spinner if `loading` prop = true", () => {
-    const wrapper = setup({ loading: true });
-    const component = findByTestAttr(wrapper, "spinner-adornment");
-    expect(component.length).toBe(1);
+    const { queryByRole } = setup({ loading: true });
+    const component = queryByRole("progressbar");
+    expect(component).toBeInTheDocument();
   });
 
   it("does not render a spinner if `loading` prop = false", () => {
-    const wrapper = setup({ loading: false });
-    const component = findByTestAttr(wrapper, "spinner-adornment");
-    expect(component.length).toBe(0);
+    const { queryByRole } = setup({ loading: false });
+    const component = queryByRole("progressbar");
+    expect(component).not.toBeInTheDocument();
   });
 });
