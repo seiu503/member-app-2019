@@ -1,9 +1,6 @@
 import React from "react";
-// import { shallow, mount } from "enzyme";
-// import { unwrap, createShallow } from "@material-ui/core/test-utils";
 import "@testing-library/jest-dom/extend-expect";
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
-import { findByTestAttr } from "../../utils/testUtils";
 import CustomSnackbarContent from "../../components/CustomSnackbarContent";
 import { green, amber } from "@mui/material/colors";
 import { SnackbarContent, IconButton } from "@mui/material";
@@ -18,7 +15,6 @@ import {
 import { theme } from "../../styles/theme";
 import { ThemeProvider } from "@mui/material/styles";
 
-// const CustomSnackbarContentNaked = unwrap(CustomSnackbarContent);
 const defaultProps = {
   classes: {
     success: "success",
@@ -31,24 +27,9 @@ const defaultProps = {
   onClose: jest.fn(),
   variant: "info"
 };
-const options = {
-  untilSelector: "Typography"
-};
-// const muiShallow = createShallow(options);
-
-// *
-//  * Factory function to create a ShallowWrapper for CustomSnackbarContent component
-//  * @function setup
-//  * @param  {object} props - Component props specific to this setup.
-//  * @return {ShallowWrapper}
-
-// const setup = (props = {}) => {
-//   const setupProps = { ...defaultProps, ...props };
-//   return shallow(<CustomSnackbarContent {...setupProps} />);
-// };
 
 /**
- * Rewriting setup function using React testing library instead of enzyme
+ * Rewriting setup function using React testing library instead of Enzyme
  * @function setup
  * @param  {object} props - Component props specific to this setup.
  * @return {render}
@@ -200,9 +181,3 @@ describe("<CustomSnackbarContent />", () => {
     onCloseMock.mockRestore();
   });
 });
-
-// no test for rendering action button if passed an action prop
-// or for calling action function if action button clicked
-// not currently using that functionality in this implementation
-// so it's commented out in the component and haven't written tests for it.
-// if we decide to use it we'll need to write tests here.

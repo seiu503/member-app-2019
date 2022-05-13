@@ -8,27 +8,28 @@ import {
   DialogContent,
   DialogContentText
 } from "@mui/material";
+import { theme } from "../styles/theme";
 import { withStyles } from "@mui/styles";
 import { Translate } from "react-localize-redux";
 
-export const styles = theme => ({
+const styles = theme => ({
   root: {
     margin: 0,
     padding: 20
   },
   danger: {
-    backgroundColor: theme.palette.danger.main,
+    backgroundColor: "#b71c1c", // theme.palette.danger.main
     color: "white",
     "&:hover": {
-      backgroundColor: theme.palette.danger.light
+      backgroundColor: "#d32f2f" // theme.palette.danger.light
     }
   },
   primary: {
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: "#2c0940" // theme.palette.primary.main
   }
 });
 
-export const AlertDialogUnwrapped = props => (
+export const AlertDialog = props => (
   <div data-testid="component-alert-dialog">
     <Dialog
       data-testid="dialog"
@@ -57,7 +58,6 @@ export const AlertDialogUnwrapped = props => (
         <Button
           onClick={props.handleClose}
           variant="outlined"
-          color="default"
           data-testid="button-cancel"
         >
           <Translate id="cancel" />
@@ -78,7 +78,7 @@ export const AlertDialogUnwrapped = props => (
   </div>
 );
 
-AlertDialogUnwrapped.propTypes = {
+AlertDialog.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
@@ -88,4 +88,6 @@ AlertDialogUnwrapped.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(AlertDialogUnwrapped);
+const AlertDialogWrapper = withStyles(styles)(AlertDialog);
+export default AlertDialogWrapper;
+// export default AlertDialog;

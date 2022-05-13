@@ -19,7 +19,7 @@ const variantIcon = {
   info: () => <InfoIcon />
 };
 
-const styles1 = theme => ({
+const styles = theme => ({
   success: {
     backgroundColor: green[600]
   },
@@ -59,10 +59,6 @@ export const CustomSnackbarContent = props => {
     ...other
   } = props;
   const Icon = variantIcon[variant];
-  // let actionButton = null;
-  // if (action) {
-  //   actionButton = action(props);
-  // }
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
@@ -106,5 +102,5 @@ CustomSnackbarContent.propTypes = {
   onClose: PropTypes.func,
   variant: PropTypes.oneOf(["success", "warning", "error", "info"]).isRequired
 };
-const CustomSnackbarContentWrapper = withStyles(styles1)(CustomSnackbarContent);
+const CustomSnackbarContentWrapper = withStyles(styles)(CustomSnackbarContent);
 export default CustomSnackbarContentWrapper;
