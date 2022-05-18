@@ -142,7 +142,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   suggestedAmountOnChange = e => {
-    // console.log("suggestedAmountOnChange");
+    console.log("suggestedAmountOnChange");
     if (e.target.value === "Other") {
       return;
     }

@@ -3158,6 +3158,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@testing-library/user-event@npm:^14.2.0":
+  version: 14.2.0
+  resolution: "@testing-library/user-event@npm:14.2.0"
+  peerDependencies:
+    "@testing-library/dom": ">=7.21.4"
+  checksum: b34f19bbfe938d03778831b9c083d451c53f983f6f6c0db05a572b71ba5323c4125097bb4b8c97595bc9b946610d2c2f65cf1e113f047eed7a3078f28a1027e2
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -6127,6 +6136,7 @@ __metadata:
     "@mui/system": ^5.7.0
     "@testing-library/jest-dom": ^5.16.4
     "@testing-library/react": 12.1.5
+    "@testing-library/user-event": ^14.2.0
     "@wojtekmaj/enzyme-adapter-react-17": ^0.6.0
     autoprefixer: ^10.0.0
     babel-preset-env: ^1.7.0

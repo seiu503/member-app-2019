@@ -154,6 +154,7 @@ export class CreateUserFormUnconnected extends React.Component {
               input={
                 <OutlinedInput
                   labelWidth={80}
+                  style={{ width: 80 }}
                   inputProps={{ id: "type", name: "type" }}
                 />
               }

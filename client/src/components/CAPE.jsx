@@ -15,13 +15,12 @@ import {
   CardMedia,
   FormLabel,
   FormHelperText,
-  FormGroup,
-  FormatQuote
+  FormGroup
 } from "@mui/material";
-import { FormatQuote } from "@mui/icons-material";
+
+import FormatQuote from "@mui/icons-material/FormatQuote";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-const matches = useMediaQuery("(min-width:450px)");
 
 import headshot from "../img/deffo_mebrat_300.png";
 
@@ -65,7 +64,7 @@ export const CAPE = props => {
   } = props;
 
   const community = formValues.employerType === "community member";
-
+  const matches = useMediaQuery("(min-width:450px)");
   return (
     <div data-testid="component-cape" className={classes.sectionContainer}>
       {capeOpen && (
@@ -213,11 +212,13 @@ export const CAPE = props => {
                 component={renderSelect}
                 options={employerTypesList}
                 onChange={updateEmployersPicklist}
-                labelWidth={100}
+                // labelWidth={'100'}
+                style={{ width: 100 }}
               />
               {formValues.employerType !== "" && (
                 <Field
-                  labelWidth={104}
+                  // labelWidth={'104'}
+                  style={{ width: 104 }}
                   label="Employer Name"
                   name="employerName"
                   id="employerName"
@@ -242,7 +243,8 @@ export const CAPE = props => {
                 classes={classes}
                 formControlName="formControlDate"
                 component={renderSelect}
-                labelWidth={41}
+                // labelWidth={'41'}
+                style={{ width: 41 }}
                 options={formElements.monthList}
               />
 
@@ -254,7 +256,8 @@ export const CAPE = props => {
                 formControlName="formControlDate"
                 classes={classes}
                 component={renderSelect}
-                labelWidth={24}
+                // labelWidth={'24'}
+                style={{ width: 24 }}
                 options={formElements.dateOptions(props)}
               />
 
@@ -266,7 +269,8 @@ export const CAPE = props => {
                 formControlName="formControlDate"
                 classes={classes}
                 component={renderSelect}
-                labelWidth={30}
+                // labelWidth={'30'}
+                style={{ width: 30 }}
                 options={formElements.yearOptions()}
               />
             </FormGroup>
@@ -309,7 +313,8 @@ export const CAPE = props => {
                 classes={classes}
                 component={renderSelect}
                 options={formElements.stateList}
-                labelWidth={80}
+                // labelWidth={'80'}
+                style={{ width: 80 }}
               />
 
               <Field
@@ -535,4 +540,4 @@ export const CAPEForm = reduxForm({
 // connect to redux store
 export const CAPEConnected = connect(mapStateToProps)(CAPEForm);
 
-export default withWidth()(CAPEConnected);
+export default CAPEConnected;

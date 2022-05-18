@@ -994,6 +994,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                 }}
                 className={props.classes.lpInput}
                 // labelWidth={100}
+                style={{ width: 100 }}
                 size="small"
                 notched={false}
                 value={props.userSelectedLanguage}
@@ -1001,6 +1002,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                   id: props.id,
                   style: {
                     height: 30,
+                    width: 100,
                     padding: "0px 15px",
                     borderColor: "white",
                     borderRadius: 4,
@@ -1044,6 +1046,7 @@ export const renderSelect = ({
   align,
   meta: { error, touched },
   // labelWidth,
+  style,
   options,
   short,
   mobile,
@@ -1067,7 +1070,7 @@ export const renderSelect = ({
           native
           input={
             // <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
-            <OutlinedInput inputProps={{ id: id }} />
+            <OutlinedInput inputProps={{ id: id, style: { ...style } }} />
           }
           className={align === "right" ? classes.selectRight : classes.select}
           value={input.value ? input.value.toLowerCase() : ""}
@@ -1485,7 +1488,7 @@ Select.propTypes = {
   }),
   name: PropTypes.string,
   label: PropTypes.string,
-  labelWidth: PropTypes.string,
+  style: PropTypes.object,
   formControlName: PropTypes.string,
   options: PropTypes.array,
   touched: PropTypes.bool,

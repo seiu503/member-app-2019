@@ -355,7 +355,8 @@ export class SubmissionFormPage2Component extends React.Component {
               type="select"
               classes={this.classes}
               component={this.renderSelect}
-              labelWidth={50}
+              // labelWidth={50}
+              style={{ width: 50 }}
               options={genderOptions}
             />
             {this.props.formValues.gender === "other" && (
@@ -375,7 +376,8 @@ export class SubmissionFormPage2Component extends React.Component {
               type="select"
               classes={this.classes}
               component={this.renderSelect}
-              labelWidth={97}
+              // labelWidth={97}
+              style={{ width: 97 }}
               options={genderPronounOptions}
             />
           </FormGroup>
@@ -460,7 +462,8 @@ export class SubmissionFormPage2Component extends React.Component {
               classes={this.classes}
               formControlName="formControlDate"
               component={this.renderSelect}
-              labelWidth={88}
+              // labelWidth={88}
+              style={{ width: 88 }}
               options={stateList}
             />
             <Field
