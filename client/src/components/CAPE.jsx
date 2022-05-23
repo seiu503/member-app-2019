@@ -477,6 +477,7 @@ export const CAPE = props => {
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
               data-testid="button-submit"
+              aria-label="Submit"
             >
               <Translate id="submitButton">Submit</Translate>
             </ButtonWithSpinner>

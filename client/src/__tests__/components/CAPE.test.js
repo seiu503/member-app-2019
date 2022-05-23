@@ -249,71 +249,51 @@ describe("<CAPE />", () => {
       expect(backMock).toHaveBeenCalled();
     });
   });
-  // describe("conditional render", () => {
-  //   it("renders alert dialog if capeOpen = `true`", () => {
-  //     handleSubmit = fn => fn;
-  //     const props = {
-  //       capeOpen: true,
-  //       handleSubmit: fn => fn
-  //     };
-  //     store = storeFactory(initialState);
-  //     wrapper = shallow(<CAPE {...defaultProps} {...props} store={store} />);
-  //     const component = findByTestAttr(wrapper, "component-alert-dialog");
-  //     expect(component.length).toBe(1);
-  //   });
+  describe("conditional render", () => {
+    it("renders alert dialog if capeOpen = `true`", async () => {
+      handleSubmit = fn => fn;
+      const testProps = {
+        capeOpen: true,
+        handleSubmit: fn => fn
+      };
+      const { getByTestId, debug } = await setup({ ...testProps });
+      const component = getByTestId("component-alert-dialog");
+      expect(component).toBeInTheDocument();
+    });
 
-  //   it("renders contact info form if rendered as standalone component", () => {
-  //     const props = {
-  //       standAlone: true
-  //     };
-  //     wrapper = setup(props);
-  //     const component = findByTestAttr(wrapper, "form-contact-info");
-  //     expect(component.length).toBe(1);
-  //   });
+    it("renders contact info form if rendered as standalone component", async () => {
+      const testProps = {
+        standAlone: true
+      };
+      const { getByTestId, debug } = await setup({ ...testProps });
+      const component = getByTestId("form-contact-info");
+      expect(component).toBeInTheDocument();
+    });
 
-  //   it("renders `Other amount` field if capeAmount === `Other`", () => {
-  //     const props = {
-  //       formValues: {
-  //         capeAmount: "Other"
-  //       },
-  //       displayCAPEPaymentFields: true,
-  //       capeObject: {
-  //         oneTimeOptions: [1, 2, 3],
-  //         monthlyOptions: [4, 5, 6]
-  //       },
-  //       donationFrequency: "One-Time"
-  //     };
-  //     wrapper = setup(props);
-  //     const component = findByTestAttr(wrapper, "field-other-amount").first();
-  //     expect(component.length).toBe(1);
-  //   });
+    it("renders `Other amount` field if capeAmount === `Other`", async () => {
+      const testProps = {
+        formValues: {
+          capeAmount: "Other"
+        },
+        displayCAPEPaymentFields: true,
+        capeObject: {
+          oneTimeOptions: [1, 2, 3],
+          monthlyOptions: [4, 5, 6]
+        },
+        donationFrequency: "One-Time"
+      };
+      const { getByTestId, debug } = await setup({ ...testProps });
+      const component = getByTestId("field-other-amount");
+      expect(component).toBeInTheDocument();
+    });
 
-  //   it("displays submit button if checkoff, donationFreq = monthly, amountSet (other)", () => {
-  //     const props = {
-  //       checkoff: true,
-  //       donationFrequency: "Monthly",
-  //       formValues: {
-  //         capeAmountOther: 10
-  //       }
-  //     };
-  //     wrapper = setup(props);
-  //     const component = findByTestAttr(wrapper, "button-submit");
-  //     expect(component.length).toBe(1);
-  //   });
-
-  //   it("displays submit button if checkoff, donationFreq = monthly, amountSet (number)", () => {
-  //     const props = {
-  //       checkoff: true,
-  //       donationFrequency: "Monthly",
-  //       formValues: {
-  //         capeAmount: 10
-  //       }
-  //     };
-  //     wrapper = setup(props);
-  //     const component = findByTestAttr(wrapper, "button-submit");
-  //     expect(component.length).toBe(1);
-  //   });
-  // });
+    it("displays submit button if displayCAPEPaymentFields = true", async () => {
+      const testProps = {
+        displayCAPEPaymentFields: true
+      };
+      const { getByLabelText, debug } = await setup({ ...testProps });
+      const component = getByLabelText("Submit");
+      expect(component).toBeInTheDocument();
+    });
+  });
 });
-
-// getByRole('textbox', {name: /name/i})
