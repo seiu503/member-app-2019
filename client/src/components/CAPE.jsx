@@ -83,6 +83,7 @@ export const CAPE = props => {
         onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
         id="CAPE"
         className={classes.form}
+        data-testid="cape-form"
       >
         <div className={classes.paymentCopy}>
           <Typography component="h2" className={classes.head}>

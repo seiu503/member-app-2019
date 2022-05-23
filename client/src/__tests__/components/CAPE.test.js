@@ -208,45 +208,46 @@ describe("<CAPE />", () => {
       // expect(changeMock).toHaveBeenCalled();
     });
 
-    // it("calls handleSubmit on submit", async () => {
-    //   wrapper = shallow(<CAPE {...props} />);
-    //   handleSubmitMock = jest.fn();
-    //   handleSubmit = handleSubmitMock;
+    it("calls handleSubmit on submit", async () => {
+      handleSubmitMock = jest.fn();
+      const testProps = {
+        handleSubmit: handleSubmitMock
+      };
+      const { getByTestId, debug } = await setup({ ...testProps });
+      testData = generateCAPEValidateFrontEnd();
 
-    //   // imported function that creates dummy data for form
-    //   testData = generateCAPEValidateFrontEnd();
+      const component = getByTestId("cape-form");
+      fireEvent.submit(component);
+      expect(handleSubmitMock).toHaveBeenCalled();
+    });
 
-    //   wrapper.setProps({ handleSubmit: handleSubmitMock });
-    //   component = wrapper.find("form");
-    //   component.simulate("submit", { ...testData });
-    //   expect(handleSubmit.mock.calls.length).toBe(1);
-    // });
+    it("scrolls to first error on failed submit", async () => {
+      const scrollToMock = jest.fn();
+      utils.scrollToFirstError = scrollToMock;
 
-    // it("scrolls to first error on failed submit", async () => {
-    //   const scrollToMock = jest.fn();
-    //   utils.scrollToFirstError = scrollToMock;
+      const { getByTestId, debug } = await setup();
+      testData = generateCAPEValidateFrontEnd();
 
-    //   wrapper = setup(props);
-    //   component = wrapper.find("form");
-    //   component.simulate("submit", "");
-    //   const asyncCheck = setTimeout(() => {
-    //     wrapper.update();
-    //     expect(scrollToMock.mock.calls.length).toBe(1);
-    //   }, 0);
-    //   global.clearTimeout(asyncCheck);
-    // });
+      const component = getByTestId("cape-form");
+      fireEvent.submit(component);
+      const asyncCheck = setTimeout(() => {
+        expect(scrollToMock).toHaveBeenCalled();
+      }, 0);
+      global.clearTimeout(asyncCheck);
+    });
 
-    // it("calls `back` on back button click", () => {
-    //   wrapper = shallow(<CAPE {...props} />);
+    it("calls `back` on back button click", async () => {
+      const testProps = {
+        back: backMock
+      };
+      const { getByTestId, debug } = await setup({ ...testProps });
+      testData = generateCAPEValidateFrontEnd();
 
-    //   // imported function that creates dummy data for form
-    //   testData = generateCAPEValidateFrontEnd();
-
-    //   wrapper.setProps({ back: backMock });
-    //   component = findByTestAttr(wrapper, "button-back");
-    //   component.simulate("click");
-    //   expect(backMock.mock.calls.length).toBe(1);
-    // });
+      const component = getByTestId("button-back");
+      const user = userEvent.setup();
+      await user.click(component);
+      expect(backMock).toHaveBeenCalled();
+    });
   });
   // describe("conditional render", () => {
   //   it("renders alert dialog if capeOpen = `true`", () => {
