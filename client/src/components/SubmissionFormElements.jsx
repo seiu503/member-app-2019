@@ -913,6 +913,7 @@ export const renderTextField = ({
   mobile,
   translate,
   additionalOnChange,
+  dataTestId,
   ...custom
 }) => {
   return (
@@ -934,7 +935,7 @@ export const renderTextField = ({
           required={!!(touched && error)}
           {...input}
           {...custom}
-          data-testid="component-text-field"
+          data-testid={dataTestId}
           inputProps={{ id: id }}
           onBlur={event => {
             input.onBlur();

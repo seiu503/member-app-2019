@@ -1,6 +1,12 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { createTheme } from "@mui/material/styles";
@@ -24,7 +30,7 @@ let wrapper,
 
 const changeFieldValueMock = jest.fn();
 const backMock = jest.fn();
-
+const changeMock = jest.fn().mockImplementation((name, value) => value);
 suggestedAmountOnChangeMock = jest.fn();
 
 // initial props for form
@@ -36,7 +42,7 @@ const defaultProps = {
   loading: false,
   pristine: false,
   invalid: false,
-  change: jest.fn(),
+  change: changeMock,
   formValues: {
     paymentType: "Card",
     employerName: "blah",
@@ -77,7 +83,9 @@ describe("<CAPE />", () => {
   beforeEach(() => {
     handleSubmit = fn => fn;
   });
-
+  afterEach(() => {
+    cleanup();
+  });
   const initialState = {};
 
   store = storeFactory(initialState);
@@ -119,7 +127,6 @@ describe("<CAPE />", () => {
     const props = {
       handleSubmit: fn => fn,
       classes: {},
-      change: jest.fn(),
       formValues: {
         employerType: "adult foster home"
       },
@@ -179,25 +186,27 @@ describe("<CAPE />", () => {
       expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
     });
 
-    // it("calls reduxForm `change` prop on capeAmountOther Change", () => {
-    //   wrapper = shallow(<CAPE {...props} />);
-    //   const changeMock = jest.fn();
-
-    //   wrapper.setProps({
-    //     change: changeMock,
-    //     formValues: {
-    //       capeAmount: "Other"
-    //     },
-    //     displayCAPEPaymentFields: true
-    //   });
-
-    //   component = findByTestAttr(wrapper, "field-other-amount").first();
-    //   const event = {
-    //     target: { value: "the-value" }
-    //   };
-    //   component.simulate("change", event);
-    //   expect(changeMock).toHaveBeenCalled();
-    // });
+    // it("calls reduxForm `change` prop on capeAmountOther Change", async () => {
+    it("calls suggestedAmountOnChange on capeAmountOther Change", async () => {
+      const testProps = {
+        change: changeMock,
+        suggestedAmountOnChange: suggestedAmountOnChangeMock,
+        formValues: {
+          ...defaultProps.formValues,
+          capeAmount: "Other"
+        },
+        displayCAPEPaymentFields: true
+      };
+      const user = userEvent.setup();
+      const { getByTestId, debug } = await setup({ ...testProps });
+      const component = getByTestId("field-other-amount").querySelector(
+        "input"
+      );
+      // debug(component, 3000000);
+      await user.type(component, "7");
+      expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
+      // expect(changeMock).toHaveBeenCalled();
+    });
 
     // it("calls handleSubmit on submit", async () => {
     //   wrapper = shallow(<CAPE {...props} />);
@@ -305,3 +314,5 @@ describe("<CAPE />", () => {
   //   });
   // });
 });
+
+// getByRole('textbox', {name: /name/i})

@@ -407,7 +407,7 @@ export const CAPE = props => {
               </div>
               {formValues.capeAmount === "Other" && (
                 <Field
-                  data-testid="field-other-amount"
+                  dataTestId="field-other-amount"
                   label="Monthly Donation Amount"
                   name="capeAmountOther"
                   id="capeAmountOther"
