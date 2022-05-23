@@ -102,6 +102,7 @@ const ContentTile = props => {
           className={classes.cardImage}
           style={imageStyle}
           data-testid="image"
+          role="img"
         />
       )}
       <div className={classes.cardContent} data-testid="card-content">
@@ -113,7 +114,12 @@ const ContentTile = props => {
           {content_type}
         </Typography>
         {content_type !== "image" && (
-          <Typography component="p" className={classes.body} data-testid="body">
+          <Typography
+            component="p"
+            className={classes.body}
+            data-testid="body"
+            role="article"
+          >
             {content}
           </Typography>
         )}

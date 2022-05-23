@@ -1,10 +1,18 @@
 import React from "react";
-import { shallow } from "enzyme";
-// import { unwrap } from "@material-ui/core/test-utils";
-import { findByTestAttr } from "../../utils/testUtils";
+import "@testing-library/jest-dom/extend-expect";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import ContentTile, { styles } from "../../components/ContentTile";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/styles";
 
-const ContentTileNaked = unwrap(ContentTile);
+const theme = createTheme();
 
 const defaultProps = {
   contentTile: {
@@ -15,21 +23,25 @@ const defaultProps = {
 };
 
 /**
- * Factory function to create a ShallowWrapper for the ContentTile component
+ * Rewriting setup function using React testing library instead of Enzyme
  * @function setup
  * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
+ * @return {render}
  */
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<ContentTileNaked {...setupProps} />);
+  return render(
+    <ThemeProvider theme={theme}>
+      <ContentTile {...setupProps} />
+    </ThemeProvider>
+  );
 };
 
 describe("<ContentTile />", () => {
   it("renders without error", () => {
-    const wrapper = setup({ classes: {} });
-    const component = findByTestAttr(wrapper, "component-content-tile");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup({ classes: {} });
+    const component = getByTestId("component-content-tile");
+    expect(component).toBeInTheDocument();
   });
 
   it("this is kind of a useless test to get coverage of the styles function...", () => {
@@ -53,44 +65,42 @@ describe("<ContentTile />", () => {
   });
 
   test("renders a title ", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "title");
-    expect(component.length).toBe(1);
-    expect(component.text()).toBe("headline");
+    const { getByTestId } = setup({ classes: {} });
+    const component = getByTestId("title");
+    expect(component).toBeInTheDocument();
+    expect(component).toHaveTextContent("headline");
   });
 
   test("renders an image if `content_type` is 'image' ", () => {
-    const wrapper = setup({
+    const { getByTestId } = setup({
       contentTile: {
         content_type: "image",
         content: "http://www.example.com/image.jpg"
       }
     });
-    const component = findByTestAttr(wrapper, "image");
-    expect(component.length).toBe(1);
-    const componentStyle = component.get(0).props.style;
-    expect(componentStyle).toHaveProperty(
-      "backgroundImage",
+    const component = getByTestId("image");
+    expect(component).toBeInTheDocument();
+    expect(component.style.backgroundImage).toEqual(
       `url(http://www.example.com/image.jpg)`
     );
   });
 
   test("does not render an image if `content_type` is not 'image' ", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "image");
-    expect(component.length).toBe(0);
+    const { queryByRole } = setup();
+    const component = queryByRole("img");
+    expect(component).toBeNull();
   });
 
   test("renders body text if `content_type` is not 'image' ", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "body");
-    expect(component.length).toBe(1);
-    expect(component.text()).toBe("some headline text");
+    const { getByTestId } = setup({ classes: {} });
+    const component = getByTestId("body");
+    expect(component).toBeInTheDocument();
+    expect(component).toHaveTextContent("some headline text");
   });
 
   test("does not render body text if `content_type` is 'image' ", () => {
-    const wrapper = setup({ contentTile: { content_type: "image" } });
-    const component = findByTestAttr(wrapper, "body");
-    expect(component.length).toBe(0);
+    const { queryByRole } = setup({ contentTile: { content_type: "image" } });
+    const component = queryByRole("article");
+    expect(component).toBeNull();
   });
 });
