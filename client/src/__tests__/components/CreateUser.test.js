@@ -11,10 +11,7 @@ import userEvent from "@testing-library/user-event";
 import { createTheme } from "@mui/material/styles";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/styles";
-import {
-  CreateUserFormUnconnected,
-  CreateUserFormConnected
-} from "../../components/CreateUser";
+import { CreateUserFormUnconnected } from "../../components/CreateUser";
 import {
   addUser,
   clearForm,

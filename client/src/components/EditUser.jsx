@@ -185,7 +185,11 @@ export class EditUserFormUnconnected extends React.Component {
             >
               Edit a User
             </Typography>
-            <form onSubmit={this.submit} className={classes.form} id="form">
+            <form
+              onSubmit={this.submit}
+              className={classes.form}
+              id="edit-user-form"
+            >
               <TextField
                 data-testid="fullName"
                 name="fullName"
@@ -260,6 +264,7 @@ export class EditUserFormUnconnected extends React.Component {
               onSubmit={this.findUserByEmail}
               className={classes.form}
               id="form"
+              data-testid="user-find-form"
             >
               <TextField
                 data-testid="existingUserEmail"
