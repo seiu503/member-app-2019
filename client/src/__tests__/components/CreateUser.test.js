@@ -51,6 +51,9 @@ const clearFormMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "CLEAR_FORM" }));
 let handleInputMock = jest.fn();
+const addUserMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve({ type: "ADD_USER_SUCCESS" }));
 
 const defaultProps = {
   appState: {
@@ -60,7 +63,7 @@ const defaultProps = {
   },
   apiUser: {
     handleInput: handleInputMock,
-    addUser: () => Promise.resolve({ type: "ADD_USER_SUCCESS" }),
+    addUser: addUserMock,
     clearForm: clearFormMock
   },
   user: {
@@ -137,104 +140,91 @@ describe("<CreateUser />", () => {
     expect(handleInputMock).toHaveBeenCalled();
   });
 
-  // test("calls `addUser` on submit", () => {
-  //   let props = {
-  //     apiUser: { addUser: addUser },
-  //     user: {
-  //       form: {
-  //         email: "fake@test.com",
-  //         name: "Test User",
-  //         type: "view"
-  //       }
-  //     }
-  //   };
+  test("calls `addUser` on submit", async () => {
+    let testProps = {
+      user: {
+        form: {
+          email: "fake@test.com",
+          name: "Test User",
+          type: "view"
+        }
+      }
+    };
 
-  //   store = storeFactory(initialState);
-  //   // Create a spy of the dispatch() method for test assertions.
-  //   const dispatchSpy = jest.spyOn(store, "dispatch");
-  //   wrapper = shallow(
-  //     <CreateUserFormConnected {...defaultProps} {...props} store={store} />
-  //   )
-  //     .dive()
-  //     .dive();
+    const { getByTestId, debug } = await setup({ ...testProps });
+    const component = getByTestId("user-form");
+    fireEvent.submit(component);
+    expect(addUserMock).toHaveBeenCalled();
+  });
 
-  //   wrapper.instance().submit(fakeEvent);
-  //   const spyCall = dispatchSpy.mock.calls[0][0];
-  //   const { email, name, type } = wrapper.instance().props.user.form;
-  //   const { authToken, userType } = wrapper.instance().props.appState;
-  //   const body = {
-  //     name,
-  //     email,
-  //     type,
-  //     requestingUserType: userType
-  //   };
-  //   expect(JSON.stringify(spyCall)).toEqual(
-  //     JSON.stringify(addUser(authToken, body))
-  //   );
-  // });
+  test("`submit` returns error if `addUser` fails", async () => {
+    const addUserErrorMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "ADD_USER_FAILURE" }).catch(err =>
+          console.log(err)
+        )
+      );
+    let testProps = {
+      apiUser: {
+        addUser: addUserErrorMock,
+        clearForm: clearFormMock
+      },
+      user: {
+        form: {
+          email: "fake@test.com",
+          name: "Test User",
+          type: "view"
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    const { getByTestId, debug } = await setup({ ...testProps });
+    const component = getByTestId("user-form");
+    fireEvent.submit(component);
+    expect(addUserErrorMock).toHaveBeenCalled();
 
-  // test("`submit` returns error if `addUser` fails", () => {
-  //   const addUserErrorMock = jest
-  //     .fn()
-  //     .mockImplementation(() =>
-  //       Promise.resolve({ type: "ADD_USER_FAILURE" }).catch(err =>
-  //         console.log(err)
-  //       )
-  //     );
-  //   let props = {
-  //     apiUser: { addUser: addUserErrorMock },
-  //     user: {
-  //       form: {
-  //         email: "fake@test.com",
-  //         name: "Test User",
-  //         type: "view"
-  //       }
-  //     }
-  //   };
-  //   Notifier.openSnackbar = jest.fn();
-  //   wrapper = shallow(
-  //     <CreateUserFormUnconnected {...defaultProps} {...props} />
-  //   );
+    return addUserErrorMock().then(() => {
+      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+        "error",
+        "An error occurred while trying to create new user"
+      );
+    });
+  });
 
-  //   wrapper.instance().submit(fakeEvent);
-  //   return addUserErrorMock().then(() => {
-  //     expect(Notifier.openSnackbar).toHaveBeenCalledWith(
-  //       "error",
-  //       "An error occurred while trying to create new user"
-  //     );
-  //   });
-  // });
+  test("`submit` returns success message if `addUser` succeeds", async () => {
+    let addUserMock = jest
+      .fn()
+      .mockImplementation(() =>
+        Promise.resolve({ type: "ADD_USER_SUCCESS" }).catch(err =>
+          console.log(err)
+        )
+      );
+    let testProps = {
+      edit: false,
+      apiUser: {
+        addUser: addUserMock,
+        clearForm: clearFormMock
+      },
+      user: {
+        form: {
+          email: "fake@test.com",
+          name: "Test User",
+          type: "view"
+        }
+      }
+    };
+    Notifier.openSnackbar = jest.fn();
+    const { getByTestId, debug } = await setup({ ...testProps });
+    const component = getByTestId("user-form");
+    fireEvent.submit(component);
+    expect(addUserMock).toHaveBeenCalled();
 
-  // test("`submit` returns success message if `addUser` succeeds", () => {
-  //   const addUserMock = jest
-  //     .fn()
-  //     .mockImplementation(() =>
-  //       Promise.resolve({ type: "ADD_USER_SUCCESS" }).catch(err =>
-  //         console.log(err)
-  //       )
-  //     );
-  //   let props = {
-  //     edit: false,
-  //     apiUser: { addUser: addUserMock },
-  //     user: {
-  //       form: {
-  //         email: "fake@test.com",
-  //         name: "Test User",
-  //         type: "view"
-  //       }
-  //     }
-  //   };
-  //   Notifier.openSnackbar = jest.fn();
-  //   wrapper = shallow(
-  //     <CreateUserFormUnconnected {...defaultProps} {...props} />
-  //   );
-
-  //   wrapper.instance().submit(fakeEvent);
-  //   return addUserMock().then(() => {
-  //     expect(Notifier.openSnackbar).toHaveBeenCalledWith(
-  //       "success",
-  //       "User Created Successfully!"
-  //     );
-  //   });
-  // });
+    return addUserMock().then(() => {
+      expect(Notifier.openSnackbar).toHaveBeenCalledWith(
+        "success",
+        "User Created Successfully!"
+      );
+    });
+  });
 });

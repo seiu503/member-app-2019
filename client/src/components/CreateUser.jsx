@@ -115,7 +115,12 @@ export class CreateUserFormUnconnected extends React.Component {
         >
           Create a User
         </Typography>
-        <form onSubmit={this.submit} className={classes.form} id="form">
+        <form
+          onSubmit={this.submit}
+          className={classes.form}
+          id="form"
+          data-testid="user-form"
+        >
           <TextField
             data-testid="component-name"
             name="name"
