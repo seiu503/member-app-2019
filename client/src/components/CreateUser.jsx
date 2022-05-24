@@ -130,6 +130,7 @@ export class CreateUserFormUnconnected extends React.Component {
           />
           <TextField
             data-testid="email"
+            aria-label="email"
             name="email"
             id="email"
             label="email"
@@ -153,7 +154,7 @@ export class CreateUserFormUnconnected extends React.Component {
               onChange={this.props.apiUser.handleInput}
               input={
                 <OutlinedInput
-                  labelWidth={80}
+                  // labelWidth={80}
                   style={{ width: 80 }}
                   inputProps={{ id: "type", name: "type" }}
                 />
