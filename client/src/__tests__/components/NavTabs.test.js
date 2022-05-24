@@ -1,13 +1,12 @@
 import React from "react";
-import { shallow } from "enzyme";
-
-import { findByTestAttr } from "../../utils/testUtils";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import NavTabs from "../../components/NavTabs";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/styles";
 
-// variables
-let wrapper;
+const theme = createTheme();
 
-// initial props for form
 const defaultProps = {
   classes: { test: "test" },
   handleTab: jest.fn(),
@@ -16,19 +15,24 @@ const defaultProps = {
 };
 
 describe("<NavTabs />", () => {
-  const setup = () => {
-    return shallow(<NavTabs {...defaultProps} />);
+  /**
+   * Rewriting setup function using React testing library instead of Enzyme
+   * @function setup
+   * @param  {object} props - Component props specific to this setup.
+   * @return {render}
+   */
+  const setup = (props = {}) => {
+    const setupProps = { ...defaultProps, ...props };
+    return render(
+      <ThemeProvider theme={theme}>
+        <NavTabs {...setupProps} />
+      </ThemeProvider>
+    );
   };
 
-  // smoke test
-  describe("basic setup", () => {
-    beforeEach(() => {
-      wrapper = setup();
-    });
-
-    it("renders without error", () => {
-      const component = findByTestAttr(wrapper, "component-navtabs");
-      expect(component.length).toBe(1);
-    });
+  it("renders without error", () => {
+    const { getByTestId } = setup({ classes: {} });
+    const component = getByTestId("component-navtabs");
+    expect(component).toBeInTheDocument();
   });
 });
