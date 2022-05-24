@@ -110,26 +110,6 @@ describe("Redux-Form custom Validators", () => {
       mailToZip: <Translate id="charLength5Error" />
     });
   });
-  // test("validates properly formed hire dates", () => {
-  //   combinedData.hireDate = "11/11/2019";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "11-11-2019";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "January, 10th 2019";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "2019-11-1";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "2019-11-11";
-  //   expect(validate(combinedData)).toStrictEqual({});
-  // });
   test("validates conditional required fields", () => {
     combinedData.employerType = "adult foster home";
     combinedData.medicaidResidents = 1;

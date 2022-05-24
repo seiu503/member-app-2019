@@ -1,21 +1,29 @@
 import React from "react";
-import { shallow } from "enzyme";
-import { findByTestAttr } from "../../utils/testUtils";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import Login from "../../components/Login";
+import { createTheme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/styles";
+
+const theme = createTheme();
 
 const defaultProps = {
   classes: {}
 };
 
 /**
- * Factory function to create a ShallowWrapper for the FormThankyou component
+ * Rewriting setup function using React testing library instead of Enzyme
  * @function setup
  * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
+ * @return {render}
  */
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<Login {...setupProps} />);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Login {...setupProps} />
+    </ThemeProvider>
+  );
 };
 
 const oldWindowLocation = window.location;
@@ -45,14 +53,13 @@ describe("<Login />", () => {
     jest.restoreAllMocks();
   });
   it("renders without error", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "component-login");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("component-login");
+    expect(component).toBeInTheDocument();
   });
   it("assigns location on componentDidMount", () => {
-    const wrapper = setup();
-    // run lifecycle method
-    wrapper.instance().componentDidMount();
-    expect(window.location.assign.mock.calls.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("component-login");
+    expect(window.location.assign).toHaveBeenCalled();
   });
 });
