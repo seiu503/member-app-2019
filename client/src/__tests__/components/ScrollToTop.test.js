@@ -1,31 +1,27 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
-import ScrollToTop, {
-  UnwrappedScrollToTop
-} from "../../components/ScrollToTop";
+import "@testing-library/jest-dom/extend-expect";
+import { render, cleanup } from "@testing-library/react";
+import { UnwrappedScrollToTop } from "../../components/ScrollToTop";
 
 const ScrollToMock = jest.fn();
 
 describe("<ScrollToTop />", () => {
   beforeEach(() => {
-    // mock window.scrollTo function
     global.window.scrollTo = ScrollToMock;
   });
   afterEach(() => {
-    // cleanup after testing
     ScrollToMock.mockRestore();
-  });
-  it("renders without error", () => {
-    const wrapper = shallow(<ScrollToTop />);
-    expect(wrapper.length).toBe(1);
+    cleanup();
   });
   it("calls window.scrollTo (location changes, no hash)", () => {
-    const wrapper = mount(
-      <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
+    const { rerender } = render(
+      <UnwrappedScrollToTop children="" location={{ pathname: "library" }} />
     );
 
     // pass different location prop to trigger componentDidUpdate
-    wrapper.setProps({ location: { pathname: "library" } });
+    rerender(
+      <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
+    );
 
     // check to see if scrollToMock was called in componentDidUpdate
     expect(ScrollToMock).toHaveBeenCalledWith({
@@ -34,19 +30,24 @@ describe("<ScrollToTop />", () => {
     });
   });
   it("does not call window.scrollTo (location doesn't change)", () => {
-    mount(
+    const { rerender } = render(
       <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
     );
     // check to see if scrollToMock was called in componentDidUpdate
     expect(ScrollToMock).not.toHaveBeenCalled();
   });
   it("does not call window.scrollTo (location changes, hash exists)", () => {
-    const wrapper = mount(
+    const { rerender } = render(
       <UnwrappedScrollToTop children="" location={{ pathname: "dashboard" }} />
     );
 
     // pass different location prop to trigger componentDidUpdate
-    wrapper.setProps({ location: { pathname: "library", hash: "dashboard" } });
+    rerender(
+      <UnwrappedScrollToTop
+        children=""
+        location={{ pathname: "library", hash: "dashboard" }}
+      />
+    );
     // check to see if scrollToMock was called in componentDidUpdate
     expect(ScrollToMock).not.toHaveBeenCalled();
   });
