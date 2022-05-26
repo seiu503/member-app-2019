@@ -593,70 +593,67 @@ describe("Input Field Render functions", () => {
     });
   });
 
-  // describe("renderCAPERadioGroup", () => {
-  //   let wrapper;
+  describe("renderCAPERadioGroup", () => {
+    const initialProps = {
+      input: {
+        name: "testRadio",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: false
+      },
+      id: "testField",
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testCheckboxClass"
+      },
+      label: "Test Field",
+      options: ["test"],
+      additionalOnChange: jest.fn(),
+      dataTestId: "test-field"
+    };
 
-  //   const initialProps = {
-  //     input: {
-  //       name: "testRadio",
-  //       onBlur: jest.fn(),
-  //       onChange,
-  //       onDragStart: jest.fn(),
-  //       onDrop: jest.fn(),
-  //       onFocus: jest.fn(),
-  //       value: false
-  //     },
-  //     id: "testField",
-  //     meta: {
-  //       touched: false,
-  //       error: ""
-  //     },
-  //     classes: {
-  //       input: "testCheckboxClass"
-  //     },
-  //     label: "Test Field",
-  //     options: ["test"],
-  //     additionalOnChange: jest.fn()
-  //   };
+    it("renders without errors", () => {
+      let { getByTestId } = render(renderCAPERadioGroup(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
+    });
 
-  //   wrapper = render(renderCAPERadioGroup(initialProps));
-  //   let component = findByTestAttr(
-  //     wrapper,
-  //     "component-cape-radio-group"
-  //   ).first();
-  //   it("renders without errors", () => {
-  //     expect(component).toHaveLength(1);
-  //   });
+    it("updates input value when changed", () => {
+      let { getByTestId } = render(renderCAPERadioGroup(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      fireEvent.click(component);
+      expect(onChange).toHaveBeenCalled();
+    });
 
-  //   it("updates input value when changed", () => {
-  //     component.checked = false;
-  //     component.prop("onChange")({ target: { checked: true } });
-  //     expect(onChange).toHaveBeenCalled();
-  //   });
+    it("it doesn't throw PropType warnings", () => {
+      checkPropTypes(renderCAPERadioGroup, initialProps);
+    });
 
-  //   it("it doesn't throw PropType warnings", () => {
-  //     checkPropTypes(renderCAPERadioGroup, initialProps);
-  //   });
-
-  //   it("handles edge cases", () => {
-  //     const testProps = {
-  //       meta: {
-  //         touched: true,
-  //         error: "Required"
-  //       },
-  //       options: ["Other"]
-  //     };
-  //     const testProps2 = {
-  //       meta: {
-  //         touched: true,
-  //         error: ""
-  //       },
-  //       options: ["Other"]
-  //     };
-  //     let props = { ...initialProps, ...testProps };
-  //     wrapper = render(renderCAPERadioGroup(props));
-  //     props = { ...initialProps, ...testProps2 };
-  //     wrapper = render(renderCAPERadioGroup(props));
-  //   });
-  // });
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          touched: true,
+          error: "Required"
+        },
+        options: ["Other"]
+      };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        },
+        options: ["Other"]
+      };
+      let props = { ...initialProps, ...testProps };
+      render(renderCAPERadioGroup(props));
+      props = { ...initialProps, ...testProps2 };
+      render(renderCAPERadioGroup(props));
+    });
+  });
 });
