@@ -71,13 +71,13 @@ class Notifier extends React.Component {
 }
 
 // this function should really just be one line
-// it should call openSnackbarFn with the first 2 arguments
-// (variant, message)
+// it should call openSnackbarFn with the first 2 arguments (currently line 101 --
+// variant, message)
 // however! some kind of race condition is happening between importing the
 // openSnackbar function into the target component and mounting the Notifier
 // so it's throwing an error if the function is not defined when the
 // Notifier mounts
-// setting a timeout of 50ms is an extremely dirty workaround but it works...
+// setting a timeout of 200ms is an extremely dirty workaround but it works...
 export const openSnackbar = (
   variant,
   message,
@@ -101,7 +101,7 @@ export const openSnackbar = (
     return openSnackbarFn(variant, message);
   } else {
     // console.log("openSnackbarFn is undefined");
-    setTimeout(() => openSnackbarFn(variant, message), 100);
+    setTimeout(() => openSnackbarFn(variant, message), 200);
   }
 };
 

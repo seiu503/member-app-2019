@@ -936,7 +936,10 @@ export const renderTextField = ({
           {...input}
           {...custom}
           data-testid={dataTestId}
-          inputProps={{ id: id }}
+          inputProps={{
+            id: id,
+            "aria-label": inputLabelTranslateHelper(id, label, translate)
+          }}
           onBlur={event => {
             input.onBlur();
             if (additionalOnChange) {

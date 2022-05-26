@@ -1,5 +1,7 @@
 import checkPropTypes from "check-prop-types";
-import { mount } from "enzyme";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import * as formElements from "../../components/SubmissionFormElements";
 import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";
@@ -252,6 +254,7 @@ describe("Input Field Render functions", () => {
         input: "testInputClass"
       },
       label: "Test Field",
+      dataTestId: "test-field",
       localize: {
         languages: [],
         translations: {},
@@ -277,7 +280,8 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
 
     const addlOnChgProps = {
@@ -299,7 +303,8 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
 
     const errorProps2 = {
@@ -320,308 +325,312 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
-    wrapper = mount(renderTextField(initialProps));
-    let component = findByTestAttr(wrapper, "component-text-field").first();
+
     it("renders without errors", () => {
-      expect(component).toHaveLength(1);
+      let { getByTestId } = render(renderTextField(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
     });
-    it("fills the input with a default value", () => {
-      expect(component.prop("name")).toBe("testField");
-      expect(component.prop("value")).toBe("Test Value");
-    });
-    it("updates input value when changed", () => {
-      const event = { target: { name: "testField", value: "Test" } };
-      component.prop("onChange")(event);
-      expect(onChange).toHaveBeenCalledWith(event);
+    it("updates input value when changed", async () => {
+      const user = userEvent.setup();
+      let { getByTestId } = render(renderTextField(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      await user.type(component, "fake@email.com");
+      expect(onChange).toHaveBeenCalled();
     });
     it("handles onBlur function", () => {
-      const event = { target: { name: "testField", value: "Test" } };
-      component.prop("onBlur")(event);
+      let { getByTestId } = render(renderTextField(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      fireEvent.blur(component);
       expect(onBlur).toHaveBeenCalled();
     });
-    it("provides helperText and error class when touched and errored", () => {
-      wrapper = mount(renderTextField(errorProps));
-      component = findByTestAttr(wrapper, "component-text-field").first();
-      expect(component.prop("error")).toBe(true);
-      expect(component.prop("helperText")).toBe("Required");
+    it("provides helperText and error class when touched and errored", async () => {
+      let { getByTestId } = render(renderTextField(errorProps));
+      let component = getByTestId("test-field");
+      const user = userEvent.setup();
+      await user.type(component.querySelector("input"), "fake@email.com");
+      expect(component).toHaveTextContent("Required");
     });
-    it("does not provide helperText and error class when touched and not errored", () => {
-      wrapper = mount(renderTextField(errorProps2));
-      component = findByTestAttr(wrapper, "component-text-field").first();
-      expect(component.prop("error")).toBe(false);
+    it("does not provide helperText and error class when touched and not errored", async () => {
+      let { getByTestId } = render(renderTextField(errorProps2));
+      let component = getByTestId("test-field");
+      const user = userEvent.setup();
+      await user.type(component.querySelector("input"), "fake@email.com");
+      expect(component).not.toHaveTextContent("Required");
     });
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderTextField, initialProps);
     });
   });
 
-  describe("renderSelect", () => {
-    let wrapper;
+  // describe("renderSelect", () => {
+  //   let wrapper;
 
-    const initialProps = {
-      input: {
-        name: "testField",
-        onBlur: jest.fn(),
-        onChange,
-        onClick,
-        onDragStart: jest.fn(),
-        onDrop: jest.fn(),
-        onFocus: jest.fn(),
-        value: "1"
-      },
-      id: "testField",
-      meta: {
-        touched: false,
-        error: ""
-      },
-      classes: {
-        input: "testInputClass"
-      },
-      label: "Test Select",
-      options: ["", "1", "2", "3"]
-    };
+  //   const initialProps = {
+  //     input: {
+  //       name: "testField",
+  //       onBlur: jest.fn(),
+  //       onChange,
+  //       onClick,
+  //       onDragStart: jest.fn(),
+  //       onDrop: jest.fn(),
+  //       onFocus: jest.fn(),
+  //       value: "1"
+  //     },
+  //     id: "testField",
+  //     meta: {
+  //       touched: false,
+  //       error: ""
+  //     },
+  //     classes: {
+  //       input: "testInputClass"
+  //     },
+  //     label: "Test Select",
+  //     options: ["", "1", "2", "3"]
+  //   };
 
-    wrapper = mount(renderSelect(initialProps));
-    let component = findByTestAttr(wrapper, "component-select").first();
-    it("renders without errors", () => {
-      expect(component).toHaveLength(1);
-    });
-    it("fills the input with a default value", () => {
-      expect(component.prop("value")).toBe("1");
-    });
-    it("populates with options", () => {
-      expect(wrapper.find("option")).toHaveLength(4);
-    });
-    it("updates input value when changed", () => {
-      const event = { target: { value: "3" } };
-      component.prop("onChange")(event);
-      expect(onChange).toHaveBeenCalled();
-    });
-    it("it doesn't throw PropType warnings", () => {
-      checkPropTypes(renderSelect, initialProps);
-    });
-    it("handles edge cases", () => {
-      const testProps = {
-        meta: {
-          touched: true,
-          error: "Required"
-        },
-        mobile: true,
-        align: "right"
-      };
-      const testProps2 = {
-        meta: {
-          touched: true,
-          error: ""
-        }
-      };
-      let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderSelect(props));
-      props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderSelect(props));
-    });
-  });
+  //   wrapper = render(renderSelect(initialProps));
+  //   let component = findByTestAttr(wrapper, "component-select").first();
+  //   it("renders without errors", () => {
+  //     expect(component).toHaveLength(1);
+  //   });
+  //   it("fills the input with a default value", () => {
+  //     expect(component.prop("value")).toBe("1");
+  //   });
+  //   it("populates with options", () => {
+  //     expect(wrapper.find("option")).toHaveLength(4);
+  //   });
+  //   it("updates input value when changed", () => {
+  //     const event = { target: { value: "3" } };
+  //     component.prop("onChange")(event);
+  //     expect(onChange).toHaveBeenCalled();
+  //   });
+  //   it("it doesn't throw PropType warnings", () => {
+  //     checkPropTypes(renderSelect, initialProps);
+  //   });
+  //   it("handles edge cases", () => {
+  //     const testProps = {
+  //       meta: {
+  //         touched: true,
+  //         error: "Required"
+  //       },
+  //       mobile: true,
+  //       align: "right"
+  //     };
+  //     const testProps2 = {
+  //       meta: {
+  //         touched: true,
+  //         error: ""
+  //       }
+  //     };
+  //     let props = { ...initialProps, ...testProps };
+  //     wrapper = render(renderSelect(props));
+  //     props = { ...initialProps, ...testProps2 };
+  //     wrapper = render(renderSelect(props));
+  //   });
+  // });
 
-  describe("renderCheckbox", () => {
-    let wrapper;
+  // describe("renderCheckbox", () => {
+  //   let wrapper;
 
-    const initialProps = {
-      input: {
-        name: "testCheckbox",
-        onBlur: jest.fn(),
-        onChange,
-        onDragStart: jest.fn(),
-        onDrop: jest.fn(),
-        onFocus: jest.fn(),
-        value: false
-      },
-      id: "testField",
-      meta: {
-        touched: false,
-        error: ""
-      },
-      classes: {
-        input: "testCheckboxClass"
-      },
-      label: "Test Field"
-    };
+  //   const initialProps = {
+  //     input: {
+  //       name: "testCheckbox",
+  //       onBlur: jest.fn(),
+  //       onChange,
+  //       onDragStart: jest.fn(),
+  //       onDrop: jest.fn(),
+  //       onFocus: jest.fn(),
+  //       value: false
+  //     },
+  //     id: "testField",
+  //     meta: {
+  //       touched: false,
+  //       error: ""
+  //     },
+  //     classes: {
+  //       input: "testCheckboxClass"
+  //     },
+  //     label: "Test Field"
+  //   };
 
-    wrapper = mount(renderCheckbox(initialProps));
-    let component = findByTestAttr(wrapper, "component-checkbox").first();
-    it("renders without errors", () => {
-      expect(component).toHaveLength(1);
-    });
+  //   wrapper = render(renderCheckbox(initialProps));
+  //   let component = findByTestAttr(wrapper, "component-checkbox").first();
+  //   it("renders without errors", () => {
+  //     expect(component).toHaveLength(1);
+  //   });
 
-    it("fills the input with a default value", () => {
-      expect(component.prop("checked")).toBe(false);
-    });
+  //   it("fills the input with a default value", () => {
+  //     expect(component.prop("checked")).toBe(false);
+  //   });
 
-    it("updates input value when changed", () => {
-      component.checked = false;
-      component.prop("onChange")({ target: { checked: true } });
-      expect(onChange).toHaveBeenCalled();
-    });
+  //   it("updates input value when changed", () => {
+  //     component.checked = false;
+  //     component.prop("onChange")({ target: { checked: true } });
+  //     expect(onChange).toHaveBeenCalled();
+  //   });
 
-    it("it doesn't throw PropType warnings", () => {
-      checkPropTypes(renderCheckbox, initialProps);
-    });
+  //   it("it doesn't throw PropType warnings", () => {
+  //     checkPropTypes(renderCheckbox, initialProps);
+  //   });
 
-    it("handles edge cases", () => {
-      const testProps = {
-        meta: {
-          touched: true,
-          error: "Required"
-        },
-        input: {
-          value: "test"
-        }
-      };
-      const testProps2 = {
-        meta: {
-          touched: true,
-          error: ""
-        },
-        input: {
-          value: "test"
-        }
-      };
-      let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderCheckbox(props));
-      props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderCheckbox(props));
-    });
-  });
+  //   it("handles edge cases", () => {
+  //     const testProps = {
+  //       meta: {
+  //         touched: true,
+  //         error: "Required"
+  //       },
+  //       input: {
+  //         value: "test"
+  //       }
+  //     };
+  //     const testProps2 = {
+  //       meta: {
+  //         touched: true,
+  //         error: ""
+  //       },
+  //       input: {
+  //         value: "test"
+  //       }
+  //     };
+  //     let props = { ...initialProps, ...testProps };
+  //     wrapper = render(renderCheckbox(props));
+  //     props = { ...initialProps, ...testProps2 };
+  //     wrapper = render(renderCheckbox(props));
+  //   });
+  // });
 
-  describe("renderRadioGroup", () => {
-    let wrapper;
+  // describe("renderRadioGroup", () => {
+  //   let wrapper;
 
-    const initialProps = {
-      input: {
-        name: "testRadio",
-        onBlur: jest.fn(),
-        onChange,
-        onDragStart: jest.fn(),
-        onDrop: jest.fn(),
-        onFocus: jest.fn(),
-        value: false
-      },
-      id: "testField",
-      meta: {
-        touched: false,
-        error: ""
-      },
-      classes: {
-        input: "testCheckboxClass"
-      },
-      label: "Test Field",
-      options: ["test"],
-      additionalOnChange: jest.fn()
-    };
+  //   const initialProps = {
+  //     input: {
+  //       name: "testRadio",
+  //       onBlur: jest.fn(),
+  //       onChange,
+  //       onDragStart: jest.fn(),
+  //       onDrop: jest.fn(),
+  //       onFocus: jest.fn(),
+  //       value: false
+  //     },
+  //     id: "testField",
+  //     meta: {
+  //       touched: false,
+  //       error: ""
+  //     },
+  //     classes: {
+  //       input: "testCheckboxClass"
+  //     },
+  //     label: "Test Field",
+  //     options: ["test"],
+  //     additionalOnChange: jest.fn()
+  //   };
 
-    wrapper = mount(renderRadioGroup(initialProps));
-    let component = findByTestAttr(wrapper, "component-radio-group").first();
-    it("renders without errors", () => {
-      expect(component).toHaveLength(1);
-    });
+  //   wrapper = render(renderRadioGroup(initialProps));
+  //   let component = findByTestAttr(wrapper, "component-radio-group").first();
+  //   it("renders without errors", () => {
+  //     expect(component).toHaveLength(1);
+  //   });
 
-    it("updates input value when changed", () => {
-      component.checked = false;
-      component.prop("onChange")({ target: { checked: true } });
-      expect(onChange).toHaveBeenCalled();
-    });
+  //   it("updates input value when changed", () => {
+  //     component.checked = false;
+  //     component.prop("onChange")({ target: { checked: true } });
+  //     expect(onChange).toHaveBeenCalled();
+  //   });
 
-    it("it doesn't throw PropType warnings", () => {
-      checkPropTypes(renderRadioGroup, initialProps);
-    });
+  //   it("it doesn't throw PropType warnings", () => {
+  //     checkPropTypes(renderRadioGroup, initialProps);
+  //   });
 
-    it("handles edge cases", () => {
-      const testProps = {
-        meta: {
-          touched: true,
-          error: "Required"
-        },
-        direction: "vert"
-      };
-      const testProps2 = {
-        meta: {
-          touched: true,
-          error: ""
-        },
-        direction: "vert"
-      };
-      let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderRadioGroup(props));
-      props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderRadioGroup(props));
-    });
-  });
+  //   it("handles edge cases", () => {
+  //     const testProps = {
+  //       meta: {
+  //         touched: true,
+  //         error: "Required"
+  //       },
+  //       direction: "vert"
+  //     };
+  //     const testProps2 = {
+  //       meta: {
+  //         touched: true,
+  //         error: ""
+  //       },
+  //       direction: "vert"
+  //     };
+  //     let props = { ...initialProps, ...testProps };
+  //     wrapper = render(renderRadioGroup(props));
+  //     props = { ...initialProps, ...testProps2 };
+  //     wrapper = render(renderRadioGroup(props));
+  //   });
+  // });
 
-  describe("renderCAPERadioGroup", () => {
-    let wrapper;
+  // describe("renderCAPERadioGroup", () => {
+  //   let wrapper;
 
-    const initialProps = {
-      input: {
-        name: "testRadio",
-        onBlur: jest.fn(),
-        onChange,
-        onDragStart: jest.fn(),
-        onDrop: jest.fn(),
-        onFocus: jest.fn(),
-        value: false
-      },
-      id: "testField",
-      meta: {
-        touched: false,
-        error: ""
-      },
-      classes: {
-        input: "testCheckboxClass"
-      },
-      label: "Test Field",
-      options: ["test"],
-      additionalOnChange: jest.fn()
-    };
+  //   const initialProps = {
+  //     input: {
+  //       name: "testRadio",
+  //       onBlur: jest.fn(),
+  //       onChange,
+  //       onDragStart: jest.fn(),
+  //       onDrop: jest.fn(),
+  //       onFocus: jest.fn(),
+  //       value: false
+  //     },
+  //     id: "testField",
+  //     meta: {
+  //       touched: false,
+  //       error: ""
+  //     },
+  //     classes: {
+  //       input: "testCheckboxClass"
+  //     },
+  //     label: "Test Field",
+  //     options: ["test"],
+  //     additionalOnChange: jest.fn()
+  //   };
 
-    wrapper = mount(renderCAPERadioGroup(initialProps));
-    let component = findByTestAttr(
-      wrapper,
-      "component-cape-radio-group"
-    ).first();
-    it("renders without errors", () => {
-      expect(component).toHaveLength(1);
-    });
+  //   wrapper = render(renderCAPERadioGroup(initialProps));
+  //   let component = findByTestAttr(
+  //     wrapper,
+  //     "component-cape-radio-group"
+  //   ).first();
+  //   it("renders without errors", () => {
+  //     expect(component).toHaveLength(1);
+  //   });
 
-    it("updates input value when changed", () => {
-      component.checked = false;
-      component.prop("onChange")({ target: { checked: true } });
-      expect(onChange).toHaveBeenCalled();
-    });
+  //   it("updates input value when changed", () => {
+  //     component.checked = false;
+  //     component.prop("onChange")({ target: { checked: true } });
+  //     expect(onChange).toHaveBeenCalled();
+  //   });
 
-    it("it doesn't throw PropType warnings", () => {
-      checkPropTypes(renderCAPERadioGroup, initialProps);
-    });
+  //   it("it doesn't throw PropType warnings", () => {
+  //     checkPropTypes(renderCAPERadioGroup, initialProps);
+  //   });
 
-    it("handles edge cases", () => {
-      const testProps = {
-        meta: {
-          touched: true,
-          error: "Required"
-        },
-        options: ["Other"]
-      };
-      const testProps2 = {
-        meta: {
-          touched: true,
-          error: ""
-        },
-        options: ["Other"]
-      };
-      let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderCAPERadioGroup(props));
-      props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderCAPERadioGroup(props));
-    });
-  });
+  //   it("handles edge cases", () => {
+  //     const testProps = {
+  //       meta: {
+  //         touched: true,
+  //         error: "Required"
+  //       },
+  //       options: ["Other"]
+  //     };
+  //     const testProps2 = {
+  //       meta: {
+  //         touched: true,
+  //         error: ""
+  //       },
+  //       options: ["Other"]
+  //     };
+  //     let props = { ...initialProps, ...testProps };
+  //     wrapper = render(renderCAPERadioGroup(props));
+  //     props = { ...initialProps, ...testProps2 };
+  //     wrapper = render(renderCAPERadioGroup(props));
+  //   });
+  // });
 });
