@@ -1055,6 +1055,7 @@ export const renderSelect = ({
   short,
   mobile,
   formControlName,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
@@ -1074,13 +1075,18 @@ export const renderSelect = ({
           native
           input={
             // <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
-            <OutlinedInput inputProps={{ id: id, style: { ...style } }} />
+            <OutlinedInput
+              inputProps={{
+                id: id,
+                style: { ...style }
+              }}
+            />
           }
           className={align === "right" ? classes.selectRight : classes.select}
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
           {...custom}
-          data-testid="component-select"
+          data-testid={dataTestId}
         >
           {options.map(item => (
             <option

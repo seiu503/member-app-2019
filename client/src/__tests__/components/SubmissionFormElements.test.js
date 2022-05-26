@@ -228,11 +228,18 @@ const onChangeMock = jest.fn();
 const onClick = jest.fn();
 describe("Input Field Render functions", () => {
   afterEach(() => {
-    onChangeMock.mockRestore();
-    onChange.mockRestore();
-    onBlur.mockRestore();
+    jest.restoreAllMocks();
+    cleanup();
   });
   describe("renderTextField", () => {
+    beforeEach(() => {
+      const openSnackbarMock = jest.fn();
+      Notifier.openSnackbar = openSnackbarMock;
+    });
+    afterEach(() => {
+      jest.restoreAllMocks();
+      cleanup();
+    });
     let wrapper;
     additionalOnChange = jest.fn();
     const initialProps = {
@@ -366,72 +373,87 @@ describe("Input Field Render functions", () => {
     });
   });
 
-  // describe("renderSelect", () => {
-  //   let wrapper;
+  describe("renderSelect", () => {
+    beforeEach(() => {
+      const openSnackbarMock = jest.fn();
+      Notifier.openSnackbar = openSnackbarMock;
+    });
+    afterEach(() => {
+      jest.restoreAllMocks();
+      cleanup();
+    });
+    const initialProps = {
+      input: {
+        name: "testField",
+        onBlur: jest.fn(),
+        onChange,
+        onClick,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: "1"
+      },
+      id: "testField",
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testInputClass"
+      },
+      label: "Test Select",
+      dataTestId: "test-field",
+      options: ["", "1", "2", "3"]
+    };
 
-  //   const initialProps = {
-  //     input: {
-  //       name: "testField",
-  //       onBlur: jest.fn(),
-  //       onChange,
-  //       onClick,
-  //       onDragStart: jest.fn(),
-  //       onDrop: jest.fn(),
-  //       onFocus: jest.fn(),
-  //       value: "1"
-  //     },
-  //     id: "testField",
-  //     meta: {
-  //       touched: false,
-  //       error: ""
-  //     },
-  //     classes: {
-  //       input: "testInputClass"
-  //     },
-  //     label: "Test Select",
-  //     options: ["", "1", "2", "3"]
-  //   };
-
-  //   wrapper = render(renderSelect(initialProps));
-  //   let component = findByTestAttr(wrapper, "component-select").first();
-  //   it("renders without errors", () => {
-  //     expect(component).toHaveLength(1);
-  //   });
-  //   it("fills the input with a default value", () => {
-  //     expect(component.prop("value")).toBe("1");
-  //   });
-  //   it("populates with options", () => {
-  //     expect(wrapper.find("option")).toHaveLength(4);
-  //   });
-  //   it("updates input value when changed", () => {
-  //     const event = { target: { value: "3" } };
-  //     component.prop("onChange")(event);
-  //     expect(onChange).toHaveBeenCalled();
-  //   });
-  //   it("it doesn't throw PropType warnings", () => {
-  //     checkPropTypes(renderSelect, initialProps);
-  //   });
-  //   it("handles edge cases", () => {
-  //     const testProps = {
-  //       meta: {
-  //         touched: true,
-  //         error: "Required"
-  //       },
-  //       mobile: true,
-  //       align: "right"
-  //     };
-  //     const testProps2 = {
-  //       meta: {
-  //         touched: true,
-  //         error: ""
-  //       }
-  //     };
-  //     let props = { ...initialProps, ...testProps };
-  //     wrapper = render(renderSelect(props));
-  //     props = { ...initialProps, ...testProps2 };
-  //     wrapper = render(renderSelect(props));
-  //   });
-  // });
+    it("renders without errors", () => {
+      let { getByTestId } = render(renderSelect(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
+    });
+    it("correctly sets default option", () => {
+      let { getByTestId } = render(renderSelect(initialProps));
+      expect(screen.getByRole("option", { name: "1" }).selected).toBe(true);
+    });
+    it("populates with options", () => {
+      let { getByTestId } = render(renderSelect(initialProps));
+      expect(screen.getAllByRole("option").length).toBe(4);
+    });
+    it("updates input value when changed", () => {
+      let { getByRole } = render(renderSelect(initialProps));
+      userEvent.selectOptions(
+        // Find the select element
+        screen.getByRole("combobox", { hidden: true }),
+        // Find and select the 3 option
+        screen.getByRole("option", { name: "3" })
+      );
+      // expect(screen.getByRole('option', { name: '3' }).selected).toBe(true)
+      expect(onChange).toHaveBeenCalled();
+    });
+    it("it doesn't throw PropType warnings", () => {
+      checkPropTypes(renderSelect, initialProps);
+    });
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          touched: true,
+          error: "Required"
+        },
+        mobile: true,
+        align: "right"
+      };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        }
+      };
+      let props = { ...initialProps, ...testProps };
+      render(renderSelect(props));
+      props = { ...initialProps, ...testProps2 };
+      render(renderSelect(props));
+    });
+  });
 
   // describe("renderCheckbox", () => {
   //   let wrapper;

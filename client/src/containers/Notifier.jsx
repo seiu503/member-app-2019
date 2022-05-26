@@ -15,8 +15,8 @@ class Notifier extends React.Component {
     action: null
   };
 
-  componentDidMount() {
-    openSnackbarFn = this.openSnackbar;
+  async componentDidMount() {
+    openSnackbarFn = await this.openSnackbar;
   }
 
   openSnackbar = (variant, message, action) => {
@@ -71,8 +71,7 @@ class Notifier extends React.Component {
 }
 
 // this function should really just be one line
-// it should call openSnackbarFn with the first 2 arguments (currently line 101 --
-// variant, message)
+// it should call openSnackbarFn with the first 2 arguments (currently line 107)
 // however! some kind of race condition is happening between importing the
 // openSnackbar function into the target component and mounting the Notifier
 // so it's throwing an error if the function is not defined when the
@@ -104,5 +103,7 @@ export const openSnackbar = (
     setTimeout(() => openSnackbarFn(variant, message), 200);
   }
 };
+
+// export const openSnackbar = async ( variant, message ) => await openSnackbarFn(variant, message);
 
 export default Notifier;
