@@ -1171,6 +1171,7 @@ export const renderRadioGroup = ({
   formControlName,
   legendClass,
   additionalOnChange,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
@@ -1202,6 +1203,7 @@ export const renderRadioGroup = ({
             }
           }}
           id={id}
+          data-testid={dataTestId}
         >
           {options.map(item => {
             return (
@@ -1242,6 +1244,7 @@ export const renderCAPERadioGroup = ({
   meta: { touched, error },
   formControlName,
   legendClass,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
@@ -1262,6 +1265,7 @@ export const renderCAPERadioGroup = ({
           id={formControlName}
           className={classes.horizGroup}
           onChange={input.onChange}
+          data-testid={dataTestId}
         >
           {options.map(item => {
             let labelText = `$${item}`;

@@ -529,69 +529,69 @@ describe("Input Field Render functions", () => {
     });
   });
 
-  // describe("renderRadioGroup", () => {
-  //   let wrapper;
+  describe("renderRadioGroup", () => {
+    const initialProps = {
+      input: {
+        name: "testRadio",
+        onBlur: jest.fn(),
+        onChange,
+        onDragStart: jest.fn(),
+        onDrop: jest.fn(),
+        onFocus: jest.fn(),
+        value: false
+      },
+      id: "testField",
+      meta: {
+        touched: false,
+        error: ""
+      },
+      classes: {
+        input: "testCheckboxClass"
+      },
+      label: "Test Field",
+      dataTestId: "test-field",
+      options: ["test"],
+      additionalOnChange: jest.fn()
+    };
 
-  //   const initialProps = {
-  //     input: {
-  //       name: "testRadio",
-  //       onBlur: jest.fn(),
-  //       onChange,
-  //       onDragStart: jest.fn(),
-  //       onDrop: jest.fn(),
-  //       onFocus: jest.fn(),
-  //       value: false
-  //     },
-  //     id: "testField",
-  //     meta: {
-  //       touched: false,
-  //       error: ""
-  //     },
-  //     classes: {
-  //       input: "testCheckboxClass"
-  //     },
-  //     label: "Test Field",
-  //     options: ["test"],
-  //     additionalOnChange: jest.fn()
-  //   };
+    it("renders without errors", () => {
+      let { getByTestId } = render(renderRadioGroup(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
+    });
 
-  //   wrapper = render(renderRadioGroup(initialProps));
-  //   let component = findByTestAttr(wrapper, "component-radio-group").first();
-  //   it("renders without errors", () => {
-  //     expect(component).toHaveLength(1);
-  //   });
+    it("updates input value when changed", () => {
+      let { getByTestId } = render(renderRadioGroup(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      fireEvent.click(component);
+      expect(onChange).toHaveBeenCalled();
+    });
 
-  //   it("updates input value when changed", () => {
-  //     component.checked = false;
-  //     component.prop("onChange")({ target: { checked: true } });
-  //     expect(onChange).toHaveBeenCalled();
-  //   });
+    it("it doesn't throw PropType warnings", () => {
+      checkPropTypes(renderRadioGroup, initialProps);
+    });
 
-  //   it("it doesn't throw PropType warnings", () => {
-  //     checkPropTypes(renderRadioGroup, initialProps);
-  //   });
-
-  //   it("handles edge cases", () => {
-  //     const testProps = {
-  //       meta: {
-  //         touched: true,
-  //         error: "Required"
-  //       },
-  //       direction: "vert"
-  //     };
-  //     const testProps2 = {
-  //       meta: {
-  //         touched: true,
-  //         error: ""
-  //       },
-  //       direction: "vert"
-  //     };
-  //     let props = { ...initialProps, ...testProps };
-  //     wrapper = render(renderRadioGroup(props));
-  //     props = { ...initialProps, ...testProps2 };
-  //     wrapper = render(renderRadioGroup(props));
-  //   });
-  // });
+    it("handles edge cases", () => {
+      const testProps = {
+        meta: {
+          touched: true,
+          error: "Required"
+        },
+        direction: "vert"
+      };
+      const testProps2 = {
+        meta: {
+          touched: true,
+          error: ""
+        },
+        direction: "vert"
+      };
+      let props = { ...initialProps, ...testProps };
+      render(renderRadioGroup(props));
+      props = { ...initialProps, ...testProps2 };
+      render(renderRadioGroup(props));
+    });
+  });
 
   // describe("renderCAPERadioGroup", () => {
   //   let wrapper;
