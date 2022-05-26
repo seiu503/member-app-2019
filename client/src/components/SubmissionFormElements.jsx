@@ -1115,6 +1115,7 @@ export const renderCheckbox = ({
   localize,
   bold,
   mini,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
@@ -1142,6 +1143,7 @@ export const renderCheckbox = ({
                 data-testid="component-checkbox"
                 name="checkbox"
                 inputProps={{ id: id }}
+                data-testid={dataTestId}
               />
             }
           />
