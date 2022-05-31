@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import queryString from "query-string";
 
-import withWidth from "@material-ui/core/withWidth";
-
 import { withLocalize } from "react-localize-redux";
 import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
@@ -457,4 +455,4 @@ SubmissionFormPage1Component.propTypes = {
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };
-export default withWidth()(withLocalize(SubmissionFormPage1Component));
+export default withLocalize(SubmissionFormPage1Component);

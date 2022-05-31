@@ -100,18 +100,6 @@ describe("<CAPE />", () => {
     );
   };
 
-  // const connectedSetup = props => {
-  //   const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-  //   return render(
-  //     <ThemeProvider theme={theme}>
-  //       <Provider store={store}>
-  //         <CAPEConnected {...setUpProps} {...props} />
-  //       </Provider>
-  //     </ThemeProvider>
-  //   );
-  // };
-
-  // smoke test and making sure we have access to correct props
   describe("basic setup", () => {
     beforeEach(() => {
       handleSubmit = fn => fn;

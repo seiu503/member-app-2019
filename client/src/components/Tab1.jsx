@@ -330,4 +330,4 @@ export const Tab1Form = reduxForm({
 // connect to redux store
 export const Tab1Connected = connect(mapStateToProps)(Tab1Form);
 
-export default withWidth()(Tab1Connected);
+export default Tab1Connected;
