@@ -35,7 +35,6 @@ let wrapper,
   store,
   getSFEmployersSuccess,
   handleUpload,
-  loadEmployersPicklistMock,
   verifySuccess;
 
 let resetMock = jest.fn();
@@ -71,6 +70,8 @@ getSFEmployersSuccess = jest
   .mockImplementation(() =>
     Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
   );
+
+const loadEmployersPicklistMock = jest.fn(() => []);
 
 // initial props for form
 const defaultProps = {
@@ -138,6 +139,7 @@ const defaultProps = {
   },
   verifyRecaptchaScore: verifyRecaptchaSuccess,
   saveSubmissionErrors: saveSubmissionErrorsMock,
+  loadEmployersPicklist: loadEmployersPicklistMock,
   headline: {
     id: 1,
     text: ""
@@ -246,14 +248,12 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
 
   describe("componentDidMount", () => {
     it("calls getSFEmployers on componentDidMount", async () => {
-      // const getAttributeOrig = document.body.getAttribute;
-      // document.body.getAttribute = jest.fn().mockImplementation(() => "true");
       const getSFEmployersSuccess = jest
         .fn()
         .mockImplementation(() =>
           Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
         );
-      loadEmployersPicklistMock = jest.fn();
+      // loadEmployersPicklistMock = jest.fn();
       props = {
         handleSubmit: jest.fn(),
         apiSF: {
@@ -262,13 +262,12 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         formValues: {
           // to get code coverage for retiree edge cases
           employerType: "Retirees"
-        },
-        loadEmployersPicklist: loadEmployersPicklistMock
+        }
+        // loadEmployersPicklist: loadEmployersPicklistMock
       };
 
       await setup(props);
       expect(getSFEmployersSuccess).toHaveBeenCalled();
-      // document.body.getAttribute = getAttributeOrig;
     });
     it("handles error when getSFEmployers fails", async () => {
       handleErrorMock = jest.fn();
@@ -296,84 +295,116 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         apiSubmission,
         apiSF
       };
-      // return render(
-      //   <ThemeProvider theme={theme}>
-      //     <Provider store={store}>
-      //       <SubmissionFormPage1Component {...setupProps} />
-      //     </Provider>
-      //   </ThemeProvider>
-      // );
       await setup(props);
       expect(getSFEmployersError).toHaveBeenCalled();
     });
   });
 
-  // describe("componentDidUpdate", () => {
-  //   it("calls loadEmployersPicklist on componentDidUpdate if employer list has not yet loaded", () => {
-  //     sfEmployerLookupSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-  //       );
-  //     loadEmployersPicklistMock = jest.fn();
-  //     props = {
-  //       submission: {
-  //         employerNames: [""],
-  //         formPage1: {},
-  //         payment: {
-  //           cardAddingUrl: ""
-  //         }
-  //       },
-  //       formValues: {
-  //         // to get code coverage for community member edge cases
-  //         employerType: "Community Member"
-  //       },
-  //       apiSF: {
-  //         getSFEmployers: sfEmployerLookupSuccess
-  //       }
-  //     };
-  //     // creating wrapper
-  //     wrapper = setup(props);
+  describe("componentDidUpdate", () => {
+    it("calls loadEmployersPicklist on componentDidUpdate if employer list has not yet loaded", async () => {
+      getSFEmployersSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      props = {
+        submission: {
+          employerNames: [""],
+          formPage1: {},
+          payment: {
+            cardAddingUrl: ""
+          }
+        },
+        formValues: {
+          // to get code coverage for community member edge cases
+          employerType: "Community Member"
+        },
+        apiSF: {
+          getSFEmployers: getSFEmployersSuccess
+        },
+        loadEmployersPicklist: loadEmployersPicklistMock
+      };
 
-  //     wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
-  //     wrapper.instance().componentDidUpdate();
+      const ref = React.createRef();
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      const { rerender } = render(
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <SubmissionFormPage1Component {...setupProps} ref={ref} />
+          </Provider>
+        </ThemeProvider>
+      );
 
-  //     // testing that loadEmployersPicklist was called
-  //     expect(loadEmployersPicklistMock.mock.calls.length).toBe(1);
-  //   });
-  //   it("does not call loadEmployersPicklist on componentDidUpdate if employer list has loaded", () => {
-  //     sfEmployerLookupSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
-  //       );
-  //     loadEmployersPicklistMock = jest.fn();
-  //     props = {
-  //       submission: {
-  //         employerNames: ["first", "second", "third", "fourth"],
-  //         formPage1: {},
-  //         payment: {
-  //           cardAddingUrl: ""
-  //         }
-  //       },
-  //       formValues: {
-  //         // to get code coverage for family child care edge cases
-  //         employerType: "Child care"
-  //       },
-  //       apiSF: {
-  //         getSFEmployers: sfEmployerLookupSuccess
-  //       }
-  //     };
-  //     // creating wrapper
-  //     wrapper = setup(props);
+      const tempLoadEmployersPicklist = ref.current.loadEmployersPicklist;
+      ref.current.loadEmployersPicklist = loadEmployersPicklistMock;
 
-  //     wrapper.instance().loadEmployersPicklist = loadEmployersPicklistMock;
-  //     wrapper.instance().componentDidUpdate();
+      await rerender(
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <SubmissionFormPage1Component {...setupProps} ref={ref} />
+          </Provider>
+        </ThemeProvider>
+      );
 
-  //     // testing that loadEmployersPicklist was not called
-  //     expect(loadEmployersPicklistMock.mock.calls.length).toBe(0);
-  //   });
-  // });
+      // testing that loadEmployersPicklist was called
+      expect(loadEmployersPicklistMock).toHaveBeenCalled();
+      loadEmployersPicklistMock.mockClear();
+    });
+    it.only("does not call loadEmployersPicklist on componentDidUpdate if employer list has loaded", async () => {
+      getSFEmployersSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+        );
+      props = {
+        submission: {
+          employerNames: ["first", "second", "third", "fourth"],
+          formPage1: {},
+          payment: {
+            cardAddingUrl: ""
+          }
+        },
+        formValues: {
+          // to get code coverage for community member edge cases
+          employerType: "Community Member"
+        },
+        apiSF: {
+          getSFEmployers: getSFEmployersSuccess
+        },
+        loadEmployersPicklist: loadEmployersPicklistMock
+      };
+
+      const ref = React.createRef();
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      const { rerender } = render(
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <SubmissionFormPage1Component
+              {...defaultProps}
+              handleSubmit={handleSubmit}
+              ref={ref}
+            />
+          </Provider>
+        </ThemeProvider>
+      );
+
+      const tempLoadEmployersPicklist = ref.current.loadEmployersPicklist;
+      ref.current.loadEmployersPicklist = loadEmployersPicklistMock;
+
+      loadEmployersPicklistMock.mockClear();
+
+      await rerender(
+        <ThemeProvider theme={theme}>
+          <Provider store={store}>
+            <SubmissionFormPage1Component {...setupProps} ref={ref} />
+          </Provider>
+        </ThemeProvider>
+      );
+
+      // testing that loadEmployersPicklist was not called
+      expect(loadEmployersPicklistMock).not.toHaveBeenCalled();
+    });
+  });
 
   // describe("handleSubmit", () => {
   //   beforeEach(done => {

@@ -29,7 +29,7 @@ export class SubmissionFormPage1Component extends React.Component {
     this.props.apiSF
       .getSFEmployers()
       .then(result => {
-        console.log(result);
+        // console.log(result);
         // console.log(result.payload);
         this.loadEmployersPicklist();
       })
