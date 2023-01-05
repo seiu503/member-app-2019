@@ -14,10 +14,10 @@ import * as formElements from "../../components/SubmissionFormElements";
 
 import * as Notifier from "../../containers/Notifier";
 
-import { createTheme } from "@mui/material/styles";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/styles";
 
-const theme = createTheme();
+const theme = createTheme(adaptV4Theme);
 
 // variables
 let wrapper,

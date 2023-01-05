@@ -166,6 +166,7 @@ export class CreateUserFormUnconnected extends React.Component {
               }
               // className={align === "right" ? classes.selectRight : classes.select}
               data-testid="userType"
+              variant="standard"
             >
               <option
                 key={shortid()}

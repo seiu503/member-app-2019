@@ -1027,6 +1027,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
             // value={props.input.value}
             // onChange={props.input.onChange}
             data-testid="component-select"
+            variant="standard"
           >
             {props.options.map(item => (
               <option key={shortid()} value={item}>
@@ -1087,6 +1088,7 @@ export const renderSelect = ({
           onChange={input.onChange}
           {...custom}
           data-testid={dataTestId}
+          variant="standard"
         >
           {options.map(item => (
             <option
@@ -1129,6 +1131,7 @@ export const renderCheckbox = ({
         <FormControl
           error={!!(touched && error)}
           className={classes[formControlName] || classes.formControl}
+          variant="standard"
         >
           <FormControlLabel
             label={inputLabelTranslateHelper(id, label, translate)}
@@ -1180,6 +1183,7 @@ export const renderRadioGroup = ({
         component="fieldset"
         error={!!(touched && error)}
         className={classes[formControlName] || classes.formControl}
+        variant="standard"
       >
         <FormLabel component="legend" className={classes.radioLabel}>
           {translate(id)}
@@ -1253,6 +1257,7 @@ export const renderCAPERadioGroup = ({
         component="fieldset"
         error={!!(touched && error)}
         className={classes[formControlName] || classes.formControl}
+        variant="standard"
       >
         <FormLabel component="legend" className={classes.capeRadioLabel}>
           {translate(id)}

@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/styles";
 import { storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
@@ -74,7 +74,7 @@ const defaultProps = {
   }
 };
 
-const theme = createTheme();
+const theme = createTheme(adaptV4Theme);
 
 describe("<CAPE />", () => {
   // assigning handlesubmit as a callback so it can be passed form's onSubmit assignment or our own test function

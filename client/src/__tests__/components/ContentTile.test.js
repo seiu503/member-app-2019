@@ -9,10 +9,10 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ContentTile, { styles } from "../../components/ContentTile";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/styles";
 
-const theme = createTheme();
+const theme = createTheme(adaptV4Theme);
 
 const defaultProps = {
   contentTile: {

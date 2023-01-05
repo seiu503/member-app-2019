@@ -8,7 +8,7 @@ import {
   waitFor
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/styles";
 import { EditUserFormUnconnected } from "../../components/EditUser";
@@ -16,7 +16,7 @@ import * as formElements from "../../components/SubmissionFormElements";
 
 import { storeFactory } from "../../utils/testUtils";
 
-const theme = createTheme();
+const theme = createTheme(adaptV4Theme);
 let store;
 let wrapper;
 

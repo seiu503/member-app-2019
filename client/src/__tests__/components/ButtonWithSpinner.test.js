@@ -2,10 +2,10 @@ import React from "react";
 import "@testing-library/jest-dom/extend-expect";
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import ButtonWithSpinner from "../../components/ButtonWithSpinner";
-import { createTheme } from "@mui/material/styles";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/styles";
 
-const theme = createTheme();
+const theme = createTheme(adaptV4Theme);
 
 const defaultProps = {
   loading: false,

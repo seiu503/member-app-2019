@@ -259,7 +259,11 @@ export class TextInputFormUnconnected extends React.Component {
           onError={errors => console.log(errors)}
           id="form"
         >
-          <FormControl component="fieldset" className={classes.formControl}>
+          <FormControl
+            component="fieldset"
+            className={classes.formControl}
+            variant="standard"
+          >
             <FormLabel component="legend" className={classes.radioLabel}>
               Content Type
             </FormLabel>

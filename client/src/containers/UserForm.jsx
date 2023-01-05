@@ -76,7 +76,11 @@ export class UserFormUnconnected extends React.Component {
       <div className={classes.container} data-testid="user-form-container">
         {loggedIn && (
           <form>
-            <FormControl component="fieldset" className={classes.formControl}>
+            <FormControl
+              component="fieldset"
+              className={classes.formControl}
+              variant="standard"
+            >
               <FormLabel component="legend" className={classes.radioLabel}>
                 Create or Edit User
               </FormLabel>
