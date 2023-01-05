@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
-import { DropzoneDialog } from "material-ui-dropzone";
+import Dropzone from "react-dropzone";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 import * as utils from "../utils";
@@ -329,31 +329,39 @@ export class TextInputFormUnconnected extends React.Component {
           ) : this.props.content.form.content_type &&
             this.props.content.form.content_type === "image" ? (
             <React.Fragment>
-              <ButtonWithSpinner
-                onClick={this.handleOpen.bind(this)}
-                variant="contained"
-                color="secondary"
-                component="label"
-                className={classes.formButton}
-                loading={this.props.content.loading}
-              >
-                Choose Image
-              </ButtonWithSpinner>
-              <DropzoneDialog
-                open={this.state.open}
-                onDropRejected={this.onDropRejected}
-                onSave={this.handleSave}
-                acceptedFiles={[
-                  "image/jpeg",
-                  "image/jpg",
-                  "image/png",
-                  "image/gif"
-                ]}
-                showPreviews={true}
-                maxFileSize={2000000}
-                filesLimit={1} // until add server support for multiupload
-                onClose={this.handleClose}
-              />
+              <div>
+                <p>
+                  This is a placeholder for the dropzone component to upload
+                  images. Image uploading is not currently implemented and the
+                  upload button will not work.
+                </p>
+              </div>
+              {/* <ButtonWithSpinner
+                //   onClick={this.handleOpen.bind(this)}
+                //   variant="contained"
+                //   color="secondary"
+                //   component="label"
+                //   className={classes.formButton}
+                //   loading={this.props.content.loading}
+                // >
+                //   Choose Image
+                // </ButtonWithSpinner>
+                // <Dropzone
+                //   open={this.state.open}
+                //   onDropRejected={this.onDropRejected}
+                //   onSave={this.handleSave}
+                //   acceptedFiles={[
+                //     "image/jpeg",
+                //     "image/jpg",
+                //     "image/png",
+                //     "image/gif"
+                //   ]}
+                //   showPreviews={true}
+                //   maxFileSize={2000000}
+                //   filesLimit={1} // until add server support for multiupload
+                //   onClose={this.handleClose}
+                // />
+              */}
             </React.Fragment>
           ) : (
             ""
