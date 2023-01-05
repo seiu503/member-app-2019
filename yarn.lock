@@ -3579,7 +3579,7 @@ __metadata:
     sinon: ^7.3.2
     sinon-chai: ^3.3.0
     sinon-express-mock: ^2.2.0
-    snyk: ^1.717.0
+    snyk: ^1.1081.0
     stream: ^0.0.2
     supervisor: ^0.12.0
     uuid: ^3.3.2
@@ -5284,12 +5284,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"snyk@npm:^1.717.0":
-  version: 1.717.0
-  resolution: "snyk@npm:1.717.0"
+"snyk@npm:^1.1081.0":
+  version: 1.1081.0
+  resolution: "snyk@npm:1.1081.0"
   bin:
     snyk: bin/snyk
-  checksum: 4ca66ce6bac723b7c75e32a5b4756611585c09b86064800876ab2ab1d92d206c517dde9af89a500cdcb58d6e2322bd62e180e93237d68fa9b23c0bb259a6212b
+  checksum: 000865fea4e547d6c86276a3bdeca4aee10038143bc2e754ed854b480201d015ca8b17bffd2a84ccb8d1345323258fac110968b3567cf2994d767a12db9feafc
   languageName: node
   linkType: hard
 
