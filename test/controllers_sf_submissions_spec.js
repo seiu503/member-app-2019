@@ -8,7 +8,6 @@ const nock = require("nock");
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const expect = chai.expect;
-const request = require("request");
 const passport = require("passport");
 require("../app/config/passport")(passport);
 chai.use(chaiHttp);
@@ -1712,7 +1711,7 @@ suite("sumissions.ctrl.js", function() {
       });
       const res = mockRes();
       const requestStub = sinon
-        .stub(request, "post")
+        .stub(axios, "post")
         .yields(null, null, JSON.stringify({ success: true, score: 0.9 }));
 
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
@@ -1733,7 +1732,7 @@ suite("sumissions.ctrl.js", function() {
       });
       const res = mockRes();
       const requestStub = sinon
-        .stub(request, "post")
+        .stub(axios, "post")
         .yields(new Error("recaptcha error"), null, null);
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
@@ -1753,7 +1752,7 @@ suite("sumissions.ctrl.js", function() {
       });
       const res = mockRes();
       const requestStub = sinon
-        .stub(request, "post")
+        .stub(axios, "post")
         .yields(
           null,
           null,

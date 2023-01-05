@@ -1,4 +1,4 @@
-const request = require("request");
+const axios = require("axios");
 const url = require("url");
 
 /*
@@ -347,7 +347,7 @@ exports.verifyHumanity = async (req, res) => {
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
-  return request.post(
+  return axios.post(
     "https://www.google.com/recaptcha/api/siteverify",
     {
       form: {

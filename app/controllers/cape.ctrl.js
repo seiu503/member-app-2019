@@ -1,5 +1,3 @@
-const request = require("request");
-
 /*
    Route handlers for fetching and updating cape records.
 */
