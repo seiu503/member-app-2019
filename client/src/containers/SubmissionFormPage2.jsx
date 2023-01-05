@@ -7,7 +7,7 @@ import { withLocalize } from "react-localize-redux";
 
 import { withStyles } from "@mui/styles";
 
-import SubmissionFormPage2Wrap from "../components/SubmissionFormPage2Component";
+import SubmissionFormPage2FormWrap from "../components/SubmissionFormPage2Component";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
@@ -51,7 +51,7 @@ export class SubmissionFormPage2Container extends React.Component {
   render() {
     return (
       <div data-testid="container-submission-form-page-2">
-        <SubmissionFormPage2Wrap {...this.props} />
+        <SubmissionFormPage2FormWrap {...this.props} />
       </div>
     );
   }

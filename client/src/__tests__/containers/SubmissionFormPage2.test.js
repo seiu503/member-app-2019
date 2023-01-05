@@ -20,7 +20,10 @@ let pushMock = jest.fn();
 
 const initialState = {
   submission: {
-    salesforceId: "1"
+    salesforceId: "1",
+    formPage1: {
+      paymentRequired: false
+    }
   },
   appState: {
     loading: false,
@@ -32,7 +35,10 @@ const defaultProps = {
   submission: {
     error: null,
     loading: false,
-    salesforceId: "1"
+    salesforceId: "1",
+    formPage1: {
+      paymentRequired: false
+    }
   },
   classes: {},
   apiSF: {
@@ -78,7 +84,10 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
   it("renders connected component", () => {
     let props = {
       submission: {
-        salesforceId: "1"
+        salesforceId: "1",
+        formPage1: {
+          paymentRequired: false
+        }
       },
       apiSF: { getSFContactById }
     };
@@ -103,7 +112,10 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
   test("calls `getSFContactById` on componentDidMount if SFid in state", () => {
     let props = {
       submission: {
-        salesforceId: "1"
+        salesforceId: "1",
+        formPage1: {
+          paymentRequired: false
+        }
       },
       apiSF: { getSFContactById }
     };
@@ -126,7 +138,10 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
       );
     let props = {
       submission: {
-        salesforceId: "1"
+        salesforceId: "1",
+        formPage1: {
+          paymentRequired: false
+        }
       },
       apiSF: {
         getSFContactById: getSFContactByIdError

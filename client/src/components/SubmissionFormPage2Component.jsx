@@ -19,7 +19,9 @@ const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
 
-export function SubmissionFormPage2ComponentWrapper({ ...rest }) {
+// function wrapper for component allows use of useMediaQuery hook
+
+export function SubmissionFormPage2ComponentFunctionWrapper({ ...rest }) {
   const matches = useMediaQuery("(min-width:450px)");
   return <SubmissionFormPage2Component {...rest} matches={matches} />;
 }
@@ -513,10 +515,10 @@ SubmissionFormPage2Component.propTypes = {
 };
 
 // add reduxForm to component
-export const SubmissionFormPage2Wrap = reduxForm({
+export const SubmissionFormPage2FormWrap = reduxForm({
   form: "submissionPage2",
   validate,
   enableReinitialize: true
-})(SubmissionFormPage2ComponentWrapper);
+})(SubmissionFormPage2ComponentFunctionWrapper);
 
-export default withLocalize(SubmissionFormPage2Wrap);
+export default withLocalize(SubmissionFormPage2FormWrap);
