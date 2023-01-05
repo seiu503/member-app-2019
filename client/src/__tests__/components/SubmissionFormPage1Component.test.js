@@ -15,7 +15,7 @@ import * as formElements from "../../components/SubmissionFormElements";
 import * as Notifier from "../../containers/Notifier";
 
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme(adaptV4Theme);
 

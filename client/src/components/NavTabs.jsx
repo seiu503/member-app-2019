@@ -7,6 +7,7 @@ import { Looks4, Looks3, LooksTwo, LooksOne } from "@mui/icons-material";
 
 import { theme } from "../styles/theme";
 
+// may need to fix this
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,

@@ -10,7 +10,7 @@ import {
 import userEvent from "@testing-library/user-event";
 import ContentTile, { styles } from "../../components/ContentTile";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
 const theme = createTheme(adaptV4Theme);
 

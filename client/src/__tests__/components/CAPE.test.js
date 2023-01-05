@@ -10,7 +10,7 @@ import {
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
 import { generateCAPEValidateFrontEnd } from "../../../../app/utils/fieldConfigs";

@@ -10,7 +10,7 @@ import {
 import userEvent from "@testing-library/user-event";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { Provider } from "react-redux";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { EditUserFormUnconnected } from "../../components/EditUser";
 import * as formElements from "../../components/SubmissionFormElements";
 
