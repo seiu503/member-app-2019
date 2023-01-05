@@ -9,7 +9,6 @@ import { FormLabel, FormHelperText, FormGroup, Divider } from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-const matches = useMediaQuery("(min-width:450px)");
 
 import * as formElements from "./SubmissionFormElements";
 import ButtonWithSpinner from "./ButtonWithSpinner";
@@ -19,6 +18,11 @@ import { openSnackbar } from "../containers/Notifier";
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
+
+export function SubmissionFormPage2ComponentWrapper({ ...rest }) {
+  const matches = useMediaQuery("(min-width:450px)");
+  return <SubmissionFormPage2Component {...rest} matches={matches} />;
+}
 
 export class SubmissionFormPage2Component extends React.Component {
   classes = this.props.classes;
@@ -135,6 +139,7 @@ export class SubmissionFormPage2Component extends React.Component {
 
   render() {
     const id = this.props.submission.submissionId;
+    const { matches } = this.props;
     const paymentRequired = this.props.submission.formPage1.paymentRequired;
     return (
       <div
@@ -512,6 +517,6 @@ export const SubmissionFormPage2Wrap = reduxForm({
   form: "submissionPage2",
   validate,
   enableReinitialize: true
-})(SubmissionFormPage2Component);
+})(SubmissionFormPage2ComponentWrapper);
 
-export default withLocalize(withWidth()(SubmissionFormPage2Wrap));
+export default withLocalize(SubmissionFormPage2Wrap);
