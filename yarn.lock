@@ -3556,7 +3556,7 @@ __metadata:
     passport-jwt: ^4.0.0
     pg: ^8.5.1
     prettier: ^1.17.1
-    request: ^2.88.0
+    request: ^2.88.2
     sass: ^1.49.9
     serve-favicon: ^2.5.0
     sinon: ^7.3.2
@@ -4855,7 +4855,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request@npm:^2.72.0, request@npm:^2.88.0":
+"request@npm:^2.72.0, request@npm:^2.88.2":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
   dependencies:
