@@ -16,30 +16,30 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  InputAdornment,
-  LanguageIcon
+  InputAdornment
 } from "@mui/material";
+
+import LanguageIcon from "@mui/icons-material/Language";
 
 import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
 
 import { forwardRef } from "react";
-import {
-  ArrowUpward,
-  ChevronLeft,
-  ChevronRight,
-  Clear,
-  DeleteForeverIcon,
-  Edit,
-  FilterList,
-  FirstPage,
-  LastPage,
-  Remove,
-  SaveAlt,
-  Search,
-  ViewColumn,
-  CheckBoxOutlineBlankIcon,
-  CheckBox
-} from "@mui/icons-material";
+
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ClearIcon from "@mui/icons-material/Clear";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import EditIcon from "@mui/icons-material/Edit";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import LastPageIcon from "@mui/icons-material/LastPage";
+import RemoveIcon from "@mui/icons-material/Remove";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import SearchIcon from "@mui/icons-material/Search";
+import ViewColumnIcon from "@mui/icons-material/ViewColumn";
 
 export const tableIcons = {
   CheckBoxBlank: forwardRef((props, ref) => (
@@ -48,20 +48,28 @@ export const tableIcons = {
   CheckBoxChecked: forwardRef((props, ref) => (
     <CheckBoxIcon {...props} ref={ref} />
   )),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
+  Edit: forwardRef((props, ref) => <EditIcon {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAltIcon {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterListIcon {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPageIcon {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPageIcon {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => (
+    <ChevronRightIcon {...props} ref={ref} />
   )),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => (
+    <ChevronLeftIcon {...props} ref={ref} />
+  )),
+  ResetSearch: forwardRef((props, ref) => <ClearIcon {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <SearchIcon {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => (
+    <ArrowUpwardIcon {...props} ref={ref} />
+  )),
+  ThirdStateCheck: forwardRef((props, ref) => (
+    <RemoveIcon {...props} ref={ref} />
+  )),
+  ViewColumn: forwardRef((props, ref) => (
+    <ViewColumnIcon {...props} ref={ref} />
+  )),
   Delete: forwardRef((props, ref) => <DeleteForeverIcon {...props} ref={ref} />)
 };
 

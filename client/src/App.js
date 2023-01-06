@@ -27,12 +27,12 @@ import NoAccess from "./components/NoAccess";
 import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Login from "./components/Login";
-import Dashboard from "./containers/Dashboard";
+// import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
-import ContentLibrary from "./containers/ContentLibrary";
+// import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
 import UserForm from "./containers/UserForm";
 import {
@@ -1176,7 +1176,7 @@ export class AppUnconnected extends Component {
                 />
               )}
             />
-            <Route
+            {/*} <Route
               path="/admin/:id?/:token?"
               render={routeProps => (
                 <Dashboard
@@ -1185,7 +1185,7 @@ export class AppUnconnected extends Component {
                   resubmitSubmission={this.resubmitSubmission}
                 />
               )}
-            />
+            /> 
             <Route
               path="/content"
               render={routeProps =>
@@ -1202,7 +1202,7 @@ export class AppUnconnected extends Component {
                   />
                 )
               }
-            />
+            /> */}
             <Route
               path="/new"
               render={routeProps =>
