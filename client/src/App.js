@@ -10,7 +10,7 @@ import queryString from "query-string";
 import moment from "moment";
 import { Translate } from "react-localize-redux";
 
-import { Typography, CssBaseline } from "@mui/material";
+import { Typography, CssBaseline, Box } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
 import * as Actions from "./store/actions";
@@ -53,107 +53,109 @@ import welcomeInfo from "./translations/welcomeInfo.json";
 
 const refCaptcha = React.createRef();
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    boxSizing: "border-box"
-  },
-  notFound: {
-    height: "80vh",
-    width: "auto",
-    marginTop: "-60px"
-  },
-  container: {
-    maxWidth: 1200,
-    margin: "auto",
-    height: "100%",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center"
-  },
-  appRoot: {
-    width: "100vw",
-    height: "100%",
-    minHeight: "80vh",
-    backgroundAttachment: "fixed",
-    backgroundPosition: "bottom",
-    [theme.breakpoints.down("sm")]: {
-      backgroundImage: "none"
-    },
-    [theme.breakpoints.up("xl")]: {
-      backgroundSize: "cover"
-    }
-  },
-  message: {
-    margin: "auto",
-    width: "50%",
-    textAlign: "center",
-    height: "50%",
-    [theme.breakpoints.down("sm")]: {
-      width: "100%",
-      height: "100%"
-    },
-    lineHeight: "2em",
-    background: "white",
-    borderRadius: "4px",
-    padding: 60,
-    fontSize: "1.2em"
-  },
-  row: {
-    display: "flex",
-    justifyContent: "center",
-    [theme.breakpoints.down("md")]: {
-      flexWrap: "wrap"
-    }
-  },
-  button: {
-    height: 100,
-    margin: "20px auto",
-    width: 100
-  },
-  footer: {
-    width: "100vw",
-    margin: "auto",
-    position: "fixed",
-    backgroundColor: theme.palette.primary.main,
-    bottom: 0,
-    padding: 25,
-    height: 73,
-    [theme.breakpoints.down("sm")]: {
-      height: 53
-    },
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "middle",
-    boxShadow: "0 1px 5px 2px rgba(0,0,0,.2)",
-    zIndex: 2,
-    color: "white"
-  },
-  footerIcon: {
-    width: 30,
-    height: "auto",
-    marginTop: 15,
-    [theme.breakpoints.down("sm")]: {
-      marginTop: 5
-    },
-    fill: theme.palette.secondary.main
-  },
-  spinner: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    display: "block"
-  },
-  form: {
-    background: "white"
-  },
-  thankYouCopy: {
-    lineHeight: 1.4,
-    textAlign: "left"
-  }
-});
+// const styles = theme => ({
+//   root: {
+//     flexGrow: 1,
+//     boxSizing: "border-box"
+//   },
+//   notFound: {
+//     height: "80vh",
+//     width: "auto",
+//     marginTop: "-60px"
+//   },
+//   container: {
+//     maxWidth: 1200,
+//     margin: "auto",
+//     height: "100%",
+//     minHeight: "100vh",
+//     display: "flex",
+//     flexDirection: "column",
+//     justifyContent: "center"
+//   },
+//   appRoot: {
+//     width: "100vw",
+//     height: "100%",
+//     minHeight: "80vh",
+//     backgroundAttachment: "fixed",
+//     backgroundPosition: "bottom",
+//     [theme.breakpoints.down("sm")]: {
+//       backgroundImage: "none"
+//     },
+//     [theme.breakpoints.up("xl")]: {
+//       backgroundSize: "cover"
+//     }
+//   },
+//   message: {
+//     margin: "auto",
+//     width: "50%",
+//     textAlign: "center",
+//     height: "50%",
+//     [theme.breakpoints.down("sm")]: {
+//       width: "100%",
+//       height: "100%"
+//     },
+//     lineHeight: "2em",
+//     background: "white",
+//     borderRadius: "4px",
+//     padding: 60,
+//     fontSize: "1.2em"
+//   },
+//   row: {
+//     display: "flex",
+//     justifyContent: "center",
+//     [theme.breakpoints.down("md")]: {
+//       flexWrap: "wrap"
+//     }
+//   },
+//   button: {
+//     height: 100,
+//     margin: "20px auto",
+//     width: 100
+//   },
+//   footer: {
+//     width: "100vw",
+//     margin: "auto",
+//     position: "fixed",
+//     backgroundColor: theme.palette.primary.main,
+//     bottom: 0,
+//     padding: 25,
+//     height: 73,
+//     [theme.breakpoints.down("sm")]: {
+//       height: 53
+//     },
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "middle",
+//     boxShadow: "0 1px 5px 2px rgba(0,0,0,.2)",
+//     zIndex: 2,
+//     color: "white"
+//   },
+//   footerIcon: {
+//     width: 30,
+//     height: "auto",
+//     marginTop: 15,
+//     [theme.breakpoints.down("sm")]: {
+//       marginTop: 5
+//     },
+//     fill: theme.palette.secondary.main
+//   },
+//   spinner: {
+//     position: "absolute",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     display: "block"
+//   },
+//   form: {
+//     background: "white"
+//   },
+//   thankYouCopy: {
+//     lineHeight: 1.4,
+//     textAlign: "left"
+//   }
+// });
+
+const styles = {};
 
 export class AppUnconnected extends Component {
   constructor(props) {
@@ -392,16 +394,22 @@ export class AppUnconnected extends Component {
     }
     // wrap in MUI typography element and return
     return (
-      <Typography
-        variant="body1"
-        component="div"
-        align="left"
-        gutterBottom
-        className={this.props.classes.body}
-        data-testid="body"
+      <Box
+        sx={{
+          // className={this.props.classes.body}
+          color: "black"
+        }}
       >
-        {paragraphs}
-      </Typography>
+        <Typography
+          variant="body1"
+          component="div"
+          align="left"
+          gutterBottom
+          data-testid="body"
+        >
+          {paragraphs}
+        </Typography>
+      </Box>
     );
   };
 
@@ -431,16 +439,28 @@ export class AppUnconnected extends Component {
     // console.log(headline);
     // wrap in MUI typography element and return
     return (
-      <Typography
-        variant="h3"
-        align="left"
-        gutterBottom
-        className={this.props.classes.headline}
-        style={{ paddingTop: 20 }}
-        data-testid="headline"
+      <Box
+        sx={{
+          fontSize: {
+            xs: "1.7rem",
+            sm: "1.7rem"
+          }
+          // [theme.breakpoints.down("sm")]: {
+          //   fontSize: "1.7rem"
+          //     }
+          // className={this.props.classes.headline}
+        }}
       >
-        {headline}
-      </Typography>
+        <Typography
+          variant="h3"
+          align="left"
+          gutterBottom
+          style={{ paddingTop: 20 }}
+          data-testid="headline"
+        >
+          {headline}
+        </Typography>
+      </Box>
     );
   };
 
@@ -1107,7 +1127,27 @@ export class AppUnconnected extends Component {
     return (
       <div
         data-testid="component-app"
-        className={classes.appRoot}
+        sx={{
+          width: "100vw",
+          height: "100%",
+          minHeight: "80vh",
+          backgroundAttachment: "fixed",
+          backgroundPosition: "bottom",
+          backgroundImage: {
+            xs: "none",
+            sm: "none"
+          },
+          // [theme.breakpoints.down("sm")]: {
+          //   backgroundImage: "none"
+          // },
+          backgroundSize: {
+            xl: "cover"
+          }
+          // [theme.breakpoints.up("xl")]: {
+          //   backgroundSize: "cover"
+          // }
+          //className={classes.appRoot}
+        }}
         style={backgroundImageStyle}
       >
         <CssBaseline />
@@ -1126,180 +1166,193 @@ export class AppUnconnected extends Component {
         )}
         <Notifier />
         {loading && <Spinner />}
-        <main className={classes.container} id="main" ref={this.main_ref}>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={routeProps => (
-                <SubmissionFormPage1
-                  tab={this.state.tab}
-                  embed={embed}
-                  setRedirect={this.setRedirect}
-                  legal_language={this.legal_language}
-                  cape_legal={this.cape_legal}
-                  direct_pay={this.direct_pay}
-                  direct_deposit={this.direct_deposit}
-                  sigBox={this.sigBox}
-                  recaptcha={refCaptcha}
-                  onResolved={this.onResolved}
-                  headline={this.state.headline}
-                  body={this.state.body}
-                  image={this.state.image}
-                  renderBodyCopy={this.renderBodyCopy}
-                  renderHeadline={this.renderHeadline}
-                  createSubmission={this.createSubmission}
-                  updateSubmission={this.updateSubmission}
-                  lookupSFContact={this.lookupSFContact}
-                  saveSubmissionErrors={this.saveSubmissionErrors}
-                  generateSubmissionBody={this.generateSubmissionBody}
-                  prepForContact={this.prepForContact}
-                  prepForSubmission={this.prepForSubmission}
-                  createSFContact={this.createSFContact}
-                  updateSFContact={this.updateSFContact}
-                  changeTab={this.changeTab}
-                  {...routeProps}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/thankyou"
-              render={routeProps => (
-                <FormThankYou
-                  setRedirect={this.setRedirect}
-                  classes={this.props.classes}
-                  paymentRequired={
-                    this.props.submission.formPage1.paymentRequired
-                  }
-                  {...routeProps}
-                />
-              )}
-            />
-            {/*} <Route
-              path="/admin/:id?/:token?"
-              render={routeProps => (
-                <Dashboard
-                  {...routeProps}
-                  setRedirect={this.setRedirect}
-                  resubmitSubmission={this.resubmitSubmission}
-                />
-              )}
-            /> 
-            <Route
-              path="/content"
-              render={routeProps =>
-                loggedIn && ["admin", "edit"].includes(userType) ? (
-                  <ContentLibrary
+        <main id="main" ref={this.main_ref}>
+          <Box
+            sx={{
+              maxWidth: 1200,
+              margin: "auto",
+              height: "100%",
+              minHeight: "100vh",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center"
+              //className={classes.container}
+            }}
+          >
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={routeProps => (
+                  <SubmissionFormPage1
+                    tab={this.state.tab}
+                    embed={embed}
                     setRedirect={this.setRedirect}
+                    legal_language={this.legal_language}
+                    cape_legal={this.cape_legal}
+                    direct_pay={this.direct_pay}
+                    direct_deposit={this.direct_deposit}
+                    sigBox={this.sigBox}
+                    recaptcha={refCaptcha}
+                    onResolved={this.onResolved}
+                    headline={this.state.headline}
+                    body={this.state.body}
+                    image={this.state.image}
+                    renderBodyCopy={this.renderBodyCopy}
+                    renderHeadline={this.renderHeadline}
+                    createSubmission={this.createSubmission}
+                    updateSubmission={this.updateSubmission}
+                    lookupSFContact={this.lookupSFContact}
+                    saveSubmissionErrors={this.saveSubmissionErrors}
+                    generateSubmissionBody={this.generateSubmissionBody}
+                    prepForContact={this.prepForContact}
+                    prepForSubmission={this.prepForSubmission}
+                    createSFContact={this.createSFContact}
+                    updateSFContact={this.updateSFContact}
+                    changeTab={this.changeTab}
                     {...routeProps}
                   />
-                ) : (
+                )}
+              />
+              <Route
+                exact
+                path="/thankyou"
+                render={routeProps => (
+                  <FormThankYou
+                    setRedirect={this.setRedirect}
+                    classes={this.props.classes}
+                    paymentRequired={
+                      this.props.submission.formPage1.paymentRequired
+                    }
+                    {...routeProps}
+                  />
+                )}
+              />
+              {/*} <Route
+                path="/admin/:id?/:token?"
+                render={routeProps => (
+                  <Dashboard
+                    {...routeProps}
+                    setRedirect={this.setRedirect}
+                    resubmitSubmission={this.resubmitSubmission}
+                  />
+                )}
+              /> 
+              <Route
+                path="/content"
+                render={routeProps =>
+                  loggedIn && ["admin", "edit"].includes(userType) ? (
+                    <ContentLibrary
+                      setRedirect={this.setRedirect}
+                      {...routeProps}
+                    />
+                  ) : (
+                    <NoAccess
+                      setRedirect={this.setRedirect}
+                      classes={this.props.classes}
+                      {...routeProps}
+                    />
+                  )
+                }
+              /> */}
+              <Route
+                path="/new"
+                render={routeProps =>
+                  loggedIn && ["admin", "edit"].includes(userType) ? (
+                    <TextInputForm
+                      setRedirect={this.setRedirect}
+                      {...routeProps}
+                    />
+                  ) : (
+                    <NoAccess
+                      setRedirect={this.setRedirect}
+                      classes={this.props.classes}
+                      {...routeProps}
+                    />
+                  )
+                }
+              />
+              <Route
+                path="/edit/:id"
+                render={routeProps =>
+                  loggedIn && ["admin", "edit"].includes(userType) ? (
+                    <TextInputForm
+                      edit={true}
+                      setRedirect={this.setRedirect}
+                      {...routeProps}
+                    />
+                  ) : (
+                    <NoAccess
+                      setRedirect={this.setRedirect}
+                      classes={this.props.classes}
+                      {...routeProps}
+                    />
+                  )
+                }
+              />
+              <Route
+                path="/users"
+                render={routeProps =>
+                  loggedIn && userType === "admin" ? (
+                    <UserForm setRedirect={this.setRedirect} {...routeProps} />
+                  ) : (
+                    <NoAccess
+                      setRedirect={this.setRedirect}
+                      classes={this.props.classes}
+                      {...routeProps}
+                    />
+                  )
+                }
+              />
+              <Route
+                path="/logout"
+                render={routeProps => (
+                  <Logout classes={this.props.classes} {...routeProps} />
+                )}
+              />
+              <Route
+                path="/login"
+                render={routeProps => (
+                  <Login classes={this.props.classes} {...routeProps} />
+                )}
+              />
+              <Route
+                exact
+                path="/page2"
+                render={routeProps => (
+                  <SubmissionFormPage2
+                    setRedirect={this.setRedirect}
+                    createSubmission={this.createSubmission}
+                    updateSubmission={this.updateSubmission}
+                    lookupSFContact={this.lookupSFContact}
+                    saveSubmissionErrors={this.saveSubmissionErrors}
+                    prepForContact={this.prepForContact}
+                    prepForSubmission={this.prepForSubmission}
+                    createSFContact={this.createSFContact}
+                    updateSFContact={this.updateSFContact}
+                    {...routeProps}
+                  />
+                )}
+              />
+              <Route
+                path="/noaccess"
+                render={routeProps => (
                   <NoAccess
                     setRedirect={this.setRedirect}
                     classes={this.props.classes}
+                    location={this.props.location}
                     {...routeProps}
                   />
-                )
-              }
-            /> */}
-            <Route
-              path="/new"
-              render={routeProps =>
-                loggedIn && ["admin", "edit"].includes(userType) ? (
-                  <TextInputForm
-                    setRedirect={this.setRedirect}
-                    {...routeProps}
-                  />
-                ) : (
-                  <NoAccess
-                    setRedirect={this.setRedirect}
-                    classes={this.props.classes}
-                    {...routeProps}
-                  />
-                )
-              }
-            />
-            <Route
-              path="/edit/:id"
-              render={routeProps =>
-                loggedIn && ["admin", "edit"].includes(userType) ? (
-                  <TextInputForm
-                    edit={true}
-                    setRedirect={this.setRedirect}
-                    {...routeProps}
-                  />
-                ) : (
-                  <NoAccess
-                    setRedirect={this.setRedirect}
-                    classes={this.props.classes}
-                    {...routeProps}
-                  />
-                )
-              }
-            />
-            <Route
-              path="/users"
-              render={routeProps =>
-                loggedIn && userType === "admin" ? (
-                  <UserForm setRedirect={this.setRedirect} {...routeProps} />
-                ) : (
-                  <NoAccess
-                    setRedirect={this.setRedirect}
-                    classes={this.props.classes}
-                    {...routeProps}
-                  />
-                )
-              }
-            />
-            <Route
-              path="/logout"
-              render={routeProps => (
-                <Logout classes={this.props.classes} {...routeProps} />
-              )}
-            />
-            <Route
-              path="/login"
-              render={routeProps => (
-                <Login classes={this.props.classes} {...routeProps} />
-              )}
-            />
-            <Route
-              exact
-              path="/page2"
-              render={routeProps => (
-                <SubmissionFormPage2
-                  setRedirect={this.setRedirect}
-                  createSubmission={this.createSubmission}
-                  updateSubmission={this.updateSubmission}
-                  lookupSFContact={this.lookupSFContact}
-                  saveSubmissionErrors={this.saveSubmissionErrors}
-                  prepForContact={this.prepForContact}
-                  prepForSubmission={this.prepForSubmission}
-                  createSFContact={this.createSFContact}
-                  updateSFContact={this.updateSFContact}
-                  {...routeProps}
-                />
-              )}
-            />
-            <Route
-              path="/noaccess"
-              render={routeProps => (
-                <NoAccess
-                  setRedirect={this.setRedirect}
-                  classes={this.props.classes}
-                  location={this.props.location}
-                  {...routeProps}
-                />
-              )}
-            />
-            <Route
-              path="*"
-              render={routeProps => (
-                <NotFound classes={this.props.classes} {...routeProps} />
-              )}
-            />
-          </Switch>
+                )}
+              />
+              <Route
+                path="*"
+                render={routeProps => (
+                  <NotFound classes={this.props.classes} {...routeProps} />
+                )}
+              />
+            </Switch>
+          </Box>
         </main>
         <Footer classes={this.props.classes} />
       </div>
@@ -1307,39 +1360,39 @@ export class AppUnconnected extends Component {
   }
 }
 
-AppUnconnected.propTypes = {
-  classes: PropTypes.object.isRequired,
-  appState: PropTypes.shape({
-    loggedIn: PropTypes.bool,
-    authToken: PropTypes.string
-  }).isRequired,
-  apiProfile: PropTypes.shape({
-    validateToken: PropTypes.func
-  }).isRequired,
-  apiSubmission: PropTypes.shape({
-    handleInput: PropTypes.func
-  }).isRequired,
-  content: PropTypes.shape({
-    form: PropTypes.shape({
-      content_type: PropTypes.string,
-      content: PropTypes.string
-    }),
-    error: PropTypes.string,
-    deleteDialogOpen: PropTypes.bool,
-    currentContent: PropTypes.shape({
-      content_type: PropTypes.string,
-      content: PropTypes.string
-    })
-  }).isRequired,
-  profile: PropTypes.shape({
-    profile: PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      email: PropTypes.string,
-      avatar_url: PropTypes.string
-    })
-  }).isRequired
-};
+// AppUnconnected.propTypes = {
+//   classes: PropTypes.object.isRequired,
+//   appState: PropTypes.shape({
+//     loggedIn: PropTypes.bool,
+//     authToken: PropTypes.string
+//   }).isRequired,
+//   apiProfile: PropTypes.shape({
+//     validateToken: PropTypes.func
+//   }).isRequired,
+//   apiSubmission: PropTypes.shape({
+//     handleInput: PropTypes.func
+//   }).isRequired,
+//   content: PropTypes.shape({
+//     form: PropTypes.shape({
+//       content_type: PropTypes.string,
+//       content: PropTypes.string
+//     }),
+//     error: PropTypes.string,
+//     deleteDialogOpen: PropTypes.bool,
+//     currentContent: PropTypes.shape({
+//       content_type: PropTypes.string,
+//       content: PropTypes.string
+//     })
+//   }).isRequired,
+//   profile: PropTypes.shape({
+//     profile: PropTypes.shape({
+//       id: PropTypes.string,
+//       name: PropTypes.string,
+//       email: PropTypes.string,
+//       avatar_url: PropTypes.string
+//     })
+//   }).isRequired
+// };
 
 const mapStateToProps = state => ({
   appState: state.appState,
@@ -1362,4 +1415,5 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withStyles(styles)(withRouter(withLocalize(AppConnected)));
+// export default withStyles(styles)(withRouter(withLocalize(AppConnected)));
+export default withRouter(withLocalize(AppConnected));

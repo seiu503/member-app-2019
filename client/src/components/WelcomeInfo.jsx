@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { Translate } from "react-localize-redux";
 
-import { Typography, CardMedia, Card, Button } from "@mui/material";
+import { Typography, CardMedia, Card, Button, Box } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { useTheme } from "@mui/material/styles";
 
@@ -78,55 +78,129 @@ export class WelcomeInfoUnconnected extends React.Component {
         ? this.props.image.url
         : SamplePhoto;
     return (
-      <div className={classes.root} data-testid="component-welcome-info">
-        <Card className={classes.welcomeCard}>
-          {imageUrl && !this.props.embed && (
-            <CardMedia
-              className={classes.media}
-              title="Welcome Photo"
-              alt="Welcome Photo"
-              image={imageUrl}
-            />
-          )}
-
-          {process.env.REACT_APP_ENV_TEXT !== "production" && (
-            <div className={classes.testWarning}>
-              <Typography
-                variant="body1"
-                gutterBottom
-                data-testid="testWarning"
-                style={{ display: "inline" }}
+      <Box
+        data-testid="component-welcome-info"
+        sx={{
+          //   [theme.breakpoints.up("lg")]: {
+          //   margin: 0
+          // },
+          margin: {
+            xs: 0,
+            sm: "40px 0 0 0",
+            lg: 0
+          },
+          color: theme.palette.primary.main
+          // [theme.breakpoints.only("xs")]: {
+          //   margin: 0
+          // }
+          // className={classes.root}
+        }}
+      >
+        <Box
+          sx={{
+            maxWidth: 600,
+            margin: "0 auto",
+            padding: 20
+            // // className={classes.welcomeCard}
+          }}
+        >
+          <Card>
+            {imageUrl && !this.props.embed && (
+              <Box
+                sx={{
+                  height: "auto",
+                  paddingTop: "56.25%", // 16:9,
+                  position: "relative",
+                  display: {
+                    md: "none"
+                  },
+                  // [theme.breakpoints.up("md")]: {
+                  //     display: "none"
+                  //   },
+                  margin: {
+                    xs: "-24px -20px 0 -20px",
+                    sm: "inherit",
+                    md: "inherit",
+                    lg: "inherit",
+                    xl: "inherit"
+                  }
+                  // [theme.breakpoints.only("xs")]: {
+                  //     margin: "-24px -20px 0 -20px"
+                  //   }
+                }}
+                // className={classes.media}
               >
-                This form is for testing only. Membership data submitted through
-                this form will not be processed. If you landed on the test page
-                by mistake and want to become a member of SEIU Local 503, please
-                click here:&nbsp;
-              </Typography>
-              <strong>
-                <a
-                  style={{ fontWeight: "bold", fontSize: "1.2em" }}
-                  href="https://seiu503signup.org"
-                >
-                  seiu503signup.org
-                </a>
-              </strong>
-            </div>
-          )}
-          {this.props.renderHeadline(this.props.headline.id)}
-          {this.props.renderBodyCopy(this.props.body.id)}
-          <div className={classes.buttonWrap}>
-            <Button
-              type="button"
-              onClick={() => this.props.handleTab(0)}
-              color="primary"
-              className={classes.next}
-              variant="contained"
+                <CardMedia
+                  title="Welcome Photo"
+                  alt="Welcome Photo"
+                  image={imageUrl}
+                />
+              </Box>
+            )}
+
+            {process.env.REACT_APP_ENV_TEXT !== "production" && (
+              <Box
+                sx={{
+                  padding: 20,
+                  backgroundColor: "#d32f2f" // theme.palette.danger.light SUB FOR // className={classes.testWarning}>
+                }}
+              >
+                <div>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    data-testid="testWarning"
+                    style={{ display: "inline" }}
+                  >
+                    This form is for testing only. Membership data submitted
+                    through this form will not be processed. If you landed on
+                    the test page by mistake and want to become a member of SEIU
+                    Local 503, please click here:&nbsp;
+                  </Typography>
+                  <strong>
+                    <a
+                      style={{ fontWeight: "bold", fontSize: "1.2em" }}
+                      href="https://seiu503signup.org"
+                    >
+                      seiu503signup.org
+                    </a>
+                  </strong>
+                </div>
+              </Box>
+            )}
+            {this.props.renderHeadline(this.props.headline.id)}
+            {this.props.renderBodyCopy(this.props.body.id)}
+            <Box
+              sx={{
+                width: "100%",
+                paddingRight: 20,
+                display: "flex",
+                justifyContent: "flex-end"
+                // className={classes.buttonWrap}
+              }}
             >
-              <Translate id="next">Next</Translate>
-            </Button>
-          </div>
-        </Card>
-      </div>
+              <Button
+                type="button"
+                onClick={() => this.props.handleTab(0)}
+                color="primary"
+                variant="contained"
+                sx={{
+                  textTransform: "none",
+                  fontSize: "1.3rem",
+                  padding: "6px 20px",
+                  color: theme.palette.secondary.main,
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.light
+                  }
+                  // className={classes.next}
+                }}
+              >
+                <Translate id="next">Next</Translate>
+              </Button>
+            </Box>
+          </Card>
+        </Box>
+      </Box>
     );
   }
 }

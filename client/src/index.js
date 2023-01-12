@@ -17,18 +17,22 @@ import { LocalizeProvider } from "react-localize-redux";
 global.fetch = require("node-fetch");
 
 render(
-  <StyledEngineProvider injectFirst>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ScrollToTop>
-          <ThemeProvider theme={theme}>
-            <LocalizeProvider store={store}>
-              <App />
-            </LocalizeProvider>
-          </ThemeProvider>
-        </ScrollToTop>
-      </BrowserRouter>
-    </Provider>
-  </StyledEngineProvider>
+  // <StyledEngineProvider>
+  <Provider store={store}>
+    <BrowserRouter>
+      <ScrollToTop>
+        <ThemeProvider theme={theme}>
+          <LocalizeProvider store={store}>
+            <App />
+          </LocalizeProvider>
+        </ThemeProvider>
+      </ScrollToTop>
+    </BrowserRouter>
+  </Provider>,
+  // </StyledEngineProvider>
+  document.getElementById("root")
 );
+
+// render( (<App />),
+//   document.getElementById("root") );
 unregister();
