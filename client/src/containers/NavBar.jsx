@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { Translate } from "react-localize-redux";
 
-import { withStyles } from "@mui/styles";
+// import { withStyles } from "@mui/styles";
 import {
   AppBar,
   Toolbar,
@@ -24,157 +24,157 @@ import { skip } from "../utils";
 import { LanguagePicker } from "../components/SubmissionFormElements";
 import logo from "../img/seiu503_white.svg";
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    width: "100vw",
-    color: "#2c0940" // dark purple // theme.palette.primary.main,
-  },
-  flex: {
-    flexGrow: 1
-  },
-  appBar: {
-    backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
-    position: "fixed"
-  },
-  menuButton: {
-    display: "none",
-    [theme.breakpoints.down("sm")]: {
-      display: "block",
-      position: "absolute",
-      right: 20
-    }
-  },
-  menuWrap: {
-    [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
-  },
-  menuLink: {
-    color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
-    textTransform: "capitalize",
-    fontSize: "1em"
-  },
-  title: {
-    flexGrow: 1,
-    color: "#ffffff", // white // theme.palette.secondary.light,
-    fontFamily: '"Source Sans Pro", sans-serif',
-    fontSize: "1.7em",
-    textDecoration: "none",
-    paddingLeft: 10,
-    fontWeight: 200,
-    [theme.breakpoints.down("md")]: {
-      fontSize: "1.1rem",
-      fontWeight: 400
-    },
-    [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
-  },
-  loginButton: {
-    textDecoration: "none"
-  },
-  avatar: {
-    marginRight: 20,
-    [theme.breakpoints.down("xs")]: {
-      display: "none"
-    }
-  },
-  admin: {
-    display: "flex"
-  },
-  skip: {
-    position: "absolute",
-    top: "-1000px",
-    left: "-1000px",
-    height: "1px",
-    width: "1px",
-    textAlign: "left",
-    overflow: "hidden",
+// const styles = theme => ({
+//   root: {
+//     flexGrow: 1,
+//     width: "100vw",
+//     color: "#2c0940" // dark purple // theme.palette.primary.main,
+//   },
+//   flex: {
+//     flexGrow: 1
+//   },
+//   appBar: {
+//     backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
+//     position: "fixed"
+//   },
+//   menuButton: {
+//     display: "none",
+//     [theme.breakpoints.down("sm")]: {
+//       display: "block",
+//       position: "absolute",
+//       right: 20
+//     }
+//   },
+//   menuWrap: {
+//     [theme.breakpoints.down("sm")]: {
+//       display: "none"
+//     }
+//   },
+//   menuLink: {
+//     color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+//     textTransform: "capitalize",
+//     fontSize: "1em"
+//   },
+//   title: {
+//     flexGrow: 1,
+//     color: "#ffffff", // white // theme.palette.secondary.light,
+//     fontFamily: '"Source Sans Pro", sans-serif',
+//     fontSize: "1.7em",
+//     textDecoration: "none",
+//     paddingLeft: 10,
+//     fontWeight: 200,
+//     [theme.breakpoints.down("md")]: {
+//       fontSize: "1.1rem",
+//       fontWeight: 400
+//     },
+//     [theme.breakpoints.down("xs")]: {
+//       display: "none"
+//     }
+//   },
+//   loginButton: {
+//     textDecoration: "none"
+//   },
+//   avatar: {
+//     marginRight: 20,
+//     [theme.breakpoints.down("xs")]: {
+//       display: "none"
+//     }
+//   },
+//   admin: {
+//     display: "flex"
+//   },
+//   skip: {
+//     position: "absolute",
+//     top: "-1000px",
+//     left: "-1000px",
+//     height: "1px",
+//     width: "1px",
+//     textAlign: "left",
+//     overflow: "hidden",
 
-    "&:focus": {
-      position: "relative",
-      top: 0,
-      left: "-13px",
-      width: "auto",
-      height: "auto",
-      overflow: "visible",
-      textAlign: "center",
-      zIndex: "1000"
-    }
-  },
-  menuItem: {
-    padding: "24px 16px",
-    textAlign: "center",
-    textTransform: "capitalize",
-    fontFamily: [
-      '"Source Sans Pro"',
-      '"Helvetica Neue"',
-      "Helvetica",
-      "Arial",
-      "sans-serif"
-    ].join(","),
-    fontWeight: 400,
-    color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
-  },
-  ListItemText: {
-    color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
-  },
-  logo: {
-    height: 60,
-    width: "auto",
-    marginRight: 10,
-    [theme.breakpoints.down("sm")]: {
-      height: 40
-    }
-  },
-  drawer: {
-    boxShadow:
-      "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
-  },
-  languagePicker: {
-    color: "white",
-    [theme.breakpoints.down("sm")]: {
-      position: "absolute",
-      top: 20,
-      right: 10
-    }
-  },
-  languagePickerLabel: {
-    color: "white",
-    marginTop: -14,
-    marginLeft: 25
-  },
-  languagePickerSelect: {
-    color: "white",
-    width: 195,
-    border: "1px solid white",
-    paddingLeft: "7px !important"
-  },
-  lpInput: {
-    // height: 30,
-  },
-  icon: {
-    display: "none"
-    // fill: 'white',
-  },
-  notched: {
-    borderColor: "transparent"
-    // borderRadius: 4,
-    // "&:hover": "white",
-    // "&:focused": "white",
-  },
-  labelShrink: {
-    color: "white"
-  },
-  labelFocused: {
-    color: "white !important",
-    marginTop: -8
-  },
-  adornedStart: {
-    paddingLeft: 10
-  }
-});
+//     "&:focus": {
+//       position: "relative",
+//       top: 0,
+//       left: "-13px",
+//       width: "auto",
+//       height: "auto",
+//       overflow: "visible",
+//       textAlign: "center",
+//       zIndex: "1000"
+//     }
+//   },
+//   menuItem: {
+//     padding: "24px 16px",
+//     textAlign: "center",
+//     textTransform: "capitalize",
+//     fontFamily: [
+//       '"Source Sans Pro"',
+//       '"Helvetica Neue"',
+//       "Helvetica",
+//       "Arial",
+//       "sans-serif"
+//     ].join(","),
+//     fontWeight: 400,
+//     color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
+//   },
+//   ListItemText: {
+//     color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
+//   },
+//   logo: {
+//     height: 60,
+//     width: "auto",
+//     marginRight: 10,
+//     [theme.breakpoints.down("sm")]: {
+//       height: 40
+//     }
+//   },
+//   drawer: {
+//     boxShadow:
+//       "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
+//   },
+//   languagePicker: {
+//     color: "white",
+//     [theme.breakpoints.down("sm")]: {
+//       position: "absolute",
+//       top: 20,
+//       right: 10
+//     }
+//   },
+//   languagePickerLabel: {
+//     color: "white",
+//     marginTop: -14,
+//     marginLeft: 25
+//   },
+//   languagePickerSelect: {
+//     color: "white",
+//     width: 195,
+//     border: "1px solid white",
+//     paddingLeft: "7px !important"
+//   },
+//   lpInput: {
+//     // height: 30,
+//   },
+//   icon: {
+//     display: "none"
+//     // fill: 'white',
+//   },
+//   notched: {
+//     borderColor: "transparent"
+//     // borderRadius: 4,
+//     // "&:hover": "white",
+//     // "&:focused": "white",
+//   },
+//   labelShrink: {
+//     color: "white"
+//   },
+//   labelFocused: {
+//     color: "white !important",
+//     marginTop: -8
+//   },
+//   adornedStart: {
+//     paddingLeft: 10
+//   }
+// });
 
 export class NavBar extends React.Component {
   constructor(props) {
@@ -437,7 +437,15 @@ export class NavBar extends React.Component {
             <LanguagePicker
               id="languagePicker"
               ref={this.props.language_picker}
-              classes={classes}
+              classes={{
+                labelShrink: {
+                  color: "white"
+                },
+                labelFocused: {
+                  color: "white !important",
+                  marginTop: -8
+                }
+              }}
               name="languagePicker"
               label="Select Language"
               userSelectedLanguage={this.props.userSelectedLanguage}
@@ -515,7 +523,7 @@ export class NavBar extends React.Component {
 }
 
 NavBar.propTypes = {
-  classes: PropTypes.object.isRequired,
+  // classes: PropTypes.object.isRequired,
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool
   }),
@@ -538,4 +546,5 @@ const mapStateToProps = state => ({
   profile: state.profile
 });
 
-export default withRouter(withStyles(styles)(connect(mapStateToProps)(NavBar)));
+// export default withRouter(withStyles(styles)(connect(mapStateToProps)(NavBar)));
+export default withRouter(connect(mapStateToProps)(NavBar));

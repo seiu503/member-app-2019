@@ -5,70 +5,70 @@ import { bindActionCreators } from "redux";
 import { Translate } from "react-localize-redux";
 
 import { Typography, CardMedia, Card, Button, Box } from "@mui/material";
-import { withStyles } from "@mui/styles";
-import { useTheme } from "@mui/material/styles";
+// import { withStyles } from "@mui/styles";
+// import { useTheme } from "@mui/material/styles";
 
 import * as apiContentActions from "../store/actions/apiContentActions";
 
 import SamplePhoto from "../img/sample-form-photo.jpg";
 
-import { theme } from "../styles/theme";
+// import { theme } from "../styles/theme";
 
-const styles = theme => ({
-  root: {
-    [theme.breakpoints.up("lg")]: {
-      margin: 0
-    },
-    margin: "40px 0 0 0",
-    color: theme.palette.primary.main,
-    [theme.breakpoints.only("xs")]: {
-      margin: 0
-    }
-  },
-  body: {
-    color: "black"
-  },
-  headline: {
-    [theme.breakpoints.down("sm")]: {
-      fontSize: "1.7rem"
-    }
-  },
-  media: {
-    height: "auto",
-    paddingTop: "56.25%", // 16:9,
-    position: "relative",
-    [theme.breakpoints.up("md")]: {
-      display: "none"
-    },
-    [theme.breakpoints.only("xs")]: {
-      margin: "-24px -20px 0 -20px"
-    }
-  },
-  welcomeCard: {
-    maxWidth: 600,
-    margin: "0 auto",
-    padding: 20
-  },
-  buttonWrap: {
-    width: "100%",
-    paddingRight: 20,
-    display: "flex",
-    justifyContent: "flex-end"
-  },
-  next: {
-    textTransform: "none",
-    fontSize: "1.3rem",
-    padding: "6px 20px",
-    color: theme.palette.secondary.main,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.light
-    }
-  },
-  testWarning: {
-    padding: 20,
-    backgroundColor: "#d32f2f" // theme.palette.danger.light
-  }
-});
+// const styles = theme => ({
+// root: {
+//   [theme.breakpoints.up("lg")]: {
+//     margin: 0
+//   },
+//   margin: "40px 0 0 0",
+//   color: theme.palette.primary.main,
+//   [theme.breakpoints.only("xs")]: {
+//     margin: 0
+//   }
+// },
+// body: {
+//   color: "black"
+// },
+// headline: {
+//   [theme.breakpoints.down("sm")]: {
+//     fontSize: "1.7rem"
+//   }
+// },
+// media: {
+//   height: "auto",
+//   paddingTop: "56.25%", // 16:9,
+//   position: "relative",
+//   [theme.breakpoints.up("md")]: {
+//     display: "none"
+//   },
+//   [theme.breakpoints.only("xs")]: {
+//     margin: "-24px -20px 0 -20px"
+//   }
+// },
+// welcomeCard: {
+//   maxWidth: 600,
+//   margin: "0 auto",
+//   padding: 20
+// },
+// buttonWrap: {
+//   width: "100%",
+//   paddingRight: 20,
+//   display: "flex",
+//   justifyContent: "flex-end"
+// },
+// next: {
+//   textTransform: "none",
+//   fontSize: "1.3rem",
+//   padding: "6px 20px",
+//   color: theme.palette.secondary.main,
+//   "&:hover": {
+//     backgroundColor: theme.palette.primary.light
+//   }
+// },
+// testWarning: {
+//   padding: 20,
+//   backgroundColor: "#d32f2f" // theme.palette.danger.light
+// }
+// });
 
 export class WelcomeInfoUnconnected extends React.Component {
   render() {
@@ -89,7 +89,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             sm: "40px 0 0 0",
             lg: 0
           },
-          color: theme.palette.primary.main
+          color: "primary.main" // "#2c0940", // dark purple
           // [theme.breakpoints.only("xs")]: {
           //   margin: 0
           // }
@@ -149,7 +149,8 @@ export class WelcomeInfoUnconnected extends React.Component {
               <Box
                 sx={{
                   padding: "20px",
-                  backgroundColor: "#d32f2f" // theme.palette.danger.light SUB FOR // className={classes.testWarning}>
+                  backgroundColor: "danger.main" // orange[500], // #b71c1c
+                  // className={classes.testWarning}
                 }}
               >
                 <div>
@@ -195,9 +196,9 @@ export class WelcomeInfoUnconnected extends React.Component {
                   textTransform: "none",
                   fontSize: "1.3rem",
                   padding: "6px 20px",
-                  color: theme.palette.secondary.main,
+                  color: "secondary.main", // "#ffce04", // yellow/gold
                   "&:hover": {
-                    backgroundColor: theme.palette.primary.light
+                    backgroundColor: "primary.light" // "#531078" // medium purple
                   }
                   // className={classes.next}
                 }}
@@ -227,6 +228,11 @@ const mapDispatchToProps = dispatch => ({
   apiContent: bindActionCreators(apiContentActions, dispatch)
 });
 
-export default withStyles(styles)(
-  connect(mapStateToProps, mapDispatchToProps)(WelcomeInfoUnconnected)
-);
+// export default withStyles(styles)(
+//   connect(mapStateToProps, mapDispatchToProps)(WelcomeInfoUnconnected)
+// );
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WelcomeInfoUnconnected);
