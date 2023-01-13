@@ -26,12 +26,15 @@ export class WelcomeInfoUnconnected extends React.Component {
             sm: "40px 0 0 0",
             lg: 0
           },
+          maxWidth: {
+            lg: "50%"
+          },
           color: "primary.main" // "#2c0940", // dark purple
         }}
       >
         <Card
           sx={{
-            maxWidth: 600,
+            maxWidth: "600px",
             margin: "0 auto",
             padding: "20px"
           }}
@@ -39,15 +42,12 @@ export class WelcomeInfoUnconnected extends React.Component {
           {imageUrl && !this.props.embed && (
             <Box
               sx={{
-                height: "auto",
-                paddingTop: "56.25%", // 16:9,
-                position: "relative",
-                display: {
-                  md: "none"
-                },
-                // [theme.breakpoints.up("md")]: {
-                //     display: "none"
-                //   },
+                // height: "auto",
+                // paddingTop: "56.25%", // 16:9,
+                // position: "relative",
+                // display: {
+                //   md: "none"
+                // },
                 margin: {
                   xs: "-24px -20px 0 -20px",
                   sm: "inherit",
@@ -55,16 +55,27 @@ export class WelcomeInfoUnconnected extends React.Component {
                   lg: "inherit",
                   xl: "inherit"
                 }
-                // [theme.breakpoints.only("xs")]: {
-                //     margin: "-24px -20px 0 -20px"
-                //   }
               }}
-              // className={classes.media}
             >
               <CardMedia
                 title="Welcome Photo"
                 alt="Welcome Photo"
                 image={imageUrl}
+                sx={{
+                  height: "auto",
+                  paddingTop: "56.25%", // 16:9,
+                  position: "relative",
+                  display: {
+                    md: "none"
+                  },
+                  margin: {
+                    xs: "-24px -20px 0 -20px",
+                    sm: "inherit",
+                    md: "inherit",
+                    lg: "inherit",
+                    xl: "inherit"
+                  }
+                }}
               />
             </Box>
           )}

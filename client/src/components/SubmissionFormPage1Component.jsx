@@ -297,33 +297,15 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     const formContainer = {
-      // padding: "80px 0 140px 0",
-      // [theme.breakpoints.down("lg")]: {
-      //   padding: "20px 0"
-      // },
       padding: {
         xs: "20px 0",
         xl: "80px 0 140px 0"
       },
-      // margin: "auto 0 auto 50%",
-      // [theme.breakpoints.down("xl")]: {
-      //   margin: "44px 0 auto 50%"
-      // },
-      // [theme.breakpoints.down("md")]: {
-      //   margin: "44px auto"
-      // },
       margin: {
         xs: "36px auto",
         sm: "44px auto",
         lg: "44px 0 auto 50%"
       },
-      // [theme.breakpoints.only("xs")]: {
-      //   width: "100vw",
-      //   position: "absolute",
-      //   left: 0,
-      //   top: 0,
-      //   margin: "36px auto"
-      // },
       width: {
         xs: "100vw"
       },
@@ -340,13 +322,6 @@ export class SubmissionFormPage1Component extends React.Component {
     const formContainerEmbed = {
       padding: "80px 0 140px 0",
       margin: "auto",
-      // [theme.breakpoints.only("xs")]: {
-      //   width: "100vw",
-      //   position: "absolute",
-      //   left: 0,
-      //   top: 0,
-      //   margin: "auto"
-      // },
       width: {
         xs: "100vw"
       },
@@ -361,11 +336,8 @@ export class SubmissionFormPage1Component extends React.Component {
       }
     };
     return (
-      <div
+      <Box
         data-testid="component-submissionformpage1"
-        // className={
-        //   this.props.embed ? classes.formContainerEmbed : classes.formContainer
-        // }
         sx={this.props.embed ? formContainerEmbed : formContainer}
       >
         {values.cape ? (
@@ -466,7 +438,7 @@ export class SubmissionFormPage1Component extends React.Component {
             )}
           </React.Fragment>
         )}
-      </div>
+      </Box>
     );
   }
 }

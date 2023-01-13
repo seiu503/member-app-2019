@@ -281,7 +281,7 @@ export class NavBar extends React.Component {
       </div>
     );
     return (
-      <div
+      <Box
         data-testid="component-navbar"
         sx={{
           flexGrow: 1,
@@ -290,234 +290,191 @@ export class NavBar extends React.Component {
           // className={classes.root}
         }}
       >
-        <AppBar
-          position="fixed"
+        <Box
           sx={{
             backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
             position: "fixed"
             // className={classes.appBar}
           }}
         >
-          <Toolbar>
-            <Box
-              sx={{
-                position: "absolute",
-                top: "-1000px",
-                left: "-1000px",
-                height: "1px",
-                width: "1px",
-                textAlign: "left",
-                overflow: "hidden"
+          <AppBar position="fixed">
+            <Toolbar>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "-1000px",
+                  left: "-1000px",
+                  height: "1px",
+                  width: "1px",
+                  textAlign: "left",
+                  overflow: "hidden"
 
-                // "&:focus": {
-                //   position: "relative",
-                //   top: 0,
-                //   left: "-13px",
-                //   width: "auto",
-                //   height: "auto",
-                //   overflow: "visible",
-                //   textAlign: "center",
-                //   zIndex: "1000"
-                // },
-                // className={classes.skip}
-              }}
-            >
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={this.skipToMain}
-                data-testid="skiplink-button"
-              >
-                <Translate id="skipLink" data-testid="skiplink">
-                  Skip to content &rsaquo;
-                </Translate>
-              </Button>
-            </Box>
-            <Link
-              to="/"
-              data-testid="logo-link"
-              sx={
-                {
-                  // className={classes.logoLink}
-                }
-              }
-            >
-              <img
-                src={logo}
-                alt="SEIU 503"
-                data-testid="logo-image"
-                sx={{
-                  height: "60px",
-                  width: "auto",
-                  marginRight: "10px",
-                  height: {
-                    xs: "40px",
-                    sm: "40px"
-                  }
-                  // [theme.breakpoints.down("sm")]: {
-                  //   height: "40px"
-                  // }
-                  // className={classes.logo}
-                }}
-              />
-            </Link>
-            <Typography
-              variant="h6"
-              color="inherit"
-              data-testid="title"
-              sx={{
-                flexGrow: 1,
-                color: "#ffffff", // white // theme.palette.secondary.light,
-                fontFamily: '"Source Sans Pro", sans-serif',
-                fontSize: "1.7em",
-                fontSize: {
-                  xs: "1.1rem",
-                  sm: "1.1rem",
-                  md: "1.1rem"
-                },
-                textDecoration: "none",
-                paddingLeft: "10px",
-                fontWeight: 200,
-                fontWeight: {
-                  xs: 400,
-                  sm: 400,
-                  md: 400
-                },
-                // [theme.breakpoints.down("md")]: {
-                //   fontSize: "1.1rem",
-                //   fontWeight: 400
-                // },
-                // [theme.breakpoints.down("xs")]: {
-                //   display: "none"
-                // }
-                display: {
-                  xs: "none"
-                }
-                // className={classes.title}
-              }}
-            >
-              <Link
-                to="/"
-                sx={{
-                  flexGrow: 1,
-                  color: "#ffffff", // white // theme.palette.secondary.light,
-                  fontFamily: '"Source Sans Pro", sans-serif',
-                  fontSize: "1.7em",
-                  fontSize: {
-                    xs: "1.1rem",
-                    sm: "1.1rem",
-                    md: "1.1rem"
-                  },
-                  textDecoration: "none",
-                  paddingLeft: "10px",
-                  fontWeight: 200,
-                  fontWeight: {
-                    xs: 400,
-                    sm: 400,
-                    md: 400
-                  },
-                  // [theme.breakpoints.down("md")]: {
-                  //   fontSize: "1.1rem",
-                  //   fontWeight: 400
+                  // "&:focus": {
+                  //   position: "relative",
+                  //   top: 0,
+                  //   left: "-13px",
+                  //   width: "auto",
+                  //   height: "auto",
+                  //   overflow: "visible",
+                  //   textAlign: "center",
+                  //   zIndex: "1000"
                   // },
-                  // [theme.breakpoints.down("xs")]: {
-                  //   display: "none"
-                  // }
-                  display: {
-                    xs: "none"
-                  }
-                  // className={classes.title}
+                  // className={classes.skip}
                 }}
               >
-                <Translate id={values.cape ? "capeBanner" : "siteBanner"}>
-                  {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
-                </Translate>
-              </Link>
-            </Typography>
-            <LanguagePicker
-              id="languagePicker"
-              ref={this.props.language_picker}
-              classes={{
-                labelShrink: {
-                  color: "white"
-                },
-                labelFocused: {
-                  color: "white !important",
-                  marginTop: -8
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={this.skipToMain}
+                  data-testid="skiplink-button"
+                >
+                  <Translate id="skipLink" data-testid="skiplink">
+                    Skip to content &rsaquo;
+                  </Translate>
+                </Button>
+              </Box>
+              <Box
+                sx={
+                  {
+                    // className={classes.logoLink}
+                  }
                 }
-              }}
-              name="languagePicker"
-              label="Select Language"
-              userSelectedLanguage={this.props.userSelectedLanguage}
-              style={{ width: 200 }}
-              // labelWidth={200}
-              onChange={this.props.updateLanguage}
-              options={[
-                "",
-                "English",
-                "Español",
-                "Русский",
-                "Tiếng Việt",
-                "简体中文"
-              ]}
-            />
-            {loggedIn && (
-              <React.Fragment>
-                <IconButton
-                  color="secondary"
-                  aria-label="Menu"
-                  aria-owns={anchorEl ? "nav-menu" : null}
-                  aria-haspopup="true"
-                  onClick={e => this.handleClick(e)}
-                  data-testid="menu-button"
+              >
+                <Link to="/" data-testid="logo-link">
+                  <Box
+                    component="img"
+                    src={logo}
+                    alt="SEIU 503"
+                    data-testid="logo-image"
+                    sx={{
+                      height: "60px",
+                      width: "auto",
+                      marginRight: "10px",
+                      height: {
+                        xs: "40px",
+                        md: "60px"
+                      }
+                    }}
+                  />
+                </Link>
+              </Box>
+              <Typography variant="h6" color="inherit" data-testid="title">
+                <Box
+                  component={Link}
+                  to="/"
                   sx={{
-                    display: "none",
-                    [theme.breakpoints.down("sm")]: {
-                      display: "block",
-                      position: "absolute",
-                      right: 20
-                      // className={classes.menuButton}
+                    flexGrow: 1,
+                    color: "#ffffff", // white // theme.palette.secondary.light,
+                    fontFamily: '"Source Sans Pro", sans-serif',
+                    fontSize: {
+                      xs: "1.1em",
+                      sm: "1.1em",
+                      md: "1.7em"
+                    },
+                    textDecoration: "none",
+                    paddingLeft: "10px",
+                    fontWeight: 200,
+                    fontWeight: {
+                      xs: 400,
+                      sm: 400,
+                      md: 400
+                    },
+                    display: {
+                      xs: "none",
+                      sm: "block"
                     }
                   }}
                 >
-                  <MenuOutlined />
-                </IconButton>
-                <Menu
-                  id="nav-menu"
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={this.handleClose}
-                  component="nav"
-                  elevation={0}
-                  anchorOrigin={{ horizontal: "right", vertical: "top" }}
-                  transformOrigin={{ horizontal: "right", vertical: "top" }}
-                  TransitionComponent={Slide}
-                  TransitionProps={{ direction: "left" }}
-                  PaperProps={{ className: classes.drawer }}
-                  data-testid="menu"
-                  sx={{
-                    boxShadow:
-                      "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
-                    // className="drawer"
-                  }}
-                >
-                  {mobileLinks}
-                </Menu>
-                <nav
-                  sx={{
-                    [theme.breakpoints.down("sm")]: {
-                      display: "none"
-                    }
-                    // className={classes.menuWrap}
-                  }}
-                >
-                  {adminMenuLinks}
-                </nav>
-              </React.Fragment>
-            )}
-          </Toolbar>
-        </AppBar>
-      </div>
+                  <Translate id={values.cape ? "capeBanner" : "siteBanner"}>
+                    {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
+                  </Translate>
+                </Box>
+              </Typography>
+              <LanguagePicker
+                id="languagePicker"
+                ref={this.props.language_picker}
+                classes={{
+                  labelShrink: {
+                    color: "white"
+                  },
+                  labelFocused: {
+                    color: "white !important",
+                    marginTop: -8
+                  }
+                }}
+                name="languagePicker"
+                label="Select Language"
+                userSelectedLanguage={this.props.userSelectedLanguage}
+                style={{ width: 200 }}
+                // labelWidth={200}
+                onChange={this.props.updateLanguage}
+                options={[
+                  "",
+                  "English",
+                  "Español",
+                  "Русский",
+                  "Tiếng Việt",
+                  "简体中文"
+                ]}
+              />
+              {loggedIn && (
+                <React.Fragment>
+                  <IconButton
+                    color="secondary"
+                    aria-label="Menu"
+                    aria-owns={anchorEl ? "nav-menu" : null}
+                    aria-haspopup="true"
+                    onClick={e => this.handleClick(e)}
+                    data-testid="menu-button"
+                    sx={{
+                      display: "none",
+                      [theme.breakpoints.down("sm")]: {
+                        display: "block",
+                        position: "absolute",
+                        right: 20
+                        // className={classes.menuButton}
+                      }
+                    }}
+                  >
+                    <MenuOutlined />
+                  </IconButton>
+                  <Menu
+                    id="nav-menu"
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={this.handleClose}
+                    component="nav"
+                    elevation={0}
+                    anchorOrigin={{ horizontal: "right", vertical: "top" }}
+                    transformOrigin={{ horizontal: "right", vertical: "top" }}
+                    TransitionComponent={Slide}
+                    TransitionProps={{ direction: "left" }}
+                    PaperProps={{ className: classes.drawer }}
+                    data-testid="menu"
+                    sx={{
+                      boxShadow:
+                        "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
+                      // className="drawer"
+                    }}
+                  >
+                    {mobileLinks}
+                  </Menu>
+                  <nav
+                    sx={{
+                      [theme.breakpoints.down("sm")]: {
+                        display: "none"
+                      }
+                      // className={classes.menuWrap}
+                    }}
+                  >
+                    {adminMenuLinks}
+                  </nav>
+                </React.Fragment>
+              )}
+            </Toolbar>
+          </AppBar>
+        </Box>
+      </Box>
     );
   }
 }

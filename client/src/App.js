@@ -455,7 +455,7 @@ export class AppUnconnected extends Component {
           variant="h3"
           align="left"
           gutterBottom
-          style={{ paddingTop: 20 }}
+          style={{ paddingTop: 20, fontSize: "2.4rem" }}
           data-testid="headline"
         >
           {headline}
@@ -1125,8 +1125,9 @@ export class AppUnconnected extends Component {
     const backgroundImageStyle = { backgroundImage };
     // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
-      <div
+      <Box
         data-testid="component-app"
+        style={backgroundImageStyle}
         sx={{
           width: "100vw",
           height: "100%",
@@ -1148,7 +1149,6 @@ export class AppUnconnected extends Component {
           // }
           //className={classes.appRoot}
         }}
-        style={backgroundImageStyle}
       >
         <CssBaseline />
         <Recaptcha
@@ -1355,7 +1355,7 @@ export class AppUnconnected extends Component {
           </Box>
         </main>
         <Footer classes={this.props.classes} />
-      </div>
+      </Box>
     );
   }
 }
