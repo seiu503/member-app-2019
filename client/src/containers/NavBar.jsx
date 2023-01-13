@@ -6,15 +6,18 @@ import queryString from "query-string";
 import { Translate } from "react-localize-redux";
 
 import { withStyles } from "@mui/styles";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import ListItemText from "@mui/material/ListItemText";
-import Slide from "@mui/material/Slide";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  ListItemText,
+  Slide,
+  Box
+} from "@mui/material";
 import MenuOutlined from "@mui/icons-material/MenuOutlined";
 
 import { skip } from "../utils";
@@ -25,13 +28,13 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     width: "100vw",
-    color: theme.palette.primary.main
+    color: "#2c0940" // dark purple // theme.palette.primary.main,
   },
   flex: {
     flexGrow: 1
   },
   appBar: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
     position: "fixed"
   },
   menuButton: {
@@ -48,13 +51,13 @@ const styles = theme => ({
     }
   },
   menuLink: {
-    color: theme.palette.secondary.main,
+    color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
     textTransform: "capitalize",
     fontSize: "1em"
   },
   title: {
     flexGrow: 1,
-    color: theme.palette.secondary.light,
+    color: "#ffffff", // white // theme.palette.secondary.light,
     fontFamily: '"Source Sans Pro", sans-serif',
     fontSize: "1.7em",
     textDecoration: "none",
@@ -112,10 +115,10 @@ const styles = theme => ({
       "sans-serif"
     ].join(","),
     fontWeight: 400,
-    color: theme.palette.secondary.main
+    color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
   },
   ListItemText: {
-    color: theme.palette.secondary.main
+    color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
   },
   logo: {
     height: 60,
@@ -216,7 +219,21 @@ export class NavBar extends React.Component {
             this.props.history.push(`/${link}`);
             handleClose();
           }}
-          className={classes.menuItem}
+          sx={{
+            padding: "24px 16px",
+            textAlign: "center",
+            textTransform: "capitalize",
+            fontFamily: [
+              '"Source Sans Pro"',
+              '"Helvetica Neue"',
+              "Helvetica",
+              "Arial",
+              "sans-serif"
+            ].join(","),
+            fontWeight: 400,
+            color: "#ffce04" // yellow/gold // theme.palette.secondary.main,
+            //className={classes.menuItem}
+          }}
           data-testid="menu-item-mobile"
         >
           <ListItemText
@@ -247,7 +264,16 @@ export class NavBar extends React.Component {
       <div data-testid="admin-menu-links">
         {adminLinks.map((link, index) => {
           return (
-            <Button key={index} className={classes.menuLink} href={`/${link}`}>
+            <Button
+              key={index}
+              sx={{
+                color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+                textTransform: "capitalize",
+                fontSize: "1em"
+                // className={classes.menuLink}
+              }}
+              href={`/${link}`}
+            >
               {link}
             </Button>
           );
@@ -255,35 +281,154 @@ export class NavBar extends React.Component {
       </div>
     );
     return (
-      <div className={classes.root} data-testid="component-navbar">
-        <AppBar position="fixed" className={classes.appBar}>
+      <div
+        data-testid="component-navbar"
+        sx={{
+          flexGrow: 1,
+          width: "100vw",
+          color: "#2c0940" // dark purple // theme.palette.primary.main,
+          // className={classes.root}
+        }}
+      >
+        <AppBar
+          position="fixed"
+          sx={{
+            backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
+            position: "fixed"
+            // className={classes.appBar}
+          }}
+        >
           <Toolbar>
-            <Button
-              color="primary"
-              variant="contained"
-              className={classes.skip}
-              onClick={this.skipToMain}
-              data-testid="skiplink-button"
+            <Box
+              sx={{
+                position: "absolute",
+                top: "-1000px",
+                left: "-1000px",
+                height: "1px",
+                width: "1px",
+                textAlign: "left",
+                overflow: "hidden"
+
+                // "&:focus": {
+                //   position: "relative",
+                //   top: 0,
+                //   left: "-13px",
+                //   width: "auto",
+                //   height: "auto",
+                //   overflow: "visible",
+                //   textAlign: "center",
+                //   zIndex: "1000"
+                // },
+                // className={classes.skip}
+              }}
             >
-              <Translate id="skipLink" data-testid="skiplink">
-                Skip to content &rsaquo;
-              </Translate>
-            </Button>
-            <Link to="/" className={classes.logoLink} data-testid="logo-link">
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={this.skipToMain}
+                data-testid="skiplink-button"
+              >
+                <Translate id="skipLink" data-testid="skiplink">
+                  Skip to content &rsaquo;
+                </Translate>
+              </Button>
+            </Box>
+            <Link
+              to="/"
+              data-testid="logo-link"
+              sx={
+                {
+                  // className={classes.logoLink}
+                }
+              }
+            >
               <img
                 src={logo}
                 alt="SEIU 503"
-                className={classes.logo}
                 data-testid="logo-image"
+                sx={{
+                  height: "60px",
+                  width: "auto",
+                  marginRight: "10px",
+                  height: {
+                    xs: "40px",
+                    sm: "40px"
+                  }
+                  // [theme.breakpoints.down("sm")]: {
+                  //   height: "40px"
+                  // }
+                  // className={classes.logo}
+                }}
               />
             </Link>
             <Typography
               variant="h6"
               color="inherit"
-              className={classes.title}
               data-testid="title"
+              sx={{
+                flexGrow: 1,
+                color: "#ffffff", // white // theme.palette.secondary.light,
+                fontFamily: '"Source Sans Pro", sans-serif',
+                fontSize: "1.7em",
+                fontSize: {
+                  xs: "1.1rem",
+                  sm: "1.1rem",
+                  md: "1.1rem"
+                },
+                textDecoration: "none",
+                paddingLeft: "10px",
+                fontWeight: 200,
+                fontWeight: {
+                  xs: 400,
+                  sm: 400,
+                  md: 400
+                },
+                // [theme.breakpoints.down("md")]: {
+                //   fontSize: "1.1rem",
+                //   fontWeight: 400
+                // },
+                // [theme.breakpoints.down("xs")]: {
+                //   display: "none"
+                // }
+                display: {
+                  xs: "none"
+                }
+                // className={classes.title}
+              }}
             >
-              <Link to="/" className={classes.title}>
+              <Link
+                to="/"
+                sx={{
+                  flexGrow: 1,
+                  color: "#ffffff", // white // theme.palette.secondary.light,
+                  fontFamily: '"Source Sans Pro", sans-serif',
+                  fontSize: "1.7em",
+                  fontSize: {
+                    xs: "1.1rem",
+                    sm: "1.1rem",
+                    md: "1.1rem"
+                  },
+                  textDecoration: "none",
+                  paddingLeft: "10px",
+                  fontWeight: 200,
+                  fontWeight: {
+                    xs: 400,
+                    sm: 400,
+                    md: 400
+                  },
+                  // [theme.breakpoints.down("md")]: {
+                  //   fontSize: "1.1rem",
+                  //   fontWeight: 400
+                  // },
+                  // [theme.breakpoints.down("xs")]: {
+                  //   display: "none"
+                  // }
+                  display: {
+                    xs: "none"
+                  }
+                  // className={classes.title}
+                }}
+              >
                 <Translate id={values.cape ? "capeBanner" : "siteBanner"}>
                   {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
                 </Translate>
@@ -311,13 +456,21 @@ export class NavBar extends React.Component {
             {loggedIn && (
               <React.Fragment>
                 <IconButton
-                  className={classes.menuButton}
                   color="secondary"
                   aria-label="Menu"
                   aria-owns={anchorEl ? "nav-menu" : null}
                   aria-haspopup="true"
                   onClick={e => this.handleClick(e)}
                   data-testid="menu-button"
+                  sx={{
+                    display: "none",
+                    [theme.breakpoints.down("sm")]: {
+                      display: "block",
+                      position: "absolute",
+                      right: 20
+                      // className={classes.menuButton}
+                    }
+                  }}
                 >
                   <MenuOutlined />
                 </IconButton>
@@ -327,7 +480,6 @@ export class NavBar extends React.Component {
                   open={Boolean(anchorEl)}
                   onClose={this.handleClose}
                   component="nav"
-                  className="drawer"
                   elevation={0}
                   anchorOrigin={{ horizontal: "right", vertical: "top" }}
                   transformOrigin={{ horizontal: "right", vertical: "top" }}
@@ -335,10 +487,24 @@ export class NavBar extends React.Component {
                   TransitionProps={{ direction: "left" }}
                   PaperProps={{ className: classes.drawer }}
                   data-testid="menu"
+                  sx={{
+                    boxShadow:
+                      "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
+                    // className="drawer"
+                  }}
                 >
                   {mobileLinks}
                 </Menu>
-                <nav className={classes.menuWrap}>{adminMenuLinks}</nav>
+                <nav
+                  sx={{
+                    [theme.breakpoints.down("sm")]: {
+                      display: "none"
+                    }
+                    // className={classes.menuWrap}
+                  }}
+                >
+                  {adminMenuLinks}
+                </nav>
               </React.Fragment>
             )}
           </Toolbar>

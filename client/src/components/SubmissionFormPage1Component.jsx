@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import queryString from "query-string";
+import { Box } from "@mui/material";
 
 import { withLocalize } from "react-localize-redux";
 import * as formElements from "./SubmissionFormElements";
@@ -295,12 +296,77 @@ export class SubmissionFormPage1Component extends React.Component {
     const checkoff = this.props.submission.formPage1.checkoff;
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
+    const formContainer = {
+      // padding: "80px 0 140px 0",
+      // [theme.breakpoints.down("lg")]: {
+      //   padding: "20px 0"
+      // },
+      padding: {
+        xs: "20px 0",
+        xl: "80px 0 140px 0"
+      },
+      // margin: "auto 0 auto 50%",
+      // [theme.breakpoints.down("xl")]: {
+      //   margin: "44px 0 auto 50%"
+      // },
+      // [theme.breakpoints.down("md")]: {
+      //   margin: "44px auto"
+      // },
+      margin: {
+        xs: "36px auto",
+        sm: "44px auto",
+        lg: "44px 0 auto 50%"
+      },
+      // [theme.breakpoints.only("xs")]: {
+      //   width: "100vw",
+      //   position: "absolute",
+      //   left: 0,
+      //   top: 0,
+      //   margin: "36px auto"
+      // },
+      width: {
+        xs: "100vw"
+      },
+      position: {
+        xs: "absolute"
+      },
+      left: {
+        xs: 0
+      },
+      top: {
+        xs: 0
+      }
+    };
+    const formContainerEmbed = {
+      padding: "80px 0 140px 0",
+      margin: "auto",
+      // [theme.breakpoints.only("xs")]: {
+      //   width: "100vw",
+      //   position: "absolute",
+      //   left: 0,
+      //   top: 0,
+      //   margin: "auto"
+      // },
+      width: {
+        xs: "100vw"
+      },
+      position: {
+        xs: "absolute"
+      },
+      left: {
+        xs: 0
+      },
+      top: {
+        xs: 0
+      }
+    };
     return (
       <div
         data-testid="component-submissionformpage1"
-        className={
-          this.props.embed ? classes.formContainerEmbed : classes.formContainer
-        }
+        // className={
+        //   this.props.embed ? classes.formContainerEmbed : classes.formContainer
+        // }
+        sx={this.props.embed ? formContainerEmbed : formContainer}
       >
         {values.cape ? (
           <CAPEForm

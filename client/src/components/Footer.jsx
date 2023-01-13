@@ -11,14 +11,14 @@ const Footer = props => (
       position: "fixed",
       backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
       bottom: 0,
-      padding: 25,
-      height: 73,
+      padding: "25px",
+      height: "73px",
       // [theme.breakpoints.down("sm")]: {
       //   height: 53
       // },
       height: {
-        xs: 53,
-        sm: 53
+        xs: "53px",
+        sm: "53px"
       },
       display: "flex",
       justifyContent: "center",

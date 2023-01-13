@@ -18,7 +18,7 @@ export const theme = createTheme({
     },
     secondary: {
       main: "#ffce04", // yellow/gold
-      light: "#ffffff" //white
+      light: "#ffffff" // white
     },
     danger: {
       main: orange[500], // #b71c1c

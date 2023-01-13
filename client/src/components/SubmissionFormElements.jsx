@@ -976,11 +976,36 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
       {({ translate }) => (
         <FormControl
           variant="outlined"
-          className={props.classes.languagePicker}
+          sx={{
+            color: "white",
+            position: {
+              xs: "absolute",
+              sm: "absolute"
+            },
+            top: {
+              xs: "20px",
+              sm: "20px"
+            },
+            right: {
+              xs: "10px",
+              sm: "10px"
+            }
+            // [theme.breakpoints.down("sm")]: {
+            //   position: "absolute",
+            //   top: 20,
+            //   right: 10
+            // },
+            // className={props.classes.languagePicker}
+          }}
         >
           <InputLabel
             htmlFor={props.name}
-            className={props.classes.languagePickerLabel}
+            sx={{
+              color: "white",
+              marginTop: "-14px",
+              marginLeft: "25px"
+              // className={props.classes.languagePickerLabel}
+            }}
             classes={{
               shrink: props.classes.labelShrink,
               focused: props.classes.labelFocused
@@ -1031,7 +1056,13 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                 }}
               />
             }
-            className={props.classes.languagePickerSelect}
+            sx={{
+              color: "white",
+              width: 195,
+              border: "1px solid white",
+              paddingLeft: "7px !important"
+              // className={props.classes.languagePickerSelect}
+            }}
             // value={props.input.value}
             // onChange={props.input.onChange}
             data-testid="component-select"
