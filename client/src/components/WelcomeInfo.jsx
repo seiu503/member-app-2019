@@ -97,14 +97,21 @@ export class WelcomeInfoUnconnected extends React.Component {
         }}
       >
         <Box
-          sx={{
-            maxWidth: 600,
-            margin: "0 auto",
-            padding: 20
-            // // className={classes.welcomeCard}
-          }}
+        // sx={{
+        //   maxWidth: 600,
+        //   margin: "0 auto",
+        //   padding: "20px"
+        //   // // className={classes.welcomeCard}
+        // }}
         >
-          <Card>
+          <Card
+            sx={{
+              maxWidth: 600,
+              margin: "0 auto",
+              padding: "20px"
+              // // className={classes.welcomeCard}
+            }}
+          >
             {imageUrl && !this.props.embed && (
               <Box
                 sx={{
@@ -141,7 +148,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             {process.env.REACT_APP_ENV_TEXT !== "production" && (
               <Box
                 sx={{
-                  padding: 20,
+                  padding: "20px",
                   backgroundColor: "#d32f2f" // theme.palette.danger.light SUB FOR // className={classes.testWarning}>
                 }}
               >
@@ -173,7 +180,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             <Box
               sx={{
                 width: "100%",
-                paddingRight: 20,
+                paddingRight: "20px",
                 display: "flex",
                 justifyContent: "flex-end"
                 // className={classes.buttonWrap}
