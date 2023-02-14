@@ -12,13 +12,12 @@ const Footer = props => (
       backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
       bottom: 0,
       padding: "25px",
-      height: "73px",
       // [theme.breakpoints.down("sm")]: {
       //   height: 53
       // },
       height: {
         xs: "53px",
-        sm: "53px"
+        sm: "73px"
       },
       display: "flex",
       justifyContent: "center",
