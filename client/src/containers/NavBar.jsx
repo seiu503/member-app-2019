@@ -205,7 +205,12 @@ export class NavBar extends React.Component {
                   />
                 </Link>
               </Box>
-              <Typography variant="h6" color="inherit" data-testid="title">
+              <Typography
+                variant="h6"
+                color="inherit"
+                data-testid="title"
+                style={{ flexGrow: 1 }}
+              >
                 <Box
                   component={Link}
                   to="/"
@@ -216,7 +221,7 @@ export class NavBar extends React.Component {
                     fontSize: {
                       xs: "1.1em",
                       sm: "1.1em",
-                      md: "1.7em"
+                      md: "2em"
                     },
                     textDecoration: "none",
                     paddingLeft: "10px",

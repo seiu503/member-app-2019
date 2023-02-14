@@ -5,6 +5,7 @@ import { openSnackbar } from "../containers/Notifier";
 import { Translate } from "react-localize-redux";
 
 import {
+  Box,
   TextField,
   Select,
   Checkbox,
@@ -976,27 +977,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
       {({ translate }) => (
         <FormControl
           variant="outlined"
-          sx={{
-            color: "white",
-            position: {
-              xs: "absolute",
-              sm: "absolute"
-            },
-            top: {
-              xs: "20px",
-              sm: "20px"
-            },
-            right: {
-              xs: "10px",
-              sm: "10px"
-            }
-            // [theme.breakpoints.down("sm")]: {
-            //   position: "absolute",
-            //   top: 20,
-            //   right: 10
-            // },
-            // className={props.classes.languagePicker}
-          }}
+          // className={props.classes.languagePicker}
         >
           <InputLabel
             htmlFor={props.name}
@@ -1018,8 +999,13 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
             autoWidth={true}
             onChange={props.onChange}
             startAdornment={
-              <InputAdornment position="start">
-                <LanguageIcon color="inherit" />
+              <InputAdornment
+                position="start"
+                sx={{
+                  color: "white"
+                }}
+              >
+                <LanguageIcon />
               </InputAdornment>
             }
             input={
@@ -1030,8 +1016,18 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                   adornedStart: props.classes.adornedStart
                 }}
                 className={props.classes.lpInput}
+                sx={{
+                  border: "1px solid white",
+                  paddingLeft: "7px !important",
+                  "& .MuiSvgIcon-root": {
+                    color: "white"
+                  }
+                }}
                 // labelWidth={100}
-                style={{ width: 100 }}
+                style={{
+                  width: 195,
+                  color: "white"
+                }}
                 size="small"
                 notched={false}
                 value={props.userSelectedLanguage}
@@ -1039,30 +1035,15 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                   id: props.id,
                   style: {
                     height: 30,
-                    width: 100,
+                    width: 195,
                     padding: "0px 15px",
                     borderColor: "white",
-                    borderRadius: 4,
-                    "&:before": {
-                      borderColor: "white"
-                    },
-                    "&:after": {
-                      borderColor: "white"
-                    }
-                  },
-                  classes: {
-                    icon: props.classes.icon
+                    color: "white",
+                    borderRadius: 4
                   }
                 }}
               />
             }
-            sx={{
-              color: "white",
-              width: 195,
-              border: "1px solid white",
-              paddingLeft: "7px !important"
-              // className={props.classes.languagePickerSelect}
-            }}
             // value={props.input.value}
             // onChange={props.input.onChange}
             data-testid="component-select"
