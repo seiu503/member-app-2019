@@ -94,6 +94,17 @@ export const theme = createTheme({
         }
       }
     },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {},
+        shrink: {
+          transform: "translate(12px, -9px) scale(0.75) !important",
+          background: "white !important",
+          padding: "0 4px !important"
+        },
+        outlined: {}
+      }
+    },
     "MuiButton-outlinedSecondary": {
       styleOverrides: {
         border: 2
