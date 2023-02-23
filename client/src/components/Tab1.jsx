@@ -71,12 +71,12 @@ export const Tab1 = props => {
             options={employerTypesList}
             onChange={employerTypeOnChange}
             // labelWidth={100}
-            style={{ width: 100 }}
+            style={{ width: "100%" }}
           />
           {formValues.employerType !== "" && (
             <Field
               // labelWidth={104}
-              style={{ width: 104 }}
+              style={{ width: "100%" }}
               label="Employer Name"
               name="employerName"
               id="employerName"

@@ -12,16 +12,19 @@ const path = require("path");
 
 // initialize passport
 
-const session = require("express-session");
-const passport = require("passport");
-require("./app/config/passport")(passport); // pass passport for configuration
-const auth = require("./app/config/auth"); // serialize / deserialize functions
+// 20230223 Commenting out all passport authentication bc not using admin dashboard
+// and don't need to track users anymore
 
-app.use(passport.initialize());
-app.use(passport.session());
+// const session = require("express-session");
+// const passport = require("passport");
+// require("./app/config/passport")(passport); // pass passport for configuration
+// const auth = require("./app/config/auth"); // serialize / deserialize functions
 
-passport.serializeUser(auth.user.serialize);
-passport.deserializeUser(auth.user.deserialize);
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// passport.serializeUser(auth.user.serialize);
+// passport.deserializeUser(auth.user.deserialize);
 
 // connect to db
 

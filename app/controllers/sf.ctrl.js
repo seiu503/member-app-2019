@@ -511,6 +511,7 @@ exports.getAllEmployers = async (req, res, next) => {
       return accounts.records;
     } else {
       console.log(`sf.ctrl.js > 764: returning employers to client`);
+      // console.log(accounts.records);
       return res.status(200).json(accounts.records);
     }
   } catch (err) {
