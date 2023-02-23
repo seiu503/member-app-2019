@@ -1130,8 +1130,8 @@ export class AppUnconnected extends Component {
         style={backgroundImageStyle}
         sx={{
           width: "100vw",
+          minHeight: "100vh",
           height: "100%",
-          minHeight: "80vh",
           backgroundAttachment: "fixed",
           backgroundPosition: "bottom",
           backgroundImage: {

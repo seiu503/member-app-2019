@@ -297,6 +297,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(employerTypesList.length);
     // console.log(employerList.length);
     const formContainer = {
+      display: "flex",
       padding: {
         xs: "20px 0",
         xl: "80px 0 140px 0"
@@ -310,7 +311,8 @@ export class SubmissionFormPage1Component extends React.Component {
         xs: "100vw"
       },
       position: {
-        xs: "absolute"
+        xs: "absolute",
+        sm: "static"
       },
       left: {
         xs: 0
