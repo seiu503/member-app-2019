@@ -247,11 +247,16 @@ export class NavBar extends React.Component {
                 ref={this.props.language_picker}
                 classes={{
                   labelShrink: {
-                    color: "white"
+                    color: "white !important",
+                    background: "#2c0940 !important"
                   },
                   labelFocused: {
                     color: "white !important",
+                    background: "#2c0940 !important",
                     marginTop: -8
+                  },
+                  labelOutlined: {
+                    color: "white !important"
                   }
                 }}
                 name="languagePicker"

@@ -982,14 +982,17 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
           <InputLabel
             htmlFor={props.name}
             sx={{
-              color: "white",
-              marginTop: "-14px",
-              marginLeft: "25px"
+              color: "white !important",
+              // marginTop: "-2px",
+              marginLeft: "25px",
+              padding: "0 4px",
+              backgroundColor: "#2c0940 !important"
               // className={props.classes.languagePickerLabel}
             }}
             classes={{
               shrink: props.classes.labelShrink,
-              focused: props.classes.labelFocused
+              focused: props.classes.labelFocused,
+              outlined: props.classes.labelOutlined
             }}
           >
             {inputLabelTranslateHelper(props.id, props.label, translate)}
@@ -1089,16 +1092,7 @@ export const renderSelect = ({
         required={touched && error === "Required"}
         style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
       >
-        <InputLabel
-          htmlFor={name}
-          classes={{
-            shrink: {
-              transform: "translate(12px, -9px) scale(0.75) !important",
-              background: "white !important",
-              padding: "0 4px !important"
-            }
-          }}
-        >
+        <InputLabel htmlFor={name}>
           {inputLabelTranslateHelper(id, label, translate)}
         </InputLabel>
         <Select

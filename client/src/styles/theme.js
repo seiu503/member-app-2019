@@ -98,9 +98,9 @@ export const theme = createTheme({
       styleOverrides: {
         root: {},
         shrink: {
-          transform: "translate(12px, -9px) scale(0.75) !important",
-          background: "white !important",
-          padding: "0 4px !important"
+          transform: "translate(12px, -9px) scale(0.75)",
+          background: "white",
+          padding: "0 4px"
         },
         outlined: {}
       }
