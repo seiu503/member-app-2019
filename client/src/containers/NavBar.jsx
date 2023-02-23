@@ -140,7 +140,8 @@ export class NavBar extends React.Component {
         <Box
           sx={{
             backgroundColor: "primary.main", // "#2c0940", // dark purple
-            position: "fixed"
+            position: "fixed",
+            zIndex: 1100
             // className={classes.appBar}
           }}
         >
