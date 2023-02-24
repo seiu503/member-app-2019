@@ -177,7 +177,7 @@ export const Tab1 = props => {
             classes={classes}
             component={renderSelect}
             // labelWidth={132}
-            style={{ width: 132 }}
+            style={{ width: "100%" }}
             options={languageOptions}
           />
 
@@ -224,7 +224,7 @@ export const Tab1 = props => {
               component={renderSelect}
               options={stateList}
               // labelWidth={80}
-              style={{ width: 80 }}
+              style={{ width: "100%" }}
             />
 
             <Field
