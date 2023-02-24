@@ -182,6 +182,8 @@ export function saveSubmissionId(id) {
 }
 
 export function verify(token) {
+  console.log("apiSubmissionActions.js > 185");
+  console.log(token);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/verify`,
@@ -193,6 +195,7 @@ export function verify(token) {
           type: VERIFY_FAILURE,
           payload: (action, state, res) => {
             return res.json().then(data => {
+              console.log("apiSubmissionActions.js > 196");
               let message = "Sorry, something went wrong :(";
               if (data && data.message) {
                 message = data.message;

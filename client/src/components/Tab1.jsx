@@ -70,12 +70,10 @@ export const Tab1 = props => {
             component={renderSelect}
             options={employerTypesList}
             onChange={employerTypeOnChange}
-            // labelWidth={100}
             style={{ width: "100%" }}
           />
           {formValues.employerType !== "" && (
             <Field
-              // labelWidth={104}
               style={{ width: "100%" }}
               label="Employer Name"
               name="employerName"
@@ -137,7 +135,6 @@ export const Tab1 = props => {
               classes={classes}
               formControlName="formControlDate"
               component={renderSelect}
-              // labelWidth={41}
               style={{ width: "100%" }}
               options={monthList}
             />
@@ -150,7 +147,6 @@ export const Tab1 = props => {
               formControlName="formControlDate"
               classes={classes}
               component={renderSelect}
-              // labelWidth={24}
               style={{ width: "100%" }}
               options={dateOptions(props)}
             />
@@ -163,7 +159,6 @@ export const Tab1 = props => {
               formControlName="formControlDate"
               classes={classes}
               component={renderSelect}
-              // labelWidth={30}
               style={{ width: "100%" }}
               options={yearOptions()}
             />
@@ -176,7 +171,6 @@ export const Tab1 = props => {
             type="select"
             classes={classes}
             component={renderSelect}
-            // labelWidth={132}
             style={{ width: "100%" }}
             options={languageOptions}
           />
@@ -223,7 +217,6 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               options={stateList}
-              // labelWidth={80}
               style={{ width: "100%" }}
             />
 

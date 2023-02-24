@@ -343,10 +343,14 @@ exports.getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 exports.verifyHumanity = async (req, res) => {
+  console.log("submissions.ctrl.js > 346");
   const ip = this.getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
+  console.log(key);
+  console.log(token);
+  console.log(ip);
   return axios.post(
     "https://www.google.com/recaptcha/api/siteverify",
     {
@@ -357,11 +361,16 @@ exports.verifyHumanity = async (req, res) => {
       }
     },
     (err, httpResponse, body) => {
+      console.log(`************ submissions.ctrl.js 364 *********`);
       if (err) {
         console.error(`submissions.ctrl.js > 361: ${err}`);
         return res.status(500).json({ message: err.message });
       } else {
+        console.log(`************ submissions.ctrl.js 368 *********`);
+        console.log(body);
+        console.log(httpResponse);
         const r = JSON.parse(body);
+        console.log(r);
         if (r.success) {
           console.log(`submissions.ctrl.js > 366: recaptcha score: ${r.score}`);
           return res.status(200).json({ score: r.score });
