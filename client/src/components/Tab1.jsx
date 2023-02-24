@@ -138,7 +138,7 @@ export const Tab1 = props => {
               formControlName="formControlDate"
               component={renderSelect}
               // labelWidth={41}
-              style={{ width: 41 }}
+              style={{ width: "100%" }}
               options={monthList}
             />
 
@@ -151,7 +151,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               // labelWidth={24}
-              style={{ width: 24 }}
+              style={{ width: "100%" }}
               options={dateOptions(props)}
             />
 
@@ -164,7 +164,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               // labelWidth={30}
-              style={{ width: 30 }}
+              style={{ width: "100%" }}
               options={yearOptions()}
             />
           </FormGroup>
