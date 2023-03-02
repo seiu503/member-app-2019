@@ -71,7 +71,7 @@ class Notifier extends React.Component {
 }
 
 // this function should really just be one line
-// it should call openSnackbarFn with the first 2 arguments (currently line 107)
+// it should call openSnackbarFn with the first 2 arguments (variant, message)
 // however! some kind of race condition is happening between importing the
 // openSnackbar function into the target component and mounting the Notifier
 // so it's throwing an error if the function is not defined when the
