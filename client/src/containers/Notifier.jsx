@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import React from "react";
 
 import CustomSnackbarContentWrapper from "../components/CustomSnackbarContent";
@@ -6,6 +7,18 @@ import { Snackbar } from "@mui/material";
 import { theme } from "../styles/theme";
 
 let openSnackbarFn;
+
+function useAsync(asyncFn, onSuccess) {
+  useEffect(() => {
+    let isActive = true;
+    asyncFn().then(data => {
+      if (isActive) onSuccess(data);
+    });
+    return () => {
+      isActive = false;
+    };
+  }, [asyncFn, onSuccess]);
+}
 
 class Notifier extends React.Component {
   state = {
@@ -16,7 +29,8 @@ class Notifier extends React.Component {
   };
 
   async componentDidMount() {
-    openSnackbarFn = await this.openSnackbar;
+    // openSnackbarFn = await this.openSnackbar;
+    openSnackbarFn = useAsync(this.openSnackbar);
   }
 
   openSnackbar = (variant, message, action) => {
