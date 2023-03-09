@@ -11,28 +11,28 @@ const Footer = props => (
       position: "fixed",
       backgroundColor: "#2c0940", // dark purple // theme.palette.primary.main,
       bottom: 0,
-      padding: "25px",
-      // [theme.breakpoints.down("sm")]: {
-      //   height: 53
-      // },
+      padding: {
+        xs: 0,
+        sm: "25px"
+      },
       height: {
         xs: "53px",
         sm: "73px"
       },
       display: "flex",
+      flexDirection: "column",
       justifyContent: "center",
       alignItems: "middle",
       boxShadow: "0 1px 5px 2px rgba(0,0,0,.2)",
       zIndex: 2,
       color: "white"
-      // className={props.classes.footer}
     }}
   >
     <a
       href="https://seiu503.tfaforms.net/490"
       rel="noopener noreferrer"
       target="_blank"
-      style={{ color: "white" }}
+      style={{ color: "white", textAlign: "center" }}
     >
       <Translate id="reportProblem">Report a problem with this form</Translate>
     </a>

@@ -21,6 +21,10 @@ export class WelcomeInfoUnconnected extends React.Component {
       <Box
         data-testid="component-welcome-info"
         sx={{
+          paddingBottom: {
+            xs: "20px",
+            sm: 0
+          },
           margin: {
             xs: 0,
             sm: "40px auto",
@@ -84,7 +88,14 @@ export class WelcomeInfoUnconnected extends React.Component {
             <Box
               sx={{
                 padding: "20px",
-                backgroundColor: "danger.main" // orange[500], // #b71c1c
+                backgroundColor: "danger.main", // orange[500], // #b71c1c
+                marginRight: {
+                  xs: "10px",
+                  // sm: "0px",
+                  // md: "10px",
+                  // lg: "10px",
+                  xl: "0px"
+                }
               }}
             >
               <div>

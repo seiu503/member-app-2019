@@ -300,12 +300,13 @@ export class SubmissionFormPage1Component extends React.Component {
       display: "flex",
       padding: {
         xs: "20px 0",
+        lg: "20px 50px 20px 0",
         xl: "80px 0 140px 0"
       },
       margin: {
         xs: "36px auto",
         sm: "44px auto",
-        lg: "44px 0 auto 50%"
+        lg: "44px 0 44px 50%"
       },
       width: {
         xs: "100vw"
