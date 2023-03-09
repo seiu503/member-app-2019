@@ -65,7 +65,7 @@ export const CustomSnackbarContent = React.forwardRef((props, ref) => {
       className={classNames(classes[variant], className)}
       data-testid="component-custom-snackbar"
       aria-describedby="client-snackbar"
-      innerRef={ref}
+      ref={ref}
       message={
         <span
           id="client-snackbar"
@@ -75,7 +75,7 @@ export const CustomSnackbarContent = React.forwardRef((props, ref) => {
           <Icon
             className={classNames(classes.icon, classes.iconVariant)}
             data-testid="message-icon"
-            innerRef={ref}
+            ref={ref}
           />
           {message}
         </span>
@@ -89,7 +89,7 @@ export const CustomSnackbarContent = React.forwardRef((props, ref) => {
           className={classes.close}
           onClick={onClose}
           data-testid="icon-button"
-          innerRef={ref}
+          ref={ref}
         >
           <CloseIcon className={classes.icon} data-testid="close-icon" />
         </IconButton>

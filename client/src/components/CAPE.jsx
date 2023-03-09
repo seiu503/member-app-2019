@@ -423,7 +423,7 @@ export const CAPE = props => {
                 />
               )}
             </div>
-            <div className={classes.legalCopy} innerRef={cape_legal}>
+            <div className={classes.legalCopy} ref={cape_legal}>
               {community ? (
                 <p>
                   <Translate id="communityCAPE2022" />

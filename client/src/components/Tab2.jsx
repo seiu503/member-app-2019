@@ -48,7 +48,7 @@ export const Tab2 = props => {
         <div
           className={classes.formHelperTextLegal}
           id="termsOfServiceLegalLanguage"
-          innerRef={legal_language}
+          ref={legal_language}
         >
           {community ? (
             <p>
@@ -94,7 +94,7 @@ export const Tab2 = props => {
             <div
               className={classes.formHelperTextLegal}
               id="directPayAuthLegalLanguage"
-              innerRef={direct_pay}
+              ref={direct_pay}
             >
               {afh && (
                 <React.Fragment>
