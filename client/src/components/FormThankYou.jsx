@@ -21,7 +21,7 @@ const FormThankYou = React.forwardRef((props, ref) => {
         lineHeight: "2em",
         background: "white",
         borderRadius: "4px",
-        padding: 60,
+        padding: "60px",
         fontSize: "1.2em"
       }}
     >
