@@ -27,7 +27,7 @@ export class WelcomeInfoUnconnected extends React.Component {
           },
           margin: {
             xs: 0,
-            sm: "40px auto",
+            md: "40px auto",
             lg: 0
           },
           maxWidth: {

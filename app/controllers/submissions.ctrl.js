@@ -351,35 +351,68 @@ exports.verifyHumanity = async (req, res) => {
   console.log(key);
   console.log(token);
   console.log(ip);
-  return axios.post(
+
+  const { err, data } = await axios.post(
     "https://www.google.com/recaptcha/api/siteverify",
     {
-      form: {
-        secret: key,
-        response: token,
-        remoteip: ip
-      }
+      secret: key,
+      response: token,
+      remoteip: ip
     },
-    (err, httpResponse, body) => {
-      console.log(`************ submissions.ctrl.js 364 *********`);
-      if (err) {
-        console.error(`submissions.ctrl.js > 361: ${err}`);
-        return res.status(500).json({ message: err.message });
-      } else {
-        console.log(`************ submissions.ctrl.js 368 *********`);
-        console.log(body);
-        console.log(httpResponse);
-        const r = JSON.parse(body);
-        console.log(r);
-        if (r.success) {
-          console.log(`submissions.ctrl.js > 366: recaptcha score: ${r.score}`);
-          return res.status(200).json({ score: r.score });
-        } else {
-          console.error(`submissions.ctrl.js > 369: recaptcha failure`);
-          console.error(r["error-codes"][0]);
-          return res.status(500).json({ message: r["error-codes"][0] });
-        }
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
       }
     }
   );
+  console.log(`************ submissions.ctrl.js 366 *********`);
+  console.log(data);
+  console.log(err);
+
+  if (err) {
+    console.error(`submissions.ctrl.js > 370: ${err}`);
+    return res.status(500).json({ message: err.message });
+  } else {
+    console.log(`************ submissions.ctrl.js 373 *********`);
+    if (data.success) {
+      console.log(`submissions.ctrl.js > 375: recaptcha score: ${data.score}`);
+      return res.status(200).json({ score: data.score });
+    } else {
+      console.error(`submissions.ctrl.js > 378: recaptcha failure`);
+      console.error(data["error-codes"][0]);
+      return res.status(500).json({ message: data["error-codes"][0] });
+    }
+  }
+
+  // return axios.post(
+  //   "https://www.google.com/recaptcha/api/siteverify",
+  //   {
+  //     form: {
+  //       secret: key,
+  //       response: token,
+  //       remoteip: ip
+  //     }
+  //   },
+  //   (err, httpResponse, body) => {
+  //     console.log(`************ submissions.ctrl.js 364 *********`);
+  //     if (err) {
+  //       console.error(`submissions.ctrl.js > 361: ${err}`);
+  //       return res.status(500).json({ message: err.message });
+  //     } else {
+  //       console.log(`************ submissions.ctrl.js 368 *********`);
+  //       console.log(body);
+  //       console.log(httpResponse);
+  //       const r = JSON.parse(body);
+  //       console.log(r);
+  //       if (r.success) {
+  //         console.log(`submissions.ctrl.js > 366: recaptcha score: ${r.score}`);
+  //         return res.status(200).json({ score: r.score });
+  //       } else {
+  //         console.error(`submissions.ctrl.js > 369: recaptcha failure`);
+  //         console.error(r["error-codes"][0]);
+  //         return res.status(500).json({ message: r["error-codes"][0] });
+  //       }
+  //     }
+  //   }
+  // );
 };
