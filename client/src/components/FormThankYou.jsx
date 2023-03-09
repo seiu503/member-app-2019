@@ -1,9 +1,30 @@
+import React from "react";
 import PropTypes from "prop-types";
 import { Translate } from "react-localize-redux";
+import { Box } from "@mui/material";
 
-const FormThankYou = props => {
+const FormThankYou = React.forwardRef((props, ref) => {
   return (
-    <div className={props.classes.message} data-testid="component-thankyou">
+    <Box
+      data-testid="component-thankyou"
+      sx={{
+        margin: "auto",
+        width: {
+          xs: "100%",
+          md: "50%"
+        },
+        textAlign: "center",
+        height: {
+          xs: "100%",
+          md: "50%"
+        },
+        lineHeight: "2em",
+        background: "white",
+        borderRadius: "4px",
+        padding: 60,
+        fontSize: "1.2em"
+      }}
+    >
       {!props.paymentRequired && (
         <p>
           <Translate id="infoSubmitted" />
@@ -19,9 +40,9 @@ const FormThankYou = props => {
       <a href="https://www.seiu503.org">
         <Translate id="clickToVisit" />
       </a>
-    </div>
+    </Box>
   );
-};
+});
 
 FormThankYou.propTypes = {
   classes: PropTypes.object

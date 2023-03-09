@@ -1152,7 +1152,7 @@ export class AppUnconnected extends Component {
       >
         <CssBaseline />
         <Recaptcha
-          ref={refCaptcha}
+          innerRef={refCaptcha}
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
           onResolved={this.onResolved}
         />

@@ -1,3 +1,4 @@
+import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
@@ -48,7 +49,7 @@ const styles = theme => ({
   }
 });
 
-export const CustomSnackbarContent = props => {
+export const CustomSnackbarContent = React.forwardRef((props, ref) => {
   const {
     classes,
     className,
@@ -64,6 +65,7 @@ export const CustomSnackbarContent = props => {
       className={classNames(classes[variant], className)}
       data-testid="component-custom-snackbar"
       aria-describedby="client-snackbar"
+      innerRef={ref}
       message={
         <span
           id="client-snackbar"
@@ -73,6 +75,7 @@ export const CustomSnackbarContent = props => {
           <Icon
             className={classNames(classes.icon, classes.iconVariant)}
             data-testid="message-icon"
+            innerRef={ref}
           />
           {message}
         </span>
@@ -86,6 +89,7 @@ export const CustomSnackbarContent = props => {
           className={classes.close}
           onClick={onClose}
           data-testid="icon-button"
+          innerRef={ref}
         >
           <CloseIcon className={classes.icon} data-testid="close-icon" />
         </IconButton>
@@ -93,7 +97,7 @@ export const CustomSnackbarContent = props => {
       {...other}
     />
   );
-};
+});
 
 CustomSnackbarContent.propTypes = {
   classes: PropTypes.object.isRequired,
