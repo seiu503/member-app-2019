@@ -9,7 +9,6 @@ const Alert = forwardRef(function Alert(props, ref) {
 });
 
 const BasicSnackbar = ({ open, onClose, variant, message }) => {
-  console.log(`open: ${open}, variant: ${variant}, message: ${message}`);
   const msg = (
     <span
       id="snackbar-message-id"

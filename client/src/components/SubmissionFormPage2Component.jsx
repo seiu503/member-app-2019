@@ -130,7 +130,10 @@ export class SubmissionFormPage2Component extends React.Component {
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
         console.log("updated SF contact");
-        props.openSnackbar("success", this.props.translate("snackBarSuccess"));
+        this.props.openSnackbar(
+          "success",
+          this.props.translate("snackBarSuccess")
+        );
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {

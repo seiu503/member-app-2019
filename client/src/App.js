@@ -348,8 +348,6 @@ export class AppUnconnected extends Component {
   }
 
   openSnackbar = async (variant, message) => {
-    console.log(this.state.snackbar);
-    console.log(variant, message);
     const newState = { ...this.state };
     newState.snackbar = {
       open: true,
@@ -357,8 +355,7 @@ export class AppUnconnected extends Component {
       message
     };
 
-    await this.setState({ ...newState });
-    console.log(this.state.snackbar);
+    this.setState({ ...newState });
   };
 
   closeSnackbar = (event, reason) => {
@@ -508,8 +505,8 @@ export class AppUnconnected extends Component {
 
   async onResolved() {
     const token = await this.recaptcha.current.getResponse();
-    console.log("reCaptcha Token");
-    console.log(token);
+    // console.log("reCaptcha Token");
+    // console.log(token);
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
@@ -706,7 +703,7 @@ export class AppUnconnected extends Component {
         returnValues.agencyNumber = 0;
       }
 
-      console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
+      // console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
 
       if (
         this.props.submission.formPage1 &&

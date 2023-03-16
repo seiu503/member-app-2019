@@ -133,11 +133,7 @@ export class WelcomeInfoUnconnected extends React.Component {
           >
             <Button
               type="button"
-              onClick={() => {
-                console.log("click");
-                this.props.handleError("testing error");
-                // setTimeout(this.props.handleTab(0), 1000);
-              }}
+              onClick={() => this.props.handleTab(0)}
               color="primary"
               variant="contained"
               sx={{

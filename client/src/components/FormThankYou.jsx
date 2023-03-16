@@ -33,7 +33,12 @@ const FormThankYou = React.forwardRef((props, ref) => {
         </p>
       )}
       {props.paymentRequired && (
-        <p className={props.classes.thankYouCopy}>
+        <p
+          style={{
+            lineHeight: 1.4,
+            textAlign: "left"
+          }}
+        >
           <Translate id="directPayNextSteps_2022" />
         </p>
       )}

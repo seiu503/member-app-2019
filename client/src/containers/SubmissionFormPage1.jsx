@@ -229,7 +229,6 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("verifyRecaptchaScore");
     // fetch token
     await this.props.recaptcha.current.execute();
 
@@ -243,7 +242,6 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      console.log("247");
       const result = await this.props.apiSubmission.verify(token).catch(err => {
         console.error(err);
         return this.props.handleError(this.props.translate("reCaptchaError"));
