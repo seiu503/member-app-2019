@@ -347,14 +347,18 @@ export class AppUnconnected extends Component {
     }
   }
 
-  openSnackbar = (variant, message) => {
-    this.setState({
-      snackbar: {
-        open: true,
-        variant,
-        message
-      }
-    });
+  openSnackbar = async (variant, message) => {
+    console.log(this.state.snackbar);
+    console.log(variant, message);
+    const newState = { ...this.state };
+    newState.snackbar = {
+      open: true,
+      variant,
+      message
+    };
+
+    await this.setState({ ...newState });
+    console.log(this.state.snackbar);
   };
 
   closeSnackbar = (event, reason) => {
@@ -1203,9 +1207,9 @@ export class AppUnconnected extends Component {
           />
         )}
         <BasicSnackbar
-          open={this.state.open}
+          open={this.state.snackbar.open}
           onClose={this.closeSnackbar}
-          severity={this.state.snackbar.variant}
+          variant={this.state.snackbar.variant}
           message={this.state.snackbar.message}
         />
         {loading && <Spinner />}

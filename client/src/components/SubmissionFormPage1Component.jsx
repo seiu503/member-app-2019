@@ -377,6 +377,8 @@ export class SubmissionFormPage1Component extends React.Component {
                 body={this.props.body}
                 renderBodyCopy={this.props.renderBodyCopy}
                 renderHeadline={this.props.renderHeadline}
+                handleError={this.props.handleError}
+                openSnackbar={this.props.openSnackbar}
                 style={
                   typeof this.props.tab !== "number"
                     ? { display: "block" }
@@ -407,6 +409,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
+                    handleError={this.props.handleError}
+                    openSnackbar={this.props.openSnackbar}
                   />
                 )}
                 {this.props.tab === 1 && (
@@ -418,6 +422,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderSelect={this.renderSelect}
                     renderTextField={this.renderTextField}
                     renderCheckbox={this.renderCheckbox}
+                    handleError={this.props.handleError}
+                    openSnackbar={this.props.openSnackbar}
                   />
                 )}
                 {(this.props.tab === 3 ||
@@ -435,6 +441,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     checkoff={checkoff}
                     capeObject={this.props.submission.cape}
                     donationFrequencyOnChange={this.donationFrequencyOnChange}
+                    handleError={this.props.handleError}
+                    openSnackbar={this.props.openSnackbar}
                   />
                 )}
               </div>
