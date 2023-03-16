@@ -13,7 +13,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import * as formElements from "./SubmissionFormElements";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import { validate } from "../utils/validators";
-import { openSnackbar } from "../containers/Notifier";
+// import { openSnackbar } from "../containers/Notifier";
 
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
@@ -116,12 +116,12 @@ export class SubmissionFormPage2Component extends React.Component {
         .createSubmission(cleanBody, true) // partial submission = true
         .catch(err => {
           console.error(err);
-          return formElements.handleError(err);
+          return this.props.handleError(err);
         });
     } else {
       await this.props.updateSubmission(id, cleanBody).catch(err => {
         console.error(err);
-        return formElements.handleError(err);
+        return this.props.handleError(err);
       });
     }
     console.log("CLEANBODY", cleanBody);
@@ -130,12 +130,12 @@ export class SubmissionFormPage2Component extends React.Component {
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
         console.log("updated SF contact");
-        openSnackbar("success", this.props.translate("snackBarSuccess"));
+        props.openSnackbar("success", this.props.translate("snackBarSuccess"));
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {
         console.error(err);
-        return formElements.handleError(err);
+        return this.props.handleError(err);
       });
   };
 

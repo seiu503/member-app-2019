@@ -1,7 +1,7 @@
 import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
-import { openSnackbar } from "../containers/Notifier";
+import { openSnackbar } from "../App";
 import { Translate } from "react-localize-redux";
 
 import {
@@ -74,13 +74,13 @@ export const tableIcons = {
   Delete: forwardRef((props, ref) => <DeleteForeverIcon {...props} ref={ref} />)
 };
 
-export const handleError = err => {
-  return openSnackbar(
-    "error",
-    err || "Sorry, something went wrong. Please try again."
-  );
-  // console.log(err);
-};
+// export const handleError = err => {
+//   return openSnackbar(
+//     "error",
+//     err || "Sorry, something went wrong. Please try again."
+//   );
+//   // console.log(err);
+// };
 
 export const removeFalsy = obj => {
   let newObj = {};

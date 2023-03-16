@@ -16,7 +16,7 @@ import queryString from "query-string";
 
 import { withStyles } from "@mui/styles";
 
-import { openSnackbar } from "./Notifier";
+// import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as utils from "../utils";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
@@ -27,8 +27,7 @@ import { withLocalize } from "react-localize-redux";
 
 import {
   stylesPage1,
-  findEmployerObject,
-  handleError
+  findEmployerObject
 } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
@@ -94,7 +93,7 @@ export class SubmissionFormPage1Container extends React.Component {
           const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
           const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
           window.history.replaceState(null, null, cleanUrl2);
-          return handleError(err);
+          return this.props.handleError(err);
         });
     }
   }
@@ -223,7 +222,7 @@ export class SubmissionFormPage1Container extends React.Component {
           })
           .catch(err => {
             console.error(err);
-            resolve(handleError(err));
+            resolve(this.props.handleError(err));
           });
       });
     }
@@ -247,7 +246,7 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log("247");
       const result = await this.props.apiSubmission.verify(token).catch(err => {
         console.error(err);
-        return handleError(this.props.translate("reCaptchaError"));
+        return this.props.handleError(this.props.translate("reCaptchaError"));
       });
 
       if (result) {
@@ -430,7 +429,7 @@ export class SubmissionFormPage1Container extends React.Component {
         .createCAPE(body)
         .catch(err => {
           console.error(err);
-          return handleError(err);
+          return this.props.handleError(err);
         });
 
       if (
@@ -438,7 +437,7 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.submission.error
       ) {
         console.log(this.props.submission.error);
-        return handleError(this.props.submission.error);
+        return this.props.handleError(this.props.submission.error);
       }
     } else {
       console.log("no CAPE body generated");
@@ -456,7 +455,9 @@ export class SubmissionFormPage1Container extends React.Component {
           // console.log(`score: ${score}`);
           if (!score || score <= 0.5) {
             // console.log(`recaptcha failed: ${score}`);
-            return handleError(this.props.translate("reCaptchaError"));
+            return this.props.handleError(
+              this.props.translate("reCaptchaError")
+            );
           }
         })
         .catch(err => {
@@ -490,7 +491,7 @@ export class SubmissionFormPage1Container extends React.Component {
         cape_errors += err;
         cape_status = "Error";
         console.error(err);
-        handleError(err);
+        this.props.handleError(err);
       });
 
     if (
@@ -500,7 +501,7 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_errors += this.props.submission.error;
       cape_status = "Error";
       // console.log(this.props.submission.error);
-      return handleError(this.props.submission.error);
+      return this.props.handleError(this.props.submission.error);
     } else if (sfCapeResult && sfCapeResult.type === "CREATE_SF_CAPE_SUCCESS") {
       cape_status = "Success";
     } else {
@@ -512,7 +513,7 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.capeAmountOther
     ).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
 
     const { id } = this.props.submission.cape;
@@ -532,7 +533,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // update CAPE record in postgres
     await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
       console.error(err);
-      // return handleError(err); // don't return to client here
+      // return this.props.handleError(err); // don't return to client here
     });
     // console.log(capeResult);
 
@@ -543,7 +544,10 @@ export class SubmissionFormPage1Container extends React.Component {
         `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
       );
     } else {
-      openSnackbar("success", "Thank you. Your CAPE submission was processed.");
+      this.props.openSnackbar(
+        "success",
+        "Thank you. Your CAPE submission was processed."
+      );
       this.props.history.push(`/thankyou/?cape=true`);
     }
   }
@@ -553,7 +557,9 @@ export class SubmissionFormPage1Container extends React.Component {
 
     if (!formValues.signature) {
       console.log(this.props.translate("provideSignatureError"));
-      return handleError(this.props.translate("provideSignatureError"));
+      return this.props.handleError(
+        this.props.translate("provideSignatureError")
+      );
     }
 
     // save legal language
@@ -562,7 +568,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // save partial submission (update later with demographics from p2)
     await this.props.createSubmission(formValues).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
 
     // move to next tab
@@ -575,7 +581,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.3) {
       console.log(`recaptcha failed: ${score}`);
-      return handleError(this.props.translate("reCaptchaError"));
+      return this.props.handleError(this.props.translate("reCaptchaError"));
     }
     // handle moving from tab 1 to tab 2:
 
@@ -594,7 +600,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // update existing contact, move to next tab
       await this.props.updateSFContact(formValues).catch(err => {
         console.error(err);
-        return handleError(err);
+        return this.props.handleError(err);
       });
       return this.props.changeTab(1);
     }
@@ -602,14 +608,14 @@ export class SubmissionFormPage1Container extends React.Component {
     // otherwise, lookup contact by first/last/email
     await this.props.lookupSFContact(formValues).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
 
     // if lookup was successful, update existing contact and move to next tab
     if (this.props.submission.salesforceId) {
       await this.props.updateSFContact(formValues).catch(err => {
         console.error(err);
-        return handleError(err);
+        return this.props.handleError(err);
       });
       return this.props.changeTab(1);
     }
@@ -618,7 +624,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // then move to next tab
     await this.props.createSFContact(formValues).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
     return this.props.changeTab(1);
   }
@@ -627,13 +633,13 @@ export class SubmissionFormPage1Container extends React.Component {
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
         console.error(err);
-        return handleError(err);
+        return this.props.handleError(err);
       });
     }
     if (newValue === 2) {
       return this.handleTab2().catch(err => {
         console.error(err);
-        return handleError(err);
+        return this.props.handleError(err);
       });
     } else {
       return this.props.changeTab(newValue);
@@ -678,7 +684,7 @@ export class SubmissionFormPage1Container extends React.Component {
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}
           clearSignature={this.clearSignature}
-          handleError={handleError}
+          handleError={this.props.handleError}
           handleCAPESubmit={this.handleCAPESubmit}
           suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}

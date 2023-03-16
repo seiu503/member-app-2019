@@ -17,7 +17,6 @@ import { LocalizeProvider } from "react-localize-redux";
 global.fetch = require("node-fetch");
 
 render(
-  // <StyledEngineProvider>
   <Provider store={store}>
     <BrowserRouter>
       <ScrollToTop>
@@ -29,10 +28,7 @@ render(
       </ScrollToTop>
     </BrowserRouter>
   </Provider>,
-  // </StyledEngineProvider>
   document.getElementById("root")
 );
 
-// render( (<App />),
-//   document.getElementById("root") );
 unregister();

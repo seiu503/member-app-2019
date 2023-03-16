@@ -27,6 +27,7 @@ import NoAccess from "./components/NoAccess";
 import NotFound from "./components/NotFound";
 import Logout from "./containers/Logout";
 import Login from "./components/Login";
+import BasicSnackbar from "./components/BasicSnackbar";
 // import Dashboard from "./containers/Dashboard";
 import TextInputForm from "./containers/TextInputForm";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
@@ -36,7 +37,7 @@ import Notifier from "./containers/Notifier";
 import Spinner from "./components/Spinner";
 import UserForm from "./containers/UserForm";
 import {
-  handleError,
+  // handleError,
   formatBirthdate,
   findEmployerObject,
   formatSFDate,
@@ -44,7 +45,7 @@ import {
   removeFalsy,
   languageMap
 } from "./components/SubmissionFormElements";
-import { openSnackbar } from "./containers/Notifier";
+// import { openSnackbar } from "./containers/Notifier";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
@@ -195,7 +196,12 @@ export class AppUnconnected extends Component {
       },
       image: {},
       tab: undefined,
-      userSelectedLanguage: ""
+      userSelectedLanguage: "",
+      snackbar: {
+        open: false,
+        variant: "info",
+        message: null
+      }
     };
     this.props.addTranslation(globalTranslations);
     this.setRedirect = this.setRedirect.bind(this);
@@ -211,6 +217,8 @@ export class AppUnconnected extends Component {
     this.changeTab = this.changeTab.bind(this);
     this.resubmitSubmission = this.resubmitSubmission.bind(this);
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
+    this.openSnackbar = this.openSnackbar.bind(this);
+    this.handleError = this.handleError.bind(this);
     this.recaptcha = refCaptcha;
   }
 
@@ -338,6 +346,36 @@ export class AppUnconnected extends Component {
       this.props.setActiveLanguage(values.lang);
     }
   }
+
+  openSnackbar = (variant, message) => {
+    this.setState({
+      snackbar: {
+        open: true,
+        variant,
+        message
+      }
+    });
+  };
+
+  closeSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    this.setState({
+      snackbar: {
+        open: false
+      }
+    });
+  };
+
+  handleError = err => {
+    return this.openSnackbar(
+      "error",
+      err || "Sorry, something went wrong. Please try again."
+    );
+    // console.log(err);
+  };
 
   updateLanguage = e => {
     // console.log("updateLanguage");
@@ -522,12 +560,12 @@ export class AppUnconnected extends Component {
           this.props.submission.error
         ) {
           console.log(this.props.submission.error);
-          return handleError(this.props.submission.error);
+          return this.handleError(this.props.submission.error);
         }
       })
       .catch(err => {
         console.error(err);
-        return handleError(err);
+        return this.handleError(err);
       });
   }
 
@@ -550,7 +588,7 @@ export class AppUnconnected extends Component {
       };
       await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
         console.error(err);
-        return handleError(err);
+        return this.handleError(err);
       });
 
       // if nothing found on lookup, need to create new contact
@@ -561,7 +599,7 @@ export class AppUnconnected extends Component {
           })
           .catch(err => {
             console.error(err);
-            return handleError(err);
+            return this.handleError(err);
           });
       }
     }
@@ -584,7 +622,7 @@ export class AppUnconnected extends Component {
     console.log("533");
     this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.handleError(err);
     });
   }
 
@@ -884,13 +922,13 @@ export class AppUnconnected extends Component {
             this.props.submission.error ||
             "An error occurred while saving your Submission";
           console.error(err);
-          return handleError(err);
+          return this.handleError(err);
         }
       })
       .catch(err => {
         console.log("869");
         console.error(err);
-        return handleError(err);
+        return this.handleError(err);
       });
 
     console.log("874");
@@ -928,14 +966,14 @@ export class AppUnconnected extends Component {
                 this.props.submission.error
               ) {
                 console.log(this.props.submission.error);
-                return handleError(this.props.submission.error);
+                return this.handleError(this.props.submission.error);
               } else {
                 this.changeTab(2);
               }
             })
             .catch(err => {
               console.error(err);
-              return handleError(err);
+              return this.handleError(err);
             });
         }
       })
@@ -946,7 +984,7 @@ export class AppUnconnected extends Component {
           err
         );
         console.error(err);
-        return handleError(err);
+        return this.handleError(err);
       });
   }
 
@@ -991,7 +1029,7 @@ export class AppUnconnected extends Component {
 
     await this.props.apiSF.createSFContact(body).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.handleError(err);
     });
   }
 
@@ -1037,7 +1075,7 @@ export class AppUnconnected extends Component {
 
     await this.props.apiSF.updateSFContact(id, body).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.handleError(err);
     });
   }
 
@@ -1069,7 +1107,7 @@ export class AppUnconnected extends Component {
     console.log(submissionData);
     const resubmitResult = await this.props.apiSF
       .createSFOMA(submissionData)
-      .catch(err => handleError(err));
+      .catch(err => this.handleError(err));
     if (
       !resubmitResult ||
       !resubmitResult.type ||
@@ -1081,7 +1119,7 @@ export class AppUnconnected extends Component {
         this.props.submission.error
       );
     } else if (resubmitResult.type === "CREATE_SF_OMA_SUCCESS") {
-      openSnackbar(
+      this.openSnackbar(
         "success",
         `Resubmitted submission from ${submissionData.first_name} ${submissionData.last_name}.`
       );
@@ -1098,12 +1136,12 @@ export class AppUnconnected extends Component {
             this.props.submission.error
           ) {
             console.log(this.props.submission.error);
-            return handleError(this.props.submission.error);
+            return this.handleError(this.props.submission.error);
           }
         })
         .catch(err => {
           console.error(err);
-          return handleError(err);
+          return this.handleError(err);
         });
       const token = this.props.appState.authToken;
       this.props.apiSubmission.getAllSubmissions(token);
@@ -1164,7 +1202,12 @@ export class AppUnconnected extends Component {
             userSelectedLanguage={this.state.userSelectedLanguage}
           />
         )}
-        <Notifier />
+        <BasicSnackbar
+          open={this.state.open}
+          onClose={this.closeSnackbar}
+          severity={this.state.snackbar.variant}
+          message={this.state.snackbar.message}
+        />
         {loading && <Spinner />}
         <main id="main" ref={this.main_ref}>
           <Box
@@ -1210,6 +1253,8 @@ export class AppUnconnected extends Component {
                     createSFContact={this.createSFContact}
                     updateSFContact={this.updateSFContact}
                     changeTab={this.changeTab}
+                    handleError={this.handleError}
+                    openSnackbar={this.openSnackbar}
                     {...routeProps}
                   />
                 )}
@@ -1330,6 +1375,8 @@ export class AppUnconnected extends Component {
                     prepForSubmission={this.prepForSubmission}
                     createSFContact={this.createSFContact}
                     updateSFContact={this.updateSFContact}
+                    handleError={this.handleError}
+                    openSnackbar={this.openSnackbar}
                     {...routeProps}
                   />
                 )}
