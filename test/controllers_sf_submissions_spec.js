@@ -1712,7 +1712,7 @@ suite("sumissions.ctrl.js", function() {
       const res = mockRes();
       const requestStub = sinon
         .stub(axios, "post")
-        .yields(null, null, JSON.stringify({ success: true, score: 0.9 }));
+        .returns({ err: null, data: { success: true, score: 0.9 } });
 
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
@@ -1733,7 +1733,7 @@ suite("sumissions.ctrl.js", function() {
       const res = mockRes();
       const requestStub = sinon
         .stub(axios, "post")
-        .yields(new Error("recaptcha error"), null, null);
+        .returns({ err: new Error("recaptcha error"), data: null });
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });
@@ -1753,11 +1753,10 @@ suite("sumissions.ctrl.js", function() {
       const res = mockRes();
       const requestStub = sinon
         .stub(axios, "post")
-        .yields(
-          null,
-          null,
-          JSON.stringify({ "error-codes": ["the error code"] })
-        );
+        .returns({
+          err: null,
+          data: { success: false, "error-codes": ["the error code"] }
+        });
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });
