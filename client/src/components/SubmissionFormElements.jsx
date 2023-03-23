@@ -1494,7 +1494,13 @@ export const renderSelect = ({
         error={!!(error && touched)}
         {...custom}
         required={touched && error === "Required"}
-        style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
+        style={
+          short
+            ? { width: 80 }
+            : mobile
+            ? { width: "100%" }
+            : { marginBottom: "30px" }
+        }
       >
         <InputLabel htmlFor={name}>
           {inputLabelTranslateHelper(id, label, translate)}

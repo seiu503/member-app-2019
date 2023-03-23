@@ -143,17 +143,15 @@ export const Tab1 = props => {
             )}
           <FormGroup
             row
-            classes={{
-              root: {
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: {
-                  xs: "wrap",
-                  sm: "nowrap"
-                },
-                justifyContent: "space-between"
-                // classes.formGroup2Col
-              }
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: {
+                xs: "wrap",
+                sm: "nowrap"
+              },
+              justifyContent: "space-between"
+              // classes.formGroup2Col
             }}
           >
             <Field
@@ -182,9 +180,9 @@ export const Tab1 = props => {
           <FormLabel
             // className={classes.formLabel}
             sx={{
-              margin: "10px 0 10px",
-              fontSize: "20px",
-              color: "black"
+              margin: "10px 0 10px"
+              // fontSize: "20px",
+              // color: "black"
             }}
             component="legend"
           >
@@ -192,15 +190,13 @@ export const Tab1 = props => {
           </FormLabel>
           <FormGroup
             row
-            classes={{
-              root: {
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "nowrap",
-                justifyContent: "space-between",
-                width: "280px"
-                //classes.formGroup2ColShort
-              }
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "nowrap",
+              justifyContent: "space-between",
+              width: "280px"
+              //classes.formGroup2ColShort
             }}
           >
             <Field
@@ -254,9 +250,9 @@ export const Tab1 = props => {
           <FormLabel
             // className={classes.formLabel}
             sx={{
-              margin: "10px 0 10px",
-              fontSize: "20px",
-              color: "black"
+              margin: "10px 0 10px"
+              // fontSize: "20px",
+              // color: "black"
             }}
             component="legend"
           >
@@ -275,25 +271,24 @@ export const Tab1 = props => {
           <FormHelperText
             // className={classes.formHelperText}
             sx={{
-              margin: "0 0 10px",
-              fontSize: "15px"
+              margin: "-30px 0 40px",
+              fontSize: ".75rem"
             }}
           >
             <Translate id="homeStreetHint" />
           </FormHelperText>
           <FormGroup
             row
-            classes={{
-              root: {
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: {
-                  xs: "wrap",
-                  sm: "nowrap"
-                },
-                justifyContent: "space-between"
-                // classes.formGroup2Col
-              }
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: {
+                xs: "wrap",
+                sm: "nowrap"
+              },
+              justifyContent: "space-between",
+              marginBottom: "30px"
+              // classes.formGroup2Col
             }}
           >
             <Field
@@ -344,8 +339,8 @@ export const Tab1 = props => {
           <FormHelperText
             // className={classes.formHelperText}
             sx={{
-              margin: "0 0 10px",
-              fontSize: "15px"
+              margin: "-30px 0 40px",
+              fontSize: ".75rem"
             }}
           >
             <Translate id="homeEmailHint" />
@@ -363,8 +358,8 @@ export const Tab1 = props => {
             <FormHelperText
               // className={classes.formHelperText}
               sx={{
-                margin: "0 0 10px",
-                fontSize: "15px"
+                margin: "-30px 0 10px",
+                fontSize: ".75rem"
               }}
             >
               <Translate id="phoneLegalLanguage" />
