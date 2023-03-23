@@ -8,7 +8,13 @@ import {
 import { connect } from "react-redux";
 import { Translate } from "react-localize-redux";
 
-import { FormLabel, FormHelperText, FormGroup, Button } from "@mui/material";
+import {
+  FormLabel,
+  FormHelperText,
+  FormGroup,
+  Button,
+  Box
+} from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
 
@@ -22,13 +28,30 @@ const {
   monthList,
   languageOptions,
   dateOptions,
-  yearOptions
+  yearOptions,
+  classesPage1
 } = formElements;
+
+const input2col = {
+  width: {
+    xs: "100%",
+    sm: "48%"
+  },
+  display: {
+    xs: "block",
+    sm: "flex" // ????
+  }
+  // [theme.breakpoints.down("xs")]: {
+  //   width: "100%",
+  //   display: "block"
+  // }
+  // classes.input2col
+};
 
 export const Tab1 = props => {
   const {
     onSubmit,
-    classes,
+    // classes,
     employerTypesList,
     employerList,
     updateEmployersPicklist,
@@ -40,6 +63,8 @@ export const Tab1 = props => {
     width,
     verifyCallback
   } = props;
+
+  const classes = classesPage1;
 
   const employerNameOnChange = () => {
     handleEmployerChange();
@@ -53,13 +78,30 @@ export const Tab1 = props => {
   const matches = useMediaQuery("(min-width:450px)");
 
   return (
-    <div data-testid="component-tab1" className={classes.sectionContainer}>
+    <Box
+      data-testid="component-tab1"
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        background: "white",
+        padding: {
+          xs: "15px 15px 40px 15px",
+          sm: "20px 20px 40px 20px"
+        },
+        borderRadius: "0 0 4px 4px"
+      }}
+    >
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
-        className={classes.form}
+        // className={classes.form}
       >
-        <div className={classes.formSection}>
+        <Box
+          // className={classes.formSection}
+          sx={{
+            paddingTop: "20px"
+          }}
+        >
           <Field
             data-testid="select-employer-type"
             label="Employer Type"
@@ -99,7 +141,21 @@ export const Tab1 = props => {
                 }}
               />
             )}
-          <FormGroup row classes={{ root: classes.formGroup2Col }}>
+          <FormGroup
+            row
+            classes={{
+              root: {
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: {
+                  xs: "wrap",
+                  sm: "nowrap"
+                },
+                justifyContent: "space-between"
+                // classes.formGroup2Col
+              }
+            }}
+          >
             <Field
               twocol
               mobile={!matches}
@@ -107,7 +163,7 @@ export const Tab1 = props => {
               name="firstName"
               id="firstName"
               type="text"
-              classes={{ input2col: classes.input2col }}
+              classes={{ input2col }}
               component={renderTextField}
             />
 
@@ -117,16 +173,36 @@ export const Tab1 = props => {
               name="lastName"
               id="lastName"
               label="Last Name"
-              classes={{ input2col: classes.input2col }}
+              classes={{ input2col }}
               component={renderTextField}
               type="text"
             />
           </FormGroup>
 
-          <FormLabel className={classes.formLabel} component="legend">
+          <FormLabel
+            // className={classes.formLabel}
+            sx={{
+              margin: "10px 0 10px",
+              fontSize: "20px",
+              color: "black"
+            }}
+            component="legend"
+          >
             <Translate id="birthDate" />
           </FormLabel>
-          <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
+          <FormGroup
+            row
+            classes={{
+              root: {
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "nowrap",
+                justifyContent: "space-between",
+                width: "280px"
+                //classes.formGroup2ColShort
+              }
+            }}
+          >
             <Field
               label="Month"
               name="mm"
@@ -175,7 +251,15 @@ export const Tab1 = props => {
             options={languageOptions}
           />
 
-          <FormLabel className={classes.formLabel} component="legend">
+          <FormLabel
+            // className={classes.formLabel}
+            sx={{
+              margin: "10px 0 10px",
+              fontSize: "20px",
+              color: "black"
+            }}
+            component="legend"
+          >
             <Translate id="address">Address</Translate>
           </FormLabel>
 
@@ -188,13 +272,29 @@ export const Tab1 = props => {
             component={renderTextField}
           />
 
-          <FormHelperText className={classes.formHelperText}>
+          <FormHelperText
+            // className={classes.formHelperText}
+            sx={{
+              margin: "0 0 10px",
+              fontSize: "15px"
+            }}
+          >
             <Translate id="homeStreetHint" />
           </FormHelperText>
           <FormGroup
-            className={classes.formGroup}
             row
-            classes={{ root: classes.formGroup2Col }}
+            classes={{
+              root: {
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: {
+                  xs: "wrap",
+                  sm: "nowrap"
+                },
+                justifyContent: "space-between"
+                // classes.formGroup2Col
+              }
+            }}
           >
             <Field
               label="Home City"
@@ -241,7 +341,13 @@ export const Tab1 = props => {
             component={renderTextField}
           />
 
-          <FormHelperText className={classes.formHelperText}>
+          <FormHelperText
+            // className={classes.formHelperText}
+            sx={{
+              margin: "0 0 10px",
+              fontSize: "15px"
+            }}
+          >
             <Translate id="homeEmailHint" />
           </FormHelperText>
           <FormGroup>
@@ -254,7 +360,13 @@ export const Tab1 = props => {
               component={renderTextField}
             />
 
-            <FormHelperText className={classes.formHelperText}>
+            <FormHelperText
+              // className={classes.formHelperText}
+              sx={{
+                margin: "0 0 10px",
+                fontSize: "15px"
+              }}
+            >
               <Translate id="phoneLegalLanguage" />
             </FormHelperText>
 
@@ -268,21 +380,40 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
-          <div className={classes.buttonWrap}>
+          <Box
+            // className={classes.buttonWrap}
+            sx={{
+              width: "100%",
+              padding: "0 20px 40px 0",
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "20px"
+            }}
+          >
             <Button
               type="submit"
               color="primary"
-              className={`${classes.next} g-recaptcha`}
+              className={`g-recaptcha`}
+              sx={{
+                textTransform: "none",
+                fontSize: "1.3rem",
+                padding: "6px 20px",
+                color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+                "&:hover": {
+                  backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+                }
+                // classes.next
+              }}
               variant="contained"
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
             >
               <Translate id="next">Next</Translate>
             </Button>
-          </div>
-        </div>
+          </Box>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 

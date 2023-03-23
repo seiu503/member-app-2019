@@ -66,7 +66,7 @@ export const CAPE = props => {
   const community = formValues.employerType === "community member";
   const matches = useMediaQuery("(min-width:450px)");
   return (
-    <div data-testid="component-cape" className={classes.sectionContainer}>
+    <div data-testid="component-cape">
       {capeOpen && (
         <AlertDialog
           open={capeOpen}

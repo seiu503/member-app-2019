@@ -1,9 +1,12 @@
 import React from "react";
+// import { render } from '../../../setupTests.js';
+import { render } from "@testing-library/react";
 import { shallow } from "enzyme";
 import moment from "moment";
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
-
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../../../styles/theme";
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
 let wrapper;
@@ -122,7 +125,8 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {}
+    payment: {},
+    employerObjects: [{ Name: "" }]
   },
   initialValues: {
     mm: "",
@@ -179,10 +183,32 @@ const defaultProps = {
   }
 };
 
+// const setup = (props = {}) => {
+//   const setupProps = { ...defaultProps, ...props };
+//   return render(<SubmissionFormPage1Container {...setupProps} />);
+// };
+
+// const setup = (props = {}) => {
+//   const setupProps = { ...defaultProps, ...props };
+//   return render(
+//     <ThemeProvider theme={theme}>
+//       <SubmissionFormPage1Container {...setupProps} />
+//     </ThemeProvider>
+//     )
+// };
+
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
   return shallow(<SubmissionFormPage1Container {...setupProps} />);
 };
+
+// const setup = (props = {}) => {
+//   const setupProps = { ...defaultProps, ...props };
+//   return shallow(
+//     <ThemeProvider theme={theme}>
+//       <SubmissionFormPage1Container {...setupProps} />
+//     </ThemeProvider>);
+// };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
@@ -193,7 +219,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("getCAPEBySFId", () => {
-    test("`getCAPEBySFId` calls getCAPEBySFId prop function", async function() {
+    test.only("`getCAPEBySFId` calls getCAPEBySFId prop function", async function() {
       const getCAPEBySFIdSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -206,7 +232,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSubmission: {
           getCAPEBySFId: getCAPEBySFIdSuccess
-        }
+        },
+        handleError: jest.fn()
       };
       wrapper = setup(props);
 
@@ -249,7 +276,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
     test("`getCAPEBySFId` handles error if prop function throws", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
       const getCAPEBySFIdError = jest
         .fn()
         .mockImplementation(() =>
@@ -271,14 +297,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .instance()
         .getCAPEBySFId()
         .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
+          expect(props.handleError.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });
 
     test("`getCAPEBySFId` handles error if prop function fails", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
       const getCAPEBySFIdError = jest
         .fn()
         .mockImplementation(() =>
@@ -301,7 +326,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .getCAPEBySFId()
         .then(() => {
           // this error is not returned to client
-          // expect(formElements.handleError.mock.calls.length).toBe(1);
+          // expect(handleError.mock.calls.length).toBe(1);
         })
         .catch(err => console.log(err));
     });

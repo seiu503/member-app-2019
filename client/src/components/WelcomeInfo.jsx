@@ -30,9 +30,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             md: "40px auto",
             lg: 0
           },
-          maxWidth: {
-            lg: "50%"
-          },
+          maxWidth: {},
           color: "primary.main" // "#2c0940", // dark purple
         }}
       >

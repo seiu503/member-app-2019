@@ -8,16 +8,8 @@ import "jest-canvas-mock";
 
 import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "../containers/SubmissionFormPage2";
-import Dashboard from "../containers/Dashboard";
-import NotFound from "../components/NotFound";
-import NoAccess from "../components/NoAccess";
 import FormThankYou from "../components/FormThankYou";
-import Login from "../components/Login";
-import UserForm from "../containers/UserForm";
 import * as utils from "../utils/index";
-import ContentLibrary from "../containers/ContentLibrary";
-import TextInputForm from "../containers/TextInputForm";
-import Logout from "../containers/Logout";
 import * as formElements from "../components/SubmissionFormElements";
 import { defaultWelcomeInfo } from "../utils/index";
 

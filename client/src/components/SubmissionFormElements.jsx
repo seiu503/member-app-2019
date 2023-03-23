@@ -287,9 +287,10 @@ export const employerTypeMap = {
   "Private Homecare": "Private Homecare Agency",
   "Community Members": "Community Member",
   "COMMUNITY MEMBERS": "Community Member",
-  "SEIU LOCAL 503 OPEU": ""
+  "SEIU LOCAL 503 OPEU": "",
   // "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
   // removing staff from picklist options
+  test: "TEST"
 };
 
 // helper function for reverse lookup from above object
@@ -401,7 +402,6 @@ export const stylesPage1 = theme => ({
       margin: "auto"
     }
   },
-  sectionContainer: {},
   head: {
     color: theme.palette.primary.light,
     fontSize: "2em",
@@ -773,6 +773,409 @@ export const stylesPage1 = theme => ({
     }
   }
 });
+export const classesPage1 = {
+  // formContainer: {
+  //   padding: "80px 0 140px 0",
+  //   margin: "auto 0 auto 50%",
+  //   [theme.breakpoints.down("xl")]: {
+  //     margin: "44px 0 auto 50%"
+  //   },
+  //   [theme.breakpoints.down("lg")]: {
+  //     padding: "20px 0"
+  //   },
+  //   [theme.breakpoints.down("md")]: {
+  //     margin: "44px auto"
+  //   },
+  //   [theme.breakpoints.only("xs")]: {
+  //     width: "100vw",
+  //     position: "absolute",
+  //     left: 0,
+  //     top: 0,
+  //     margin: "36px auto"
+  //   }
+  // },
+  // formContainerEmbed: {
+  //   padding: "80px 0 140px 0",
+  //   margin: "auto",
+  //   [theme.breakpoints.only("xs")]: {
+  //     width: "100vw",
+  //     position: "absolute",
+  //     left: 0,
+  //     top: 0,
+  //     margin: "auto"
+  //   }
+  // },
+  // head: {
+  //   color: theme.palette.primary.light,
+  //   fontSize: "2em",
+  //   fontWeight: 700,
+  //   lineHeight: 1.1,
+  //   marginBottom: 15
+  // },
+  // form: {
+  //   maxWidth: 600,
+  //   margin: "auto",
+  //   background: "white",
+  //   padding: "20px 20px 40px 20px",
+  //   borderRadius: "0 0 4px 4px",
+  //   [theme.breakpoints.only("xs")]: {
+  //     padding: "15px 15px 40px 15px"
+  //   }
+  // },
+  buttonWrap: {
+    width: "100%",
+    padding: "0 20px 40px 0",
+    display: "flex",
+    justifyContent: "flex-end",
+    marginTop: "20px"
+  },
+  buttonWrapTab3: {
+    width: "100%",
+    padding: "40px 20px 0 0",
+    display: "flex",
+    justifyContent: "flex-start"
+  },
+  buttonWrapCAPE: {
+    width: "100%",
+    padding: "0 20px 40px 0",
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  // next: {
+  //   textTransform: "none",
+  //   fontSize: "1.3rem",
+  //   padding: "6px 20px",
+  //   color: theme.palette.secondary.main,
+  //   "&:hover": {
+  //     backgroundColor: theme.palette.primary.light
+  //   }
+  // },
+  // nextSmall: {
+  //   textTransform: "none",
+  //   fontSize: ".8rem",
+  //   padding: "3px 10px",
+  //   color: theme.palette.secondary.light,
+  //   "&:hover": {
+  //     backgroundColor: theme.palette.primary.light
+  //   }
+  // },
+  // backSmall: {
+  //   textTransform: "none",
+  //   fontSize: ".8rem",
+  //   padding: "3px 10px",
+  //   color: theme.palette.secondary.light,
+  //   "&:hover": {
+  //     backgroundColor: theme.palette.primary.light
+  //   }
+  // },
+  verticalGroup: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column"
+  },
+  horizGroup: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  // back: {
+  //   textTransform: "none",
+  //   fontSize: "1.3rem",
+  //   padding: "6px 20px",
+  //   color: theme.palette.secondary.main,
+  //   "&:hover": {
+  //     backgroundColor: theme.palette.primary.light
+  //   },
+  //   marginRight: 40
+  // },
+  formSection: {
+    paddingTop: "20px"
+  },
+  group: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  groupLeft: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "flex-start"
+  },
+  select: {
+    width: "100%",
+    margin: "0 0 30px 0"
+  },
+  selectRight: {
+    textAlign: "right",
+    width: "100%",
+    margin: "0 0 30px 0",
+    direction: "rtl"
+  },
+  failedText: {
+    color: "red"
+  },
+  formButton: {
+    width: "100%",
+    padding: "20px",
+    margin: "25px 0 40px"
+  },
+  clearButton: {
+    width: "100%",
+    padding: "10px",
+    margin: "0"
+  },
+  formControl: {
+    width: "100%"
+  },
+  formControlLabel: {
+    width: "100%"
+  },
+  formControlDate: {
+    width: "15%",
+    minWidth: "80px"
+  },
+  formLabel: {
+    margin: "10px 0"
+  },
+  formHelperText: {
+    margin: "-25px 0 30px 0"
+  },
+  checkboxErrorText: {
+    margin: "-10px 0 10px 0"
+  },
+  formGroup: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start"
+  },
+  // formGroup2Col: {
+  //   display: "flex",
+  //   flexDirection: "row",
+  //   flexWrap: "nowrap",
+  //   justifyContent: "space-between",
+  //   [theme.breakpoints.down("xs")]: {
+  //     flexWrap: "wrap"
+  //   }
+  // },
+  formGroup2ColShort: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
+    width: "280px"
+  },
+  formGroupTopMargin: {
+    marginTop: "30px"
+  },
+  input: {
+    width: "100%",
+    margin: "0 0 30px 0"
+  },
+  // input2Col: {
+  //   width: "48%",
+  //   [theme.breakpoints.down("xs")]: {
+  //     width: "100%",
+  //     display: "block"
+  //   }
+  // },
+  controlCheckbox: {
+    margin: "-35px 0 0 0"
+  },
+  controlCheckboxMargin: {
+    margin: "-35px 0 40px 0"
+  },
+  controlCheckboxMarginBold: {
+    margin: "-35px 0 40px 0",
+    fontWeight: 700
+  },
+  controlCheckboxMarginBoldSpacer: {
+    margin: "0 0",
+    fontWeight: 700
+  },
+  formHelperTextLegal: {
+    margin: "-50px 0 50px 0",
+    fontSize: "14px",
+    lineHeight: "1.2em"
+  },
+  sigBox: {
+    border: "1px solid lightgrey",
+    "border-radius": "5px",
+    margin: "0 0 32px",
+    width: "100%"
+  },
+  buttonLink: {
+    background: "none",
+    border: "none",
+    padding: "0",
+    font: " inherit",
+    "border-bottom": "1px solid blue",
+    cursor: " pointer",
+    color: "blue"
+  },
+  horizRadio: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  horizRadioCenter: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    margin: "auto",
+    textAlign: "center"
+  },
+  horizRadioBold: {
+    fontWeight: 700
+  },
+  // subhead: {
+  //   color: theme.palette.primary.light,
+  //   fontSize: "1.5em",
+  //   fontWeight: 400,
+  //   paddingBottom: 20
+  // },
+  paymentCopy: {
+    paddingBottom: "1.5em"
+  },
+  // card: {
+  //   display: "flex",
+  //   [theme.breakpoints.down("xs")]: {
+  //     flexDirection: "column"
+  //   }
+  // },
+  details: {
+    display: "flex",
+    flexDirection: "column"
+  },
+  content: {
+    flex: "1 0 auto"
+  },
+  cover: {
+    minWidth: "200px",
+    minHeight: "200px"
+  },
+  // cardHead: {
+  //   color: theme.palette.primary.light,
+  //   fontWeight: 400,
+  //   paddingBottom: 10
+  // },
+  // quoteAttr: {
+  //   color: theme.palette.primary.light,
+  //   fontStyle: "italic",
+  //   paddingTop: 10
+  // },
+  pullQuote: {
+    textIndent: "20px"
+  },
+  suggestedAmounts: {
+    display: "block",
+    flexWrap: "wrap",
+    margin: "0 -1.666666666666667% 13px",
+    paddingTop: "20px",
+    marginTop: "15px",
+    backgroundColor: "#FBE796"
+  },
+  suggestedAmountBoxes: {
+    flexDirection: "row",
+    flexWrap: "nowrap"
+  },
+  suggestedAmountBox: {
+    width: "21%",
+    height: "60px",
+    margin: "13px 1.666666666666667% 0",
+    display: "inline-block"
+  },
+  boxLabel: {
+    height: "100%",
+    fontSize: 20,
+    lineHeight: "60px",
+    fontWeight: 300,
+    color: "#4C4C4C",
+    textAlign: "center",
+    border: "1px solid #C4C3C3",
+    borderRadius: "3px",
+    display: "block",
+    transition:
+      "color 0.1s, background-color 0.1s, border-color 0.1s, font-weight 0.1s",
+    position: "relative",
+    cursor: "pointer",
+    margin: 0
+  },
+  boxInput: {
+    float: "left",
+    opacity: 0,
+    width: 0,
+    height: 0,
+    position: "absolute",
+    padding: 0,
+    margin: 0,
+    border: 0,
+    "&:focus + label": {
+      outline: "rgba(83,16,120, 0.5) auto 3px"
+    },
+    "&:checked + label": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: "2px",
+      fontWeight: 700
+    },
+    "&:checked + $boxLabel": {
+      borderColor: "#531078",
+      color: "#531078",
+      borderWidth: "2px",
+      fontWeight: 700
+    }
+  },
+  capeAmount: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%"
+  },
+  boxCurrency: {
+    fontSize: 14,
+    lineHeight: "14px",
+    fontWeight: 400,
+    verticalAlign: "text-top",
+    position: "absolute",
+    top: 22,
+    left: -22,
+    whiteSpace: "nowrap"
+  },
+  boxItem: {
+    position: "absolute",
+    height: "100%"
+  },
+  boxAmount: {
+    position: "relative",
+    left: -10
+  },
+  radioLabel: {
+    textAlign: "center"
+  },
+  bodyCenter: {
+    width: "100%",
+    textAlign: "center"
+  },
+  // capeRadioLabel: {
+  //   fontSize: "1.2em",
+  //   color: theme.palette.primary.light,
+  //   fontWeight: 700,
+  //   textAlign: "center"
+  // },
+  checkboxLabelBold: {
+    "& span": {
+      fontWeight: "700 !important"
+    }
+  },
+  checkboxLabelMini: {
+    "& span": {
+      fontWeight: "400 !important",
+      fontSize: 14
+    }
+  }
+};
 export const stylesPage2 = theme => ({
   root: {
     margin: "80px 0"
@@ -1086,7 +1489,8 @@ export const renderSelect = ({
     {({ translate }) => (
       <FormControl
         variant="outlined"
-        className={classes[formControlName] || classes.formControl}
+        // className={classes[formControlName] || classes.formControl}
+        sx={classes[formControlName] || classes.formControl}
         error={!!(error && touched)}
         {...custom}
         required={touched && error === "Required"}

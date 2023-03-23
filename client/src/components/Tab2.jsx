@@ -28,7 +28,7 @@ export const Tab2 = props => {
     formValues.employerType.toLowerCase() === "community member";
 
   return (
-    <div data-testid="component-tab2" className={classes.sectionContainer}>
+    <div data-testid="component-tab2">
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"

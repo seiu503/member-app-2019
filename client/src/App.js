@@ -11,7 +11,6 @@ import moment from "moment";
 import { Translate } from "react-localize-redux";
 
 import { Typography, CssBaseline, Box } from "@mui/material";
-import { withStyles } from "@mui/styles";
 
 import * as Actions from "./store/actions";
 import * as apiContentActions from "./store/actions/apiContentActions";
@@ -23,19 +22,12 @@ import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
 import FormThankYou from "./components/FormThankYou";
-import NoAccess from "./components/NoAccess";
 import NotFound from "./components/NotFound";
-import Logout from "./containers/Logout";
-import Login from "./components/Login";
 import BasicSnackbar from "./components/BasicSnackbar";
-// import Dashboard from "./containers/Dashboard";
-import TextInputForm from "./containers/TextInputForm";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
 import Notifier from "./containers/Notifier";
-// import ContentLibrary from "./containers/ContentLibrary";
 import Spinner from "./components/Spinner";
-import UserForm from "./containers/UserForm";
 import {
   // handleError,
   formatBirthdate,
@@ -53,108 +45,6 @@ import globalTranslations from "./translations/globalTranslations";
 import welcomeInfo from "./translations/welcomeInfo.json";
 
 const refCaptcha = React.createRef();
-
-// const styles = theme => ({
-//   root: {
-//     flexGrow: 1,
-//     boxSizing: "border-box"
-//   },
-//   notFound: {
-//     height: "80vh",
-//     width: "auto",
-//     marginTop: "-60px"
-//   },
-//   container: {
-//     maxWidth: 1200,
-//     margin: "auto",
-//     height: "100%",
-//     minHeight: "100vh",
-//     display: "flex",
-//     flexDirection: "column",
-//     justifyContent: "center"
-//   },
-//   appRoot: {
-//     width: "100vw",
-//     height: "100%",
-//     minHeight: "80vh",
-//     backgroundAttachment: "fixed",
-//     backgroundPosition: "bottom",
-//     [theme.breakpoints.down("sm")]: {
-//       backgroundImage: "none"
-//     },
-//     [theme.breakpoints.up("xl")]: {
-//       backgroundSize: "cover"
-//     }
-//   },
-//   message: {
-//     margin: "auto",
-//     width: "50%",
-//     textAlign: "center",
-//     height: "50%",
-//     [theme.breakpoints.down("sm")]: {
-//       width: "100%",
-//       height: "100%"
-//     },
-//     lineHeight: "2em",
-//     background: "white",
-//     borderRadius: "4px",
-//     padding: 60,
-//     fontSize: "1.2em"
-//   },
-//   row: {
-//     display: "flex",
-//     justifyContent: "center",
-//     [theme.breakpoints.down("md")]: {
-//       flexWrap: "wrap"
-//     }
-//   },
-//   button: {
-//     height: 100,
-//     margin: "20px auto",
-//     width: 100
-//   },
-//   footer: {
-//     width: "100vw",
-//     margin: "auto",
-//     position: "fixed",
-//     backgroundColor: theme.palette.primary.main,
-//     bottom: 0,
-//     padding: 25,
-//     height: 73,
-//     [theme.breakpoints.down("sm")]: {
-//       height: 53
-//     },
-//     display: "flex",
-//     justifyContent: "center",
-//     alignItems: "middle",
-//     boxShadow: "0 1px 5px 2px rgba(0,0,0,.2)",
-//     zIndex: 2,
-//     color: "white"
-//   },
-//   footerIcon: {
-//     width: 30,
-//     height: "auto",
-//     marginTop: 15,
-//     [theme.breakpoints.down("sm")]: {
-//       marginTop: 5
-//     },
-//     fill: theme.palette.secondary.main
-//   },
-//   spinner: {
-//     position: "absolute",
-//     top: "50%",
-//     left: "50%",
-//     transform: "translate(-50%, -50%)",
-//     display: "block"
-//   },
-//   form: {
-//     background: "white"
-//   },
-//   thankYouCopy: {
-//     lineHeight: 1.4,
-//     textAlign: "left"
-//   }
-// });
 
 const styles = {};
 
@@ -215,7 +105,6 @@ export class AppUnconnected extends Component {
     this.createSFContact = this.createSFContact.bind(this);
     this.updateSFContact = this.updateSFContact.bind(this);
     this.changeTab = this.changeTab.bind(this);
-    this.resubmitSubmission = this.resubmitSubmission.bind(this);
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
@@ -223,125 +112,17 @@ export class AppUnconnected extends Component {
   }
 
   async componentDidMount() {
+    // check and log environment
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    // console.log("Wednesday 1/15 1:11pm");
+
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
+
     // set form language based on detected default language
     this.props.setActiveLanguage(defaultLanguage);
-    // If not logged in, check local storage for authToken
-    // if it doesn't exist, it returns the string "undefined"
-    if (!this.props.appState.loggedIn) {
-      // don't run this sequence if landing on admin dash for first time
-      // after google auth -- there will be nothing in localstorage yet
-      if (!(this.props.match && this.props.match.params.id)) {
-        // console.log("not logged in, looking for id & token in localStorage");
-        const authToken = window.localStorage.getItem("authToken");
-        const userId = window.localStorage.getItem("userId");
-        // console.log(`authToken: ${authToken}, userId: ${userId}`);
-        if (
-          authToken &&
-          authToken !== "undefined" &&
-          userId &&
-          userId !== "undefined"
-        ) {
-          // console.log("found id & token in localstorage, validating token");
-          // console.log(!!authToken, userId);
-          this.props.apiProfile
-            .validateToken(authToken, userId)
-            .then(result => {
-              console.log(result.type);
-              if (result.type === "VALIDATE_TOKEN_FAILURE") {
-                // console.log("VALIDATE_TOKEN_FAILURE: clearing localStorage");
-                return window.localStorage.clear();
-              } else {
-                // console.log(
-                //   `validate token success: ${!!authToken}, ${userId}`
-                // );
-                this.props.apiProfile
-                  .getProfile(authToken, userId)
-                  .then(result => {
-                    // console.log(result.type);
-                    if (result.type === "GET_PROFILE_SUCCESS") {
-                      // console.log(
-                      //   `setting user type here: ${result.payload.type}`
-                      // );
-                      this.props.actions.setLoggedIn(result.payload.type);
-                      // check for redirect url in local storage
-                      const redirect = window.localStorage.getItem("redirect");
-                      if (redirect) {
-                        // redirect to originally requested page and then
-                        // clear value from local storage
-                        this.props.history.push(redirect);
-                        window.localStorage.removeItem("redirect");
-                      }
-                    } else {
-                      // console.log("not logged in", authToken, userId);
-                      // console.log(result.type);
-                    }
-                  });
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              return window.localStorage.clear();
-            });
-        }
-      }
-    }
+
+    // check if language was set in query string
     const values = queryString.parse(this.props.location.search);
-    // fetch dynamic content
-    if (values.h || values.b || values.i) {
-      const { h, i, b } = values;
-      let idArray = [h, i, b];
-      const queryIds = idArray.filter(id => (id ? id : null));
-      queryIds.forEach(id => {
-        this.props.apiContent
-          .getContentById(id)
-          .then(result => {
-            const message =
-              result.payload && result.payload.message
-                ? result.payload.message
-                : "There was an error loading the content.";
-            if (
-              !result ||
-              !result.payload ||
-              (result.payload && result.payload.message)
-            ) {
-              console.log(message);
-            } else {
-              switch (result.payload.content_type) {
-                case "headline":
-                  return this.setState({
-                    headline: {
-                      text: result.payload.content,
-                      id: id
-                    }
-                  });
-                case "bodyCopy":
-                  return this.setState({
-                    body: {
-                      text: result.payload.content,
-                      id: id
-                    }
-                  });
-                case "image":
-                  return this.setState({
-                    image: {
-                      url: result.payload.content,
-                      id: id
-                    }
-                  });
-                default:
-                  break;
-              }
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      });
-    }
     if (values.lang) {
       this.props.setActiveLanguage(values.lang);
     }
@@ -484,10 +265,6 @@ export class AppUnconnected extends Component {
             xs: "1.7rem",
             sm: "1.7rem"
           }
-          // [theme.breakpoints.down("sm")]: {
-          //   fontSize: "1.7rem"
-          //     }
-          // className={this.props.classes.headline}
         }}
       >
         <Typography
@@ -585,7 +362,6 @@ export class AppUnconnected extends Component {
         first_name: formValues.firstName,
         last_name: formValues.lastName,
         home_email: formValues.homeEmail
-        // employer_id: this.props.submission.formPage1.employerId
       };
       await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
         console.error(err);
@@ -607,7 +383,6 @@ export class AppUnconnected extends Component {
   }
 
   async saveSubmissionErrors(submission_id, method, error) {
-    console.log("520");
     // 1. retrieve existing errors array from current submission
     let { submission_errors } = this.props.submission.currentSubmission;
     if (submission_errors === null || submission_errors === undefined) {
@@ -741,8 +516,6 @@ export class AppUnconnected extends Component {
   prepForSubmission(values, partial) {
     return new Promise(resolve => {
       let returnValues = { ...values };
-      // console.log("signature here???");
-      // console.log(returnValues);
 
       if (!partial) {
         // set default date values for DPA & DDA if relevant
@@ -936,7 +709,6 @@ export class AppUnconnected extends Component {
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
-    // console.log("no payment required, writing OMA to SF and on to CAPE");
     body.Worker__c = this.props.submission.salesforceId;
     return this.props.apiSF
       .createSFOMA(body)
@@ -1089,71 +861,11 @@ export class AppUnconnected extends Component {
     });
   };
 
-  // resubmit submission and deleteSubmission methods here, to be passed to submission table
-  async resubmitSubmission(submissionData) {
-    console.log(submissionData);
-    // const body = await this.generateSubmissionBody(submissionData);
-    // console.log(body);
-    // const cleanBody = removeFalsy(body);
-    // console.log(cleanBody);
-    // cleanBody.Worker__c = submissionData.salesforceId;
-    // console.log(cleanBody)
-    submissionData.Worker__c = submissionData.salesforce_id;
-    if (!submissionData.text_auth_opt_out) {
-      submissionData.text_auth_opt_out = false;
-    } else {
-      submissionData.text_auth_opt_out = true;
-    }
-    delete submissionData.salesforce_id;
-    console.log(submissionData);
-    const resubmitResult = await this.props.apiSF
-      .createSFOMA(submissionData)
-      .catch(err => this.handleError(err));
-    if (
-      !resubmitResult ||
-      !resubmitResult.type ||
-      resubmitResult.type !== "CREATE_SF_OMA_SUCCESS"
-    ) {
-      this.saveSubmissionErrors(
-        submissionData.id,
-        "createSFOMA_RESUBMIT",
-        this.props.submission.error
-      );
-    } else if (resubmitResult.type === "CREATE_SF_OMA_SUCCESS") {
-      this.openSnackbar(
-        "success",
-        `Resubmitted submission from ${submissionData.first_name} ${submissionData.last_name}.`
-      );
-      // update submission status to success
-      this.props.apiSubmission
-        .updateSubmission(submissionData.id, {
-          submission_status: "Success",
-          submission_errors: null
-        })
-        .then(result => {
-          console.log(result.type);
-          if (
-            result.type === "UPDATE_SUBMISSION_FAILURE" ||
-            this.props.submission.error
-          ) {
-            console.log(this.props.submission.error);
-            return this.handleError(this.props.submission.error);
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          return this.handleError(err);
-        });
-      const token = this.props.appState.authToken;
-      this.props.apiSubmission.getAllSubmissions(token);
-    }
-  }
-
   render() {
     const values = queryString.parse(this.props.location.search);
     const embed = values.embed;
     const { classes } = this.props;
-    const { loggedIn, userType, loading } = this.props.appState;
+    const { loading } = this.props.appState;
     const backgroundImage = embed
       ? "none"
       : `url(${
@@ -1162,7 +874,6 @@ export class AppUnconnected extends Component {
             : SamplePhoto
         })`;
     const backgroundImageStyle = { backgroundImage };
-    // console.log(`loggedIn: ${loggedIn}, userType: ${userType}`);
     return (
       <Box
         data-testid="component-app"
@@ -1177,16 +888,9 @@ export class AppUnconnected extends Component {
             xs: "none",
             sm: "none"
           },
-          // [theme.breakpoints.down("sm")]: {
-          //   backgroundImage: "none"
-          // },
           backgroundSize: {
             xl: "cover"
           }
-          // [theme.breakpoints.up("xl")]: {
-          //   backgroundSize: "cover"
-          // }
-          //className={classes.appRoot}
         }}
       >
         <CssBaseline />
@@ -1220,7 +924,6 @@ export class AppUnconnected extends Component {
               display: "flex",
               flexDirection: "column",
               justifyContent: "center"
-              //className={classes.container}
             }}
           >
             <Switch>
@@ -1274,94 +977,6 @@ export class AppUnconnected extends Component {
                   />
                 )}
               />
-              {/*} <Route
-                path="/admin/:id?/:token?"
-                render={routeProps => (
-                  <Dashboard
-                    {...routeProps}
-                    setRedirect={this.setRedirect}
-                    resubmitSubmission={this.resubmitSubmission}
-                  />
-                )}
-              /> 
-              <Route
-                path="/content"
-                render={routeProps =>
-                  loggedIn && ["admin", "edit"].includes(userType) ? (
-                    <ContentLibrary
-                      setRedirect={this.setRedirect}
-                      {...routeProps}
-                    />
-                  ) : (
-                    <NoAccess
-                      setRedirect={this.setRedirect}
-                      classes={this.props.classes}
-                      {...routeProps}
-                    />
-                  )
-                }
-              /> */}
-              <Route
-                path="/new"
-                render={routeProps =>
-                  loggedIn && ["admin", "edit"].includes(userType) ? (
-                    <TextInputForm
-                      setRedirect={this.setRedirect}
-                      {...routeProps}
-                    />
-                  ) : (
-                    <NoAccess
-                      setRedirect={this.setRedirect}
-                      classes={this.props.classes}
-                      {...routeProps}
-                    />
-                  )
-                }
-              />
-              <Route
-                path="/edit/:id"
-                render={routeProps =>
-                  loggedIn && ["admin", "edit"].includes(userType) ? (
-                    <TextInputForm
-                      edit={true}
-                      setRedirect={this.setRedirect}
-                      {...routeProps}
-                    />
-                  ) : (
-                    <NoAccess
-                      setRedirect={this.setRedirect}
-                      classes={this.props.classes}
-                      {...routeProps}
-                    />
-                  )
-                }
-              />
-              <Route
-                path="/users"
-                render={routeProps =>
-                  loggedIn && userType === "admin" ? (
-                    <UserForm setRedirect={this.setRedirect} {...routeProps} />
-                  ) : (
-                    <NoAccess
-                      setRedirect={this.setRedirect}
-                      classes={this.props.classes}
-                      {...routeProps}
-                    />
-                  )
-                }
-              />
-              <Route
-                path="/logout"
-                render={routeProps => (
-                  <Logout classes={this.props.classes} {...routeProps} />
-                )}
-              />
-              <Route
-                path="/login"
-                render={routeProps => (
-                  <Login classes={this.props.classes} {...routeProps} />
-                )}
-              />
               <Route
                 exact
                 path="/page2"
@@ -1383,17 +998,6 @@ export class AppUnconnected extends Component {
                 )}
               />
               <Route
-                path="/noaccess"
-                render={routeProps => (
-                  <NoAccess
-                    setRedirect={this.setRedirect}
-                    classes={this.props.classes}
-                    location={this.props.location}
-                    {...routeProps}
-                  />
-                )}
-              />
-              <Route
                 path="*"
                 render={routeProps => (
                   <NotFound classes={this.props.classes} {...routeProps} />
@@ -1408,51 +1012,21 @@ export class AppUnconnected extends Component {
   }
 }
 
-// AppUnconnected.propTypes = {
-//   classes: PropTypes.object.isRequired,
-//   appState: PropTypes.shape({
-//     loggedIn: PropTypes.bool,
-//     authToken: PropTypes.string
-//   }).isRequired,
-//   apiProfile: PropTypes.shape({
-//     validateToken: PropTypes.func
-//   }).isRequired,
-//   apiSubmission: PropTypes.shape({
-//     handleInput: PropTypes.func
-//   }).isRequired,
-//   content: PropTypes.shape({
-//     form: PropTypes.shape({
-//       content_type: PropTypes.string,
-//       content: PropTypes.string
-//     }),
-//     error: PropTypes.string,
-//     deleteDialogOpen: PropTypes.bool,
-//     currentContent: PropTypes.shape({
-//       content_type: PropTypes.string,
-//       content: PropTypes.string
-//     })
-//   }).isRequired,
-//   profile: PropTypes.shape({
-//     profile: PropTypes.shape({
-//       id: PropTypes.string,
-//       name: PropTypes.string,
-//       email: PropTypes.string,
-//       avatar_url: PropTypes.string
-//     })
-//   }).isRequired
-// };
+AppUnconnected.propTypes = {
+  apiSubmission: PropTypes.shape({
+    handleInput: PropTypes.func
+  }).isRequired
+};
 
 const mapStateToProps = state => ({
-  appState: state.appState,
-  profile: state.profile,
   content: state.content,
-  submission: state.submission
+  submission: state.submission,
+  appState: state.appState
 });
 
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
-  apiProfile: bindActionCreators(apiProfileActions, dispatch),
   apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
@@ -1463,5 +1037,4 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-// export default withStyles(styles)(withRouter(withLocalize(AppConnected)));
 export default withRouter(withLocalize(AppConnected));

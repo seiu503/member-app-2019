@@ -14,7 +14,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 
-import { withStyles } from "@mui/styles";
+// import { withStyles } from "@mui/styles";
 
 // import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
@@ -727,6 +727,8 @@ export const SubmissionFormPage1Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage1Container);
 
-export default withLocalize(
-  withStyles(stylesPage1)(SubmissionFormPage1Connected)
-);
+// export default withLocalize(
+//   withStyles(stylesPage1)(SubmissionFormPage1Connected)
+// );
+
+export default withLocalize(SubmissionFormPage1Connected);

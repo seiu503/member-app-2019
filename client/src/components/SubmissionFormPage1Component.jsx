@@ -11,7 +11,7 @@ import Tab2Form from "./Tab2";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
 
-// helper functions these MAY NEED TO BE UPDATED with localization package
+// helper functions
 const { employerTypeMap, getKeyByValue } = formElements;
 
 export class SubmissionFormPage1Component extends React.Component {
@@ -70,11 +70,14 @@ export class SubmissionFormPage1Component extends React.Component {
             // return "SEIU LOCAL 503 OPEU";
             return "";
           } else {
-            return employer.Sub_Division__c;
+            return employer.Sub_Division__c || "test";
           }
         })
       : [""];
-    const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
+    const employerTypesCodes = [...new Set(employerTypesListRaw)] || ["test"];
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    // console.log(employerTypesCodes);
+    // console.log(employerTypeMap);
     const employerTypesList = employerTypesCodes.map(code =>
       employerTypeMap[code] ? employerTypeMap[code] : ""
     ) || [""];
@@ -309,7 +312,8 @@ export class SubmissionFormPage1Component extends React.Component {
         lg: "44px 0 44px 50%"
       },
       width: {
-        xs: "100vw"
+        xs: "100vw",
+        sm: "auto"
       },
       position: {
         xs: "absolute",
@@ -326,10 +330,12 @@ export class SubmissionFormPage1Component extends React.Component {
       padding: "80px 0 140px 0",
       margin: "auto",
       width: {
-        xs: "100vw"
+        xs: "100vw",
+        sm: "auto"
       },
       position: {
-        xs: "absolute"
+        xs: "absolute",
+        sm: "static"
       },
       left: {
         xs: 0
@@ -483,12 +489,6 @@ SubmissionFormPage1Component.propTypes = {
   }),
   formValues: PropTypes.shape({
     signatureType: PropTypes.string
-  }).isRequired,
-  apiContent: PropTypes.shape({
-    uploadImage: PropTypes.func
-  }).isRequired,
-  content: PropTypes.shape({
-    error: PropTypes.string
   }).isRequired,
   legal_language: PropTypes.shape({
     current: PropTypes.shape({
