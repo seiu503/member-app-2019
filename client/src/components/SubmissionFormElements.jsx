@@ -1577,23 +1577,24 @@ export const renderCheckbox = ({
           className={classes[formControlName] || classes.formControl}
           variant="standard"
         >
-          <FormControlLabel
-            label={inputLabelTranslateHelper(id, label, translate)}
-            sx={classStyle}
-            control={
-              <Checkbox
-                color="primary"
-                checked={input.value ? true : false}
-                {...custom}
-                {...input}
-                className={classes.checkbox}
-                data-testid="component-checkbox"
-                name="checkbox"
-                inputProps={{ id: id }}
-                data-testid={dataTestId}
-              />
-            }
-          />
+          <Box sx={classStyle}>
+            <FormControlLabel
+              label={inputLabelTranslateHelper(id, label, translate)}
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={input.value ? true : false}
+                  {...custom}
+                  {...input}
+                  className={classes.checkbox}
+                  data-testid="component-checkbox"
+                  name="checkbox"
+                  inputProps={{ id: id }}
+                  data-testid={dataTestId}
+                />
+              }
+            />
+          </Box>
           {touched && error && (
             <FormHelperText className={classes.checkboxErrorText}>
               {error}

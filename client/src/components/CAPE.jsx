@@ -1,6 +1,5 @@
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
-// import { ReCaptcha } from "react-recaptcha-v3";
 import { Translate } from "react-localize-redux";
 
 import AlertDialog from "./AlertDialog";
@@ -15,7 +14,8 @@ import {
   CardMedia,
   FormLabel,
   FormHelperText,
-  FormGroup
+  FormGroup,
+  Box
 } from "@mui/material";
 
 import FormatQuote from "@mui/icons-material/FormatQuote";
@@ -35,7 +35,7 @@ import { scrollToFirstError } from "../utils";
 export const CAPE = props => {
   const {
     handleCAPESubmit,
-    classes,
+    // classes,
     loading,
     back,
     formValues,
@@ -63,10 +63,36 @@ export const CAPE = props => {
     checkoff
   } = props;
 
+  const classes = formElements.classesPage1;
+  const input2col = {
+    width: {
+      xs: "100%",
+      sm: "48%"
+    },
+    display: {
+      xs: "block",
+      sm: "flex" // ????
+    }
+    // classes.input2col
+  };
+
   const community = formValues.employerType === "community member";
   const matches = useMediaQuery("(min-width:450px)");
   return (
-    <div data-testid="component-cape">
+    <Box
+      data-testid="component-cape"
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        background: "white",
+        padding: {
+          xs: "15px 15px 40px 15px",
+          sm: "20px 20px 40px 20px"
+        },
+        borderRadius: "0 0 4px 4px"
+        // className={classes.form}
+      }}
+    >
       {capeOpen && (
         <AlertDialog
           open={capeOpen}
@@ -82,42 +108,105 @@ export const CAPE = props => {
       <form
         onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
         id="CAPE"
-        className={classes.form}
+        // className={classes.form}
         data-testid="cape-form"
       >
-        <div className={classes.paymentCopy}>
-          <Typography component="h2" className={classes.head}>
+        <Box
+          // className={classes.paymentCopy}
+          sx={{
+            paddingBottom: "1.5em"
+          }}
+        >
+          <Typography
+            component="h2"
+            // className={classes.head}
+            sx={{
+              color: "#531078", // medium purple // theme.palette.primary.light
+              fontSize: "1.75em",
+              fontWeight: 700,
+              lineHeight: 1.1,
+              marginBottom: "15px"
+            }}
+          >
             <Translate id="capeHeadline">
               Contribute to CAPE: Citizen Action for Political Education
             </Translate>
           </Typography>
-          <Typography component="p" className={classes.subhead}>
+          <Typography
+            component="p"
+            // className={classes.subhead}
+            sx={{
+              color: "#531078", // medium purple // theme.palette.primary.light
+              fontSize: "1.25em",
+              fontWeight: 400,
+              paddingBottom: "20px"
+            }}
+          >
             <Translate id="capeSubhead">
               Collective political action to raise wages, protect benefits, fund
               public services, and build strong communities.
             </Translate>
           </Typography>
-          <Typography component="p" className={classes.body}>
+          <Typography
+            component="p" // className={classes.body}
+          >
             <Translate id="capeBody1" />
           </Typography>
-          <ul className={classes.ul}>
-            <li className={classes.li}>
-              <Translate id="capeBullet1" />
-            </li>
-            <li className={classes.li}>
-              <Translate id="capeBullet2" />
-            </li>
-            <li className={classes.li}>
-              <Translate id="capeBullet3" />
-            </li>
-          </ul>
-          <Card className={classes.card}>
-            <div className={classes.details}>
-              <CardContent className={classes.content}>
+          <Box
+            sx={{
+              fontSize: ".875em"
+            }}
+          >
+            <ul
+            // className={classes.ul}
+            >
+              <li
+              // className={classes.li}
+              >
+                <Translate id="capeBullet1" />
+              </li>
+              <li // className={classes.li}
+              >
+                <Translate id="capeBullet2" />
+              </li>
+              <li // className={classes.li}
+              >
+                <Translate id="capeBullet3" />
+              </li>
+            </ul>
+          </Box>
+          <Card
+            // className={classes.card}
+            sx={{
+              display: "flex",
+              flexDirection: {
+                xs: "column",
+                sm: "row"
+              }
+            }}
+          >
+            <Box
+              // className={classes.details}
+              sx={{
+                display: "flex",
+                flexDirection: "column"
+              }}
+            >
+              <CardContent
+                //className={classes.content}
+                sx={{
+                  flex: "1 0 auto"
+                }}
+              >
                 <Typography
                   component="h5"
                   variant="h5"
-                  className={classes.cardHead}
+                  // className={classes.cardHead}
+                  sx={{
+                    color: "#531078", // medium purple // theme.palette.primary.light
+                    fontWeight: 400,
+                    paddingBottom: "10px"
+                  }}
                 >
                   <Translate id="capeCardHead">Join us</Translate>
                 </Typography>
@@ -132,7 +221,13 @@ export const CAPE = props => {
                       opacity: 0.8
                     }}
                   />
-                  <Typography component="p" className={classes.pullQuote}>
+                  <Typography
+                    component="p"
+                    // className={classes.pullQuote}
+                    sx={{
+                      textIndent: 20
+                    }}
+                  >
                     <Translate id="capePullQuote">
                       I can’t write big checks. But I contribute what I can each
                       month to CAPE. And when we put all of our resources
@@ -150,23 +245,48 @@ export const CAPE = props => {
                     }}
                   />
                 </div>
-                <Typography component="p" className={classes.quoteAttr}>
+                <Typography
+                  component="p"
+                  // className={classes.quoteAttr}
+                  sx={{
+                    color: "#531078", // medium purple // theme.palette.primary.light
+                    fontStyle: "italic",
+                    paddingTop: "10px"
+                  }}
+                >
                   <Translate id="capeQuoteAttr">
                     &mdash;Deffo Mebrat, Adult Foster Care Provider
                   </Translate>
                 </Typography>
               </CardContent>
-            </div>
+            </Box>
             <CardMedia
-              className={classes.cover}
+              // className={classes.cover}
+              sx={{
+                minWidth: "200px",
+                minHeight: "200px"
+              }}
               image={headshot}
               title="Deffo Mebrat"
             />
           </Card>
-        </div>
+        </Box>
         {standAlone && (
           <div data-testid="form-contact-info">
-            <FormGroup row classes={{ root: classes.formGroup2Col }}>
+            <FormGroup
+              row
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: {
+                  xs: "wrap",
+                  sm: "nowrap"
+                },
+                justifyContent: "space-between",
+                marginBottom: "35px"
+                // classes.formGroup2Col
+              }}
+            >
               <Field
                 twocol
                 mobile={!matches}
@@ -174,7 +294,7 @@ export const CAPE = props => {
                 name="firstName"
                 id="firstName"
                 type="text"
-                classes={{ input2col: classes.input2col }}
+                classes={{ input2col }}
                 component={renderTextField}
               />
 
@@ -184,12 +304,19 @@ export const CAPE = props => {
                 name="lastName"
                 id="lastName"
                 label="Last Name"
-                classes={{ input2col: classes.input2col }}
+                classes={{ input2col }}
                 component={renderTextField}
                 type="text"
               />
             </FormGroup>
-            <FormGroup classes={{ root: classes.formGroupTopMargin }}>
+            <FormGroup
+              classes={{
+                root: {
+                  marginTop: "30px"
+                }
+                // classes.formGroupTopMargin
+              }}
+            >
               <Field
                 label="Home Email"
                 name="homeEmail"
@@ -199,7 +326,13 @@ export const CAPE = props => {
                 component={renderTextField}
               />
             </FormGroup>
-            <FormHelperText className={classes.formHelperText}>
+            <FormHelperText
+              // className={classes.formHelperText}
+              sx={{
+                margin: "-30px 0 30px",
+                fontSize: ".75rem"
+              }}
+            >
               <Translate id="homeEmailHint" />
             </FormHelperText>
             <FormGroup>
@@ -232,10 +365,28 @@ export const CAPE = props => {
               )}
             </FormGroup>
 
-            <FormLabel className={classes.formLabel} component="legend">
+            <FormLabel
+              // className={classes.formLabel}
+              sx={{
+                margin: "10px 0 10px"
+                // fontSize: "20px",
+                // color: "black"
+              }}
+              component="legend"
+            >
               <Translate id="birthDate" />
             </FormLabel>
-            <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
+            <FormGroup
+              row
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "nowrap",
+                justifyContent: "space-between",
+                width: "280px"
+                //classes.formGroup2ColShort
+              }}
+            >
               <Field
                 label="Month"
                 name="mm"
@@ -244,8 +395,7 @@ export const CAPE = props => {
                 classes={classes}
                 formControlName="formControlDate"
                 component={renderSelect}
-                // labelWidth={'41'}
-                style={{ width: 41 }}
+                style={{ width: "100%" }}
                 options={formElements.monthList}
               />
 
@@ -257,8 +407,7 @@ export const CAPE = props => {
                 formControlName="formControlDate"
                 classes={classes}
                 component={renderSelect}
-                // labelWidth={'24'}
-                style={{ width: 24 }}
+                style={{ width: "100%" }}
                 options={formElements.dateOptions(props)}
               />
 
@@ -270,13 +419,20 @@ export const CAPE = props => {
                 formControlName="formControlDate"
                 classes={classes}
                 component={renderSelect}
-                // labelWidth={'30'}
-                style={{ width: 30 }}
+                style={{ width: "100%" }}
                 options={formElements.yearOptions()}
               />
             </FormGroup>
 
-            <FormLabel className={classes.formLabel} component="legend">
+            <FormLabel
+              // className={classes.formLabel}
+              sx={{
+                margin: "10px 0 10px"
+                // fontSize: "20px",
+                // color: "black"
+              }}
+              component="legend"
+            >
               <Translate id="address">Address</Translate>
             </FormLabel>
 
@@ -289,9 +445,18 @@ export const CAPE = props => {
               component={renderTextField}
             />
             <FormGroup
-              className={classes.formGroup}
               row
-              classes={{ root: classes.formGroup2Col }}
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: {
+                  xs: "wrap",
+                  sm: "nowrap"
+                },
+                justifyContent: "space-between",
+                marginBottom: "30px"
+                // classes.formGroup2Col
+              }}
             >
               <Field
                 label="Home City"
@@ -314,8 +479,7 @@ export const CAPE = props => {
                 classes={classes}
                 component={renderSelect}
                 options={formElements.stateList}
-                // labelWidth={'80'}
-                style={{ width: 80 }}
+                style={{ width: "100%" }}
               />
 
               <Field
@@ -338,10 +502,15 @@ export const CAPE = props => {
                 type="tel"
                 classes={classes}
                 component={renderTextField}
-                onBlur={mobilePhoneOnBlur}
               />
 
-              <FormHelperText className={classes.formHelperText}>
+              <FormHelperText
+                // className={classes.formHelperText}
+                sx={{
+                  margin: "-30px 0 10px",
+                  fontSize: ".75rem"
+                }}
+              >
                 <Translate id="phoneLegalLanguage" />
               </FormHelperText>
 
@@ -350,9 +519,9 @@ export const CAPE = props => {
                 name="textAuthOptOut"
                 id="textAuthOptOut"
                 type="checkbox"
-                formControlName="controlCheckboxMargin"
-                classes={classes}
+                formControlName="controlCheckbox"
                 component={renderCheckbox}
+                classes={classes}
               />
             </FormGroup>
           </div>
@@ -364,12 +533,20 @@ export const CAPE = props => {
           type="text"
           classes={classes}
           component={renderTextField}
+          sx={{
+            marginTop: "30px"
+          }}
         />
         {!displayCAPEPaymentFields && (
           <ButtonWithSpinner
             type="button"
             color="primary"
-            className={classes.formButton}
+            // className={classes.formButton}
+            sx={{
+              width: "100%",
+              padding: "20px",
+              margin: "0 0 40px"
+            }}
             variant="contained"
             loading={loading}
             onClick={checkCAPEPaymentLogic}
@@ -380,14 +557,45 @@ export const CAPE = props => {
         )}
         {displayCAPEPaymentFields && (
           <div data-testid="component-cape-payment-fields">
-            <div className={classes.paymentCopy}>
-              <Typography component="h2" className={classes.head}>
+            <Box
+              // className={classes.paymentCopy}
+              sx={{
+                paddingBottom: "1.5em"
+              }}
+            >
+              <Typography
+                component="h2"
+                // className={classes.head}
+                sx={{
+                  color: "#531078", // medium purple // theme.palette.primary.light
+                  fontSize: "2em",
+                  fontWeight: 700,
+                  lineHeight: 1.1,
+                  marginBottom: "15px"
+                }}
+              >
                 <Translate id="capePaymentHead">
                   Make your contribution today
                 </Translate>
               </Typography>
-              <div className={classes.suggestedAmounts}>
-                <div className={classes.suggestedAmountBoxes}>
+              <Box
+                //className={classes.suggestedAmounts}
+                sx={{
+                  display: "block",
+                  flexWrap: "wrap",
+                  margin: "0 -1.666666666666667% 13px",
+                  paddingTop: "20px",
+                  marginTop: "15px",
+                  backgroundColor: "#FBE796"
+                }}
+              >
+                <Box
+                  // className={classes.suggestedAmountBoxes}
+                  sx={{
+                    flexDirection: "row",
+                    flexWrap: "nowrap"
+                  }}
+                >
                   <Field
                     data-testid="radio-cape-amount"
                     label="Donation amount"
@@ -395,7 +603,11 @@ export const CAPE = props => {
                     formControlName="capeAmount"
                     id="capeAmountMonthly"
                     direction="horiz"
-                    className={classes.horizRadio}
+                    // className={classes.horizRadio}
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row"
+                    }}
                     classes={classes}
                     component={formElements.renderCAPERadioGroup}
                     options={capeObject.monthlyOptions}
@@ -404,8 +616,8 @@ export const CAPE = props => {
                       suggestedAmountOnChange(event);
                     }}
                   />
-                </div>
-              </div>
+                </Box>
+              </Box>
               {formValues.capeAmount === "Other" && (
                 <Field
                   dataTestId="field-other-amount"
@@ -422,8 +634,11 @@ export const CAPE = props => {
                   additionalOnChange={suggestedAmountOnChange}
                 />
               )}
-            </div>
-            <div className={classes.legalCopy} ref={cape_legal}>
+            </Box>
+            <div
+              // className={classes.legalCopy}
+              ref={cape_legal}
+            >
               {community ? (
                 <p>
                   <Translate id="communityCAPE2022" />
@@ -467,11 +682,12 @@ export const CAPE = props => {
             <ButtonWithSpinner
               type="submit"
               color="primary"
-              className={
-                standAlone
-                  ? `${classes.formButton} g-recaptcha`
-                  : classes.formButton
-              }
+              className={standAlone ? "g-recaptcha" : ""}
+              sx={{
+                width: "100%",
+                padding: "20px",
+                margin: "25px 0 40px"
+              }}
               variant="contained"
               loading={loading}
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
@@ -484,13 +700,30 @@ export const CAPE = props => {
           </div>
         )}
         {!standAlone && (
-          <div className={classes.buttonWrapCAPE}>
+          <Box
+            // className={classes.buttonWrapCAPE}
+            sx={{
+              width: "100%",
+              padding: "0 20px 40px 0",
+              display: "flex",
+              justifyContent: "space-between"
+            }}
+          >
             <Button
               type="button"
               data-testid="button-back"
               onClick={() => back(1)}
               color="primary"
-              className={classes.backSmall}
+              // className={classes.backSmall}
+              sx={{
+                textTransform: "none",
+                fontSize: ".8rem",
+                padding: "3px 10px",
+                color: "#ffffff", // white // theme.palette.secondary.light,
+                "&:hover": {
+                  backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+                }
+              }}
               variant="contained"
             >
               <Translate id="back">Back</Translate>
@@ -500,15 +733,24 @@ export const CAPE = props => {
               data-testid="button-next"
               onClick={handleCAPEOpen}
               color="primary"
-              className={classes.nextSmall}
+              // className={classes.nextSmall}
+              sx={{
+                textTransform: "none",
+                fontSize: ".8rem",
+                padding: "3px 10px",
+                color: "#ffffff", // white // theme.palette.secondary.light,
+                "&:hover": {
+                  backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+                }
+              }}
               variant="contained"
             >
               <Translate id="skip">Skip</Translate>
             </Button>
-          </div>
+          </Box>
         )}
       </form>
-    </div>
+    </Box>
   );
 };
 
