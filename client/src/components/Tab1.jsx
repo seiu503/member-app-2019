@@ -41,10 +41,6 @@ const input2col = {
     xs: "block",
     sm: "flex" // ????
   }
-  // [theme.breakpoints.down("xs")]: {
-  //   width: "100%",
-  //   display: "block"
-  // }
   // classes.input2col
 };
 

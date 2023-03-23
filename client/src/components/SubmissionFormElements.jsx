@@ -1556,9 +1556,20 @@ export const renderCheckbox = ({
   <Translate>
     {({ translate }) => {
       const classStyle = bold
-        ? classes.checkboxLabelBold
+        ? {
+            "& span": {
+              fontWeight: "700 !important",
+              margin: "0 0"
+            }
+          }
         : mini
-        ? classes.checkboxLabelMini
+        ? {
+            "& span": {
+              fontWeight: "400 !important",
+              fontSize: 14,
+              margin: "0 0 35px 0"
+            }
+          }
         : "";
       return (
         <FormControl
@@ -1568,7 +1579,7 @@ export const renderCheckbox = ({
         >
           <FormControlLabel
             label={inputLabelTranslateHelper(id, label, translate)}
-            className={classStyle}
+            sx={classStyle}
             control={
               <Checkbox
                 color="primary"

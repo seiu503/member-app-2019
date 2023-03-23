@@ -2,18 +2,19 @@ import React from "react";
 import { Field } from "redux-form";
 import { reduxForm } from "redux-form";
 
-import { Button, FormHelperText, Typography } from "@mui/material";
+import { Button, FormHelperText, Typography, Box } from "@mui/material";
 
 import PropTypes from "prop-types";
 import { Translate } from "react-localize-redux";
 
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
+import * as formElements from "./SubmissionFormElements";
 
 export const Tab2 = props => {
   const {
     onSubmit,
-    classes,
+    // classes,
     renderTextField,
     renderCheckbox,
     back,
@@ -21,6 +22,8 @@ export const Tab2 = props => {
     direct_pay,
     formValues
   } = props;
+
+  const classes = formElements.classesPage1;
   // console.log(formValues.employerType);
   const afh = formValues.employerType.toLowerCase() === "adult foster home";
   const retiree = formValues.employerType.toLowerCase() === "retired";
@@ -28,13 +31,21 @@ export const Tab2 = props => {
     formValues.employerType.toLowerCase() === "community member";
 
   return (
-    <div data-testid="component-tab2">
-      <form
-        onSubmit={props.handleSubmit(onSubmit)}
-        id="tab2"
-        className={classes.form}
-        style={{ paddingTop: 40 }}
-      >
+    <Box
+      data-testid="component-tab2"
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        background: "white",
+        padding: {
+          xs: "15px 15px 40px 15px",
+          sm: "20px 20px 40px 20px"
+        },
+        borderRadius: "0 0 4px 4px"
+        // className={classes.form}
+      }}
+    >
+      <form onSubmit={props.handleSubmit(onSubmit)} id="tab2">
         <Field
           formControlName="controlCheckboxMarginBold"
           label="Agree to Terms of Membership"
@@ -44,9 +55,18 @@ export const Tab2 = props => {
           classes={classes}
           bold={true}
           component={renderCheckbox}
+          // sx={{
+          //   margin: "-35px 0 40px 0",
+          //   fontWeight: 700
+          // }}
         />
-        <div
-          className={classes.formHelperTextLegal}
+        <Box
+          // className={classes.formHelperTextLegal}
+          sx={{
+            margin: "0 0 35px 0",
+            fontSize: "14px",
+            lineHeight: "1.2em"
+          }}
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
@@ -67,7 +87,11 @@ export const Tab2 = props => {
                 name="MOECheckbox"
                 id="MOECheckbox"
                 type="checkbox"
-                classes={classes}
+                classes={{
+                  root: {
+                    marginTop: "35px important!"
+                  }
+                }}
                 bold={true}
                 component={renderCheckbox}
               />
@@ -76,7 +100,7 @@ export const Tab2 = props => {
               </p>
             </div>
           )}
-        </div>
+        </Box>
 
         {(afh || community || retiree) && (
           <React.Fragment>
@@ -91,8 +115,13 @@ export const Tab2 = props => {
               bold={true}
               component={renderCheckbox}
             />
-            <div
-              className={classes.formHelperTextLegal}
+            <Box
+              // className={classes.formHelperTextLegal}
+              sx={{
+                margin: "-50px 0 50px 0",
+                fontSize: "14px",
+                lineHeight: "1.2em"
+              }}
               id="directPayAuthLegalLanguage"
               ref={direct_pay}
             >
@@ -132,7 +161,7 @@ export const Tab2 = props => {
               <p>
                 <Translate id="DPA4" />
               </p>
-            </div>
+            </Box>
           </React.Fragment>
         )}
         <Field
@@ -146,7 +175,7 @@ export const Tab2 = props => {
           classes={classes}
           component={renderCheckbox}
         />
-        <Typography component="h3" className={classes.fieldLabel}>
+        <Typography component="h3">
           <Translate id="signatureTitle" />
         </Typography>
 
@@ -160,18 +189,43 @@ export const Tab2 = props => {
             classes={classes}
             component={renderTextField}
           />
-          <FormHelperText className={classes.formHelperText}>
+          <FormHelperText
+            // className={classes.formHelperText}
+            sx={{
+              margin: "-30px 0 40px",
+              fontSize: ".75rem"
+            }}
+          >
             <Translate id="signatureHint" />
           </FormHelperText>
         </React.Fragment>
 
-        <div className={classes.buttonWrap}>
+        <Box
+          // className={classes.buttonWrap}
+          sx={{
+            width: "100%",
+            padding: "0 20px 40px 0",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "20px"
+          }}
+        >
           <Button
             type="button"
             data-testid="button-back"
             onClick={() => back(0)}
             color="primary"
-            className={classes.back}
+            // className={classes.back}
+            sx={{
+              textTransform: "none",
+              fontSize: "1.3rem",
+              padding: "6px 20px",
+              color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+              "&:hover": {
+                backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+              },
+              marginRight: "40px"
+            }}
             variant="contained"
           >
             <Translate id="back">Back</Translate>
@@ -179,14 +233,23 @@ export const Tab2 = props => {
           <Button
             type="submit"
             color="primary"
-            className={classes.next}
+            sx={{
+              textTransform: "none",
+              fontSize: "1.3rem",
+              padding: "6px 20px",
+              color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+              "&:hover": {
+                backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+              }
+              // classes.next
+            }}
             variant="contained"
           >
             <Translate id="next">Next</Translate>
           </Button>
-        </div>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 
