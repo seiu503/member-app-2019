@@ -87,6 +87,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   updateEmployersPicklist = () => {
+    console.log("updateEmployersPicklist");
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];

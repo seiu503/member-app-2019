@@ -22,7 +22,7 @@ import * as formElements from "./SubmissionFormElements";
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
-// helper functions these MAY NEED TO BE UPDATED with localization package
+// helper functions
 const {
   stateList,
   monthList,
@@ -60,6 +60,8 @@ export const Tab1 = props => {
     verifyCallback
   } = props;
 
+  // console.log(handleEmployerChange);
+
   const classes = classesPage1;
 
   const employerNameOnChange = () => {
@@ -67,7 +69,8 @@ export const Tab1 = props => {
   };
 
   const employerTypeOnChange = () => {
-    updateEmployersPicklist();
+    console.log("employerTypeOnChange");
+    props.updateEmployersPicklist();
     handleEmployerChange();
   };
 
@@ -90,6 +93,7 @@ export const Tab1 = props => {
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
+        data-testid="form-tab1"
         // className={classes.form}
       >
         <Box
@@ -216,7 +220,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               style={{ width: "100%" }}
-              options={dateOptions(props)}
+              options={formElements.dateOptions(props)}
             />
 
             <Field
@@ -228,7 +232,7 @@ export const Tab1 = props => {
               classes={classes}
               component={renderSelect}
               style={{ width: "100%" }}
-              options={yearOptions()}
+              options={formElements.yearOptions()}
             />
           </FormGroup>
 

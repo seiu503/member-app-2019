@@ -1534,15 +1534,16 @@ export const renderSelect = ({
           data-testid={dataTestId}
           variant="standard"
         >
-          {options.map(item => (
-            <option
-              key={shortid()}
-              value={item ? item.toLowerCase() : ""}
-              style={selectStyle(align)}
-            >
-              {optionsLabelTranslateHelper(id, item, translate)}
-            </option>
-          ))}
+          {options &&
+            options.map(item => (
+              <option
+                key={shortid()}
+                value={item ? item.toLowerCase() : ""}
+                style={selectStyle(align)}
+              >
+                {optionsLabelTranslateHelper(id, item, translate)}
+              </option>
+            ))}
         </Select>
       </FormControl>
     )}
