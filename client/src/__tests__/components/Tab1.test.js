@@ -1,6 +1,8 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
+import { within } from "@testing-library/dom";
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
@@ -135,7 +137,7 @@ describe("<Tab1 />", () => {
 
     // });
 
-    it("calls updateEmployersPicklist on select change", () => {
+    it("calls updateEmployersPicklist on select change", async () => {
       // create a mock function so we can see whether it's called on select change
       updateEmployersPicklistMock = jest.fn(() =>
         console.log("updateEmployersPicklistMock")
@@ -151,10 +153,13 @@ describe("<Tab1 />", () => {
       };
 
       // set up unwrapped component with mock functions assigned to props
-      const { getByTestId } = setup({ ...props });
+      const user = userEvent.setup();
+      const { getByLabelText, getByRole } = await setup({ ...props });
+      const fieldContainer = getByLabelText("Employer Type");
+      // const employerTypeSelect = within(fieldContainer).getByRole('combobox');
 
       // simulate select change
-      fireEvent.change(getByTestId("select-employer-type"));
+      await userEvent.selectOptions(fieldContainer, [""]);
 
       // expect the mock to have been called once
       expect(updateEmployersPicklistMock).toHaveBeenCalled();

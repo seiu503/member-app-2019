@@ -1500,7 +1500,7 @@ export const renderSelect = ({
             : { marginBottom: "30px" }
         }
       >
-        <InputLabel htmlFor={name}>
+        <InputLabel htmlFor={name} id={`${id}Label`}>
           {inputLabelTranslateHelper(id, label, translate)}
         </InputLabel>
         <Select
@@ -1510,7 +1510,9 @@ export const renderSelect = ({
             <OutlinedInput
               inputProps={{
                 id: id,
-                style: { ...style }
+                name: name,
+                style: { ...style },
+                "aria-labelledby": `${id}Label`
               }}
             />
           }
