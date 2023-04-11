@@ -283,7 +283,10 @@ export const CAPE = props => {
                   sm: "nowrap"
                 },
                 justifyContent: "space-between",
-                marginBottom: "35px"
+                marginBottom: {
+                  xs: 0,
+                  sm: "35px"
+                }
                 // classes.formGroup2Col
               }}
             >

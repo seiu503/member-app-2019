@@ -1751,7 +1751,8 @@ export const renderCAPERadioGroup = ({
                   width: "21%",
                   height: "60px",
                   margin: "13px 1.666666666666667% 0",
-                  display: "inline-block"
+                  display: "inline-block",
+                  textAlign: "center"
                 }}
                 label={labelText}
                 labelPlacement="bottom"
@@ -1761,6 +1762,7 @@ export const renderCAPERadioGroup = ({
                     color="primary"
                     inputProps={{ id: id }}
                     data-testid="component-radio"
+                    style={{ paddingBottom: 0 }}
                   />
                 }
               />
@@ -1769,7 +1771,7 @@ export const renderCAPERadioGroup = ({
         </RadioGroup>
         {touched && error && (
           <FormHelperText
-            className={classes.checkboxErrorText}
+            // className={classes.checkboxErrorText}
             sx={{
               margin: "-10px 0 10px 0",
               textAlign: "center"
