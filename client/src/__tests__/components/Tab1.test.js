@@ -80,6 +80,23 @@ describe("<Tab1 />", () => {
     );
   };
 
+  const connectedSetup = (props = {}) => {
+    const setupProps = {
+      ...defaultProps,
+      ...props,
+      handleSubmit,
+      apiSubmission,
+      apiSF
+    };
+    return render(
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <Tab1Connected {...setupProps} {...props} />
+        </Provider>
+      </ThemeProvider>
+    );
+  };
+
   const {
     stateList,
     monthList,
@@ -106,45 +123,39 @@ describe("<Tab1 />", () => {
       updateEmployersPicklist: jest.fn()
     };
 
-    // it("renders without error", () => {
-    //   const { getByTestId } = setup();
-    //   const component = getByTestId("component-tab1");
-    //   expect(component).toBeInTheDocument();
-    // });
+    it("renders without error", () => {
+      const { getByTestId } = setup();
+      const component = getByTestId("component-tab1");
+      expect(component).toBeInTheDocument();
+    });
 
-    // it("calls handleSubmit on submit", () => {
+    it("calls handleSubmit on submit", () => {
+      // create a mock function so we can see whether it's called on click
+      handleSubmitMock = jest.fn();
 
-    //   // create a mock function so we can see whether it's called on click
-    //   handleSubmitMock = jest.fn();
+      // add mock function to props
+      const props = { handleSubmit: handleSubmitMock };
 
-    //   // add mock function to props
-    //   const props = { handleSubmit: handleSubmitMock };
+      // set up unwrapped component with handleSubmitMock as handleSubmit prop
+      const { getByTestId } = setup({ ...props });
 
-    //   // set up unwrapped component with handleSubmitMock as handleSubmit prop
-    //   const { getByTestId } = setup({ ...props });
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
 
-    //   // imported function that creates dummy data for form
-    //   testData = generateSampleValidate();
+      // simulate submit
+      fireEvent.submit(getByTestId("form-tab1"), { ...testData });
 
-    //   // simulate submit
-    //   fireEvent.submit(getByTestId("form-tab1"), { ...testData });
+      // expect the mock to have been called once
+      expect(handleSubmitMock).toHaveBeenCalled();
 
-    //   // expect the mock to have been called once
-    //   expect(handleSubmitMock).toHaveBeenCalled();
-
-    //   // restore mock
-    //   handleSubmitMock.mockRestore();
-
-    // });
+      // restore mock
+      handleSubmitMock.mockRestore();
+    });
 
     it("calls updateEmployersPicklist on select change", async () => {
       // create a mock function so we can see whether it's called on select change
-      updateEmployersPicklistMock = jest.fn(() =>
-        console.log("updateEmployersPicklistMock")
-      );
-      let handleEmployerChangeMock = jest.fn(() =>
-        console.log("handleEmployerChangeMock")
-      );
+      updateEmployersPicklistMock = jest.fn();
+      let handleEmployerChangeMock = jest.fn();
 
       // add mock function to props
       const props = {
@@ -156,7 +167,6 @@ describe("<Tab1 />", () => {
       const user = userEvent.setup();
       const { getByLabelText, getByRole } = await setup({ ...props });
       const fieldContainer = getByLabelText("Employer Type");
-      // const employerTypeSelect = within(fieldContainer).getByRole('combobox');
 
       // simulate select change
       await userEvent.selectOptions(fieldContainer, [""]);
@@ -168,21 +178,11 @@ describe("<Tab1 />", () => {
       updateEmployersPicklistMock.mockRestore();
     });
 
-    // it("renders connected component", () => {
-    //   defaultProps.formValues.employerType = "adult foster home";
-    //   const setUpProps = {
-    //     ...defaultProps,
-    //     handleSubmit,
-    //     apiSubmission,
-    //     apiSF
-    //   };
-    //   wrapper = mount(
-    //     <Provider store={store}>
-    //       <Tab1Connected {...setUpProps} {...props} />
-    //     </Provider>
-    //   );
-    //   const component = findByTestAttr(wrapper, "component-tab1");
-    //   expect(component.length).toBe(1);
-    // });
+    it("renders connected component", () => {
+      props.formValues.employerType = "adult foster home";
+      const { getByTestId } = connectedSetup({ ...props });
+      const component = getByTestId("component-tab1");
+      expect(component).toBeInTheDocument();
+    });
   });
 });

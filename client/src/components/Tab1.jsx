@@ -69,7 +69,6 @@ export const Tab1 = props => {
   };
 
   const employerTypeOnChange = () => {
-    console.log("employerTypeOnChange");
     props.updateEmployersPicklist();
     handleEmployerChange();
   };
