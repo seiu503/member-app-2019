@@ -1561,6 +1561,7 @@ export const renderCheckbox = ({
   localize,
   bold,
   mini,
+  block,
   dataTestId,
   ...custom
 }) => (
@@ -1579,13 +1580,19 @@ export const renderCheckbox = ({
           margin: "0 0 35px 0"
         }
       };
+      const blockClass = {
+        display: "block !important"
+      };
       return (
         <FormControl
           error={!!(touched && error)}
           // className={classes[formControlName] || classes.formControl}
           variant="standard"
+          sx={block ? blockClass : {}}
         >
-          <Box sx={bold ? boldClass : mini ? miniClass : {}}>
+          <Box
+            sx={bold ? boldClass : mini ? miniClass : block ? blockClass : {}}
+          >
             <FormControlLabel
               label={inputLabelTranslateHelper(id, label, translate)}
               control={

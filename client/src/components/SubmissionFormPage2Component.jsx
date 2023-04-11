@@ -155,8 +155,8 @@ export class SubmissionFormPage2Component extends React.Component {
     const formContainer = {
       display: "flex",
       padding: {
-        xs: "20px 0",
-        lg: "20px 50px 20px 0",
+        xs: "20px 10px",
+        lg: "20px 0 20px 0",
         xl: "80px 0 140px 0"
       },
       margin: {
@@ -177,7 +177,8 @@ export class SubmissionFormPage2Component extends React.Component {
       },
       top: {
         xs: 0
-      }
+      },
+      background: "white"
     };
     const input2col = {
       width: {
@@ -434,60 +435,72 @@ export class SubmissionFormPage2Component extends React.Component {
                 margin: "0 0"
               }}
             >
-              <Field
-                label="I identify as LGBTQIA+"
-                name="lgbtqId"
-                id="lgbtqId"
-                type="checkbox"
-                //classes={this.classes}
-                component={this.renderCheckbox}
-                localize={this.props.localize}
-              />
-              <Field
-                label="I identify as transgender"
-                name="transId"
-                id="transId"
-                type="checkbox"
-                classes={this.classes}
-                component={this.renderCheckbox}
-                localize={this.props.localize}
-              />
-              <Field
-                label="I am a veteran or active military"
-                name="veteranId"
-                id="veteranId"
-                type="checkbox"
-                //classes={this.classes}
-                component={this.renderCheckbox}
-                localize={this.props.localize}
-              />
-              <Field
-                label="I identify as disabled or a person with a disability"
-                name="disabilityId"
-                id="disabilityId"
-                type="checkbox"
-                //classes={this.classes}
-                component={this.renderCheckbox}
-                localize={this.props.localize}
-              />
-              <Field
-                label="I identify as Deaf or hard-of-hearing"
-                name="deafOrHardOfHearing"
-                id="deafOrHardOfHearing"
-                type="checkbox"
-                //classes={this.classes}
-                component={this.renderCheckbox}
-                localize={this.props.localize}
-              />
-              <Field
-                label="I identify as Blind or visually impaired"
-                name="blindOrVisuallyImpaired"
-                id="blindOrVisuallyImpaired"
-                type="checkbox"
-                //classes={this.classes}
-                component={this.renderCheckbox}
-                localize={this.props.localize}
-              />
+              <Box
+                sx={{
+                  marginBottom: "15px"
+                }}
+              >
+                <Field
+                  label="I identify as LGBTQIA+"
+                  name="lgbtqId"
+                  id="lgbtqId"
+                  type="checkbox"
+                  //classes={this.classes}
+                  block
+                  component={this.renderCheckbox}
+                  localize={this.props.localize}
+                />
+                <Field
+                  label="I identify as transgender"
+                  name="transId"
+                  id="transId"
+                  type="checkbox"
+                  block
+                  // classes={this.classes}
+                  component={this.renderCheckbox}
+                  localize={this.props.localize}
+                />
+                <Field
+                  label="I am a veteran or active military"
+                  name="veteranId"
+                  id="veteranId"
+                  type="checkbox"
+                  block
+                  //classes={this.classes}
+                  component={this.renderCheckbox}
+                  localize={this.props.localize}
+                />
+                <Field
+                  label="I identify as disabled or a person with a disability"
+                  name="disabilityId"
+                  id="disabilityId"
+                  type="checkbox"
+                  block
+                  //classes={this.classes}
+                  component={this.renderCheckbox}
+                  localize={this.props.localize}
+                />
+                <Field
+                  label="I identify as Deaf or hard-of-hearing"
+                  name="deafOrHardOfHearing"
+                  id="deafOrHardOfHearing"
+                  type="checkbox"
+                  block
+                  //classes={this.classes}
+                  component={this.renderCheckbox}
+                  localize={this.props.localize}
+                />
+                <Field
+                  label="I identify as Blind or visually impaired"
+                  name="blindOrVisuallyImpaired"
+                  id="blindOrVisuallyImpaired"
+                  type="checkbox"
+                  block
+                  //classes={this.classes}
+                  component={this.renderCheckbox}
+                  localize={this.props.localize}
+                />
+              </Box>
               <Field
                 label="Gender"
                 name="gender"
@@ -495,8 +508,9 @@ export class SubmissionFormPage2Component extends React.Component {
                 type="select"
                 //classes={this.classes}
                 component={this.renderSelect}
-                // labelWidth={50}
-                sx={{ marginBottom: "0px" }}
+                sx={{
+                  marginBottom: "0px"
+                }}
                 options={genderOptions}
               />
               {this.props.formValues.gender === "other" && (
