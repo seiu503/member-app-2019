@@ -1609,80 +1609,80 @@ export const renderCheckbox = ({
 );
 
 // custom MUI friendly RADIO group with translated label
-export const renderRadioGroup = ({
-  input,
-  id,
-  label,
-  options,
-  validate,
-  classes,
-  direction,
-  meta: { touched, error },
-  formControlName,
-  legendClass,
-  additionalOnChange,
-  dataTestId,
-  ...custom
-}) => (
-  <Translate>
-    {({ translate }) => (
-      <FormControl
-        component="fieldset"
-        error={!!(touched && error)}
-        className={classes[formControlName] || classes.formControl}
-        variant="standard"
-      >
-        <FormLabel component="legend" className={classes.radioLabel}>
-          {translate(id)}
-        </FormLabel>
+// export const renderRadioGroup = ({
+//   input,
+//   id,
+//   label,
+//   options,
+//   validate,
+//   classes,
+//   direction,
+//   meta: { touched, error },
+//   formControlName,
+//   legendClass,
+//   additionalOnChange,
+//   dataTestId,
+//   ...custom
+// }) => (
+//   <Translate>
+//     {({ translate }) => (
+//       <FormControl
+//         component="fieldset"
+//         error={!!(touched && error)}
+//         className={classes[formControlName] || classes.formControl}
+//         variant="standard"
+//       >
+//         <FormLabel component="legend" className={classes.radioLabel}>
+//           {translate(id)}
+//         </FormLabel>
 
-        <RadioGroup
-          data-testid="component-radio-group"
-          aria-label={formControlName}
-          name={formControlName}
-          className={
-            direction === "vert" ? classes.verticalGroup : classes.horizGroup
-          }
-          onChange={(event, value) => {
-            console.log(value);
-            console.log(event.target.value);
-            input.onChange(value);
-            if (additionalOnChange) {
-              console.log("additionalOnChange");
-              console.log(additionalOnChange);
-              additionalOnChange(value);
-            }
-          }}
-          id={id}
-          data-testid={dataTestId}
-        >
-          {options.map(item => {
-            return (
-              <FormControlLabel
-                key={shortid()}
-                value={item}
-                className={legendClass}
-                control={
-                  <Radio
-                    checked={item.toString() === input.value.toString()}
-                    color="primary"
-                    data-testid="component-radio"
-                  />
-                }
-                label={inputLabelTranslateHelper(item, item, translate)}
-              />
-            );
-          })}
-        </RadioGroup>
-        {touched && error && (
-          <FormHelperText className={classes.checkboxErrorText}>
-            {error}
-          </FormHelperText>
-        )}
-      </FormControl>
-    )}
-  </Translate>
-);
+//         <RadioGroup
+//           data-testid="component-radio-group"
+//           aria-label={formControlName}
+//           name={formControlName}
+//           className={
+//             direction === "vert" ? classes.verticalGroup : classes.horizGroup
+//           }
+//           onChange={(event, value) => {
+//             console.log(value);
+//             console.log(event.target.value);
+//             input.onChange(value);
+//             if (additionalOnChange) {
+//               console.log("additionalOnChange");
+//               console.log(additionalOnChange);
+//               additionalOnChange(value);
+//             }
+//           }}
+//           id={id}
+//           data-testid={dataTestId}
+//         >
+//           {options.map(item => {
+//             return (
+//               <FormControlLabel
+//                 key={shortid()}
+//                 value={item}
+//                 className={legendClass}
+//                 control={
+//                   <Radio
+//                     checked={item.toString() === input.value.toString()}
+//                     color="primary"
+//                     data-testid="component-radio"
+//                   />
+//                 }
+//                 label={inputLabelTranslateHelper(item, item, translate)}
+//               />
+//             );
+//           })}
+//         </RadioGroup>
+//         {touched && error && (
+//           <FormHelperText className={classes.checkboxErrorText}>
+//             {error}
+//           </FormHelperText>
+//         )}
+//       </FormControl>
+//     )}
+//   </Translate>
+// );
 
 export const renderCAPERadioGroup = ({
   input,
