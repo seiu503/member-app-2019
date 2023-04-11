@@ -592,6 +592,7 @@ export const CAPE = props => {
                 <Box
                   // className={classes.suggestedAmountBoxes}
                   sx={{
+                    display: "flex",
                     flexDirection: "row",
                     flexWrap: "nowrap"
                   }}

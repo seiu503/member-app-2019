@@ -1555,29 +1555,26 @@ export const renderCheckbox = ({
 }) => (
   <Translate>
     {({ translate }) => {
-      const classStyle = bold
-        ? {
-            "& span": {
-              fontWeight: "700 !important",
-              margin: "0 0"
-            }
-          }
-        : mini
-        ? {
-            "& span": {
-              fontWeight: "400 !important",
-              fontSize: 14,
-              margin: "0 0 35px 0"
-            }
-          }
-        : "";
+      const boldClass = {
+        "& span": {
+          fontWeight: "700 !important",
+          margin: "0 0"
+        }
+      };
+      const miniClass = {
+        "& span": {
+          fontWeight: "400 !important",
+          fontSize: 14,
+          margin: "0 0 35px 0"
+        }
+      };
       return (
         <FormControl
           error={!!(touched && error)}
           className={classes[formControlName] || classes.formControl}
           variant="standard"
         >
-          <Box sx={classStyle}>
+          <Box sx={bold ? boldClass : mini ? miniClass : {}}>
             <FormControlLabel
               label={inputLabelTranslateHelper(id, label, translate)}
               control={
@@ -1586,7 +1583,7 @@ export const renderCheckbox = ({
                   checked={input.value ? true : false}
                   {...custom}
                   {...input}
-                  className={classes.checkbox}
+                  // className={classes.checkbox}
                   data-testid="component-checkbox"
                   name="checkbox"
                   inputProps={{ id: id }}
@@ -1596,7 +1593,12 @@ export const renderCheckbox = ({
             />
           </Box>
           {touched && error && (
-            <FormHelperText className={classes.checkboxErrorText}>
+            <FormHelperText
+              // className={classes.checkboxErrorText}
+              sx={{
+                margin: "-10px 0 10px 0"
+              }}
+            >
               {error}
             </FormHelperText>
           )}
@@ -1701,10 +1703,22 @@ export const renderCAPERadioGroup = ({
       <FormControl
         component="fieldset"
         error={!!(touched && error)}
-        className={classes[formControlName] || classes.formControl}
+        // className={classes[formControlName] || classes.formControl}
+        sx={{
+          width: "100%"
+        }}
         variant="standard"
       >
-        <FormLabel component="legend" className={classes.capeRadioLabel}>
+        <FormLabel
+          component="legend"
+          // className={classes.capeRadioLabel}
+          sx={{
+            fontSize: "1.2em",
+            color: "#531078", // medium purple // theme.palette.primary.light
+            fontWeight: 700,
+            textAlign: "center"
+          }}
+        >
           {translate(id)}
         </FormLabel>
 
@@ -1713,7 +1727,13 @@ export const renderCAPERadioGroup = ({
           aria-label={formControlName}
           name={formControlName}
           id={formControlName}
-          className={classes.horizGroup}
+          // className={classes.horizGroup}
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center"
+          }}
           onChange={input.onChange}
           data-testid={dataTestId}
         >
@@ -1726,7 +1746,13 @@ export const renderCAPERadioGroup = ({
               <FormControlLabel
                 key={shortid()}
                 value={item}
-                className={classes.suggestedAmountBox}
+                // className={classes.suggestedAmountBox}
+                sx={{
+                  width: "21%",
+                  height: "60px",
+                  margin: "13px 1.666666666666667% 0",
+                  display: "inline-block"
+                }}
                 label={labelText}
                 labelPlacement="bottom"
                 control={
@@ -1742,7 +1768,13 @@ export const renderCAPERadioGroup = ({
           })}
         </RadioGroup>
         {touched && error && (
-          <FormHelperText className={classes.checkboxErrorText}>
+          <FormHelperText
+            className={classes.checkboxErrorText}
+            sx={{
+              margin: "-10px 0 10px 0",
+              textAlign: "center"
+            }}
+          >
             {error}
           </FormHelperText>
         )}
