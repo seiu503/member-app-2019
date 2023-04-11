@@ -347,12 +347,12 @@ export const CAPE = props => {
                 options={employerTypesList}
                 onChange={updateEmployersPicklist}
                 // labelWidth={'100'}
-                style={{ width: 100 }}
+                style={{ width: "100%" }}
               />
               {formValues.employerType !== "" && (
                 <Field
                   // labelWidth={'104'}
-                  style={{ width: 104 }}
+                  style={{ width: "100%" }}
                   label="Employer Name"
                   name="employerName"
                   id="employerName"
