@@ -5,7 +5,13 @@ import { withLocalize, Translate } from "react-localize-redux";
 import queryString from "query-string";
 import moment from "moment";
 
-import { FormLabel, FormHelperText, FormGroup, Divider } from "@mui/material";
+import {
+  FormLabel,
+  FormHelperText,
+  FormGroup,
+  Divider,
+  Box
+} from "@mui/material";
 import { CheckCircleOutline } from "@mui/icons-material";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -27,7 +33,7 @@ export function SubmissionFormPage2ComponentFunctionWrapper({ ...rest }) {
 }
 
 export class SubmissionFormPage2Component extends React.Component {
-  classes = this.props.classes;
+  // classes = this.props.classes;
   constructor(props) {
     super(props);
     this.state = {};
@@ -146,357 +152,528 @@ export class SubmissionFormPage2Component extends React.Component {
     const id = this.props.submission.submissionId;
     const { matches } = this.props;
     const paymentRequired = this.props.submission.formPage1.paymentRequired;
+    const formContainer = {
+      display: "flex",
+      padding: {
+        xs: "20px 0",
+        lg: "20px 50px 20px 0",
+        xl: "80px 0 140px 0"
+      },
+      margin: {
+        xs: "36px auto",
+        sm: "44px auto"
+        // lg: "44px 0 44px 50%"
+      },
+      width: {
+        xs: "100vw",
+        sm: "auto"
+      },
+      position: {
+        xs: "absolute",
+        sm: "static"
+      },
+      left: {
+        xs: 0
+      },
+      top: {
+        xs: 0
+      }
+    };
+    const input2col = {
+      width: {
+        xs: "100%",
+        sm: "48%"
+      },
+      display: {
+        xs: "block",
+        sm: "flex" // ????
+      }
+      // classes.input2col
+    };
     return (
-      <div
-        className={this.classes.formContainer}
+      <Box
+        sx={{
+          margin: "auto",
+          padding: "20px",
+          maxWidth: "600px",
+          background: "white"
+        }}
         data-testid="component-submissionformpage2"
       >
-        <form
-          id="submissionFormPage2"
-          onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
-          className={this.classes.form}
-        >
-          <div className={this.classes.successWrap}>
-            <div className={this.classes.checkIcon}>
-              <CheckCircleOutline
-                style={{ color: "#66BB6A", height: 100, width: 100 }}
-              />
-            </div>
-            <FormHelperText
-              className={this.classes.page2IntroText}
-              id="page2IntroText"
+        <Box sx={formContainer}>
+          <form
+            id="submissionFormPage2"
+            onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
+            // className={this.classes.form}
+          >
+            <Box
+              // className={this.classes.successWrap}
+              sx={{
+                display: "flex",
+                flexWrap: {
+                  xs: "wrap",
+                  sm: "nowrap"
+                }
+              }}
             >
-              {paymentRequired ? (
-                <Translate
-                  id="directPayNextSteps_2022"
-                  data-testid="direct-pay-text"
+              <Box
+                // className={this.classes.checkIcon}
+                sx={{
+                  width: {
+                    xs: "100%",
+                    sm: "auto"
+                  },
+                  display: {
+                    xs: "flex",
+                    sm: "static"
+                  },
+                  justifyContent: {
+                    xs: "center",
+                    sm: "left"
+                  }
+                }}
+              >
+                <CheckCircleOutline
+                  style={{ color: "#66BB6A", height: 100, width: 100 }}
                 />
-              ) : (
-                <Translate
-                  id="thankYouNoPayment"
-                  data-testid="no-payment-text"
+              </Box>
+              <FormHelperText
+                // className={this.classes.page2IntroText}
+                sx={{
+                  fontSize: "1.2rem",
+                  lineHeight: "1.4em",
+                  padding: {
+                    xs: "0 0 .5em 0",
+                    sm: "0 0 .5em .5em"
+                  }
+                }}
+                id="page2IntroText"
+              >
+                {paymentRequired ? (
+                  <Translate
+                    id="directPayNextSteps_2022"
+                    data-testid="direct-pay-text"
+                  />
+                ) : (
+                  <Translate
+                    id="thankYouNoPayment"
+                    data-testid="no-payment-text"
+                  />
+                )}
+              </FormHelperText>
+            </Box>
+            <p>
+              <Translate id="introParagraph" />
+            </p>
+            <Divider style={{ margin: 20 }} />
+            {!id && (
+              <React.Fragment>
+                <FormGroup
+                  // className={this.classes.formGroup}
+                  // sx={{
+                  //   display: "flex",
+                  //   flexDirection: "column",
+                  //   justifyContent: "flex-start",
+                  //   margin: "0 0 20px"
+                  // }}
+                  row
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: {
+                      xs: "wrap",
+                      sm: "nowrap"
+                    },
+                    justifyContent: "space-between"
+                    // classes.formGroup2Col
+                  }}
+                >
+                  <Field
+                    twocol
+                    mobile={!matches}
+                    label="First Name"
+                    name="firstName"
+                    id="firstName"
+                    type="text"
+                    classes={{ input2col }}
+                    component={this.renderTextField}
+                  />
+
+                  <Field
+                    twocol
+                    mobile={!matches}
+                    name="lastName"
+                    id="lastName"
+                    label="Last Name"
+                    classes={{ input2col }}
+                    component={this.renderTextField}
+                    type="text"
+                  />
+                </FormGroup>
+                <Field
+                  label="Home Email"
+                  name="homeEmail"
+                  id="homeEmail"
+                  type="email"
+                  // classes={this.classes}
+                  component={this.renderTextField}
+                />
+              </React.Fragment>
+            )}
+            <FormLabel
+              // className={this.classes.formLabel}
+              sx={{
+                margin: "10px 0 10px",
+                fontSize: "20px",
+                color: "black"
+              }}
+              component="legend"
+            >
+              <Translate id="raceEthnicityHelperText" />
+            </FormLabel>
+            <FormGroup
+              // className={this.classes.formGroup}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                margin: "0 0 20px"
+              }}
+            >
+              <Field
+                label="African or African-American"
+                name="africanOrAfricanAmerican"
+                id="africanOrAfricanAmerican"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Arab American, Middle Eastern, or North African"
+                name="arabAmericanMiddleEasternOrNorthAfrican"
+                id="arabAmericanMiddleEasternOrNorthAfrican"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Asian or Asian American"
+                name="asianOrAsianAmerican"
+                id="asianOrAsianAmerican"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Hispanic or Latinx"
+                name="hispanicOrLatinx"
+                id="hispanicOrLatinx"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Native American or Indigenous"
+                name="nativeAmericanOrIndigenous"
+                id="nativeAmericanOrIndigenous"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Native Hawaiian or Other Pacific Islander"
+                name="nativeHawaiianOrOtherPacificIslander"
+                id="nativeHawaiianOrOtherPacificIslander"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="White"
+                name="white"
+                id="white"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Other"
+                name="other"
+                id="other"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Declined"
+                name="declined"
+                id="declined"
+                // classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+            </FormGroup>
+
+            <FormLabel
+              // className={this.classes.formLabel}
+              sx={{
+                margin: "10px 0 10px",
+                fontSize: "20px",
+                color: "black"
+              }}
+              component="legend"
+            >
+              <Translate id="otherSocialIdentities" />
+            </FormLabel>
+            <FormGroup
+              // className={this.classes.formGroup}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                margin: "0 0"
+              }}
+            >
+              <Field
+                label="I identify as LGBTQIA+"
+                name="lgbtqId"
+                id="lgbtqId"
+                type="checkbox"
+                //classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="I identify as transgender"
+                name="transId"
+                id="transId"
+                type="checkbox"
+                classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="I am a veteran or active military"
+                name="veteranId"
+                id="veteranId"
+                type="checkbox"
+                //classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="I identify as disabled or a person with a disability"
+                name="disabilityId"
+                id="disabilityId"
+                type="checkbox"
+                //classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="I identify as Deaf or hard-of-hearing"
+                name="deafOrHardOfHearing"
+                id="deafOrHardOfHearing"
+                type="checkbox"
+                //classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="I identify as Blind or visually impaired"
+                name="blindOrVisuallyImpaired"
+                id="blindOrVisuallyImpaired"
+                type="checkbox"
+                //classes={this.classes}
+                component={this.renderCheckbox}
+                localize={this.props.localize}
+              />
+              <Field
+                label="Gender"
+                name="gender"
+                id="gender"
+                type="select"
+                //classes={this.classes}
+                component={this.renderSelect}
+                // labelWidth={50}
+                sx={{ marginBottom: "0px" }}
+                options={genderOptions}
+              />
+              {this.props.formValues.gender === "other" && (
+                <Field
+                  label="If other, Please describe"
+                  name="genderOtherDescription"
+                  id="genderOtherDescription"
+                  type="text"
+                  //classes={this.classes}
+                  component={this.renderTextField}
                 />
               )}
-            </FormHelperText>
-          </div>
-          <p>
-            <Translate id="introParagraph" />
-          </p>
-          <Divider style={{ margin: 20 }} />
-          {!id && (
-            <React.Fragment>
-              <FormGroup
-                className={this.classes.formGroup}
-                row
-                classes={{ root: this.classes.formGroup2Col }}
-              >
-                <Field
-                  twocol
-                  mobile={!matches}
-                  label="First Name"
-                  name="firstName"
-                  id="firstName"
-                  type="text"
-                  classes={{ input2col: this.classes.input2col }}
-                  component={this.renderTextField}
-                />
-
-                <Field
-                  twocol
-                  mobile={!matches}
-                  name="lastName"
-                  id="lastName"
-                  label="Last Name"
-                  classes={{ input2col: this.classes.input2col }}
-                  component={this.renderTextField}
-                  type="text"
-                />
-              </FormGroup>
               <Field
-                label="Home Email"
-                name="homeEmail"
-                id="homeEmail"
-                type="email"
+                label="Your pronouns"
+                name="genderPronoun"
+                id="genderPronoun"
+                type="select"
                 classes={this.classes}
-                component={this.renderTextField}
+                component={this.renderSelect}
+                // labelWidth={97}
+                sx={{ marginBottom: "0px" }}
+                options={genderPronounOptions}
               />
-            </React.Fragment>
-          )}
-          <FormLabel className={this.classes.formLabel} component="legend">
-            <Translate id="raceEthnicityHelperText" />
-          </FormLabel>
-          <FormGroup className={this.classes.formGroup}>
-            <Field
-              label="African or African-American"
-              name="africanOrAfricanAmerican"
-              id="africanOrAfricanAmerican"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Arab American, Middle Eastern, or North African"
-              name="arabAmericanMiddleEasternOrNorthAfrican"
-              id="arabAmericanMiddleEasternOrNorthAfrican"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Asian or Asian American"
-              name="asianOrAsianAmerican"
-              id="asianOrAsianAmerican"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Hispanic or Latinx"
-              name="hispanicOrLatinx"
-              id="hispanicOrLatinx"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Native American or Indigenous"
-              name="nativeAmericanOrIndigenous"
-              id="nativeAmericanOrIndigenous"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Native Hawaiian or Other Pacific Islander"
-              name="nativeHawaiianOrOtherPacificIslander"
-              id="nativeHawaiianOrOtherPacificIslander"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="White"
-              name="white"
-              id="white"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Other"
-              name="other"
-              id="other"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Declined"
-              name="declined"
-              id="declined"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-          </FormGroup>
+            </FormGroup>
 
-          <FormLabel className={this.classes.formLabel} component="legend">
-            <Translate id="otherSocialIdentities" />
-          </FormLabel>
-          <FormGroup className={this.classes.formGroup}>
-            <Field
-              label="I identify as LGBTQIA+"
-              name="lgbtqId"
-              id="lgbtqId"
-              type="checkbox"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="I identify as transgender"
-              name="transId"
-              id="transId"
-              type="checkbox"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="I am a veteran or active military"
-              name="veteranId"
-              id="veteranId"
-              type="checkbox"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="I identify as disabled or a person with a disability"
-              name="disabilityId"
-              id="disabilityId"
-              type="checkbox"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="I identify as Deaf or hard-of-hearing"
-              name="deafOrHardOfHearing"
-              id="deafOrHardOfHearing"
-              type="checkbox"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="I identify as Blind or visually impaired"
-              name="blindOrVisuallyImpaired"
-              id="blindOrVisuallyImpaired"
-              type="checkbox"
-              classes={this.classes}
-              component={this.renderCheckbox}
-              localize={this.props.localize}
-            />
-            <Field
-              label="Gender"
-              name="gender"
-              id="gender"
-              type="select"
-              classes={this.classes}
-              component={this.renderSelect}
-              // labelWidth={50}
-              style={{ width: 50 }}
-              options={genderOptions}
-            />
-            {this.props.formValues.gender === "other" && (
+            <FormLabel
+              // className={this.classes.formLabel}
+              sx={{
+                margin: "10px 0 10px",
+                fontSize: "20px",
+                color: "black"
+              }}
+              component="legend"
+            >
+              <Translate id="employmentInfo" />
+            </FormLabel>
+            <FormGroup
+              // className={this.classes.formGroup}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                margin: "0 0 20px"
+              }}
+            >
               <Field
-                label="If other, Please describe"
-                name="genderOtherDescription"
-                id="genderOtherDescription"
+                label="Job Class/Title"
+                name="jobTitle"
+                id="jobTitle"
                 type="text"
-                classes={this.classes}
+                //classes={this.classes}
                 component={this.renderTextField}
               />
-            )}
-            <Field
-              label="Your pronouns"
-              name="genderPronoun"
-              id="genderPronoun"
-              type="select"
-              classes={this.classes}
-              component={this.renderSelect}
-              // labelWidth={97}
-              style={{ width: 97 }}
-              options={genderPronounOptions}
-            />
-          </FormGroup>
+              <Field
+                label="Hire Date"
+                name="hireDate"
+                id="hireDate"
+                type="text"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+              <Field
+                label="Worksite"
+                name="worksite"
+                id="worksite"
+                type="text"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+              <Field
+                label="Work Email"
+                name="workEmail"
+                id="workEmail"
+                type="email"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+              <Field
+                label="Work Phone"
+                name="workPhone"
+                id="workPhone"
+                type="tel"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+            </FormGroup>
 
-          <FormLabel className={this.classes.formLabel} component="legend">
-            <Translate id="employmentInfo" />
-          </FormLabel>
-          <FormGroup className={this.classes.formGroup}>
-            <Field
-              label="Job Class/Title"
-              name="jobTitle"
-              id="jobTitle"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-            <Field
-              label="Hire Date"
-              name="hireDate"
-              id="hireDate"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-            <Field
-              label="Worksite"
-              name="worksite"
-              id="worksite"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-            <Field
-              label="Work Email"
-              name="workEmail"
-              id="workEmail"
-              type="email"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-            <Field
-              label="Work Phone"
-              name="workPhone"
-              id="workPhone"
-              type="tel"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-          </FormGroup>
+            <FormLabel
+              // className={this.classes.formLabel}
+              sx={{
+                margin: "10px 0 10px",
+                fontSize: "20px",
+                color: "black"
+              }}
+              component="legend"
+            >
+              <Translate id="mailToAddress" />
+            </FormLabel>
+            <FormHelperText
+              // className={this.classes.page2IntroText}
+              sx={{
+                fontSize: ".9rem",
+                lineHeight: "1.2em",
+                padding: {
+                  xs: "0 0 .5em 0",
+                  sm: "0 0 .5em .5em"
+                },
+                marginTop: "0px"
+              }}
+              id="mailingAddressDescription"
+            >
+              <Translate id="fieldHintAddress" />
+            </FormHelperText>
+            <FormGroup
+              // className={this.classes.formGroup}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
+                margin: "0 0 20px"
+              }}
+            >
+              <Field
+                label="Mailing Street"
+                name="mailToStreet"
+                id="mailToStreet"
+                type="text"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+              <Field
+                label="Mailing City"
+                name="mailToCity"
+                id="mailToCity"
+                type="text"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+              <Field
+                label="Mailing State"
+                name="mailToState"
+                id="mailToState"
+                type="select"
+                //classes={this.classes}
+                formControlName="formControlDate"
+                component={this.renderSelect}
+                // labelWidth={88}
+                sx={{ marginBottom: "0px" }}
+                options={stateList}
+              />
+              <Field
+                label="Mailing ZIP"
+                name="mailToZip"
+                id="mailToZip"
+                type="text"
+                //classes={this.classes}
+                component={this.renderTextField}
+              />
+            </FormGroup>
 
-          <FormLabel className={this.classes.formLabel} component="legend">
-            <Translate id="mailToAddress" />
-          </FormLabel>
-          <FormHelperText
-            className={this.classes.formHelperText}
-            id="mailingAddressDescription"
-          >
-            <Translate id="fieldHintAddress" />
-          </FormHelperText>
-          <FormGroup className={this.classes.formGroup}>
-            <Field
-              label="Mailing Street"
-              name="mailToStreet"
-              id="mailToStreet"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-            <Field
-              label="Mailing City"
-              name="mailToCity"
-              id="mailToCity"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-            <Field
-              label="Mailing State"
-              name="mailToState"
-              id="mailToState"
-              type="select"
-              classes={this.classes}
-              formControlName="formControlDate"
-              component={this.renderSelect}
-              // labelWidth={88}
-              style={{ width: 88 }}
-              options={stateList}
-            />
-            <Field
-              label="Mailing ZIP"
-              name="mailToZip"
-              id="mailToZip"
-              type="text"
-              classes={this.classes}
-              component={this.renderTextField}
-            />
-          </FormGroup>
-
-          <ButtonWithSpinner
-            type="submit"
-            color="primary"
-            className={this.classes.formButton}
-            variant="contained"
-            loading={this.props.submission.loading}
-          >
-            <Translate id="submit" />
-          </ButtonWithSpinner>
-        </form>
-      </div>
+            <ButtonWithSpinner
+              type="submit"
+              color="primary"
+              //className={this.classes.formButton}
+              sx={{
+                width: "100%",
+                padding: "20px",
+                margin: "0 0 40px"
+              }}
+              variant="contained"
+              loading={this.props.submission.loading}
+            >
+              <Translate id="submit" />
+            </ButtonWithSpinner>
+          </form>
+        </Box>
+      </Box>
     );
   }
 }

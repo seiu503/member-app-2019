@@ -5,13 +5,13 @@ import { connect } from "react-redux";
 import queryString from "query-string";
 import { withLocalize } from "react-localize-redux";
 
-import { withStyles } from "@mui/styles";
+// import { withStyles } from "@mui/styles";
 
 import SubmissionFormPage2FormWrap from "../components/SubmissionFormPage2Component";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
-import { stylesPage2 } from "../components/SubmissionFormElements";
+// import { stylesPage2 } from "../components/SubmissionFormElements";
 
 export class SubmissionFormPage2Container extends React.Component {
   classes = this.props.classes;
@@ -76,6 +76,8 @@ export const SubmissionFormPage2Connected = connect(
 )(SubmissionFormPage2Container);
 
 // add MUI styles and faked lifecycle methods
-export default withStyles(stylesPage2)(
-  withLocalize(SubmissionFormPage2Connected)
-);
+// export default withStyles(stylesPage2)(
+//   withLocalize(SubmissionFormPage2Connected)
+// );
+
+export default withLocalize(SubmissionFormPage2Connected);

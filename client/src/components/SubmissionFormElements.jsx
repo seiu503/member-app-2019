@@ -1335,7 +1335,6 @@ export const renderTextField = ({
           label={inputLabelTranslateHelper(id, label, translate)}
           error={!!(touched && error)}
           variant="outlined"
-          className={classes.input}
           style={
             twocol && !mobile
               ? { width: "48%" }
@@ -1490,7 +1489,6 @@ export const renderSelect = ({
       <FormControl
         variant="outlined"
         // className={classes[formControlName] || classes.formControl}
-        sx={classes[formControlName] || classes.formControl}
         error={!!(error && touched)}
         {...custom}
         required={touched && error === "Required"}
@@ -1516,7 +1514,20 @@ export const renderSelect = ({
               }}
             />
           }
-          className={align === "right" ? classes.selectRight : classes.select}
+          // className={align === "right" ? classes.selectRight : classes.select}
+          sx={
+            align === "right"
+              ? {
+                  textAlign: "right",
+                  width: "100%",
+                  margin: "0 0 30px 0",
+                  direction: "rtl"
+                }
+              : {
+                  width: "100%",
+                  margin: "0 0 30px 0"
+                }
+          }
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
           {...custom}
@@ -1571,7 +1582,7 @@ export const renderCheckbox = ({
       return (
         <FormControl
           error={!!(touched && error)}
-          className={classes[formControlName] || classes.formControl}
+          // className={classes[formControlName] || classes.formControl}
           variant="standard"
         >
           <Box sx={bold ? boldClass : mini ? miniClass : {}}>
