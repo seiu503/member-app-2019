@@ -58,7 +58,8 @@ const defaultProps = {
   },
   location: {
     search: "?cId=1&aId=3&sId=2"
-  }
+  },
+  handleError: jest.fn()
 };
 
 let getSFContactByIdError = jest

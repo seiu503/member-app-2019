@@ -14,9 +14,6 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 
-// import { withStyles } from "@mui/styles";
-
-// import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as utils from "../utils";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";

@@ -21,6 +21,7 @@ const BasicSnackbar = ({ open, onClose, variant, message }) => {
     <>
       <Snackbar
         open={open}
+        data-testid="component-basic-snackbar"
         autoHideDuration={6000}
         onClose={onClose}
         anchorOrigin={{

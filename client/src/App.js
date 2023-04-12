@@ -26,7 +26,7 @@ import NotFound from "./components/NotFound";
 import BasicSnackbar from "./components/BasicSnackbar";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
-import Notifier from "./containers/Notifier";
+// import Notifier from "./containers/Notifier";
 import Spinner from "./components/Spinner";
 import {
   // handleError,
@@ -37,7 +37,6 @@ import {
   removeFalsy,
   languageMap
 } from "./components/SubmissionFormElements";
-// import { openSnackbar } from "./containers/Notifier";
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 

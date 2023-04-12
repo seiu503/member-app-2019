@@ -12,7 +12,7 @@ import {
 import { SubmissionFormPage1Component } from "../../components/SubmissionFormPage1Component";
 import * as formElements from "../../components/SubmissionFormElements";
 
-import * as Notifier from "../../containers/Notifier";
+// import * as Notifier from "../../containers/Notifier";
 
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
@@ -287,7 +287,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           employerType: "adult foster home"
         }
       };
-      Notifier.openSnackbar = jest.fn();
+      // Notifier.openSnackbar = jest.fn();
       let testProps = {
         ...defaultProps,
         ...props,

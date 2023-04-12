@@ -165,7 +165,8 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {

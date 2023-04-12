@@ -167,7 +167,8 @@ const defaultProps = {
     setSpinner: jest.fn()
   },
   createSubmission: createSubmissionSuccess,
-  changeTab: changeTabMock
+  changeTab: changeTabMock,
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {

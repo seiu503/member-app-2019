@@ -3,7 +3,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as formElements from "../../components/SubmissionFormElements";
-import Notifier from "../../containers/Notifier";
+// import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";
 
 const {
@@ -233,8 +233,8 @@ describe("Input Field Render functions", () => {
   });
   describe("renderTextField", () => {
     beforeEach(() => {
-      const openSnackbarMock = jest.fn();
-      Notifier.openSnackbar = openSnackbarMock;
+      // const openSnackbarMock = jest.fn();
+      // Notifier.openSnackbar = openSnackbarMock;
     });
     afterEach(() => {
       jest.restoreAllMocks();
@@ -375,8 +375,8 @@ describe("Input Field Render functions", () => {
 
   describe("renderSelect", () => {
     beforeEach(() => {
-      const openSnackbarMock = jest.fn();
-      Notifier.openSnackbar = openSnackbarMock;
+      // const openSnackbarMock = jest.fn();
+      // Notifier.openSnackbar = openSnackbarMock;
     });
     afterEach(() => {
       jest.restoreAllMocks();

@@ -60,7 +60,7 @@ export class NavBar extends React.Component {
       const { primary, handleClose, link } = props;
       return (
         <MenuItem
-          button
+          // button
           component={Button}
           href={`/${link}`}
           onClick={() => {
@@ -301,7 +301,7 @@ export class NavBar extends React.Component {
                   >
                     <MenuOutlined />
                   </IconButton>
-                  <Box
+                  <Menu
                     element={Menu}
                     id="nav-menu"
                     anchorEl={anchorEl}
@@ -315,14 +315,14 @@ export class NavBar extends React.Component {
                     TransitionProps={{ direction: "left" }}
                     PaperProps={{ className: classes.drawer }}
                     data-testid="menu"
-                    sx={{
+                    style={{
                       boxShadow:
                         "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
                       // className="drawer"
                     }}
                   >
                     {mobileLinks}
-                  </Box>
+                  </Menu>
                   <Box
                     element="nav"
                     sx={{

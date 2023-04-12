@@ -245,7 +245,8 @@ const defaultProps = {
     current: {
       innerHTML: "cape"
     }
-  }
+  },
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {

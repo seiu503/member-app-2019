@@ -174,7 +174,8 @@ const defaultProps = {
   changeTab: changeTabMock,
   lookupSFContact: lookupSFContactSuccess,
   createSFContact: createSFContactSuccess,
-  translate: jest.fn()
+  translate: jest.fn(),
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {

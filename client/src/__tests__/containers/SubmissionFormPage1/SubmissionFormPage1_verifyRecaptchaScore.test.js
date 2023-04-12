@@ -152,7 +152,8 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  translate: jest.fn()
+  translate: jest.fn(),
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {

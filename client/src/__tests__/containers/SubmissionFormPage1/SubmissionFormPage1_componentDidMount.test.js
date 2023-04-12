@@ -171,7 +171,8 @@ const defaultProps = {
     id: 3,
     text: ""
   },
-  setCAPEOptions: jest.fn()
+  setCAPEOptions: jest.fn(),
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {

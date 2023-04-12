@@ -189,7 +189,8 @@ const defaultProps = {
   },
   createSubmission: createSubmissionMock,
   changeTab: jest.fn(),
-  translate: jest.fn()
+  translate: jest.fn(),
+  handleError: jest.fn()
 };
 
 const setup = (props = {}) => {
