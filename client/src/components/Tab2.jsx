@@ -45,7 +45,11 @@ export const Tab2 = props => {
         // className={classes.form}
       }}
     >
-      <form onSubmit={props.handleSubmit(onSubmit)} id="tab2">
+      <form
+        onSubmit={props.handleSubmit(onSubmit)}
+        id="tab2"
+        data-testid="form-tab2"
+      >
         <Field
           formControlName="controlCheckboxMarginBold"
           label="Agree to Terms of Membership"

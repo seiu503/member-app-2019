@@ -54,14 +54,6 @@ describe("<Tab1 />", () => {
   const initialState = {};
 
   store = storeFactory(initialState);
-  // const setup = props => {
-  //   const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-  //   return mount(
-  //     <Provider store={store}>
-  //       <Tab1Form {...setUpProps} {...props} />
-  //     </Provider>
-  //   );
-  // };
 
   const setup = (props = {}) => {
     const setupProps = {
