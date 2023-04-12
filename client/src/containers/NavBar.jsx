@@ -31,19 +31,6 @@ export class NavBar extends React.Component {
     this.state = {
       anchorEl: null
     };
-
-    this.handleClick = this.handleClick.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-  }
-
-  handleClick(e) {
-    this.setState({ anchorEl: e.currentTarget });
-    this.props.main_ref.current.classList.add("is-blurred");
-  }
-
-  handleClose() {
-    this.setState({ anchorEl: null });
-    this.props.main_ref.current.classList.remove("is-blurred");
   }
 
   skipToMain() {
@@ -52,81 +39,6 @@ export class NavBar extends React.Component {
 
   render() {
     const values = queryString.parse(this.props.location.search);
-    const { classes } = this.props;
-    const { anchorEl } = this.state;
-    const { loggedIn } = this.props.appState;
-    const adminLinks = ["users", "content", "logout"];
-    const ListItemLink = props => {
-      const { primary, handleClose, link } = props;
-      return (
-        <MenuItem
-          // button
-          component={Button}
-          href={`/${link}`}
-          onClick={() => {
-            this.props.history.push(`/${link}`);
-            handleClose();
-          }}
-          sx={{
-            padding: "24px 16px",
-            textAlign: "center",
-            textTransform: "capitalize",
-            fontFamily: [
-              '"Source Sans Pro"',
-              '"Helvetica Neue"',
-              "Helvetica",
-              "Arial",
-              "sans-serif"
-            ].join(","),
-            fontWeight: 400,
-            color: "secondary.main" // "#ffce04" // yellow/gold
-          }}
-          data-testid="menu-item-mobile"
-        >
-          <ListItemText
-            primary={primary}
-            primaryTypographyProps={{
-              color: "secondary"
-            }}
-          />
-        </MenuItem>
-      );
-    };
-    const mobileLinks = (
-      <div data-testid="mobile-links">
-        {adminLinks.map((link, index) => {
-          return (
-            <ListItemLink
-              key={index}
-              primary={link}
-              handleClose={this.handleClose}
-              link={link}
-              data-testid="mobile-link"
-            />
-          );
-        })}
-      </div>
-    );
-    const adminMenuLinks = (
-      <div data-testid="admin-menu-links">
-        {adminLinks.map((link, index) => {
-          return (
-            <Button
-              key={index}
-              sx={{
-                color: "secondary.main", // "#ffce04", // yellow/gold
-                textTransform: "capitalize",
-                fontSize: "1em"
-                // className={classes.menuLink}
-              }}
-              href={`/${link}`}
-            >
-              {link}
-            </Button>
-          );
-        })}
-      </div>
-    );
     return (
       <Box
         data-testid="component-navbar"
@@ -275,67 +187,6 @@ export class NavBar extends React.Component {
                   "简体中文"
                 ]}
               />
-              {loggedIn && (
-                <React.Fragment>
-                  <IconButton
-                    color="secondary"
-                    aria-label="Menu"
-                    aria-owns={anchorEl ? "nav-menu" : null}
-                    aria-haspopup="true"
-                    onClick={e => this.handleClick(e)}
-                    data-testid="menu-button"
-                    sx={{
-                      display: {
-                        xs: "block",
-                        md: "none"
-                      },
-                      position: {
-                        xs: "absolute",
-                        md: "static"
-                      },
-                      right: {
-                        xs: 20,
-                        md: 0
-                      }
-                    }}
-                  >
-                    <MenuOutlined />
-                  </IconButton>
-                  <Menu
-                    element={Menu}
-                    id="nav-menu"
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={this.handleClose}
-                    component="nav"
-                    elevation={0}
-                    anchorOrigin={{ horizontal: "right", vertical: "top" }}
-                    transformOrigin={{ horizontal: "right", vertical: "top" }}
-                    TransitionComponent={Slide}
-                    TransitionProps={{ direction: "left" }}
-                    PaperProps={{ className: classes.drawer }}
-                    data-testid="menu"
-                    style={{
-                      boxShadow:
-                        "inset 0px 2px 4px -1px rgba(0,0,0,.2), inset 0px -2px 4px -1px rgba(0,0,0,.2), inset 0px 4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px -4px 5px 0px rgba(0, 0, 0, 0.14), inset 0px 1px 10px 0px rgba(0, 0, 0, 0.12), inset 0px -1px 10px 0px rgba(0, 0, 0, 0.12), -4px 0px 10px -2px rgba(0,0,0,.2)"
-                      // className="drawer"
-                    }}
-                  >
-                    {mobileLinks}
-                  </Menu>
-                  <Box
-                    element="nav"
-                    sx={{
-                      display: {
-                        xs: "none",
-                        md: "block"
-                      }
-                    }}
-                  >
-                    {adminMenuLinks}
-                  </Box>
-                </React.Fragment>
-              )}
             </Toolbar>
           </AppBar>
         </Box>

@@ -82,123 +82,21 @@ describe("<NavBar />", () => {
     expect(component).toBeInTheDocument();
   });
 
-  test("renders a menu button", () => {
-    const { getByTestId } = setup({ loggedIn: true });
-    const component = getByTestId("menu-button");
-    expect(component).toBeInTheDocument();
-  });
-
-  test("renders a menu", () => {
-    const { getByTestId } = setup();
-    const component = getByTestId("menu");
-    expect(component).toBeInTheDocument();
-  });
-
-  // test("if `loggedId` = true, renders admin menu links", () => {
-  //   const wrapper = setup({ appState: { loggedIn: true } });
-  //   const component = findByTestAttr(wrapper, "admin-menu-links");
-  //   expect(component.length).toBe(1);
-  // });
-
-  // test("if `loggedId` = false, does not render admin menu links", () => {
-  //   const wrapper = setup({ appState: { loggedIn: false } });
-  //   const component = findByTestAttr(wrapper, "admin-menu-links");
-  //   expect(component.length).toBe(0);
-  // });
-
-  test("clicking skiplink calls `skipToMain` method", () => {
+  test("clicking skiplink calls `skipToMain` method", async () => {
     // create a mock function so we can see whether it's called on click
     utils.skip = jest.fn();
-    const wrapper = setup();
+
+    // set up unwrapped component with handleSubmitMock as handleSubmit prop
+    const user = userEvent.setup();
+    const { getByTestId } = setup();
 
     // simulate click
-    const skipLink = findByTestAttr(wrapper, "skiplink-button");
-    skipLink.simulate("click");
+    await userEvent.click(getByTestId("skiplink-button"));
 
     // expect the mock to have been called once
-    expect(utils.skip.mock.calls.length).toBe(1);
+    expect(utils.skip).toHaveBeenCalled();
 
     // restore mock
     utils.skip.mockRestore();
-  });
-
-  test("clicking mobile menu button calls `handleClick` function", () => {
-    const wrapper = setup({});
-    const menuButton = findByTestAttr(wrapper, "menu-button");
-
-    // mock handleClick function
-    wrapper.instance().handleClick = jest.fn();
-
-    // mock event and simulate click
-    const mockedEvent = { currentTarget: {} };
-    menuButton.simulate("click", mockedEvent);
-
-    // expect the handleClick function to have been called
-    expect(wrapper.instance().handleClick).toBeCalled();
-  });
-
-  test("clicking mobile menu item calls `handleClose` function", () => {
-    const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "mobile-link")
-      .first()
-      .dive();
-
-    // mock handleClose function
-    const handleCloseMock = jest.fn();
-    menuItem.setProps({ handleClose: handleCloseMock });
-
-    // simulate click
-    menuItem.simulate("click");
-
-    // expect the handleClose mock to have been called once
-    expect(handleCloseMock.mock.calls.length).toBe(1);
-
-    // restore mock
-    handleCloseMock.mockRestore();
-  });
-
-  test("clicking mobile menu item redirects to correct link", () => {
-    const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "mobile-link")
-      .first()
-      .dive();
-    menuItem.setProps({ link: "home" });
-
-    // mock `history.push()`
-    const pushMock = jest.fn();
-    wrapper.setProps({ history: { push: pushMock } });
-
-    // simulate click
-    menuItem.simulate("click");
-
-    // expect the `history.push` mock to have been called with correct link
-    expect(pushMock.mock.calls.length).toBe(1);
-    expect(pushMock.mock.calls[0]).toEqual(["/home"]);
-
-    // restore mock
-    pushMock.mockRestore();
-  });
-
-  test("`handleClick` sets anchorEl to current target", () => {
-    const wrapper = setup();
-    wrapper.setState({ anchorEl: null });
-
-    // call instance method with mocked event
-    const mockedEvent = { currentTarget: { nodeName: "button" } };
-    wrapper.instance().handleClick(mockedEvent);
-
-    expect(wrapper.instance().state.anchorEl).toStrictEqual(
-      mockedEvent.currentTarget
-    );
-  });
-
-  test("`handleClose` sets anchorEl to null", () => {
-    const wrapper = setup();
-    wrapper.setState({ anchorEl: { nodeName: "button" } });
-
-    // call instance method
-    wrapper.instance().handleClose();
-
-    expect(wrapper.instance().state.anchorEl).toBe(null);
   });
 });
