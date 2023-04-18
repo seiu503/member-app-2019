@@ -571,6 +571,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab1() {
+    console.log("handleTab1");
     const { formValues } = this.props;
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
@@ -625,6 +626,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab(newValue) {
+    console.log("handleTab");
+    console.log(newValue);
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
         console.error(err);

@@ -91,6 +91,7 @@ export const Tab1 = props => {
     >
       <form
         onSubmit={props.handleSubmit(onSubmit)}
+        role="form"
         id="tab2"
         data-testid="form-tab1"
         // className={classes.form}
@@ -387,6 +388,7 @@ export const Tab1 = props => {
             <Button
               type="submit"
               color="primary"
+              data-testid="button-submit"
               className={`g-recaptcha`}
               sx={{
                 textTransform: "none",

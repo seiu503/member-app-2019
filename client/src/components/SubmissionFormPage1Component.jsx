@@ -231,6 +231,9 @@ export class SubmissionFormPage1Component extends React.Component {
     console.log("handleSubmit");
     this.props.actions.setSpinner();
 
+    // verifyRecaptchaScore is called in handleTab1, in SubmissionFormPage1.jsx
+    // so is not needed here
+
     // await this.props
     //   .verifyRecaptchaScore()
     //   .then(score => {

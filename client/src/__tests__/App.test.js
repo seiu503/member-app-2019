@@ -3,7 +3,13 @@ import { MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "@testing-library/jest-dom/extend-expect";
 import { within } from "@testing-library/dom";
-import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../utils/testUtils";
 import { AppConnected, AppUnconnected } from "../App";
@@ -14,6 +20,10 @@ import SubmissionFormPage2 from "../containers/SubmissionFormPage2";
 import FormThankYou from "../components/FormThankYou";
 import * as utils from "../utils/index";
 import * as formElements from "../components/SubmissionFormElements";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../app/utils/fieldConfigs";
 import { defaultWelcomeInfo } from "../utils/index";
 
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -177,47 +187,83 @@ describe("<App />", () => {
       setActiveLanguageMock.mockRestore();
     });
   });
-  // describe("Misc methods", () => {
-  //   it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
-  //     wrapper = await unconnectedSetup();
-  //     getResponseMock = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve("token"));
-  //     wrapper.instance().recaptcha = {
-  //       current: {
-  //         getResponse: getResponseMock
-  //       }
-  //     };
-  //     await wrapper.update();
-  //     await wrapper.instance().onResolved();
-  //     expect(getResponseMock.mock.calls.length).toBe(1);
-  //     await getResponseMock().then(() => {
-  //       expect(handleInputMock).toHaveBeenCalledWith({
-  //         target: { name: "reCaptchaValue", value: "token" }
-  //       });
-  //     });
-  //   });
-  //   it("setRedirect saves redirect url to localStorage", async () => {
-  //     const props = {
-  //       history: {
-  //         location: {
-  //           pathname: "testpath"
-  //         }
-  //       }
-  //     };
-  //     wrapper = await setup(props);
-  //     wrapper.instance().setRedirect();
-  //     expect(window.localStorage.getItem("redirect")).toBe("testpath");
-  //   });
-  //   it("renderBodyCopy renders paragraphs matching provided body id", async () => {
-  //     wrapper = await setup();
-  //     const result = wrapper.instance().renderBodyCopy(0);
-  //     expect(result.props.children.props.children.length).toBe(3);
-  //     expect(result.props.children.props.children[0].key).toBe("bodyCopy0_1");
-  //     const result1 = wrapper.instance().renderBodyCopy(100);
-  //     expect(result1.props.children.props.children[0].key).toBe("0");
-  //   });
-  // });
+  describe("Misc methods", () => {
+    it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
+      getResponseMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve("token"));
+
+      const props = {
+        recaptcha: {
+          current: {
+            getResponseMock
+          }
+        },
+        formValues: {
+          ...generateSubmissionBody
+        }
+      };
+
+      // mock window.scrollTo
+      window.scrollTo = jest.fn();
+
+      // simulate user click 'Next'
+      const user = userEvent.setup();
+      const { getByTestId, getByRole } = await setup({ ...props });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton, { delay: 0.5 });
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // const handleSubmit = jest.fn();
+      // tab1Form.onsubmit = handleSubmit;
+
+      // simulate submit with default formValues
+      // const submitButton = getByTestId("button-submit");
+      // console.log(submitButton);
+      await waitFor(() => {
+        // userEvent.click(submitButton, { delay: 0.5 });
+        fireEvent.submit(tab1Form);
+        expect(handleSubmit).toHaveBeenCalled();
+      });
+
+      // expect the mock to have been called once
+      // await waitFor(() => {
+      //   expect(getResponseMock).toHaveBeenCalled();
+      // });
+      // await getResponseMock().then(() => {
+      //   expect(handleInputMock).toHaveBeenCalledWith({
+      //     target: { name: "reCaptchaValue", value: "token" }
+      //   });
+
+      // // restore mock
+      // getResponseMock.mockRestore();
+    });
+    // it("setRedirect saves redirect url to localStorage", async () => {
+    //   const props = {
+    //     history: {
+    //       location: {
+    //         pathname: "testpath"
+    //       }
+    //     }
+    //   };
+    //   wrapper = await setup(props);
+    //   wrapper.instance().setRedirect();
+    //   expect(window.localStorage.getItem("redirect")).toBe("testpath");
+    // });
+    // it("renderBodyCopy renders paragraphs matching provided body id", async () => {
+    //   wrapper = await setup();
+    //   const result = wrapper.instance().renderBodyCopy(0);
+    //   expect(result.props.children.props.children.length).toBe(3);
+    //   expect(result.props.children.props.children[0].key).toBe("bodyCopy0_1");
+    //   const result1 = wrapper.instance().renderBodyCopy(100);
+    //   expect(result1.props.children.props.children[0].key).toBe("0");
+    // });
+  });
 
   // describe("Unprotected route tests", () => {
   //   beforeEach(() => {
@@ -252,5 +298,5 @@ describe("<App />", () => {
   //   //   expect(wrapper.find(SubmissionForm)).toHaveLength(0);
   //   //   expect(wrapper.find(Logout)).toHaveLength(1);
   //   // });
-  // });
 });
+// });
