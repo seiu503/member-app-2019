@@ -42,7 +42,10 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.submission.employerNames.length < 3) {
+    if (
+      this.props.submission.employerNames &&
+      this.props.submission.employerNames.length < 3
+    ) {
       this.loadEmployersPicklist();
     }
   }
@@ -77,17 +80,18 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerTypesCodes = [...new Set(employerTypesListRaw)] || ["test"];
     // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     // console.log(employerTypesCodes);
-    // console.log(employerTypeMap);
+    // console.log(formElements.employerTypeMap);
     const employerTypesList = employerTypesCodes.map(code =>
-      employerTypeMap[code] ? employerTypeMap[code] : ""
+      formElements.employerTypeMap[code]
+        ? formElements.employerTypeMap[code]
+        : ""
     ) || [""];
     employerTypesList.unshift("");
-    // console.log(employerTypesList);
     return employerTypesList;
   };
 
   updateEmployersPicklist = () => {
-    console.log("updateEmployersPicklist");
+    // console.log("updateEmployersPicklist");
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
