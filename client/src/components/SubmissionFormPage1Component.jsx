@@ -234,21 +234,6 @@ export class SubmissionFormPage1Component extends React.Component {
     // verifyRecaptchaScore is called in handleTab1, in SubmissionFormPage1.jsx
     // so is not needed here
 
-    // await this.props
-    //   .verifyRecaptchaScore()
-    //   .then(score => {
-    //     console.log(`score: ${score}`);
-    //     if (!score || score <= 0.5) {
-    //       console.log(`recaptcha failed: ${score}`);
-    //       return this.props.handleError(
-    //         "ReCaptcha validation failed, please reload the page and try again."
-    //       );
-    //     }
-    //   })
-    //   .catch(err => {
-    //     console.error(err);
-    //   });
-
     return Promise.all([
       this.props.createSubmission(formValues),
       this.createSFOMA()
@@ -473,12 +458,12 @@ SubmissionFormPage1Component.propTypes = {
     error: PropTypes.string,
     salesforceId: PropTypes.string,
     employerNames: PropTypes.array,
-    employerObjects: PropTypes.arrayOf(
-      PropTypes.shape({
-        Name: PropTypes.string,
-        Sub_Division__c: PropTypes.string
-      })
-    ),
+    // employerObjects: PropTypes.arrayOf(
+    //   PropTypes.shape({
+    //     Name: PropTypes.string,
+    //     Sub_Division__c: PropTypes.string
+    //   })
+    // ),
     formPage1: PropTypes.shape({})
   }).isRequired,
   apiSF: PropTypes.shape({

@@ -727,8 +727,4 @@ export const SubmissionFormPage1Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage1Container);
 
-// export default withLocalize(
-//   withStyles(stylesPage1)(SubmissionFormPage1Connected)
-// );
-
 export default withLocalize(SubmissionFormPage1Connected);

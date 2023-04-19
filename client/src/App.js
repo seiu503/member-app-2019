@@ -93,7 +93,7 @@ export class AppUnconnected extends Component {
       }
     };
     this.props.addTranslation(globalTranslations);
-    this.setRedirect = this.setRedirect.bind(this);
+    // this.setRedirect = this.setRedirect.bind(this);
     this.onResolved = this.onResolved.bind(this);
     this.createSubmission = this.createSubmission.bind(this);
     this.updateSubmission = this.updateSubmission.bind(this);
@@ -192,7 +192,7 @@ export class AppUnconnected extends Component {
     let paragraphs = (
       <React.Fragment>
         {paragraphIds.map((id, index) => (
-          <p key={id}>
+          <p key={id} data-testid={id}>
             <Translate id={id} />
           </p>
         ))}
@@ -288,10 +288,11 @@ export class AppUnconnected extends Component {
     });
   }
 
-  setRedirect() {
-    const currentPath = this.props.history.location.pathname;
-    window.localStorage.setItem("redirect", currentPath);
-  }
+  // appears to be unused 4/19/2023
+  // setRedirect() {
+  //   const currentPath = this.props.history.location.pathname;
+  //   window.localStorage.setItem("redirect", currentPath);
+  // }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
     // console.log("updateSubmission");
@@ -853,8 +854,6 @@ export class AppUnconnected extends Component {
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {
-    console.log("changeTab");
-    console.log(newValue);
     const newState = { ...this.state };
     newState.tab = newValue;
     this.setState({ ...newState }, () => {
@@ -863,6 +862,7 @@ export class AppUnconnected extends Component {
   };
 
   render() {
+    console.log(this.props.location.search);
     const values = queryString.parse(this.props.location.search);
     const embed = values.embed;
     const { classes } = this.props;
@@ -935,7 +935,7 @@ export class AppUnconnected extends Component {
                   <SubmissionFormPage1
                     tab={this.state.tab}
                     embed={embed}
-                    setRedirect={this.setRedirect}
+                    // setRedirect={this.setRedirect}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     direct_pay={this.direct_pay}
@@ -969,7 +969,7 @@ export class AppUnconnected extends Component {
                 path="/thankyou"
                 render={routeProps => (
                   <FormThankYou
-                    setRedirect={this.setRedirect}
+                    // setRedirect={this.setRedirect}
                     classes={this.props.classes}
                     paymentRequired={
                       this.props.submission.formPage1.paymentRequired
@@ -983,7 +983,7 @@ export class AppUnconnected extends Component {
                 path="/page2"
                 render={routeProps => (
                   <SubmissionFormPage2
-                    setRedirect={this.setRedirect}
+                    // setRedirect={this.setRedirect}
                     createSubmission={this.createSubmission}
                     updateSubmission={this.updateSubmission}
                     lookupSFContact={this.lookupSFContact}

@@ -94,9 +94,4 @@ describe("<WelcomeInfo />", () => {
     const component = getByTestId("component-welcome-info");
     expect(component).toBeInTheDocument();
   });
-
-  // it("should have access to expected props", () => {
-  //   wrapper = setup();
-  //   expect(wrapper.instance().props.location.search).toBe("");
-  // });
 });
