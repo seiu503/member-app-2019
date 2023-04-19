@@ -1,11 +1,6 @@
 import update from "immutability-helper";
 
-import {
-  LOGOUT,
-  SET_LOGGEDIN,
-  SET_REDIRECT_URL,
-  SET_SPINNER
-} from "../actions";
+import { LOGOUT, SET_LOGGEDIN, SET_SPINNER } from "../actions";
 import {
   VALIDATE_TOKEN_REQUEST,
   VALIDATE_TOKEN_SUCCESS,
@@ -109,7 +104,6 @@ export const INITIAL_STATE = {
   loggedIn: false,
   authToken: "",
   loading: false,
-  redirect: "",
   userType: ""
 };
 
@@ -149,9 +143,6 @@ function appState(state = INITIAL_STATE, action) {
         loggedIn: { $set: false },
         loading: { $set: false }
       });
-
-    case SET_REDIRECT_URL:
-      return update(state, { redirect: { $set: action.payload } });
 
     case SET_LOGGEDIN:
       // console.log("SET_LOGGEDIN");

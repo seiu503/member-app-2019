@@ -23,7 +23,6 @@ describe("appState reducer", () => {
       loggedIn: true,
       authToken: "1234",
       loading: false,
-      redirect: "",
       userType: undefined
     });
   });
@@ -37,7 +36,6 @@ describe("appState reducer", () => {
       loggedIn: true,
       authToken: "",
       loading: false,
-      redirect: "",
       userType: undefined
     });
   });
@@ -50,25 +48,9 @@ describe("appState reducer", () => {
       loggedIn: false,
       authToken: "",
       loading: false,
-      redirect: "",
       userType: ""
     });
   });
-  it("should handle SET_REDIRECT_URL", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_REDIRECT_URL",
-        payload: "http://www.example.com"
-      })
-    ).toEqual({
-      loggedIn: false,
-      authToken: "",
-      loading: false,
-      redirect: "http://www.example.com",
-      userType: ""
-    });
-  });
-
   it("should handle SET_LOGGEDIN", () => {
     expect(
       reducer(INITIAL_STATE, {
@@ -78,7 +60,6 @@ describe("appState reducer", () => {
       loggedIn: true,
       authToken: "",
       loading: false,
-      redirect: "",
       userType: undefined
     });
   });
