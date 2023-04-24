@@ -292,6 +292,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async checkCAPEPaymentLogic() {
+    console.log("+++++=============+++++++");
     console.log("checkCAPEPaymentLogic");
     const { formValues } = this.props;
 

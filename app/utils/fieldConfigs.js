@@ -1099,7 +1099,7 @@ const capeTableFields = {
     // SFAPIName: "Employer__c",
     // SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "employer_name"
+    testingSample: "State of Oregon"
   },
   employer_type: {
     oldFormPage: "none",
@@ -1115,7 +1115,7 @@ const capeTableFields = {
     // SFAPIName: "Employer__c",
     // SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "employer_id"
+    testingSample: "State Agency"
   },
   job_title: {
     oldFormPage: "none",

@@ -111,7 +111,10 @@ export class SubmissionFormPage1Component extends React.Component {
         ? employerObjects.filter(
             employer =>
               employer.Sub_Division__c ===
-              getKeyByValue(employerTypeMap, employerTypeUserSelect)
+              formElements.getKeyByValue(
+                formElements.employerTypeMap,
+                employerTypeUserSelect
+              )
           )
         : [{ Name: "" }];
       let employerList = employerObjectsFiltered.map(employer => employer.Name);
