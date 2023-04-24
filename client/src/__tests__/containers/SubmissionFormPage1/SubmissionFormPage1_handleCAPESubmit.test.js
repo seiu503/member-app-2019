@@ -413,144 +413,114 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           screen.getByText("Your information has been submitted.")
         ).toBeInTheDocument();
       });
-
-      // wrapper = setup(props);
-      // let generateCAPEBodyMock = jest
-      //   .fn()
-      //   .mockImplementation(() => Promise.resolve({}));
-      // wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
-      // wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-      // await wrapper.instance().handleCAPESubmit();
-
-      // await wrapper
-      //   .instance()
-      //   .verifyRecaptchaScore()
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
-      // await generateCAPEBodyMock();
-      // await createSFCAPESuccess()
-      //   .then(() => {
-      //     expect(createCAPESuccess.mock.calls.length).toBe(1);
-      //   })
-      //   .catch(err => {
-      //     console.log(err);
-      //   });
     });
 
-    // test("`handleCAPESubmit` handles error if recaptcha verification fails", () => {
-    //   verifyRecaptchaScoreMock = jest
-    //     .fn()
-    //     .mockImplementation(() => Promise.resolve(0.1));
-    //   formElements.handleError = jest.fn();
+    test("`handleCAPESubmit` handles error if recaptcha verification fails", async () => {
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.1));
+      formElements.handleError = jest.fn();
 
-    //   wrapper = setup();
+      // add mock function to props
+      let props = {
+        verifyRecaptchaScore: verifyRecaptchaScoreMock
+      };
 
-    //   wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-    //   wrapper
-    //     .instance()
-    //     .handleCAPESubmit(true)
-    //     .then(() => {
-    //       expect(formElements.handleError.mock.calls.length).toBe(1);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // });
+      // simulate user click 'Next'
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...props });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
-    // test("`handleCAPESubmit` handles error if paymentRequired && newCardNeeded && !paymentMethodAdded", () => {
-    //   verifyRecaptchaScoreMock = jest
-    //     .fn()
-    //     .mockImplementation(() => Promise.resolve(0.9));
-    //   formElements.handleError = jest.fn();
+      // check that submit button renders
+      waitFor(() => {
+        const submitButton = getByTestId("button-submit");
+        expect(submitButton).toBeInTheDocument();
+      });
 
-    //   let props = {
-    //     formValues: {
-    //       capeAmount: 10
-    //     },
-    //     submission: {
-    //       formPage1: {
-    //         paymentRequired: true,
-    //         paymentMethodAdded: false,
-    //         newCardNeeded: true
-    //       }
-    //     }
-    //   };
+      // imported function that creates dummy data for form
+      let testData = generateCAPEValidateFrontEnd();
 
-    //   wrapper = setup(props);
+      // simulate CAPE submit
+      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
 
-    //   wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-    //   wrapper
-    //     .instance()
-    //     .handleCAPESubmit()
-    //     .then(async () => {
-    //       await wrapper.instance().verifyRecaptchaScore();
-    //       expect(formElements.handleError.mock.calls.length).toBe(1);
-    //     });
-    // });
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
 
-    // test("`handleCAPESubmit` handles error if lookupSFContact prop throws", () => {
-    //   formElements.handleError = jest.fn();
-    //   lookupSFContactError = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
-    //     );
-    //   updateCAPESuccess = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
-    //     );
-    //   let props = {
-    //     formValues: {
-    //       capeAmount: 10
-    //     },
-    //     submission: {
-    //       formPage1: {
-    //         paymentRequired: true,
-    //         paymentMethodAdded: true
-    //       },
-    //       salesforceId: null,
-    //       payment: {
-    //         memberShortId: "123"
-    //       }
-    //     },
-    //     apiSF: {
-    //       ...defaultProps.apiSF,
-    //       lookupSFContact: lookupSFContactError,
-    //       createSFCAPE: createSFCAPESuccess
-    //     },
-    //     apiSubmission: {
-    //       createCAPE: createCAPESuccess
-    //     },
-    //     cape_legal: {
-    //       current: {
-    //         innerHTML: ""
-    //       }
-    //     },
-    //     reset: jest.fn()
-    //   };
+    test("`handleCAPESubmit` handles error if lookupSFContact prop throws", async () => {
+      verifyRecaptchaScoreMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0.9));
+      formElements.handleError = jest.fn();
+      lookupSFContactError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
+        );
+      updateCAPESuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
+        );
 
-    //   wrapper = setup(props);
+      // add mock function to props
+      let props = {
+        formValues: {
+          capeAmount: 10
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentMethodAdded: true
+          },
+          salesforceId: null,
+          payment: {
+            memberShortId: "123"
+          }
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: lookupSFContactError,
+          createSFCAPE: createSFCAPESuccess
+        },
+        apiSubmission: {
+          createCAPE: createCAPESuccess
+        },
+        cape_legal: {
+          current: {
+            innerHTML: ""
+          }
+        },
+        reset: jest.fn(),
+        verifyRecaptchaScore: verifyRecaptchaScoreMock
+      };
 
-    //   wrapper.instance().verifyRecaptchaScore = verifyRecaptchaScoreMock;
-    //   wrapper
-    //     .instance()
-    //     .handleCAPESubmit()
-    //     .then(async () => {
-    //       await wrapper
-    //         .instance()
-    //         .verifyRecaptchaScore()
-    //         .catch(err => {
-    //           console.log(err);
-    //         });
-    //       await lookupSFContactError();
-    //       expect(formElements.handleError.mock.calls.length).toBe(1);
-    //     })
-    //     .catch(err => {
-    //       // console.log(err);
-    //     });
-    // });
+      // simulate user click 'Next'
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...props });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that submit button renders
+      waitFor(() => {
+        const submitButton = getByTestId("button-submit");
+        expect(submitButton).toBeInTheDocument();
+      });
+
+      // imported function that creates dummy data for form
+      let testData = generateCAPEValidateFrontEnd();
+
+      // simulate CAPE submit
+      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
 
     // is createSFContact even called by handleCAPESubmit?? if so, where/how??
     // test("`handleCAPESubmit` handles error if createSFContact method throws", () => {
