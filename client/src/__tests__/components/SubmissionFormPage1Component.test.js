@@ -513,130 +513,144 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
-    // it("calls handleError if payment required but no payment method added", () => {
-    //   updateSubmissionSuccess = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-    //     );
-    //   testData = generateSampleValidate();
-    //   createSubmissionSuccess = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-    //     );
+    it("calls handleError if payment required but no payment method added", async () => {
+      updateSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+        );
+      testData = generateSampleValidate();
+      createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
 
-    //   props.tab = 2;
-    //   props.submission.payment.activeMethodLast4 = null;
+      props = {
+        tab: 1,
+        submission: {
+          payment: {
+            activeMethodLast4: null
+          },
+          formPage1: {}
+        },
+        formValues: {
+          ...testData,
+          paymentType: "Card",
+          paymentMethodAdded: false,
+          employerId: "0014N00002ASaRyQAL"
+        }
+      };
 
-    //   wrapper = setup(props);
-    //   // console.log(wrapper.instance().props);
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-    //   const formValues = {
-    //     paymentType: "Card",
-    //     paymentMethodAdded: false,
-    //     employerId: "0014N00002ASaRyQAL"
-    //   };
-    //   const values = { ...formValues, ...testData };
-    //   wrapper
-    //     .instance()
-    //     .handleSubmit({ ...values })
-    //     .then(() => {
-    //       expect(handleErrorMock.mock.calls.length).toBe(1);
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // });
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-    // it("errors if there is no signature", async function() {
-    //   updateSubmissionError = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
-    //     );
-    //   testData = generateSampleValidate();
-    //   formElements.handleError = jest.fn();
-    //   createSubmissionSuccess = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-    //     );
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
 
-    //   props.tab = 2;
-    //   props.submission.formPage1.paymentMethodAdded = true;
-    //   props.submission.payment = { cardAddingUrl: "" };
-    //   props.submission.error = "Error";
-    //   props.saveSubmissionErrors = saveSubmissionErrorsMock;
-    //   props.createSubmission = createSubmissionSuccess;
-    //   props.howManyTabs = 4;
-    //   props.handleError = handleErrorMock;
-    //   props.updateSubmission = updateSubmissionError;
-    //   props.formValues.employerId = "0014N00002ASaRzQAL";
+    it("errors if there is no signature", async function() {
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
+      testData = generateSampleValidate();
+      formElements.handleError = jest.fn();
+      createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
 
-    //   wrapper = setup(props);
+      props = {
+        tab: 1,
+        submission: {
+          formPage1: {
+            paymentMethodAdded: true
+          },
+          payment: { cardAddingUrl: "" },
+          error: "Error"
+        },
+        saveSubmissionErrors: saveSubmissionErrorsMock,
+        createSubmission: createSubmissionSuccess,
+        howManyTabs: 4,
+        handleError: handleErrorMock,
+        updateSubmission: updateSubmissionError,
+        formValues: {
+          employerId: "0014N00002ASaRzQAL",
+          signature: null,
+          employerType: "test"
+        }
+      };
 
-    //   delete testData.signature;
-    //   // simulate submit with dummy data
-    //   wrapper.instance().handleSubmit({ ...testData });
-    //   // testing that clearForm is called when handleSubmit receives Error message
-    //   try {
-    //     await updateSubmissionError();
-    //     await createSFOMASuccess();
-    //     await saveSubmissionErrorsMock();
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-    //     expect(handleErrorMock.mock.calls[0][0]).toBe("Error");
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-    // it("provides error feedback after failed Submit", async function() {
-    //   // imported function that creates dummy data for form
-    //   testData = generateSampleValidate();
-    //   // test function that will count calls as well as return error object
-    //   let createSubmissionError = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
-    //     );
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
 
-    //   // creating wrapper
-    //   props.apiSubmission.updateSubmission = updateSubmissionError;
-    //   props.apiSubmission.handleInput = handleInputMock;
-    //   props.submission.payment.activeMethodLast4 = "1234";
-    //   props.submission.payment.paymentErrorHold = false;
-    //   props.createSubmission = createSubmissionError;
-    //   wrapper = setup(props);
-    //   formElements.handleError = handleErrorMock;
-    //   props.formValues.employerId = "0014N00002ASaS0QAL";
+    it("provides error feedback after failed Submit", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return error object
+      let createSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
+        );
 
-    //   // simulate submit with dummy data
-    //   // simulate submit with dummy data
-    //   wrapper
-    //     .instance()
-    //     .handleSubmit(generateSampleValidate())
-    //     .then(async () => {
-    //       try {
-    //         await createSubmissionError();
-    //         expect(formElements.handleError.mock.calls.length).toBe(1);
-    //       } catch (err) {
-    //         console.log(err);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
+      // creating wrapper
+      props = {
+        apiSubmission: {
+          updateSubmission: updateSubmissionError,
+          handleInput: handleInputMock
+        },
+        submission: {
+          payment: {
+            activeMethodLast4: "1234",
+            paymentErrorHold: false
+          },
+          formPage1: {}
+        },
+        createSubmission: createSubmissionError,
+        formValues: {
+          employerId: "0014N00002ASaS0QAL",
+          employerType: "test"
+        },
+        tab: 1
+      };
 
-    //   // testing that openSnackbar is called when handleSubmit receives Error message
-    //   try {
-    //     await createSubmissionError();
-    //     await createSFOMASuccess();
-    //     expect(formElements.handleError.mock.calls.length).toBe(1);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
+      formElements.handleError = handleErrorMock;
+
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
+
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
 
     // it("resets payment options for check-paying retirees", async function() {
     //   // imported function that creates dummy data for form
