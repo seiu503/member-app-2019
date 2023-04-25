@@ -24,7 +24,7 @@ export const Tab2 = props => {
   } = props;
 
   const classes = formElements.classesPage1;
-  // console.log(formValues.employerType);
+  console.log(formValues.employerType);
   const afh = formValues.employerType.toLowerCase() === "adult foster home";
   const retiree = formValues.employerType.toLowerCase() === "retired";
   const community =

@@ -104,7 +104,8 @@ const defaultProps = {
   },
   formValues: {
     mm: "",
-    onlineCampaignSource: null
+    onlineCampaignSource: null,
+    employerType: "test"
   },
   classes: { test: "test" },
   // need these here for form to have access to their definitions later
@@ -125,7 +126,7 @@ const defaultProps = {
     }
   },
   location: {
-    search: "?cape=true"
+    // search: "?cape=true"
   },
   reset: resetMock,
   history: {
@@ -160,6 +161,7 @@ const defaultProps = {
     text: ""
   },
   renderBodyCopy: jest.fn(),
+  renderHeadline: jest.fn(),
   updateSubmission: updateSubmissionSuccess,
   translate: jest.fn()
 };
@@ -381,7 +383,8 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         apiSF: {
           getSFEmployers: getSFEmployersSuccess
         },
-        loadEmployersPicklist: loadEmployersPicklistMock
+        loadEmployersPicklist: loadEmployersPicklistMock,
+        tab: 0
       };
 
       const ref = React.createRef();
@@ -415,408 +418,412 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  // describe("handleSubmit", () => {
-  //   beforeEach(done => {
-  //     props = {
-  //       reCaptchaRef: {
-  //         current: {
-  //           getValue: jest.fn().mockImplementation(() => "mock value")
-  //         }
-  //       },
-  //       tab: 2,
-  //       apiSubmission: {
-  //         createSubmission: createSubmissionSuccess,
-  //         updateSubmission: updateSubmissionSuccess,
-  //         createSubmission: createSubmissionSuccess,
-  //         verify: verifySuccess
-  //       },
-  //       submission: {
-  //         formPage1: {
-  //           paymentRequired: true,
-  //           paymentType: "Card",
-  //           paymentMethodAdded: false
-  //         },
-  //         payment: {
-  //           cardAddingUrl: ""
-  //         }
-  //       },
-  //       formValues: {
-  //         ...generateSubmissionBody
-  //       },
-  //       handleError: handleErrorMock,
-  //       reset: resetMock
-  //     };
-  //     done();
-  //   });
-  //   afterEach(() => {
-  //     jest.restoreAllMocks();
-  //   });
-  //   it("handles error if verifyRecaptchaScore fails", () => {
-  //     testData = generateSampleValidate();
-  //     const verifyRecaptchaError = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve(0));
-  //     handleErrorMock = jest
-  //       .fn()
-  //       .mockImplementation(() => console.log("handleError"));
-  //     props = {
-  //       verifyRecaptchaScore: verifyRecaptchaError,
-  //       handleError: handleErrorMock,
-  //       updateSubmission: updateSubmissionSuccess,
-  //       createSubmission: createSubmissionSuccess,
-  //       formValues: {
-  //         mm: "",
-  //         onlineCampaignSource: null,
-  //         employerType: "state homecare or personal support"
-  //       }
-  //     };
-  //     wrapper = setup(props);
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit({ ...testData })
-  //       .then(async () => {
-  //         await verifyRecaptchaError().then(() => {
-  //           // expect(handleErrorMock.mock.calls.length).toBe(1);
-  //         });
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
-  //   it("handles error if verifyRecaptchaScore throws", () => {
-  //     testData = generateSampleValidate();
-  //     const verifyRecaptchaError = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.reject(0));
-  //     props = {
-  //       verifyRecaptchaScore: verifyRecaptchaError,
-  //       handleError: handleErrorMock,
-  //       updateSubmission: updateSubmissionSuccess,
-  //       createSubmission: createSubmissionSuccess
-  //     };
-  //     wrapper = setup(props);
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit({ ...testData })
-  //       .then(async () => {
-  //         await verifyRecaptchaError();
-  //         // expect(handleErrorMock.mock.calls.length).toBe(1);
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
-  //   it("calls handleError if payment required but no payment method added", () => {
-  //     updateSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-  //       );
-  //     testData = generateSampleValidate();
-  //     createSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-  //       );
+  describe("handleSubmit", () => {
+    beforeEach(done => {
+      props = {
+        reCaptchaRef: {
+          current: {
+            getValue: jest.fn().mockImplementation(() => "mock value")
+          }
+        },
+        tab: 0,
+        apiSubmission: {
+          createSubmission: createSubmissionSuccess,
+          updateSubmission: updateSubmissionSuccess,
+          createSubmission: createSubmissionSuccess,
+          verify: verifySuccess
+        },
+        submission: {
+          formPage1: {
+            paymentRequired: true,
+            paymentType: "Card",
+            paymentMethodAdded: false
+          },
+          payment: {
+            cardAddingUrl: ""
+          }
+        },
+        formValues: {
+          ...generateSubmissionBody
+        },
+        handleError: handleErrorMock,
+        reset: resetMock
+      };
+      done();
+    });
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+    it("handles error if verifyRecaptchaScore fails", async () => {
+      testData = generateSampleValidate();
+      const verifyRecaptchaError = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(0));
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(() => console.log("handleError"));
+      props = {
+        verifyRecaptchaScore: verifyRecaptchaError,
+        handleError: handleErrorMock,
+        updateSubmission: updateSubmissionSuccess,
+        createSubmission: createSubmissionSuccess,
+        formValues: {
+          mm: "",
+          onlineCampaignSource: null,
+          employerType: "state homecare or personal support"
+        },
+        renderHeadline: jest.fn(),
+        tab: 0
+      };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...props });
 
-  //     props.tab = 2;
-  //     props.submission.payment.activeMethodLast4 = null;
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab1"), { ...testData });
 
-  //     wrapper = setup(props);
-  //     // console.log(wrapper.instance().props);
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+    it("handles error if verifyRecaptchaScore throws", async () => {
+      testData = generateSampleValidate();
+      const verifyRecaptchaError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject(0));
+      props = {
+        verifyRecaptchaScore: verifyRecaptchaError,
+        handleError: handleErrorMock,
+        updateSubmission: updateSubmissionSuccess,
+        createSubmission: createSubmissionSuccess,
+        renderHeadline: jest.fn(),
+        tab: 0
+      };
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-  //     const formValues = {
-  //       paymentType: "Card",
-  //       paymentMethodAdded: false,
-  //       employerId: "0014N00002ASaRyQAL"
-  //     };
-  //     const values = { ...formValues, ...testData };
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit({ ...values })
-  //       .then(() => {
-  //         expect(handleErrorMock.mock.calls.length).toBe(1);
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab1"), { ...testData });
 
-  //   it("errors if there is no signature", async function() {
-  //     updateSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
-  //       );
-  //     testData = generateSampleValidate();
-  //     formElements.handleError = jest.fn();
-  //     createSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-  //       );
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+    // it("calls handleError if payment required but no payment method added", () => {
+    //   updateSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    //     );
+    //   testData = generateSampleValidate();
+    //   createSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+    //     );
 
-  //     props.tab = 2;
-  //     props.submission.formPage1.paymentMethodAdded = true;
-  //     props.submission.payment = { cardAddingUrl: "" };
-  //     props.submission.error = "Error";
-  //     props.saveSubmissionErrors = saveSubmissionErrorsMock;
-  //     props.createSubmission = createSubmissionSuccess;
-  //     props.howManyTabs = 4;
-  //     props.handleError = handleErrorMock;
-  //     props.updateSubmission = updateSubmissionError;
-  //     props.formValues.employerId = "0014N00002ASaRzQAL";
+    //   props.tab = 2;
+    //   props.submission.payment.activeMethodLast4 = null;
 
-  //     wrapper = setup(props);
+    //   wrapper = setup(props);
+    //   // console.log(wrapper.instance().props);
 
-  //     delete testData.signature;
-  //     // simulate submit with dummy data
-  //     wrapper.instance().handleSubmit({ ...testData });
-  //     // testing that clearForm is called when handleSubmit receives Error message
-  //     try {
-  //       await updateSubmissionError();
-  //       await createSFOMASuccess();
-  //       await saveSubmissionErrorsMock();
+    //   const formValues = {
+    //     paymentType: "Card",
+    //     paymentMethodAdded: false,
+    //     employerId: "0014N00002ASaRyQAL"
+    //   };
+    //   const values = { ...formValues, ...testData };
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit({ ...values })
+    //     .then(() => {
+    //       expect(handleErrorMock.mock.calls.length).toBe(1);
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
 
-  //       expect(handleErrorMock.mock.calls[0][0]).toBe("Error");
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
+    // it("errors if there is no signature", async function() {
+    //   updateSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
+    //     );
+    //   testData = generateSampleValidate();
+    //   formElements.handleError = jest.fn();
+    //   createSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+    //     );
 
-  //   it("provides error feedback after failed Submit", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return error object
-  //     let createSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
-  //       );
+    //   props.tab = 2;
+    //   props.submission.formPage1.paymentMethodAdded = true;
+    //   props.submission.payment = { cardAddingUrl: "" };
+    //   props.submission.error = "Error";
+    //   props.saveSubmissionErrors = saveSubmissionErrorsMock;
+    //   props.createSubmission = createSubmissionSuccess;
+    //   props.howManyTabs = 4;
+    //   props.handleError = handleErrorMock;
+    //   props.updateSubmission = updateSubmissionError;
+    //   props.formValues.employerId = "0014N00002ASaRzQAL";
 
-  //     // creating wrapper
-  //     props.apiSubmission.updateSubmission = updateSubmissionError;
-  //     props.apiSubmission.handleInput = handleInputMock;
-  //     props.submission.payment.activeMethodLast4 = "1234";
-  //     props.submission.payment.paymentErrorHold = false;
-  //     props.createSubmission = createSubmissionError;
-  //     wrapper = setup(props);
-  //     formElements.handleError = handleErrorMock;
-  //     props.formValues.employerId = "0014N00002ASaS0QAL";
+    //   wrapper = setup(props);
 
-  //     // simulate submit with dummy data
-  //     // simulate submit with dummy data
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await createSubmissionError();
-  //           expect(formElements.handleError.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
+    //   delete testData.signature;
+    //   // simulate submit with dummy data
+    //   wrapper.instance().handleSubmit({ ...testData });
+    //   // testing that clearForm is called when handleSubmit receives Error message
+    //   try {
+    //     await updateSubmissionError();
+    //     await createSFOMASuccess();
+    //     await saveSubmissionErrorsMock();
 
-  //     // testing that openSnackbar is called when handleSubmit receives Error message
-  //     try {
-  //       await createSubmissionError();
-  //       await createSFOMASuccess();
-  //       expect(formElements.handleError.mock.calls.length).toBe(1);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
+    //     expect(handleErrorMock.mock.calls[0][0]).toBe("Error");
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // });
 
-  //   it("resets payment options for check-paying retirees", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return error object
-  //     updateSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-  //       );
+    // it("provides error feedback after failed Submit", async function() {
+    //   // imported function that creates dummy data for form
+    //   testData = generateSampleValidate();
+    //   // test function that will count calls as well as return error object
+    //   let createSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "CREATE_SUBMISSION_FAILURE" })
+    //     );
 
-  //     // creating wrapper
-  //     props.apiSubmission.updateSubmission = updateSubmissionSuccess;
-  //     props.createSubmission = createSubmissionSuccess;
-  //     props.submission.formPage1.employerType = "retired";
-  //     props.submission.formPage1.paymentType = "Check";
-  //     props.updateSubmission = updateSubmissionSuccess;
-  //     const handleInputMock = jest.fn();
-  //     props.apiSubmission.handleInput = handleInputMock;
-  //     wrapper = setup(props);
-  //     createSFOMASuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     wrapper.instance().createSFOMA = createSFOMASuccess;
-  //     const updateSubmissionMethodSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
+    //   // creating wrapper
+    //   props.apiSubmission.updateSubmission = updateSubmissionError;
+    //   props.apiSubmission.handleInput = handleInputMock;
+    //   props.submission.payment.activeMethodLast4 = "1234";
+    //   props.submission.payment.paymentErrorHold = false;
+    //   props.createSubmission = createSubmissionError;
+    //   wrapper = setup(props);
+    //   formElements.handleError = handleErrorMock;
+    //   props.formValues.employerId = "0014N00002ASaS0QAL";
 
-  //     // simulate submit with dummy data
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await verifyRecaptchaSuccess();
-  //           await updateSubmissionMethodSuccess();
-  //           await createSFOMASuccess();
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
+    //   // simulate submit with dummy data
+    //   // simulate submit with dummy data
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit(generateSampleValidate())
+    //     .then(async () => {
+    //       try {
+    //         await createSubmissionError();
+    //         expect(formElements.handleError.mock.calls.length).toBe(1);
+    //       } catch (err) {
+    //         console.log(err);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
 
-  //   it("updates submission status after successful submit", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return error object
-  //     updateSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-  //       );
+    //   // testing that openSnackbar is called when handleSubmit receives Error message
+    //   try {
+    //     await createSubmissionError();
+    //     await createSFOMASuccess();
+    //     expect(formElements.handleError.mock.calls.length).toBe(1);
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // });
 
-  //     // creating wrapper
-  //     props.apiSubmission.updateSubmission = updateSubmissionSuccess;
-  //     props.createSubmission = createSubmissionSuccess;
-  //     const handleInputMock = jest.fn();
-  //     props.apiSubmission.handleInput = handleInputMock;
-  //     wrapper = setup(props);
-  //     createSFOMASuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     wrapper.instance().createSFOMA = createSFOMASuccess;
-  //     const updateSubmissionMethodSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
-  //     wrapper.instance().props.submission.error = null;
+    // it("resets payment options for check-paying retirees", async function() {
+    //   // imported function that creates dummy data for form
+    //   testData = generateSampleValidate();
+    //   // test function that will count calls as well as return error object
+    //   updateSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    //     );
 
-  //     // simulate submit with dummy data
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await verifyRecaptchaSuccess();
-  //           await updateSubmissionMethodSuccess();
-  //           await createSFOMASuccess();
-  //           await updateSubmissionSuccess();
-  //           // expect(handleTabMock.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
+    //   // creating wrapper
+    //   props.apiSubmission.updateSubmission = updateSubmissionSuccess;
+    //   props.createSubmission = createSubmissionSuccess;
+    //   props.submission.formPage1.employerType = "retired";
+    //   props.submission.formPage1.paymentType = "Check";
+    //   props.updateSubmission = updateSubmissionSuccess;
+    //   const handleInputMock = jest.fn();
+    //   props.apiSubmission.handleInput = handleInputMock;
+    //   wrapper = setup(props);
+    //   createSFOMASuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   wrapper.instance().createSFOMA = createSFOMASuccess;
+    //   const updateSubmissionMethodSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
 
-  //   it("handles error if updateSubmission fails", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return error object
-  //     updateSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
-  //       );
+    //   // simulate submit with dummy data
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit(generateSampleValidate())
+    //     .then(async () => {
+    //       try {
+    //         await verifyRecaptchaSuccess();
+    //         await updateSubmissionMethodSuccess();
+    //         await createSFOMASuccess();
+    //       } catch (err) {
+    //         console.log(err);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
 
-  //     // creating wrapper
-  //     props.apiSubmission.updateSubmission = updateSubmissionError;
-  //     props.apiSubmission.createSubmission = createSubmissionSuccess;
-  //     props.createSubmission = createSubmissionSuccess;
-  //     const handleInputMock = jest.fn();
-  //     props.apiSubmission.handleInput = handleInputMock;
-  //     const updateSubmissionMethodSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     props.updateSubmission = updateSubmissionMethodSuccess;
-  //     wrapper = setup(props);
-  //     createSFOMASuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     wrapper.instance().createSFOMA = createSFOMASuccess;
-  //     wrapper.instance().props.submission.error = null;
+    // it("updates submission status after successful submit", async function() {
+    //   // imported function that creates dummy data for form
+    //   testData = generateSampleValidate();
+    //   // test function that will count calls as well as return error object
+    //   updateSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    //     );
 
-  //     // simulate submit with dummy data
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await verifyRecaptchaSuccess();
-  //           await updateSubmissionMethodSuccess();
-  //           await createSFOMASuccess();
-  //           await updateSubmissionError();
-  //           // expect(handleErrorMock.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
+    //   // creating wrapper
+    //   props.apiSubmission.updateSubmission = updateSubmissionSuccess;
+    //   props.createSubmission = createSubmissionSuccess;
+    //   const handleInputMock = jest.fn();
+    //   props.apiSubmission.handleInput = handleInputMock;
+    //   wrapper = setup(props);
+    //   createSFOMASuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   wrapper.instance().createSFOMA = createSFOMASuccess;
+    //   const updateSubmissionMethodSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   wrapper.instance().updateSubmission = updateSubmissionMethodSuccess;
+    //   wrapper.instance().props.submission.error = null;
 
-  //   it("handles error if updateSubmission throws", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return error object
-  //     let createSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.reject({ type: "CREATE_SUBMISSION_FAILURE" })
-  //       );
+    //   // simulate submit with dummy data
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit(generateSampleValidate())
+    //     .then(async () => {
+    //       try {
+    //         await verifyRecaptchaSuccess();
+    //         await updateSubmissionMethodSuccess();
+    //         await createSFOMASuccess();
+    //         await updateSubmissionSuccess();
+    //         // expect(handleTabMock.mock.calls.length).toBe(1);
+    //       } catch (err) {
+    //         console.log(err);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
 
-  //     // creating wrapper
-  //     props.apiSubmission.createSubmission = createSubmissionError;
-  //     const handleInputMock = jest.fn();
-  //     props.apiSubmission.handleInput = handleInputMock;
-  //     const createSubmissionMethodSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     props.createSubmission = createSubmissionMethodSuccess;
-  //     props.submission.error = null;
-  //     props.location = {
-  //       search: ""
-  //     }; // coverage for !CAPE
-  //     props.embed = true; // coverage for embed render edge case
-  //     wrapper = setup(props);
-  //     createSFOMASuccess = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve());
-  //     wrapper.instance().createSFOMA = createSFOMASuccess;
-  //     // simulate submit with dummy data
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await createSubmissionMethodSuccess();
-  //           await createSFOMASuccess();
-  //           await createSubmissionError();
-  //           expect(handleErrorMock.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
-  // });
+    // it("handles error if updateSubmission fails", async function() {
+    //   // imported function that creates dummy data for form
+    //   testData = generateSampleValidate();
+    //   // test function that will count calls as well as return error object
+    //   updateSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
+    //     );
+
+    //   // creating wrapper
+    //   props.apiSubmission.updateSubmission = updateSubmissionError;
+    //   props.apiSubmission.createSubmission = createSubmissionSuccess;
+    //   props.createSubmission = createSubmissionSuccess;
+    //   const handleInputMock = jest.fn();
+    //   props.apiSubmission.handleInput = handleInputMock;
+    //   const updateSubmissionMethodSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   props.updateSubmission = updateSubmissionMethodSuccess;
+    //   wrapper = setup(props);
+    //   createSFOMASuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   wrapper.instance().createSFOMA = createSFOMASuccess;
+    //   wrapper.instance().props.submission.error = null;
+
+    //   // simulate submit with dummy data
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit(generateSampleValidate())
+    //     .then(async () => {
+    //       try {
+    //         await verifyRecaptchaSuccess();
+    //         await updateSubmissionMethodSuccess();
+    //         await createSFOMASuccess();
+    //         await updateSubmissionError();
+    //         // expect(handleErrorMock.mock.calls.length).toBe(1);
+    //       } catch (err) {
+    //         console.log(err);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
+
+    // it("handles error if updateSubmission throws", async function() {
+    //   // imported function that creates dummy data for form
+    //   testData = generateSampleValidate();
+    //   // test function that will count calls as well as return error object
+    //   let createSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.reject({ type: "CREATE_SUBMISSION_FAILURE" })
+    //     );
+
+    //   // creating wrapper
+    //   props.apiSubmission.createSubmission = createSubmissionError;
+    //   const handleInputMock = jest.fn();
+    //   props.apiSubmission.handleInput = handleInputMock;
+    //   const createSubmissionMethodSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   props.createSubmission = createSubmissionMethodSuccess;
+    //   props.submission.error = null;
+    //   props.location = {
+    //     search: ""
+    //   }; // coverage for !CAPE
+    //   props.embed = true; // coverage for embed render edge case
+    //   wrapper = setup(props);
+    //   createSFOMASuccess = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve());
+    //   wrapper.instance().createSFOMA = createSFOMASuccess;
+    //   // simulate submit with dummy data
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit(generateSampleValidate())
+    //     .then(async () => {
+    //       try {
+    //         await createSubmissionMethodSuccess();
+    //         await createSFOMASuccess();
+    //         await createSubmissionError();
+    //         expect(handleErrorMock.mock.calls.length).toBe(1);
+    //       } catch (err) {
+    //         console.log(err);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
+  });
 
   // describe("updateSubmission", () => {
   //   it("calls `handleError` if apiSubmission.updateSubmission fails", async function() {
