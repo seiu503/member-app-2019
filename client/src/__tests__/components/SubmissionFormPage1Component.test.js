@@ -1,6 +1,13 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
-import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  within,
+  waitFor
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "jest-canvas-mock";
 import { Provider } from "react-redux";
@@ -71,7 +78,7 @@ getSFEmployersSuccess = jest
     Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
   );
 
-const loadEmployersPicklistMock = jest.fn(() => []);
+let loadEmployersPicklistMock = jest.fn(() => []);
 
 // initial props for form
 const defaultProps = {
@@ -350,7 +357,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       expect(loadEmployersPicklistMock).toHaveBeenCalled();
       loadEmployersPicklistMock.mockClear();
     });
-    it.only("does not call loadEmployersPicklist on componentDidUpdate if employer list has loaded", async () => {
+    it("displays correct data in employer type dropdown if employer list has loaded", async () => {
+      loadEmployersPicklistMock = jest
+        .fn()
+        .mockImplementation(() => ["Test1", "Test2", "Test3", "Test4"]);
       getSFEmployersSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -358,7 +368,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         );
       props = {
         submission: {
-          employerNames: ["first", "second", "third", "fourth"],
+          employerNames: ["Test1", "Test2", "Test3", "Test4"],
           formPage1: {},
           payment: {
             cardAddingUrl: ""
@@ -388,10 +398,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         </ThemeProvider>
       );
 
-      const tempLoadEmployersPicklist = ref.current.loadEmployersPicklist;
       ref.current.loadEmployersPicklist = loadEmployersPicklistMock;
-
-      loadEmployersPicklistMock.mockClear();
 
       await rerender(
         <ThemeProvider theme={theme}>
@@ -401,8 +408,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         </ThemeProvider>
       );
 
-      // testing that loadEmployersPicklist was not called
-      expect(loadEmployersPicklistMock).not.toHaveBeenCalled();
+      // testing that employer type picklist displays 4 options
+      const field = screen.getByTestId("select-employer-type");
+      const select = within(field).getByRole("combobox");
+      expect(select.length).toBe(4);
     });
   });
 

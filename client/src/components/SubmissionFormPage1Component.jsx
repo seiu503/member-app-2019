@@ -42,6 +42,9 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
+    // console.log('cDU');
+    // console.log(this.props.submission.employerNames);
+    // console.log(this.props.submission.employerNames.length);
     if (
       this.props.submission.employerNames &&
       this.props.submission.employerNames.length < 3
@@ -56,6 +59,7 @@ export class SubmissionFormPage1Component extends React.Component {
   renderCheckbox = formElements.renderCheckbox;
 
   loadEmployersPicklist = () => {
+    // console.log('lEP');
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
     const employerTypesListRaw = this.props.submission.employerObjects
@@ -290,11 +294,11 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
+    // console.log('=================');
+    // console.log(employerTypesList);
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
     const checkoff = this.props.submission.formPage1.checkoff;
-    // console.log(employerTypesList.length);
-    // console.log(employerList.length);
     const formContainer = {
       display: "flex",
       padding: {
