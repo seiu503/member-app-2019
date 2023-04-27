@@ -817,100 +817,100 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  // describe("updateSubmission", () => {
-  //   it("calls `handleError` if apiSubmission.updateSubmission fails", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return success object
-  //     updateSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
-  //       );
+  describe("updateSubmission", () => {
+    it("calls `handleError` if apiSubmission.updateSubmission fails", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
 
-  //     // replacing openSnackbar import with mock function
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         updateSubmission: updateSubmissionError
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMASuccess
-  //       },
-  //       updateSubmission: updateSubmissionError
-  //     };
-  //     wrapper = setup(props);
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMASuccess,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        updateSubmission: updateSubmissionError
+      };
 
-  //     delete testData.signature;
+      delete testData.signature;
 
-  //     wrapper
-  //       .instance()
-  //       .props.updateSubmission()
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
 
-  //     try {
-  //       await updateSubmissionError();
-  //       expect(handleErrorMock.mock.calls.length).toBe(1);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
-  //   it("calls `handleError` if apiSubmission.updateSubmission throws", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return success object
-  //     updateSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
-  //       );
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-  //     // replacing openSnackbar import with mock function
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         updateSubmission: updateSubmissionError
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMASuccess
-  //       },
-  //       updateSubmission: updateSubmissionError
-  //     };
-  //     wrapper = setup(props);
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-  //     delete testData.signature;
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+    it("calls `handleError` if apiSubmission.updateSubmission throws", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
 
-  //     wrapper
-  //       .instance()
-  //       .props.updateSubmission()
-  //       .catch(err => console.log(err));
-  //     // testing that clearForm is called when handleSubmit receives Error message
-  //     try {
-  //       await updateSubmissionError();
-  //       expect(formElements.handleError.mock.calls.length).toBe(1);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
-  // });
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMASuccess,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        updateSubmission: updateSubmissionError
+      };
+
+      delete testData.signature;
+
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
+
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
+
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+  });
 
   // describe("createSubmission", () => {
   //   it("calls `handleTab` if apiSubmission.updateSubmission succeeds", async function() {
