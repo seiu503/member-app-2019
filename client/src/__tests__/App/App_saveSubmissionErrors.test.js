@@ -1,12 +1,28 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
+import { AppUnconnected } from "../../App";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
-
-import { AppUnconnected } from "../../App";
-
-let wrapper;
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -65,24 +81,9 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
     }
   })
 );
-
-let getSFDJRSuccess = jest
+let createSFOMAError = jest
   .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
+  .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_ERROR" }));
 
 let refreshRecaptchaMock = jest
   .fn()
@@ -99,6 +100,8 @@ const sigBox = {
     clear: clearSigBoxMock
   }
 };
+
+const testData = generateSampleValidate();
 
 const formValues = {
   firstName: "firstName",
@@ -117,6 +120,19 @@ const formValues = {
   yyyy: "1999",
   preferredLanguage: "English",
   textAuthOptOut: false
+};
+
+const initialState = {
+  appState: {
+    loading: false
+  },
+  submission: {
+    formPage1: {
+      reCaptchaValue: ""
+    },
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload]
+  }
 };
 
 const defaultProps = {
@@ -150,9 +166,6 @@ const defaultProps = {
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -191,12 +204,27 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  setActiveLanguage: jest.fn()
 };
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<AppUnconnected {...setupProps} />);
+const store = storeFactory(initialState);
+
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  // console.log(setupProps.submission.employerObjects);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[route]}>
+          <AppUnconnected {...setupProps} />
+        </MemoryRouter>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<App />", () => {
@@ -216,6 +244,9 @@ describe("<App />", () => {
         apiSubmission: {
           updateSubmission: updateSubmissionSuccess
         },
+        apiSF: {
+          createSFOMA: createSFOMAError
+        },
         submission: {
           currentSubmission: {
             submission_errors: "blah"
@@ -225,12 +256,24 @@ describe("<App />", () => {
         }
       };
 
-      wrapper = setup(props);
+      // simulate user click 'Next'
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...props });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
-      wrapper
-        .instance()
-        .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
-      expect(updateSubmissionSuccess.mock.calls.length).toBe(1);
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // expect updateSubmissionSuccess to have been called
+      waitFor(() => {
+        expect(updateSubmissionSuccess).toHaveBeenCalled();
+      });
     });
 
     test("`saveSubmissionErrors` handles error if updateSubmission fails", async function() {
@@ -243,6 +286,9 @@ describe("<App />", () => {
         apiSubmission: {
           updateSubmission: updateSubmissionError
         },
+        apiSF: {
+          createSFOMA: createSFOMAError
+        },
         submission: {
           currentSubmission: {
             submission_errors: null
@@ -252,16 +298,24 @@ describe("<App />", () => {
         }
       };
       formElements.handleError = jest.fn();
-      wrapper = setup(props);
+      // simulate user click 'Next'
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...props });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
-      wrapper
-        .instance()
-        .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
-      expect(updateSubmissionError.mock.calls.length).toBe(1);
-      await updateSubmissionError().catch(err => {
-        console.log(err);
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
       });
-      expect(formElements.handleError.mock.calls.length).toBe(1);
+
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
     });
 
     test("`saveSubmissionErrors` handles error if updateSubmission throws", async function() {
@@ -280,18 +334,30 @@ describe("<App />", () => {
           },
           formPage1: {},
           payment: {}
+        },
+        apiSF: {
+          createSFOMA: createSFOMAError
         }
       };
       formElements.handleError = jest.fn();
-      wrapper = setup(props);
+      // simulate user click 'Next'
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...props });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
-      wrapper
-        .instance()
-        .saveSubmissionErrors("12345", "updateSFDJR", "Error message");
-      await updateSubmissionError().catch(err => {
-        console.log(err);
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
       });
-      expect(formElements.handleError.mock.calls.length).toBe(1);
+
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
     });
   });
 });

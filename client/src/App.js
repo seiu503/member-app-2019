@@ -862,7 +862,7 @@ export class AppUnconnected extends Component {
   };
 
   render() {
-    console.log(this.props.location.search);
+    // console.log(this.props.tab);
     const values = queryString.parse(this.props.location.search);
     const embed = values.embed;
     const { classes } = this.props;
