@@ -371,13 +371,21 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       props = {
         submission: {
           employerNames: ["Test1", "Test2", "Test3", "Test4"],
+          employerObjects: [
+            {
+              Name: "community members" // coverage for edge cases
+            },
+            {
+              Name: "seiu local 503 opeu" // coverage for edge casses
+            }
+          ],
           formPage1: {},
           payment: {
             cardAddingUrl: ""
           }
         },
         formValues: {
-          // to get code coverage for community member edge cases
+          // coverage for edge cases
           employerType: "Community Member"
         },
         apiSF: {
@@ -388,7 +396,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       };
 
       const ref = React.createRef();
-      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      let setupProps = { ...defaultProps, ...props, handleSubmit };
       const { rerender } = render(
         <ThemeProvider theme={theme}>
           <Provider store={store}>
@@ -400,6 +408,20 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           </Provider>
         </ThemeProvider>
       );
+
+      const newProps = {
+        formValues: {
+          employerType: "retired" // coverage for edge cases
+        },
+        submission: {
+          ...props.submission,
+          formPage1: {
+            employerType: "seiu 503 staff" // coverage for edge cases
+          }
+        }
+      };
+
+      setupProps = { ...defaultProps, ...props, ...newProps, handleSubmit };
 
       ref.current.loadEmployersPicklist = loadEmployersPicklistMock;
 
@@ -1140,220 +1162,113 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  // describe("createSFOMA", () => {
-  //   it("handles error if createSFOMA prop fails", async function() {
-  //     let createSFOMAError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" })
-  //       );
-  //     let generateSubmissionBodyMock = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve({}));
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         salesforceId: "456",
-  //         formPage1: {},
-  //         payment: {},
-  //         error: "test"
-  //       },
-  //       apiSubmission: {
-  //         updateSubmission: updateSubmissionError
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMAError
-  //       },
-  //       formValues: {}
-  //     };
-  //     wrapper = setup(props);
-  //     wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
+  describe("createSFOMA", () => {
+    it("handles error if createSFOMA prop fails", async function() {
+      let createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let generateSubmissionBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      const ref = React.createRef();
 
-  //     wrapper
-  //       .instance()
-  //       .createSFOMA()
-  //       .then(() => {
-  //         return createSFOMAError()
-  //           .then(() => {
-  //             expect(createSFOMAError.mock.calls.length).toBe(2);
-  //           })
-  //           .catch(err => {
-  //             console.log(err);
-  //           });
-  //       })
-  //       .catch(err => {
-  //         // console.log(err);
-  //       });
-  //   });
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          salesforceId: "456",
+          formPage1: {},
+          payment: {},
+          error: "test"
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMAError,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        formValues: {
+          employerType: "test"
+        },
+        ref: {
+          current: {
+            generateSubmissionBody: generateSubmissionBodyMock
+          }
+        }
+      };
 
-  //   it("handles error if createSFOMA prop throws", async function() {
-  //     let createSFOMAError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.reject({ type: "CREATE_SF_OMA_FAILURE" })
-  //       );
-  //     let generateSubmissionBodyMock = jest
-  //       .fn()
-  //       .mockImplementation(() => Promise.resolve({}));
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         salesforceId: "456",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         updateSubmission: updateSubmissionError
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMAError
-  //       },
-  //       formValues: {}
-  //     };
-  //     wrapper = setup(props);
-  //     wrapper.instance().generateSubmissionBody = generateSubmissionBodyMock;
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
 
-  //     try {
-  //       wrapper
-  //         .instance()
-  //         .createSFOMA()
-  //         .then(() => {
-  //           return createSFOMAError()
-  //             .catch(err => {
-  //               // console.log(err);
-  //             })
-  //             .finally(() => {
-  //               expect(formElements.handleError.mock.calls.length).toBe(1);
-  //             });
-  //         })
-  //         .catch(err => {
-  //           // console.log(err);
-  //         });
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
-  // });
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-  // test("`donationFrequencyOnChange` calls this.props.change and this.handleDonationFrequencyChange", () => {
-  //   const changeMock = jest.fn();
-  //   const handleDonationFrequencyChangeMock = jest.fn();
-  //   const props = {
-  //     change: changeMock,
-  //     handleDonationFrequencyChange: handleDonationFrequencyChangeMock
-  //   };
-  //   wrapper = setup(props);
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-  //   wrapper.instance().donationFrequencyOnChange();
-  //   expect(changeMock).toHaveBeenCalled();
-  //   expect(handleDonationFrequencyChangeMock).toHaveBeenCalled();
-  // });
+      // expect createSFOMAError to have been called
+      waitFor(() => {
+        expect(createSFOMAError).toHaveBeenCalled();
+      });
+    });
 
-  // test("`loadEmployersPicklist` handles Community Members edge case", () => {
-  //   const props = {
-  //     submission: {
-  //       employerObjects: [
-  //         {
-  //           Name: "community members"
-  //         }
-  //       ],
-  //       payment: {
-  //         cardAddingUrl: ""
-  //       },
-  //       formPage1: {
-  //         employerType: ""
-  //       }
-  //     }
-  //   };
-  //   wrapper = setup(props);
+    it("handles error if createSFOMA prop throws", async function() {
+      let createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      let generateSubmissionBodyMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({}));
+      formElements.handleError = handleErrorMock;
+      // creating wrapper
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          salesforceId: "456",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMAError,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        formValues: {
+          employerType: "test"
+        },
+        ref: {
+          current: {
+            generateSubmissionBody: generateSubmissionBodyMock
+          }
+        }
+      };
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
 
-  //   const list = wrapper.instance().loadEmployersPicklist();
-  //   expect(list).toContain("Community Member");
-  // });
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-  // test("`loadEmployersPicklist` handles 503 Staff edge case", () => {
-  //   const props = {
-  //     submission: {
-  //       employerObjects: [
-  //         {
-  //           Name: "seiu local 503 opeu"
-  //         }
-  //       ],
-  //       payment: {
-  //         cardAddingUrl: ""
-  //       },
-  //       formPage1: {
-  //         employerType: ""
-  //       }
-  //     }
-  //   };
-  //   wrapper = setup(props);
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-  //   const list = wrapper.instance().loadEmployersPicklist();
-  //   expect(list).toEqual(["", ""]);
-  // });
-
-  // test("`updateEmployersPicklist` handles Retirees edge case", () => {
-  //   const props = {
-  //     submission: {
-  //       employerObjects: [
-  //         {
-  //           Name: "community members"
-  //         }
-  //       ],
-  //       payment: {
-  //         cardAddingUrl: ""
-  //       },
-  //       formPage1: {
-  //         employerType: "retired"
-  //       }
-  //     },
-  //     formValues: {
-  //       employerType: "retired"
-  //     }
-  //   };
-  //   wrapper = setup(props);
-  //   wrapper.instance().loadEmployersPicklist = jest
-  //     .fn()
-  //     .mockImplementation(() => ["community members"]);
-  //   wrapper.instance().updateEmployersPicklist();
-  //   expect(wrapper.instance().props.formValues.employerName).toBe("Retirees");
-  // });
-
-  // test("`updateEmployersPicklist` handles 503 Staff edge case", () => {
-  //   const props = {
-  //     submission: {
-  //       employerObjects: [
-  //         {
-  //           Name: "seiu local 503 opeu"
-  //         }
-  //       ],
-  //       payment: {
-  //         cardAddingUrl: ""
-  //       },
-  //       formPage1: {
-  //         employerType: "seiu 503 staff"
-  //       }
-  //     },
-  //     formValues: {
-  //       employerType: "seiu 503 staff"
-  //     }
-  //   };
-  //   wrapper = setup(props);
-  //   wrapper.instance().loadEmployersPicklist = jest
-  //     .fn()
-  //     .mockImplementation(() => ["seiu 503 staff"]);
-  //   wrapper.instance().updateEmployersPicklist();
-  //   expect(wrapper.instance().props.formValues.employerName).toBe(
-  //     "SEIU 503 Staff"
-  //   );
-  // });
+      // expect handelError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+  });
 });

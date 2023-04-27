@@ -242,7 +242,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(pushMock).toHaveBeenCalled();
     });
 
-    test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange and handleDonationFrequencyChange", async () => {
+    test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange", async () => {
       const handleEmployerTypeChangeMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(""));

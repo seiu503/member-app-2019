@@ -21,7 +21,6 @@ export class SubmissionFormPage1Component extends React.Component {
       signatureType: "draw"
     };
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.donationFrequencyOnChange = this.donationFrequencyOnChange.bind(this);
   }
   sigBox = {};
   componentDidMount() {
@@ -192,13 +191,6 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
-  donationFrequencyOnChange(event, value) {
-    // console.log("donationFrequencyOnChange");
-    // console.log(value);
-    this.props.change("donationFrequency", value);
-    this.props.handleDonationFrequencyChange(value);
-  }
-
   async createSFOMA() {
     // console.log("createSFOMA");
     this.props.actions.setSpinner();
@@ -368,7 +360,6 @@ export class SubmissionFormPage1Component extends React.Component {
             renderCheckbox={this.renderCheckbox}
             checkoff={checkoff}
             capeObject={this.props.submission.cape}
-            donationFrequencyOnChange={this.donationFrequencyOnChange}
           />
         ) : (
           <React.Fragment>
@@ -446,7 +437,6 @@ export class SubmissionFormPage1Component extends React.Component {
                     renderCheckbox={this.renderCheckbox}
                     checkoff={checkoff}
                     capeObject={this.props.submission.cape}
-                    donationFrequencyOnChange={this.donationFrequencyOnChange}
                     handleError={this.props.handleError}
                     openSnackbar={this.props.openSnackbar}
                   />
