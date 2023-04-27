@@ -912,240 +912,233 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  // describe("createSubmission", () => {
-  //   it("calls `handleTab` if apiSubmission.updateSubmission succeeds", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return success object
-  //     const createSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-  //       );
+  describe("createSubmission", () => {
+    it("calls `handleTab` if apiSubmission.updateSubmission succeeds", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      const createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
 
-  //     const updateSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-  //       );
+      const updateSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+        );
 
-  //     const createSFOMASuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
-  //       );
+      const createSFOMASuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+        );
 
-  //     // replacing openSnackbar import with mock function
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         createSubmission: createSubmissionSuccess,
-  //         updateSubmission: updateSubmissionSuccess
-  //       },
-  //       handleError: handleErrorMock,
-  //       handleTab: handleTabMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMASuccess
-  //       },
-  //       createSubmission: createSubmissionSuccess,
-  //       createSFOMA: createSFOMASuccess
-  //     };
-  //     wrapper = setup(props);
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          createSubmission: createSubmissionSuccess,
+          updateSubmission: updateSubmissionSuccess
+        },
+        handleError: handleErrorMock,
+        handleTab: handleTabMock,
+        apiSF: {
+          createSFOMA: createSFOMASuccess,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        createSubmission: createSubmissionSuccess,
+        createSFOMA: createSFOMASuccess
+      };
 
-  //     delete testData.signature;
+      delete testData.signature;
 
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await createSFOMASuccess();
-  //           await createSubmissionSuccess();
-  //           await updateSubmissionSuccess();
-  //           expect(handleTabMock.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
-  //   it("calls `handleError` if apiSF.createSFOMA throws", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return success object
-  //     const createSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-  //       );
-  //     const createSFOMAError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.reject({ type: "CREATE_SF_OMA_FAILURE" })
-  //       );
-  //     const updateSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-  //       );
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
 
-  //     // replacing openSnackbar import with mock function
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         createSubmission: createSubmissionSuccess,
-  //         updateSubmission: updateSubmissionSuccess
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMAError
-  //       },
-  //       createSubmission: createSubmissionSuccess,
-  //       updateSubission: updateSubmissionSuccess
-  //     };
-  //     wrapper = setup(props);
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-  //     delete testData.signature;
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await createSFOMAError();
-  //           expect(formElements.handleError.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => console.log(err));
-  //   });
-  //   it("calls `handleError` if apiSubmission.createSubmission fails", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return success object
-  //     const createSubmissionSuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
-  //       );
+      // expect handleTab to have been called
+      waitFor(() => {
+        expect(handleTabMock).toHaveBeenCalled();
+      });
+    });
+    it("calls `handleError` if apiSF.createSFOMA throws", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      const createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
+      const createSFOMAError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SF_OMA_FAILURE" })
+        );
+      const updateSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+        );
 
-  //     const createSFOMASuccess = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
-  //       );
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          createSubmission: createSubmissionSuccess,
+          updateSubmission: updateSubmissionSuccess
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMAError,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        createSubmission: createSubmissionSuccess,
+        updateSubission: updateSubmissionSuccess
+      };
 
-  //     const updateSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
-  //       );
+      delete testData.signature;
 
-  //     // replacing openSnackbar import with mock function
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         createSubmission: createSubmissionSuccess,
-  //         updateSubmission: updateSubmissionError
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMASuccess
-  //       },
-  //       createSubmission: createSubmissionSuccess,
-  //       createSFOMA: createSFOMASuccess
-  //     };
-  //     wrapper = setup(props);
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
 
-  //     delete testData.signature;
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
 
-  //     wrapper
-  //       .instance()
-  //       .handleSubmit(generateSampleValidate())
-  //       .then(async () => {
-  //         try {
-  //           await createSFOMASuccess();
-  //           await createSubmissionSuccess();
-  //           await updateSubmissionError();
-  //           expect(handleErrorMock.mock.calls.length).toBe(1);
-  //         } catch (err) {
-  //           console.log(err);
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log(err);
-  //       });
-  //   });
-  //   it("calls `handleError` if apiSubmission.createSubmission throws", async function() {
-  //     // imported function that creates dummy data for form
-  //     testData = generateSampleValidate();
-  //     // test function that will count calls as well as return success object
-  //     const createSubmissionError = jest
-  //       .fn()
-  //       .mockImplementation(() =>
-  //         Promise.reject({ type: "CREATE_SUBMISSION_FAILURE" })
-  //       );
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
-  //     // replacing openSnackbar import with mock function
-  //     formElements.handleError = handleErrorMock;
-  //     // creating wrapper
-  //     const props = {
-  //       tab: 2,
-  //       submission: {
-  //         submissionId: "123",
-  //         formPage1: {},
-  //         payment: {}
-  //       },
-  //       apiSubmission: {
-  //         createSubmission: createSubmissionError
-  //       },
-  //       handleError: handleErrorMock,
-  //       apiSF: {
-  //         createSFOMA: createSFOMASuccess
-  //       },
-  //       createSubmission: createSubmissionError
-  //     };
-  //     wrapper = setup(props);
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+    it("calls `handleError` if apiSubmission.createSubmission fails", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      const createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
 
-  //     delete testData.signature;
+      const createSFOMASuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+        );
 
-  //     wrapper
-  //       .instance()
-  //       .props.createSubmission()
-  //       .catch(err => console.log(err));
-  //     // testing that clearForm is called when handleSubmit receives Error message
-  //     try {
-  //       await createSubmissionError();
-  //       expect(formElements.handleError.mock.calls.length).toBe(1);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   });
-  // });
+      const updateSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
+        );
+
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          createSubmission: createSubmissionSuccess,
+          updateSubmission: updateSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMASuccess,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        createSubmission: createSubmissionSuccess,
+        createSFOMA: createSFOMASuccess
+      };
+
+      delete testData.signature;
+
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
+
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
+
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+    it("calls `handleError` if apiSubmission.createSubmission throws", async function() {
+      // imported function that creates dummy data for form
+      testData = generateSampleValidate();
+      // test function that will count calls as well as return success object
+      const createSubmissionError = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.reject({ type: "CREATE_SUBMISSION_FAILURE" })
+        );
+
+      const props = {
+        tab: 1,
+        submission: {
+          submissionId: "123",
+          formPage1: {},
+          payment: {}
+        },
+        apiSubmission: {
+          createSubmission: createSubmissionError
+        },
+        handleError: handleErrorMock,
+        apiSF: {
+          createSFOMA: createSFOMASuccess,
+          getSFEmployers: getSFEmployersSuccess
+        },
+        createSubmission: createSubmissionError
+      };
+
+      delete testData.signature;
+
+      // simulate submit with dummy data
+      formElements.handleError = handleErrorMock;
+
+      const setupProps = { ...defaultProps, ...props, handleSubmit };
+      // render form
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup({ ...setupProps });
+
+      // simulate submit
+      await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
+
+      // expect handleError to have been called
+      waitFor(() => {
+        expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+  });
 
   // describe("createSFOMA", () => {
   //   it("handles error if createSFOMA prop fails", async function() {
