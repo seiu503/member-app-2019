@@ -166,7 +166,11 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  handleError: jest.fn()
+  handleError: jest.fn(),
+  headline: {},
+  body: {},
+  renderHeadline: jest.fn(),
+  renderBodyCopy: jest.fn()
 };
 
 const setup = (props = {}) => {
