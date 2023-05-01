@@ -106,7 +106,7 @@ export const CAPE = props => {
         />
       )}
       <form
-        onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
+        onSubmit={e => props.handleSubmit(e => handleCAPESubmit(e, standAlone))}
         id="CAPE"
         // className={classes.form}
         data-testid="cape-form"

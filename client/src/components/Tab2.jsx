@@ -46,9 +46,10 @@ export const Tab2 = props => {
       }}
     >
       <form
-        onSubmit={props.handleSubmit(onSubmit)}
+        onSubmit={e => props.handleSubmit(onSubmit(e))}
         id="tab2"
         data-testid="form-tab2"
+        name="form-tab2"
       >
         <Field
           formControlName="controlCheckboxMarginBold"
@@ -236,6 +237,7 @@ export const Tab2 = props => {
           </Button>
           <Button
             type="submit"
+            data-testid="button-submit-tab2"
             color="primary"
             sx={{
               textTransform: "none",

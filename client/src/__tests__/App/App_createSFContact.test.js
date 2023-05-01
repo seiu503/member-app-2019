@@ -1,13 +1,37 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {
+  employersPayload,
+  storeFactory,
+  renderWithProviders
+} from "../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import { AppUnconnected } from "../../App";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
-
-import { AppUnconnected } from "../../App";
-
-let wrapper;
-
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
+import { verify } from "../../store/actions/apiSubmissionActions";
+import { SubmissionFormPage1Container } from "../../containers/SubmissionFormPage1";
+import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -60,27 +84,20 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
+
+let verifyMock = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "VERIFY_SUCCESS",
+    payload: {
+      score: 0.9
+    }
+  })
+);
+
+const server = setupServer(...handlers);
 
 global.scrollTo = jest.fn();
 
@@ -113,7 +130,34 @@ const formValues = {
   textAuthOptOut: false
 };
 
+const initialState = {
+  appState: {
+    loading: false
+  },
+  submission: {
+    formPage1: {
+      reCaptchaValue: "token"
+    },
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload]
+  }
+};
+
 const defaultProps = {
+  apiSubmission: {
+    verify: jest.fn().mockImplementation(() =>
+      Promise.resolve({
+        type: "VERIFY_SUCCESS",
+        payload: {
+          score: 0.9
+        }
+      })
+    ),
+    handleInput: handleInputMock,
+    clearForm: clearFormMock,
+    setCAPEOptions: jest.fn(),
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+  },
   submission: {
     error: null,
     loading: false,
@@ -121,7 +165,12 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {}
+    payment: {},
+    salesforceId: "123",
+    formPage1: {
+      prefillEmployerId: "1",
+      reCaptchaValue: "token"
+    }
   },
   appState: {},
   apiProfile: {},
@@ -132,7 +181,14 @@ const defaultProps = {
     mm: "",
     onlineCampaignSource: null
   },
-  formValues,
+  formValues: {
+    directPayAuth: true,
+    directDepositAuth: true,
+    employerName: "homecare",
+    paymentType: "card",
+    employerType: "retired",
+    preferredLanguage: "English"
+  },
   location: {
     search: "id=1"
   },
@@ -142,26 +198,18 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
-    createSFContact: createSFContactSuccess,
-    lookupSFContact: lookupSFContactSuccess
-  },
-  apiSubmission: {
-    handleInput: handleInputMock,
-    clearForm: clearFormMock,
-    setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    createSFContact: createSFContactError,
+    lookupSFContact: lookupSFContactSuccess,
+    createSFContact: createSFContactError
   },
   history: {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
   sigBox: { ...sigBox },
@@ -185,57 +233,73 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  setActiveLanguage: jest.fn()
 };
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<AppUnconnected {...setupProps} />);
+const store = storeFactory(initialState);
+
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  // console.log(setupProps.submission.employerObjects);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[route]}>
+          <AppUnconnected {...setupProps} />
+        </MemoryRouter>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<App />", () => {
-  beforeEach(() => {
-    // console.log = jest.fn();
-  });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("createSFContact", () => {
     test("`createSFContact` handles error if prop function fails", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: "1"
-          }
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      wrapper = setup(props);
-      wrapper
-        .instance()
-        .createSFContact(formValues)
-        .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
+      // test for presence of snackbar component with variant = error
+
+      const testData = generateSampleValidate();
+
+      // render app
+      const user = userEvent.setup();
+      const { getByTestId, getByRole, debug } = await setup();
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // the problem is that apiSubmission.verify is being mocked in App, but when it's passed down to SubmFormPage1Component
+      // it's pulling the real action from the redux store
+      // need to figure out a way to mock that function for the child componenet so the verify function doesn't fail, keeping
+      // everything after that from executing
+
+      // // expect snackbar to be in document with error styling and correct message
+      await waitFor(() => {
+        const snackbar = getByTestId("component-basic-snackbar");
+        screen.debug(snackbar);
+        expect(snackbar).toBeInTheDocument();
+      });
     });
   });
 });

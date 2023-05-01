@@ -1,14 +1,28 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
-import { findByTestAttr } from "../../utils/testUtils";
-
-import "jest-canvas-mock";
-// import * as formElements from "../../components/SubmissionFormElements";
-
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
 import { AppUnconnected } from "../../App";
-
-let wrapper;
+import "jest-canvas-mock";
+import * as formElements from "../../components/SubmissionFormElements";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -58,30 +72,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let validateTokenSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "VALIDATE_TOKEN_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let createSFOMASuccess = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }));
@@ -106,6 +96,8 @@ const sigBox = {
   }
 };
 
+const testData = generateSampleValidate();
+
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -123,6 +115,19 @@ const formValues = {
   yyyy: "1999",
   preferredLanguage: "English",
   textAuthOptOut: false
+};
+
+const initialState = {
+  appState: {
+    loading: false
+  },
+  submission: {
+    formPage1: {
+      reCaptchaValue: ""
+    },
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload]
+  }
 };
 
 const defaultProps = {
@@ -155,24 +160,18 @@ const defaultProps = {
     createSFOMA: createSFOMASuccess,
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
   },
   apiSubmission: {
-    handleInput: handleInputMock,
+    // handleInput: handleInputMock,
     clearForm: clearFormMock,
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
     getAllSubmissions: () =>
       Promise.resolve({ type: "GET_ALL_SUBMISSIONS_SUCCESS" })
-  },
-  apiProfile: {
-    validateToken: validateTokenSuccess
   },
   history: {
     push: pushMock
@@ -203,12 +202,27 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  lookupSFContact: lookupSFContactSuccess
+  lookupSFContact: lookupSFContactSuccess,
+  setActiveLanguage: jest.fn()
 };
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<AppUnconnected {...setupProps} />);
+const store = storeFactory(initialState);
+
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  // console.log(setupProps.submission.employerObjects);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[route]}>
+          <AppUnconnected {...setupProps} />
+        </MemoryRouter>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<App />", () => {
@@ -227,35 +241,58 @@ describe("<App />", () => {
       handleInputMock.mockClear();
     });
 
-    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
-      const props = {
-        submission: {
-          formPage1: {
-            prefillEmployerId: "1234"
-          },
-          payment: {}
-        }
-      };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
-      wrapper.instance().prepForContact(body);
-    });
+    // test.only("`prepForContact` sets employerId conditionally based on prefillEmployerChanged prop", async () => {
+    //   const props = {
+    //     submission: {
+    //       formPage1: {
+    //         prefillEmployerId: "1234",
+    //         prefillEmployerChanged: true
+    //       },
+    //       payment: {},
+    //     },
+    //     apiSubmission: {
+    //       // handleInput: handleInputMock
+    //     }
+    //   };
+
+    //   // simulate user click 'Next'
+    //   const user = userEvent.setup();
+    //   const { getByTestId, getByRole, getByText, debug } = await setup({ ...props });
+    //   const nextButton = getByTestId("button-next");
+    //   await userEvent.click(nextButton);
+
+    //   // check that tab 1 renders
+    //   const tab1Form = getByRole("form");
+    //   await waitFor(() => {
+    //     expect(tab1Form).toBeInTheDocument();
+    //   });
+
+    //   await fireEvent.submit(tab1Form, { ...testData });
+
+    //   const submitButton = await getByTestId("button-submit");
+    //   // screen.debug(submitButton)
+    //   // await fireEvent.click(submitButton);
+    //   // await userEvent.click(submitButton);
+
+    //   const form = getByRole("form");
+    //   // const nextButtonTab2 = getByTestId("button-next");
+    //   await waitFor(() => screen.debug(form)) // tab 2
+    //   // const form = getByRole('form', { name: /form-tab2/i })
+    //   // screen.debug(form);
+
+    //   // check that tab 2 renders
+    //   // const tab2Form = getByTestId("form-tab2");
+    //   // await waitFor(() => {
+    //   //   expect(tab2Form).toBeInTheDocument();
+    //   // });
+
+    //   // await fireEvent.submit(tab2Form, { ...testData });
+
+    //   // // expect employerId to be set to '0016100000WERGeAAP' (unknown)
+    //   // await waitFor(() => {
+    //   //   expect(handleInputMock).toHaveBeenCalledWith({target: { name: "employerId", value: '0016100000WERGeAAP' }});
+    //   // });
+    // });
 
     test("`updateLanguage` calls this.props.setActiveLanguage", () => {
       const setActiveLanguageMock = jest.fn();

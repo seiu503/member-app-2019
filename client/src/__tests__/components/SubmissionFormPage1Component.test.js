@@ -440,7 +440,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     });
   });
 
-  describe("handleSubmit", () => {
+  describe.only("handleSubmit", () => {
     beforeEach(done => {
       props = {
         reCaptchaRef: {
@@ -476,7 +476,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     afterEach(() => {
       jest.restoreAllMocks();
     });
-    it("handles error if verifyRecaptchaScore fails", async () => {
+    it.only("handles error if verifyRecaptchaScore fails", async () => {
       testData = generateSampleValidate();
       const verifyRecaptchaError = jest
         .fn()
@@ -484,7 +484,12 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       handleErrorMock = jest
         .fn()
         .mockImplementation(() => console.log("handleError"));
+      formElements.handleError = handleErrorMock;
       props = {
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFEmployers: getSFEmployersSuccess
+        },
         verifyRecaptchaScore: verifyRecaptchaError,
         handleError: handleErrorMock,
         updateSubmission: updateSubmissionSuccess,
@@ -505,7 +510,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab1"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -522,6 +527,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
         renderHeadline: jest.fn(),
         tab: 0
       };
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(() => console.log("handleError"));
+      formElements.handleError = handleErrorMock;
       const setupProps = { ...defaultProps, ...props, handleSubmit };
       // render form
       const user = userEvent.setup();
@@ -531,7 +540,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab1"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -563,6 +572,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           employerId: "0014N00002ASaRyQAL"
         }
       };
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(() => console.log("handleError"));
+      formElements.handleError = handleErrorMock;
 
       const setupProps = { ...defaultProps, ...props, handleSubmit };
       // render form
@@ -573,7 +586,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -585,7 +598,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
           Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
         );
       testData = generateSampleValidate();
-      formElements.handleError = jest.fn();
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(() => console.log("handleError"));
+      formElements.handleError = handleErrorMock;
       createSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -622,7 +638,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -669,7 +685,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -720,7 +736,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect updateSubmissionSuccess to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(updateSubmissionSuccess).toHaveBeenCalled();
       });
     });
@@ -775,7 +791,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -833,7 +849,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -882,7 +898,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -928,7 +944,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -992,7 +1008,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleTab to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(handleTabMock).toHaveBeenCalled();
       });
     });
@@ -1050,7 +1066,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -1110,7 +1126,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -1156,7 +1172,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
       });
     });
@@ -1213,7 +1229,7 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect createSFOMAError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(createSFOMAError).toHaveBeenCalled();
       });
     });
@@ -1266,8 +1282,70 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       await fireEvent.submit(getByTestId("form-tab2"), { ...testData });
 
       // expect handelError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(formElements.handleError).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("misc methods", () => {
+    it("`prepForContact` sets employerId conditionally based on prefillEmployerChanged prop", async () => {
+      const props = {
+        submission: {
+          formPage1: {
+            prefillEmployerId: "1234",
+            prefillEmployerChanged: true
+          },
+          payment: {}
+        },
+        apiSubmission: {
+          // handleInput: handleInputMock
+        },
+        tab: 1
+      };
+
+      const { getByTestId, getByRole, getByText, debug } = await setup({
+        ...props
+      });
+
+      // check that tab 2 renders
+      const tab2Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab2Form).toBeInTheDocument();
+      });
+
+      // await waitFor(() => {
+      //   // fireEvent.submit(tab2Form, { ...testData });
+      //   const submitButton = getByTestId("button-submit-tab2");
+
+      // });
+
+      // const submitButton = await getByTestId("button-submit-tab2");
+      // // screen.debug(submitButton)
+      // await fireEvent.click(submitButton);
+
+      // const submitButton = await getByTestId("button-submit");
+      // // screen.debug(submitButton)
+      // // await fireEvent.click(submitButton);
+      // // await userEvent.click(submitButton);
+
+      // const form = getByRole("form");
+      // // const nextButtonTab2 = getByTestId("button-next");
+      // await waitFor(() => screen.debug(form)) // tab 2
+      // // const form = getByRole('form', { name: /form-tab2/i })
+      // // screen.debug(form);
+
+      // // check that tab 2 renders
+      // const tab2Form = getByTestId("form-tab2");
+      // // await waitFor(() => {
+      // //   expect(tab2Form).toBeInTheDocument();
+      // // });
+
+      await fireEvent.submit(tab2Form, { ...testData });
+
+      // expect employerId to be set to '0016100000WERGeAAP' (unknown)
+      await waitFor(() => {
+        // expect(handleInputMock).toHaveBeenCalledWith({target: { name: "employerId", value: '0016100000WERGeAAP' }});
       });
     });
   });

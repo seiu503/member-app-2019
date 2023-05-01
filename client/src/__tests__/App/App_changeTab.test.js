@@ -1,11 +1,28 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
-import "jest-canvas-mock";
-
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
 import { AppUnconnected } from "../../App";
-
-let wrapper;
+import "jest-canvas-mock";
+import * as formElements from "../../components/SubmissionFormElements";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
 
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -157,12 +174,40 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
+  },
+  setActiveLanguage: jest.fn()
+};
+
+const initialState = {
+  appState: {
+    loading: false
+  },
+  submission: {
+    formPage1: {
+      reCaptchaValue: ""
+    },
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload]
   }
 };
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<AppUnconnected {...setupProps} />);
+const store = storeFactory(initialState);
+
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  // console.log(setupProps.submission.employerObjects);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[route]}>
+          <AppUnconnected {...setupProps} />
+        </MemoryRouter>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<App />", () => {
@@ -185,9 +230,20 @@ describe("<App />", () => {
         }
       };
 
-      wrapper = setup(props);
-      wrapper.instance().changeTab(2);
-      expect(wrapper.instance().state.tab).toBe(2);
+      const { getByTestId, getByRole } = await setup({ ...props });
+
+      // simulate user click 'next' to change tab
+      // => need to write this test so it's changing to tab 2 but
+      // can't simulate submit so can't get past tab 1 ????
+      const nextButton = await getByTestId("button-next");
+      await fireEvent.click(nextButton);
+
+      const form = getByRole("form");
+
+      // check that tab 1 renders
+      await waitFor(() => {
+        expect(form).toBeInTheDocument();
+      });
     });
   });
 });

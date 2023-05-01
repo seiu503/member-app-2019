@@ -90,7 +90,7 @@ export const Tab1 = props => {
       }}
     >
       <form
-        onSubmit={props.handleSubmit(onSubmit)}
+        onSubmit={e => props.handleSubmit(onSubmit(e))}
         role="form"
         id="tab2"
         data-testid="form-tab1"

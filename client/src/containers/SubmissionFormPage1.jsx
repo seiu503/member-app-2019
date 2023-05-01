@@ -239,12 +239,16 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
+      console.log(token);
+      console.log(this.props.apiSubmission.verify);
       const result = await this.props.apiSubmission.verify(token).catch(err => {
         console.error(err);
         return this.props.handleError(this.props.translate("reCaptchaError"));
       });
 
       if (result) {
+        console.log("==============");
+        console.log(result);
         console.log(`recaptcha score: ${result.payload.score}`);
         return result.payload.score;
       }
@@ -627,8 +631,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab(newValue) {
-    // console.log("handleTab");
-    // console.log(newValue);
+    console.log("handleTab");
+    console.log(newValue);
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
         console.error(err);

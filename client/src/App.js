@@ -280,9 +280,10 @@ export class AppUnconnected extends Component {
   };
 
   async onResolved() {
+    console.log("onResolved");
     const token = await this.recaptcha.current.getResponse();
-    // console.log("reCaptcha Token");
-    // console.log(token);
+    console.log("reCaptcha Token");
+    console.log(token);
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
@@ -403,6 +404,7 @@ export class AppUnconnected extends Component {
   }
 
   async prepForContact(values) {
+    console.log("prepForContact");
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -498,6 +500,7 @@ export class AppUnconnected extends Component {
             : "0016100000WERGeAAP"; // <= unknown employer
         }
       } else {
+        console.log("++++++++++++++++++++++++++++++++++++++++++++++");
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
         // this will be an agency-level employer Id
@@ -862,7 +865,6 @@ export class AppUnconnected extends Component {
   };
 
   render() {
-    // console.log(this.props.tab);
     const values = queryString.parse(this.props.location.search);
     const embed = values.embed;
     const { classes } = this.props;
@@ -960,6 +962,7 @@ export class AppUnconnected extends Component {
                     changeTab={this.changeTab}
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
+                    apiSubmission={this.props.apiSubmission}
                     {...routeProps}
                   />
                 )}
