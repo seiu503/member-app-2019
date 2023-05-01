@@ -289,16 +289,13 @@ describe("<App />", () => {
       // simulate submit
       await fireEvent.submit(tab1Form, { ...testData });
 
-      // the problem is that apiSubmission.verify is being mocked in App, but when it's passed down to SubmFormPage1Component
-      // it's pulling the real action from the redux store
-      // need to figure out a way to mock that function for the child componenet so the verify function doesn't fail, keeping
-      // everything after that from executing
-
       // // expect snackbar to be in document with error styling and correct message
       await waitFor(() => {
         const snackbar = getByTestId("component-basic-snackbar");
-        screen.debug(snackbar);
+        const errorIcon = getByTestId("ErrorOutlineIcon");
+        // screen.debug(snackbar);
         expect(snackbar).toBeInTheDocument();
+        expect(errorIcon).toBeInTheDocument();
       });
     });
   });

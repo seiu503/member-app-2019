@@ -350,7 +350,8 @@ export class AppUnconnected extends Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
-    console.log(`formValues: ${formValues}`);
+    console.log(`formValues:`);
+    console.dir(formValues);
     if (
       formValues.firstName &&
       formValues.lastName &&
@@ -477,6 +478,7 @@ export class AppUnconnected extends Component {
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else {
         console.log(`no agency number found for ${values.employerName}`);
+        returnValues.employerName = "Unknown (DEFAULT)";
         returnValues.agencyNumber = 0;
       }
 

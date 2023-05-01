@@ -25,10 +25,15 @@ export const Tab2 = props => {
 
   const classes = formElements.classesPage1;
   // console.log(formValues.employerType);
-  const afh = formValues.employerType.toLowerCase() === "adult foster home";
-  const retiree = formValues.employerType.toLowerCase() === "retired";
-  const community =
-    formValues.employerType.toLowerCase() === "community member";
+  const afh = formValues.employerType
+    ? formValues.employerType.toLowerCase() === "adult foster home"
+    : false;
+  const retiree = formValues.employerType
+    ? formValues.employerType.toLowerCase() === "retired"
+    : false;
+  const community = formValues.employerType
+    ? formValues.employerType.toLowerCase() === "community member"
+    : false;
 
   return (
     <Box
