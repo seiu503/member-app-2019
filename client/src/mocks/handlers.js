@@ -8,6 +8,14 @@ const handlers = [
 
   rest.get("http://localhost:8080/api/sfaccts", (req, res, ctx) => {
     return res(ctx.json(employersPayload), ctx.status(200));
+  }),
+
+  rest.put("http://localhost:8080/api/sflookup", (req, res, ctx) => {
+    return res(ctx.json({ id: "testid" }), ctx.status(200));
+  }),
+
+  rest.post("http://localhost:8080/api/sf", (req, res, ctx) => {
+    return res(ctx.json({ id: "testid" }), ctx.status(200));
   })
 ];
 
