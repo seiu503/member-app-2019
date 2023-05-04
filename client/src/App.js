@@ -153,7 +153,9 @@ export class AppUnconnected extends Component {
   handleError = err => {
     return this.openSnackbar(
       "error",
-      err || "Sorry, something went wrong. Please try again."
+      err.message
+        ? err.message
+        : err || "Sorry, something went wrong. Please try again."
     );
     // console.log(err);
   };
@@ -682,8 +684,6 @@ export class AppUnconnected extends Component {
   }
 
   async createSubmission(formValues, partial) {
-    console.log("createSubmission");
-    console.log(formValues, partial);
     // create initial submission using data in tabs 1 & 2
 
     const body = await this.generateSubmissionBody(formValues, partial);

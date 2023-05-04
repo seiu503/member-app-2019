@@ -18,6 +18,16 @@ const handlers = [
   rest.post("http://localhost:8080/api/sf", (req, res, ctx) => {
     console.log("createSFContact mock");
     return res(ctx.json({ id: "testid" }), ctx.status(200));
+  }),
+
+  rest.post("http://localhost:8080/api/sfOMA", (req, res, ctx) => {
+    console.log("createSFOMA mock");
+    return res(ctx.json({ id: "testid" }), ctx.status(200));
+  }),
+
+  rest.post("http://localhost:8080/api/submission", (req, res, ctx) => {
+    console.log("addSubmission mock");
+    return res(ctx.json({ id: "testid" }), ctx.status(200));
   })
 ];
 
