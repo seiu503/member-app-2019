@@ -12,11 +12,7 @@ import {
   waitFor
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  employersPayload,
-  storeFactory,
-  renderWithProviders
-} from "../../utils/testUtils";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { AppUnconnected } from "../../App";
@@ -29,8 +25,6 @@ import {
   generateSampleValidate,
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
-import { verify } from "../../store/actions/apiSubmissionActions";
-import { SubmissionFormPage1Container } from "../../containers/SubmissionFormPage1";
 import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),

@@ -350,6 +350,7 @@ export class AppUnconnected extends Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
+    console.log("lookupSFContact");
     console.log(`formValues:`);
     console.dir(formValues);
     if (
@@ -482,7 +483,7 @@ export class AppUnconnected extends Component {
         returnValues.agencyNumber = 0;
       }
 
-      // console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
+      console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
 
       if (
         this.props.submission.formPage1 &&
@@ -502,7 +503,6 @@ export class AppUnconnected extends Component {
             : "0016100000WERGeAAP"; // <= unknown employer
         }
       } else {
-        console.log("++++++++++++++++++++++++++++++++++++++++++++++");
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
         // this will be an agency-level employer Id
@@ -514,6 +514,8 @@ export class AppUnconnected extends Component {
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
       });
+      console.log("@@@@@@@@@@@@@@@@@@@ 516");
+      console.dir(returnValues);
       resolve(returnValues);
     });
   }
@@ -767,7 +769,7 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    // console.log("createSFContact");
+    console.log("createSFContact");
     const values = await this.prepForContact(formValues);
     let {
       firstName,
@@ -812,6 +814,7 @@ export class AppUnconnected extends Component {
   }
 
   async updateSFContact(formValues) {
+    console.log("updateSFContact");
     const values = await this.prepForContact(formValues);
     let {
       firstName,
@@ -859,6 +862,7 @@ export class AppUnconnected extends Component {
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {
+    console.log(`changeTab: ${newValue}`);
     const newState = { ...this.state };
     newState.tab = newValue;
     this.setState({ ...newState }, () => {

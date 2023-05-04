@@ -192,7 +192,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   async createSFOMA() {
-    // console.log("createSFOMA");
+    console.log("createSFOMA");
     this.props.actions.setSpinner();
     const { formValues } = this.props;
     const body = await this.props.generateSubmissionBody(formValues);
@@ -286,8 +286,6 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
-    // console.log('=================');
-    // console.log(employerTypesList);
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
     const checkoff = this.props.submission.formPage1.checkoff;

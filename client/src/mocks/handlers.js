@@ -11,10 +11,12 @@ const handlers = [
   }),
 
   rest.put("http://localhost:8080/api/sflookup", (req, res, ctx) => {
+    console.log("sflookup mock");
     return res(ctx.json({ id: "testid" }), ctx.status(200));
   }),
 
   rest.post("http://localhost:8080/api/sf", (req, res, ctx) => {
+    console.log("createSFContact mock");
     return res(ctx.json({ id: "testid" }), ctx.status(200));
   })
 ];

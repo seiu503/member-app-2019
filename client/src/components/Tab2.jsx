@@ -35,6 +35,9 @@ export const Tab2 = props => {
     ? formValues.employerType.toLowerCase() === "community member"
     : false;
 
+  console.log("Tab2Render");
+  console.log(formValues);
+
   return (
     <Box
       data-testid="component-tab2"

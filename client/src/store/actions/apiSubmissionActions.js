@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import { RSAA } from "redux-api-middleware";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -182,8 +181,6 @@ export function saveSubmissionId(id) {
 }
 
 export function verify(token) {
-  console.log("apiSubmissionActions.js > 185");
-  console.log(token);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/verify`,

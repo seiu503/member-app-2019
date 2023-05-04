@@ -239,17 +239,12 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      console.log(token);
-      console.log(this.props.apiSubmission.verify);
       const result = await this.props.apiSubmission.verify(token).catch(err => {
         console.error(err);
         return this.props.handleError(this.props.translate("reCaptchaError"));
       });
 
       if (result) {
-        console.log("==============");
-        console.log(result);
-        console.log(`recaptcha score: ${result.payload.score}`);
         return result.payload.score;
       }
     }
@@ -554,6 +549,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab2() {
     const { formValues } = this.props;
+    console.log(formValues);
 
     if (!formValues.signature) {
       console.log(this.props.translate("provideSignatureError"));
@@ -613,6 +609,7 @@ export class SubmissionFormPage1Container extends React.Component {
     });
 
     // if lookup was successful, update existing contact and move to next tab
+    // refactor this bc it's an exact repeat of lines 595-602; make it a sub-module and just call it again here
     if (this.props.submission.salesforceId) {
       await this.props.updateSFContact(formValues).catch(err => {
         console.error(err);
@@ -634,16 +631,22 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log("handleTab");
     console.log(newValue);
     if (newValue === 1) {
-      return this.handleTab1().catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
+      return this.handleTab1()
+        .then(() => console.log("handleTab1 success"))
+        .catch(err => {
+          console.log("handleTab1 failed");
+          console.error(err);
+          return this.props.handleError(err);
+        });
     }
     if (newValue === 2) {
-      return this.handleTab2().catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
+      return this.handleTab2()
+        .then(() => console.log("handleTab2 success"))
+        .catch(err => {
+          console.log("handleTab2 failed");
+          console.error(err);
+          return this.props.handleError(err);
+        });
     } else {
       return this.props.changeTab(newValue);
     }
