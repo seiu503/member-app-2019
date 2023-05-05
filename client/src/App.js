@@ -862,7 +862,7 @@ export class AppUnconnected extends Component {
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {
-    console.log(`changeTab: ${newValue}`);
+    // console.log(`changeTab: ${newValue}`);
     const newState = { ...this.state };
     newState.tab = newValue;
     this.setState({ ...newState }, () => {

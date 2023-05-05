@@ -261,42 +261,6 @@ const setup = async (props = {}, route = "/") => {
   );
 };
 
-const notes = () => {
-  // Tab1 onSubmit = handleTab(1) (SubmissionFormPage1.jsx > 628)
-  // handleTab calls handleTab1() (async, w catch block) (SubmFormP1.jsx > 573)
-  // handleTab1 calls verifyRecapchaScore method (SubmFormP1.jsx > 228)
-  // verifyRecaptchaScore calls this.props.recaptcha.current.execute() (mocked in test props)
-  // verifyRecaptchaScore calls this.props.apiSubmission.verify() (mocked with msw) and returns a score back to handleTab1
-  // handleTab1 calls utils.ispaymentRequired (is this mocked? what's happening here?)
-  // handleTab1 calls apiSubmission.handleInput (mocked in test props?)
-  // handleTab1 checks for this.props.submission.salesforceId
-  // if yes, calls this.props.apiSF.updateSFContact (async, w catch block)
-  // if success, RETURN this.props.changeTab(1) (App.js > 864)
-  // if fail, handleError
-  // if no, calls this.props.lookupSFContact (async, w catch block) ==> NEED TO MOCK THIS
-  // if fail, handleError
-  // handleTab1 checks again for this.props.submission.salesforceId (should have been returned in lookup)
-  // if yes, calls this.props.apiSF.updateSFContact (async, w catch block) ?mocked w msw??
-  // if success, RETURN this.props.changeTab(1) (App.js > 864)
-  // if fail, handleError
-  // if no, calls this.props.lookupSFContact (async, w catch block) ?mocked w msw??
-  // if fail, handleError
-  // handleTab1 calls this.props.createSFContact (async, w catch block) mocked in test props
-  // if fail, handleError
-  // if success, RETURN this.props.changeTab(1) (App.js > 864)
-  // changeTab(1) sets App state to cause Tab 2 to render
-  //  ==> createSubmission is not called until submit on Tab 2
-  // Tab2 onSubmit = handleTab(2) (SubmissionFormPage1.jsx > 628)
-  // handleTab calls handleTab2() (async, w catch block) (SubmFormP1.jsx > 550)
-  // handleTab2 checks for formValues.signature
-  // if false, handleError
-  // handleTab2 calls this.saveLegalLanguage() (mocked in test props)
-  // handleTab2 calls this.props.createSubmission (async, w catch block) (App.js > 684)
-  // createSubmission calls this.props.apiSubmission.addSubmission (async, w catch block)
-  // createSubmission calls this.props.apiSF.createSFOMA (async, w catch block)
-  // handleTab2 calls this.props.changeTab(2) (App.js > 864)
-};
-
 describe("<App />", () => {
   // Enable API mocking before tests.
   beforeAll(() => server.listen());
@@ -381,14 +345,12 @@ describe("<App />", () => {
     });
     test("`createSubmission` handles error if prop function throws", async function() {
       formElements.handleError = jest.fn();
-      addSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({
-            type: "ADD_SUBMISSION_FAILURE",
-            message: "An error occurred while saving your Submission"
-          })
-        );
+      addSubmissionError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "ADD_SUBMISSION_FAILURE",
+          message: "An error occurred while saving your Submission"
+        })
+      );
       let props = {
         apiSubmission: {
           handleInput,
@@ -555,14 +517,12 @@ describe("<App />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
-      createSFOMAError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({
-            type: "CREATE_SF_OMA_FAILURE",
-            message: "sfOMA error"
-          })
-        );
+      createSFOMAError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "CREATE_SF_OMA_FAILURE",
+          message: "sfOMA error"
+        })
+      );
       const updateSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -643,14 +603,12 @@ describe("<App />", () => {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       formElements.handleError = jest.fn();
 
-      const updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({
-            type: "UPDATE_SUBMISSION_FAILURE",
-            message: "updateSubmission error"
-          })
-        );
+      const updateSubmissionError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "UPDATE_SUBMISSION_FAILURE",
+          message: "updateSubmission error"
+        })
+      );
       const createSFOMASuccess = jest
         .fn()
         .mockImplementation(() =>

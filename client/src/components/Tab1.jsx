@@ -60,8 +60,8 @@ export const Tab1 = props => {
     verifyCallback
   } = props;
 
-  console.log("Tab1Render");
-  console.log(formValues);
+  // console.log("Tab1Render");
+  // console.log(formValues);
 
   const classes = classesPage1;
 

@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import { RSAA } from "redux-api-middleware";
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
