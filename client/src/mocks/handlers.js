@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { rest } from "msw";
 import { employersPayload } from "../utils/testUtils";
 

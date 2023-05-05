@@ -129,7 +129,7 @@
       "src/**/*.{js,jsx}",
       "!src/index.js",
       "!src/serviceWorker.js",
-      "!src/store/actions"
+      "!src/mocks/handlers.js"
     ]
   },
   "homepage": "."

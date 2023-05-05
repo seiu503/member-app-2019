@@ -21,13 +21,4 @@ describe("index", () => {
     };
     expect(actions.setSpinner()).toEqual(expectedAction);
   });
-
-  // it("should create an action to set a redirect URL", () => {
-  //   const url = "http://www.example.com";
-  //   const expectedAction = {
-  //     type: "SET_REDIRECT_URL",
-  //     payload: url
-  //   };
-  //   expect(actions.setRedirectUrl(url)).toEqual(expectedAction);
-  // });
 });
