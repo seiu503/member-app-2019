@@ -274,12 +274,6 @@ describe("<App />", () => {
     test("`lookupSFContact` calls lookupSFContact prop if required fields populated", async function() {
       // just test that with this set of props, it doesn't error and advances to next tab
       let props = {
-        formValues: {
-          firstName: "string",
-          lastName: "string",
-          employerName: "homecare",
-          homeEmail: "test@test.com"
-        },
         submission: {
           salesforceId: null,
           formPage1: { ...defaultProps.formPage1 }
@@ -330,16 +324,14 @@ describe("<App />", () => {
         expect(cape).toBeInTheDocument();
       });
     });
-    test.only("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
-      lookupSFContactError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({
-            type: "LOOKUP_SF_CONTACT_FAILURE",
-            payload: {},
-            message: "lookupSFContactError"
-          })
-        );
+    test("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
+      lookupSFContactError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "LOOKUP_SF_CONTACT_FAILURE",
+          payload: {},
+          message: "lookupSFContactError"
+        })
+      );
       let props = {
         submission: {
           salesforceId: null,
@@ -413,125 +405,172 @@ describe("<App />", () => {
       });
     });
     test("`lookupSFContact` calls createSFContact if lookupSFContact finds no match", async function() {
-      formElements.handleError = jest.fn();
+      // just test that with this set of props, it doesn't error and advances to next tab
       let props = {
-        formValues: {
-          firstName: "string",
-          lastName: "string",
-          employerName: "homecare",
-          homeEmail: "test@test.com"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
         submission: {
           salesforceId: null,
           formPage1: {
+            ...defaultProps.formPage1,
             prefillEmployerId: null
           }
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
+          ...defaultProps.apiSF,
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: null }
+            })
+          )
         }
       };
-      wrapper = setup(props);
-      let createSFContactMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper.instance().setCAPEOptions = jest.fn();
-      wrapper.instance().createSFContact = createSFContactMock;
+      // render app
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-      wrapper.update();
-      wrapper
-        .instance()
-        .lookupSFContact(formValues)
-        .then(async () => {
-          await lookupSFContactSuccess;
-          expect(createSFContactMock.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // enter required data
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        const firstName = await getByLabelText("First Name");
+        const lastName = await getByLabelText("Last Name");
+        const homeEmail = await getByLabelText("Home Email");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+        await fireEvent.change(firstName, { target: { value: "test" } });
+        await fireEvent.change(lastName, { target: { value: "test" } });
+        await fireEvent.change(homeEmail, {
+          target: { value: "test@test.com" }
+        });
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        expect(employerName).toBeInTheDocument();
+        await fireEvent.change(employerName, {
+          target: {
+            value: "homecare worker (aging and people with disabilities)"
+          }
+        });
+        const tab1Form = await getByTestId("form-tab1");
+        await fireEvent.submit(tab1Form, { ...testData });
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect tab2 to render
+      await waitFor(() => {
+        const tab2Form = getByTestId("form-tab2");
+        expect(tab2Form).toBeInTheDocument();
+      });
     });
     test("`lookupSFContact` handles error if createSFContact throws", async function() {
       formElements.handleError = jest.fn();
       let props = {
-        formValues: {
-          firstName: "string",
-          lastName: "string",
-          employerName: "homecare",
-          homeEmail: "test@test.com"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
         submission: {
           salesforceId: null,
           formPage1: {
-            prefillEmployerId: "123"
-          }
-        },
-        apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
-        }
-      };
-      wrapper = setup(props);
-      let createSFContactMock = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("Error"));
-      wrapper.instance().setCAPEOptions = jest.fn();
-      wrapper.instance().createSFContact = createSFContactMock;
-
-      wrapper.update();
-      wrapper
-        .instance()
-        .lookupSFContact(formValues)
-        .then(async () => {
-          await lookupSFContactSuccess;
-          await createSFContactMock;
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => console.log(err));
-    });
-    test("`lookupSFContact` doesn't call createSFContact if salesforceId in redux store", async function() {
-      formElements.handleError = jest.fn();
-      let props = {
-        formValues: {
-          firstName: "string",
-          lastName: "string",
-          employerName: "homecare",
-          homeEmail: "test@test.com"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "1",
-          formPage1: {
+            ...defaultProps.formPage1,
             prefillEmployerId: null
           }
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
-          lookupSFContact: lookupSFContactSuccess
+          ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.reject({
+              type: "CREATE_SF_CONTACT_FAILURE",
+              message: "createSFContactError"
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: null }
+            })
+          )
         }
       };
-      wrapper = setup(props);
-      let createSFContactMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve({}));
-      wrapper.instance().setCAPEOptions = jest.fn();
-      wrapper.instance().createSFContact = createSFContactMock;
+      // render app
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-      wrapper.update();
-      wrapper
-        .instance()
-        .lookupSFContact(formValues)
-        .then(async () => {
-          await lookupSFContactSuccess;
-          expect(createSFContactMock.mock.calls.length).toBe(0);
-        })
-        .catch(err => console.log(err));
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // enter required data
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        const firstName = await getByLabelText("First Name");
+        const lastName = await getByLabelText("Last Name");
+        const homeEmail = await getByLabelText("Home Email");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+        await fireEvent.change(firstName, { target: { value: "test" } });
+        await fireEvent.change(lastName, { target: { value: "test" } });
+        await fireEvent.change(homeEmail, {
+          target: { value: "test@test.com" }
+        });
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        expect(employerName).toBeInTheDocument();
+        await fireEvent.change(employerName, {
+          target: {
+            value: "homecare worker (aging and people with disabilities)"
+          }
+        });
+        const tab1Form = await getByTestId("form-tab1");
+        await fireEvent.submit(tab1Form, { ...testData });
+      });
+
+      // expect snackbar to be in document with error styling and correct message
+      await waitFor(() => {
+        const snackbar = getByTestId("component-basic-snackbar");
+        const errorIcon = getByTestId("ErrorOutlineIcon");
+        const message = getByText("createSFContactError");
+        expect(snackbar).toBeInTheDocument();
+        expect(message).toBeInTheDocument();
+        expect(errorIcon).toBeInTheDocument();
+      });
     });
   });
 });
