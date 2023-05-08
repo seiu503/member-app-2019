@@ -157,6 +157,7 @@ export class NavBar extends React.Component {
               </Typography>
               <LanguagePicker
                 id="languagePicker"
+                data-testid="language-picker"
                 ref={this.props.language_picker}
                 classes={{
                   labelShrink: {

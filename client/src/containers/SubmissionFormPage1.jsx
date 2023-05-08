@@ -226,11 +226,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
+    // console.log('verifyRecaptchaScore');
     // fetch token
     await this.props.recaptcha.current.execute();
 
     // then verify
     const token = this.props.submission.formPage1.reCaptchaValue;
+    // console.log(`token: ${token}`);
 
     // check for token every 200ms until returned to avoid race condition
     (async () => {

@@ -13,7 +13,8 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
-import { AppUnconnected } from "../../App";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -23,13 +24,26 @@ import {
   generateSampleValidate,
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
-
+import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  executeMock = jest.fn().mockImplementation(() => Promise.resolve()),
-  updateSubmissionError = jest.fn().mockImplementation(() => Promise.reject()),
-  handleErrorMock = jest.fn();
+  handleErrorMock = jest.fn(),
+  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generateSampleValidate();
+const server = setupServer(...handlers);
+
+import { AppUnconnected } from "../../App";
+
+let verifyMock = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "VERIFY_SUCCESS",
+    payload: {
+      score: 0.9
+    }
+  })
+);
 
 let updateSFContactSuccess = jest
   .fn()
@@ -86,18 +100,6 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
-const testData = generateSampleValidate();
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -123,7 +125,7 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: ""
+      reCaptchaValue: "token"
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
@@ -135,7 +137,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      signature: "",
+      reCaptchaValue: "token"
     },
     cape: {},
     payment: {}
@@ -165,7 +168,8 @@ const defaultProps = {
     lookupSFContact: lookupSFContactSuccess
   },
   apiSubmission: {
-    // handleInput: handleInputMock,
+    handleInput: handleInputMock,
+    verify: verifyMock,
     clearForm: clearFormMock,
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
@@ -177,10 +181,11 @@ const defaultProps = {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -225,107 +230,157 @@ const setup = async (props = {}, route = "/") => {
   );
 };
 
+const notes = () => {
+  // Tab1 onSubmit = handleTab(1) (SubmissionFormPage1.jsx > 628)
+  //  // handleTab calls handleTab1() (async, w catch block) (SubmFormP1.jsx > 573)
+  //    // handleTab1 calls verifyRecapchaScore method (SubmFormP1.jsx > 228)
+  //     // verifyRecaptchaScore calls this.props.recaptcha.current.execute() (mocked in test props)
+  //     // verifyRecaptchaScore calls this.props.apiSubmission.verify() (mocked with msw) and returns a score back to handleTab1
+  //    // handleTab1 calls utils.ispaymentRequired (is this mocked? what's happening here?)
+  //    // handleTab1 calls apiSubmission.handleInput (mocked in test props?)
+  //    // handleTab1 checks for this.props.submission.salesforceId
+  //      // if yes, calls this.props.apiSF.updateSFContact (async, w catch block)
+  //        // if success, RETURN this.props.changeTab(1) (App.js > 864)
+  //        // if fail, handleError
+  //      // if no, calls this.props.lookupSFContact (async, w catch block) ==> (App.js > 354)
+  //        // lookup SFContact calls createSFContact
+  //          // createSFContact calls this.prepForContact
+  //        // if fail, handleError
+  //    // handleTab1 checks again for this.props.submission.salesforceId (should have been returned in lookup)
+  //      // if yes, calls this.props.apiSF.updateSFContact (async, w catch block) ?mocked w msw??
+  //        // if success, RETURN this.props.changeTab(1) (App.js > 864)
+  //        // if fail, handleError
+  //      // if no, calls this.props.lookupSFContact (async, w catch block) ?mocked w msw??
+  //        // if fail, handleError
+  //    // handleTab1 calls this.props.createSFContact (async, w catch block) mocked in test props
+  //      // if fail, handleError
+  //      // if success, RETURN this.props.changeTab(1) (App.js > 864)
+  //        // changeTab(1) sets App state to cause Tab 2 to render
+  // Tab2 onSubmit = handleTab(2) (SubmissionFormPage1.jsx > 628)
+  //  // handleTab calls handleTab2() (async, w catch block) (SubmFormP1.jsx > 550)
+  //    // handleTab2 checks for formValues.signature
+  //      // if false, handleError
+  //    // handleTab2 calls this.saveLegalLanguage() (mocked in test props)
+  //    // handleTab2 calls this.props.createSubmission (async, w catch block) (App.js > 684)
+  //      // createSubmission calls this.generateSubmissionBody (App.js > 561)
+  //         // generateSubmissionBody calls this.prepForContact (App.js > 410)
+  //         // generateSubmissionBody calls this.prepForSubmission (App.js > 525)
+  //      // createSubmission calls this.props.apiSubmission.addSubmission (async, w catch block)
+  //      // createSubmission calls this.props.apiSF.createSFOMA (async, w catch block)
+  //    // handleTab2 calls this.props.changeTab(2) (App.js > 864)
+};
+
 describe("<App />", () => {
-  beforeEach(() => {
-    // console.log = jest.fn();
-  });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("misc methods", () => {
     beforeEach(() => {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve(""));
+      // handleInputMock = jest.fn().mockImplementation(() => Promise.resolve(""));
     });
     afterEach(() => {
-      handleInputMock.mockClear();
+      // handleInputMock.mockClear();
     });
 
-    // test.only("`prepForContact` sets employerId conditionally based on prefillEmployerChanged prop", async () => {
-    //   const props = {
-    //     submission: {
-    //       formPage1: {
-    //         prefillEmployerId: "1234",
-    //         prefillEmployerChanged: true
-    //       },
-    //       payment: {},
-    //     },
-    //     apiSubmission: {
-    //       // handleInput: handleInputMock
-    //     }
-    //   };
+    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged prop", async () => {
+      const props = {
+        submission: {
+          formPage1: {
+            ...defaultProps.submission.formPage1,
+            prefillEmployerId: "1234",
+            prefillEmployerChanged: true,
+            reCaptchaValue: "token"
+          },
+          payment: {}
+        }
+      };
 
-    //   // simulate user click 'Next'
-    //   const user = userEvent.setup();
-    //   const { getByTestId, getByRole, getByText, debug } = await setup({ ...props });
-    //   const nextButton = getByTestId("button-next");
-    //   await userEvent.click(nextButton);
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-    //   // check that tab 1 renders
-    //   const tab1Form = getByRole("form");
-    //   await waitFor(() => {
-    //     expect(tab1Form).toBeInTheDocument();
-    //   });
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
-    //   await fireEvent.submit(tab1Form, { ...testData });
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
 
-    //   const submitButton = await getByTestId("button-submit");
-    //   // screen.debug(submitButton)
-    //   // await fireEvent.click(submitButton);
-    //   // await userEvent.click(submitButton);
+      // simulate submit
+      await fireEvent.submit(tab1Form, { ...testData });
 
-    //   const form = getByRole("form");
-    //   // const nextButtonTab2 = getByTestId("button-next");
-    //   await waitFor(() => screen.debug(form)) // tab 2
-    //   // const form = getByRole('form', { name: /form-tab2/i })
-    //   // screen.debug(form);
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
 
-    //   // check that tab 2 renders
-    //   // const tab2Form = getByTestId("form-tab2");
-    //   // await waitFor(() => {
-    //   //   expect(tab2Form).toBeInTheDocument();
-    //   // });
+      // expect employerId to be set to '0016100000WERGeAAP' (unknown)
+      await waitFor(() => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "employerId", value: "0016100000WERGeAAP" }
+        });
+      });
+    });
 
-    //   // await fireEvent.submit(tab2Form, { ...testData });
-
-    //   // // expect employerId to be set to '0016100000WERGeAAP' (unknown)
-    //   // await waitFor(() => {
-    //   //   expect(handleInputMock).toHaveBeenCalledWith({target: { name: "employerId", value: '0016100000WERGeAAP' }});
-    //   // });
-    // });
-
-    test("`updateLanguage` calls this.props.setActiveLanguage", () => {
+    test("`updateLanguage` calls this.props.setActiveLanguage", async () => {
       const setActiveLanguageMock = jest.fn();
       const props = {
         setActiveLanguage: setActiveLanguageMock
       };
-      wrapper = setup(props);
-      const fakeEvent = {
-        target: {
-          value: "English"
-        }
-      };
-      wrapper.instance().updateLanguage(fakeEvent);
-      const fakeRef = {
-        current: {
-          value: "Español"
-        }
-      };
-      wrapper.instance().language_picker = fakeRef;
-      wrapper.instance().updateLanguage(fakeEvent);
-      //^^ doing this twice to hit branches with userSelectedLanguage
-      expect(setActiveLanguageMock).toHaveBeenCalled();
+
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user select language
+      const languagePicker = getByLabelText("Select Language");
+      await fireEvent.change(languagePicker, { target: { value: "Español" } });
+
+      await waitFor(() => {
+        expect(setActiveLanguageMock).toHaveBeenCalled();
+      });
     });
 
-    test("`renderHeadline` renders headline", () => {
-      const props = {};
-      wrapper = setup(props);
-      wrapper.instance().renderHeadline(1);
-      const component = findByTestAttr(wrapper, "headline-translate");
-      // expect(component.length).toBe(1);
+    test("`renderHeadline` renders headline", async () => {
+      // render app
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup();
+      const headline = getByTestId("headline");
+      expect(headline).toBeInTheDocument();
     });
 
-    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
+    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", async () => {
       const props = {
         submission: {
           salesforceId: "1234",
@@ -338,26 +393,56 @@ describe("<App />", () => {
           search: "&cId=1234"
         }
       };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().prepForSubmission(body);
+
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // enter signature and simulate submit tab2
+      await waitFor(async () => {
+        const sigInput = await getByLabelText("Signature");
+        await fireEvent.change(sigInput, { target: { value: "test" } });
+        const tab2Form = await getByTestId("form-tab2");
+        await fireEvent.submit(tab2Form, { ...testData });
+      });
+
+      // just test that with these props there are no errors and it moves to tab 3
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect cape tab to render
+      await waitFor(() => {
+        const cape = getByTestId("component-cape");
+        expect(cape).toBeInTheDocument();
+      });
     });
 
-    test("`updateSubmission` uses defaults if no passedId or passedUpdates", () => {
+    test("`updateSubmission` uses defaults if no passedId or passedUpdates", async () => {
       const props = {
         submission: {
           salesforceId: "1234",
@@ -371,11 +456,122 @@ describe("<App />", () => {
           search: "&cId=1234"
         }
       };
-      wrapper = setup(props);
-      wrapper.instance().updateSubmission();
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // enter signature and simulate submit tab2
+      await waitFor(async () => {
+        const sigInput = await getByLabelText("Signature");
+        await fireEvent.change(sigInput, { target: { value: "test" } });
+        const tab2Form = await getByTestId("form-tab2");
+        await fireEvent.submit(tab2Form, { ...testData });
+      });
+
+      // just test that with these props there are no errors and it moves to tab 3
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect cape tab to render
+      await waitFor(() => {
+        const cape = getByTestId("component-cape");
+        expect(cape).toBeInTheDocument();
+      });
     });
 
-    test("`saveSubmissionErrors` handles error if updateSubmission throws", () => {
+    test("`saveSubmissionErrors` handles error if updateSubmission throws", async () => {
+      const updateSubmissionError = jest.fn().mockImplementation(() =>
+        Promise.reject({
+          type: "UPDATE_SUBMISSION_FAILURE",
+          message: "updateSubmissionError"
+        })
+      );
+      const props = {
+        submission: {
+          salesforceId: "1234",
+          formPage1: {
+            legalLanguage: "abc"
+          },
+          submissionId: "5678",
+          currentSubmission: {},
+          payment: {}
+        },
+        location: {
+          search: "&cId=1234"
+        },
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          updateSubmission: updateSubmissionError
+        }
+      };
+      // render app
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // enter signature and simulate submit tab2
+      await waitFor(async () => {
+        const sigInput = await getByLabelText("Signature");
+        await fireEvent.change(sigInput, { target: { value: "test" } });
+        const tab2Form = await getByTestId("form-tab2");
+        await fireEvent.submit(tab2Form, { ...testData });
+      });
+
+      // expect snackbar to be in document with error styling and correct message
+      await waitFor(() => {
+        const snackbar = getByTestId("component-basic-snackbar");
+        const errorIcon = getByTestId("ErrorOutlineIcon");
+        const message = getByText("updateSubmissionError");
+        expect(snackbar).toBeInTheDocument();
+        expect(message).toBeInTheDocument();
+        expect(errorIcon).toBeInTheDocument();
+      });
+    });
+
+    test("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
       const props = {
         submission: {
           salesforceId: "1234",
@@ -390,30 +586,52 @@ describe("<App />", () => {
           search: "&cId=1234"
         }
       };
-      wrapper = setup(props);
-      wrapper.instance().updateSubmission = updateSubmissionError;
-      wrapper.instance().saveSubmissionErrors();
-    });
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-    test("`generateSubmissionBody` uses back end fieldnames if !firstName", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        },
-        location: {
-          search: "&cId=1234"
-        }
-      };
-      const values = {};
-      wrapper = setup(props);
-      wrapper.instance().updateSubmission = updateSubmissionError;
-      wrapper.instance().generateSubmissionBody(values, true);
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit
+      await fireEvent.submit(tab1Form, { ...testData });
+
+      // enter signature and simulate submit tab2
+      await waitFor(async () => {
+        const sigInput = await getByLabelText("Signature");
+        await fireEvent.change(sigInput, { target: { value: "test" } });
+        const tab2Form = await getByTestId("form-tab2");
+        await fireEvent.submit(tab2Form, { ...testData });
+      });
+
+      // just test that with these props there are no errors and it moves to tab 3
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect cape tab to render
+      await waitFor(() => {
+        const cape = getByTestId("component-cape");
+        expect(cape).toBeInTheDocument();
+      });
     });
   });
 });
