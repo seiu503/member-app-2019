@@ -433,15 +433,6 @@ export class AppUnconnected extends Component {
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else if (
         values.employerName &&
-        values.employerName.toLowerCase() === "seiu 503 staff"
-      ) {
-        employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
-          "SEIU LOCAL 503 OPEU"
-        );
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
-      } else if (
-        values.employerName &&
         values.employerName.toLowerCase() ===
           "personal support worker (paid by ppl)"
       ) {
@@ -468,15 +459,6 @@ export class AppUnconnected extends Component {
         employerObject = findEmployerObject(
           this.props.submission.employerObjects,
           "State APD"
-        );
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
-      } else if (
-        values.employerName &&
-        values.employerName.toLowerCase() === "community member"
-      ) {
-        employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
-          "COMMUNITY MEMBERS"
         );
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else {
