@@ -157,11 +157,6 @@ const defaultProps = {
       innerHTML: "legal"
     }
   },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
-    }
-  },
   direct_pay: {
     current: {
       innerHTML: "pay"
@@ -199,7 +194,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "homecare",
@@ -243,7 +237,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "community member",
           paymentType: "card",
           employerType: "community member",
@@ -292,7 +285,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "community member",
           paymentType: "card",
           employerType: "community member",
@@ -337,7 +329,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -390,7 +381,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -447,7 +437,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",

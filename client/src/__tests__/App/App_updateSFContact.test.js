@@ -60,24 +60,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -149,11 +131,6 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
@@ -178,11 +155,6 @@ const defaultProps = {
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   direct_pay: {
@@ -214,7 +186,6 @@ describe("<App />", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -230,8 +201,7 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          updateSFContact: updateSFContactSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactSuccess
         }
       };
       wrapper = setup(props);
@@ -251,7 +221,6 @@ describe("<App />", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -267,8 +236,7 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          updateSFContact: updateSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          updateSFContact: updateSFContactError
         }
       };
       wrapper = setup(props);

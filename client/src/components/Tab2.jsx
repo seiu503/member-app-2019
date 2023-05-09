@@ -24,19 +24,13 @@ export const Tab2 = props => {
   } = props;
 
   const classes = formElements.classesPage1;
-  // console.log(formValues.employerType);
+
   const afh = formValues.employerType
     ? formValues.employerType.toLowerCase() === "adult foster home"
     : false;
   const retiree = formValues.employerType
     ? formValues.employerType.toLowerCase() === "retired"
     : false;
-  const community = formValues.employerType
-    ? formValues.employerType.toLowerCase() === "community member"
-    : false;
-
-  console.log("Tab2Render");
-  console.log(formValues);
 
   return (
     <Box
@@ -83,16 +77,10 @@ export const Tab2 = props => {
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
-          {community ? (
-            <p>
-              <Translate id="communityMembershipTerms2022" />
-            </p>
-          ) : (
-            <p>
-              <Translate id="membershipTerms2021" />
-            </p>
-          )}
-          {!community && !retiree && !afh && (
+          <p>
+            <Translate id="membershipTerms2021" />
+          </p>
+          {!retiree && !afh && (
             <div>
               <Field
                 formControlName="controlCheckboxMarginBoldSpacer"
@@ -115,7 +103,7 @@ export const Tab2 = props => {
           )}
         </Box>
 
-        {(afh || community || retiree) && (
+        {(afh || retiree) && (
           <React.Fragment>
             <Field
               formControlName="controlCheckboxMarginBold"
@@ -148,16 +136,6 @@ export const Tab2 = props => {
                   </p>
                 </React.Fragment>
               )}
-              {community && (
-                <>
-                  <p>
-                    <Translate id="communityDPA2022_1" />
-                  </p>
-                  <p>
-                    <Translate id="communityDPA2022_2" />
-                  </p>
-                </>
-              )}
               {retiree && (
                 <p>
                   <Translate id="retireeDPA1" />
@@ -166,11 +144,6 @@ export const Tab2 = props => {
               <p>
                 <Translate id={afh ? "afhDPA3" : "DPA3"} />
               </p>
-              {community && (
-                <p>
-                  <Translate id="communityDPA2022_4" />
-                </p>
-              )}
               <p>
                 <Translate id="DPA4" />
               </p>

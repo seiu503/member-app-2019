@@ -140,11 +140,6 @@ const defaultProps = {
       innerText: "legal"
     }
   },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
-    }
-  },
   direct_pay: {
     current: {
       innerHTML: "pay"
@@ -282,7 +277,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",

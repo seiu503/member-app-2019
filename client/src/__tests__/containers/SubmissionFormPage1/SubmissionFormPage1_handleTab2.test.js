@@ -67,24 +67,6 @@ let addSubmissionSuccess = jest
     Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -172,11 +154,6 @@ const defaultProps = {
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   direct_pay: {

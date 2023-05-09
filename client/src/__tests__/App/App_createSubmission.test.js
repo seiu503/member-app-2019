@@ -97,24 +97,6 @@ let createSubmissionSuccess = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
@@ -149,7 +131,6 @@ const formValues = {
   preferredLanguage: "English",
   textAuthOptOut: false,
   directPayAuth: true,
-  directDepositAuth: true,
   employerName: "homecare",
   paymentType: "card",
   employerType: "retired",
@@ -210,11 +191,6 @@ const defaultProps = {
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   direct_pay: {
@@ -438,7 +414,6 @@ describe("<App />", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -531,7 +506,6 @@ describe("<App />", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -617,7 +591,6 @@ describe("<App />", () => {
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",

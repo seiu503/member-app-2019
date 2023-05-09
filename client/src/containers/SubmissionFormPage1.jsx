@@ -260,15 +260,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.legal_language.current.innerText ||
       "";
     // console.log(legalLanguage);
-    if (formValues.directDepositAuth && this.props.direct_deposit.current) {
-      console.log("directDepositAuth");
-      legalLanguage = legalLanguage
-        ? legalLanguage.concat(
-            "<hr>",
-            this.props.direct_deposit.current.innerHTML
-          )
-        : "";
-    }
+
     if (formValues.directPayAuth && this.props.direct_pay.current) {
       console.log("directPayAuth");
       legalLanguage = legalLanguage.concat(

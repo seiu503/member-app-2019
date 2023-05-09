@@ -177,7 +177,6 @@ const defaultProps = {
   },
   formValues: {
     directPayAuth: true,
-    directDepositAuth: true,
     employerName: "homecare",
     paymentType: "card",
     employerType: "retired",
@@ -213,11 +212,6 @@ const defaultProps = {
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   direct_pay: {

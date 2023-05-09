@@ -146,11 +146,6 @@ const defaultProps = {
       innerHTML: "legal"
     }
   },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
-    }
-  },
   direct_pay: {
     current: {
       innerHTML: "pay"
@@ -204,8 +199,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess
         },
         submission: {
           formPage1: {
@@ -231,8 +225,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          getSFContactByDoubleId: getSFContactByDoubleIdError
         }
       };
 
@@ -257,8 +250,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          getSFContactByDoubleId: getSFContactByDoubleIdError
         },
         setCAPEOptions: jest.fn()
       };
@@ -290,8 +282,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess
         },
         apiSubmission: {
           setCAPEOptions: jest.fn()

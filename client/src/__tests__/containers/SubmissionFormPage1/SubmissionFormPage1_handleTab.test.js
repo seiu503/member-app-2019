@@ -153,11 +153,6 @@ const defaultProps = {
       innerHTML: "legal"
     }
   },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
-    }
-  },
   direct_pay: {
     current: {
       innerHTML: "pay"
@@ -197,7 +192,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         formValues: {
           signature: "test",
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",
@@ -369,7 +363,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         formValues: {
           signature: "test",
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "homecare",
           paymentType: "card",
           employerType: "retired",

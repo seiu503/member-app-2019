@@ -165,11 +165,6 @@ const defaultProps = {
       innerHTML: "legal"
     }
   },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
-    }
-  },
   direct_pay: {
     current: {
       innerHTML: "pay"

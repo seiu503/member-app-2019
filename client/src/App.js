@@ -55,7 +55,6 @@ export class AppUnconnected extends Component {
     this.legal_language = React.createRef();
     this.cape_legal = React.createRef();
     this.direct_pay = React.createRef();
-    this.direct_deposit = React.createRef();
     this.sigBox = React.createRef();
     this.props.initialize({
       languages: [
@@ -509,13 +508,6 @@ export class AppUnconnected extends Component {
       let returnValues = { ...values };
 
       if (!partial) {
-        // set default date values for DPA & DDA if relevant
-        returnValues.direct_pay_auth = values.directPayAuth
-          ? formatSFDate(new Date())
-          : null;
-        returnValues.direct_deposit_auth = values.directDepositAuth
-          ? formatSFDate(new Date())
-          : null;
         // set legal language
         returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
       }
@@ -570,7 +562,6 @@ export class AppUnconnected extends Component {
       textAuthOptOut,
       immediatePastMemberStatus,
       direct_pay_auth,
-      direct_deposit_auth,
       salesforceId,
       termsAgree,
       scholarshipBox,
@@ -640,7 +631,6 @@ export class AppUnconnected extends Component {
       maintenance_of_effort,
       seiu503_cba_app_date,
       direct_pay_auth,
-      direct_deposit_auth,
       immediate_past_member_status: immediatePastMemberStatus,
       salesforce_id: salesforceId || this.props.submission.salesforceId,
       reCaptchaValue,
@@ -929,7 +919,6 @@ export class AppUnconnected extends Component {
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     direct_pay={this.direct_pay}
-                    direct_deposit={this.direct_deposit}
                     sigBox={this.sigBox}
                     recaptcha={refCaptcha}
                     onResolved={this.onResolved}
