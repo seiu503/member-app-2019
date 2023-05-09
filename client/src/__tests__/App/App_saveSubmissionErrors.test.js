@@ -13,7 +13,8 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
-import { AppUnconnected } from "../../App";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -23,11 +24,17 @@ import {
   generateSampleValidate,
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
-
+import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generateSampleValidate();
+const server = setupServer(...handlers);
+
+import { AppUnconnected } from "../../App";
 
 let updateSFContactSuccess = jest
   .fn()
@@ -90,18 +97,6 @@ let refreshRecaptchaMock = jest
   .mockImplementation(() => Promise.resolve({}));
 
 global.scrollTo = jest.fn();
-
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
-const testData = generateSampleValidate();
 
 const formValues = {
   firstName: "firstName",
@@ -183,7 +178,6 @@ const defaultProps = {
     execute: executeMock
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -223,12 +217,14 @@ const setup = async (props = {}, route = "/") => {
 };
 
 describe("<App />", () => {
-  beforeEach(() => {
-    // console.log = jest.fn();
-  });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("saveSubmissionErrors", () => {
     afterEach(() => {
