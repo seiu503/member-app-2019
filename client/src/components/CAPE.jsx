@@ -634,6 +634,7 @@ export const CAPE = props => {
                   component={renderTextField}
                   onChange={(event, value) => {
                     change("capeAmountOther", value);
+                    suggestedAmountOnChange();
                   }}
                   additionalOnChange={suggestedAmountOnChange}
                 />

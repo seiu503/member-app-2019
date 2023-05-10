@@ -110,7 +110,7 @@ describe("<CAPE />", () => {
       cleanup();
     });
 
-    const suggestedAmountOnChangeMock = jest.fn();
+    let suggestedAmountOnChangeMock = jest.fn();
 
     const props = {
       handleSubmit: fn => fn,
@@ -174,7 +174,6 @@ describe("<CAPE />", () => {
       expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
     });
 
-    // it("calls reduxForm `change` prop on capeAmountOther Change", async () => {
     it("calls suggestedAmountOnChange on capeAmountOther Change", async () => {
       const testProps = {
         change: changeMock,
@@ -193,7 +192,6 @@ describe("<CAPE />", () => {
       // debug(component, 3000000);
       await user.type(component, "7");
       expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
-      // expect(changeMock).toHaveBeenCalled();
     });
 
     it("calls handleSubmit on submit", async () => {
