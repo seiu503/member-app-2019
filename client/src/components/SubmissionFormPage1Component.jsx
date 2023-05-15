@@ -109,7 +109,11 @@ export class SubmissionFormPage1Component extends React.Component {
     const employerTypesList = this.loadEmployersPicklist();
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
-    if (employerTypesList.length > 1 && employerTypeUserSelect !== "") {
+    if (
+      employerTypesList &&
+      employerTypesList.length > 1 &&
+      employerTypeUserSelect !== ""
+    ) {
       const employerObjectsFiltered = employerTypeUserSelect
         ? employerObjects.filter(
             employer =>
@@ -282,6 +286,8 @@ export class SubmissionFormPage1Component extends React.Component {
   }
 
   render() {
+    // console.log('submFormPage1Comp Render');
+    // console.dir(this.props.apiSF.createSFContact);
     const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }

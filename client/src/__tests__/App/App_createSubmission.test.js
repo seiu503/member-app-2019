@@ -166,9 +166,8 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    // updateSFContact: updateSFContactSuccess,
-    createSFContact: createSFContactSuccess
-    // lookupSFContact: lookupSFContactSuccess
+    createSFContact: () =>
+      Promise.resolve({ type: "CREATE_SF_CONTACT_SUCCESS" })
   },
   apiSubmission: {
     // handleInput: handleInputMock,
