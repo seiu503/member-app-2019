@@ -623,8 +623,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab(newValue) {
-    // console.log("handleTab");
-    // console.log(newValue);
+    console.log("handleTab");
+    console.log(newValue);
     if (newValue === 1) {
       return this.handleTab1()
         .then(() => console.log("handleTab1 success"))
