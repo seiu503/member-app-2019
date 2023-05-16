@@ -12,7 +12,7 @@ const { getByTestId } = render(<SpinnerAdornment classes={{}} />);
 
 const spinnerAdornment = getByTestId("component-spinner-adornment");
 
-describe.only("<SpinnerAdornment />", () => {
+describe("<SpinnerAdornment />", () => {
   it("renders without error", () => {
     const spinnerAdornment = getByTestId("component-spinner-adornment");
     expect(spinnerAdornment).toHaveClass("MuiCircularProgress-root");

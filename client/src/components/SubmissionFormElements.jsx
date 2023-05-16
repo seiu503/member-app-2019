@@ -1540,6 +1540,7 @@ export const renderSelect = ({
             options.map(item => (
               <option
                 key={shortid()}
+                data-testid={item}
                 value={item ? item.toLowerCase() : ""}
                 style={selectStyle(align)}
               >

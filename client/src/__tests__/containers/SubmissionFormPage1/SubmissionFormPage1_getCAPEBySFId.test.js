@@ -197,7 +197,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   });
 
   describe("getCAPEBySFId", () => {
-    test.only("`getCAPEBySFId` calls getCAPEBySFId prop function", async function() {
+    test("`getCAPEBySFId` calls getCAPEBySFId prop function", async function() {
       const getCAPEBySFIdSuccess = jest
         .fn()
         .mockImplementation(() =>
