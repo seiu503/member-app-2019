@@ -297,7 +297,7 @@ export class AppUnconnected extends Component {
   // }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
-    // console.log("updateSubmission");
+    console.log("updateSubmission > App.js 300");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;

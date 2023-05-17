@@ -3,7 +3,6 @@ import "@testing-library/jest-dom/extend-expect";
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as formElements from "../../components/SubmissionFormElements";
-// import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";
 
 const {
@@ -13,7 +12,6 @@ const {
   renderTextField,
   renderSelect,
   renderCheckbox,
-  // renderRadioGroup,
   renderCAPERadioGroup,
   getKeyByValue,
   findEmployerObject

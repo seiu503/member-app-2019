@@ -134,7 +134,9 @@
       "!src/serviceWorker.js",
       "!src/mocks/handlers.js"
     ],
-    "transform": {}
+    "transform": {
+      "\\.[jt]sx?$": "babel-jest"
+    }
   },
   "homepage": "."
 }

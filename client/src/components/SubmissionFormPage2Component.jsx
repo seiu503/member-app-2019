@@ -116,7 +116,7 @@ export class SubmissionFormPage2Component extends React.Component {
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;
 
-      console.log("CLEANBODY", cleanBody);
+      console.log("119");
 
       await this.props
         .createSubmission(cleanBody, true) // partial submission = true
@@ -125,13 +125,31 @@ export class SubmissionFormPage2Component extends React.Component {
           return this.props.handleError(err);
         });
     } else {
-      await this.props.updateSubmission(id, cleanBody).catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
+      await this.props
+        .updateSubmission(id, cleanBody)
+        .then(result => {
+          // console.log(result.type);
+          if (
+            result.type === "UPDATE_SUBMISSION_FAILURE" ||
+            this.props.submission.error
+          ) {
+            // console.log(this.props.submission.error);
+            this.props.saveSubmissionErrors(
+              this.props.submission.submissionId,
+              "updateSubmission",
+              this.props.submission.error
+            );
+            console.error(this.props.submission.error);
+            return this.props.handleError(this.props.submission.error);
+          }
+        })
+        .catch(err => {
+          console.log("131");
+          console.error(err);
+          return this.props.handleError(err);
+        });
     }
-    console.log("CLEANBODY", cleanBody);
-    // the method in App.js only processes fields from page 1, need to jump direction to API action to make this work for page 2 fields
+    console.log("134");
     this.props.apiSF
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
@@ -205,6 +223,7 @@ export class SubmissionFormPage2Component extends React.Component {
           <form
             id="submissionFormPage2"
             onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
+            data-testid="form-page2"
             // className={this.classes.form}
           >
             <Box
@@ -250,17 +269,10 @@ export class SubmissionFormPage2Component extends React.Component {
                 }}
                 id="page2IntroText"
               >
-                {paymentRequired ? (
-                  <Translate
-                    id="directPayNextSteps_2022"
-                    data-testid="direct-pay-text"
-                  />
-                ) : (
-                  <Translate
-                    id="thankYouNoPayment"
-                    data-testid="no-payment-text"
-                  />
-                )}
+                <Translate
+                  id="thankYouNoPayment"
+                  data-testid="no-payment-text"
+                />
               </FormHelperText>
             </Box>
             <p>

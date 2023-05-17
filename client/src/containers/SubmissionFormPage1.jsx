@@ -226,7 +226,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    // console.log('verifyRecaptchaScore');
+    console.log("verifyRecaptchaScore");
     // fetch token
     await this.props.recaptcha.current.execute();
 
@@ -567,6 +567,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab1() {
     console.log("handleTab1");
+    console.log(this.props.updateSFContact);
     const { formValues } = this.props;
     console.dir(formValues);
     // verify recaptcha score
