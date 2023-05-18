@@ -94,7 +94,7 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   updateEmployersPicklist = () => {
-    // console.log("updateEmployersPicklist");
+    console.log("updateEmployersPicklist");
     let employerObjects = this.props.submission.employerObjects || [
       { Name: "", Sub_Division__c: "" }
     ];
@@ -107,6 +107,7 @@ export class SubmissionFormPage1Component extends React.Component {
     }
     // console.log(`employerType: ${employerTypeUserSelect}`);
     const employerTypesList = this.loadEmployersPicklist();
+
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
     if (
@@ -125,12 +126,7 @@ export class SubmissionFormPage1Component extends React.Component {
           )
         : [{ Name: "" }];
       let employerList = employerObjectsFiltered.map(employer => employer.Name);
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "community member"
-      ) {
-        employerList = ["Community Member"];
-      }
+
       if (
         employerTypeUserSelect &&
         employerTypeUserSelect.toLowerCase() === "seiu 503 staff"

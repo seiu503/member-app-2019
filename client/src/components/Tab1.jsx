@@ -70,8 +70,9 @@ export const Tab1 = props => {
   };
 
   const employerTypeOnChange = () => {
+    console.log("employerTypeOnChange");
     props.updateEmployersPicklist();
-    handleEmployerChange();
+    props.handleEmployerChange();
   };
 
   const matches = useMediaQuery("(min-width:450px)");

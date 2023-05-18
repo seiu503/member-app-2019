@@ -157,35 +157,36 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   };
 
-  async handleEmployerTypeChange(employerType) {
-    console.log("handleEmployerTypeChange");
-    console.log(employerType);
-    console.log(
-      `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
-    );
-    // set payment required to true
-    if (utils.isPaymentRequired(employerType)) {
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: true }
-      });
-      await this.props.apiSubmission.handleInput({
-        target: { name: "checkoff", value: false }
-      });
-      if (this.state.displayCAPEPaymentFields) {
-        console.log(
-          `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
-        );
-      }
-    } else {
-      console.log("setting paymentRequired to false");
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: false }
-      });
-      await this.props.apiSubmission.handleInput({
-        target: { name: "checkoff", value: true }
-      });
-    }
-  }
+  // this is unused as of 5/18/2023 and can be deleted but need to also delete all references and related tests
+  // async handleEmployerTypeChange(employerType) {
+  //   console.log("handleEmployerTypeChange");
+  //   console.log(employerType);
+  //   console.log(
+  //     `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
+  //   );
+  //   // set payment required to true
+  //   if (utils.isPaymentRequired(employerType)) {
+  //     await this.props.apiSubmission.handleInput({
+  //       target: { name: "paymentRequired", value: true }
+  //     });
+  //     await this.props.apiSubmission.handleInput({
+  //       target: { name: "checkoff", value: false }
+  //     });
+  //     if (this.state.displayCAPEPaymentFields) {
+  //       console.log(
+  //         `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
+  //       );
+  //     }
+  //   } else {
+  //     console.log("setting paymentRequired to false");
+  //     await this.props.apiSubmission.handleInput({
+  //       target: { name: "paymentRequired", value: false }
+  //     });
+  //     await this.props.apiSubmission.handleInput({
+  //       target: { name: "checkoff", value: true }
+  //     });
+  //   }
+  // }
 
   handleEmployerChange() {
     // console.log("handleEmployerChange");
