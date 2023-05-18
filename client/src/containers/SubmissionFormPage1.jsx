@@ -42,7 +42,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
-    this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
+    // this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
     this.handleEmployerChange = this.handleEmployerChange.bind(this);
     this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
     this.handleCAPEOpen = this.handleCAPEOpen.bind(this);
@@ -231,7 +231,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // then verify
     const token = this.props.submission.formPage1.reCaptchaValue;
-    // console.log(`token: ${token}`);
+    console.log(`token: ${token}`);
 
     // check for token every 200ms until returned to avoid race condition
     (async () => {
@@ -568,7 +568,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab1() {
     console.log("handleTab1");
-    console.log(this.props.updateSFContact);
     const { formValues } = this.props;
     console.dir(formValues);
     // verify recaptcha score
