@@ -76,9 +76,7 @@ export class SubmissionFormPage1Container extends React.Component {
             // remove cId & aId from route params if no match,
             // but preserve other params
             const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
-            console.log(cleanUrl1);
             const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-            console.log(cleanUrl2);
             window.history.replaceState(null, null, cleanUrl2);
           }
         })
