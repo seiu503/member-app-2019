@@ -298,7 +298,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
+    // console.log("generateCAPEBody");
     // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
@@ -312,6 +312,8 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       formValues.employerName
     );
+    // console.log(employerObject);
+    // console.log(formValues.employerName);
 
     if (employerObject) {
       // console.log(`employerId: ${employerObject.Id}`);
@@ -325,7 +327,7 @@ export class SubmissionFormPage1Container extends React.Component {
         `no employerObject found for ${formValues.employerName}; no agency #`
       );
     }
-    // console.log(employerObject);
+
     // decide whether to use prefilled employer id (worksite level),
     // or user-chosen employer id (employer level)
     let employerId;
@@ -353,11 +355,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
-    console.log(q);
+    // console.log(q);
     const campaignSource =
       q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
 
-    console.log(campaignSource);
+    // console.log(campaignSource);
 
     // set body fields
     const paymentMethod = "Checkoff";
@@ -370,12 +372,12 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount || typeof donationAmount !== "number") {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
 
       return this.setState(newState, () => {
-        console.log(this.state.displayCAPEPaymentFields);
+        // console.log(this.state.displayCAPEPaymentFields);
       });
     }
 
@@ -400,7 +402,7 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_status: "Incomplete",
       donation_frequency: "Monthly"
     };
-    console.log(body);
+    // console.log(body);
     return body;
   }
 
@@ -409,7 +411,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async createCAPE(capeAmount, capeAmountOther) {
     console.log("createCAPE");
     const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
-    console.log(body);
+    // console.log(body);
     if (body) {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)
@@ -458,7 +460,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
-        // console.log(this.state.displayCAPEPaymentFields);
+        console.log(this.state.displayCAPEPaymentFields);
       });
     }
 
@@ -493,7 +495,7 @@ export class SubmissionFormPage1Container extends React.Component {
     } else {
       cape_status = "Error";
     }
-    console.log("496");
+
     await this.createCAPE(
       formValues.capeAmount,
       formValues.capeAmountOther
