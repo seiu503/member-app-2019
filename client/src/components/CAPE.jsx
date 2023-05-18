@@ -106,7 +106,7 @@ export const CAPE = props => {
         />
       )}
       <form
-        onSubmit={e => props.handleSubmit(e => handleCAPESubmit(e, standAlone))}
+        onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
         id="CAPE"
         // className={classes.form}
         data-testid="cape-form"
@@ -614,7 +614,7 @@ export const CAPE = props => {
                     }}
                     classes={classes}
                     component={formElements.renderCAPERadioGroup}
-                    options={capeObject.monthlyOptions}
+                    options={props.submission.cape.monthlyOptions}
                     onChange={(event, value) => {
                       change("capeAmount", value);
                       suggestedAmountOnChange(event);

@@ -204,7 +204,6 @@ function Submission(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_DID_SUCCESS:
       // console.log(action.payload);
       if (action.payload && action.payload.Account) {
-        console.log("GET_SF_CONTACT_DID_SUCCESS");
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
         // attached account/employer type is "Parent Employer" or "Agency"
@@ -245,7 +244,6 @@ function Submission(state = INITIAL_STATE, action) {
           console.log("staff edge case");
           employerName = "";
         }
-        console.log(`employerName: ${employerName}`);
         // split ethinicity string, provide true value for each ethnicity returned
         let ethnicities = [""];
         if (action.payload.Ethnicity__c) {

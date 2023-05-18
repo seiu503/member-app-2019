@@ -1,17 +1,40 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
-
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-let wrapper;
-
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../../styles/theme";
+import {
+  generatePage2Validate,
+  generateSubmissionBody
+} from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generatePage2Validate();
+const server = setupServer(...handlers);
+
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
 let updateSFContactSuccess = jest
   .fn()
@@ -29,6 +52,13 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "CREATE_SF_CONTACT_SUCCESS",
+    payload: { salesforce_id: "123" }
+  })
+);
+
+let createSFCAPESuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "CREATE_SF_CAPE_SUCCESS",
     payload: { salesforce_id: "123" }
   })
 );
@@ -60,21 +90,18 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let getSFEmployersSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_EMPLOYERS_SUCCESS",
+    payload: { ...employersPayload }
+  })
+);
+
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
 global.scrollTo = jest.fn();
-
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
 
 let formValues;
 
@@ -98,7 +125,7 @@ const defaultProps = {
   },
   classes: {},
   apiSF: {
-    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
+    getSFEmployers: getSFEmployersSuccess,
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
@@ -116,10 +143,11 @@ const defaultProps = {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -141,39 +169,56 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  handleError: jest.fn()
+  headline: {
+    id: 1,
+    text: ""
+  },
+  image: {
+    id: 2,
+    url: "blah"
+  },
+  body: {
+    id: 3,
+    text: ""
+  },
+  setCAPEOptions: jest.fn(),
+  handleError: jest.fn(),
+  renderHeadline: jest.fn(),
+  translate: jest.fn(),
+  renderBodyCopy: jest.fn(),
+  capeObject: {}
 };
 
+let handleSubmit;
+const initialState = {};
+const store = storeFactory(initialState);
 const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  const setupProps = { ...defaultProps, ...props, handleSubmit };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <SubmissionFormPage1Container {...setupProps} />
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    formValues = {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false
-    };
-  });
-  afterEach(() => {
-    jest.restoreAllMocks();
+    handleSubmit = fn => fn;
   });
 
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
+
+  // test is passing but not sure if it provides coverage of that branch. have tracked it through line 403 of
+  // generateCAPEBody, not sure what's happening after value is returned to createCAPE. may need to rewrite for coverage
   describe("createCAPE", () => {
     test("`createCAPE` handles case if no CAPE body generated", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
@@ -184,7 +229,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           employerName: "sdjflk",
           paymentType: "card",
           employerType: "retired",
-          preferredLanguage: "English"
+          preferredLanguage: "English",
+          capeAmount: 1
         },
         apiSubmission: {
           handleInput: handleInputMock
@@ -197,18 +243,34 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           employerObjects: [{ Id: "1", Name: "SEIU LOCAL 503 OPEU" }]
         },
         apiSF: {
-          createSFContact: createSFContactError
+          createSFContact: createSFContactError,
+          createSFCAPE: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { cape_id: "123" }
+            }),
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            })
+        },
+        location: {
+          search: "&cape=true"
         }
       };
-      const generateCAPEBodyMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(null));
-      wrapper = setup(props);
-      wrapper.instance().generateCAPEBody = generateCAPEBodyMock;
-      const result = await wrapper
-        .instance()
-        .createCAPE()
-        .catch(err => console.log(err));
+
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
+
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect no error snackbar
+      await waitFor(() => {
+        const snackbar = queryByTestId("component-basic-snackbar");
+        expect(snackbar).not.toBeInTheDocument();
+      });
     });
   });
 });

@@ -61,7 +61,6 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
         .then(result => {
-          // console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -299,7 +298,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    // console.log("generateCAPEBody");
+    console.log("generateCAPEBody");
     // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
@@ -401,16 +400,16 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_status: "Incomplete",
       donation_frequency: "Monthly"
     };
-    // console.log(body);
+    console.log(body);
     return body;
   }
 
   // create an initial CAPE record in postgres to get returned ID
   // not finalized until payment method added and SFCAPE status updated
   async createCAPE(capeAmount, capeAmountOther) {
-    // console.log("createCAPE");
+    console.log("createCAPE");
     const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
-    // console.log(body);
+    console.log(body);
     if (body) {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)
@@ -455,7 +454,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      // console.log("no donation amount chosen");
+      console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
@@ -494,7 +493,7 @@ export class SubmissionFormPage1Container extends React.Component {
     } else {
       cape_status = "Error";
     }
-
+    console.log("496");
     await this.createCAPE(
       formValues.capeAmount,
       formValues.capeAmountOther

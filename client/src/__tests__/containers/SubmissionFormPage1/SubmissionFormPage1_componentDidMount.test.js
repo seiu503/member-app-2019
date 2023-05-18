@@ -229,12 +229,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         })
       );
       let props = {
-        ...defaultProps,
         location: {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          ...defaultProps.apiSF,
           getSFContactByDoubleId: getSFContactByDoubleIdSuccess
         },
         submission: {
@@ -242,7 +240,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             firstName: "test",
             lastName: "test"
           },
-          cape: {},
+          cape: {
+            monthlyOptions: []
+          },
           payment: {}
         }
       };

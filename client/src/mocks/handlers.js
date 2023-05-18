@@ -9,7 +9,27 @@ const handlers = [
   }),
 
   rest.get("http://localhost:8080/api/sfaccts", (req, res, ctx) => {
+    console.log("this.props.apiSF.getSFEmployers mock");
     return res(ctx.json(employersPayload), ctx.status(200));
+  }),
+
+  rest.post("http://localhost:8080/api/sfCAPE", (req, res, ctx) => {
+    console.log("this.props.apiSF.createSFCAPE mock");
+    return res(ctx.json({ salesforce_id: "123" }), ctx.status(200));
+  }),
+
+  rest.get(`http://localhost:8080/api/sfdid/1/2`, (req, res, ctx) => {
+    console.log("getSFContactByDoubleId mock");
+    return res(
+      ctx.json({
+        id: "testid",
+        FirstName: "test",
+        LastName: "test",
+        Account: { id: "test" },
+        Ethnicity__c: "Declined"
+      }),
+      ctx.status(200)
+    );
   }),
 
   rest.put("http://localhost:8080/api/sflookup", (req, res, ctx) => {

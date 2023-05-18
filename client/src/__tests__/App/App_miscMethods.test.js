@@ -128,7 +128,8 @@ const initialState = {
       reCaptchaValue: "token"
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload]
+    employerObjects: [...employersPayload],
+    formPage2: {}
   }
 };
 
@@ -580,6 +581,48 @@ describe("<App />", () => {
         const cape = getByTestId("component-cape");
         expect(cape).toBeInTheDocument();
       });
+    });
+
+    test("opens confirmation modal on SubmFormPage1 componentDidMount if firstName and lastName returned from getSFContactByDoubleId", async () => {
+      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() => {
+        console.log("getSFContactByDoubleIdMock");
+        return Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            FirstName: "test",
+            LastName: "test",
+            Account: { id: "test" },
+            Ethnicity__c: "Declined"
+          }
+        });
+      });
+      let props = {
+        location: {
+          search: "cId=1&aId=2"
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          }
+        },
+        formPage2: {}
+      };
+
+      const { getByTestId } = await setup(props, "/?cId=1&aId=2");
+
+      // simulate user click 'Next'
+      const nextButton = await getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that modal renders
+      const modal = await getByTestId("component-modal");
+      await waitFor(() => expect(modal).toBeInTheDocument());
     });
   });
 });
