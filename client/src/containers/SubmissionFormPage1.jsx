@@ -196,31 +196,32 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  async getCAPEBySFId() {
-    const id = this.props.submission.salesforceId;
-    if (id) {
-      return new Promise(resolve => {
-        this.props.apiSubmission
-          .getCAPEBySFId(id)
-          .then(result => {
-            if (
-              result.type === "GET_CAPE_BY_SFID_FAILURE" ||
-              this.props.submission.error
-            ) {
-              // console.log(this.props.submission.error);
-              // don't return this error to client
-              // it's confusing if it's just 'no record found'...
-              resolve(console.log(this.props.submission.error));
-            }
-            resolve(result);
-          })
-          .catch(err => {
-            console.error(err);
-            resolve(this.props.handleError(err));
-          });
-      });
-    }
-  }
+  // 5/18/23 appears unused, delete if not needed
+  // async getCAPEBySFId() {
+  //   const id = this.props.submission.salesforceId;
+  //   if (id) {
+  //     return new Promise(resolve => {
+  //       this.props.apiSubmission
+  //         .getCAPEBySFId(id)
+  //         .then(result => {
+  //           if (
+  //             result.type === "GET_CAPE_BY_SFID_FAILURE" ||
+  //             this.props.submission.error
+  //           ) {
+  //             // console.log(this.props.submission.error);
+  //             // don't return this error to client
+  //             // it's confusing if it's just 'no record found'...
+  //             resolve(console.log(this.props.submission.error));
+  //           }
+  //           resolve(result);
+  //         })
+  //         .catch(err => {
+  //           console.error(err);
+  //           resolve(this.props.handleError(err));
+  //         });
+  //     });
+  //   }
+  // }
 
   async verifyRecaptchaScore() {
     console.log("verifyRecaptchaScore");
