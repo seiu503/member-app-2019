@@ -268,6 +268,32 @@ describe("<App />", () => {
           formPage1: {
             legalLanguage: "jjj"
           }
+        },
+        apiSF: {
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
 
@@ -339,6 +365,32 @@ describe("<App />", () => {
           formPage1: {
             legalLanguage: "jjj"
           }
+        },
+        apiSF: {
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
 
@@ -381,7 +433,6 @@ describe("<App />", () => {
       await waitFor(() => {
         const snackbar = getByTestId("component-basic-snackbar");
         const errorIcon = getByTestId("ErrorOutlineIcon");
-        debug(snackbar);
         const message = getByText(
           "An error occurred while saving your Submission"
         );
@@ -433,7 +484,22 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
           createSFOMA: createSFOMAError
         }
       };
@@ -525,7 +591,22 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
           createSFOMA: createSFOMAError
         }
       };
@@ -565,7 +646,6 @@ describe("<App />", () => {
       await waitFor(() => {
         const snackbar = getByTestId("component-basic-snackbar");
         const errorIcon = getByTestId("ErrorOutlineIcon");
-        debug(snackbar);
         const message = getByText("sfOMA error");
         expect(snackbar).toBeInTheDocument();
         expect(message).toBeInTheDocument();
@@ -597,7 +677,14 @@ describe("<App />", () => {
         },
         apiSubmission: {
           handleInput: handleInputMock,
-          addSubmission: addSubmissionSuccess,
+          addSubmission: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "ADD_SUBMISSION_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
           updateSubmission: updateSubmissionError
         },
         submission: {
@@ -607,8 +694,30 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: createSFContactSuccess,
-          createSFOMA: createSFOMASuccess
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
 
@@ -648,7 +757,6 @@ describe("<App />", () => {
       await waitFor(() => {
         const snackbar = getByTestId("component-basic-snackbar");
         const errorIcon = getByTestId("ErrorOutlineIcon");
-        debug(snackbar);
         const message = getByText("updateSubmission error");
         expect(snackbar).toBeInTheDocument();
         expect(message).toBeInTheDocument();
