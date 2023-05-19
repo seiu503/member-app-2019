@@ -225,6 +225,28 @@ describe("<App />", () => {
         submission: {
           salesforceId: null,
           formPage1: { ...defaultProps.formPage1 }
+        },
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
       // render app
@@ -289,7 +311,21 @@ describe("<App />", () => {
         },
         apiSF: {
           ...defaultProps.apiSF,
-          lookupSFContact: lookupSFContactError
+          lookupSFContact: lookupSFContactError,
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
 
@@ -368,6 +404,20 @@ describe("<App />", () => {
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
               payload: { salesforce_id: null }
+            })
+          ),
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
             })
           )
         }
@@ -458,7 +508,15 @@ describe("<App />", () => {
               type: "LOOKUP_SF_CONTACT_SUCCESS",
               payload: { salesforce_id: null }
             })
-          )
+          ),
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
       // render app
