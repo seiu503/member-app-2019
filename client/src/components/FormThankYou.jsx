@@ -25,23 +25,12 @@ const FormThankYou = React.forwardRef((props, ref) => {
         fontSize: "1.2em"
       }}
     >
-      {!props.paymentRequired && (
-        <p>
-          <Translate id="infoSubmitted" />
-          <br />
-          <Translate id="thankYou" />
-        </p>
-      )}
-      {props.paymentRequired && (
-        <p
-          style={{
-            lineHeight: 1.4,
-            textAlign: "left"
-          }}
-        >
-          <Translate id="directPayNextSteps_2022" />
-        </p>
-      )}
+      <p>
+        <Translate id="infoSubmitted" />
+        <br />
+        <Translate id="thankYou" />
+      </p>
+
       <a href="https://www.seiu503.org">
         <Translate id="clickToVisit" />
       </a>
