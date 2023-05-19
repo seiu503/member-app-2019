@@ -95,7 +95,7 @@ export const CAPE = props => {
       {capeOpen && (
         <AlertDialog
           open={capeOpen}
-          handleClose={handleCAPEClose}
+          handleClose={props.handleCAPEClose}
           title={<Translate id="skipTab" />}
           content={<Translate id="skipWarning" />}
           danger={true}
@@ -539,7 +539,7 @@ export const CAPE = props => {
             marginTop: "30px"
           }}
         />
-        {!displayCAPEPaymentFields && (
+        {!props.displayCAPEPaymentFields && (
           <ButtonWithSpinner
             type="button"
             color="primary"

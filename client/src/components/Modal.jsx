@@ -75,6 +75,7 @@ function Modal(props) {
           <Button
             onClick={props.handleClose}
             className={classes.modalButtonGreen}
+            data-testid="button-close"
             autoFocus
           >
             <Translate id="modalConfirmButton" /> {`${props.fullName}`}

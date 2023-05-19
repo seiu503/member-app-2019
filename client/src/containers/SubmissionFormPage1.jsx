@@ -111,6 +111,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleCloseAndClear() {
+    console.log("handleCloseAndClear");
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
@@ -126,6 +127,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   closeDialog() {
+    console.log("closeDialog");
     const params = queryString.parse(this.props.location.search);
     const embed = params.embed ? "&embed=true" : "";
     this.props.history.push(
@@ -188,16 +190,6 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     this.props.apiSubmission.handleInput({
       target: { name: "legalLanguage", value: legalLanguage }
-    });
-  }
-
-  async calculateAFHDuesRate(medicaidResidents) {
-    // console.log("calculateAFHDuesRate");
-    console.log(`medicaidResidents: ${medicaidResidents}`);
-    let afhDuesRate = medicaidResidents * 14.84 + 2.75;
-    // console.log(`afhDuesRate: ${afhDuesRate}`);
-    this.props.apiSubmission.handleInput({
-      target: { name: "afhDuesRate", value: afhDuesRate }
     });
   }
 

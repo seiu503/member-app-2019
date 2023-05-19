@@ -501,5 +501,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         );
       });
     });
+    test("`generateCAPEBody` displays CAPE Payment fields if no donation amount chosen", async () => {
+      wrapper = setup();
+      await wrapper.instance().generateCAPEBody(null, null);
+      expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
+    });
   });
 });

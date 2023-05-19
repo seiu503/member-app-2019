@@ -1,23 +1,51 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
-
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
-
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-let wrapper;
-
+import * as formElements from "../../../components/SubmissionFormElements";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../../styles/theme";
+import {
+  generatePage2Validate,
+  generateSubmissionBody
+} from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
+const testData = generatePage2Validate();
+const server = setupServer(...handlers);
+
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+
 let updateSFContactSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
+  );
+
+let updateSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
   );
 
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
@@ -26,6 +54,12 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
     payload: { salesforce_id: "123" }
   })
 );
+
+let lookupSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
+  );
 
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -55,21 +89,23 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let createSubmissionSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+  );
+
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
+let verifyRecaptchaScoreMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve(0.9));
+
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
+const changeTabMock = jest.fn();
 
 const formValues = {
   firstName: "firstName",
@@ -98,7 +134,8 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {}
+    payment: {},
+    employerObjects: [...employersPayload]
   },
   initialValues: {
     mm: "",
@@ -121,23 +158,26 @@ const defaultProps = {
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    setCAPEOptions: jest.fn(),
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
   legal_language: {
     current: {
-      innerHTML: "legal",
-      innerText: "legal"
+      innerHTML: "legal"
     }
   },
   direct_pay: {
@@ -145,63 +185,166 @@ const defaultProps = {
       innerHTML: "pay"
     }
   },
+  createSubmission: createSubmissionSuccess,
+  changeTab: changeTabMock,
   actions: {
     setSpinner: jest.fn()
   },
-  lookupSFContact: lookupSFContactSuccess,
+  headline: {
+    id: 1,
+    text: ""
+  },
+  image: {
+    id: 2,
+    url: "blah"
+  },
+  body: {
+    id: 3,
+    text: ""
+  },
+  setCAPEOptions: jest.fn(),
+  handleError: jest.fn(),
+  renderHeadline: jest.fn(),
   translate: jest.fn(),
-  handleError: jest.fn()
+  renderBodyCopy: jest.fn()
 };
 
+let handleSubmit;
+const initialState = {};
+const store = storeFactory(initialState);
 const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  const setupProps = { ...defaultProps, ...props, handleSubmit };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <SubmissionFormPage1Container {...setupProps} />
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    // console.log = jest.fn();
+    handleSubmit = fn => fn;
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("misc methods", () => {
-    beforeEach(() => {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve(""));
-    });
-    afterEach(() => {
-      handleInputMock.mockClear();
+    test("`handleCAPEOpen` opens alert dialog if try to navigate past CAPE tab w/o submitting", async () => {
+      let props = {
+        tab: 3
+      };
+
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const skipButton = getByTestId("button-next");
+
+      // simulate click skipButton
+      await waitFor(async () => {
+        await user.click(skipButton);
+      });
+
+      // expect alert dialog to be in document
+      await waitFor(() => {
+        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
+      });
     });
 
-    test("`handleOpen` opens modal", () => {
-      wrapper = setup();
-      wrapper.instance().handleOpen();
-      expect(wrapper.instance().state.open).toBe(true);
+    test("clicking 'close' button on alert dialog closes modal", async () => {
+      let props = {
+        tab: 3
+      };
+
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const skipButton = await getByTestId("button-next");
+
+      // simulate click skipButton
+      await waitFor(async () => {
+        await user.click(skipButton);
+      });
+
+      // expect alert dialog to be in document
+      await waitFor(() => {
+        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
+      });
+
+      // simulate click modalClose
+      const closeButton = getByTestId("button-cancel");
+      await waitFor(async () => {
+        await user.click(closeButton);
+      });
+
+      // expect alert dialog to be closed
+      await waitFor(() => {
+        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
+      });
     });
 
-    test("`handleCAPEOpen` opens alert dialog", () => {
-      wrapper = setup();
-      wrapper.instance().handleCAPEOpen();
-      expect(wrapper.instance().state.capeOpen).toBe(true);
-    });
-
-    test("`handleClose` closes modal", () => {
-      wrapper = setup();
-      wrapper.instance().handleClose();
-      expect(wrapper.instance().state.open).toBe(false);
-    });
-
-    test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", () => {
+    test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", async () => {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       const props = {
+        tab: 0,
         apiSubmission: {
           handleInput: handleInputMock
         }
       };
-      wrapper = setup(props);
-      wrapper.instance().handleEmployerChange();
-      expect(handleInputMock.mock.calls[0][0]).toEqual({
-        target: { name: "prefillEmployerChanged", value: true }
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // enter required data
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+        const employerName = await getByLabelText("Employer Name");
+        expect(employerName).toBeInTheDocument();
+        await fireEvent.change(employerName, {
+          target: {
+            value: "personal support worker (paid by ppl)"
+          }
+        });
+      });
+
+      // expect handleInput to have been called to set prefillEmployerchanged to `true`
+      await waitFor(async () => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "prefillEmployerChanged", value: true }
+        });
       });
     });
 
@@ -210,100 +353,184 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       let replaceStateMock = jest.fn();
       clearFormMock = jest.fn();
       window.history.replaceState = replaceStateMock;
-      wrapper = setup();
-      wrapper.instance().props.apiSubmission.clearForm = clearFormMock;
-      await wrapper.instance().handleCloseAndClear();
-      expect(wrapper.instance().state.open).toBe(false);
-      expect(clearFormMock.mock.calls.length).toBe(1);
+      const getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() => {
+        return Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            FirstName: "test",
+            LastName: "test",
+            Account: { id: "test" },
+            Ethnicity__c: "Declined"
+          }
+        });
+      });
+      let props = {
+        location: {
+          search: "cId=1&aId=2"
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess
+        },
+        apiSubmission: {
+          clearForm: clearFormMock
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          }
+        },
+        formPage2: {},
+        tab: 0
+      };
+
+      const user = userEvent.setup(props);
+      const { getByTestId } = await setup(props, "/?cId=1&aId=2");
+
+      // check that modal renders
+      const modal = await getByTestId("component-modal");
+      await waitFor(() => expect(modal).toBeInTheDocument());
+
+      // simulate user click on close button
+      const closeButton = await getByTestId("button-link-request");
+      await waitFor(() => expect(closeButton).toBeInTheDocument());
+
+      await user.click(closeButton);
+
+      // expect clearFormMock to have beeen called
+      await waitFor(() => {
+        expect(clearFormMock).toHaveBeenCalled();
+        expect(replaceStateMock).toHaveBeenCalled();
+      });
 
       window.history.replaceState = originalReplaceState;
     });
 
-    test("`handleCAPEClose` closes alert dialog", () => {
-      wrapper = setup();
-      wrapper.instance().handleCAPEClose();
-      expect(wrapper.instance().state.capeOpen).toBe(false);
-    });
-
-    test("`closeDialog` calls handleCAPEClose and this.props.history.push", () => {
-      const props = {
+    test("clicking close on CAPE modal closes alert dialog", async () => {
+      let pushMock = jest.fn();
+      let props = {
+        tab: 3,
         history: {
           push: pushMock
         }
       };
-      wrapper = setup(props);
-      wrapper.instance().closeDialog();
-      expect(wrapper.instance().state.capeOpen).toBe(false);
-      expect(pushMock).toHaveBeenCalled();
-    });
 
-    test("`checkCAPEPaymentLogic` sets displayCAPEPaymentFields to true and calls handleEmployerTypeChange", async () => {
-      const handleEmployerTypeChangeMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(""));
-      const props = {
-        formValues: {
-          employerType: "retired",
-          donationFrequency: "Monthly"
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().handleEmployerTypeChange = handleEmployerTypeChangeMock;
-      wrapper.update();
-      await wrapper.instance().checkCAPEPaymentLogic();
-      expect(handleEmployerTypeChangeMock).toHaveBeenCalled();
-      expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
-    });
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-    test("`calculateAFHDuesRate` calls handleInput", async function() {
-      let props = {
-        formValues: {
-          afhDuesRate: null
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        }
-      };
-      wrapper = setup(props);
-      const residents = 1;
-      await wrapper.instance().calculateAFHDuesRate(residents);
-      expect(handleInputMock.mock.calls[0][0]).toEqual({
-        target: { name: "afhDuesRate", value: 17.59 }
+      const skipButton = getByTestId("button-next");
+
+      // simulate click skipButton
+      await waitFor(async () => {
+        await user.click(skipButton);
+      });
+
+      // expect alert dialog to be in document
+      await waitFor(() => {
+        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
+      });
+
+      const cancelButton = await getByTestId("button-cancel");
+      await user.click(cancelButton);
+
+      // expect alert dialog not to be in document
+      await waitFor(() => {
+        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
       });
     });
 
-    test("`saveLegalLanguage` saves legal language to formValues", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+    test("clicking action button on CAPE modal calls this.props.history.push", async () => {
+      let pushMock = jest.fn();
       let props = {
-        formValues: {
-          directPayAuth: true,
-          employerName: "homecare",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
+        tab: 3,
+        history: {
+          push: pushMock
         }
       };
-      wrapper = setup(props);
 
-      wrapper.update();
-      wrapper
-        .instance()
-        .saveLegalLanguage()
-        .then(() => {
-          expect(handleInputMock.mock.calls[0][0]).toEqual({
-            target: { name: "legalLanguage", value: "legal<hr>deposit<hr>pay" }
-          });
-        })
-        .catch(err => console.log(err));
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const skipButton = getByTestId("button-next");
+
+      // simulate click skipButton
+      await waitFor(async () => {
+        await user.click(skipButton);
+      });
+
+      // expect alert dialog to be in document
+      await waitFor(() => {
+        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
+      });
+
+      const actionButton = await getByTestId("button-action");
+      await user.click(actionButton);
+
+      // expect alert dialog not to be in document
+      await waitFor(() => {
+        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
+        expect(pushMock).toHaveBeenCalled();
+      });
     });
 
-    test("`generateCAPEBody` displays CAPE Payment fields if no donation amount chosen", async () => {
-      wrapper = setup();
-      await wrapper.instance().generateCAPEBody(null, null);
-      expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
+    test("clicking Next button on CAPE form displays CAPE PaymentFields", async () => {
+      const handleEmployerTypeChangeMock = jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(""));
+      let pushMock = jest.fn();
+      let props = {
+        tab: 3,
+        history: {
+          push: pushMock
+        }
+      };
+
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      expect(
+        queryByTestId("component-cape-payment-fields")
+      ).not.toBeInTheDocument();
+
+      const nextButton = await queryByTestId("button-next-upper");
+
+      // simulate click nextButton
+      await waitFor(async () => {
+        await user.click(nextButton);
+      });
+
+      // expect CAPE payment fields to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-cape-payment-fields")
+        ).not.toBeInTheDocument();
+      });
     });
   });
 });
