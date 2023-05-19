@@ -43,7 +43,6 @@ export const CAPE = props => {
     renderSelect,
     renderTextField,
     renderCheckbox,
-    suggestedAmountOnChange,
     standAlone,
     verifyCallback,
     employerTypesList,
@@ -617,7 +616,6 @@ export const CAPE = props => {
                     options={props.submission.cape.monthlyOptions}
                     onChange={(event, value) => {
                       change("capeAmount", value);
-                      suggestedAmountOnChange(event);
                     }}
                   />
                 </Box>
@@ -634,9 +632,7 @@ export const CAPE = props => {
                   component={renderTextField}
                   onChange={(event, value) => {
                     change("capeAmountOther", value);
-                    suggestedAmountOnChange();
                   }}
-                  additionalOnChange={suggestedAmountOnChange}
                 />
               )}
             </Box>

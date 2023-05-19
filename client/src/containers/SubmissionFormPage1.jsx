@@ -134,29 +134,6 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleCAPEClose();
   }
 
-  suggestedAmountOnChange = e => {
-    console.log("suggestedAmountOnChange");
-    if (e.target.value === "Other") {
-      return;
-    }
-    const params = queryString.parse(this.props.location.search);
-
-    if (
-      params.cape &&
-      utils.isPaymentRequired(this.props.submission.formPage1.employerType)
-    ) {
-      this.props.apiSubmission.handleInput({
-        target: "paymentRequired",
-        value: true
-      });
-    } else {
-      this.props.apiSubmission.handleInput({
-        target: "paymentRequired",
-        value: false
-      });
-    }
-  };
-
   // this is unused as of 5/18/2023 and can be deleted but need to also delete all references and related tests
   // async handleEmployerTypeChange(employerType) {
   //   console.log("handleEmployerTypeChange");
@@ -578,12 +555,6 @@ export class SubmissionFormPage1Container extends React.Component {
     }
     // handle moving from tab 1 to tab 2:
 
-    // check if payment is required and store this in redux store for later
-    if (utils.isPaymentRequired(formValues.employerType)) {
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: true }
-      });
-    }
     this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });
@@ -688,7 +659,6 @@ export class SubmissionFormPage1Container extends React.Component {
           clearSignature={this.clearSignature}
           handleError={this.props.handleError}
           handleCAPESubmit={this.handleCAPESubmit}
-          suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           handleEmployerChange={this.handleEmployerChange}
