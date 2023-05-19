@@ -233,7 +233,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
+          getSFEmployers: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: [...employersPayload]
+            })
+          )
         },
         submission: {
           formPage1: {
