@@ -282,7 +282,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount || typeof donationAmount !== "number") {
-      // console.log("no donation amount chosen");
+      console.log("no donation amount chosen");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
 

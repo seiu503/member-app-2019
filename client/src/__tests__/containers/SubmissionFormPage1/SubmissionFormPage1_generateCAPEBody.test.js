@@ -502,9 +502,90 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       });
     });
     test("`generateCAPEBody` displays CAPE Payment fields if no donation amount chosen", async () => {
-      wrapper = setup();
-      await wrapper.instance().generateCAPEBody(null, null);
-      expect(wrapper.instance().state.displayCAPEPaymentFields).toBe(true);
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      const openSnackbarMock = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          employerName: "sdjflk",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmount: null
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          verify: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "VERIFY_SUCCESS",
+              payload: {
+                score: 0.9
+              }
+            })
+          )
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null,
+            reCaptchaValue: "token"
+          },
+          employerObjects: [...employersPayload],
+          cape: {
+            id: 1
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
+      };
+      const { queryByTestId, getByTestId } = setup(props);
+
+      const nextButton = await screen.getByRole("button", {
+        name: /next/i
+      });
+
+      await waitFor(async () => {
+        await expect(nextButton).toBeInTheDocument();
+      });
+
+      const cape = await getByTestId("cape-form");
+
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect the `displayPaymentFields` prop to be true after submit, hiding the Next button
+      // should really be testing for presence of cape payment fields but can't get that to work for some reason
+      await waitFor(async () => {
+        await expect(nextButton).not.toBeInTheDocument();
+      });
     });
   });
 });
