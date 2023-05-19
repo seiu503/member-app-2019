@@ -247,6 +247,28 @@ describe("<App />", () => {
             reCaptchaValue: "token"
           },
           payment: {}
+        },
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
 
@@ -292,7 +314,29 @@ describe("<App />", () => {
     test("`updateLanguage` calls this.props.setActiveLanguage", async () => {
       const setActiveLanguageMock = jest.fn();
       const props = {
-        setActiveLanguage: setActiveLanguageMock
+        setActiveLanguage: setActiveLanguageMock,
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
+        }
       };
 
       // render app
@@ -340,6 +384,28 @@ describe("<App />", () => {
         },
         location: {
           search: "&cId=1234"
+        },
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
 
@@ -403,6 +469,28 @@ describe("<App />", () => {
         },
         location: {
           search: "&cId=1234"
+        },
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
       // render app
@@ -476,6 +564,28 @@ describe("<App />", () => {
         apiSubmission: {
           ...defaultProps.apiSubmission,
           updateSubmission: updateSubmissionError
+        },
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
       // render app
@@ -533,6 +643,28 @@ describe("<App />", () => {
         },
         location: {
           search: "&cId=1234"
+        },
+        apiSF: {
+          createSFOMA: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_OMA_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
       // render app
