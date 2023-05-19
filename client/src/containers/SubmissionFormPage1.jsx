@@ -529,22 +529,18 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log("handleTab");
     console.log(newValue);
     if (newValue === 1) {
-      return this.handleTab1()
-        .then(() => console.log("handleTab1 success"))
-        .catch(err => {
-          console.log("handleTab1 failed");
-          console.error(err);
-          return this.props.handleError(err);
-        });
+      return this.handleTab1().catch(err => {
+        console.log("handleTab1 failed");
+        console.error(err);
+        return this.props.handleError(err);
+      });
     }
     if (newValue === 2) {
-      return this.handleTab2()
-        .then(() => console.log("handleTab2 success"))
-        .catch(err => {
-          console.log("handleTab2 failed");
-          console.error(err);
-          return this.props.handleError(err);
-        });
+      return this.handleTab2().catch(err => {
+        console.log("handleTab2 failed");
+        console.error(err);
+        return this.props.handleError(err);
+      });
     } else {
       return this.props.changeTab(newValue);
     }

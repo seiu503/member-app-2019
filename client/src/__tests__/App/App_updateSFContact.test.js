@@ -217,7 +217,7 @@ const setup = async (props = {}, route = "/") => {
     ...defaultProps,
     ...props
   };
-  // console.log(setupProps.submission.employerObjects);
+  // console.dir(setupProps.apiSF);
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
@@ -228,22 +228,6 @@ const setup = async (props = {}, route = "/") => {
     </ThemeProvider>
   );
 };
-
-// const setupChild = async (props = {}, route = "/") => {
-//   const setupProps = {
-//     ...defaultProps,
-//     ...props
-//   };
-//   return render(
-//     <ThemeProvider theme={theme}>
-//       <Provider store={store}>
-//         <MemoryRouter initialEntries={[route]}>
-//           <SubmissionFormPage1Container {...setupProps} />
-//         </MemoryRouter>
-//       </Provider>
-//     </ThemeProvider>
-//   );
-// };
 
 describe("<App />", () => {
   // Enable API mocking before tests.
@@ -257,64 +241,45 @@ describe("<App />", () => {
 
   describe("updateSFContact", () => {
     test("`updateSFContact` calls updateSFContact prop function", async function() {
+      let updateSFContactSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "UPDATE_SF_CONTACT_SUCCESS",
+          payload: { id: 1 }
+        })
+      );
+      let props = {
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          updateSFContact: updateSFContactSuccess
+        }
+      };
       // render app
       const user = userEvent.setup();
       const {
         getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
         queryByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup();
-
-      // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
-
-      // check that tab 1 renders
-      const tab1Form = getByRole("form");
-      await waitFor(() => {
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // expect snackbar NOT to be in document
-      await waitFor(async () => {
-        await expect(
-          queryByTestId("component-basic-snackbar")
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    test("`updateSFContact` handles error if prop function fails", async function() {
-      let props = {
-        apiSF: {
-          ...defaultProps.apiSF,
-          updateSFContact: updateSFContactError
-        }
-      };
-      // render app
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
         debug
       } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
-
-      // check that tab 1 renders
-      const tab1Form = getByRole("form");
-      await waitFor(() => {
-        expect(tab1Form).toBeInTheDocument();
-      });
 
       // enter required data
       await waitFor(async () => {
@@ -338,7 +303,83 @@ describe("<App />", () => {
         expect(employerName).toBeInTheDocument();
         await fireEvent.change(employerName, {
           target: {
-            value: "homecare worker (aging and people with disabilities)"
+            value: "personal support worker (paid by ppl)"
+          }
+        });
+        const tab1Form = await getByTestId("form-tab1");
+        await fireEvent.submit(tab1Form, { ...testData });
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(async () => {
+        await expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+        await expect(updateSFContactSuccess).toHaveBeenCalled();
+      });
+    });
+
+    test("`updateSFContact` handles error if prop function fails", async function() {
+      let updateSFContactError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject("updateSFContactError"));
+      let props = {
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          updateSFContact: updateSFContactError
+        }
+      };
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        queryByTestId,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // enter required data
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        const firstName = await getByLabelText("First Name");
+        const lastName = await getByLabelText("Last Name");
+        const homeEmail = await getByLabelText("Home Email");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+        await fireEvent.change(firstName, { target: { value: "test" } });
+        await fireEvent.change(lastName, { target: { value: "test" } });
+        await fireEvent.change(homeEmail, {
+          target: { value: "test@test.com" }
+        });
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        expect(employerName).toBeInTheDocument();
+        await fireEvent.change(employerName, {
+          target: {
+            value: "personal support worker (paid by ppl)"
           }
         });
         const tab1Form = await getByTestId("form-tab1");

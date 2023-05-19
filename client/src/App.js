@@ -407,7 +407,7 @@ export class AppUnconnected extends Component {
   }
 
   async prepForContact(values) {
-    console.log("prepForContact");
+    // console.log("prepForContact");
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -461,12 +461,12 @@ export class AppUnconnected extends Component {
         );
         returnValues.agencyNumber = employerObject.Agency_Number__c;
       } else {
-        console.log(`no agency number found for ${values.employerName}`);
+        // console.log(`no agency number found for ${values.employerName}`);
         returnValues.employerName = "Unknown (DEFAULT)";
         returnValues.agencyNumber = 0;
       }
 
-      console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
+      // console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
 
       if (
         this.props.submission.formPage1 &&
@@ -497,8 +497,7 @@ export class AppUnconnected extends Component {
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
       });
-      console.log("@@@@@@@@@@@@@@@@@@@ 516");
-      console.dir(returnValues);
+      // console.dir(returnValues);
       resolve(returnValues);
     });
   }
@@ -786,7 +785,7 @@ export class AppUnconnected extends Component {
   }
 
   async updateSFContact(formValues) {
-    console.log("updateSFContact");
+    // console.log("updateSFContact");
     const values = await this.prepForContact(formValues);
     let {
       firstName,
