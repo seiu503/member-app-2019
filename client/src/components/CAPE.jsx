@@ -77,6 +77,7 @@ export const CAPE = props => {
 
   const community = formValues.employerType === "community member";
   const matches = useMediaQuery("(min-width:450px)");
+
   return (
     <Box
       data-testid="component-cape"
@@ -552,12 +553,11 @@ export const CAPE = props => {
             variant="contained"
             loading={loading}
             onClick={checkCAPEPaymentLogic}
-            data-testid="button-next-upper"
           >
             <Translate id="next">Next</Translate>
           </ButtonWithSpinner>
         )}
-        {displayCAPEPaymentFields && (
+        {props.displayCAPEPaymentFields && (
           <div data-testid="component-cape-payment-fields">
             <Box
               // className={classes.paymentCopy}

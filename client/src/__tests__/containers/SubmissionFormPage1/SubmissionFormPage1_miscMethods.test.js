@@ -500,6 +500,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         tab: 3,
         history: {
           push: pushMock
+        },
+        formValues: {
+          employerType: "state agency"
         }
       };
 
@@ -514,22 +517,27 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      expect(
-        queryByTestId("component-cape-payment-fields")
-      ).not.toBeInTheDocument();
+      let capePaymentFields = await queryByTestId(
+        "component-cape-payment-fields"
+      );
+      expect(capePaymentFields).not.toBeInTheDocument();
 
-      const nextButton = await queryByTestId("button-next-upper");
+      const nextButton = await screen.getByRole("button", {
+        name: /next/i
+      });
+      await waitFor(async () => {
+        expect(nextButton).toBeInTheDocument();
+      });
 
       // simulate click nextButton
       await waitFor(async () => {
         await user.click(nextButton);
       });
 
+      capePaymentFields = await queryByTestId("component-cape-payment-fields");
       // expect CAPE payment fields to be in document
       await waitFor(() => {
-        expect(
-          queryByTestId("component-cape-payment-fields")
-        ).not.toBeInTheDocument();
+        expect(capePaymentFields).toBeInTheDocument();
       });
     });
   });

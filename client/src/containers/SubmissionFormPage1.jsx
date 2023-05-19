@@ -194,14 +194,12 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async checkCAPEPaymentLogic() {
-    console.log("+++++=============+++++++");
-    console.log("checkCAPEPaymentLogic");
+    // console.log("checkCAPEPaymentLogic");
     const { formValues } = this.props;
 
     const newState = { ...this.state };
     newState.displayCAPEPaymentFields = true;
     this.setState(newState, async () => {
-      await this.handleEmployerTypeChange(formValues.employerType);
       console.log(
         `displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
       );
