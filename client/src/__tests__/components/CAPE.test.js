@@ -68,6 +68,12 @@ const defaultProps = {
   capeObject: {
     monthlyOptions: [""],
     oneTimeOptions: [""]
+  },
+  submission: {
+    cape: {
+      monthlyOptions: [""],
+      oneTimeOptions: [""]
+    }
   }
 };
 
