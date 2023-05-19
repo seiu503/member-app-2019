@@ -25,13 +25,11 @@ let wrapper,
   apiSF,
   handleSubmitMock,
   testData,
-  suggestedAmountOnChangeMock,
   component;
 
 const changeFieldValueMock = jest.fn();
 const backMock = jest.fn();
 const changeMock = jest.fn().mockImplementation((name, value) => value);
-suggestedAmountOnChangeMock = jest.fn();
 
 // initial props for form
 const defaultProps = {
@@ -67,7 +65,6 @@ const defaultProps = {
   employerList: ["test"],
   checkoff: false,
   displayCAPEPaymentFields: true,
-  suggestedAmountOnChange: suggestedAmountOnChangeMock,
   capeObject: {
     monthlyOptions: [""],
     oneTimeOptions: [""]
@@ -110,8 +107,6 @@ describe("<CAPE />", () => {
       cleanup();
     });
 
-    let suggestedAmountOnChangeMock = jest.fn();
-
     const props = {
       handleSubmit: fn => fn,
       classes: {},
@@ -132,7 +127,6 @@ describe("<CAPE />", () => {
       handleEmployerTypeChange: jest
         .fn()
         .mockImplementation(() => Promise.resolve({})),
-      suggestedAmountOnChange: suggestedAmountOnChangeMock,
       capeObject: {
         monthlyOptions: [1, 2, 3],
         oneTimeOptions: [4, 5, 6]
@@ -158,40 +152,6 @@ describe("<CAPE />", () => {
       const component = getAllByRole("combobox")[0];
       fireEvent.change(component);
       expect(updateEmployersPicklistMock).toHaveBeenCalled();
-    });
-
-    it("calls suggestedAmountOnChange on capeAmount Change", async () => {
-      const testProps = {
-        suggestedAmountOnChange: suggestedAmountOnChangeMock,
-        capeObject: {
-          monthlyOptions: ["1", "2", "3"]
-        }
-      };
-      const user = userEvent.setup();
-      const { getByLabelText, debug } = await setup({ ...testProps });
-      const component = getByLabelText("$1");
-      await user.click(component);
-      expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
-    });
-
-    it("calls suggestedAmountOnChange on capeAmountOther Change", async () => {
-      const testProps = {
-        change: changeMock,
-        suggestedAmountOnChange: suggestedAmountOnChangeMock,
-        formValues: {
-          ...defaultProps.formValues,
-          capeAmount: "Other"
-        },
-        displayCAPEPaymentFields: true
-      };
-      const user = userEvent.setup();
-      const { getByTestId, debug } = await setup({ ...testProps });
-      const component = getByTestId("field-other-amount").querySelector(
-        "input"
-      );
-      // debug(component, 3000000);
-      await user.type(component, "7");
-      expect(suggestedAmountOnChangeMock).toHaveBeenCalled();
     });
 
     it("calls handleSubmit on submit", async () => {
