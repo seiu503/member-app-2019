@@ -210,6 +210,29 @@ describe("<App />", () => {
   describe("prepForSubmission", () => {
     test("`prepForSubmission` handles partial submissions", async function() {
       // all submissions are 'partial' until page2 with demographics is submitted
+
+      let props = {
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
+        }
+      };
       // render app
       const user = userEvent.setup();
       const {
@@ -219,7 +242,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup();
+      } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
@@ -279,6 +302,26 @@ describe("<App />", () => {
       let props = {
         location: {
           search: "&s=test"
+        },
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
       // render app
@@ -290,7 +333,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup();
+      } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
@@ -352,6 +395,26 @@ describe("<App />", () => {
           search: {
             cId: "333"
           }
+        },
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
       // render app
@@ -363,7 +426,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup();
+      } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
@@ -423,6 +486,26 @@ describe("<App />", () => {
       const props = {
         submission: {
           salesforce_id: "111"
+        },
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "LOOKUP_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            ),
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({
+                type: "CREATE_SF_CONTACT_SUCCESS",
+                payload: { id: 1 }
+              })
+            )
         }
       };
       // render app
@@ -434,7 +517,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup();
+      } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
