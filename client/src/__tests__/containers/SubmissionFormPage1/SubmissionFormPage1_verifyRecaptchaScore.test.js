@@ -1,22 +1,51 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
-
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-let wrapper;
-
+import * as formElements from "../../../components/SubmissionFormElements";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../../styles/theme";
+import {
+  generatePage2Validate,
+  generateSubmissionBody
+} from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
+const testData = generatePage2Validate();
+const server = setupServer(...handlers);
+
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+
 let updateSFContactSuccess = jest
   .fn()
   .mockImplementation(() =>
     Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
+  );
+
+let updateSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
   );
 
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
@@ -25,6 +54,12 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
     payload: { salesforce_id: "123" }
   })
 );
+
+let lookupSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
+  );
 
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -54,21 +89,23 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let createSubmissionSuccess = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+  );
+
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
+let verifyRecaptchaScoreMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve(0.9));
+
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
+const changeTabMock = jest.fn();
 
 const formValues = {
   firstName: "firstName",
@@ -121,16 +158,19 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -144,25 +184,57 @@ const defaultProps = {
       innerHTML: "pay"
     }
   },
+  createSubmission: createSubmissionSuccess,
+  changeTab: changeTabMock,
   actions: {
     setSpinner: jest.fn()
   },
+  headline: {
+    id: 1,
+    text: ""
+  },
+  image: {
+    id: 2,
+    url: "blah"
+  },
+  body: {
+    id: 3,
+    text: ""
+  },
+  setCAPEOptions: jest.fn(),
+  handleError: jest.fn(),
+  renderHeadline: jest.fn(),
   translate: jest.fn(),
-  handleError: jest.fn()
+  renderBodyCopy: jest.fn()
 };
 
+let handleSubmit;
+const initialState = {};
+const store = storeFactory(initialState);
 const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  const setupProps = { ...defaultProps, ...props, handleSubmit };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <SubmissionFormPage1Container {...setupProps} />
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    // console.log = jest.fn();
+    handleSubmit = fn => fn;
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("verifyRecaptchaScore", () => {
     test("verifyRecaptchaScore calls `recaptcha.current.execute()`", async function() {
@@ -171,11 +243,31 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           current: {
             execute: executeMock
           }
-        }
+        },
+        tab: 0
       };
-      wrapper = setup(props);
-      await wrapper.instance().verifyRecaptchaScore();
-      expect(executeMock.mock.calls.length).toBe(1);
+
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
+      });
+
+      // expect handleInputMock to have been called setting `howManyTabs` to 3
+      await waitFor(() => {
+        expect(executeMock).toHaveBeenCalled();
+      });
     });
     test("verifyRecaptchaScore calls `apiSubmission.verify`", async function() {
       const verifySuccess = jest
@@ -195,18 +287,42 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         apiSubmission: {
-          verify: verifySuccess
-        }
+          verify: verifySuccess,
+          handleInput: handleInputMock
+        },
+        tab: 0,
+        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
+        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
       };
-      wrapper = setup(props);
-      await wrapper.instance().verifyRecaptchaScore();
-      expect(verifySuccess.mock.calls.length).toBe(1);
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
+      });
+
+      // expect handleInputMock to have been called setting `howManyTabs` to 3
+      await waitFor(() => {
+        expect(verifySuccess).toHaveBeenCalled();
+      });
     });
     test("verifyRecaptchaScore handles error if `apiSubmission.verify` throws", async function() {
       const verifyError = jest
         .fn()
-        .mockImplementation(() => Promise.reject({ type: "VERIFY_FAILURE" }));
+        .mockImplementation(() => Promise.reject("reCaptchaError"));
       const props = {
+        translate: text => text,
+        handleError: handleErrorMock,
         recaptcha: {
           current: {
             execute: executeMock
@@ -218,18 +334,34 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         apiSubmission: {
-          verify: verifyError
-        }
+          verify: verifyError,
+          handleInput: handleInputMock
+        },
+        tab: 0,
+        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
+        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
       };
-      wrapper = setup(props);
-      await wrapper.instance().verifyRecaptchaScore();
-      await verifyError()
-        .then(() => {
-          expect(handleErrorMock.mock.calls.length).toBe(1);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
+      });
+
+      // expect hadleError to have been called with 'reCaptchaError'
+      await waitFor(() => {
+        expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
+      });
     });
   });
 });
