@@ -89,6 +89,8 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
+let formValues;
+
 const initialState = {
   appState: {
     loading: false
@@ -107,10 +109,12 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      signature: "",
+      legalLanguage: "jjj"
     },
     cape: {},
-    payment: {}
+    payment: {},
+    employerObjects: [...employersPayload]
   },
   appState: {},
   apiProfile: {},
@@ -121,7 +125,7 @@ const defaultProps = {
     mm: "",
     onlineCampaignSource: null
   },
-  formValues: {},
+  formValues,
   location: {
     search: "id=1"
   },
@@ -131,15 +135,20 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    updateSFContact: updateSFContactSuccess,
-    createSFContact: createSFContactSuccess,
-    lookupSFContact: lookupSFContactSuccess
+    updateSFContact: () =>
+      Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS" }),
+    createSFContact: () =>
+      Promise.resolve({ type: "CREATE_SF_CONTACT_SUCCESS" }),
+    lookupSFContact: () =>
+      Promise.resolve({ type: "LOOKUP_SF_CONTACT_SUCCESS" })
   },
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -204,18 +213,29 @@ describe("<App />", () => {
   describe("prepForContact", () => {
     test("`prepForContact` handles edge case if no employerName in formValues", async function() {
       let props = {
-        formValues: {
-          employerName: undefined
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          lookupSFContact: () =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            }),
+          createSFContact: () =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
         }
       };
       // render app
       const user = userEvent.setup();
       const {
         getByTestId,
-        queryByTestId,
         getByRole,
         getByLabelText,
         getByText,
+        queryByTestId,
         debug
       } = await setup(props);
 
@@ -223,19 +243,39 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // check that tab 1 renders
-      const tab1Form = getByRole("form");
-      await waitFor(() => {
-        expect(tab1Form).toBeInTheDocument();
+      // enter required data
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        const firstName = await getByLabelText("First Name");
+        const lastName = await getByLabelText("Last Name");
+        const homeEmail = await getByLabelText("Home Email");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+        await fireEvent.change(firstName, { target: { value: "test" } });
+        await fireEvent.change(lastName, { target: { value: "test" } });
+        await fireEvent.change(homeEmail, {
+          target: { value: "test@test.com" }
+        });
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        expect(employerName).toBeInTheDocument();
+        await fireEvent.change(employerName, {
+          target: {
+            value: "personal support worker (paid by ppl)"
+          }
+        });
+        const tab1Form = await getByTestId("form-tab1");
+        await fireEvent.submit(tab1Form, { ...testData });
+      });
 
       // expect snackbar NOT to be in document
-      await waitFor(() => {
+      await waitFor(async () => {
         expect(
-          queryByTestId("component-basic-snackbar")
+          await queryByTestId("component-basic-snackbar")
         ).not.toBeInTheDocument();
       });
     });
@@ -254,6 +294,44 @@ describe("<App />", () => {
             prefillEmployerId: null
           },
           employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+        },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        apiSF: {
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         }
       };
       // render app
@@ -304,6 +382,26 @@ describe("<App />", () => {
             prefillEmployerChanged: true
           },
           employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+        },
+        apiSF: {
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         }
       };
       // render app
@@ -349,8 +447,38 @@ describe("<App />", () => {
         formValues: {
           employerName: "personal support worker (paid by ppl)"
         },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
         apiSF: {
           ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -421,8 +549,38 @@ describe("<App />", () => {
         formValues: {
           employerName: "personal support worker (paid by state of oregon)"
         },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
         apiSF: {
           ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",

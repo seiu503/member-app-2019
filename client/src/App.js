@@ -50,6 +50,7 @@ const styles = {};
 export class AppUnconnected extends Component {
   constructor(props) {
     super(props);
+    this._isMounted = false;
     this.language_picker = React.createRef();
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
@@ -110,6 +111,8 @@ export class AppUnconnected extends Component {
   }
 
   async componentDidMount() {
+    this._isMounted = true;
+
     // check and log environment
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
 
@@ -126,6 +129,10 @@ export class AppUnconnected extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   openSnackbar = async (variant, message) => {
     const newState = { ...this.state };
     newState.snackbar = {
@@ -134,7 +141,7 @@ export class AppUnconnected extends Component {
       message
     };
 
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   };
 
   closeSnackbar = (event, reason) => {
@@ -142,11 +149,12 @@ export class AppUnconnected extends Component {
       return;
     }
 
-    this.setState({
-      snackbar: {
-        open: false
-      }
-    });
+    this._isMounted &&
+      this.setState({
+        snackbar: {
+          open: false
+        }
+      });
   };
 
   handleError = err => {
@@ -164,7 +172,7 @@ export class AppUnconnected extends Component {
     // update value of select
     const newState = { ...this.state };
     newState.userSelectedLanguage = e.target.value;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
 
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
@@ -351,9 +359,9 @@ export class AppUnconnected extends Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
-    console.log("lookupSFContact");
-    console.log(`formValues:`);
-    console.dir(formValues);
+    // console.log("lookupSFContact");
+    // console.log(`formValues:`);
+    // console.dir(formValues);
     if (
       formValues.firstName &&
       formValues.lastName &&
@@ -439,7 +447,9 @@ export class AppUnconnected extends Component {
           this.props.submission.employerObjects,
           "PPL PSW"
         );
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
+        returnValues.agencyNumber = employerObject
+          ? employerObject.Agency_Number__c
+          : 0;
       } else if (
         values.employerName &&
         values.employerName.toLowerCase() ===
@@ -449,7 +459,9 @@ export class AppUnconnected extends Component {
           this.props.submission.employerObjects,
           "State PSW"
         );
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
+        returnValues.agencyNumber = employerObject
+          ? employerObject.Agency_Number__c
+          : 0;
       } else if (
         values.employerName &&
         values.employerName.toLowerCase() ===
@@ -459,7 +471,9 @@ export class AppUnconnected extends Component {
           this.props.submission.employerObjects,
           "State APD"
         );
-        returnValues.agencyNumber = employerObject.Agency_Number__c;
+        returnValues.agencyNumber = employerObject
+          ? employerObject.Agency_Number__c
+          : 0;
       } else {
         // console.log(`no agency number found for ${values.employerName}`);
         returnValues.employerName = "Unknown (DEFAULT)";
@@ -740,7 +754,7 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    console.log("createSFContact");
+    // console.log("createSFContact");
     const values = await this.prepForContact(formValues);
     let {
       firstName,
@@ -836,9 +850,10 @@ export class AppUnconnected extends Component {
     // console.log(`changeTab: ${newValue}`);
     const newState = { ...this.state };
     newState.tab = newValue;
-    this.setState({ ...newState }, () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
+    this._isMounted &&
+      this.setState({ ...newState }, () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
   };
 
   render() {

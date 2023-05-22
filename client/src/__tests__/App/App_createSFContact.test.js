@@ -257,12 +257,21 @@ describe("<App />", () => {
   describe("createSFContact", () => {
     test("`createSFContact` handles error if prop function fails", async function() {
       // test for presence of snackbar component with variant = error
+      const props = {
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFContact: jest
+            .fn()
+            .mockImplementation(() => Promise.reject("createSFContactError"))
+        }
+      };
 
       const testData = generateSampleValidate();
 
       // render app
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup();
+      const { getByTestId, getByRole, getByText, debug } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
@@ -277,13 +286,14 @@ describe("<App />", () => {
       // simulate submit
       await fireEvent.submit(tab1Form, { ...testData });
 
-      // // expect snackbar to be in document with error styling and correct message
-      await waitFor(() => {
+      // expect snackbar to be in the document with correct error message
+      await waitFor(async () => {
         const snackbar = getByTestId("component-basic-snackbar");
         const errorIcon = getByTestId("ErrorOutlineIcon");
-        // screen.debug(snackbar);
+        const message = await getByText("createSFContactError");
         expect(snackbar).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
+        expect(message).toBeInTheDocument();
       });
     });
   });
