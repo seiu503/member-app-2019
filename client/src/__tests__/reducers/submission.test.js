@@ -56,22 +56,6 @@ describe("submission reducer", () => {
       })
     ).toEqual(INITIAL_STATE);
   });
-  it("should handle `setCurrentSubmission`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_CURRENT_SUBMISSION",
-        payload: {
-          id: "1"
-        }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      currentSubmission: {
-        id: "1"
-      },
-      submissionId: "1"
-    });
-  });
 
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {

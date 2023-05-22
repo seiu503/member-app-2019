@@ -135,12 +135,6 @@ function Submission(state = INITIAL_STATE, action) {
         }
       });
 
-    case SET_CURRENT_SUBMISSION:
-      return update(state, {
-        currentSubmission: { $set: action.payload },
-        submissionId: { $set: action.payload.id }
-      });
-
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:

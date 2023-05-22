@@ -18,64 +18,49 @@ const submissionBody = generateSampleSubmission();
 const capeBody = generateCAPEValidateFrontEnd();
 const token = "1234";
 
-describe.skip("apiSubmissionActions", () => {
-  describe("api actions", () => {
+describe("apiSubmissionActions", () => {
+  it("HANDLE_INPUT: handles form input", () => {
+    const e = { target: { name: "name", value: "value" } };
+    const expectedAction = {
+      type: "HANDLE_INPUT",
+      payload: { name: "name", value: "value" }
+    };
+    expect(actions.handleInput(e)).toEqual(expectedAction);
+  });
+
+  it("CLEAR_FORM: clears form and returns initial state", () => {
+    const expectedAction = {
+      type: "CLEAR_FORM"
+    };
+    expect(actions.clearForm()).toEqual(expectedAction);
+  });
+
+  it("SET_CAPE_OPTIONS: sets CAPE options", () => {
+    const e = { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] };
+    const expectedAction = {
+      type: "SET_CAPE_OPTIONS",
+      payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
+    };
+    expect(actions.setCAPEOptions(e)).toEqual(expectedAction);
+  });
+
+  it("saves a salesForceId", async () => {
+    let id = "123456";
+    const result = await store.dispatch(actions.saveSalesforceId(id));
+    const expectedResult = {
+      payload: { salesforceId: "123456" },
+      type: "SAVE_SALESFORCEID",
+      meta: undefined
+    };
+    expect(result).toEqual(expectedResult);
+  });
+
+  describe.skip("api actions", () => {
     afterEach(() => {
       nock.cleanAll();
       nock.enableNetConnect();
       // expect at least one expect in async code:
       expect.hasAssertions();
-    });
-
-    it("HANDLE_INPUT: handles form input", () => {
-      const e = { target: { name: "name", value: "value" } };
-      const expectedAction = {
-        type: "HANDLE_INPUT",
-        payload: { name: "name", value: "value" }
-      };
-      expect(actions.handleInput(e)).toEqual(expectedAction);
-    });
-
-    it("CLEAR_FORM: clears form and returns initial state", () => {
-      const expectedAction = {
-        type: "CLEAR_FORM"
-      };
-      expect(actions.clearForm()).toEqual(expectedAction);
-    });
-
-    it("SET_CAPE_OPTIONS: sets CAPE options", () => {
-      const e = { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] };
-      const expectedAction = {
-        type: "SET_CAPE_OPTIONS",
-        payload: { monthlyOptions: [1, 2, 3], oneTimeOptions: [4, 5, 6] }
-      };
-      expect(actions.setCAPEOptions(e)).toEqual(expectedAction);
-    });
-
-    it("SET_PAYMENT_DETAILS_CAPE: sets CAPE payment details", () => {
-      const paymentAdded = true;
-      const cardBrand = "Visa";
-      const cardLast4 = "1234";
-      const expectedAction = {
-        type: "SET_PAYMENT_DETAILS_CAPE",
-        payload: { paymentAdded, cardBrand, cardLast4 }
-      };
-      expect(
-        actions.setPaymentDetailsCAPE(paymentAdded, cardBrand, cardLast4)
-      ).toEqual(expectedAction);
-    });
-
-    it("SET_PAYMENT_DETAILS_DUES: sets dues payment details", () => {
-      const paymentAdded = true;
-      const cardBrand = "Visa";
-      const cardLast4 = "1234";
-      const expectedAction = {
-        type: "SET_PAYMENT_DETAILS_DUES",
-        payload: { paymentAdded, cardBrand, cardLast4 }
-      };
-      expect(
-        actions.setPaymentDetailsDues(paymentAdded, cardBrand, cardLast4)
-      ).toEqual(expectedAction);
     });
 
     it("ADD_SUBMISSION: Dispatches success action after successful POST", async () => {
@@ -305,17 +290,6 @@ describe.skip("apiSubmissionActions", () => {
         payload: { message: "Sorry, something went wrong :(" },
         type: "VERIFY_FAILURE",
         error: true,
-        meta: undefined
-      };
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("saves a salesForceId", async () => {
-      let id = "123456";
-      const result = await store.dispatch(actions.saveSalesforceId(id));
-      const expectedResult = {
-        payload: { salesforceId: "123456" },
-        type: "SAVE_SALESFORCEID",
         meta: undefined
       };
       expect(result).toEqual(expectedResult);
