@@ -201,12 +201,6 @@ NavBar.propTypes = {
   appState: PropTypes.shape({
     loggedIn: PropTypes.bool
   }),
-  profile: PropTypes.shape({
-    profile: PropTypes.shape({
-      name: PropTypes.string,
-      avatar_url: PropTypes.string
-    })
-  }),
   location: PropTypes.shape({
     pathname: PropTypes.string
   }),
@@ -216,8 +210,7 @@ NavBar.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  appState: state.appState,
-  profile: state.profile
+  appState: state.appState
 });
 
 export default withRouter(connect(mapStateToProps)(NavBar));

@@ -1,14 +1,6 @@
 import update from "immutability-helper";
 
-import { LOGOUT, SET_LOGGEDIN, SET_SPINNER } from "../actions";
-import {
-  VALIDATE_TOKEN_REQUEST,
-  VALIDATE_TOKEN_SUCCESS,
-  VALIDATE_TOKEN_FAILURE,
-  GET_PROFILE_REQUEST,
-  GET_PROFILE_SUCCESS,
-  GET_PROFILE_FAILURE
-} from "../actions/apiProfileActions";
+import { SET_SPINNER } from "../actions";
 import {
   ADD_SUBMISSION_REQUEST,
   ADD_SUBMISSION_SUCCESS,
@@ -87,50 +79,12 @@ export const INITIAL_STATE = {
 function appState(state = INITIAL_STATE, action) {
   // let error;
   switch (action.type) {
-    case LOGOUT:
-      return INITIAL_STATE;
-
     case SET_SPINNER: {
       return update(state, {
         loading: { $set: true }
       });
     }
 
-    case GET_PROFILE_SUCCESS:
-      // console.log("GET_PROFILE_SUCCESS");
-      // console.log(action.payload);
-      return update(state, {
-        loggedIn: { $set: true },
-        loading: { $set: false },
-        userType: { $set: action.payload.type }
-      });
-
-    case VALIDATE_TOKEN_SUCCESS:
-      // console.log("VALIDATE_TOKEN_SUCCESS");
-      // console.log(action.payload);
-      return update(state, {
-        loggedIn: { $set: true },
-        authToken: { $set: action.payload.token },
-        loading: { $set: false },
-        userType: { $set: action.payload.user_type }
-      });
-
-    case VALIDATE_TOKEN_FAILURE:
-      return update(state, {
-        loggedIn: { $set: false },
-        loading: { $set: false }
-      });
-
-    case SET_LOGGEDIN:
-      // console.log("SET_LOGGEDIN");
-      // console.log(action.payload);
-      return update(state, {
-        loggedIn: { $set: true },
-        userType: { $set: action.payload }
-      });
-
-    case VALIDATE_TOKEN_REQUEST:
-    case GET_PROFILE_REQUEST:
     case ADD_SUBMISSION_REQUEST:
     case UPDATE_SUBMISSION_REQUEST:
     case GET_SF_CONTACT_REQUEST:
@@ -154,7 +108,6 @@ function appState(state = INITIAL_STATE, action) {
         loading: { $set: true }
       });
 
-    case GET_PROFILE_FAILURE:
     case ADD_SUBMISSION_SUCCESS:
     case ADD_SUBMISSION_FAILURE:
     case UPDATE_SUBMISSION_SUCCESS:
