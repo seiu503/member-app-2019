@@ -5,14 +5,6 @@ describe("appState reducer", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
   });
 
-  it("should handle LOGOUT", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "LOGOUT"
-      })
-    ).toEqual(INITIAL_STATE);
-  });
-
   it("should handle VALIDATE_TOKEN_SUCCESS", () => {
     expect(
       reducer(INITIAL_STATE, {
@@ -49,18 +41,6 @@ describe("appState reducer", () => {
       authToken: "",
       loading: false,
       userType: ""
-    });
-  });
-  it("should handle SET_LOGGEDIN", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_LOGGEDIN"
-      })
-    ).toEqual({
-      loggedIn: true,
-      authToken: "",
-      loading: false,
-      userType: undefined
     });
   });
 });

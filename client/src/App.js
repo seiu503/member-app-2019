@@ -13,7 +13,6 @@ import { Translate } from "react-localize-redux";
 import { Typography, CssBaseline, Box } from "@mui/material";
 
 import * as Actions from "./store/actions";
-import * as apiContentActions from "./store/actions/apiContentActions";
 import * as apiProfileActions from "./store/actions/apiProfileActions";
 import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
@@ -1014,7 +1013,6 @@ AppUnconnected.propTypes = {
 };
 
 const mapStateToProps = state => ({
-  content: state.content,
   submission: state.submission,
   appState: state.appState
 });
@@ -1022,7 +1020,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
-  apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
   setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
 });

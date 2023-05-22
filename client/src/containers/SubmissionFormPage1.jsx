@@ -17,7 +17,6 @@ import queryString from "query-string";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as utils from "../utils";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
-import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
 import { withLocalize } from "react-localize-redux";
@@ -605,7 +604,6 @@ export class SubmissionFormPage1Container extends React.Component {
 const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
-  content: state.content,
   initialValues: state.submission.formPage1,
   formValues: getFormValues("submissionPage1")(state) || {},
   pristine: isPristine("submissionPage1")(state),
@@ -617,7 +615,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
-  apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
   actions: bindActionCreators(actions, dispatch),
   submitForm: () => dispatch(submit("submissionPage1"))

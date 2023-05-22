@@ -6,8 +6,6 @@ import { Translate } from "react-localize-redux";
 
 import { Typography, CardMedia, Card, Button, Box } from "@mui/material";
 
-import * as apiContentActions from "../store/actions/apiContentActions";
-
 import SamplePhoto from "../img/sample-form-photo.jpg";
 
 export class WelcomeInfoUnconnected extends React.Component {
@@ -165,11 +163,4 @@ const mapStateToProps = state => ({
   appState: state.appState
 });
 
-const mapDispatchToProps = dispatch => ({
-  apiContent: bindActionCreators(apiContentActions, dispatch)
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WelcomeInfoUnconnected);
+export default connect(mapStateToProps)(WelcomeInfoUnconnected);
