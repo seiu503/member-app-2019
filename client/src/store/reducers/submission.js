@@ -105,9 +105,6 @@ export const INITIAL_STATE = {
     donationAmount: 0,
     paymentMethod: "",
     donationFrequency: "Monthly",
-    activeMethodLast4: "",
-    cardBrand: "",
-    paymentErrorHold: false,
     monthlyOptions: [10, 13, 15, "Other"],
     oneTimeOptions: [15, 20, 25, "Other"],
     oneTimePaymentId: "",
@@ -135,32 +132,6 @@ function Submission(state = INITIAL_STATE, action) {
         cape: {
           monthlyOptions: { $set: action.payload.monthlyOptions },
           oneTimeOptions: { $set: action.payload.oneTimeOptions }
-        }
-      });
-
-    case SET_PAYMENT_DETAILS_CAPE:
-      // console.log("SET_PAYMENT_DETAILS_CAPE");
-      // console.log(action.payload);
-      return update(state, {
-        cape: {
-          activeMethodLast4: { $set: action.payload.cardLast4 },
-          cardBrand: { $set: action.payload.cardBrand }
-        },
-        formPage1: {
-          paymentMethodAdded: { $set: true }
-        }
-      });
-
-    case SET_PAYMENT_DETAILS_DUES:
-      // console.log("SET_PAYMENT_DETAILS_DUES");
-      // console.log(action.payload);
-      return update(state, {
-        payment: {
-          activeMethodLast4: { $set: action.payload.cardLast4 },
-          cardBrand: { $set: action.payload.cardBrand }
-        },
-        formPage1: {
-          paymentMethodAdded: { $set: true }
         }
       });
 

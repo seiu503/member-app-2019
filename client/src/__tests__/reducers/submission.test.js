@@ -49,25 +49,6 @@ describe("submission reducer", () => {
       }
     });
   });
-  it("should handle `setPaymentDetailsCAPE`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_PAYMENT_DETAILS_CAPE",
-        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      cape: {
-        ...INITIAL_STATE.cape,
-        activeMethodLast4: "1234",
-        cardBrand: "Visa"
-      },
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        paymentMethodAdded: true
-      }
-    });
-  });
   it("should handle `clearForm`", () => {
     expect(
       reducer(INITIAL_STATE, {
