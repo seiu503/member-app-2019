@@ -174,9 +174,7 @@ const defaultProps = {
     clearForm: clearFormMock,
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
-    getAllSubmissions: () =>
-      Promise.resolve({ type: "GET_ALL_SUBMISSIONS_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -249,14 +247,12 @@ describe("<App />", () => {
           payment: {}
         },
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -316,14 +312,12 @@ describe("<App />", () => {
       const props = {
         setActiveLanguage: setActiveLanguageMock,
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -386,14 +380,12 @@ describe("<App />", () => {
           search: "&cId=1234"
         },
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -471,14 +463,12 @@ describe("<App />", () => {
           search: "&cId=1234"
         },
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -566,14 +556,12 @@ describe("<App />", () => {
           updateSubmission: updateSubmissionError
         },
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -645,14 +633,12 @@ describe("<App />", () => {
           search: "&cId=1234"
         },
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",

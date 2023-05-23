@@ -1,8 +1,6 @@
-/**
- * @jest-environment node
- */
-/* istanbul ignore file */
-import nock from "nock";
+import { setupServer } from "msw/node";
+import handlers from "../../mocks/handlers";
+import { rest } from "msw";
 import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiSubmissionActions";
@@ -17,6 +15,7 @@ const store = createStore(submissiomReducer.initialState);
 const submissionBody = generateSampleSubmission();
 const capeBody = generateCAPEValidateFrontEnd();
 const token = "1234";
+const server = setupServer(...handlers);
 
 describe("apiSubmissionActions", () => {
   it("HANDLE_INPUT: handles form input", () => {
@@ -55,21 +54,23 @@ describe("apiSubmissionActions", () => {
     expect(result).toEqual(expectedResult);
   });
 
-  describe.skip("api actions", () => {
+  describe("api actions", () => {
+    // Enable API mocking before tests.
+    beforeAll(() => server.listen());
+
     afterEach(() => {
-      nock.cleanAll();
-      nock.enableNetConnect();
+      // Reset any runtime request handlers we may add during the tests.
+      server.resetHandlers();
       // expect at least one expect in async code:
       expect.hasAssertions();
     });
 
-    it("ADD_SUBMISSION: Dispatches success action after successful POST", async () => {
-      nock(`${BASE_URL}`)
-        .post("/api/submission/", submissionBody)
-        .reply(200, submissionBody);
+    // Disable API mocking after the tests are done.
+    afterAll(() => server.close());
 
+    it("ADD_SUBMISSION: Dispatches success action after successful POST", async () => {
       const expectedResult = {
-        payload: undefined,
+        payload: { id: "testid" },
         type: "ADD_SUBMISSION_SUCCESS",
         meta: undefined
       };
@@ -81,15 +82,14 @@ describe("apiSubmissionActions", () => {
     });
 
     it("ADD_SUBMISSION: Dispatches failure action after failed POST", async () => {
-      const body = JSON.stringify({
-        message: "There was an error saving the submission"
-      });
-      const init = {
-        status: 404,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
+      server.use(
+        rest.post("http://localhost:8080/api/submission", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "There was an error saving the submission" }),
+            ctx.status(404)
+          );
+        })
+      );
 
       const result = await store.dispatch(
         actions.addSubmission(submissionBody)
@@ -104,13 +104,14 @@ describe("apiSubmissionActions", () => {
     });
 
     it("ADD_SUBMISSION: Dispatches failure action after failed POST (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
+      server.use(
+        rest.post("http://localhost:8080/api/submission", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "Sorry, something went wrong :(" }),
+            ctx.status(500)
+          );
+        })
+      );
 
       const result = await store.dispatch(
         actions.addSubmission(submissionBody)
@@ -125,36 +126,30 @@ describe("apiSubmissionActions", () => {
     });
 
     it("UPDATE_SUBMISSION: Dispatches success action after successful PUT", async () => {
-      nock(`${BASE_URL}`)
-        .put("/api/submission/12345678", submissionBody)
-        .reply(200, submissionBody);
-
       const expectedResult = {
-        payload: undefined,
+        payload: { id: "testid" },
         type: "UPDATE_SUBMISSION_SUCCESS",
         meta: undefined
       };
 
-      const result = await store.dispatch(
-        actions.updateSubmission(submissionBody)
-      );
+      const result = await store.dispatch(actions.updateSubmission("12345678"));
       expect(result).toEqual(expectedResult);
     });
 
     it("UPDATE_SUBMISSION: Dispatches failure action after failed PUT", async () => {
-      const body = JSON.stringify({
-        message: "There was an error saving the submission"
-      });
-      const init = {
-        status: 404,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(
-        actions.updateSubmission(submissionBody)
+      server.use(
+        rest.put(
+          "http://localhost:8080/api/submission/12345678",
+          (req, res, ctx) => {
+            return res(
+              ctx.json({ message: "There was an error saving the submission" }),
+              ctx.status(404)
+            );
+          }
+        )
       );
+
+      const result = await store.dispatch(actions.updateSubmission("12345678"));
       const expectedResult = {
         payload: { message: "There was an error saving the submission" },
         type: "UPDATE_SUBMISSION_FAILURE",
@@ -165,17 +160,19 @@ describe("apiSubmissionActions", () => {
     });
 
     it("UPDATE_SUBMISSION: Dispatches failure action after failed PUT (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(
-        actions.updateSubmission(submissionBody)
+      server.use(
+        rest.put(
+          "http://localhost:8080/api/submission/12345678",
+          (req, res, ctx) => {
+            return res(
+              ctx.json({ message: "Sorry, something went wrong :(" }),
+              ctx.status(500)
+            );
+          }
+        )
       );
+
+      const result = await store.dispatch(actions.updateSubmission("12345678"));
       const expectedResult = {
         payload: { message: "Sorry, something went wrong :(" },
         type: "UPDATE_SUBMISSION_FAILURE",
@@ -185,68 +182,9 @@ describe("apiSubmissionActions", () => {
       expect(result).toEqual(expectedResult);
     });
 
-    it("GET_ALL_SUBMISSIONS: Dispatches success action after successful GET", async () => {
-      nock(`${BASE_URL}`)
-        .get("/api/submission")
-        .reply(200, [submissionBody]);
-
-      const expectedResult = {
-        payload: undefined,
-        type: "GET_ALL_SUBMISSIONS_SUCCESS",
-        meta: undefined
-      };
-
-      const result = await store.dispatch(actions.getAllSubmissions(token));
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("GET_ALL_SUBMISSIONS: Dispatches failure action after failed GET", async () => {
-      const body = JSON.stringify({
-        message: "There was an error fetching the submissions"
-      });
-      const init = {
-        status: 404,
-        statusText: "There was an error fetching the submissions"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.getAllSubmissions(token));
-      const expectedResult = {
-        payload: { message: "There was an error fetching the submissions" },
-        type: "GET_ALL_SUBMISSIONS_FAILURE",
-        error: true,
-        meta: undefined
-      };
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("GET_ALL_SUBMISSIONS: Dispatches failure action after failed GET (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.getAllSubmissions(token));
-      const expectedResult = {
-        payload: { message: "Sorry, something went wrong :(" },
-        type: "GET_ALL_SUBMISSIONS_FAILURE",
-        error: true,
-        meta: undefined
-      };
-      expect(result).toEqual(expectedResult);
-    });
-
     it("VERIFY: Dispatches success action after successful POST", async () => {
-      nock(`${BASE_URL}`)
-        .post("/api/verify")
-        .reply(200, { success: true, score: 0.9 });
-
       const expectedResult = {
-        payload: undefined,
+        payload: { score: 0.9 },
         type: "VERIFY_SUCCESS",
         meta: undefined
       };
@@ -256,15 +194,14 @@ describe("apiSubmissionActions", () => {
     });
 
     it("VERIFY: Dispatches failure action after failed POST", async () => {
-      const body = JSON.stringify({
-        message: "Recaptcha validation failed"
-      });
-      const init = {
-        status: 404,
-        statusText: "Recaptcha validation failed"
-      };
-
-      fetch.mockResponseOnce(body, init);
+      server.use(
+        rest.post("http://localhost:8080/api/verify", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "Recaptcha validation failed" }),
+            ctx.status(404)
+          );
+        })
+      );
 
       const result = await store.dispatch(actions.verify(token));
       const expectedResult = {
@@ -277,13 +214,14 @@ describe("apiSubmissionActions", () => {
     });
 
     it("VERIFY: Dispatches failure action after failed POST (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
+      server.use(
+        rest.post("http://localhost:8080/api/verify", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "Sorry, something went wrong :(" }),
+            ctx.status(500)
+          );
+        })
+      );
 
       const result = await store.dispatch(actions.verify(token));
       const expectedResult = {
@@ -296,12 +234,8 @@ describe("apiSubmissionActions", () => {
     });
 
     it("CREATE_CAPE: Dispatches success action after successful POST", async () => {
-      nock(`${BASE_URL}`)
-        .post("/api/cape/", capeBody)
-        .reply(200, capeBody);
-
       const expectedResult = {
-        payload: undefined,
+        payload: { id: "testid" },
         type: "CREATE_CAPE_SUCCESS",
         meta: undefined
       };
@@ -311,15 +245,14 @@ describe("apiSubmissionActions", () => {
     });
 
     it("CREATE_CAPE: Dispatches failure action after failed POST", async () => {
-      const body = JSON.stringify({
-        message: "There was an error saving the CAPE record"
-      });
-      const init = {
-        status: 404,
-        statusText: "There was an error saving the CAPE record"
-      };
-
-      fetch.mockResponseOnce(body, init);
+      server.use(
+        rest.post("http://localhost:8080/api/cape", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "There was an error saving the CAPE record" }),
+            ctx.status(404)
+          );
+        })
+      );
 
       const result = await store.dispatch(actions.createCAPE(capeBody));
       const expectedResult = {
@@ -332,13 +265,14 @@ describe("apiSubmissionActions", () => {
     });
 
     it("CREATE_CAPE: Dispatches failure action after failed POST (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error saving the submission"
-      };
-
-      fetch.mockResponseOnce(body, init);
+      server.use(
+        rest.post("http://localhost:8080/api/cape", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "Sorry, something went wrong :(" }),
+            ctx.status(500)
+          );
+        })
+      );
 
       const result = await store.dispatch(actions.createCAPE(capeBody));
       const expectedResult = {
@@ -351,32 +285,27 @@ describe("apiSubmissionActions", () => {
     });
 
     it("UPDATE_CAPE: Dispatches success action after successful PUT", async () => {
-      nock(`${BASE_URL}`)
-        .put("/api/cape/12345678", capeBody)
-        .reply(200, capeBody);
-
       const expectedResult = {
-        payload: undefined,
+        payload: { id: "testid" },
         type: "UPDATE_CAPE_SUCCESS",
         meta: undefined
       };
 
-      const result = await store.dispatch(actions.updateCAPE(capeBody));
+      const result = await store.dispatch(actions.updateCAPE("12345678"));
       expect(result).toEqual(expectedResult);
     });
 
     it("UPDATE_CAPE: Dispatches failure action after failed PUT", async () => {
-      const body = JSON.stringify({
-        message: "There was an error saving the CAPE record"
-      });
-      const init = {
-        status: 404,
-        statusText: "There was an error saving the CAPE record"
-      };
+      server.use(
+        rest.put("http://localhost:8080/api/cape/12345678", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "There was an error saving the CAPE record" }),
+            ctx.status(404)
+          );
+        })
+      );
 
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.updateCAPE(capeBody));
+      const result = await store.dispatch(actions.updateCAPE("12345678"));
       const expectedResult = {
         payload: { message: "There was an error saving the CAPE record" },
         type: "UPDATE_CAPE_FAILURE",
@@ -387,73 +316,19 @@ describe("apiSubmissionActions", () => {
     });
 
     it("UPDATE_CAPE: Dispatches failure action after failed PUT (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error saving the CAPE record"
-      };
+      server.use(
+        rest.put("http://localhost:8080/api/cape/12345678", (req, res, ctx) => {
+          return res(
+            ctx.json({ message: "Sorry, something went wrong :(" }),
+            ctx.status(500)
+          );
+        })
+      );
 
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.updateCAPE(capeBody));
+      const result = await store.dispatch(actions.updateCAPE("12345678"));
       const expectedResult = {
         payload: { message: "Sorry, something went wrong :(" },
         type: "UPDATE_CAPE_FAILURE",
-        error: true,
-        meta: undefined
-      };
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("GET_CAPE_BY_SFID: Dispatches success action after successful GET", async () => {
-      nock(`${BASE_URL}`)
-        .get("/api/capeBySF")
-        .reply(200, [capeBody]);
-
-      const expectedResult = {
-        payload: undefined,
-        type: "GET_CAPE_BY_SFID_SUCCESS",
-        meta: undefined
-      };
-
-      const result = await store.dispatch(actions.getCAPEBySFId());
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("GET_CAPE_BY_SFID: Dispatches failure action after failed GET", async () => {
-      const body = JSON.stringify({
-        message: "There was an error fetching the CAPE record"
-      });
-      const init = {
-        status: 404,
-        statusText: "There was an error fetching the CAPE record"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.getCAPEBySFId());
-      const expectedResult = {
-        payload: { message: "There was an error fetching the CAPE record" },
-        type: "GET_CAPE_BY_SFID_FAILURE",
-        error: true,
-        meta: undefined
-      };
-      expect(result).toEqual(expectedResult);
-    });
-
-    it("GET_CAPE_BY_SFID: Dispatches failure action after failed GET (generic error msg)", async () => {
-      const body = JSON.stringify({});
-      const init = {
-        status: 500,
-        statusText: "There was an error fetching the CAPE record"
-      };
-
-      fetch.mockResponseOnce(body, init);
-
-      const result = await store.dispatch(actions.getCAPEBySFId());
-      const expectedResult = {
-        payload: { message: "Sorry, something went wrong :(" },
-        type: "GET_CAPE_BY_SFID_FAILURE",
         error: true,
         meta: undefined
       };

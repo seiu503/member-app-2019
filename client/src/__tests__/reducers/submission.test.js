@@ -92,32 +92,6 @@ describe("submission reducer", () => {
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
-    test("getAllSubmissions", () => {
-      const action = {
-        type: "GET_ALL_SUBMISSIONS_SUCCESS",
-        payload: [
-          {
-            id: "1",
-            first_name: "first",
-            last_name: "last",
-            email: "test@test.com"
-          }
-        ]
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        allSubmissions: [
-          {
-            id: "1",
-            first_name: "first",
-            last_name: "last",
-            email: "test@test.com"
-          }
-        ],
-        error: null
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
     test("getSFContact", () => {
       const payload = {
         Id: "123",
@@ -833,34 +807,6 @@ describe("submission reducer", () => {
         salesforceId: "string",
         error: null,
         redirect: true
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("getCAPEBySFId", () => {
-      const action = {
-        type: "GET_CAPE_BY_SFID_SUCCESS",
-        payload: {
-          Id: "123",
-          member_short_id: "456",
-          cape_amount: 5,
-          payment_method: "Unionise",
-          donation_frequency: "Monthly",
-          active_method_last_four: "1234",
-          card_brand: "Visa"
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        cape: {
-          ...INITIAL_STATE.cape,
-          id: "123",
-          memberShortId: "456",
-          donationAmount: 5,
-          paymentMethod: "Unionise",
-          donationFrequency: "Monthly",
-          activeMethodLast4: "1234",
-          cardBrand: "Visa"
-        }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

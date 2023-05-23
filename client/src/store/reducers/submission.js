@@ -9,17 +9,11 @@ import {
   UPDATE_SUBMISSION_REQUEST,
   UPDATE_SUBMISSION_SUCCESS,
   UPDATE_SUBMISSION_FAILURE,
-  GET_ALL_SUBMISSIONS_REQUEST,
-  GET_ALL_SUBMISSIONS_SUCCESS,
-  GET_ALL_SUBMISSIONS_FAILURE,
   CREATE_CAPE_REQUEST,
   CREATE_CAPE_SUCCESS,
   CREATE_CAPE_FAILURE,
   UPDATE_CAPE_REQUEST,
   UPDATE_CAPE_FAILURE,
-  GET_CAPE_BY_SFID_REQUEST,
-  GET_CAPE_BY_SFID_SUCCESS,
-  GET_CAPE_BY_SFID_FAILURE,
   SAVE_SALESFORCEID,
   SAVE_SUBMISSIONID,
   HANDLE_INPUT,
@@ -144,11 +138,9 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_OMA_REQUEST:
     case UPDATE_SF_CONTACT_REQUEST:
     case CREATE_SF_OMA_SUCCESS:
-    case GET_ALL_SUBMISSIONS_REQUEST:
     case CREATE_CAPE_REQUEST:
     case CREATE_SF_CAPE_REQUEST:
     case CREATE_SF_CAPE_SUCCESS:
-    case GET_CAPE_BY_SFID_REQUEST:
     case UPDATE_CAPE_REQUEST:
     case GET_SF_CONTACT_DID_REQUEST:
       return update(state, {
@@ -312,20 +304,6 @@ function Submission(state = INITIAL_STATE, action) {
         return INITIAL_STATE;
       }
 
-    case GET_CAPE_BY_SFID_SUCCESS: {
-      return update(state, {
-        cape: {
-          id: { $set: action.payload.Id || action.payload.id },
-          memberShortId: { $set: action.payload.member_short_id },
-          donationAmount: { $set: action.payload.cape_amount },
-          paymentMethod: { $set: action.payload.payment_method },
-          donationFrequency: { $set: action.payload.donation_frequency },
-          activeMethodLast4: { $set: action.payload.active_method_last_four },
-          cardBrand: { $set: action.payload.card_brand }
-        }
-      });
-    }
-
     case ADD_SUBMISSION_SUCCESS:
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
@@ -345,12 +323,6 @@ function Submission(state = INITIAL_STATE, action) {
     case UPDATE_SUBMISSION_SUCCESS:
       return update(state, {
         submissionId: { $set: action.payload.submission_id },
-        error: { $set: null }
-      });
-
-    case GET_ALL_SUBMISSIONS_SUCCESS:
-      return update(state, {
-        allSubmissions: { $set: action.payload },
         error: { $set: null }
       });
 
@@ -376,10 +348,8 @@ function Submission(state = INITIAL_STATE, action) {
     case CREATE_SF_CONTACT_FAILURE:
     case CREATE_SF_OMA_FAILURE:
     case UPDATE_SF_CONTACT_FAILURE:
-    case GET_ALL_SUBMISSIONS_FAILURE:
     case CREATE_SF_CAPE_FAILURE:
     case CREATE_CAPE_FAILURE:
-    case GET_CAPE_BY_SFID_FAILURE:
     case UPDATE_CAPE_FAILURE:
     case GET_SF_CONTACT_DID_FAILURE:
       if (typeof action.payload.message === "string") {
