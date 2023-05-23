@@ -54,6 +54,17 @@ describe("apiSubmissionActions", () => {
     expect(result).toEqual(expectedResult);
   });
 
+  it("saves a submissionId", async () => {
+    let id = "123456";
+    const result = await store.dispatch(actions.saveSubmissionId(id));
+    const expectedResult = {
+      payload: { submissionId: "123456" },
+      type: "SAVE_SUBMISSIONID",
+      meta: undefined
+    };
+    expect(result).toEqual(expectedResult);
+  });
+
   describe("api actions", () => {
     // Enable API mocking before tests.
     beforeAll(() => server.listen());

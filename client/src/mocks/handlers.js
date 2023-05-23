@@ -40,6 +40,16 @@ const handlers = [
     );
   }),
 
+  rest.get(`http://localhost:8080/api/sf/12345678`, (req, res, ctx) => {
+    console.log("getSFContactById mock");
+    return res(
+      ctx.json({
+        id: "testid"
+      }),
+      ctx.status(200)
+    );
+  }),
+
   rest.put("http://localhost:8080/api/sflookup", (req, res, ctx) => {
     console.log("sflookup mock");
     return res(ctx.json({ id: "testid" }), ctx.status(200));
@@ -62,6 +72,11 @@ const handlers = [
 
   rest.put("http://localhost:8080/api/submission/12345678", (req, res, ctx) => {
     console.log("updateSubmission mock");
+    return res(ctx.json({ id: "testid" }), ctx.status(200));
+  }),
+
+  rest.put("http://localhost:8080/api/sf/12345678", (req, res, ctx) => {
+    console.log("updateSFContact mock");
     return res(ctx.json({ id: "testid" }), ctx.status(200));
   })
 ];
