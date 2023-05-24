@@ -21,10 +21,7 @@ import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
 import { withLocalize } from "react-localize-redux";
 
-import {
-  stylesPage1,
-  findEmployerObject
-} from "../components/SubmissionFormElements";
+import { findEmployerObject } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {

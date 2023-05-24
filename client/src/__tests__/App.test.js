@@ -79,7 +79,8 @@ const defaultProps = {
   apiSF: {
     getSFEmployers: jest
       .fn()
-      .mockImplementation(() => Promise.resolve([...employersPayload]))
+      .mockImplementation(() => Promise.resolve([...employersPayload])),
+    getSFContactById: jest.fn().mockImplementation(() => Promise.resolve())
   },
   initialize: jest.fn(),
   setActiveLanguage: setActiveLanguageMock,

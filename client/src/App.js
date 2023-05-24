@@ -545,14 +545,14 @@ export class AppUnconnected extends Component {
 
   async generateSubmissionBody(values, partial) {
     const firstValues = await this.prepForContact(values);
-    console.log("firstValues", firstValues);
+    // console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
-    console.log("secondValues", secondValues);
+    // console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = firstValues.signature
       ? firstValues.signature
       : this.props.submission.formPage1.signature;
-    console.log(`signature: ${secondValues.signature}`);
+    // console.log(`signature: ${secondValues.signature}`);
     secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
     secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
 
@@ -598,13 +598,13 @@ export class AppUnconnected extends Component {
       work_phone,
       hire_date
     } = secondValues;
-    console.log(`hire_date: ${hire_date}`);
+    // console.log(`hire_date: ${hire_date}`);
 
     if (hire_date) {
       let hireDate = moment(new Date(hire_date));
       if (hireDate.isValid()) {
         hire_date = formatSFDate(hireDate);
-        console.log(`hire_date: ${hire_date}`);
+        // console.log(`hire_date: ${hire_date}`);
       }
     }
 
@@ -672,16 +672,14 @@ export class AppUnconnected extends Component {
     const body = await this.generateSubmissionBody(formValues, partial);
     // console.log(body);
     const cleanBody = removeFalsy(body);
-    console.log(cleanBody);
+    // console.log(cleanBody);
     await this.props.apiSubmission
       .addSubmission(cleanBody)
       .then(result => {
-        console.log("858");
         if (
           result.type !== "ADD_SUBMISSION_SUCCESS" ||
           this.props.submission.error
         ) {
-          console.log("863");
           const err =
             this.props.submission.error ||
             "An error occurred while saving your Submission";
@@ -690,12 +688,9 @@ export class AppUnconnected extends Component {
         }
       })
       .catch(err => {
-        console.log("869");
         console.error(err);
         return this.handleError(err);
       });
-
-    console.log("874");
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
@@ -723,7 +718,6 @@ export class AppUnconnected extends Component {
               submission_status: "Success"
             })
             .then(result => {
-              console.log(result.type);
               if (
                 result.type === "UPDATE_SUBMISSION_FAILURE" ||
                 this.props.submission.error
