@@ -646,5 +646,113 @@ describe("<App />", () => {
         expect(tab2Form).toBeInTheDocument();
       });
     });
+
+    test("`prepForContact` handles APD edge case", async function() {
+      let props = {
+        formValues: {
+          employerName: "homecare worker (aging and people with disabilities)"
+        },
+        submission: {
+          formPage1: {
+            prefillEmployerId: null
+          }
+        },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: null }
+            })
+          )
+        }
+      };
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // enter required data
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        const firstName = await getByLabelText("First Name");
+        const lastName = await getByLabelText("Last Name");
+        const homeEmail = await getByLabelText("Home Email");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+        await fireEvent.change(firstName, { target: { value: "test" } });
+        await fireEvent.change(lastName, { target: { value: "test" } });
+        await fireEvent.change(homeEmail, {
+          target: { value: "test@test.com" }
+        });
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        expect(employerName).toBeInTheDocument();
+        await fireEvent.change(employerName, {
+          target: {
+            value: "homecare worker (aging and people with disabilities)"
+          }
+        });
+        const tab1Form = await getByTestId("form-tab1");
+        await fireEvent.submit(tab1Form, { ...testData });
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect tab2 to render
+      await waitFor(() => {
+        const tab2Form = getByTestId("form-tab2");
+        expect(tab2Form).toBeInTheDocument();
+      });
+    });
   });
 });
