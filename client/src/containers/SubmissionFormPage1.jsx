@@ -148,7 +148,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // then verify
     const token = this.props.submission.formPage1.reCaptchaValue;
-    console.log(`token: ${token}`);
+    // console.log(`token: ${token}`);
 
     // check for token every 200ms until returned to avoid race condition
     (async () => {
@@ -448,7 +448,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab2() {
     const { formValues } = this.props;
-    console.log(formValues);
+    // console.log(formValues);
 
     if (!formValues.signature) {
       console.log(this.props.translate("provideSignatureError"));
@@ -473,7 +473,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async handleTab1() {
     console.log("handleTab1");
     const { formValues } = this.props;
-    console.dir(formValues);
+    // console.dir(formValues);
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.3) {

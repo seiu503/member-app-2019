@@ -26,6 +26,8 @@ import {
   generateSubmissionBody
 } from "../../../app/utils/fieldConfigs";
 import { defaultWelcomeInfo } from "../utils/index";
+import handlers from "../mocks/handlers";
+import { setupServer } from "msw/node";
 
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
@@ -38,6 +40,7 @@ let store;
 let wrapper;
 
 const oldWindowLocation = window.location;
+const server = setupServer(...handlers);
 
 const handleInputMock = jest.fn();
 const setActiveLanguageMock = jest
@@ -68,7 +71,7 @@ const defaultProps = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: ""
+      reCaptchaValue: "token"
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
@@ -97,6 +100,9 @@ const defaultProps = {
   },
   location: {
     search: "?i=1&h=2&b=3&s=4"
+  },
+  formValues: {
+    reCaptchaValue: "token"
   }
 };
 
@@ -149,7 +155,7 @@ describe("<App />", () => {
   });
 
   describe("componentDidMount", () => {
-    it("componentDidMount checks for browser language on componentDidMount", async () => {
+    it("componentDidMount checks for browser language", async () => {
       // add mock function to props
       utils.detectDefaultLanguage = jest.fn();
       const props = {
@@ -165,22 +171,125 @@ describe("<App />", () => {
       // restore mock
       setActiveLanguageMock.mockRestore();
     });
+    it("componentDidMount checks for language in query string", async () => {
+      // add mock function to props
+      utils.detectDefaultLanguage = jest.fn();
+      const props = {
+        setActiveLanguage: setActiveLanguageMock,
+        location: {
+          search: "?lang=EN"
+        }
+      };
+
+      // simulate component render / cDM
+      const { getByTestId } = await setup(props);
+
+      // expect the mock to have been called once
+      await waitFor(() =>
+        expect(setActiveLanguageMock).toHaveBeenCalledWith("EN")
+      );
+
+      // restore mock
+      setActiveLanguageMock.mockRestore();
+    });
   });
   describe("Misc methods", () => {
-    // can't get this one to work (4/19/2023), come back to it later if needed for coverage
+    // Enable API mocking before tests.
+    beforeAll(() => server.listen());
+
+    // Reset any runtime request handlers we may add during the tests.
+    afterEach(() => server.resetHandlers());
+
+    // Disable API mocking after the tests are done.
+    afterAll(() => server.close());
+    it("click on Snackbar close button closes Snackbar", async () => {
+      const props = {
+        ...defaultProps,
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFEmployers: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve([...employersPayload])),
+          getSFContactById: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve())
+        }
+      };
+      window.scrollTo = jest.fn();
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByText,
+        debug,
+        queryByTestId
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit
+      await fireEvent.submit(tab1Form);
+      // recaptcha will error, triggering snackbar
+
+      // expect snackbar to be in the document
+      await waitFor(async () => {
+        const snackbar = getByTestId("component-basic-snackbar");
+        expect(snackbar).toBeInTheDocument();
+      });
+
+      // simulate user click on close button
+      const closeButton = getByRole("button", {
+        name: /close/i
+      });
+      await userEvent.click(closeButton);
+
+      // expect snackbar to close
+      await waitFor(async () => {
+        const snackbar = queryByTestId("component-basic-snackbar");
+        expect(snackbar).not.toBeInTheDocument();
+      });
+    });
+
     // it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
     //   getResponseMock = jest
     //     .fn()
     //     .mockImplementation(() => Promise.resolve("token"));
 
     //   const props = {
+    //     ...defaultProps,
+    //     // this doesn't work because recaptcha is not a prop, would havel to mock the whole module
     //     recaptcha: {
     //       current: {
-    //         getResponseMock
-    //       }
+    //         getResponse: getResponseMock,
+    //         execute: jest.fn().mockImplementation(() => {
+    //           console.log('executeMock');
+    //           return Promise.resolve("token");
+    //           })
+    //         }
+    //     },
+    //     submission: {
+    //       ...defaultProps.submission,
+    //       formPage1: {
+    //         ...defaultProps.submission.formPage1,
+    //         reCaptchaValue: 'token'
+    //         }
     //     },
     //     formValues: {
-    //       ...generateSubmissionBody
+    //       ...generateSubmissionBody,
+    //       reCaptchaValue: 'token'
+    //     },
+    //     apiSubmission: {
+    //       ...defaultProps.apiSubmission,
+    //       handleInput: jest.fn()
     //     }
     //   };
 
@@ -189,7 +298,7 @@ describe("<App />", () => {
 
     //   // simulate user click 'Next'
     //   const user = userEvent.setup();
-    //   const { getByTestId, getByRole, debug } = await setup({ ...props });
+    //   const { getByTestId, getByRole, debug } = await setup(props);
     //   const nextButton = getByTestId("button-next");
     //   await userEvent.click(nextButton, { delay: 0.5 });
 
@@ -202,26 +311,14 @@ describe("<App />", () => {
     //   // simulate submit with default formValues
     //   await waitFor(() => {
     //     fireEvent.submit(tab1Form);
-    //     expect(getResponseMock).toHaveBeenCalled();
     //   });
+
+    //   expect(getResponseMock).toHaveBeenCalled();
 
     //   // restore mock
     //   getResponseMock.mockRestore();
     // });
 
-    // setRedirect appears unused 4/19/2023, delete later
-    // it("setRedirect saves redirect url to localStorage", async () => {
-    //   const props = {
-    //     history: {
-    //       location: {
-    //         pathname: "testpath"
-    //       }
-    //     }
-    //   };
-    //   wrapper = await setup(props);
-    //   wrapper.instance().setRedirect();
-    //   expect(window.localStorage.getItem("redirect")).toBe("testpath");
-    // });
     it("renderBodyCopy renders paragraphs matching provided body id (default copy)", async () => {
       const { getByTestId } = await setup();
       const component = getByTestId("body");
@@ -229,22 +326,6 @@ describe("<App />", () => {
       const par0 = getByTestId("bodyCopy0_1");
       expect(par0).toBeInTheDocument();
     });
-    //this functionality may be removed, check coverage later
-    // it("renderBodyCopy renders paragraphs matching provided body id (custom copy)", async () => {
-    // const testProps = {
-    //   location: {
-    //     search: "?b=100"
-    //   },
-    //   body: {
-    //     text: '',
-    //     id: 100
-    //   },
-    // }
-    // const { getByTestId } = await setup(testProps);
-    // const component = getByTestId("body");
-    // const par0 = getByTestId("0");
-    // expect(par0).toBeInTheDocument();
-    // });
   });
 
   describe("Unprotected route tests", () => {

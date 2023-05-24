@@ -158,7 +158,7 @@ export class AppUnconnected extends Component {
   handleError = err => {
     return this.openSnackbar(
       "error",
-      err.message
+      err && err.message
         ? err.message
         : err || "Sorry, something went wrong. Please try again."
     );
@@ -205,19 +205,6 @@ export class AppUnconnected extends Component {
         ))}
       </React.Fragment>
     );
-    // if this body copy has not yet been translated there will be no
-    // translation ids in the welcomeInfo JSON object
-    // just render the raw copy in English
-    if (!paragraphIds.length) {
-      let paragraphsRaw = this.state.body.text.split("\n");
-      paragraphs = (
-        <React.Fragment>
-          {paragraphsRaw.map((paragraphString, index) => (
-            <p key={index}>{paragraphString}</p>
-          ))}
-        </React.Fragment>
-      );
-    }
     // wrap in MUI typography element and return
     return (
       <Box
@@ -287,35 +274,17 @@ export class AppUnconnected extends Component {
   };
 
   async onResolved() {
-    console.log("onResolved");
     const token = await this.recaptcha.current.getResponse();
-    console.log("reCaptcha Token");
-    console.log(token);
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
   }
 
-  // appears to be unused 4/19/2023
-  // setRedirect() {
-  //   const currentPath = this.props.history.location.pathname;
-  //   window.localStorage.setItem("redirect", currentPath);
-  // }
-
   async updateSubmission(passedId, passedUpdates, formValues) {
-    console.log("updateSubmission > App.js 300");
-    console.log(passedId);
+    // console.log("updateSubmission > App.js 300");
+    // console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
-    console.log(
-      `medicaidResidents: ${
-        formValues ? formValues.medicaidResidents : undefined
-      }`
-    );
-    console.log(`medicaidResidents from passedUpdates:`);
-    console.log(passedUpdates);
-    console.log("formPage1");
-    console.log(this.props.submission.formPage1);
     const medicaidResidents =
       formValues && formValues.medicaidResidents
         ? formValues.medicaidResidents
@@ -327,8 +296,6 @@ export class AppUnconnected extends Component {
       medicaid_residents: medicaidResidents
     };
     const updates = passedUpdates ? passedUpdates : pmtUpdates;
-    console.log("###############");
-    console.log(updates);
 
     if (updates.hire_date) {
       let hireDate = moment(new Date(updates.hire_date));
@@ -340,7 +307,6 @@ export class AppUnconnected extends Component {
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
-        console.log(result.type);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -358,8 +324,6 @@ export class AppUnconnected extends Component {
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
     // console.log("lookupSFContact");
-    // console.log(`formValues:`);
-    // console.dir(formValues);
     if (
       formValues.firstName &&
       formValues.lastName &&
@@ -405,7 +369,6 @@ export class AppUnconnected extends Component {
       submission_errors,
       submission_status: "error"
     };
-    console.log("533");
     this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
       return this.handleError(err);
@@ -598,7 +561,7 @@ export class AppUnconnected extends Component {
       work_phone,
       hire_date
     } = secondValues;
-    // console.log(`hire_date: ${hire_date}`);
+    console.log(`hire_date: ${hire_date}`);
 
     if (hire_date) {
       let hireDate = moment(new Date(hire_date));

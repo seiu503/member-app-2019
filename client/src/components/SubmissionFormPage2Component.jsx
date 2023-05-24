@@ -90,7 +90,7 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-    console.log(body);
+    // console.log(body);
     const cleanBody = formElements.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
@@ -109,14 +109,12 @@ export class SubmissionFormPage2Component extends React.Component {
     }
 
     let id = this.props.submission.submissionId;
-    console.log(`SUBMISSION ID: ${id}`);
+    // console.log(`SUBMISSION ID: ${id}`);
 
     if (!id) {
       cleanBody.first_name = firstName;
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;
-
-      console.log("119");
 
       await this.props
         .createSubmission(cleanBody, true) // partial submission = true
@@ -128,8 +126,9 @@ export class SubmissionFormPage2Component extends React.Component {
       await this.props
         .updateSubmission(id, cleanBody)
         .then(result => {
-          // console.log(result.type);
+          console.log(result);
           if (
+            !result ||
             result.type === "UPDATE_SUBMISSION_FAILURE" ||
             this.props.submission.error
           ) {
@@ -144,12 +143,10 @@ export class SubmissionFormPage2Component extends React.Component {
           }
         })
         .catch(err => {
-          console.log("131");
           console.error(err);
           return this.props.handleError(err);
         });
     }
-    console.log("134");
     this.props.apiSF
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
