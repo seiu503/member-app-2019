@@ -204,8 +204,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    // console.log("generateCAPEBody");
-    // console.log(capeAmount, capeAmountOther);
+    console.log("generateCAPEBody");
+    console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -278,7 +278,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount || typeof donationAmount !== "number") {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen: 281");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
 
@@ -339,7 +339,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    console.log("handleCAPESubmit", standAlone);
+    // console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
 
     if (standAlone) {
@@ -362,7 +362,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen: 365");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
@@ -375,8 +375,23 @@ export class SubmissionFormPage1Container extends React.Component {
     const body = await this.generateCAPEBody(
       formValues.capeAmount,
       formValues.capeAmountOther
-    );
-    delete body.cape_status;
+    ).catch(err => {
+      cape_errors += err;
+      cape_status = "Error";
+      console.error(err);
+      this.props.handleError(err);
+    });
+    if (body) {
+      delete body.cape_status;
+    } else {
+      const err = "There was a problem with the CAPE Submission";
+      cape_errors += err;
+      cape_status = "Error";
+      console.error(err);
+      this.props.handleError(err);
+    }
+
+    // console.log(body);
 
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
