@@ -510,7 +510,7 @@ export class AppUnconnected extends Component {
     const firstValues = await this.prepForContact(values);
     // console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
-    console.log("secondValues", secondValues);
+    // console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = firstValues.signature
       ? firstValues.signature

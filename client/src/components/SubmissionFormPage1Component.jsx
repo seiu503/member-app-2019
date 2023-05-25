@@ -20,7 +20,6 @@ export class SubmissionFormPage1Component extends React.Component {
     this.state = {
       signatureType: "draw"
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
   sigBox = {};
   componentDidMount() {
@@ -223,61 +222,6 @@ export class SubmissionFormPage1Component extends React.Component {
           err
         );
         return this.props.handleError(err);
-      });
-  }
-
-  async handleSubmit(formValues) {
-    console.log("handleSubmit");
-    this.props.actions.setSpinner();
-
-    // verifyRecaptchaScore is called in handleTab1, in SubmissionFormPage1.jsx
-    // so is not needed here
-
-    return Promise.all([
-      this.props.createSubmission(formValues),
-      this.createSFOMA()
-    ])
-      .then(() => {
-        // update submission status and redirect to CAPE tab
-        if (!this.props.submission.error) {
-          console.log("updating submission status");
-          this.props.apiSubmission
-            .updateSubmission(this.props.submission.submissionId, {
-              submission_status: "Success"
-            })
-            .then(result => {
-              console.log(result.type);
-              if (
-                result.type === "UPDATE_SUBMISSION_FAILURE" ||
-                this.props.submission.error
-              ) {
-                console.log(this.props.submission.error);
-                return this.props.handleError(this.props.submission.error);
-              }
-              this.props.handleTab(this.props.howManyTabs - 1);
-            })
-            .catch(err => {
-              console.error(err);
-              return this.props.handleError(err);
-            });
-        } else {
-          console.error(this.props.submission.error);
-          this.props.saveSubmissionErrors(
-            this.props.submission.submissionId,
-            "handleSubmit",
-            this.props.submission.error
-          );
-          this.props.handleError(this.props.submission.error);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.saveSubmissionErrors(
-          this.props.submission.submissionId,
-          "handleSubmit",
-          err
-        );
-        this.props.handleError(err);
       });
   }
 
