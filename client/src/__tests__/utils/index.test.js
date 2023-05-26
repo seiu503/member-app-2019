@@ -41,6 +41,13 @@ describe("utils/index", () => {
     utils.scrollToFirstError(errors);
     expect(scrollToSpy).not.toHaveBeenCalled();
   });
+  it("`removeURLParam` removes params when more than 2 passed", () => {
+    const url = "http://test.com?p1=1&p2=2&p3=3";
+    const param = "p3";
+    expect(utils.removeURLParam(url, param)).toEqual(
+      "http://test.com?p1=1&p2=2"
+    );
+  });
   describe("`detectDefaultLanguage` returns language set by browser", () => {
     let languageGetter, languageArrGetter;
     it("defaults to `en`", () => {

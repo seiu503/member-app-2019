@@ -332,6 +332,15 @@ describe("<App />", () => {
     beforeEach(() => {
       store = storeFactory(initialState);
     });
+
+    // Enable API mocking before tests.
+    beforeAll(() => server.listen());
+
+    // Reset any runtime request handlers we may add during the tests.
+    afterEach(() => server.resetHandlers());
+
+    // Disable API mocking after the tests are done.
+    afterAll(() => server.close());
     test("invalid path should render NotFound component", async () => {
       const { queryByTestId } = await setup({}, "/random");
       const subm1 = queryByTestId("component-submissionformpage1");
@@ -353,7 +362,13 @@ describe("<App />", () => {
     });
     test(' "/page2?cId={cId}&aId={aid}" path should render SubmissionFormPage2 component', async () => {
       const { queryByTestId } = await setup(
-        {},
+        {
+          apiSF: {
+            getSFContactById: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve())
+          }
+        },
         "/page2?cId=12345678&aId=123456"
       );
       const subm1 = queryByTestId("component-submissionformpage1");

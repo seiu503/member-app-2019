@@ -646,7 +646,6 @@ describe("<App />", () => {
         expect(tab2Form).toBeInTheDocument();
       });
     });
-
     test("`prepForContact` handles APD edge case", async function() {
       let props = {
         formValues: {
@@ -655,7 +654,27 @@ describe("<App />", () => {
         submission: {
           formPage1: {
             prefillEmployerId: null
-          }
+          },
+          employerObjects: [
+            {
+              attributes: {
+                type: "Account",
+                url: "/services/data/v42.0/sobjects/Account/0016100001UoJZVAA3"
+              },
+              Id: "0016100001UoJZVAA3",
+              Name: "HEALTH LICENSING AGENCY",
+              Sub_Division__c: "State",
+              Parent: {
+                attributes: {
+                  type: "Account",
+                  url:
+                    "/services/data/v42.0/sobjects/Account/0016100000Kb1RQAAZ"
+                },
+                Id: "0016100000Kb1RQAAZ"
+              },
+              Agency_Number__c: 83300
+            }
+          ]
         },
         createSFContact: jest.fn().mockImplementation(() =>
           Promise.resolve({

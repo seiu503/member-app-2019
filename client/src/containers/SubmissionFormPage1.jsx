@@ -502,14 +502,18 @@ export class SubmissionFormPage1Container extends React.Component {
     });
 
     // check if SF contact id already exists (prefill case)
-    if (this.props.submission.salesforceId) {
-      // update existing contact, move to next tab
-      await this.props.updateSFContact(formValues).catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
-      return this.props.changeTab(1);
-    }
+    const checkForSFContactId = async () => {
+      if (this.props.submission.salesforceId) {
+        // update existing contact, move to next tab
+        await this.props.updateSFContact(formValues).catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
+        return this.props.changeTab(1);
+      }
+    };
+
+    await checkForSFContactId();
 
     // otherwise, lookup contact by first/last/email
     await this.props.lookupSFContact(formValues).catch(err => {
@@ -518,14 +522,7 @@ export class SubmissionFormPage1Container extends React.Component {
     });
 
     // if lookup was successful, update existing contact and move to next tab
-    // refactor this bc it's an exact repeat of lines 595-602; make it a sub-module and just call it again here
-    if (this.props.submission.salesforceId) {
-      await this.props.updateSFContact(formValues).catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
-      return this.props.changeTab(1);
-    }
+    await checkForSFContactId();
 
     // otherwise, create new contact with submission data,
     // then move to next tab
