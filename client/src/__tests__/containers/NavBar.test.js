@@ -1,7 +1,14 @@
 import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import "@testing-library/jest-dom/extend-expect";
 import { within } from "@testing-library/dom";
-import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -41,7 +48,7 @@ const defaultProps = {
   main_ref: { ...main_ref }
 };
 
-const setup = (props = {}) => {
+const setup = (props = {}, route = "/") => {
   const setupProps = {
     ...defaultProps,
     ...props
@@ -49,7 +56,9 @@ const setup = (props = {}) => {
   return render(
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <NavBar {...setupProps} />
+        <MemoryRouter initialEntries={[route]}>
+          <NavBar {...setupProps} />
+        </MemoryRouter>
       </ThemeProvider>
     </BrowserRouter>
   );
@@ -80,6 +89,15 @@ describe("<NavBar />", () => {
     const { getByTestId } = setup();
     const component = getByTestId("title");
     expect(component).toBeInTheDocument();
+  });
+
+  test.only(' "/?cape=true" path should render CAPE headline', async () => {
+    const { queryByTestId } = await setup(
+      { location: { search: "?cape=true&lang=en" } },
+      "/?cape=true&lang=en"
+    );
+    const capehead = await queryByTestId("capeBanner");
+    await waitFor(() => expect(capehead).toBeInTheDocument());
   });
 
   test("clicking skiplink calls `skipToMain` method", async () => {

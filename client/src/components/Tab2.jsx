@@ -128,7 +128,7 @@ export const Tab2 = props => {
             >
               {afh && (
                 <React.Fragment>
-                  <p>
+                  <p data-testid="afhDPA1">
                     <Translate id="afhDPA1" />
                   </p>
                   <p>

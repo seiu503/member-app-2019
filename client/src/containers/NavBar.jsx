@@ -126,6 +126,7 @@ export class NavBar extends React.Component {
               >
                 <Box
                   component={Link}
+                  data-testid={values.cape ? "capeBanner" : "siteBanner"}
                   to="/"
                   sx={{
                     flexGrow: 1,

@@ -1,7 +1,13 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
 import { within } from "@testing-library/dom";
-import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -120,12 +126,14 @@ describe("<Tab2 />", () => {
       handleSubmitMock.mockRestore();
     });
 
-    it("calls `back` on back button click", () => {
+    it("calls `back` on back button click", async () => {
       // create a mock function so we can see whether it's called on click
       backMock = jest.fn();
 
       // add mock function to props
-      const props = { back: backMock };
+      const props = {
+        back: backMock
+      };
 
       // set up unwrapped component with handleSubmitMock as handleSubmit prop
       const { getByTestId } = setup({ ...props });
@@ -133,7 +141,7 @@ describe("<Tab2 />", () => {
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
 
-      // simulate submit
+      // simulate click back button
       fireEvent.click(getByTestId("button-back"));
 
       // expect the mock to have been called once
@@ -154,6 +162,19 @@ describe("<Tab2 />", () => {
       };
       const { getByLabelText } = setup({ ...props });
       const component = getByLabelText("Direct Pay Authorization");
+      expect(component).toBeInTheDocument();
+    });
+
+    it("renders AFH DPA legal copy for AFH employer types", () => {
+      handleSubmit = fn => fn;
+      const props = {
+        formValues: {
+          employerType: "adult foster home"
+        }
+      };
+      const { getByTestId } = setup({ ...props });
+      // expect conditional text to display for AFH workers
+      const component = getByTestId("afhDPA1");
       expect(component).toBeInTheDocument();
     });
   });

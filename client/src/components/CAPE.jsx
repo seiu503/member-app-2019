@@ -128,7 +128,7 @@ export const CAPE = props => {
               marginBottom: "15px"
             }}
           >
-            <Translate id="capeHeadline">
+            <Translate id="capeHeadline" data-testid="headline-cape">
               Contribute to CAPE: Citizen Action for Political Education
             </Translate>
           </Typography>
@@ -640,45 +640,37 @@ export const CAPE = props => {
               // className={classes.legalCopy}
               ref={cape_legal}
             >
-              {community ? (
-                <p>
-                  <Translate id="communityCAPE2022" />
-                </p>
-              ) : (
-                <>
-                  <p>
-                    <Translate
-                      id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
-                    />
-                  </p>
-                  <p>
-                    <strong>
-                      <Translate id="capeNewLegal1" />
-                    </strong>
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal2" />
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal3" />
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal4" />
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal5" />
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal6" />
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal7" />
-                  </p>
-                  <p>
-                    <Translate id="capeNewLegal8" />
-                  </p>
-                </>
-              )}
+              <p>
+                <Translate
+                  id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+                />
+              </p>
+              <p>
+                <strong>
+                  <Translate id="capeNewLegal1" />
+                </strong>
+              </p>
+              <p>
+                <Translate id="capeNewLegal2" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal3" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal4" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal5" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal6" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal7" />
+              </p>
+              <p>
+                <Translate id="capeNewLegal8" />
+              </p>
             </div>
             <ButtonWithSpinner
               type="submit"
