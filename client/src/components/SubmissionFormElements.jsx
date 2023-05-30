@@ -647,7 +647,7 @@ export const renderTextField = ({
               ? { width: "48%" }
               : short
               ? { width: 150 }
-              : { width: "100%", marginBottom: 30 }
+              : { marginBottom: 30, width: "100%" }
           }
           helperText={touched && error}
           required={!!(touched && error)}
@@ -802,9 +802,9 @@ export const renderSelect = ({
         style={
           short
             ? { width: 80 }
-            : mobile
-            ? { width: "100%" }
-            : { marginBottom: "30px" }
+            : // : mobile
+              // ? { width: "100%" }
+              { width: "100%" }
         }
       >
         <InputLabel htmlFor={name} id={`${id}Label`}>

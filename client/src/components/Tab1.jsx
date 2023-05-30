@@ -101,11 +101,13 @@ export const Tab1 = props => {
         <Box
           // className={classes.formSection}
           sx={{
-            paddingTop: "20px"
+            paddingTop: "20px",
+            width: "100%"
           }}
         >
           <Field
             data-testid="select-employer-type"
+            dataTestId="select-employer-type-field"
             label="Employer Type"
             name="employerType"
             id="employerType"
@@ -211,6 +213,7 @@ export const Tab1 = props => {
               component={renderSelect}
               style={{ width: "100%" }}
               options={monthList}
+              short
             />
 
             <Field
@@ -223,6 +226,7 @@ export const Tab1 = props => {
               component={renderSelect}
               style={{ width: "100%" }}
               options={formElements.dateOptions(props)}
+              short
             />
 
             <Field
@@ -235,6 +239,7 @@ export const Tab1 = props => {
               component={renderSelect}
               style={{ width: "100%" }}
               options={formElements.yearOptions()}
+              short
             />
           </FormGroup>
 
