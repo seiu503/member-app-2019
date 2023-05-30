@@ -45,6 +45,7 @@ export class SubmissionFormPage2Component extends React.Component {
   renderCheckbox = formElements.renderCheckbox;
 
   handleSubmit = async values => {
+    console.log("handleSubmit p2");
     const {
       mailToCity,
       mailToState,
@@ -112,6 +113,7 @@ export class SubmissionFormPage2Component extends React.Component {
     // console.log(`SUBMISSION ID: ${id}`);
 
     if (!id) {
+      console.log("116");
       cleanBody.first_name = firstName;
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;
@@ -125,28 +127,13 @@ export class SubmissionFormPage2Component extends React.Component {
     } else {
       await this.props
         .updateSubmission(id, cleanBody)
-        .then(result => {
-          console.log(result);
-          if (
-            !result ||
-            result.type === "UPDATE_SUBMISSION_FAILURE" ||
-            this.props.submission.error
-          ) {
-            // console.log(this.props.submission.error);
-            this.props.saveSubmissionErrors(
-              this.props.submission.submissionId,
-              "updateSubmission",
-              this.props.submission.error
-            );
-            console.error(this.props.submission.error);
-            return this.props.handleError(this.props.submission.error);
-          }
-        })
+        // no then block here bc nothing is returned (this is an app method not an API Call)
         .catch(err => {
           console.error(err);
           return this.props.handleError(err);
         });
     }
+    console.log("136");
     this.props.apiSF
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
@@ -518,7 +505,7 @@ export class SubmissionFormPage2Component extends React.Component {
                 //classes={this.classes}
                 component={this.renderSelect}
                 sx={{
-                  marginBottom: "0px"
+                  marginBottom: "15px"
                 }}
                 options={genderOptions}
               />
@@ -667,7 +654,7 @@ export class SubmissionFormPage2Component extends React.Component {
                 formControlName="formControlDate"
                 component={this.renderSelect}
                 // labelWidth={88}
-                sx={{ marginBottom: "0px" }}
+                sx={{ marginBottom: "15px" }}
                 options={stateList}
               />
               <Field

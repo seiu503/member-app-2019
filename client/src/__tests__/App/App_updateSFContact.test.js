@@ -438,7 +438,7 @@ describe("<App />", () => {
 //       });
 //     });
 
-//     test.only("`updateSFContact` handles error if prop function fails", async function() {
+//     test("`updateSFContact` handles error if prop function fails", async function() {
 //       let props = {
 //         ...defaultProps,
 //         apiSubmission: {

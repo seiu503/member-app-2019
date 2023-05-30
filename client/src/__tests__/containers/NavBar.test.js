@@ -91,7 +91,7 @@ describe("<NavBar />", () => {
     expect(component).toBeInTheDocument();
   });
 
-  test.only(' "/?cape=true" path should render CAPE headline', async () => {
+  test(' "/?cape=true" path should render CAPE headline', async () => {
     const { queryByTestId } = await setup(
       { location: { search: "?cape=true&lang=en" } },
       "/?cape=true&lang=en"

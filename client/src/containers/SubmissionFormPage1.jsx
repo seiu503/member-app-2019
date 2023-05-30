@@ -533,7 +533,8 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.changeTab(1);
   }
 
-  async handleTab(newValue) {
+  async handleTab(e, newValue) {
+    e.preventDefault();
     console.log("handleTab");
     console.log(newValue);
     if (newValue === 1) {

@@ -340,7 +340,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 {this.props.tab === 0 && (
                   <Tab1Form
                     {...this.props}
-                    onSubmit={() => this.props.handleTab(1)}
+                    onSubmit={e => this.props.handleTab(e, 1)}
                     verifyCallback={this.verifyCallback}
                     classes={classes}
                     employerTypesList={employerTypesList}
@@ -357,7 +357,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 {this.props.tab === 1 && (
                   <Tab2Form
                     {...this.props}
-                    onSubmit={() => this.props.handleTab(2)}
+                    onSubmit={e => this.props.handleTab(e, 2)}
                     classes={classes}
                     handleInput={this.props.apiSubmission.handleInput}
                     renderSelect={this.renderSelect}

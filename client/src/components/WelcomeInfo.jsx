@@ -130,7 +130,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             <Button
               type="button"
               data-testid="button-next"
-              onClick={() => this.props.handleTab(0)}
+              onClick={e => this.props.handleTab(e, 0)}
               color="primary"
               variant="contained"
               sx={{

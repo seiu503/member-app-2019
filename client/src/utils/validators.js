@@ -115,12 +115,12 @@ export const validate = values => {
   ) {
     errors.workPhone = <Translate id="invalidPhoneError" />;
   }
-  // if (
-  //   values.hireDate &&
-  //   !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
-  // ) {
-  //   errors.hireDate = <Translate id="invalidDateError" />;
-  // }
+  if (
+    values.hireDate &&
+    !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
+  ) {
+    errors.hireDate = <Translate id="invalidDateError" />;
+  }
   if (values.homeZip && values.homeZip.length !== 5) {
     errors.homeZip = <Translate id="charLength5Error" />;
   }

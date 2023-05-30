@@ -281,8 +281,8 @@ export class AppUnconnected extends Component {
   }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
-    // console.log("updateSubmission > App.js 300");
-    // console.log(passedId);
+    console.log("updateSubmission > App.js 300");
+    console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
     const medicaidResidents =
@@ -307,6 +307,7 @@ export class AppUnconnected extends Component {
     this.props.apiSubmission
       .updateSubmission(id, updates)
       .then(result => {
+        console.log(result);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
           this.props.submission.error
@@ -376,7 +377,7 @@ export class AppUnconnected extends Component {
   }
 
   async prepForContact(values) {
-    // console.log("prepForContact");
+    console.log("prepForContact");
     return new Promise(resolve => {
       let returnValues = { ...values };
 
