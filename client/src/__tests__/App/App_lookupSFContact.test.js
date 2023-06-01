@@ -92,20 +92,22 @@ global.scrollTo = jest.fn();
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
   employerType: "employerType",
   employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
-  textAuthOptOut: false
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
 };
 
 const defaultProps = {
@@ -113,7 +115,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {},
@@ -182,7 +185,8 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
@@ -227,14 +231,12 @@ describe("<App />", () => {
           formPage1: { ...defaultProps.formPage1 }
         },
         apiSF: {
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           lookupSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -270,15 +272,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -312,14 +315,12 @@ describe("<App />", () => {
         apiSF: {
           ...defaultProps.apiSF,
           lookupSFContact: lookupSFContactError,
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           createSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "CREATE_SF_CONTACT_SUCCESS",
@@ -349,33 +350,10 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "homecare worker (aging and people with disabilities)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -406,14 +384,12 @@ describe("<App />", () => {
               payload: { salesforce_id: null }
             })
           ),
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           createSFContact: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "CREATE_SF_CONTACT_SUCCESS",
@@ -443,33 +419,10 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "homecare worker (aging and people with disabilities)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -509,14 +462,12 @@ describe("<App />", () => {
               payload: { salesforce_id: null }
             })
           ),
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            )
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
       // render app
@@ -539,33 +490,10 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "homecare worker (aging and people with disabilities)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
