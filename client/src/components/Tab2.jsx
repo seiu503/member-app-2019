@@ -41,7 +41,7 @@ export const Tab2 = props => {
       }}
     >
       <form
-        onSubmit={e => props.handleSubmit(onSubmit(e))}
+        onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
         data-testid="form-tab2"
         name="form-tab2"
@@ -55,13 +55,8 @@ export const Tab2 = props => {
           classes={classes}
           bold={true}
           component={renderCheckbox}
-          // sx={{
-          //   margin: "-35px 0 40px 0",
-          //   fontWeight: 700
-          // }}
         />
         <Box
-          // className={classes.formHelperTextLegal}
           sx={{
             margin: "0 0 35px 0",
             fontSize: "14px",

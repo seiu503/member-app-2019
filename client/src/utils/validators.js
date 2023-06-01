@@ -106,11 +106,6 @@ export const capeValidate = values => {
       requiredField: "capeAmountOther",
       controllingField: "capeAmount",
       controllingValues: ["Other"]
-    },
-    {
-      requiredField: "paymentMethodAdded",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home", "retired", "community member"]
     }
   ];
   conditionalRequiredFields.forEach(obj => {
@@ -129,15 +124,6 @@ export const capeValidate = values => {
   });
   if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
     errors.capeAmountOther = <Translate id="wholeDollarError" />;
-  }
-  if (
-    values.employerType &&
-    (values.employerType.toLowerCase() === "adult foster home" ||
-      values.employerType.toLowerCase() === "retired" ||
-      values.employerType.toLowerCase() === "community member") &&
-    !values.paymentMethodAdded
-  ) {
-    errors.paymentMethodAdded = <Translate id="addPaymentError" />;
   }
   if (
     values.homeEmail &&

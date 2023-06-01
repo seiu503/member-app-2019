@@ -339,24 +339,28 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    // console.log("handleCAPESubmit", standAlone);
+    console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
 
     if (standAlone) {
       // verify recaptcha score
-      await this.verifyRecaptchaScore()
-        .then(score => {
-          // console.log(`score: ${score}`);
-          if (!score || score <= 0.5) {
-            // console.log(`recaptcha failed: ${score}`);
-            return this.props.handleError(
-              this.props.translate("reCaptchaError")
-            );
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      try {
+        await this.verifyRecaptchaScore()
+          .then(score => {
+            // console.log(`score: ${score}`);
+            if (!score || score <= 0.5) {
+              // console.log(`recaptcha failed: ${score}`);
+              return this.props.handleError(
+                this.props.translate("reCaptchaError")
+              );
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.error(err);
+      }
     }
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
@@ -366,6 +370,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
+        this.props.handleError(this.props.translate("donationAmountError"));
         console.log(this.state.displayCAPEPaymentFields);
       });
     }
@@ -496,7 +501,7 @@ export class SubmissionFormPage1Container extends React.Component {
       return this.props.handleError(this.props.translate("reCaptchaError"));
     }
     // handle moving from tab 1 to tab 2:
-
+    console.log("499");
     this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });
@@ -533,8 +538,8 @@ export class SubmissionFormPage1Container extends React.Component {
     return this.props.changeTab(1);
   }
 
-  async handleTab(e, newValue) {
-    e.preventDefault();
+  async handleTab(newValue) {
+    // e.preventDefault();
     console.log("handleTab");
     console.log(newValue);
     if (newValue === 1) {
