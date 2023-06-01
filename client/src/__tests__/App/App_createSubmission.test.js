@@ -103,38 +103,25 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
   employerType: "employerType",
   employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
   textAuthOptOut: false,
-  directPayAuth: true,
-  employerName: "homecare",
-  paymentType: "card",
-  employerType: "retired",
-  preferredLanguage: "English"
+  termsAgree: true,
+  MOECheckbox: true
 };
 
 const defaultProps = {
@@ -142,7 +129,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {}
@@ -183,7 +171,6 @@ const defaultProps = {
     execute: executeMock
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -210,7 +197,8 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
@@ -270,30 +258,24 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          lookupSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "LOOKUP_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            )
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
 
@@ -321,15 +303,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -367,30 +350,24 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          lookupSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "LOOKUP_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            )
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
 
@@ -418,15 +395,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -484,22 +462,18 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          lookupSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "LOOKUP_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           createSFOMA: createSFOMAError
         }
       };
@@ -524,15 +498,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -591,22 +566,18 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          lookupSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "LOOKUP_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           createSFOMA: createSFOMAError
         }
       };
@@ -631,15 +602,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -677,14 +649,12 @@ describe("<App />", () => {
         },
         apiSubmission: {
           handleInput: handleInputMock,
-          addSubmission: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "ADD_SUBMISSION_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
+          addSubmission: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "ADD_SUBMISSION_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
           updateSubmission: updateSubmissionError
         },
         submission: {
@@ -694,30 +664,24 @@ describe("<App />", () => {
           }
         },
         apiSF: {
-          createSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          lookupSFContact: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "LOOKUP_SF_CONTACT_SUCCESS",
-                payload: { id: 1 }
-              })
-            ),
-          createSFOMA: jest
-            .fn()
-            .mockImplementation(() =>
-              Promise.resolve({
-                type: "CREATE_SF_OMA_SUCCESS",
-                payload: { id: 1 }
-              })
-            )
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
 
@@ -742,15 +706,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
