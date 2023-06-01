@@ -95,33 +95,25 @@ const server = setupServer(...handlers);
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
   employerType: "employerType",
   employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
-  textAuthOptOut: false
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
 };
 
 const initialState = {
@@ -130,7 +122,8 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
@@ -163,7 +156,8 @@ const defaultProps = {
     salesforceId: "123",
     formPage1: {
       prefillEmployerId: "1",
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     }
   },
   appState: {},
@@ -172,7 +166,6 @@ const defaultProps = {
   addTranslation: jest.fn(),
   profile: {},
   initialValues: {
-    mm: "",
     onlineCampaignSource: null
   },
   formValues: {
@@ -205,7 +198,6 @@ const defaultProps = {
     }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -267,11 +259,15 @@ describe("<App />", () => {
         }
       };
 
-      const testData = generateSampleValidate();
-
       // render app
       const user = userEvent.setup();
-      const { getByTestId, getByRole, getByText, debug } = await setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByText,
+        getByLabelText,
+        debug
+      } = await setup(props);
 
       // simulate user click 'Next'
       const nextButton = getByTestId("button-next");
@@ -283,8 +279,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
       // expect snackbar to be in the document with correct error message
       await waitFor(async () => {

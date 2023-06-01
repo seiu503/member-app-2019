@@ -188,7 +188,7 @@ export const getMaxDay = month => {
 };
 // function to adjust date select based on mm value
 export const dateOptions = props => {
-  const mm = props.formValues.mm || props.formValues.hiremm;
+  const mm = props.formValues.mm;
   const max = getMaxDay(mm);
   let dates = [];
   for (let i = 1; i <= max; i++) {

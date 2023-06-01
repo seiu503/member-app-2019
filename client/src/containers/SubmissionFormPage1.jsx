@@ -501,7 +501,6 @@ export class SubmissionFormPage1Container extends React.Component {
       return this.props.handleError(this.props.translate("reCaptchaError"));
     }
     // handle moving from tab 1 to tab 2:
-    console.log("499");
     this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });

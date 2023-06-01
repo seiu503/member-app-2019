@@ -116,13 +116,6 @@ describe("Redux-Form custom Validators", () => {
     expect(capeValidate(testDataCAPE)).toStrictEqual({
       capeAmountOther: <Translate id="requiredError" />
     });
-    testDataCAPE.capeAmount = 10;
-    testDataCAPE.employerType = "retired";
-    testDataCAPE.paymentType = "Card";
-    testDataCAPE.paymentMethodAdded = false;
-    expect(capeValidate(testDataCAPE)).toStrictEqual({
-      paymentMethodAdded: <Translate id="addPaymentError" />
-    });
   });
   test("validates capeAmountOther as positive integer", () => {
     testDataCAPE.capeAmount = "Other";

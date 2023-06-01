@@ -1,6 +1,7 @@
 import { Translate } from "react-localize-redux";
 import React from "react";
 export const validate = values => {
+  // console.log(values);
   const errors = {};
   const requiredFields = [
     "firstName",
@@ -23,6 +24,7 @@ export const validate = values => {
   ];
   requiredFields.forEach(field => {
     if (!values[field]) {
+      // console.log(`missing ${field}`);
       errors[field] = <Translate id="requiredError" />;
     }
   });
@@ -81,6 +83,8 @@ export const validate = values => {
   if (values.mailToZip && values.mailToZip.length !== 5) {
     errors.mailToZip = <Translate id="charLength5Error" />;
   }
+  console.log("errors");
+  console.dir(errors);
   return errors;
 };
 
