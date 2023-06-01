@@ -251,6 +251,9 @@ export class SubmissionFormPage1Component extends React.Component {
         xs: "100vw",
         sm: "auto"
       },
+      maxWidth: {
+        xs: "600px"
+      },
       position: {
         xs: "absolute",
         sm: "static"

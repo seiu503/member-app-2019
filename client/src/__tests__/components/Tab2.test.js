@@ -151,31 +151,4 @@ describe("<Tab2 />", () => {
       backMock.mockRestore();
     });
   });
-
-  describe("conditional render", () => {
-    it("renders DPA checkbox for payment required employer types", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          employerType: "Retired"
-        }
-      };
-      const { getByLabelText } = setup({ ...props });
-      const component = getByLabelText("Direct Pay Authorization");
-      expect(component).toBeInTheDocument();
-    });
-
-    it("renders AFH DPA legal copy for AFH employer types", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          employerType: "adult foster home"
-        }
-      };
-      const { getByTestId } = setup({ ...props });
-      // expect conditional text to display for AFH workers
-      const component = getByTestId("afhDPA1");
-      expect(component).toBeInTheDocument();
-    });
-  });
 });

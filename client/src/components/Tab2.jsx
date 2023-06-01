@@ -25,13 +25,6 @@ export const Tab2 = props => {
 
   const classes = formElements.classesPage1;
 
-  const afh = formValues.employerType
-    ? formValues.employerType.toLowerCase() === "adult foster home"
-    : false;
-  const retiree = formValues.employerType
-    ? formValues.employerType.toLowerCase() === "retired"
-    : false;
-
   return (
     <Box
       data-testid="component-tab2"
@@ -80,76 +73,28 @@ export const Tab2 = props => {
           <p>
             <Translate id="membershipTerms2021" />
           </p>
-          {!retiree && !afh && (
-            <div>
-              <Field
-                formControlName="controlCheckboxMarginBoldSpacer"
-                label="Agree to Dues Authorization"
-                name="MOECheckbox"
-                id="MOECheckbox"
-                type="checkbox"
-                classes={{
-                  root: {
-                    marginTop: "35px important!"
-                  }
-                }}
-                bold={true}
-                component={renderCheckbox}
-              />
-              <p>
-                <Translate id="checkoff2021" />
-              </p>
-            </div>
-          )}
-        </Box>
 
-        {(afh || retiree) && (
-          <React.Fragment>
+          <div>
             <Field
-              formControlName="controlCheckboxMarginBold"
-              data-testid="checkbox-DPA"
-              label="Direct Pay Authorization"
-              name="directPayAuth"
-              id="directPayAuth"
+              formControlName="controlCheckboxMarginBoldSpacer"
+              label="Agree to Dues Authorization"
+              name="MOECheckbox"
+              id="MOECheckbox"
               type="checkbox"
-              classes={classes}
+              classes={{
+                root: {
+                  marginTop: "35px important!"
+                }
+              }}
               bold={true}
               component={renderCheckbox}
             />
-            <Box
-              // className={classes.formHelperTextLegal}
-              sx={{
-                margin: "-50px 0 50px 0",
-                fontSize: "14px",
-                lineHeight: "1.2em"
-              }}
-              id="directPayAuthLegalLanguage"
-              ref={direct_pay}
-            >
-              {afh && (
-                <React.Fragment>
-                  <p data-testid="afhDPA1">
-                    <Translate id="afhDPA1" />
-                  </p>
-                  <p>
-                    <Translate id="afhDPA2" />
-                  </p>
-                </React.Fragment>
-              )}
-              {retiree && (
-                <p>
-                  <Translate id="retireeDPA1" />
-                </p>
-              )}
-              <p>
-                <Translate id={afh ? "afhDPA3" : "DPA3"} />
-              </p>
-              <p>
-                <Translate id="DPA4" />
-              </p>
-            </Box>
-          </React.Fragment>
-        )}
+            <p>
+              <Translate id="checkoff2021" />
+            </p>
+          </div>
+        </Box>
+
         <Field
           formControlName="controlCheckboxMargin"
           data-testid="checkbox-ScholarshipBox"
