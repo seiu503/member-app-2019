@@ -111,25 +111,6 @@ describe("Redux-Form custom Validators", () => {
     });
   });
   test("validates conditional required fields", () => {
-    combinedData.employerType = "adult foster home";
-    combinedData.medicaidResidents = 1;
-    combinedData.paymentMethodAdded = true;
-    combinedData.directPayAuth = null;
-    expect(validate(combinedData)).toStrictEqual({
-      directPayAuth: <Translate id="requiredError" />
-    });
-    combinedData.employerType = "adult foster home";
-    combinedData.directPayAuth = "2019-11-1";
-    combinedData.paymentType = "Card";
-    combinedData.paymentMethodAdded = false;
-    expect(validate(combinedData)).toStrictEqual({
-      paymentMethodAdded: <Translate id="requiredError" />
-    });
-    combinedData.paymentMethodAdded = true;
-    combinedData.medicaidResidents = 0;
-    expect(validate(combinedData)).toStrictEqual({
-      medicaidResidents: <Translate id="medicaidResidentsError" />
-    });
     testDataCAPE.capeAmount = "Other";
     testDataCAPE.capeAmountOther = null;
     expect(capeValidate(testDataCAPE)).toStrictEqual({

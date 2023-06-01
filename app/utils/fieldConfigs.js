@@ -1808,6 +1808,7 @@ const generateSampleValidate = () => {
   sampleData.mm = "01";
   sampleData.yyyy = "2001";
   sampleData.termsAgree = true;
+  sampleData.MOECheckbox = true;
   sampleData.mobilePhone = sampleData.cellPhone;
   sampleData.homePostalCode = sampleData.homeZip;
   delete sampleData.cellPhone;

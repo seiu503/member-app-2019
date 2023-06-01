@@ -18,55 +18,9 @@ export const validate = values => {
     "employerName",
     "employerType",
     "termsAgree",
+    "MOECheckbox",
     "signature"
   ];
-  const conditionalRequiredFields = [
-    {
-      requiredField: "MOECheckbox",
-      controllingField: "employerType",
-      controllingValues: [
-        "non-profit",
-        "state agency",
-        "nursing home",
-        "state homecare or personal support",
-        "higher education",
-        "local government (city, county, school district)",
-        "child care",
-        "private homecare agency"
-      ]
-    },
-    {
-      requiredField: "directPayAuth",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home", "retired", "community member"]
-    },
-    {
-      requiredField: "medicaidResidents",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home"]
-    },
-    {
-      requiredField: "paymentType",
-      controllingField: "employerType",
-      controllingValues: ["retired"]
-    },
-    {
-      requiredField: "paymentMethodAdded",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home", "retired", "community member"]
-    }
-  ];
-  conditionalRequiredFields.forEach(obj => {
-    let matchValue = values[obj["controllingField"]]
-      ? values[obj["controllingField"]].toLowerCase()
-      : "";
-    if (
-      obj["controllingValues"].includes(matchValue) &&
-      !values[obj["requiredField"]]
-    ) {
-      errors[obj["requiredField"]] = <Translate id="requiredError" />;
-    }
-  });
   requiredFields.forEach(field => {
     if (!values[field]) {
       errors[field] = <Translate id="requiredError" />;
