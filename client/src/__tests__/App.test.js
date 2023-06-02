@@ -52,12 +52,34 @@ let getResponseMock = jest
 
 const pushMock = jest.fn();
 
+const formValues = {
+  firstName: "firstName",
+  lastName: "lastName",
+  homeEmail: "test@test.com",
+  homeStreet: "homeStreet",
+  homeCity: "homeCity",
+  homeZip: "12345",
+  homeState: "homeState",
+  signature: "signature",
+  employerType: "employerType",
+  employerName: "employerName",
+  mobilePhone: "1234567890",
+  mm: "01",
+  dd: "01",
+  yyyy: "1999",
+  preferredLanguage: "English",
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
+};
+
 const initialState = {
   appState: {
     loading: false
   },
   submission: {
     formPage1: {
+      ...formValues,
       reCaptchaValue: ""
     },
     allSubmissions: [{ key: "value" }],
@@ -71,6 +93,7 @@ const defaultProps = {
   },
   submission: {
     formPage1: {
+      ...formValues,
       reCaptchaValue: "token"
     },
     allSubmissions: [{ key: "value" }],
@@ -236,8 +259,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form);
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
       // recaptcha will error, triggering snackbar
 
       // expect snackbar to be in the document
@@ -258,66 +284,6 @@ describe("<App />", () => {
         expect(snackbar).not.toBeInTheDocument();
       });
     });
-
-    // it("onResolved calls recaptcha.getResponse and saves recaptcha token to redux store", async () => {
-    //   getResponseMock = jest
-    //     .fn()
-    //     .mockImplementation(() => Promise.resolve("token"));
-
-    //   const props = {
-    //     ...defaultProps,
-    //     // this doesn't work because recaptcha is not a prop, would havel to mock the whole module
-    //     recaptcha: {
-    //       current: {
-    //         getResponse: getResponseMock,
-    //         execute: jest.fn().mockImplementation(() => {
-    //           console.log('executeMock');
-    //           return Promise.resolve("token");
-    //           })
-    //         }
-    //     },
-    //     submission: {
-    //       ...defaultProps.submission,
-    //       formPage1: {
-    //         ...defaultProps.submission.formPage1,
-    //         reCaptchaValue: 'token'
-    //         }
-    //     },
-    //     formValues: {
-    //       ...generateSubmissionBody,
-    //       reCaptchaValue: 'token'
-    //     },
-    //     apiSubmission: {
-    //       ...defaultProps.apiSubmission,
-    //       handleInput: jest.fn()
-    //     }
-    //   };
-
-    //   // mock window.scrollTo
-    //   window.scrollTo = jest.fn();
-
-    //   // simulate user click 'Next'
-    //   const user = userEvent.setup();
-    //   const { getByTestId, getByRole, debug } = await setup(props);
-    //   const nextButton = getByTestId("button-next");
-    //   await userEvent.click(nextButton, { delay: 0.5 });
-
-    //   // check that tab 1 renders
-    //   const tab1Form = getByRole("form");
-    //   await waitFor(() => {
-    //     expect(tab1Form).toBeInTheDocument();
-    //   });
-
-    //   // simulate submit with default formValues
-    //   await waitFor(() => {
-    //     fireEvent.submit(tab1Form);
-    //   });
-
-    //   expect(getResponseMock).toHaveBeenCalled();
-
-    //   // restore mock
-    //   getResponseMock.mockRestore();
-    // });
 
     it("renderBodyCopy renders paragraphs matching provided body id (default copy)", async () => {
       const { getByTestId } = await setup();

@@ -83,7 +83,8 @@ const defaultProps = {
       paymentRequired: false
     },
     formPage2: {
-      ...generatePage2Validate
+      ...generatePage2Validate,
+      hireDate: "2000-10-01"
     },
     salesforceId: "123",
     submissionId: "345"
@@ -118,7 +119,15 @@ const defaultProps = {
   openSnackbar: jest.fn()
 };
 
-const initialState = {};
+const bodyData = generatePage2Validate();
+const initialState = {
+  submission: {
+    formPage2: {
+      ...bodyData,
+      hireDate: "2000-10-01"
+    }
+  }
+};
 store = storeFactory(initialState);
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props, handleSubmit };
@@ -203,9 +212,10 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
 
       const page2Form = getByTestId("form-page2");
 
-      // simulate submit page2
+      // simulate submit p2
       await waitFor(async () => {
-        await fireEvent.submit(page2Form, { ...testData });
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
       });
 
       // expect handleErrorMock to have been called with correct message
@@ -250,11 +260,10 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
         debug
       } = await setup(props);
 
-      const page2Form = getByTestId("form-page2");
-
-      // simulate submit page2
+      // simulate submit p2
       await waitFor(async () => {
-        await fireEvent.submit(page2Form, { ...testData });
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
       });
 
       // expect handleErrorMock to have been called with correct message
@@ -301,9 +310,10 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
 
       const page2Form = getByTestId("form-page2");
 
-      // simulate submit page2
+      // simulate submit p2
       await waitFor(async () => {
-        await fireEvent.submit(page2Form, { ...testData });
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
       });
 
       // expect handleErrorMock to have been called with correct message

@@ -101,20 +101,22 @@ global.scrollTo = jest.fn();
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
   employerType: "employerType",
   employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
-  textAuthOptOut: false
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
 };
 
 const initialState = {
@@ -123,10 +125,12 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: ""
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload]
+    employerObjects: [...employersPayload],
+    formPage2: {}
   }
 };
 
@@ -135,7 +139,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {}
@@ -259,7 +264,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
       // expect updateSubmissionSuccess to have been called
       waitFor(() => {
@@ -289,6 +298,7 @@ describe("<App />", () => {
         }
       };
       formElements.handleError = jest.fn();
+
       // simulate user click 'Next'
       const user = userEvent.setup();
       const { getByTestId, getByRole, debug } = await setup({ ...props });
@@ -301,7 +311,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
       // expect handleError to have been called
       waitFor(() => {
@@ -331,6 +345,7 @@ describe("<App />", () => {
         }
       };
       formElements.handleError = jest.fn();
+
       // simulate user click 'Next'
       const user = userEvent.setup();
       const { getByTestId, getByRole, debug } = await setup({ ...props });
@@ -343,7 +358,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
       // expect handleError to have been called
       waitFor(() => {

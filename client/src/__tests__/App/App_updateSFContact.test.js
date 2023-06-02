@@ -92,37 +92,41 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
+const formValues = {
+  firstName: "firstName",
+  lastName: "lastName",
+  homeEmail: "test@test.com",
+  homeStreet: "homeStreet",
+  homeCity: "homeCity",
+  homeZip: "12345",
+  homeState: "homeState",
+  signature: "signature",
+  employerType: "employerType",
+  employerName: "employerName",
+  mobilePhone: "1234567890",
+  mm: "01",
+  dd: "01",
+  yyyy: "1999",
+  preferredLanguage: "English",
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
+};
+
 const initialState = {
   appState: {
     loading: false
   },
   submission: {
+    salesforceId: "123",
     formPage1: {
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
-    salesforceId: "123"
+    formPage2: {}
   }
-};
-
-const formValues = {
-  firstName: "firstName",
-  lastName: "lastName",
-  homeEmail: "homeEmail",
-  homeStreet: "homeStreet",
-  homeCity: "homeCity",
-  homeZip: "homeZip",
-  homeState: "homeState",
-  signature: "signature",
-  employerType: "employerType",
-  employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
-  dd: "01",
-  yyyy: "1999",
-  preferredLanguage: "English",
-  textAuthOptOut: false
 };
 
 const defaultProps = {
@@ -130,8 +134,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: "",
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {},
@@ -249,6 +253,10 @@ describe("<App />", () => {
       );
       let props = {
         ...defaultProps,
+        submission: {
+          ...defaultProps.submission,
+          salesforceId: 1
+        },
         apiSF: {
           ...defaultProps.apiSF,
           lookupSFContact: jest.fn().mockImplementation(() =>
@@ -281,33 +289,10 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "personal support worker (paid by ppl)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -357,33 +342,10 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "personal support worker (paid by ppl)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -398,115 +360,3 @@ describe("<App />", () => {
     });
   });
 });
-
-// describe("<SubmissionFormPage1 />", () => {
-//   // ... this doesn't work bc if i pass updateSFContact as a prop it doesn't test the method on App.js
-//   // Enable API mocking before tests.
-//   beforeAll(() => server.listen());
-
-//   // Reset any runtime request handlers we may add during the tests.
-//   afterEach(() => server.resetHandlers());
-
-//   // Disable API mocking after the tests are done.
-//   afterAll(() => server.close());
-
-//   describe("updateSFContact", () => {
-//     test("`updateSFContact` calls updateSFContact prop function", async function() {
-//       // render app
-//       const user = userEvent.setup();
-//       const {
-//         getByTestId,
-//         queryByTestId,
-//         getByRole,
-//         getByLabelText,
-//         getByText,
-//         debug
-//       } = await setupChild();
-
-//       // check that tab 1 renders
-//       const tab1Form = getByRole("form");
-//       await waitFor(() => {
-//         expect(tab1Form).toBeInTheDocument();
-//       });
-
-//       // simulate submit
-//       await fireEvent.submit(tab1Form, { ...testData });
-
-//       // expect handleError not to have been called
-//       await waitFor(() => {
-//         expect(handleErrorMock).not.toHaveBeenCalled()
-//       });
-//     });
-
-//     test("`updateSFContact` handles error if prop function fails", async function() {
-//       let props = {
-//         ...defaultProps,
-//         apiSubmission: {
-//           ...defaultProps.apiSubmission,
-//            verify: jest.fn().mockImplementation(() =>
-//             Promise.resolve({
-//               type: "VERIFY_SUCCESS",
-//               payload: {
-//                 score: 0.9
-//               }
-//             })
-//           )
-//         },
-//         apiSF: {
-//           ...defaultProps.apiSF,
-//           updateSFContact: updateSFContactError
-//         },
-//         updateSFContact: updateSFContactError
-//       };
-//       // render app
-//       const user = userEvent.setup(props);
-//       const {
-//         getByTestId,
-//         getByRole,
-//         getByLabelText,
-//         getByText,
-//         debug
-//       } = await setupChild(props);
-
-//       // check that tab 1 renders
-//       const tab1Form = getByRole("form");
-//       await waitFor(() => {
-//         expect(tab1Form).toBeInTheDocument();
-//       });
-
-//       // enter required data
-//       await waitFor(async () => {
-//         const employerType = await getByLabelText("Employer Type");
-//         const firstName = await getByLabelText("First Name");
-//         const lastName = await getByLabelText("Last Name");
-//         const homeEmail = await getByLabelText("Home Email");
-//         await fireEvent.change(employerType, {
-//           target: { value: "state homecare or personal support" }
-//         });
-//         await fireEvent.change(firstName, { target: { value: "test" } });
-//         await fireEvent.change(lastName, { target: { value: "test" } });
-//         await fireEvent.change(homeEmail, {
-//           target: { value: "test@test.com" }
-//         });
-//       });
-
-//       // simulate submit tab1
-//       await waitFor(async () => {
-//         const employerName = await getByLabelText("Employer Name");
-//         expect(employerName).toBeInTheDocument();
-//         await fireEvent.change(employerName, {
-//           target: {
-//             value: "homecare worker (aging and people with disabilities)"
-//           }
-//         });
-//         const tab1Form = await getByTestId("form-tab1");
-//         await fireEvent.submit(tab1Form, { ...testData });
-//       });
-
-//       // expect handleError to have been called with correct message
-//       await waitFor(() => {
-//         expect(handleErrorMock).toHaveBeenCalledWith("updateSFContactError")
-//       });
-//     });
-//   });
-// });

@@ -37,6 +37,7 @@ export class SubmissionFormPage2Component extends React.Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   // reusable MUI form components
@@ -44,8 +45,9 @@ export class SubmissionFormPage2Component extends React.Component {
   renderSelect = formElements.renderSelect;
   renderCheckbox = formElements.renderCheckbox;
 
-  handleSubmit = async values => {
+  handleSubmit = async () => {
     console.log("handleSubmit p2");
+    const values = { ...this.props.submission.formPage2 };
     const {
       mailToCity,
       mailToState,
@@ -68,7 +70,7 @@ export class SubmissionFormPage2Component extends React.Component {
       firstName,
       lastName,
       homeEmail
-    } = values;
+    } = this.props.submission.formPage2;
     const ethnicity = formElements.calcEthnicity(values);
     const body = {
       mail_to_city: mailToCity,
@@ -206,7 +208,7 @@ export class SubmissionFormPage2Component extends React.Component {
         <Box sx={formContainer}>
           <form
             id="submissionFormPage2"
-            onSubmit={this.props.handleSubmit(this.handleSubmit.bind(this))}
+            onSubmit={this.props.handleSubmit(this.handleSubmit)}
             data-testid="form-page2"
             // className={this.classes.form}
           >
@@ -666,21 +668,23 @@ export class SubmissionFormPage2Component extends React.Component {
                 component={this.renderTextField}
               />
             </FormGroup>
-
-            <ButtonWithSpinner
-              type="submit"
-              color="primary"
-              //className={this.classes.formButton}
-              sx={{
-                width: "100%",
-                padding: "20px",
-                margin: "0 0 40px"
-              }}
-              variant="contained"
-              loading={this.props.submission.loading}
-            >
-              <Translate id="submit" />
-            </ButtonWithSpinner>
+            <div data-testid="button-div">
+              <ButtonWithSpinner
+                type="submit"
+                color="primary"
+                data-testid="button-submit-p2"
+                //className={this.classes.formButton}
+                sx={{
+                  width: "100%",
+                  padding: "20px",
+                  margin: "0 0 40px"
+                }}
+                variant="contained"
+                loading={this.props.submission.loading}
+              >
+                <Translate id="submit" />
+              </ButtonWithSpinner>
+            </div>
           </form>
         </Box>
       </Box>
