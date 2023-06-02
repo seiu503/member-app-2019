@@ -89,7 +89,26 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
-let formValues;
+const formValues = {
+  firstName: "firstName",
+  lastName: "lastName",
+  homeEmail: "test@test.com",
+  homeStreet: "homeStreet",
+  homeCity: "homeCity",
+  homeZip: "12345",
+  homeState: "homeState",
+  signature: "signature",
+  employerType: "employerType",
+  employerName: "employerName",
+  mobilePhone: "1234567890",
+  mm: "01",
+  dd: "01",
+  yyyy: "1999",
+  preferredLanguage: "English",
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
+};
 
 const initialState = {
   appState: {
@@ -97,10 +116,12 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload]
+    employerObjects: [...employersPayload],
+    formPage2: {}
   }
 };
 
@@ -109,8 +130,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: "",
-      legalLanguage: "jjj"
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {},
@@ -243,33 +264,10 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "personal support worker (paid by ppl)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -355,8 +353,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
       // expect snackbar NOT to be in document
       await waitFor(() => {
@@ -378,6 +379,7 @@ describe("<App />", () => {
           ...defaultProps.submission,
           salesforceId: "123",
           formPage1: {
+            ...formValues,
             prefillEmployerId: "2",
             prefillEmployerChanged: true
           },
@@ -425,8 +427,11 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
       // expect snackbar NOT to be in document
       await waitFor(() => {
@@ -445,6 +450,7 @@ describe("<App />", () => {
     test("`prepForContact` handles PPL edge case", async function() {
       let props = {
         formValues: {
+          ...formValues,
           employerName: "personal support worker (paid by ppl)"
         },
         createSFContact: jest.fn().mockImplementation(() =>
@@ -502,33 +508,10 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "personal support worker (paid by ppl)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -547,6 +530,7 @@ describe("<App />", () => {
     test("`prepForContact` handles PSW edge case", async function() {
       let props = {
         formValues: {
+          ...formValues,
           employerName: "personal support worker (paid by state of oregon)"
         },
         createSFContact: jest.fn().mockImplementation(() =>
@@ -604,33 +588,10 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "personal support worker (paid by state of oregon)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -649,6 +610,7 @@ describe("<App />", () => {
     test("`prepForContact` handles APD edge case", async function() {
       let props = {
         formValues: {
+          ...formValues,
           employerName: "homecare worker (aging and people with disabilities)"
         },
         submission: {
@@ -731,33 +693,10 @@ describe("<App />", () => {
       const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        const firstName = await getByLabelText("First Name");
-        const lastName = await getByLabelText("Last Name");
-        const homeEmail = await getByLabelText("Home Email");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        await fireEvent.change(firstName, { target: { value: "test" } });
-        await fireEvent.change(lastName, { target: { value: "test" } });
-        await fireEvent.change(homeEmail, {
-          target: { value: "test@test.com" }
-        });
-      });
-
       // simulate submit tab1
       await waitFor(async () => {
-        const employerName = await getByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "homecare worker (aging and people with disabilities)"
-          }
-        });
-        const tab1Form = await getByTestId("form-tab1");
-        await fireEvent.submit(tab1Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
