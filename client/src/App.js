@@ -324,7 +324,8 @@ export class AppUnconnected extends Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
-    // console.log("lookupSFContact");
+    console.log("lookupSFContact");
+    console.dir(formValues);
     if (
       formValues.firstName &&
       formValues.lastName &&
@@ -345,6 +346,8 @@ export class AppUnconnected extends Component {
 
       // if nothing found on lookup, need to create new contact
       if (!this.props.submission.salesforceId) {
+        console.log("348");
+        console.dir(formValues);
         await this.createSFContact(formValues)
           .then(() => {
             // console.log(this.props.submission.salesforceId);
@@ -378,6 +381,7 @@ export class AppUnconnected extends Component {
 
   async prepForContact(values) {
     console.log("prepForContact");
+    console.dir(values);
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -392,6 +396,9 @@ export class AppUnconnected extends Component {
       let employerObject;
 
       if (values.employerName) {
+        console.log("********");
+        console.log(`employerName: ${values.employerName}`);
+        // console.dir(this.props.submission.employerObjects);
         employerObject = findEmployerObject(
           this.props.submission.employerObjects,
           values.employerName
@@ -457,10 +464,13 @@ export class AppUnconnected extends Component {
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
           // this will be an agency-level employer Id
+          console.log("460");
           returnValues.employerId = employerObject
             ? employerObject.Id
             : "0016100000WERGeAAP"; // <= unknown employer
         }
+        console.log(employerObject);
+        console.log(returnValues.employerId);
       } else {
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
@@ -469,6 +479,7 @@ export class AppUnconnected extends Component {
           ? employerObject.Id
           : "0016100000WERGeAAP"; // <= unknown employer
       }
+      console.log("473");
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
@@ -508,6 +519,7 @@ export class AppUnconnected extends Component {
   }
 
   async generateSubmissionBody(values, partial) {
+    console.log("generateSubmissionBody");
     const firstValues = await this.prepForContact(values);
     // console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
@@ -710,8 +722,12 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    // console.log("createSFContact");
-    const values = await this.prepForContact(formValues);
+    console.log("createSFContact");
+    const values = await this.prepForContact(formValues).catch(err =>
+      console.log(err)
+    );
+    console.log("724");
+    console.log(values);
     let {
       firstName,
       lastName,
@@ -755,7 +771,7 @@ export class AppUnconnected extends Component {
   }
 
   async updateSFContact(formValues) {
-    // console.log("updateSFContact");
+    console.log("updateSFContact");
     const values = await this.prepForContact(formValues);
     let {
       firstName,

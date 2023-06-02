@@ -83,8 +83,8 @@ export const validate = values => {
   if (values.mailToZip && values.mailToZip.length !== 5) {
     errors.mailToZip = <Translate id="charLength5Error" />;
   }
-  console.log("errors");
-  console.dir(errors);
+  // console.log("errors");
+  // console.dir(errors);
   return errors;
 };
 

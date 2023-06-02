@@ -103,20 +103,22 @@ global.scrollTo = jest.fn();
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
   employerType: "employerType",
   employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
-  textAuthOptOut: false
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
 };
 
 const initialState = {
@@ -125,7 +127,8 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
@@ -138,8 +141,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: "",
-      reCaptchaValue: "token"
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {}
@@ -315,15 +318,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -404,15 +408,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // just test that with these props there are no errors and it moves to tab 3
@@ -498,15 +503,16 @@ describe("<App />", () => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit
-      await fireEvent.submit(tab1Form, { ...testData });
-
-      // enter signature and simulate submit tab2
+      // simulate submit tab1
       await waitFor(async () => {
-        const sigInput = await getByLabelText("Signature");
-        await fireEvent.change(sigInput, { target: { value: "test" } });
-        const tab2Form = await getByTestId("form-tab2");
-        await fireEvent.submit(tab2Form, { ...testData });
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // just test that with these props there are no errors and it moves to tab 3
