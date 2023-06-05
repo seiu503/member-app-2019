@@ -1081,7 +1081,10 @@ export const renderCAPERadioGroup = ({
                   width: "21%",
                   height: "60px",
                   margin: "13px 1.666666666666667% 0",
-                  display: "inline-block",
+                  display: {
+                    xs: "flex",
+                    sm: "inline-block"
+                  },
                   textAlign: "center"
                 }}
                 label={labelText}

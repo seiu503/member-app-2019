@@ -85,9 +85,9 @@ export class WelcomeInfoUnconnected extends React.Component {
               sx={{
                 padding: "20px",
                 backgroundColor: "danger.main", // orange[500], // #b71c1c
-                marginRight: {
-                  xs: "10px",
-                  // sm: "0px",
+                margin: {
+                  xs: "auto -20px",
+                  sm: "-20px -20px 0px -20px",
                   // md: "10px",
                   // lg: "10px",
                   xl: "0px"

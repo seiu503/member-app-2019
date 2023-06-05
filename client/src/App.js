@@ -856,7 +856,7 @@ export class AppUnconnected extends Component {
             sm: "none"
           },
           backgroundSize: {
-            xl: "cover"
+            md: "cover"
           }
         }}
       >
