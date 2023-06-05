@@ -640,6 +640,7 @@ export const renderTextField = ({
       {({ translate }) => (
         <TextField
           label={inputLabelTranslateHelper(id, label, translate)}
+          InputLabelProps={{ htmlFor: id }}
           error={!!(touched && error)}
           variant="outlined"
           style={
@@ -689,7 +690,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
           // className={props.classes.languagePicker}
         >
           <InputLabel
-            htmlFor={props.name}
+            htmlFor={props.id}
             sx={{
               color: "white !important",
               // marginTop: "-2px",
@@ -807,7 +808,7 @@ export const renderSelect = ({
               { width: "100%" }
         }
       >
-        <InputLabel htmlFor={name} id={`${id}Label`}>
+        <InputLabel htmlFor={id} id={`${id}Label`}>
           {inputLabelTranslateHelper(id, label, translate)}
         </InputLabel>
         <Select
