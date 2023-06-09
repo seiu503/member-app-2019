@@ -47,8 +47,8 @@ exports.getClientIp = req =>
  */
 exports.createSubmission = async (req, res, next) => {
   const ip = getClientIp(req);
-  console.log("submissions.ctrl.js > 45: createSubmission");
-  console.log(req.body);
+  // console.log("submissions.ctrl.js > 45: createSubmission");
+  // console.log(req.body);
   let {
     submission_date,
     agency_number,
@@ -167,24 +167,24 @@ exports.updateSubmission = async (req, res, next) => {
   const updates = req.body;
   delete updates.submission_id;
   let { id } = req.params;
-  console.log(`subm.ctrl.js > 169 -- req.params:`);
-  console.log(req.params);
-  console.log(`subm.ctrl.js > 172 -- req.headers:`);
-  console.log(req.headers);
-  console.log(`subm.ctrl.js > 171 -- referer:`);
+  // console.log(`subm.ctrl.js > 169 -- req.params:`);
+  // console.log(req.params);
+  // console.log(`subm.ctrl.js > 172 -- req.headers:`);
+  // console.log(req.headers);
+  // console.log(`subm.ctrl.js > 171 -- referer:`);
   const referer = req.get("Referrer");
   if (typeof referer === "string") {
     console.log(referer);
   } else {
-    console.log(`subm.ctrl.js > 177 -- referer is NOT a string`);
+    // console.log(`subm.ctrl.js > 177 -- referer is NOT a string`);
   }
 
   const queryData = url.parse(
     referer && typeof referer === "string" ? referer : "www.test.com",
     true
   ).query;
-  console.log(`subm.ctrl.js > 184 -- queryData:`);
-  console.log(queryData);
+  // console.log(`subm.ctrl.js > 184 -- queryData:`);
+  // console.log(queryData);
   if (queryData.submission_id) {
     id = queryData.submission_id;
   }
@@ -201,8 +201,8 @@ exports.updateSubmission = async (req, res, next) => {
   if (updates.scholarship_flag === "on") {
     updates.scholarship_flag = true;
   }
-  console.log(`subm.ctrl.js > 202 - id: ${id} (updates below)`);
-  console.log(updates);
+  // console.log(`subm.ctrl.js > 202 - id: ${id} (updates below)`);
+  // console.log(updates);
 
   if (!updates || !Object.keys(updates).length) {
     console.error("subm.ctrl.js > 206: !updates");
@@ -343,9 +343,9 @@ exports.getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 exports.verifyHumanity = async (req, res) => {
-  console.log("submissions.ctrl.js > 346");
+  // console.log("submissions.ctrl.js > 346");
   const ip = this.getClientIp(req);
-  console.log(`verifyHumanity: ${ip}`);
+  // console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
 
@@ -368,7 +368,7 @@ exports.verifyHumanity = async (req, res) => {
     return res.status(500).json({ message: err.message });
   } else {
     if (data.success) {
-      console.log(`submissions.ctrl.js > 375: recaptcha score: ${data.score}`);
+      // console.log(`submissions.ctrl.js > 375: recaptcha score: ${data.score}`);
       return res.status(200).json({ score: data.score });
     } else {
       console.error(`submissions.ctrl.js > 378: recaptcha failure`);
