@@ -57,7 +57,11 @@ formatSFDate = date => {
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
     year = d.getFullYear();
-
+  console.log(`index.js > 60: date: ${date}`);
+  console.log(`index.js > 60: d: ${d}`);
+  console.log(`index.js > 60: month: ${month}`);
+  console.log(`index.js > 60: day: ${day}`);
+  console.log(`index.js > 60: year: ${year}`);
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
 

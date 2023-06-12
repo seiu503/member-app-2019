@@ -372,18 +372,22 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
         }
       }
     });
-    console.log(
-      `sf.ctrl.js: 403: bodyRaw.agency_number: ${bodyRaw.agency_number}`
-    );
-    console.log(
-      `sf.ctrl.js: 406: body.Agency_Number_from_Webform__c: ${body.Agency_Number_from_Webform__c}`
-    );
+    // console.log(
+    //   `sf.ctrl.js: 403: bodyRaw.agency_number: ${bodyRaw.agency_number}`
+    // );
+    // console.log(
+    //   `sf.ctrl.js: 406: body.Agency_Number_from_Webform__c: ${body.Agency_Number_from_Webform__c}`
+    // );
+    console.log(`sf.ctrl.js: 382: body.Birthdate: ${body.Birthdate}`);
     delete body["Account.Id"];
     delete body["Account.Agency_Number__c"];
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    body.Birthdate__c = this.formatSFDate(new Date(bodyRaw.birthdate));
+    console.log(`sf.ctrl.js: 390: bodyRaw.birthdate: ${bodyRaw.birthdate}`);
+    // body.Birthdate__c = this.formatSFDate(bodyRaw.birthdate);
+    body.Birthdate__c = new Date(bodyRaw.birthdate).toISOString();
+    console.log(`sf.ctrl.js: 394: body.Birthdate__c: ${body.Birthdate__c}`);
     body.Submission_Date__c = new Date(); // this one can be a datetime
     body.Worker__c = bodyRaw.Worker__c
       ? bodyRaw.Worker__c
