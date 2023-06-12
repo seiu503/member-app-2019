@@ -526,7 +526,7 @@ aws-sdk-mock@^4.4.0:
     sinon "^7.3.2"
     traverse "^0.6.6"
 
-aws-sdk@^2.483.0, aws-sdk@^2.876.0:
+aws-sdk@^2.1396.0, aws-sdk@^2.483.0:
   version "2.1396.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1396.0.tgz#14dc92f874aca039a329d5a96f9f894fd9159252"
   integrity sha512-5tAzB4pO9mfwb4XbDIv7wj4IsxaLI+KEAUZ8CR80sh2OdsP9AVGtMGH61dH6DQbHxCiwtLyQuoy7gZEuXv2ldQ==
@@ -2350,7 +2350,7 @@ jsesc@^2.5.1:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
 
-jsforce@^1.11.0:
+jsforce@^1.11.1:
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-1.11.1.tgz#229c176ef43b996438828734a8ba7ee691b61e98"
   integrity sha512-u1vL2F4FYRNccwjwA3ftMULEf9Ekeyvsz7vYKeQ03sKg6m7DNwB2O9d0erCM7k5sQUJ44J39CI05nokDKN3ktw==
