@@ -8,7 +8,6 @@ const nock = require("nock");
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const expect = chai.expect;
-const request = require("request");
 const passport = require("passport");
 require("../app/config/passport")(passport);
 chai.use(chaiHttp);
@@ -1712,8 +1711,8 @@ suite("sumissions.ctrl.js", function() {
       });
       const res = mockRes();
       const requestStub = sinon
-        .stub(request, "post")
-        .yields(null, null, JSON.stringify({ success: true, score: 0.9 }));
+        .stub(axios, "post")
+        .returns({ err: null, data: { success: true, score: 0.9 } });
 
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
@@ -1733,8 +1732,8 @@ suite("sumissions.ctrl.js", function() {
       });
       const res = mockRes();
       const requestStub = sinon
-        .stub(request, "post")
-        .yields(new Error("recaptcha error"), null, null);
+        .stub(axios, "post")
+        .returns({ err: new Error("recaptcha error"), data: null });
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });
@@ -1753,12 +1752,11 @@ suite("sumissions.ctrl.js", function() {
       });
       const res = mockRes();
       const requestStub = sinon
-        .stub(request, "post")
-        .yields(
-          null,
-          null,
-          JSON.stringify({ "error-codes": ["the error code"] })
-        );
+        .stub(axios, "post")
+        .returns({
+          err: null,
+          data: { success: false, "error-codes": ["the error code"] }
+        });
       await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
         console.log(err);
       });

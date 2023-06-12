@@ -1,7 +1,8 @@
 import checkPropTypes from "check-prop-types";
-import { mount } from "enzyme";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import * as formElements from "../../components/SubmissionFormElements";
-import Notifier from "../../containers/Notifier";
 import { findByTestAttr } from "../../utils/testUtils";
 
 const {
@@ -11,7 +12,6 @@ const {
   renderTextField,
   renderSelect,
   renderCheckbox,
-  renderRadioGroup,
   renderCAPERadioGroup,
   getKeyByValue,
   findEmployerObject
@@ -130,10 +130,10 @@ describe("Helper Functions", () => {
 
   describe("misc methods", () => {
     it("handleError calls openSnackbar", () => {
-      const openSnackbarMock = jest.fn();
-      Notifier.openSnackbar = openSnackbarMock;
-      formElements.handleError("Error");
-      formElements.handleError();
+      // const openSnackbarMock = jest.fn();
+      // Notifier.openSnackbar = openSnackbarMock;
+      // formElements.handleError("Error");
+      // formElements.handleError();
       // Notifier code is farkockte, openSnackbar doesn't exist when it mounts
       // don't try to test this until fixing component code
       // expect(openSnackbarMock.mock.calls.length).toBe(2);
@@ -219,18 +219,25 @@ describe("Helper Functions", () => {
   });
 });
 
-const onChange = jest.fn();
+const onChange = jest.fn().mockImplementation(() => console.log("onChange"));
 const onBlur = jest.fn();
 let additionalOnChange = jest.fn();
 const onChangeMock = jest.fn();
 const onClick = jest.fn();
 describe("Input Field Render functions", () => {
   afterEach(() => {
-    onChangeMock.mockRestore();
-    onChange.mockRestore();
-    onBlur.mockRestore();
+    jest.restoreAllMocks();
+    cleanup();
   });
   describe("renderTextField", () => {
+    beforeEach(() => {
+      // const openSnackbarMock = jest.fn();
+      // Notifier.openSnackbar = openSnackbarMock;
+    });
+    afterEach(() => {
+      jest.restoreAllMocks();
+      cleanup();
+    });
     let wrapper;
     additionalOnChange = jest.fn();
     const initialProps = {
@@ -252,6 +259,7 @@ describe("Input Field Render functions", () => {
         input: "testInputClass"
       },
       label: "Test Field",
+      dataTestId: "test-field",
       localize: {
         languages: [],
         translations: {},
@@ -277,7 +285,8 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
 
     const addlOnChgProps = {
@@ -299,7 +308,8 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
 
     const errorProps2 = {
@@ -320,37 +330,41 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testInputClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
-    wrapper = mount(renderTextField(initialProps));
-    let component = findByTestAttr(wrapper, "component-text-field").first();
+
     it("renders without errors", () => {
-      expect(component).toHaveLength(1);
+      let { getByTestId } = render(renderTextField(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
     });
-    it("fills the input with a default value", () => {
-      expect(component.prop("name")).toBe("testField");
-      expect(component.prop("value")).toBe("Test Value");
-    });
-    it("updates input value when changed", () => {
-      const event = { target: { name: "testField", value: "Test" } };
-      component.prop("onChange")(event);
-      expect(onChange).toHaveBeenCalledWith(event);
+    it("updates input value when changed", async () => {
+      const user = userEvent.setup();
+      let { getByTestId } = render(renderTextField(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      await user.type(component, "fake@email.com");
+      expect(onChange).toHaveBeenCalled();
     });
     it("handles onBlur function", () => {
-      const event = { target: { name: "testField", value: "Test" } };
-      component.prop("onBlur")(event);
+      let { getByTestId } = render(renderTextField(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      fireEvent.blur(component);
       expect(onBlur).toHaveBeenCalled();
     });
-    it("provides helperText and error class when touched and errored", () => {
-      wrapper = mount(renderTextField(errorProps));
-      component = findByTestAttr(wrapper, "component-text-field").first();
-      expect(component.prop("error")).toBe(true);
-      expect(component.prop("helperText")).toBe("Required");
+    it("provides helperText and error class when touched and errored", async () => {
+      let { getByTestId } = render(renderTextField(errorProps));
+      let component = getByTestId("test-field");
+      const user = userEvent.setup();
+      await user.type(component.querySelector("input"), "fake@email.com");
+      expect(component).toHaveTextContent("Required");
     });
-    it("does not provide helperText and error class when touched and not errored", () => {
-      wrapper = mount(renderTextField(errorProps2));
-      component = findByTestAttr(wrapper, "component-text-field").first();
-      expect(component.prop("error")).toBe(false);
+    it("does not provide helperText and error class when touched and not errored", async () => {
+      let { getByTestId } = render(renderTextField(errorProps2));
+      let component = getByTestId("test-field");
+      const user = userEvent.setup();
+      await user.type(component.querySelector("input"), "fake@email.com");
+      expect(component).not.toHaveTextContent("Required");
     });
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderTextField, initialProps);
@@ -358,8 +372,10 @@ describe("Input Field Render functions", () => {
   });
 
   describe("renderSelect", () => {
-    let wrapper;
-
+    afterEach(() => {
+      jest.restoreAllMocks();
+      cleanup();
+    });
     const initialProps = {
       input: {
         name: "testField",
@@ -380,24 +396,30 @@ describe("Input Field Render functions", () => {
         input: "testInputClass"
       },
       label: "Test Select",
+      dataTestId: "test-field",
       options: ["", "1", "2", "3"]
     };
 
-    wrapper = mount(renderSelect(initialProps));
-    let component = findByTestAttr(wrapper, "component-select").first();
     it("renders without errors", () => {
-      expect(component).toHaveLength(1);
+      let { getByTestId } = render(renderSelect(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
     });
-    it("fills the input with a default value", () => {
-      expect(component.prop("value")).toBe("1");
+    it("correctly sets default option", () => {
+      let { getByTestId } = render(renderSelect(initialProps));
+      expect(screen.getByRole("option", { name: "1" }).selected).toBe(true);
     });
     it("populates with options", () => {
-      expect(wrapper.find("option")).toHaveLength(4);
+      let { getByTestId } = render(renderSelect(initialProps));
+      expect(screen.getAllByRole("option").length).toBe(4);
     });
-    it("updates input value when changed", () => {
-      const event = { target: { value: "3" } };
-      component.prop("onChange")(event);
-      expect(onChange).toHaveBeenCalled();
+    it("updates input value when changed", async () => {
+      let { getByRole } = render(renderSelect(initialProps));
+      userEvent.selectOptions(
+        screen.getByRole("combobox", { hidden: true }),
+        "3"
+      );
+      expect(screen.getByText("3")).toBeInTheDocument();
     });
     it("it doesn't throw PropType warnings", () => {
       checkPropTypes(renderSelect, initialProps);
@@ -418,9 +440,9 @@ describe("Input Field Render functions", () => {
         }
       };
       let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderSelect(props));
+      render(renderSelect(props));
       props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderSelect(props));
+      render(renderSelect(props));
     });
   });
 
@@ -445,22 +467,26 @@ describe("Input Field Render functions", () => {
       classes: {
         input: "testCheckboxClass"
       },
-      label: "Test Field"
+      label: "Test Field",
+      dataTestId: "test-field"
     };
 
-    wrapper = mount(renderCheckbox(initialProps));
-    let component = findByTestAttr(wrapper, "component-checkbox").first();
     it("renders without errors", () => {
-      expect(component).toHaveLength(1);
+      let { getByTestId } = render(renderCheckbox(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
     });
 
     it("fills the input with a default value", () => {
-      expect(component.prop("checked")).toBe(false);
+      let { getByTestId } = render(renderCheckbox(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      expect(component.checked).toBe(false);
     });
 
     it("updates input value when changed", () => {
-      component.checked = false;
-      component.prop("onChange")({ target: { checked: true } });
+      let { getByTestId } = render(renderCheckbox(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      fireEvent.click(component);
       expect(onChange).toHaveBeenCalled();
     });
 
@@ -488,79 +514,77 @@ describe("Input Field Render functions", () => {
         }
       };
       let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderCheckbox(props));
+      render(renderCheckbox(props));
       props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderCheckbox(props));
+      render(renderCheckbox(props));
     });
   });
 
-  describe("renderRadioGroup", () => {
-    let wrapper;
+  // describe("renderRadioGroup", () => {
+  //   const initialProps = {
+  //     input: {
+  //       name: "testRadio",
+  //       onBlur: jest.fn(),
+  //       onChange,
+  //       onDragStart: jest.fn(),
+  //       onDrop: jest.fn(),
+  //       onFocus: jest.fn(),
+  //       value: false
+  //     },
+  //     id: "testField",
+  //     meta: {
+  //       touched: false,
+  //       error: ""
+  //     },
+  //     classes: {
+  //       input: "testCheckboxClass"
+  //     },
+  //     label: "Test Field",
+  //     dataTestId: "test-field",
+  //     options: ["test"],
+  //     additionalOnChange: jest.fn()
+  //   };
 
-    const initialProps = {
-      input: {
-        name: "testRadio",
-        onBlur: jest.fn(),
-        onChange,
-        onDragStart: jest.fn(),
-        onDrop: jest.fn(),
-        onFocus: jest.fn(),
-        value: false
-      },
-      id: "testField",
-      meta: {
-        touched: false,
-        error: ""
-      },
-      classes: {
-        input: "testCheckboxClass"
-      },
-      label: "Test Field",
-      options: ["test"],
-      additionalOnChange: jest.fn()
-    };
+  //   it("renders without errors", () => {
+  //     let { getByTestId } = render(renderRadioGroup(initialProps));
+  //     let component = getByTestId("test-field");
+  //     expect(component).toBeInTheDocument();
+  //   });
 
-    wrapper = mount(renderRadioGroup(initialProps));
-    let component = findByTestAttr(wrapper, "component-radio-group").first();
-    it("renders without errors", () => {
-      expect(component).toHaveLength(1);
-    });
+  //   it("updates input value when changed", () => {
+  //     let { getByTestId } = render(renderRadioGroup(initialProps));
+  //     let component = getByTestId("test-field").querySelector("input");
+  //     fireEvent.click(component);
+  //     expect(onChange).toHaveBeenCalled();
+  //   });
 
-    it("updates input value when changed", () => {
-      component.checked = false;
-      component.prop("onChange")({ target: { checked: true } });
-      expect(onChange).toHaveBeenCalled();
-    });
+  //   it("it doesn't throw PropType warnings", () => {
+  //     checkPropTypes(renderRadioGroup, initialProps);
+  //   });
 
-    it("it doesn't throw PropType warnings", () => {
-      checkPropTypes(renderRadioGroup, initialProps);
-    });
-
-    it("handles edge cases", () => {
-      const testProps = {
-        meta: {
-          touched: true,
-          error: "Required"
-        },
-        direction: "vert"
-      };
-      const testProps2 = {
-        meta: {
-          touched: true,
-          error: ""
-        },
-        direction: "vert"
-      };
-      let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderRadioGroup(props));
-      props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderRadioGroup(props));
-    });
-  });
+  //   it("handles edge cases", () => {
+  //     const testProps = {
+  //       meta: {
+  //         touched: true,
+  //         error: "Required"
+  //       },
+  //       direction: "vert"
+  //     };
+  //     const testProps2 = {
+  //       meta: {
+  //         touched: true,
+  //         error: ""
+  //       },
+  //       direction: "vert"
+  //     };
+  //     let props = { ...initialProps, ...testProps };
+  //     render(renderRadioGroup(props));
+  //     props = { ...initialProps, ...testProps2 };
+  //     render(renderRadioGroup(props));
+  //   });
+  // });
 
   describe("renderCAPERadioGroup", () => {
-    let wrapper;
-
     const initialProps = {
       input: {
         name: "testRadio",
@@ -581,21 +605,20 @@ describe("Input Field Render functions", () => {
       },
       label: "Test Field",
       options: ["test"],
-      additionalOnChange: jest.fn()
+      additionalOnChange: jest.fn(),
+      dataTestId: "test-field"
     };
 
-    wrapper = mount(renderCAPERadioGroup(initialProps));
-    let component = findByTestAttr(
-      wrapper,
-      "component-cape-radio-group"
-    ).first();
     it("renders without errors", () => {
-      expect(component).toHaveLength(1);
+      let { getByTestId } = render(renderCAPERadioGroup(initialProps));
+      let component = getByTestId("test-field");
+      expect(component).toBeInTheDocument();
     });
 
     it("updates input value when changed", () => {
-      component.checked = false;
-      component.prop("onChange")({ target: { checked: true } });
+      let { getByTestId } = render(renderCAPERadioGroup(initialProps));
+      let component = getByTestId("test-field").querySelector("input");
+      fireEvent.click(component);
       expect(onChange).toHaveBeenCalled();
     });
 
@@ -619,9 +642,9 @@ describe("Input Field Render functions", () => {
         options: ["Other"]
       };
       let props = { ...initialProps, ...testProps };
-      wrapper = mount(renderCAPERadioGroup(props));
+      render(renderCAPERadioGroup(props));
       props = { ...initialProps, ...testProps2 };
-      wrapper = mount(renderCAPERadioGroup(props));
+      render(renderCAPERadioGroup(props));
     });
   });
 });

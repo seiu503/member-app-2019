@@ -490,12 +490,19 @@ exports.getAllEmployers = async (req, res, next) => {
   console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
+  // 0016100000Pw3aKAAR = Child Care Acct Id
+  // 0016100000Pw3XQAAZ = AFH Account Id, 0016100001UoDg2AAF = AFH Parent Acct Id
+  // 0016100000TOfXsAAL = Retirees Acct Id, 0016100001UoDg2AAF = Retiree Parent Acct Id
   // 0016100001UoDg2AAF = Generic Parent
   // 01261000000ksTuAAI = Record type ID for Agency level employer
   // (Community members & Staff do not fit the query in any other way
   // so have to be SELECTed for separately)
-  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Parent_CASE_Safe_ID__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Parent_CASE_Safe_ID__c != '0016100001UoDg2AAF' AND Parent_CASE_Safe_ID__c != null`;
-  // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4'`;
+
+  // query below includes community, afh, retirees, child care
+  // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
+
+  // query below explicitly excludes community, afh, retirees, child care
+  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Id != '0016100000Pw3XQAAZ' AND Id != '0016100000TOfXsAAL' AND Id !='0016100000Pw3aKAAR'`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -515,6 +522,7 @@ exports.getAllEmployers = async (req, res, next) => {
       return accounts.records;
     } else {
       console.log(`sf.ctrl.js > 764: returning employers to client`);
+      // console.log(accounts.records);
       return res.status(200).json(accounts.records);
     }
   } catch (err) {

@@ -110,57 +110,11 @@ describe("Redux-Form custom Validators", () => {
       mailToZip: <Translate id="charLength5Error" />
     });
   });
-  // test("validates properly formed hire dates", () => {
-  //   combinedData.hireDate = "11/11/2019";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "11-11-2019";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "January, 10th 2019";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "2019-11-1";
-  //   expect(validate(combinedData)).toStrictEqual({
-  //     hireDate: <Translate id="invalidDateError" />
-  //   });
-  //   combinedData.hireDate = "2019-11-11";
-  //   expect(validate(combinedData)).toStrictEqual({});
-  // });
   test("validates conditional required fields", () => {
-    combinedData.employerType = "adult foster home";
-    combinedData.medicaidResidents = 1;
-    combinedData.paymentMethodAdded = true;
-    combinedData.directPayAuth = null;
-    expect(validate(combinedData)).toStrictEqual({
-      directPayAuth: <Translate id="requiredError" />
-    });
-    combinedData.employerType = "adult foster home";
-    combinedData.directPayAuth = "2019-11-1";
-    combinedData.paymentType = "Card";
-    combinedData.paymentMethodAdded = false;
-    expect(validate(combinedData)).toStrictEqual({
-      paymentMethodAdded: <Translate id="requiredError" />
-    });
-    combinedData.paymentMethodAdded = true;
-    combinedData.medicaidResidents = 0;
-    expect(validate(combinedData)).toStrictEqual({
-      medicaidResidents: <Translate id="medicaidResidentsError" />
-    });
     testDataCAPE.capeAmount = "Other";
     testDataCAPE.capeAmountOther = null;
     expect(capeValidate(testDataCAPE)).toStrictEqual({
       capeAmountOther: <Translate id="requiredError" />
-    });
-    testDataCAPE.capeAmount = 10;
-    testDataCAPE.employerType = "retired";
-    testDataCAPE.paymentType = "Card";
-    testDataCAPE.paymentMethodAdded = false;
-    expect(capeValidate(testDataCAPE)).toStrictEqual({
-      paymentMethodAdded: <Translate id="addPaymentError" />
     });
   });
   test("validates capeAmountOther as positive integer", () => {

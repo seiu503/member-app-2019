@@ -1,15 +1,20 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
-import { unwrap, createShallow } from "@material-ui/core/test-utils";
-import { findByTestAttr } from "../../utils/testUtils";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import CustomSnackbarContent from "../../components/CustomSnackbarContent";
-import CloseIcon from "@material-ui/icons/Close";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import WarningIcon from "@material-ui/icons/Warning";
-import ErrorIcon from "@material-ui/icons/Error";
-import InfoIcon from "@material-ui/icons/Info";
+import { green, amber } from "@mui/material/colors";
+import { SnackbarContent, IconButton } from "@mui/material";
+import {
+  CheckCircleIcon,
+  WarningIcon,
+  ErrorIcon,
+  InfoIcon,
+  CloseIcon
+} from "@mui/icons-material";
 
-const CustomSnackbarContentNaked = unwrap(CustomSnackbarContent);
+import { theme } from "../../styles/theme";
+import { ThemeProvider } from "@mui/material/styles";
+
 const defaultProps = {
   classes: {
     success: "success",
@@ -22,117 +27,134 @@ const defaultProps = {
   onClose: jest.fn(),
   variant: "info"
 };
-const options = {
-  untilSelector: "Typography"
-};
-const muiShallow = createShallow(options);
 
 /**
- * Factory function to create a ShallowWrapper for CustomSnackbarContent component
+ * Rewriting setup function using React testing library instead of Enzyme
  * @function setup
  * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
+ * @return {render}
  */
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<CustomSnackbarContentNaked {...setupProps} />);
+  return render(
+    <ThemeProvider theme={theme}>
+      <CustomSnackbarContent {...setupProps} />
+    </ThemeProvider>
+  );
 };
 
 describe("<CustomSnackbarContent />", () => {
-  afterAll(() => {
+  afterEach(() => {
     jest.resetAllMocks();
+    cleanup();
   });
 
-  it("renders without error", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "component-custom-snackbar");
-    expect(component.length).toBe(1);
-  });
+  describe("Basic render tests", () => {
+    it("renders without error", () => {
+      const { getByTestId } = setup();
+      const component = getByTestId("component-custom-snackbar");
+      expect(component).toHaveClass("info");
+    });
 
-  test("renders a message", () => {
-    const wrapper = mount(<CustomSnackbarContentNaked {...defaultProps} />);
-    const component = findByTestAttr(wrapper, "message");
-    expect(component.length).toBe(1);
-    expect(component.text()).toBe("Info");
-  });
+    test("renders a message", () => {
+      const { getByTestId } = setup();
+      expect(screen.getByTestId("message")).toHaveTextContent("Info");
+    });
 
-  test("renders a button", () => {
-    const wrapper = mount(<CustomSnackbarContentNaked {...defaultProps} />);
-    const component = wrapper.find("button");
-    expect(component.length).toBe(1);
-  });
+    test("renders a button", () => {
+      const { getByTestId } = setup();
+      const component = getByTestId("icon-button");
+      expect(component).toHaveClass("MuiIconButton-root");
+    });
 
-  test("renders a close icon", () => {
-    const wrapper = mount(<CustomSnackbarContentNaked {...defaultProps} />);
-    const icon = wrapper.find(CloseIcon);
-    expect(icon.length).toBe(1);
+    test("renders a close icon", () => {
+      const { getByTestId } = setup();
+      const component = getByTestId("close-icon");
+      expect(component).toHaveClass("MuiSvgIcon-root");
+    });
   });
 
   describe("`variant` = 'success'", () => {
-    const wrapper = mount(
-      <CustomSnackbarContentNaked {...defaultProps} variant="success" />
-    );
     test("renders a CheckCircleIcon", () => {
-      const icon = wrapper.find(CheckCircleIcon);
-      expect(icon.length).toBe(1);
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="success" />
+        </ThemeProvider>
+      );
+      const icon = getByTestId("CheckCircleIcon");
+      expect(icon).toHaveClass("MuiSvgIcon-root");
     });
     test("has 'success' class", () => {
-      const wrapper = muiShallow(
-        <CustomSnackbarContentNaked {...defaultProps} variant="success" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="success" />
+        </ThemeProvider>
       );
-      const component = wrapper.find(".success");
-      expect(component.length).toBe(1);
+      const component = getByTestId("component-custom-snackbar");
+      expect(component).toHaveClass("success");
     });
   });
 
   describe("`variant` = 'error'", () => {
     test("renders an ErrorIcon", () => {
-      const wrapper = mount(
-        <CustomSnackbarContentNaked {...defaultProps} variant="error" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="error" />
+        </ThemeProvider>
       );
-      const icon = wrapper.find(ErrorIcon);
-      expect(icon.length).toBe(1);
+      const icon = getByTestId("ErrorIcon");
+      expect(icon).toHaveClass("MuiSvgIcon-root");
     });
     test("has 'error' class", () => {
-      const wrapper = muiShallow(
-        <CustomSnackbarContentNaked {...defaultProps} variant="error" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="error" />
+        </ThemeProvider>
       );
-      const component = wrapper.find(".error");
-      expect(component.length).toBe(1);
+      const component = getByTestId("component-custom-snackbar");
+      expect(component).toHaveClass("error");
     });
   });
 
   describe("`variant` = 'warning'", () => {
     test("renders a WarningIcon", () => {
-      const wrapper = mount(
-        <CustomSnackbarContentNaked {...defaultProps} variant="warning" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="warning" />
+        </ThemeProvider>
       );
-      const icon = wrapper.find(WarningIcon);
-      expect(icon.length).toBe(1);
+      const icon = getByTestId("WarningIcon");
+      expect(icon).toHaveClass("MuiSvgIcon-root");
     });
     test("has 'warning' class", () => {
-      const wrapper = muiShallow(
-        <CustomSnackbarContentNaked {...defaultProps} variant="warning" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="warning" />
+        </ThemeProvider>
       );
-      const component = wrapper.find(".warning");
-      expect(component.length).toBe(1);
+      const component = getByTestId("component-custom-snackbar");
+      expect(component).toHaveClass("warning");
     });
   });
 
   describe("`variant` = 'info'", () => {
     test("renders an InfoIcon", () => {
-      const wrapper = mount(
-        <CustomSnackbarContentNaked {...defaultProps} variant="info" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="info" />
+        </ThemeProvider>
       );
-      const icon = wrapper.find(InfoIcon);
-      expect(icon.length).toBe(1);
+      const icon = getByTestId("InfoIcon");
+      expect(icon).toHaveClass("MuiSvgIcon-root");
     });
     test("has 'info' class", () => {
-      const wrapper = muiShallow(
-        <CustomSnackbarContentNaked {...defaultProps} variant="info" />
+      const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+          <CustomSnackbarContent {...defaultProps} variant="info" />
+        </ThemeProvider>
       );
-      const component = wrapper.find(".info");
-      expect(component.length).toBe(1);
+      const component = getByTestId("component-custom-snackbar");
+      expect(component).toHaveClass("info");
     });
   });
 
@@ -141,23 +163,21 @@ describe("<CustomSnackbarContent />", () => {
     const onCloseMock = jest.fn();
     const props = { variant: "success", onClose: onCloseMock, classes: {} };
 
-    // set up unwrapped component with onCloseMock as onClose prop
-    const wrapper = mount(<CustomSnackbarContentNaked {...props} />);
+    // set up component with onCloseMock as onClose prop
+    const { getByLabelText } = render(
+      <ThemeProvider theme={theme}>
+        <CustomSnackbarContent {...props} />
+      </ThemeProvider>
+    );
 
     // simulate click
-    const closeButton = wrapper.find("button").find('[aria-label="Close"]');
-    closeButton.simulate("click");
+    const node = getByLabelText("Close");
+    fireEvent.click(node);
 
-    // expect the mock to have been called once
-    expect(onCloseMock.mock.calls.length).toBe(1);
+    // expect the mock to have been called
+    expect(onCloseMock).toHaveBeenCalled();
 
     // restore mock
     onCloseMock.mockRestore();
   });
 });
-
-// no test for rendering action button if passed an action prop
-// or for calling action function if action button clicked
-// not currently using that functionality in this implementation
-// so it's commented out in the component and haven't written tests for it.
-// if we decide to use it we'll need to write tests here.

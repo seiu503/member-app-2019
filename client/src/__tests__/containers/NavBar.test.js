@@ -1,8 +1,22 @@
 import React from "react";
-import { shallow } from "enzyme";
-import { findByTestAttr } from "../../utils/testUtils";
+import { MemoryRouter } from "react-router-dom";
+import "@testing-library/jest-dom/extend-expect";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { BrowserRouter } from "react-router-dom";
 import { NavBar } from "../../containers/NavBar";
 import * as utils from "../../utils";
+const theme = createTheme(adaptV4Theme);
 
 const main_ref = {
   current: {
@@ -34,189 +48,73 @@ const defaultProps = {
   main_ref: { ...main_ref }
 };
 
-/**
- * Factory function to create a ShallowWrapper for the NavBar component
- * @function setup
- * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
- */
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<NavBar {...setupProps} />);
+const setup = (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  return render(
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <MemoryRouter initialEntries={[route]}>
+          <NavBar {...setupProps} />
+        </MemoryRouter>
+      </ThemeProvider>
+    </BrowserRouter>
+  );
 };
 
 describe("<NavBar />", () => {
   it("renders without error", () => {
-    const wrapper = setup();
-    // console.log(wrapper.debug());
-    const component = findByTestAttr(wrapper, "component-navbar");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("component-navbar");
+    expect(component).toBeInTheDocument();
   });
 
   test("renders a skiplink", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "skiplink");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("skiplink-button");
+    expect(component).toBeInTheDocument();
   });
 
   test("renders a logo link and logo image", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "logo-link");
-    expect(component.length).toBe(1);
-    const image = component.find("img");
-    expect(image.length).toBe(1);
+    const { getByTestId, getByRole } = setup();
+    const component = getByTestId("logo-link");
+    expect(component).toBeInTheDocument();
+    const image = getByRole("img");
+    expect(image).toBeInTheDocument();
   });
 
   test("renders a title", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "title");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("title");
+    expect(component).toBeInTheDocument();
   });
 
-  test("renders a menu button", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "menu-button");
-    expect(component.length).toBe(1);
+  test(' "/?cape=true" path should render CAPE headline', async () => {
+    const { queryByTestId } = await setup(
+      { location: { search: "?cape=true&lang=en" } },
+      "/?cape=true&lang=en"
+    );
+    const capehead = await queryByTestId("capeBanner");
+    await waitFor(() => expect(capehead).toBeInTheDocument());
   });
 
-  test("renders a menu", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "menu");
-    expect(component.length).toBe(1);
-  });
-
-  test("if `loggedId` = true, renders admin menu links", () => {
-    const wrapper = setup({ appState: { loggedIn: true } });
-    const component = findByTestAttr(wrapper, "admin-menu-links");
-    expect(component.length).toBe(1);
-  });
-
-  test("if `loggedId` = false, does not render admin menu links", () => {
-    const wrapper = setup({ appState: { loggedIn: false } });
-    const component = findByTestAttr(wrapper, "admin-menu-links");
-    expect(component.length).toBe(0);
-  });
-
-  test("clicking skiplink calls `skipToMain` method", () => {
+  test("clicking skiplink calls `skipToMain` method", async () => {
     // create a mock function so we can see whether it's called on click
     utils.skip = jest.fn();
-    const wrapper = setup();
+
+    // set up unwrapped component with handleSubmitMock as handleSubmit prop
+    const user = userEvent.setup();
+    const { getByTestId } = setup();
 
     // simulate click
-    const skipLink = findByTestAttr(wrapper, "skiplink-button");
-    skipLink.simulate("click");
+    await userEvent.click(getByTestId("skiplink-button"));
 
     // expect the mock to have been called once
-    expect(utils.skip.mock.calls.length).toBe(1);
+    expect(utils.skip).toHaveBeenCalled();
 
     // restore mock
     utils.skip.mockRestore();
   });
-
-  test("clicking mobile menu button calls `handleClick` function", () => {
-    const wrapper = setup({});
-    const menuButton = findByTestAttr(wrapper, "menu-button");
-
-    // mock handleClick function
-    wrapper.instance().handleClick = jest.fn();
-
-    // mock event and simulate click
-    const mockedEvent = { currentTarget: {} };
-    menuButton.simulate("click", mockedEvent);
-
-    // expect the handleClick function to have been called
-    expect(wrapper.instance().handleClick).toBeCalled();
-  });
-
-  test("clicking mobile menu item calls `handleClose` function", () => {
-    const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "mobile-link")
-      .first()
-      .dive();
-
-    // mock handleClose function
-    const handleCloseMock = jest.fn();
-    menuItem.setProps({ handleClose: handleCloseMock });
-
-    // simulate click
-    menuItem.simulate("click");
-
-    // expect the handleClose mock to have been called once
-    expect(handleCloseMock.mock.calls.length).toBe(1);
-
-    // restore mock
-    handleCloseMock.mockRestore();
-  });
-
-  test("clicking mobile menu item redirects to correct link", () => {
-    const wrapper = setup();
-    const menuItem = findByTestAttr(wrapper, "mobile-link")
-      .first()
-      .dive();
-    menuItem.setProps({ link: "home" });
-
-    // mock `history.push()`
-    const pushMock = jest.fn();
-    wrapper.setProps({ history: { push: pushMock } });
-
-    // simulate click
-    menuItem.simulate("click");
-
-    // expect the `history.push` mock to have been called with correct link
-    expect(pushMock.mock.calls.length).toBe(1);
-    expect(pushMock.mock.calls[0]).toEqual(["/home"]);
-
-    // restore mock
-    pushMock.mockRestore();
-  });
-
-  // test("clicking standard menu item redirects to correct link", () => {
-  //   const wrapper = setup();
-  //   const menuItem = findByTestAttr(wrapper, "standard-menu-link").dive();
-
-  //   // link isn't passed as a prop to this element but
-  //   // the same link variable is used to set the button text
-  //   // so we can extract the text from the button to test whether it
-  //   // redirects to the right route
-  //   const link = menuItem.text();
-
-  //   // mock `history.push()`
-  //   const pushMock = jest.fn();
-  //   wrapper.setProps({ history: { push: pushMock } });
-
-  //   // simulate click
-  //   menuItem.simulate("click");
-
-  //   // expect the `history.push` mock to have been called with correct link
-  //   expect(pushMock.mock.calls.length).toBe(1);
-  //   expect(pushMock.mock.calls[0]).toEqual([`/${link}`]);
-
-  //   // restore mock
-  //   pushMock.mockRestore();
-  // });
-
-  test("`handleClick` sets anchorEl to current target", () => {
-    const wrapper = setup();
-    wrapper.setState({ anchorEl: null });
-
-    // call instance method with mocked event
-    const mockedEvent = { currentTarget: { nodeName: "button" } };
-    wrapper.instance().handleClick(mockedEvent);
-
-    expect(wrapper.instance().state.anchorEl).toStrictEqual(
-      mockedEvent.currentTarget
-    );
-  });
-
-  test("`handleClose` sets anchorEl to null", () => {
-    const wrapper = setup();
-    wrapper.setState({ anchorEl: { nodeName: "button" } });
-
-    // call instance method
-    wrapper.instance().handleClose();
-
-    expect(wrapper.instance().state.anchorEl).toBe(null);
-  });
 });
-
-// handle in integration tests: handleClick blurs main content area

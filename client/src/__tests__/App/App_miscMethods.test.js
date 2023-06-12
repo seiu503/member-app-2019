@@ -1,21 +1,49 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
-import { findByTestAttr } from "../../utils/testUtils";
-
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
-// import * as formElements from "../../components/SubmissionFormElements";
-
-import { AppUnconnected } from "../../App";
-
-let wrapper;
-
+import * as formElements from "../../components/SubmissionFormElements";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
+import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  executeMock = jest.fn().mockImplementation(() => Promise.resolve()),
-  updateSubmissionError = jest.fn().mockImplementation(() => Promise.reject()),
-  handleErrorMock = jest.fn();
+  handleErrorMock = jest.fn(),
+  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generateSampleValidate();
+const server = setupServer(...handlers);
+
+import { AppUnconnected } from "../../App";
+
+let verifyMock = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "VERIFY_SUCCESS",
+    payload: {
+      score: 0.9
+    }
+  })
+);
 
 let updateSFContactSuccess = jest
   .fn()
@@ -58,30 +86,6 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let validateTokenSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "VALIDATE_TOKEN_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let createSFOMASuccess = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }));
@@ -96,33 +100,40 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
   employerType: "employerType",
   employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
-  textAuthOptOut: false
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
+};
+
+const initialState = {
+  appState: {
+    loading: false
+  },
+  submission: {
+    formPage1: {
+      reCaptchaValue: "token",
+      ...formValues
+    },
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload],
+    formPage2: {}
+  }
 };
 
 const defaultProps = {
@@ -130,7 +141,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
     payment: {}
@@ -155,44 +167,33 @@ const defaultProps = {
     createSFOMA: createSFOMASuccess,
     getIframeURL: () =>
       Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
     updateSFContact: updateSFContactSuccess,
     createSFContact: createSFContactSuccess,
     lookupSFContact: lookupSFContactSuccess
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    verify: verifyMock,
     clearForm: clearFormMock,
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
-    getAllSubmissions: () =>
-      Promise.resolve({ type: "GET_ALL_SUBMISSIONS_SUCCESS" })
-  },
-  apiProfile: {
-    validateToken: validateTokenSuccess
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   direct_pay: {
@@ -203,92 +204,206 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  lookupSFContact: lookupSFContactSuccess
+  lookupSFContact: lookupSFContactSuccess,
+  setActiveLanguage: jest.fn()
 };
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<AppUnconnected {...setupProps} />);
+const store = storeFactory(initialState);
+
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  // console.log(setupProps.submission.employerObjects);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[route]}>
+          <AppUnconnected {...setupProps} />
+        </MemoryRouter>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<App />", () => {
-  beforeEach(() => {
-    // console.log = jest.fn();
+  // Enable API mocking before tests.
+  beforeAll(() => {
+    server.listen();
+    cleanup();
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+
+  beforeEach(() => cleanup());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("misc methods", () => {
-    beforeEach(() => {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve(""));
-    });
-    afterEach(() => {
-      handleInputMock.mockClear();
-    });
-
-    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged state key", () => {
+    beforeEach(() => cleanup());
+    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged prop", async () => {
       const props = {
+        formValues: {
+          ...formValues,
+          employerName: "test"
+        },
         submission: {
           formPage1: {
-            prefillEmployerId: "1234"
+            ...defaultProps.submission.formPage1,
+            employerName: "test",
+            prefillEmployerId: "1234",
+            prefillEmployerChanged: true,
+            reCaptchaValue: "token"
           },
-          payment: {}
+          payment: {},
+          employerObjects: [...employersPayload]
+        },
+        apiSF: {
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = true;
-      wrapper.update();
-      wrapper.instance().prepForContact(body);
+
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // change employer type
+      await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+      });
+
+      // change employer name
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        await fireEvent.change(employerName, {
+          target: {
+            value: "personal support worker (paid by ppl)"
+          }
+        });
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect employerId to be set to '0014N00002ASaRyQAL' (PSW)
+      await waitFor(() => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "employerId", value: "0014N00002ASaRyQAL" }
+        });
+      });
     });
 
-    test("`updateLanguage` calls this.props.setActiveLanguage", () => {
+    test("`updateLanguage` calls this.props.setActiveLanguage", async () => {
       const setActiveLanguageMock = jest.fn();
       const props = {
-        setActiveLanguage: setActiveLanguageMock
-      };
-      wrapper = setup(props);
-      const fakeEvent = {
-        target: {
-          value: "English"
+        setActiveLanguage: setActiveLanguageMock,
+        apiSF: {
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
-      wrapper.instance().updateLanguage(fakeEvent);
-      const fakeRef = {
-        current: {
-          value: "Español"
-        }
-      };
-      wrapper.instance().language_picker = fakeRef;
-      wrapper.instance().updateLanguage(fakeEvent);
-      //^^ doing this twice to hit branches with userSelectedLanguage
-      expect(setActiveLanguageMock).toHaveBeenCalled();
+
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user select language
+      const languagePicker = getByLabelText("Select Language");
+      await fireEvent.change(languagePicker, { target: { value: "Español" } });
+
+      await waitFor(() => {
+        expect(setActiveLanguageMock).toHaveBeenCalled();
+      });
     });
 
-    test("`renderHeadline` renders headline", () => {
-      const props = {};
-      wrapper = setup(props);
-      wrapper.instance().renderHeadline(1);
-      const component = findByTestAttr(wrapper, "headline-translate");
-      // expect(component.length).toBe(1);
+    test("`renderHeadline` renders headline", async () => {
+      // render app
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup();
+      const headline = getByTestId("headline");
+      expect(headline).toBeInTheDocument();
     });
 
-    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", () => {
+    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", async () => {
       const props = {
         submission: {
           salesforceId: "1234",
@@ -299,220 +414,136 @@ describe("<App />", () => {
         },
         location: {
           search: "&cId=1234"
+        },
+        apiSF: {
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
         }
       };
-      const body = {
-        firstName: "firstName",
-        lastName: "lastName",
-        homeStreet: "homeStreet",
-        homeCity: "city",
-        homeState: "state",
-        homeZip: "zip",
-        birthdate: new Date(),
-        homeEmail: "test@test.com",
-        mobilePhone: "1234567890",
-        preferredLanguage: "Spanish",
-        textAuthOptOut: false,
-        capeAmountOther: 11,
-        employerName: "homecare"
-      };
-      wrapper = setup(props);
-      wrapper.instance().prepForSubmission(body);
+
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
+      });
+
+      // just test that with these props there are no errors and it moves to tab 3
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect cape tab to render
+      await waitFor(() => {
+        const cape = getByTestId("component-cape");
+        expect(cape).toBeInTheDocument();
+      });
     });
 
-    test("`updateSubmission` uses defaults if no passedId or passedUpdates", () => {
+    test("opens confirmation modal on SubmFormPage1 componentDidMount if firstName and lastName returned from getSFContactByDoubleId", async () => {
+      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() => {
+        console.log("getSFContactByDoubleIdMock");
+        return Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            FirstName: "test",
+            LastName: "test",
+            Account: { id: "test" },
+            Ethnicity__c: "Declined"
+          }
+        });
+      });
       const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          payment: {}
-        },
         location: {
-          search: "&cId=1234"
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().updateSubmission();
-    });
-
-    test("`saveSubmissionErrors` handles error if updateSubmission throws", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        },
-        location: {
-          search: "&cId=1234"
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().updateSubmission = updateSubmissionError;
-      wrapper.instance().saveSubmissionErrors();
-    });
-
-    test("`generateSubmissionBody` uses back end fieldnames if !firstName", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        },
-        location: {
-          search: "&cId=1234"
-        }
-      };
-      const values = {};
-      wrapper = setup(props);
-      wrapper.instance().updateSubmission = updateSubmissionError;
-      wrapper.instance().generateSubmissionBody(values, true);
-    });
-
-    test("`resubmitSubmission` calls createSFOMA prop", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().resubmitSubmission(formValues);
-      expect(createSFOMASuccess).toHaveBeenCalled();
-    });
-
-    test("`resubmitSubmission` handles error if createSFOMA fails", () => {
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
+          search: "cId=1&aId=2"
         },
         apiSF: {
           ...defaultProps.apiSF,
-          createSFOMA: createSFOMAError
-        }
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          }
+        },
+        formPage2: {}
       };
-      wrapper = setup(props);
-      wrapper.instance().resubmitSubmission(formValues);
-      expect(createSFOMAError).toHaveBeenCalled();
-    });
 
-    test("`resubmitSubmission` handles error if createSFOMA throws", () => {
-      createSFOMAError = jest.fn().mockImplementation(() => Promise.reject());
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          createSFOMA: createSFOMAError
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().resubmitSubmission(formValues);
-      expect(createSFOMAError).toHaveBeenCalled();
-    });
+      const { getByTestId } = await setup(props, "/?cId=1&aId=2");
 
-    test("`resubmitSubmission` handles error if updateSubmission fails", async () => {
-      updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
-        );
-      createSFOMASuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
-        );
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          createSFOMA: createSFOMASuccess
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          updateSubmission: updateSubmissionError
-        }
-      };
-      wrapper = setup(props);
-      wrapper.instance().resubmitSubmission(formValues);
-      await createSFOMASuccess()
-        .then(async () => {
-          await updateSubmissionError().catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-    });
-    test("`resubmitSubmission` handles error if updateSubmission throws", async () => {
-      createSFOMASuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
-        );
-      updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() => Promise.reject());
-      const props = {
-        submission: {
-          salesforceId: "1234",
-          formPage1: {
-            legalLanguage: "abc"
-          },
-          submissionId: "5678",
-          currentSubmission: {},
-          payment: {}
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          updateSubmission: updateSubmissionError
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          createSFOMA: createSFOMASuccess
-        }
-      };
-      formValues.id = "1234";
-      wrapper = setup(props);
-      wrapper.instance().resubmitSubmission(formValues);
-      await createSFOMASuccess()
-        .then(async () => {
-          await updateSubmissionError().catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
+      // simulate user click 'Next'
+      const nextButton = await getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that modal renders
+      const modal = await getByTestId("component-modal");
+      await waitFor(() => expect(modal).toBeInTheDocument());
     });
   });
 });

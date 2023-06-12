@@ -14,22 +14,14 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
 
-import { withStyles } from "@material-ui/core/styles";
-
-import { openSnackbar } from "./Notifier";
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as utils from "../utils";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
-import * as apiContentActions from "../store/actions/apiContentActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
 import { withLocalize } from "react-localize-redux";
 
-import {
-  stylesPage1,
-  findEmployerObject,
-  handleError
-} from "../components/SubmissionFormElements";
+import { findEmployerObject } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {
@@ -46,7 +38,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
-    this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
+    // this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
     this.handleEmployerChange = this.handleEmployerChange.bind(this);
     this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
     this.handleCAPEOpen = this.handleCAPEOpen.bind(this);
@@ -65,7 +57,6 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
         .then(result => {
-          // console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -80,9 +71,7 @@ export class SubmissionFormPage1Container extends React.Component {
             // remove cId & aId from route params if no match,
             // but preserve other params
             const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
-            console.log(cleanUrl1);
             const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-            console.log(cleanUrl2);
             window.history.replaceState(null, null, cleanUrl2);
           }
         })
@@ -94,7 +83,7 @@ export class SubmissionFormPage1Container extends React.Component {
           const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
           const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
           window.history.replaceState(null, null, cleanUrl2);
-          return handleError(err);
+          return this.props.handleError(err);
         });
     }
   }
@@ -118,6 +107,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleCloseAndClear() {
+    console.log("handleCloseAndClear");
     const newState = { ...this.state };
     newState.open = false;
     this.setState({ ...newState });
@@ -133,65 +123,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   closeDialog() {
+    console.log("closeDialog");
     const params = queryString.parse(this.props.location.search);
     const embed = params.embed ? "&embed=true" : "";
     this.props.history.push(
       `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
     );
     this.handleCAPEClose();
-  }
-
-  suggestedAmountOnChange = e => {
-    // console.log("suggestedAmountOnChange");
-    if (e.target.value === "Other") {
-      return;
-    }
-    const params = queryString.parse(this.props.location.search);
-
-    if (
-      params.cape &&
-      utils.isPaymentRequired(this.props.submission.formPage1.employerType)
-    ) {
-      this.props.apiSubmission.handleInput({
-        target: "paymentRequired",
-        value: true
-      });
-    } else {
-      this.props.apiSubmission.handleInput({
-        target: "paymentRequired",
-        value: false
-      });
-    }
-  };
-
-  async handleEmployerTypeChange(employerType) {
-    console.log("handleEmployerTypeChange");
-    console.log(employerType);
-    console.log(
-      `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
-    );
-    // set payment required to true
-    if (utils.isPaymentRequired(employerType)) {
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: true }
-      });
-      await this.props.apiSubmission.handleInput({
-        target: { name: "checkoff", value: false }
-      });
-      if (this.state.displayCAPEPaymentFields) {
-        console.log(
-          `this.state.displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
-        );
-      }
-    } else {
-      console.log("setting paymentRequired to false");
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: false }
-      });
-      await this.props.apiSubmission.handleInput({
-        target: { name: "checkoff", value: true }
-      });
-    }
   }
 
   handleEmployerChange() {
@@ -203,38 +141,14 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  async getCAPEBySFId() {
-    const id = this.props.submission.salesforceId;
-    if (id) {
-      return new Promise(resolve => {
-        this.props.apiSubmission
-          .getCAPEBySFId(id)
-          .then(result => {
-            if (
-              result.type === "GET_CAPE_BY_SFID_FAILURE" ||
-              this.props.submission.error
-            ) {
-              // console.log(this.props.submission.error);
-              // don't return this error to client
-              // it's confusing if it's just 'no record found'...
-              resolve(console.log(this.props.submission.error));
-            }
-            resolve(result);
-          })
-          .catch(err => {
-            console.error(err);
-            resolve(handleError(err));
-          });
-      });
-    }
-  }
-
   async verifyRecaptchaScore() {
+    console.log("verifyRecaptchaScore");
     // fetch token
-    await this.props.recaptcha.execute();
+    await this.props.recaptcha.current.execute();
 
     // then verify
     const token = this.props.submission.formPage1.reCaptchaValue;
+    // console.log(`token: ${token}`);
 
     // check for token every 200ms until returned to avoid race condition
     (async () => {
@@ -245,11 +159,10 @@ export class SubmissionFormPage1Container extends React.Component {
     if (token) {
       const result = await this.props.apiSubmission.verify(token).catch(err => {
         console.error(err);
-        return handleError(this.props.translate("reCaptchaError"));
+        return this.props.handleError(this.props.translate("reCaptchaError"));
       });
 
       if (result) {
-        // console.log(`recaptcha score: ${result.payload.score}`);
         return result.payload.score;
       }
     }
@@ -263,73 +176,26 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.legal_language.current.innerText ||
       "";
     // console.log(legalLanguage);
-    if (formValues.directDepositAuth && this.props.direct_deposit.current) {
-      console.log("directDepositAuth");
-      legalLanguage = legalLanguage
-        ? legalLanguage.concat(
-            "<hr>",
-            this.props.direct_deposit.current.innerHTML
-          )
-        : "";
-    }
+
     if (formValues.directPayAuth && this.props.direct_pay.current) {
-      console.log("directPayAuth");
+      // console.log("directPayAuth");
       legalLanguage = legalLanguage.concat(
         "<hr>",
         this.props.direct_pay.current.innerHTML
       );
     }
-    console.log(legalLanguage);
     this.props.apiSubmission.handleInput({
       target: { name: "legalLanguage", value: legalLanguage }
     });
   }
 
-  async calculateAFHDuesRate(medicaidResidents) {
-    // console.log("calculateAFHDuesRate");
-    console.log(`medicaidResidents: ${medicaidResidents}`);
-    let afhDuesRate = medicaidResidents * 14.84 + 2.75;
-    // console.log(`afhDuesRate: ${afhDuesRate}`);
-    this.props.apiSubmission.handleInput({
-      target: { name: "afhDuesRate", value: afhDuesRate }
-    });
-  }
-
-  // async saveSignature() {
-  //   //   console.log("saveSignature");
-  //   const { formValues } = this.props;
-  //   // perform signature processing steps and save value to redux store
-  //   // before ref disappears
-
-  //   if (this.state.signatureType === "draw") {
-  //     // console.log(`this.state.signagureType: ${this.state.signatureType}`);
-  //     const sigUrl = await this.handleUpload(
-  //       formValues.firstName,
-  //       formValues.lastName
-  //     ).catch(err => {
-  //       console.error(err);
-  //       return handleError(err);
-  //     });
-  //     // console.log(`signature url: ${sigUrl}`);
-  //     this.props.apiSubmission.handleInput({
-  //       target: { name: "signature", value: sigUrl }
-  //     });
-  //     return sigUrl;
-  //   } else {
-  //     // console.log(`this.state.signatureType: ${this.state.signatureType}`);
-  //     // console.log(formValues.signature);
-  //     return formValues.signature;
-  //   }
-  // }
-
   async checkCAPEPaymentLogic() {
-    console.log("checkCAPEPaymentLogic");
+    // console.log("checkCAPEPaymentLogic");
     const { formValues } = this.props;
 
     const newState = { ...this.state };
     newState.displayCAPEPaymentFields = true;
     this.setState(newState, async () => {
-      await this.handleEmployerTypeChange(formValues.employerType);
       console.log(
         `displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
       );
@@ -338,8 +204,8 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    // console.log("generateCAPEBody");
-    // console.log(capeAmount, capeAmountOther);
+    console.log("generateCAPEBody");
+    console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
 
     // if no contact in prefill or from previous form tabs...
@@ -352,6 +218,8 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       formValues.employerName
     );
+    // console.log(employerObject);
+    // console.log(formValues.employerName);
 
     if (employerObject) {
       // console.log(`employerId: ${employerObject.Id}`);
@@ -365,7 +233,7 @@ export class SubmissionFormPage1Container extends React.Component {
         `no employerObject found for ${formValues.employerName}; no agency #`
       );
     }
-    // console.log(employerObject);
+
     // decide whether to use prefilled employer id (worksite level),
     // or user-chosen employer id (employer level)
     let employerId;
@@ -393,11 +261,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
-    console.log(q);
+    // console.log(q);
     const campaignSource =
       q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
 
-    console.log(campaignSource);
+    // console.log(campaignSource);
 
     // set body fields
     const paymentMethod = "Checkoff";
@@ -410,12 +278,12 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(`donationAmount: ${donationAmount}`);
 
     if (!donationAmount || typeof donationAmount !== "number") {
-      console.log("no donation amount chosen");
+      // console.log("no donation amount chosen: 281");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
 
       return this.setState(newState, () => {
-        console.log(this.state.displayCAPEPaymentFields);
+        // console.log(this.state.displayCAPEPaymentFields);
       });
     }
 
@@ -447,7 +315,7 @@ export class SubmissionFormPage1Container extends React.Component {
   // create an initial CAPE record in postgres to get returned ID
   // not finalized until payment method added and SFCAPE status updated
   async createCAPE(capeAmount, capeAmountOther) {
-    // console.log("createCAPE");
+    console.log("createCAPE");
     const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
     // console.log(body);
     if (body) {
@@ -455,7 +323,7 @@ export class SubmissionFormPage1Container extends React.Component {
         .createCAPE(body)
         .catch(err => {
           console.error(err);
-          return handleError(err);
+          return this.props.handleError(err);
         });
 
       if (
@@ -463,7 +331,7 @@ export class SubmissionFormPage1Container extends React.Component {
         this.props.submission.error
       ) {
         console.log(this.props.submission.error);
-        return handleError(this.props.submission.error);
+        return this.props.handleError(this.props.submission.error);
       }
     } else {
       console.log("no CAPE body generated");
@@ -471,32 +339,39 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleCAPESubmit(standAlone) {
-    // console.log("handleCAPESubmit");
+    console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
 
     if (standAlone) {
       // verify recaptcha score
-      await this.verifyRecaptchaScore()
-        .then(score => {
-          // console.log(`score: ${score}`);
-          if (!score || score <= 0.5) {
-            // console.log(`recaptcha failed: ${score}`);
-            return handleError(this.props.translate("reCaptchaError"));
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
+      try {
+        await this.verifyRecaptchaScore()
+          .then(score => {
+            // console.log(`score: ${score}`);
+            if (!score || score <= 0.5) {
+              // console.log(`recaptcha failed: ${score}`);
+              return this.props.handleError(
+                this.props.translate("reCaptchaError")
+              );
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+      } catch (err) {
+        console.error(err);
+      }
     }
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      // console.log("no donation amount chosen");
+      // console.log("no donation amount chosen: 365");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
-        // console.log(this.state.displayCAPEPaymentFields);
+        this.props.handleError(this.props.translate("donationAmountError"));
+        console.log(this.state.displayCAPEPaymentFields);
       });
     }
 
@@ -505,8 +380,23 @@ export class SubmissionFormPage1Container extends React.Component {
     const body = await this.generateCAPEBody(
       formValues.capeAmount,
       formValues.capeAmountOther
-    );
-    delete body.cape_status;
+    ).catch(err => {
+      cape_errors += err;
+      cape_status = "Error";
+      console.error(err);
+      this.props.handleError(err);
+    });
+    if (body) {
+      delete body.cape_status;
+    } else {
+      const err = "There was a problem with the CAPE Submission";
+      cape_errors += err;
+      cape_status = "Error";
+      console.error(err);
+      this.props.handleError(err);
+    }
+
+    // console.log(body);
 
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
@@ -515,7 +405,7 @@ export class SubmissionFormPage1Container extends React.Component {
         cape_errors += err;
         cape_status = "Error";
         console.error(err);
-        handleError(err);
+        this.props.handleError(err);
       });
 
     if (
@@ -525,7 +415,7 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_errors += this.props.submission.error;
       cape_status = "Error";
       // console.log(this.props.submission.error);
-      return handleError(this.props.submission.error);
+      return this.props.handleError(this.props.submission.error);
     } else if (sfCapeResult && sfCapeResult.type === "CREATE_SF_CAPE_SUCCESS") {
       cape_status = "Success";
     } else {
@@ -537,7 +427,7 @@ export class SubmissionFormPage1Container extends React.Component {
       formValues.capeAmountOther
     ).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
 
     const { id } = this.props.submission.cape;
@@ -554,11 +444,10 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_amount: donationAmount,
       donation_frequency: formValues.donationFrequency
     };
-
     // update CAPE record in postgres
     await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
       console.error(err);
-      // return handleError(err); // don't return to client here
+      // return this.props.handleError(err); // don't return to client here
     });
     // console.log(capeResult);
 
@@ -569,18 +458,23 @@ export class SubmissionFormPage1Container extends React.Component {
         `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
       );
     } else {
-      openSnackbar("success", "Thank you. Your CAPE submission was processed.");
-
+      this.props.openSnackbar(
+        "success",
+        "Thank you. Your CAPE submission was processed."
+      );
       this.props.history.push(`/thankyou/?cape=true`);
     }
   }
 
   async handleTab2() {
     const { formValues } = this.props;
+    // console.log(formValues);
 
     if (!formValues.signature) {
       console.log(this.props.translate("provideSignatureError"));
-      return handleError(this.props.translate("provideSignatureError"));
+      return this.props.handleError(
+        this.props.translate("provideSignatureError")
+      );
     }
 
     // save legal language
@@ -589,7 +483,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // save partial submission (update later with demographics from p2)
     await this.props.createSubmission(formValues).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
 
     // move to next tab
@@ -597,70 +491,70 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab1() {
+    console.log("handleTab1");
     const { formValues } = this.props;
+    // console.dir(formValues);
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.3) {
       console.log(`recaptcha failed: ${score}`);
-      return handleError(this.props.translate("reCaptchaError"));
+      return this.props.handleError(this.props.translate("reCaptchaError"));
     }
     // handle moving from tab 1 to tab 2:
-
-    // check if payment is required and store this in redux store for later
-    if (utils.isPaymentRequired(formValues.employerType)) {
-      await this.props.apiSubmission.handleInput({
-        target: { name: "paymentRequired", value: true }
-      });
-    }
     this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });
 
     // check if SF contact id already exists (prefill case)
-    if (this.props.submission.salesforceId) {
-      // update existing contact, move to next tab
-      await this.props.updateSFContact(formValues).catch(err => {
-        console.error(err);
-        return handleError(err);
-      });
-      return this.props.changeTab(1);
-    }
+    console.log(`sfid: ${this.props.submission.salesforceId}`);
+    const checkForSFContactId = async () => {
+      if (this.props.submission.salesforceId) {
+        console.log("511");
+        // update existing contact, move to next tab
+        await this.props.updateSFContact(formValues).catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
+        return this.props.changeTab(1);
+      }
+    };
+
+    await checkForSFContactId();
 
     // otherwise, lookup contact by first/last/email
     await this.props.lookupSFContact(formValues).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
 
     // if lookup was successful, update existing contact and move to next tab
-    if (this.props.submission.salesforceId) {
-      await this.props.updateSFContact(formValues).catch(err => {
-        console.error(err);
-        return handleError(err);
-      });
-      return this.props.changeTab(1);
-    }
+    await checkForSFContactId();
 
     // otherwise, create new contact with submission data,
     // then move to next tab
     await this.props.createSFContact(formValues).catch(err => {
       console.error(err);
-      return handleError(err);
+      return this.props.handleError(err);
     });
     return this.props.changeTab(1);
   }
 
   async handleTab(newValue) {
+    // e.preventDefault();
+    console.log("handleTab");
+    console.log(newValue);
     if (newValue === 1) {
       return this.handleTab1().catch(err => {
+        console.log("handleTab1 failed");
         console.error(err);
-        return handleError(err);
+        return this.props.handleError(err);
       });
     }
     if (newValue === 2) {
       return this.handleTab2().catch(err => {
+        console.log("handleTab2 failed");
         console.error(err);
-        return handleError(err);
+        return this.props.handleError(err);
       });
     } else {
       return this.props.changeTab(newValue);
@@ -682,7 +576,7 @@ export class SubmissionFormPage1Container extends React.Component {
         : ""
     }`;
     return (
-      <div data-test="container-submission-form-page-1">
+      <div data-testid="container-submission-form-page-1">
         <Modal
           open={
             this.state.open &&
@@ -705,9 +599,8 @@ export class SubmissionFormPage1Container extends React.Component {
           signatureType={this.state.signatureType}
           toggleSignatureInputType={this.toggleSignatureInputType}
           clearSignature={this.clearSignature}
-          handleError={handleError}
+          handleError={this.props.handleError}
           handleCAPESubmit={this.handleCAPESubmit}
-          suggestedAmountOnChange={this.suggestedAmountOnChange}
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           handleEmployerChange={this.handleEmployerChange}
@@ -727,7 +620,6 @@ export class SubmissionFormPage1Container extends React.Component {
 const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
-  content: state.content,
   initialValues: state.submission.formPage1,
   formValues: getFormValues("submissionPage1")(state) || {},
   pristine: isPristine("submissionPage1")(state),
@@ -739,7 +631,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
-  apiContent: bindActionCreators(apiContentActions, dispatch),
   apiSF: bindActionCreators(apiSFActions, dispatch),
   actions: bindActionCreators(actions, dispatch),
   submitForm: () => dispatch(submit("submissionPage1"))
@@ -750,6 +641,4 @@ export const SubmissionFormPage1Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage1Container);
 
-export default withLocalize(
-  withStyles(stylesPage1)(SubmissionFormPage1Connected)
-);
+export default withLocalize(SubmissionFormPage1Connected);

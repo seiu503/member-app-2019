@@ -228,6 +228,13 @@
 	"Vui lòng cung cấp chữ ký",
 	"请提供签名"
 ],
+"donationAmountError": [
+	"Please choose a donation amount",
+	"Por favor elige una cantidad",
+	"Пожалуйста, выберите сумму",
+	"Vui lòng chọn số tiền",
+	"请选择金额"
+],
 "sigSaveError": [
 	"An error occurred while trying to save your signature. Please try typing it instead.",
 	"Ocurrió un error mientras trataba de guardar su firma. Trate de escribirla.",
@@ -236,7 +243,11 @@
 	"尝试保存签名时出错。请尝试键入您的签名。"
 ],
 "sigSaveError2": [
-	"Please draw your signature or click the link to type it instead", "Firme o haga clic en el enlace para escribirla", "Поставьте подпись с помощью мыши или нажмите на ссылку для набора на клавиатуре", "Vui lòng ký tên hoặc nhấp vào liên kết để nhập chữ ký", "请绘制签名或点击链接键入您的签名"
+	"Please draw your signature or click the link to type it instead", 
+	"Firme o haga clic en el enlace para escribirla", 
+	"Поставьте подпись с помощью мыши или нажмите на ссылку для набора на клавиатуре", 
+	"Vui lòng ký tên hoặc nhấp vào liên kết để nhập chữ ký", 
+	"请绘制签名或点击链接键入您的签名"
 ],
 "reCaptchaError": [
 	"Sorry, your session timed out, please reload the page and try again.",

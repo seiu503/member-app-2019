@@ -8,30 +8,46 @@ import {
 import { connect } from "react-redux";
 import { Translate } from "react-localize-redux";
 
-import FormLabel from "@material-ui/core/FormLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormGroup from "@material-ui/core/FormGroup";
-import Button from "@material-ui/core/Button";
-import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import {
+  FormLabel,
+  FormHelperText,
+  FormGroup,
+  Button,
+  Box
+} from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
 
-// helper functions these MAY NEED TO BE UPDATED with localization package
+// helper functions
 const {
   stateList,
   monthList,
   languageOptions,
   dateOptions,
-  yearOptions
+  yearOptions,
+  classesPage1
 } = formElements;
+
+const input2col = {
+  width: {
+    xs: "100%",
+    sm: "48%"
+  },
+  display: {
+    xs: "block",
+    sm: "flex" // ????
+  }
+  // classes.input2col
+};
 
 export const Tab1 = props => {
   const {
     onSubmit,
-    classes,
+    // classes,
     employerTypesList,
     employerList,
     updateEmployersPicklist,
@@ -44,25 +60,54 @@ export const Tab1 = props => {
     verifyCallback
   } = props;
 
+  // console.log("Tab1Render");
+  // console.log(formValues);
+
+  const classes = classesPage1;
+
   const employerNameOnChange = () => {
     handleEmployerChange();
   };
 
   const employerTypeOnChange = () => {
-    updateEmployersPicklist();
-    handleEmployerChange();
+    console.log("employerTypeOnChange");
+    props.updateEmployersPicklist();
+    props.handleEmployerChange();
   };
 
+  const matches = useMediaQuery("(min-width:450px)");
+
   return (
-    <div data-test="component-tab1" className={classes.sectionContainer}>
+    <Box
+      data-testid="component-tab1"
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        background: "white",
+        padding: {
+          xs: "15px 15px 40px 15px",
+          sm: "20px 20px 40px 20px"
+        },
+        borderRadius: "0 0 4px 4px"
+      }}
+    >
       <form
         onSubmit={props.handleSubmit(onSubmit)}
+        role="form"
         id="tab2"
-        className={classes.form}
+        data-testid="form-tab1"
+        // className={classes.form}
       >
-        <div className={classes.formSection}>
+        <Box
+          // className={classes.formSection}
+          sx={{
+            paddingTop: "20px",
+            width: "100%"
+          }}
+        >
           <Field
-            data-test="select-employer-type"
+            data-testid="select-employer-type"
+            dataTestId="select-employer-type-field"
             label="Employer Type"
             name="employerType"
             id="employerType"
@@ -71,11 +116,11 @@ export const Tab1 = props => {
             component={renderSelect}
             options={employerTypesList}
             onChange={employerTypeOnChange}
-            labelWidth={100}
+            style={{ width: "100%" }}
           />
           {formValues.employerType !== "" && (
             <Field
-              labelWidth={104}
+              style={{ width: "100%" }}
               label="Employer Name"
               name="employerName"
               id="employerName"
@@ -100,34 +145,64 @@ export const Tab1 = props => {
                 }}
               />
             )}
-          <FormGroup row classes={{ root: classes.formGroup2Col }}>
+          <FormGroup
+            row
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: {
+                xs: "wrap",
+                sm: "nowrap"
+              },
+              justifyContent: "space-between"
+              // classes.formGroup2Col
+            }}
+          >
             <Field
               twocol
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               label="First Name"
               name="firstName"
               id="firstName"
               type="text"
-              classes={{ input2col: classes.input2col }}
+              classes={{ input2col }}
               component={renderTextField}
             />
 
             <Field
               twocol
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               name="lastName"
               id="lastName"
               label="Last Name"
-              classes={{ input2col: classes.input2col }}
+              classes={{ input2col }}
               component={renderTextField}
               type="text"
             />
           </FormGroup>
 
-          <FormLabel className={classes.formLabel} component="legend">
+          <FormLabel
+            // className={classes.formLabel}
+            sx={{
+              margin: "10px 0 10px"
+              // fontSize: "20px",
+              // color: "black"
+            }}
+            component="legend"
+          >
             <Translate id="birthDate" />
           </FormLabel>
-          <FormGroup row classes={{ root: classes.formGroup2ColShort }}>
+          <FormGroup
+            row
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "nowrap",
+              justifyContent: "space-between",
+              width: "280px"
+              //classes.formGroup2ColShort
+            }}
+          >
             <Field
               label="Month"
               name="mm"
@@ -136,8 +211,9 @@ export const Tab1 = props => {
               classes={classes}
               formControlName="formControlDate"
               component={renderSelect}
-              labelWidth={41}
+              style={{ width: "100%" }}
               options={monthList}
+              short
             />
 
             <Field
@@ -148,8 +224,9 @@ export const Tab1 = props => {
               formControlName="formControlDate"
               classes={classes}
               component={renderSelect}
-              labelWidth={24}
-              options={dateOptions(props)}
+              style={{ width: "100%" }}
+              options={formElements.dateOptions(props)}
+              short
             />
 
             <Field
@@ -160,8 +237,9 @@ export const Tab1 = props => {
               formControlName="formControlDate"
               classes={classes}
               component={renderSelect}
-              labelWidth={30}
-              options={yearOptions()}
+              style={{ width: "100%" }}
+              options={formElements.yearOptions()}
+              short
             />
           </FormGroup>
 
@@ -172,11 +250,19 @@ export const Tab1 = props => {
             type="select"
             classes={classes}
             component={renderSelect}
-            labelWidth={132}
+            style={{ width: "100%" }}
             options={languageOptions}
           />
 
-          <FormLabel className={classes.formLabel} component="legend">
+          <FormLabel
+            // className={classes.formLabel}
+            sx={{
+              margin: "10px 0 10px"
+              // fontSize: "20px",
+              // color: "black"
+            }}
+            component="legend"
+          >
             <Translate id="address">Address</Translate>
           </FormLabel>
 
@@ -189,13 +275,28 @@ export const Tab1 = props => {
             component={renderTextField}
           />
 
-          <FormHelperText className={classes.formHelperText}>
+          <FormHelperText
+            // className={classes.formHelperText}
+            sx={{
+              margin: "-30px 0 40px",
+              fontSize: ".75rem"
+            }}
+          >
             <Translate id="homeStreetHint" />
           </FormHelperText>
           <FormGroup
-            className={classes.formGroup}
             row
-            classes={{ root: classes.formGroup2Col }}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: {
+                xs: "wrap",
+                sm: "nowrap"
+              },
+              justifyContent: "space-between",
+              marginBottom: "30px"
+              // classes.formGroup2Col
+            }}
           >
             <Field
               label="Home City"
@@ -203,7 +304,7 @@ export const Tab1 = props => {
               id="homeCity"
               type="text"
               twocol
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               classes={classes}
               component={renderTextField}
             />
@@ -214,11 +315,11 @@ export const Tab1 = props => {
               id="homeState"
               type="select"
               short
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               classes={classes}
               component={renderSelect}
               options={stateList}
-              labelWidth={80}
+              style={{ width: "100%" }}
             />
 
             <Field
@@ -226,7 +327,7 @@ export const Tab1 = props => {
               name="homeZip"
               id="homeZip"
               short
-              mobile={!isWidthUp("sm", width)}
+              mobile={!matches}
               type="text"
               classes={classes}
               component={renderTextField}
@@ -242,7 +343,13 @@ export const Tab1 = props => {
             component={renderTextField}
           />
 
-          <FormHelperText className={classes.formHelperText}>
+          <FormHelperText
+            // className={classes.formHelperText}
+            sx={{
+              margin: "-30px 0 40px",
+              fontSize: ".75rem"
+            }}
+          >
             <Translate id="homeEmailHint" />
           </FormHelperText>
           <FormGroup>
@@ -255,7 +362,13 @@ export const Tab1 = props => {
               component={renderTextField}
             />
 
-            <FormHelperText className={classes.formHelperText}>
+            <FormHelperText
+              // className={classes.formHelperText}
+              sx={{
+                margin: "-30px 0 10px",
+                fontSize: ".75rem"
+              }}
+            >
               <Translate id="phoneLegalLanguage" />
             </FormHelperText>
 
@@ -269,21 +382,41 @@ export const Tab1 = props => {
               component={renderCheckbox}
             />
           </FormGroup>
-          <div className={classes.buttonWrap}>
+          <Box
+            // className={classes.buttonWrap}
+            sx={{
+              width: "100%",
+              padding: "0 20px 40px 0",
+              display: "flex",
+              justifyContent: "flex-end",
+              marginTop: "20px"
+            }}
+          >
             <Button
               type="submit"
               color="primary"
-              className={`${classes.next} g-recaptcha`}
+              data-testid="button-submit"
+              className={`g-recaptcha`}
+              sx={{
+                textTransform: "none",
+                fontSize: "1.3rem",
+                padding: "6px 20px",
+                color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+                "&:hover": {
+                  backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+                }
+                // classes.next
+              }}
               variant="contained"
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
             >
               <Translate id="next">Next</Translate>
             </Button>
-          </div>
-        </div>
+          </Box>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 
@@ -324,4 +457,4 @@ export const Tab1Form = reduxForm({
 // connect to redux store
 export const Tab1Connected = connect(mapStateToProps)(Tab1Form);
 
-export default withWidth()(Tab1Connected);
+export default Tab1Connected;

@@ -1,6 +1,7 @@
 import { Translate } from "react-localize-redux";
 import React from "react";
 export const validate = values => {
+  // console.log(values);
   const errors = {};
   const requiredFields = [
     "firstName",
@@ -18,57 +19,12 @@ export const validate = values => {
     "employerName",
     "employerType",
     "termsAgree",
+    "MOECheckbox",
     "signature"
   ];
-  const conditionalRequiredFields = [
-    {
-      requiredField: "MOECheckbox",
-      controllingField: "employerType",
-      controllingValues: [
-        "non-profit",
-        "state agency",
-        "nursing home",
-        "state homecare or personal support",
-        "higher education",
-        "local government (city, county, school district)",
-        "child care",
-        "private homecare agency"
-      ]
-    },
-    {
-      requiredField: "directPayAuth",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home", "retired", "community member"]
-    },
-    {
-      requiredField: "medicaidResidents",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home"]
-    },
-    {
-      requiredField: "paymentType",
-      controllingField: "employerType",
-      controllingValues: ["retired"]
-    },
-    {
-      requiredField: "paymentMethodAdded",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home", "retired", "community member"]
-    }
-  ];
-  conditionalRequiredFields.forEach(obj => {
-    let matchValue = values[obj["controllingField"]]
-      ? values[obj["controllingField"]].toLowerCase()
-      : "";
-    if (
-      obj["controllingValues"].includes(matchValue) &&
-      !values[obj["requiredField"]]
-    ) {
-      errors[obj["requiredField"]] = <Translate id="requiredError" />;
-    }
-  });
   requiredFields.forEach(field => {
     if (!values[field]) {
+      // console.log(`missing ${field}`);
       errors[field] = <Translate id="requiredError" />;
     }
   });
@@ -115,18 +71,20 @@ export const validate = values => {
   ) {
     errors.workPhone = <Translate id="invalidPhoneError" />;
   }
-  // if (
-  //   values.hireDate &&
-  //   !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
-  // ) {
-  //   errors.hireDate = <Translate id="invalidDateError" />;
-  // }
+  if (
+    values.hireDate &&
+    !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
+  ) {
+    errors.hireDate = <Translate id="invalidDateError" />;
+  }
   if (values.homeZip && values.homeZip.length !== 5) {
     errors.homeZip = <Translate id="charLength5Error" />;
   }
   if (values.mailToZip && values.mailToZip.length !== 5) {
     errors.mailToZip = <Translate id="charLength5Error" />;
   }
+  // console.log("errors");
+  // console.dir(errors);
   return errors;
 };
 
@@ -152,11 +110,6 @@ export const capeValidate = values => {
       requiredField: "capeAmountOther",
       controllingField: "capeAmount",
       controllingValues: ["Other"]
-    },
-    {
-      requiredField: "paymentMethodAdded",
-      controllingField: "employerType",
-      controllingValues: ["adult foster home", "retired", "community member"]
     }
   ];
   conditionalRequiredFields.forEach(obj => {
@@ -175,15 +128,6 @@ export const capeValidate = values => {
   });
   if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
     errors.capeAmountOther = <Translate id="wholeDollarError" />;
-  }
-  if (
-    values.employerType &&
-    (values.employerType.toLowerCase() === "adult foster home" ||
-      values.employerType.toLowerCase() === "retired" ||
-      values.employerType.toLowerCase() === "community member") &&
-    !values.paymentMethodAdded
-  ) {
-    errors.paymentMethodAdded = <Translate id="addPaymentError" />;
   }
   if (
     values.homeEmail &&

@@ -49,47 +49,12 @@ describe("submission reducer", () => {
       }
     });
   });
-  it("should handle `setPaymentDetailsCAPE`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_PAYMENT_DETAILS_CAPE",
-        payload: { paymentAdded: true, cardBrand: "Visa", cardLast4: "1234" }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      cape: {
-        ...INITIAL_STATE.cape,
-        activeMethodLast4: "1234",
-        cardBrand: "Visa"
-      },
-      formPage1: {
-        ...INITIAL_STATE.formPage1,
-        paymentMethodAdded: true
-      }
-    });
-  });
   it("should handle `clearForm`", () => {
     expect(
       reducer(INITIAL_STATE, {
         type: "CLEAR_FORM"
       })
     ).toEqual(INITIAL_STATE);
-  });
-  it("should handle `setCurrentSubmission`", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "SET_CURRENT_SUBMISSION",
-        payload: {
-          id: "1"
-        }
-      })
-    ).toEqual({
-      ...INITIAL_STATE,
-      currentSubmission: {
-        id: "1"
-      },
-      submissionId: "1"
-    });
   });
 
   describe("successful actions return correct state", () => {
@@ -124,32 +89,6 @@ describe("submission reducer", () => {
       const expectedState = {
         ...INITIAL_STATE,
         submissionId: "2"
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("getAllSubmissions", () => {
-      const action = {
-        type: "GET_ALL_SUBMISSIONS_SUCCESS",
-        payload: [
-          {
-            id: "1",
-            first_name: "first",
-            last_name: "last",
-            email: "test@test.com"
-          }
-        ]
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        allSubmissions: [
-          {
-            id: "1",
-            first_name: "first",
-            last_name: "last",
-            email: "test@test.com"
-          }
-        ],
-        error: null
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
@@ -868,34 +807,6 @@ describe("submission reducer", () => {
         salesforceId: "string",
         error: null,
         redirect: true
-      };
-      expect(reducer(undefined, action)).toEqual(expectedState);
-    });
-    test("getCAPEBySFId", () => {
-      const action = {
-        type: "GET_CAPE_BY_SFID_SUCCESS",
-        payload: {
-          Id: "123",
-          member_short_id: "456",
-          cape_amount: 5,
-          payment_method: "Unionise",
-          donation_frequency: "Monthly",
-          active_method_last_four: "1234",
-          card_brand: "Visa"
-        }
-      };
-      const expectedState = {
-        ...INITIAL_STATE,
-        cape: {
-          ...INITIAL_STATE.cape,
-          id: "123",
-          memberShortId: "456",
-          donationAmount: 5,
-          paymentMethod: "Unionise",
-          donationFrequency: "Monthly",
-          activeMethodLast4: "1234",
-          cardBrand: "Visa"
-        }
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

@@ -1,18 +1,40 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
-
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
-
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-let wrapper;
-
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../../styles/theme";
+import {
+  generatePage2Validate,
+  generateSubmissionBody
+} from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generatePage2Validate();
+const server = setupServer(...handlers);
+
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
 let updateSFContactSuccess = jest
   .fn()
@@ -67,16 +89,6 @@ let refreshRecaptchaMock = jest
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
-
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
@@ -116,7 +128,7 @@ const defaultProps = {
   },
   classes: {},
   apiSF: {
-    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
+    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" }),
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
@@ -134,21 +146,17 @@ const defaultProps = {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   direct_pay: {
@@ -171,18 +179,40 @@ const defaultProps = {
     id: 3,
     text: ""
   },
-  setCAPEOptions: jest.fn()
+  setCAPEOptions: jest.fn(),
+  handleError: jest.fn(),
+  renderHeadline: jest.fn(),
+  translate: jest.fn(),
+  renderBodyCopy: jest.fn()
 };
 
+let handleSubmit;
+const initialState = {};
+const store = storeFactory(initialState);
 const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  const setupProps = { ...defaultProps, ...props, handleSubmit };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <SubmissionFormPage1Container {...setupProps} />
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    // console.log = jest.fn();
+    handleSubmit = fn => fn;
   });
+
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("componentDidMount", () => {
     afterEach(() => {
@@ -204,122 +234,92 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         apiSF: {
           getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          getSFEmployers: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: [...employersPayload]
+            })
+          )
         },
         submission: {
           formPage1: {
             firstName: "test",
             lastName: "test"
           },
-          cape: {},
+          cape: {
+            monthlyOptions: []
+          },
           payment: {}
         }
       };
 
-      wrapper = setup(props);
-      wrapper.instance().componentDidMount();
+      const { getByTestId } = setup(props);
+      const component = getByTestId("component-submissionformpage1");
+      expect(component).toBeInTheDocument();
       expect(getSFContactByDoubleIdSuccess).toHaveBeenCalled();
     });
 
-    test("clears form if `getSFContactByDoubleId` fails", () => {
-      formElements.handleError = jest.fn();
+    test("clears form if `getSFContactByDoubleId` fails", async () => {
+      clearFormMock = jest.fn();
       getSFContactByDoubleIdError = () =>
         Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
       let props = {
+        ...defaultProps,
         location: {
           search: "cId=1&aId=2"
         },
         apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().componentDidMount();
-      return getSFContactByDoubleIdError()
-        .then(() => {
-          expect(clearFormMock.mock.calls.length).toBe(1);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
-
-    test("handles error if `getSFContactByDoubleId` throws", () => {
-      getSFContactByDoubleIdError = () =>
-        Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE" });
-      formElements.handleError = jest.fn();
-      let props = {
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        },
-        setCAPEOptions: jest.fn()
-      };
-
-      wrapper = setup(props);
-
-      wrapper.instance().componentDidMount();
-      return getSFContactByDoubleIdError()
-        .then(() => {
-          expect(formElements.handleError.mock.calls.length).toBe(1);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
-
-    test("calls `handleOpen` on componentDidMount if firstName and lastName returned from getSFContactByDoubleId", () => {
-      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "GET_SF_CONTACT_DID_SUCCESS",
-          payload: {
-            firstName: "test",
-            lastName: "test"
-          }
-        })
-      );
-      let props = {
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          ...defaultProps.apiSF,
+          getSFContactByDoubleId: getSFContactByDoubleIdError
         },
         apiSubmission: {
-          setCAPEOptions: jest.fn()
-        },
-        submission: {
-          formPage1: {
-            firstName: "test",
-            lastName: "test"
-          },
-          payment: {
-            currentCAPEFromSF: 0
-          },
-          cape: {}
+          ...defaultProps.apiSubmission,
+          clearForm: clearFormMock
         }
       };
 
-      wrapper = setup(props);
+      const { getByTestId } = setup(props);
+      const component = await getByTestId("component-submissionformpage1");
+      expect(component).toBeInTheDocument();
+      await waitFor(() => expect(clearFormMock).toHaveBeenCalled());
+    });
 
-      let handleOpenMock = jest.fn();
-      wrapper.instance().handleOpen = handleOpenMock;
+    test("handles error if `getSFContactByDoubleId` throws", async () => {
+      const oldWindowLocation = window.location;
+      const oldWindowHistory = window.history;
+      delete window.location;
+      delete window.history;
+      window.location = Object.assign(new URL("https://test.com"));
+      window.history = {
+        replaceState: jest.fn()
+      };
+      clearFormMock = jest.fn(() => console.log("clearFormMock"));
+      getSFContactByDoubleIdError = () =>
+        Promise.reject("getSFContactByDoubleIdError");
+      let props = {
+        ...defaultProps,
+        location: {
+          search: "cId=1&aId=2"
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFContactByDoubleId: getSFContactByDoubleIdError
+        },
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          clearForm: clearFormMock
+        },
+        handleError: handleErrorMock
+      };
 
-      wrapper.instance().componentDidMount();
-      return getSFContactByDoubleIdSuccess()
-        .then(() => {
-          expect(handleOpenMock).toHaveBeenCalled();
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      await setup(props);
+      await waitFor(() =>
+        expect(handleErrorMock).toHaveBeenCalledWith(
+          "getSFContactByDoubleIdError"
+        )
+      );
+      window.location = oldWindowLocation;
+      window.history = oldWindowHistory;
     });
   });
 });

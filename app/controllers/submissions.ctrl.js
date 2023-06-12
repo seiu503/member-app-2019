@@ -1,4 +1,4 @@
-const request = require("request");
+const axios = require("axios");
 const url = require("url");
 
 /*
@@ -343,34 +343,37 @@ exports.getSubmissionById = (req, res, next) => {
  * @returns {Bool} returns true for human, false for bot
  */
 exports.verifyHumanity = async (req, res) => {
+  console.log("submissions.ctrl.js > 346");
   const ip = this.getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);
   const { token } = req.body;
   const key = process.env.RECAPTCHA_V3_SECRET_KEY;
-  return request.post(
+
+  const { err, data } = await axios.post(
     "https://www.google.com/recaptcha/api/siteverify",
     {
-      form: {
-        secret: key,
-        response: token,
-        remoteip: ip
-      }
+      secret: key,
+      response: token,
+      remoteip: ip
     },
-    (err, httpResponse, body) => {
-      if (err) {
-        console.error(`submissions.ctrl.js > 361: ${err}`);
-        return res.status(500).json({ message: err.message });
-      } else {
-        const r = JSON.parse(body);
-        if (r.success) {
-          console.log(`submissions.ctrl.js > 366: recaptcha score: ${r.score}`);
-          return res.status(200).json({ score: r.score });
-        } else {
-          console.error(`submissions.ctrl.js > 369: recaptcha failure`);
-          console.error(r["error-codes"][0]);
-          return res.status(500).json({ message: r["error-codes"][0] });
-        }
+    {
+      headers: {
+        "Content-Type": "multipart/form-data"
       }
     }
   );
+
+  if (err) {
+    console.error(`submissions.ctrl.js > 370: ${err}`);
+    return res.status(500).json({ message: err.message });
+  } else {
+    if (data.success) {
+      console.log(`submissions.ctrl.js > 375: recaptcha score: ${data.score}`);
+      return res.status(200).json({ score: data.score });
+    } else {
+      console.error(`submissions.ctrl.js > 378: recaptcha failure`);
+      console.error(data["error-codes"][0]);
+      return res.status(500).json({ message: data["error-codes"][0] });
+    }
+  }
 };

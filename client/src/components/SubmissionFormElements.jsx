@@ -1,81 +1,30 @@
 import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
-import { openSnackbar } from "../containers/Notifier";
+import { openSnackbar } from "../App";
 import { Translate } from "react-localize-redux";
 
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import Checkbox from "@material-ui/core/Checkbox";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormLabel from "@material-ui/core/FormLabel";
-import Radio from "@material-ui/core/Radio";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import LanguageIcon from "@material-ui/icons/Language";
+import {
+  Box,
+  TextField,
+  Select,
+  Checkbox,
+  OutlinedInput,
+  InputLabel,
+  FormControl,
+  FormControlLabel,
+  FormHelperText,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  InputAdornment
+} from "@mui/material";
+
+import LanguageIcon from "@mui/icons-material/Language";
 
 import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
 
 import { forwardRef } from "react";
-// import AddBox from "@material-ui/icons/AddBox";
-import ArrowUpward from "@material-ui/icons/ArrowUpward";
-// import Check from "@material-ui/icons/Check";
-import ChevronLeft from "@material-ui/icons/ChevronLeft";
-import ChevronRight from "@material-ui/icons/ChevronRight";
-import Clear from "@material-ui/icons/Clear";
-import DeleteOutline from "@material-ui/icons/DeleteOutline";
-import Edit from "@material-ui/icons/Edit";
-import FilterList from "@material-ui/icons/FilterList";
-import FirstPage from "@material-ui/icons/FirstPage";
-import LastPage from "@material-ui/icons/LastPage";
-import Remove from "@material-ui/icons/Remove";
-import SaveAlt from "@material-ui/icons/SaveAlt";
-import Search from "@material-ui/icons/Search";
-import ViewColumn from "@material-ui/icons/ViewColumn";
-import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-
-export const tableIcons = {
-  // Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  // Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  // Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  CheckBoxBlank: forwardRef((props, ref) => (
-    <CheckBoxOutlineBlankIcon {...props} ref={ref} />
-  )),
-  CheckBoxChecked: forwardRef((props, ref) => (
-    <CheckBoxIcon {...props} ref={ref} />
-  )),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  // DetailPanel: forwardRef((props, ref) => (
-  //   <ChevronRight {...props} ref={ref} />
-  // )),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => (
-    <ChevronLeft {...props} ref={ref} />
-  )),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-};
-
-export const handleError = err => {
-  return openSnackbar(
-    "error",
-    err || "Sorry, something went wrong. Please try again."
-  );
-  // console.log(err);
-};
 
 export const removeFalsy = obj => {
   let newObj = {};
@@ -239,7 +188,7 @@ export const getMaxDay = month => {
 };
 // function to adjust date select based on mm value
 export const dateOptions = props => {
-  const mm = props.formValues.mm || props.formValues.hiremm;
+  const mm = props.formValues.mm;
   const max = getMaxDay(mm);
   let dates = [];
   for (let i = 1; i <= max; i++) {
@@ -282,9 +231,10 @@ export const employerTypeMap = {
   "Private Homecare": "Private Homecare Agency",
   "Community Members": "Community Member",
   "COMMUNITY MEMBERS": "Community Member",
-  "SEIU LOCAL 503 OPEU": ""
+  "SEIU LOCAL 503 OPEU": "",
   // "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
   // removing staff from picklist options
+  test: "TEST"
 };
 
 // helper function for reverse lookup from above object
@@ -364,62 +314,13 @@ export const findEmployerObject = (employerObjects, employerName) =>
     : { Name: "" };
 
 // MUI styles objects
-export const stylesPage1 = theme => ({
-  formContainer: {
-    padding: "80px 0 140px 0",
-    margin: "auto 0 auto 50%",
-    [theme.breakpoints.down("xl")]: {
-      margin: "44px 0 auto 50%"
-    },
-    [theme.breakpoints.down("lg")]: {
-      padding: "20px 0"
-    },
-    [theme.breakpoints.down("md")]: {
-      margin: "44px auto"
-    },
-    [theme.breakpoints.only("xs")]: {
-      width: "100vw",
-      position: "absolute",
-      left: 0,
-      top: 0,
-      margin: "36px auto"
-    }
-  },
-  formContainerEmbed: {
-    padding: "80px 0 140px 0",
-    margin: "auto",
-    [theme.breakpoints.only("xs")]: {
-      width: "100vw",
-      position: "absolute",
-      left: 0,
-      top: 0,
-      margin: "auto"
-    }
-  },
-  sectionContainer: {},
-  head: {
-    color: theme.palette.primary.light,
-    fontSize: "2em",
-    fontWeight: 700,
-    lineHeight: 1.1,
-    marginBottom: 15
-  },
-  form: {
-    maxWidth: 600,
-    margin: "auto",
-    background: "white",
-    padding: "20px 20px 40px 20px",
-    borderRadius: "0 0 4px 4px",
-    [theme.breakpoints.only("xs")]: {
-      padding: "15px 15px 40px 15px"
-    }
-  },
+export const classesPage1 = {
   buttonWrap: {
     width: "100%",
     padding: "0 20px 40px 0",
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: 20
+    marginTop: "20px"
   },
   buttonWrapTab3: {
     width: "100%",
@@ -433,33 +334,6 @@ export const stylesPage1 = theme => ({
     display: "flex",
     justifyContent: "space-between"
   },
-  next: {
-    textTransform: "none",
-    fontSize: "1.3rem",
-    padding: "6px 20px",
-    color: theme.palette.secondary.main,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.light
-    }
-  },
-  nextSmall: {
-    textTransform: "none",
-    fontSize: ".8rem",
-    padding: "3px 10px",
-    color: theme.palette.secondary.light,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.light
-    }
-  },
-  backSmall: {
-    textTransform: "none",
-    fontSize: ".8rem",
-    padding: "3px 10px",
-    color: theme.palette.secondary.light,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.light
-    }
-  },
   verticalGroup: {
     width: "100%",
     display: "flex",
@@ -471,18 +345,8 @@ export const stylesPage1 = theme => ({
     flexDirection: "row",
     justifyContent: "center"
   },
-  back: {
-    textTransform: "none",
-    fontSize: "1.3rem",
-    padding: "6px 20px",
-    color: theme.palette.secondary.main,
-    "&:hover": {
-      backgroundColor: theme.palette.primary.light
-    },
-    marginRight: 40
-  },
   formSection: {
-    paddingTop: 20
+    paddingTop: "20px"
   },
   group: {
     display: "flex",
@@ -511,12 +375,12 @@ export const stylesPage1 = theme => ({
   },
   formButton: {
     width: "100%",
-    padding: 20,
+    padding: "20px",
     margin: "25px 0 40px"
   },
   clearButton: {
     width: "100%",
-    padding: 10,
+    padding: "10px",
     margin: "0"
   },
   formControl: {
@@ -527,7 +391,7 @@ export const stylesPage1 = theme => ({
   },
   formControlDate: {
     width: "15%",
-    minWidth: 80
+    minWidth: "80px"
   },
   formLabel: {
     margin: "10px 0"
@@ -544,35 +408,19 @@ export const stylesPage1 = theme => ({
     flexWrap: "wrap",
     justifyContent: "flex-start"
   },
-  formGroup2Col: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    justifyContent: "space-between",
-    [theme.breakpoints.down("xs")]: {
-      flexWrap: "wrap"
-    }
-  },
   formGroup2ColShort: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "nowrap",
     justifyContent: "space-between",
-    width: 280
+    width: "280px"
   },
   formGroupTopMargin: {
-    marginTop: 30
+    marginTop: "30px"
   },
   input: {
     width: "100%",
     margin: "0 0 30px 0"
-  },
-  input2Col: {
-    width: "48%",
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
-      display: "block"
-    }
   },
   controlCheckbox: {
     margin: "-35px 0 0 0"
@@ -622,20 +470,8 @@ export const stylesPage1 = theme => ({
   horizRadioBold: {
     fontWeight: 700
   },
-  subhead: {
-    color: theme.palette.primary.light,
-    fontSize: "1.5em",
-    fontWeight: 400,
-    paddingBottom: 20
-  },
   paymentCopy: {
     paddingBottom: "1.5em"
-  },
-  card: {
-    display: "flex",
-    [theme.breakpoints.down("xs")]: {
-      flexDirection: "column"
-    }
   },
   details: {
     display: "flex",
@@ -645,28 +481,18 @@ export const stylesPage1 = theme => ({
     flex: "1 0 auto"
   },
   cover: {
-    minWidth: 200,
-    minHeight: 200
-  },
-  cardHead: {
-    color: theme.palette.primary.light,
-    fontWeight: 400,
-    paddingBottom: 10
-  },
-  quoteAttr: {
-    color: theme.palette.primary.light,
-    fontStyle: "italic",
-    paddingTop: 10
+    minWidth: "200px",
+    minHeight: "200px"
   },
   pullQuote: {
-    textIndent: 20
+    textIndent: "20px"
   },
   suggestedAmounts: {
     display: "block",
     flexWrap: "wrap",
     margin: "0 -1.666666666666667% 13px",
-    paddingTop: 20,
-    marginTop: 15,
+    paddingTop: "20px",
+    marginTop: "15px",
     backgroundColor: "#FBE796"
   },
   suggestedAmountBoxes: {
@@ -675,7 +501,7 @@ export const stylesPage1 = theme => ({
   },
   suggestedAmountBox: {
     width: "21%",
-    height: 60,
+    height: "60px",
     margin: "13px 1.666666666666667% 0",
     display: "inline-block"
   },
@@ -687,7 +513,7 @@ export const stylesPage1 = theme => ({
     color: "#4C4C4C",
     textAlign: "center",
     border: "1px solid #C4C3C3",
-    borderRadius: 3,
+    borderRadius: "3px",
     display: "block",
     transition:
       "color 0.1s, background-color 0.1s, border-color 0.1s, font-weight 0.1s",
@@ -710,13 +536,13 @@ export const stylesPage1 = theme => ({
     "&:checked + label": {
       borderColor: "#531078",
       color: "#531078",
-      borderWidth: 2,
+      borderWidth: "2px",
       fontWeight: 700
     },
     "&:checked + $boxLabel": {
       borderColor: "#531078",
       color: "#531078",
-      borderWidth: 2,
+      borderWidth: "2px",
       fontWeight: 700
     }
   },
@@ -750,12 +576,6 @@ export const stylesPage1 = theme => ({
     width: "100%",
     textAlign: "center"
   },
-  capeRadioLabel: {
-    fontSize: "1.2em",
-    color: theme.palette.primary.light,
-    fontWeight: 700,
-    textAlign: "center"
-  },
   checkboxLabelBold: {
     "& span": {
       fontWeight: "700 !important"
@@ -767,112 +587,7 @@ export const stylesPage1 = theme => ({
       fontSize: 14
     }
   }
-});
-export const stylesPage2 = theme => ({
-  root: {
-    margin: "80px 0"
-  },
-  formContainer: {
-    padding: "80px 0 140px 0",
-    margin: "44px 0 auto 50%",
-    [theme.breakpoints.down("lg")]: {
-      padding: "20px 0",
-      margin: "44px auto"
-    }
-  },
-  container: {
-    padding: "40px 0 140px 0",
-    margin: "44px auto"
-  },
-  head: {
-    color: theme.palette.primary.light,
-    fontSize: "2em",
-    fontWeight: 700
-  },
-  checkIcon: {
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "center"
-    }
-  },
-  successWrap: {
-    display: "flex",
-    [theme.breakpoints.down("xs")]: {
-      flexWrap: "wrap"
-    }
-  },
-  page2IntroText: {
-    fontSize: "1.2rem",
-    lineHeight: "1.4em",
-    padding: "0 0 .5em .5em",
-    [theme.breakpoints.down("xs")]: {
-      padding: "0 0 .5em 0"
-    }
-  },
-  form: {
-    maxWidth: 600,
-    margin: "auto",
-    padding: "20px",
-    background: "white"
-  },
-  group: {
-    display: "flex",
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "center"
-  },
-  input: {
-    width: "100%",
-    margin: "0 0 20px 0"
-  },
-  select: {
-    width: "100%",
-    margin: "0 0 20px 0"
-  },
-  failedText: {
-    color: "red"
-  },
-  formButton: {
-    width: "100%",
-    padding: 20,
-    margin: "0 0 40px"
-  },
-  formLabel: {
-    margin: "10px 0 10px",
-    fontSize: "20px",
-    color: "black"
-  },
-  checkboxErrorText: {
-    margin: "-10px 0 10px 0"
-  },
-  formGroup: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    margin: "0 0 20px"
-  },
-  formHelperText: {
-    margin: "0 0 10px",
-    fontSize: "15px"
-  },
-  formGroup2Col: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "nowrap",
-    justifyContent: "space-between",
-    [theme.breakpoints.down("xs")]: {
-      flexWrap: "wrap"
-    }
-  },
-  input2Col: {
-    width: "48%",
-    [theme.breakpoints.down("xs")]: {
-      width: "100%",
-      display: "block"
-    }
-  }
-});
+};
 
 // helper functions for localization package when translating labels
 // this is required so that only the label is translated and the not value
@@ -917,6 +632,7 @@ export const renderTextField = ({
   mobile,
   translate,
   additionalOnChange,
+  dataTestId,
   ...custom
 }) => {
   return (
@@ -924,22 +640,25 @@ export const renderTextField = ({
       {({ translate }) => (
         <TextField
           label={inputLabelTranslateHelper(id, label, translate)}
+          InputLabelProps={{ htmlFor: id }}
           error={!!(touched && error)}
           variant="outlined"
-          className={classes.input}
           style={
             twocol && !mobile
               ? { width: "48%" }
               : short
               ? { width: 150 }
-              : { width: "100%", marginBottom: 30 }
+              : { marginBottom: 30, width: "100%" }
           }
           helperText={touched && error}
           required={!!(touched && error)}
           {...input}
           {...custom}
-          data-test="component-text-field"
-          inputProps={{ id: id }}
+          data-testid={dataTestId}
+          inputProps={{
+            id: id,
+            "aria-label": inputLabelTranslateHelper(id, label, translate)
+          }}
           onBlur={event => {
             input.onBlur();
             if (additionalOnChange) {
@@ -968,14 +687,22 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
       {({ translate }) => (
         <FormControl
           variant="outlined"
-          className={props.classes.languagePicker}
+          // className={props.classes.languagePicker}
         >
           <InputLabel
-            htmlFor={props.name}
-            className={props.classes.languagePickerLabel}
+            htmlFor={props.id}
+            sx={{
+              color: "white !important",
+              // marginTop: "-2px",
+              marginLeft: "25px",
+              padding: "0 4px",
+              backgroundColor: "#2c0940 !important"
+              // className={props.classes.languagePickerLabel}
+            }}
             classes={{
               shrink: props.classes.labelShrink,
-              focused: props.classes.labelFocused
+              focused: props.classes.labelFocused,
+              outlined: props.classes.labelOutlined
             }}
           >
             {inputLabelTranslateHelper(props.id, props.label, translate)}
@@ -985,8 +712,13 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
             autoWidth={true}
             onChange={props.onChange}
             startAdornment={
-              <InputAdornment position="start">
-                <LanguageIcon color="inherit" />
+              <InputAdornment
+                position="start"
+                sx={{
+                  color: "white"
+                }}
+              >
+                <LanguageIcon />
               </InputAdornment>
             }
             input={
@@ -997,7 +729,18 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                   adornedStart: props.classes.adornedStart
                 }}
                 className={props.classes.lpInput}
-                labelWidth={100}
+                sx={{
+                  border: "1px solid white",
+                  paddingLeft: "7px !important",
+                  "& .MuiSvgIcon-root": {
+                    color: "white"
+                  }
+                }}
+                // labelWidth={100}
+                style={{
+                  width: 195,
+                  color: "white"
+                }}
                 size="small"
                 notched={false}
                 value={props.userSelectedLanguage}
@@ -1005,26 +748,19 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
                   id: props.id,
                   style: {
                     height: 30,
+                    width: 195,
                     padding: "0px 15px",
                     borderColor: "white",
-                    borderRadius: 4,
-                    "&:before": {
-                      borderColor: "white"
-                    },
-                    "&:after": {
-                      borderColor: "white"
-                    }
-                  },
-                  classes: {
-                    icon: props.classes.icon
+                    color: "white",
+                    borderRadius: 4
                   }
                 }}
               />
             }
-            className={props.classes.languagePickerSelect}
             // value={props.input.value}
             // onChange={props.input.onChange}
-            data-test="component-select"
+            data-testid="component-select"
+            variant="standard"
           >
             {props.options.map(item => (
               <option key={shortid()} value={item}>
@@ -1047,46 +783,78 @@ export const renderSelect = ({
   classes,
   align,
   meta: { error, touched },
-  labelWidth,
+  // labelWidth,
+  style,
   options,
   short,
   mobile,
   formControlName,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
     {({ translate }) => (
       <FormControl
         variant="outlined"
-        className={classes[formControlName] || classes.formControl}
+        // className={classes[formControlName] || classes.formControl}
         error={!!(error && touched)}
         {...custom}
         required={touched && error === "Required"}
-        style={short ? { width: 80 } : mobile ? { width: "100%" } : {}}
+        style={
+          short
+            ? { width: 80 }
+            : // : mobile
+              // ? { width: "100%" }
+              { width: "100%" }
+        }
       >
-        <InputLabel htmlFor={name}>
+        <InputLabel htmlFor={id} id={`${id}Label`}>
           {inputLabelTranslateHelper(id, label, translate)}
         </InputLabel>
         <Select
           native
           input={
-            <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+            // <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+            <OutlinedInput
+              inputProps={{
+                id: id,
+                name: name,
+                style: { ...style },
+                "aria-labelledby": `${id}Label`
+              }}
+            />
           }
-          className={align === "right" ? classes.selectRight : classes.select}
+          // className={align === "right" ? classes.selectRight : classes.select}
+          sx={
+            align === "right"
+              ? {
+                  textAlign: "right",
+                  width: "100%",
+                  margin: "0 0 30px 0",
+                  direction: "rtl"
+                }
+              : {
+                  width: "100%",
+                  margin: "0 0 30px 0"
+                }
+          }
           value={input.value ? input.value.toLowerCase() : ""}
           onChange={input.onChange}
           {...custom}
-          data-test="component-select"
+          data-testid={dataTestId}
+          variant="standard"
         >
-          {options.map(item => (
-            <option
-              key={shortid()}
-              value={item ? item.toLowerCase() : ""}
-              style={selectStyle(align)}
-            >
-              {optionsLabelTranslateHelper(id, item, translate)}
-            </option>
-          ))}
+          {options &&
+            options.map(item => (
+              <option
+                key={shortid()}
+                data-testid={item}
+                value={item ? item.toLowerCase() : ""}
+                style={selectStyle(align)}
+              >
+                {optionsLabelTranslateHelper(id, item, translate)}
+              </option>
+            ))}
         </Select>
       </FormControl>
     )}
@@ -1105,38 +873,62 @@ export const renderCheckbox = ({
   localize,
   bold,
   mini,
+  block,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
     {({ translate }) => {
-      const classStyle = bold
-        ? classes.checkboxLabelBold
-        : mini
-        ? classes.checkboxLabelMini
-        : "";
+      const boldClass = {
+        "& span": {
+          fontWeight: "700 !important",
+          margin: "0 0"
+        }
+      };
+      const miniClass = {
+        "& span": {
+          fontWeight: "400 !important",
+          fontSize: 14,
+          margin: "0 0 35px 0"
+        }
+      };
+      const blockClass = {
+        display: "block !important"
+      };
       return (
         <FormControl
           error={!!(touched && error)}
-          className={classes[formControlName] || classes.formControl}
+          // className={classes[formControlName] || classes.formControl}
+          variant="standard"
+          sx={block ? blockClass : {}}
         >
-          <FormControlLabel
-            label={inputLabelTranslateHelper(id, label, translate)}
-            className={classStyle}
-            control={
-              <Checkbox
-                color="primary"
-                checked={input.value ? true : false}
-                {...custom}
-                {...input}
-                className={classes.checkbox}
-                data-test="component-checkbox"
-                name="checkbox"
-                inputProps={{ id: id }}
-              />
-            }
-          />
+          <Box
+            sx={bold ? boldClass : mini ? miniClass : block ? blockClass : {}}
+          >
+            <FormControlLabel
+              label={inputLabelTranslateHelper(id, label, translate)}
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={input.value ? true : false}
+                  {...custom}
+                  {...input}
+                  // className={classes.checkbox}
+                  data-testid="component-checkbox"
+                  name="checkbox"
+                  inputProps={{ id: id }}
+                  data-testid={dataTestId}
+                />
+              }
+            />
+          </Box>
           {touched && error && (
-            <FormHelperText className={classes.checkboxErrorText}>
+            <FormHelperText
+              // className={classes.checkboxErrorText}
+              sx={{
+                margin: "-10px 0 10px 0"
+              }}
+            >
               {error}
             </FormHelperText>
           )}
@@ -1147,77 +939,80 @@ export const renderCheckbox = ({
 );
 
 // custom MUI friendly RADIO group with translated label
-export const renderRadioGroup = ({
-  input,
-  id,
-  label,
-  options,
-  validate,
-  classes,
-  direction,
-  meta: { touched, error },
-  formControlName,
-  legendClass,
-  additionalOnChange,
-  ...custom
-}) => (
-  <Translate>
-    {({ translate }) => (
-      <FormControl
-        component="fieldset"
-        error={!!(touched && error)}
-        className={classes[formControlName] || classes.formControl}
-      >
-        <FormLabel component="legend" className={classes.radioLabel}>
-          {translate(id)}
-        </FormLabel>
+// export const renderRadioGroup = ({
+//   input,
+//   id,
+//   label,
+//   options,
+//   validate,
+//   classes,
+//   direction,
+//   meta: { touched, error },
+//   formControlName,
+//   legendClass,
+//   additionalOnChange,
+//   dataTestId,
+//   ...custom
+// }) => (
+//   <Translate>
+//     {({ translate }) => (
+//       <FormControl
+//         component="fieldset"
+//         error={!!(touched && error)}
+//         className={classes[formControlName] || classes.formControl}
+//         variant="standard"
+//       >
+//         <FormLabel component="legend" className={classes.radioLabel}>
+//           {translate(id)}
+//         </FormLabel>
 
-        <RadioGroup
-          data-test="component-radio-group"
-          aria-label={formControlName}
-          name={formControlName}
-          className={
-            direction === "vert" ? classes.verticalGroup : classes.horizGroup
-          }
-          onChange={(event, value) => {
-            console.log(value);
-            console.log(event.target.value);
-            input.onChange(value);
-            if (additionalOnChange) {
-              console.log("additionalOnChange");
-              console.log(additionalOnChange);
-              additionalOnChange(value);
-            }
-          }}
-          id={id}
-        >
-          {options.map(item => {
-            return (
-              <FormControlLabel
-                key={shortid()}
-                value={item}
-                className={legendClass}
-                control={
-                  <Radio
-                    checked={item.toString() === input.value.toString()}
-                    color="primary"
-                    data-test="component-radio"
-                  />
-                }
-                label={inputLabelTranslateHelper(item, item, translate)}
-              />
-            );
-          })}
-        </RadioGroup>
-        {touched && error && (
-          <FormHelperText className={classes.checkboxErrorText}>
-            {error}
-          </FormHelperText>
-        )}
-      </FormControl>
-    )}
-  </Translate>
-);
+//         <RadioGroup
+//           data-testid="component-radio-group"
+//           aria-label={formControlName}
+//           name={formControlName}
+//           className={
+//             direction === "vert" ? classes.verticalGroup : classes.horizGroup
+//           }
+//           onChange={(event, value) => {
+//             console.log(value);
+//             console.log(event.target.value);
+//             input.onChange(value);
+//             if (additionalOnChange) {
+//               console.log("additionalOnChange");
+//               console.log(additionalOnChange);
+//               additionalOnChange(value);
+//             }
+//           }}
+//           id={id}
+//           data-testid={dataTestId}
+//         >
+//           {options.map(item => {
+//             return (
+//               <FormControlLabel
+//                 key={shortid()}
+//                 value={item}
+//                 className={legendClass}
+//                 control={
+//                   <Radio
+//                     checked={item.toString() === input.value.toString()}
+//                     color="primary"
+//                     data-testid="component-radio"
+//                   />
+//                 }
+//                 label={inputLabelTranslateHelper(item, item, translate)}
+//               />
+//             );
+//           })}
+//         </RadioGroup>
+//         {touched && error && (
+//           <FormHelperText className={classes.checkboxErrorText}>
+//             {error}
+//           </FormHelperText>
+//         )}
+//       </FormControl>
+//     )}
+//   </Translate>
+// );
 
 export const renderCAPERadioGroup = ({
   input,
@@ -1230,6 +1025,7 @@ export const renderCAPERadioGroup = ({
   meta: { touched, error },
   formControlName,
   legendClass,
+  dataTestId,
   ...custom
 }) => (
   <Translate>
@@ -1237,19 +1033,39 @@ export const renderCAPERadioGroup = ({
       <FormControl
         component="fieldset"
         error={!!(touched && error)}
-        className={classes[formControlName] || classes.formControl}
+        // className={classes[formControlName] || classes.formControl}
+        sx={{
+          width: "100%"
+        }}
+        variant="standard"
       >
-        <FormLabel component="legend" className={classes.capeRadioLabel}>
+        <FormLabel
+          component="legend"
+          // className={classes.capeRadioLabel}
+          sx={{
+            fontSize: "1.2em",
+            color: "#531078", // medium purple // theme.palette.primary.light
+            fontWeight: 700,
+            textAlign: "center"
+          }}
+        >
           {translate(id)}
         </FormLabel>
 
         <RadioGroup
-          data-test="component-cape-radio-group"
+          data-testid="component-cape-radio-group"
           aria-label={formControlName}
           name={formControlName}
           id={formControlName}
-          className={classes.horizGroup}
+          // className={classes.horizGroup}
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center"
+          }}
           onChange={input.onChange}
+          data-testid={dataTestId}
         >
           {options.map(item => {
             let labelText = `$${item}`;
@@ -1260,7 +1076,17 @@ export const renderCAPERadioGroup = ({
               <FormControlLabel
                 key={shortid()}
                 value={item}
-                className={classes.suggestedAmountBox}
+                // className={classes.suggestedAmountBox}
+                sx={{
+                  width: "21%",
+                  height: "60px",
+                  margin: "13px 1.666666666666667% 0",
+                  display: {
+                    xs: "flex",
+                    sm: "inline-block"
+                  },
+                  textAlign: "center"
+                }}
                 label={labelText}
                 labelPlacement="bottom"
                 control={
@@ -1268,7 +1094,8 @@ export const renderCAPERadioGroup = ({
                     checked={item.toString() === input.value.toString()}
                     color="primary"
                     inputProps={{ id: id }}
-                    data-test="component-radio"
+                    data-testid="component-radio"
+                    style={{ paddingBottom: 0 }}
                   />
                 }
               />
@@ -1276,7 +1103,13 @@ export const renderCAPERadioGroup = ({
           })}
         </RadioGroup>
         {touched && error && (
-          <FormHelperText className={classes.checkboxErrorText}>
+          <FormHelperText
+            // className={classes.checkboxErrorText}
+            sx={{
+              margin: "-10px 0 10px 0",
+              textAlign: "center"
+            }}
+          >
             {error}
           </FormHelperText>
         )}
@@ -1488,7 +1321,7 @@ Select.propTypes = {
   }),
   name: PropTypes.string,
   label: PropTypes.string,
-  labelWidth: PropTypes.string,
+  style: PropTypes.object,
   formControlName: PropTypes.string,
   options: PropTypes.array,
   touched: PropTypes.bool,

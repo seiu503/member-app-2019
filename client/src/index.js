@@ -8,7 +8,8 @@ import "./styles/css/index.css";
 import App from "./App";
 import store from "./store/store";
 import { unregister } from "./serviceWorker";
-import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { StyledEngineProvider } from "@mui/material";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
 import { LocalizeProvider } from "react-localize-redux";
@@ -19,14 +20,15 @@ render(
   <Provider store={store}>
     <BrowserRouter>
       <ScrollToTop>
-        <MuiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
           <LocalizeProvider store={store}>
             <App />
           </LocalizeProvider>
-        </MuiThemeProvider>
+        </ThemeProvider>
       </ScrollToTop>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
 );
+
 unregister();

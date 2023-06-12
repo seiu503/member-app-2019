@@ -1,11 +1,14 @@
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
+
 import { Translate } from "react-localize-redux";
 
 const styles = theme => ({
@@ -46,7 +49,7 @@ function Modal(props) {
   return (
     <div>
       <Dialog
-        data-test="component-modal"
+        data-testid="component-modal"
         open={props.open}
         onClose={props.handleCloseAndClear}
         aria-labelledby="alert-dialog-title"
@@ -62,7 +65,7 @@ function Modal(props) {
         </DialogContent>
         <DialogActions className={classes.dialogActionsOverride}>
           <Button
-            data-test="button-link-request"
+            data-testid="button-link-request"
             onClick={props.handleCloseAndClear}
             className={classes.modalButtonRed}
           >
@@ -72,6 +75,7 @@ function Modal(props) {
           <Button
             onClick={props.handleClose}
             className={classes.modalButtonGreen}
+            data-testid="button-close"
             autoFocus
           >
             <Translate id="modalConfirmButton" /> {`${props.fullName}`}

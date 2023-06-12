@@ -1,25 +1,26 @@
+import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
 
-import CloseIcon from "@material-ui/icons/Close";
-import green from "@material-ui/core/colors/green";
-import amber from "@material-ui/core/colors/amber";
-import IconButton from "@material-ui/core/IconButton";
-import SnackbarContent from "@material-ui/core/SnackbarContent";
-import CheckCircleIcon from "@material-ui/icons/CheckCircle";
-import WarningIcon from "@material-ui/icons/Warning";
-import ErrorIcon from "@material-ui/icons/Error";
-import InfoIcon from "@material-ui/icons/Info";
-import { withStyles } from "@material-ui/core/styles";
+import { green, amber } from "@mui/material/colors";
+import { SnackbarContent, IconButton } from "@mui/material";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import WarningIcon from "@mui/icons-material/Warning";
+import ErrorIcon from "@mui/icons-material/Error";
+import InfoIcon from "@mui/icons-material/Info";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { theme } from "../styles/theme";
+import { withStyles } from "@mui/styles";
 
 const variantIcon = {
-  success: CheckCircleIcon,
-  warning: WarningIcon,
-  error: ErrorIcon,
-  info: InfoIcon
+  success: () => <CheckCircleIcon />,
+  warning: () => <WarningIcon />,
+  error: () => <ErrorIcon />,
+  info: () => <InfoIcon />
 };
 
-const styles1 = theme => ({
+const styles = theme => ({
   success: {
     backgroundColor: green[600]
   },
@@ -48,7 +49,7 @@ const styles1 = theme => ({
   }
 });
 
-export const CustomSnackbarContent = props => {
+export const CustomSnackbarContent = React.forwardRef((props, ref) => {
   const {
     classes,
     className,
@@ -59,24 +60,22 @@ export const CustomSnackbarContent = props => {
     ...other
   } = props;
   const Icon = variantIcon[variant];
-  // let actionButton = null;
-  // if (action) {
-  //   actionButton = action(props);
-  // }
   return (
     <SnackbarContent
       className={classNames(classes[variant], className)}
-      data-test="component-custom-snackbar"
+      data-testid="component-custom-snackbar"
       aria-describedby="client-snackbar"
+      // ref={ref}
       message={
         <span
           id="client-snackbar"
           className={classes.message}
-          data-test="message"
+          data-testid="message"
         >
           <Icon
             className={classNames(classes.icon, classes.iconVariant)}
-            data-test="message-icon"
+            data-testid="message-icon"
+            // ref={ref}
           />
           {message}
         </span>
@@ -89,15 +88,16 @@ export const CustomSnackbarContent = props => {
           color="inherit"
           className={classes.close}
           onClick={onClose}
-          data-test="icon-button"
+          data-testid="icon-button"
+          // ref={ref}
         >
-          <CloseIcon className={classes.icon} data-test="close-icon" />
+          <CloseIcon className={classes.icon} data-testid="close-icon" />
         </IconButton>
       ]}
       {...other}
     />
   );
-};
+});
 
 CustomSnackbarContent.propTypes = {
   classes: PropTypes.object.isRequired,
@@ -106,5 +106,5 @@ CustomSnackbarContent.propTypes = {
   onClose: PropTypes.func,
   variant: PropTypes.oneOf(["success", "warning", "error", "info"]).isRequired
 };
-const CustomSnackbarContentWrapper = withStyles(styles1)(CustomSnackbarContent);
+const CustomSnackbarContentWrapper = withStyles(styles)(CustomSnackbarContent);
 export default CustomSnackbarContentWrapper;

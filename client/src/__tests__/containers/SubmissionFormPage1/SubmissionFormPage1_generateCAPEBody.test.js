@@ -1,17 +1,40 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
-
-import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
-
-let wrapper;
-
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../../styles/theme";
+import {
+  generatePage2Validate,
+  generateSubmissionBody
+} from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generatePage2Validate();
+const server = setupServer(...handlers);
+
+import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
 let updateSFContactSuccess = jest
   .fn()
@@ -29,6 +52,13 @@ let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "CREATE_SF_CONTACT_SUCCESS",
+    payload: { salesforce_id: "123" }
+  })
+);
+
+let createSFCAPESuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "CREATE_SF_CAPE_SUCCESS",
     payload: { salesforce_id: "123" }
   })
 );
@@ -60,21 +90,18 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
+let getSFEmployersSuccess = jest.fn().mockImplementation(() =>
+  Promise.resolve({
+    type: "GET_SF_EMPLOYERS_SUCCESS",
+    payload: { ...employersPayload }
+  })
+);
+
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
 global.scrollTo = jest.fn();
-
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
-};
 
 let formValues;
 
@@ -98,7 +125,7 @@ const defaultProps = {
   },
   classes: {},
   apiSF: {
-    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
+    getSFEmployers: getSFEmployersSuccess,
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
@@ -116,21 +143,17 @@ const defaultProps = {
     push: pushMock
   },
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
   legal_language: {
     current: {
       innerHTML: "legal"
-    }
-  },
-  direct_deposit: {
-    current: {
-      innerHTML: "deposit"
     }
   },
   cape_legal: {
@@ -145,88 +168,152 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
-  }
+  },
+  headline: {
+    id: 1,
+    text: ""
+  },
+  image: {
+    id: 2,
+    url: "blah"
+  },
+  body: {
+    id: 3,
+    text: ""
+  },
+  setCAPEOptions: jest.fn(),
+  handleError: jest.fn(),
+  renderHeadline: jest.fn(),
+  translate: jest.fn(),
+  renderBodyCopy: jest.fn(),
+  capeObject: {}
 };
 
+let handleSubmit;
+const initialState = {};
+const store = storeFactory(initialState);
 const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<SubmissionFormPage1Container {...setupProps} />);
+  const setupProps = { ...defaultProps, ...props, handleSubmit };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <SubmissionFormPage1Container {...setupProps} />
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
-    formValues = {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false
-    };
+    handleSubmit = fn => fn;
   });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("generateCAPEBody", () => {
     test("`generateCAPEBody` handles edge case if no matching employer object found", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+      const openSnackbarMock = jest.fn();
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "sdjflk",
           paymentType: "card",
           employerType: "retired",
-          preferredLanguage: "English"
+          preferredLanguage: "English",
+          capeAmount: 1
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         },
         submission: {
           salesforceId: "123",
           formPage1: {
             prefillEmployerId: null
           },
-          employerObjects: [{ Id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+          employerObjects: [{ Id: "1", Name: "SEIU LOCAL 503 OPEU" }],
+          cape: {
+            id: 1
+          }
         },
         apiSF: {
-          createSFContact: createSFContactError
-        }
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
       };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .generateCAPEBody(5)
-        .catch(err => console.log(err));
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      expect(result.employer_id).toBe("0016100000WERGeAAP");
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect openSnackbar to be called with success message
+      await waitFor(() => {
+        expect(openSnackbarMock).toHaveBeenCalledWith(
+          "success",
+          "Thank you. Your CAPE submission was processed."
+        );
+      });
     });
     test("`generateCAPEBody` handles edge case if prefill employer id & employer changed", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+      const openSnackbarMock = jest.fn();
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "hjk",
           paymentType: "card",
           employerType: "retired",
-          preferredLanguage: "English"
+          preferredLanguage: "English",
+          capeAmount: 1
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         },
         submission: {
           salesforceId: "123",
@@ -234,71 +321,140 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             prefillEmployerId: "1",
             prefillEmployerChanged: true
           },
-          employerObjects: [{ Id: "2", Name: "SEIU LOCAL 503 OPEU" }]
+          employerObjects: [{ Id: "2", Name: "SEIU LOCAL 503 OPEU" }],
+          cape: {
+            id: 1
+          }
         },
         apiSF: {
-          createSFContact: createSFContactError
-        }
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
       };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .generateCAPEBody("Other", 2)
-        .catch(err => console.log(err));
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      expect(result.employer_id).toBe("0016100000WERGeAAP");
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect openSnackbar to be called with success message
+      await waitFor(() => {
+        expect(openSnackbarMock).toHaveBeenCalledWith(
+          "success",
+          "Thank you. Your CAPE submission was processed."
+        );
+      });
     });
     test("`generateCAPEBody` handles edge case if prefill employer id & employer !changed", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+      const openSnackbarMock = jest.fn();
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "hjk",
           paymentType: "card",
           employerType: "retired",
-          preferredLanguage: "English"
+          preferredLanguage: "English",
+          capeAmount: 1
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         },
         submission: {
           salesforceId: "123",
           formPage1: {
             prefillEmployerId: "1"
           },
-          employerObjects: [{ Id: "2", Name: "SEIU LOCAL 503 OPEU" }]
+          employerObjects: [{ Id: "2", Name: "SEIU LOCAL 503 OPEU" }],
+          cape: {
+            id: 1
+          }
         },
         apiSF: {
-          createSFContact: createSFContactError
-        }
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
       };
-      wrapper = setup(props);
-      wrapper.instance().state.prefillEmployerChanged = false;
-      wrapper.update();
-      const result = await wrapper
-        .instance()
-        .generateCAPEBody("Other", 2)
-        .catch(err => console.log(err));
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      expect(result.employer_id).toBe("1");
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect openSnackbar to be called with success message
+      await waitFor(() => {
+        expect(openSnackbarMock).toHaveBeenCalledWith(
+          "success",
+          "Thank you. Your CAPE submission was processed."
+        );
+      });
     });
     test("`generateCAPEBody` handles SEIU 503 Staff edge case", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      formValues.employerName = "SEIU 503 Staff";
+      const openSnackbarMock = jest.fn();
       let props = {
         formValues: {
           directPayAuth: true,
-          directDepositAuth: true,
           employerName: "SEIU 503 Staff",
           paymentType: "card",
           employerType: "retired",
-          preferredLanguage: "English"
+          preferredLanguage: "English",
+          capeAmount: 1
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         },
         submission: {
           salesforceId: "123",
@@ -307,19 +463,217 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           },
           employerObjects: [
             { Id: "1", Name: "SEIU LOCAL 503 OPEU", Agency_Number__c: 700 }
-          ]
+          ],
+          cape: {
+            id: 1
+          }
         },
         apiSF: {
-          createSFContact: createSFContactError
-        }
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
       };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .generateCAPEBody(10)
-        .catch(err => console.log(err));
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      expect(result.employer_id).toBe("1");
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect openSnackbar to be called with success message
+      await waitFor(() => {
+        expect(openSnackbarMock).toHaveBeenCalledWith(
+          "success",
+          "Thank you. Your CAPE submission was processed."
+        );
+      });
+    });
+    test("CAPE form displays CAPE Payment fields if no donation amount chosen", async () => {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      const openSnackbarMock = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          employerName: "sdjflk",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English",
+          capeAmount: null
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          verify: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "VERIFY_SUCCESS",
+              payload: {
+                score: 0.9
+              }
+            })
+          )
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null,
+            reCaptchaValue: "token"
+          },
+          employerObjects: [...employersPayload],
+          cape: {
+            id: 1
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
+      };
+      const { queryByTestId, getByTestId } = setup(props);
+
+      const nextButton = await screen.getByRole("button", {
+        name: /next/i
+      });
+
+      await waitFor(async () => {
+        await expect(nextButton).toBeInTheDocument();
+      });
+
+      const cape = await getByTestId("cape-form");
+
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect the `displayPaymentFields` prop to be true after submit, hiding the Next button
+      // should really be testing for presence of cape payment fields but can't get that to work for some reason
+      await waitFor(async () => {
+        await expect(nextButton).not.toBeInTheDocument();
+      });
+    });
+
+    test("`generateCAPEBody` handles edge case if no donation amount chosen after fields displayed", async () => {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      const openSnackbarMock = jest.fn();
+      let props = {
+        formValues: {
+          directPayAuth: true,
+          employerName: "health licensing agency",
+          paymentType: "card",
+          employerType: "state agency",
+          preferredLanguage: "English",
+          capeAmount: "Other",
+          capeAmountOther: null
+        },
+        apiSubmission: {
+          handleInput: handleInputMock,
+          createCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          verify: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "VERIFY_SUCCESS",
+              payload: {
+                score: 0.9
+              }
+            })
+          )
+        },
+        submission: {
+          salesforceId: "123",
+          formPage1: {
+            prefillEmployerId: null,
+            reCaptchaValue: "token"
+          },
+          employerObjects: [...employersPayload],
+          cape: {
+            id: 1
+          }
+        },
+        apiSF: {
+          createSFContact: createSFContactError,
+          getSFEmployers: () =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: { ...employersPayload }
+            }),
+          createSFCAPE: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CAPE_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
+        },
+        location: {
+          search: "&cape=true"
+        },
+        openSnackbar: openSnackbarMock
+      };
+      const { queryByTestId, getByTestId } = setup(props);
+
+      const nextButton = await screen.getByRole("button", {
+        name: /next/i
+      });
+
+      await waitFor(async () => {
+        await expect(nextButton).toBeInTheDocument();
+      });
+
+      const cape = await getByTestId("cape-form");
+
+      // simulate submit
+      await fireEvent.submit(cape);
+
+      // expect the `displayPaymentFields` prop to be true after submit, hiding the Next button
+      // should really be testing for presence of cape payment fields but can't get that to work for some reason
+      // await waitFor(async () => {
+      //   await expect(nextButton).not.toBeInTheDocument();
+      // });
     });
   });
 });

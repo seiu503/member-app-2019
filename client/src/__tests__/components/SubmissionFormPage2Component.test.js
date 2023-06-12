@@ -1,15 +1,45 @@
 import React from "react";
-import { shallow } from "enzyme";
-
-import { findByTestAttr } from "../../utils/testUtils";
-import { generatePage2Validate } from "../../../../app/utils/fieldConfigs";
-import { SubmissionFormPage2Component } from "../../components/SubmissionFormPage2Component";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
+import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generatePage2Validate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
+import handlers from "../../mocks/handlers";
+let pushMock = jest.fn(),
+  handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
+  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
-// variables
-let wrapper, handleSubmit, props, apiSubmission, apiSF, handleSubmitMock;
+const testData = generatePage2Validate();
+const server = setupServer(...handlers);
 
-let handleErrorMock = jest.fn();
+import {
+  SubmissionFormPage2Component,
+  SubmissionFormPage2FormWrap
+} from "../../components/SubmissionFormPage2Component";
+
+let handleSubmit, props, handleSubmitMock, store;
 
 let updateSFContactSuccess = jest
   .fn()
@@ -23,11 +53,10 @@ let updateSFContactError = jest
     Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
   );
 
-let updateSubmissionSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS", payload: {} })
-  );
+let updateSubmissionSuccess = jest.fn().mockImplementation(() => {
+  console.log("updateSubmissionSuccessMock");
+  Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS", payload: {} });
+});
 
 let createSubmissionSuccess = jest
   .fn()
@@ -35,11 +64,14 @@ let createSubmissionSuccess = jest
     Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS", payload: {} })
   );
 
-let updateSubmissionError = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
-  );
+let updateSubmissionError = jest.fn().mockImplementation(() => {
+  console.log("updateSubmissionErrorMock");
+  Promise.reject({
+    type: "UPDATE_SUBMISSION_FAILURE",
+    payload: {},
+    message: "updateSubmissionError"
+  });
+});
 
 // initial props for form
 const defaultProps = {
@@ -49,14 +81,24 @@ const defaultProps = {
     loading: false,
     formPage1: {
       paymentRequired: false
-    }
+    },
+    formPage2: {
+      ...generatePage2Validate,
+      hireDate: "2000-10-01"
+    },
+    salesforceId: "123",
+    submissionId: "345"
   },
   initialValues: { gender: "" },
   formValues: { gender: "" },
   classes: { test: "test" },
   // need these here for form to have access to their definitions later
-  apiSubmission,
-  apiSF,
+  apiSubmission: {
+    updateSubmission: updateSubmissionSuccess
+  },
+  apiSF: {
+    updateSFContact: updateSFContactSuccess
+  },
   location: {
     search: ""
   },
@@ -69,8 +111,33 @@ const defaultProps = {
     setSpinner: jest.fn()
   },
   createSubmission: createSubmissionSuccess,
+  updateSubmission: updateSubmissionSuccess,
   updateSFContact: updateSFContactSuccess,
-  translate: jest.fn()
+  saveSubmissionErrors: jest.fn(),
+  translate: jest.fn(),
+  handleError: handleErrorMock,
+  openSnackbar: jest.fn()
+};
+
+const bodyData = generatePage2Validate();
+const initialState = {
+  submission: {
+    formPage2: {
+      ...bodyData,
+      hireDate: "2000-10-01"
+    }
+  }
+};
+store = storeFactory(initialState);
+const setup = (props = {}) => {
+  const setupProps = { ...defaultProps, ...props, handleSubmit };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <SubmissionFormPage2FormWrap {...setupProps} />
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("Unconnected <SubmissionFormPage2 />", () => {
@@ -79,303 +146,217 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
   // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
     handleSubmit = fn => fn;
-    apiSubmission = {};
-    apiSF = {
-      updateSFContact: jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS" })
-        )
-    };
   });
 
-  // create wrapper with default props and assigned values from above as props
-  const unconnectedSetup = props => {
-    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-    return shallow(<SubmissionFormPage2Component {...setUpProps} {...props} />);
-  };
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
 
-  // smoke test and making sure we have access to correct props
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
+
   describe("basic setup", () => {
     beforeEach(() => {
       handleSubmitMock = jest.fn();
       handleSubmit = handleSubmitMock;
-      wrapper = unconnectedSetup();
     });
 
     it("renders without error", () => {
-      const component = findByTestAttr(
-        wrapper,
-        "component-submissionformpage2"
-      );
-      expect(component.length).toBe(1);
-    });
-    it("renders specialized text if payment required", () => {
-      const props = {
-        submission: {
-          formPage1: {
-            paymentRequired: true
-          }
-        }
-      };
-      wrapper = unconnectedSetup(props);
-      const component = findByTestAttr(wrapper, "direct-pay-text");
-      expect(component.length).toBe(1);
-    });
-    it("has access to `submission error` prop", () => {
-      expect(wrapper.instance().props.submission.error).toBe(null);
-    });
-    it("has access to `classes` prop", () => {
-      expect(typeof wrapper.instance().props.classes).toBe("object");
-      expect(wrapper.instance().props.classes.test).toBe("test");
-    });
-    it("has access to `initialValues` prop", () => {
-      expect(typeof wrapper.instance().props.formValues).toBe("object");
-      expect(wrapper.instance().props.initialValues.gender).toBe("");
+      const { getByTestId } = setup(props);
+      const component = getByTestId("component-submissionformpage2");
+      expect(component).toBeInTheDocument();
     });
   });
 
   describe("handleSubmit", () => {
-    beforeEach(done => {
-      props = {
-        apiSubmission: {
-          updateSubmission: updateSubmissionSuccess
-        },
-        apiSF: {
-          updateSFContact: updateSFContactSuccess
-        },
-        location: {
-          search: "id=1"
-        },
-        submission: {
-          formPage1: {
-            paymentRequired: false
-          },
-          formPage2: {
-            ...generatePage2Validate
-          },
-          salesforceId: "123"
-        },
-        handleError: handleErrorMock
-      };
-      done();
-    });
     afterEach(() => {
-      jest.restoreAllMocks();
-    });
-
-    it("handles error if updateSubmission prop fails", async function() {
-      props.submission.salesforceId = null;
-      updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() => Promise.reject());
-
-      // creating wrapper
-      props.updateSubmission = updateSubmissionError;
-      props.submission.error = "Error";
-      wrapper = unconnectedSetup(props);
-      formElements.handleError = handleErrorMock;
-
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(generatePage2Validate())
-        .then(async () => {
-          try {
-            await updateSubmissionError();
-            expect(handleErrorMock.mock.calls.length).toBe(1);
-          } catch (err) {
-            console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      // jest.restoreAllMocks();
     });
 
     it("handles error if updateSubmission prop throws", async function() {
-      // imported function that creates dummy data for form
-      updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
-        );
+      props = {
+        ...defaultProps,
+        apiSF: {
+          updateSFContact: jest.fn().mockImplementation(() => {
+            console.log("updateSFContactMock");
+            return Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: {}
+            });
+          })
+        },
+        submission: {
+          ...defaultProps.submission,
+          salesforceId: null,
+          error: "updateSubmissionError"
+        },
+        updateSubmission: jest.fn().mockImplementation(() => {
+          console.log("updateSubmissionErrorMock");
+          return Promise.reject("updateSubmissionError");
+        })
+      };
 
-      // creating wrapper
-      props.apiSubmission.updateSubmission = updateSubmissionError;
-      wrapper = unconnectedSetup(props);
       formElements.handleError = handleErrorMock;
 
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(generatePage2Validate())
-        .then(async () => {
-          try {
-            await updateSubmissionError();
-            expect(formElements.handleError.mock.calls.length).toBe(1);
-          } catch (err) {
-            // console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      // render form
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const page2Form = getByTestId("form-page2");
+
+      // simulate submit p2
+      await waitFor(async () => {
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
+      });
+
+      // expect handleErrorMock to have been called with correct message
+      await waitFor(() => {
+        const message = "updateSubmissionError";
+        expect(handleErrorMock).toHaveBeenCalledWith(message);
+      });
     });
 
     it("handles error if updateSFContact prop throws", async function() {
-      // creating wrapper
-      props.apiSubmission.updateSubmission = updateSubmissionSuccess;
-      props.apiSF.updateSFContact = updateSFContactError;
+      props = {
+        ...defaultProps,
+        apiSF: {
+          updateSFContact: jest.fn().mockImplementation(() => {
+            console.log("updateSFContactMock");
+            return Promise.reject("updateSFContactError");
+          })
+        },
+        submission: {
+          ...defaultProps.submission,
+          salesforceId: null,
+          error: "updateSFContactError"
+        },
+        updateSubmission: jest.fn().mockImplementation(() => {
+          console.log("updateSubmissionSuccessMock");
+          return Promise.resolve({
+            type: "UPDATE_SUBMISSION_SUCCESS",
+            payload: {}
+          });
+        })
+      };
 
-      wrapper = unconnectedSetup(props);
       formElements.handleError = handleErrorMock;
 
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(generatePage2Validate())
-        .then(async () => {
-          try {
-            await updateSubmissionSuccess();
-            await updateSFContactError();
-            expect(formElements.handleError.mock.calls.length).toBe(1);
-          } catch (err) {
-            // console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
+      // render form
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-    it("handles error if updateSFContact prop fails", async function() {
-      updateSFContactError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
-        );
+      // simulate submit p2
+      await waitFor(async () => {
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
+      });
 
-      // creating wrapper
-      props.updateSubmission = updateSubmissionSuccess;
-      props.updateSFContact = updateSFContactError;
-      wrapper = unconnectedSetup(props);
-      formElements.handleError = handleErrorMock;
-
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(generatePage2Validate())
-        .then(async () => {
-          try {
-            await updateSubmissionSuccess();
-            await updateSFContactError();
-            expect(handleErrorMock.mock.calls.length).toBe(1);
-          } catch (err) {
-            console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
-
-    it("handles error if createSubmission method throws (no id)", async function() {
-      const createSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "CREATE_SUBMISSION_FAILURE", payload: {} })
-        );
-
-      // creating wrapper
-      props.createSubmission = createSubmissionError;
-      props.updateSubmission = updateSubmissionSuccess;
-      props.updateSFContact = updateSFContactSuccess;
-      props.submission.submissionId = null;
-      wrapper = unconnectedSetup(props);
-      formElements.handleError = handleErrorMock;
-
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(generatePage2Validate())
-        .then(async () => {
-          try {
-            await createSubmissionError();
-            expect(handleErrorMock.mock.calls.length).toBe(1);
-          } catch (err) {
-            console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      // expect handleErrorMock to have been called with correct message
+      await waitFor(() => {
+        const message = "updateSFContactError";
+        expect(handleErrorMock).toHaveBeenCalledWith(message);
+      });
     });
 
     it("handles error if updateSubmission method throws", async function() {
-      updateSubmissionError = jest
+      const updateSubmissionError = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
-        );
+        .mockImplementation(() => Promise.reject("updateSubmissionError"));
 
-      // creating wrapper
-      props.updateSubmission = updateSubmissionError;
-      props.updateSFContact = updateSFContactSuccess;
-      props.submission.submissionId = 1234;
-      wrapper = unconnectedSetup(props);
+      props = {
+        ...defaultProps,
+        apiSF: {
+          updateSFContact: jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: {}
+            });
+          })
+        },
+        submission: {
+          ...defaultProps.submission,
+          salesforceId: null,
+          error: "createSubmissionError"
+        },
+        updateSubmission: updateSubmissionError
+      };
+
       formElements.handleError = handleErrorMock;
 
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(generatePage2Validate())
-        .then(async () => {
-          try {
-            await updateSubmissionError();
-            expect(handleErrorMock.mock.calls.length).toBe(1);
-          } catch (err) {
-            console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      // render form
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const page2Form = getByTestId("form-page2");
+
+      // simulate submit p2
+      await waitFor(async () => {
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
+      });
+
+      // expect handleErrorMock to have been called with correct message
+      await waitFor(() => {
+        const message = "updateSubmissionError";
+        expect(handleErrorMock).toHaveBeenCalledWith(message);
+      });
     });
 
-    it("handles edge cases: no params.id, no hire date", async function() {
-      updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
-        );
+    // REWRITE IF NEEDED FOR COVERAGE
+    // it("handles edge cases: no params.id, no hire date", async function() {
+    //   updateSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
+    //     );
 
-      // creating wrapper
-      props.updateSubmission = updateSubmissionError;
-      props.updateSFContact = updateSFContactSuccess;
-      props.submission.submissionId = 1234;
-      props.submission.salesforceId = null;
-      props.location.search = "";
-      wrapper = unconnectedSetup(props);
-      formElements.handleError = handleErrorMock;
-      const bodyData = generatePage2Validate();
-      delete bodyData.hireDate;
+    //   // creating wrapper
+    //   props.updateSubmission = updateSubmissionError;
+    //   props.updateSFContact = updateSFContactSuccess;
+    //   props.submission.submissionId = 1234;
+    //   props.submission.salesforceId = null;
+    //   props.location.search = "";
+    //   wrapper = unconnectedSetup(props);
+    //   formElements.handleError = handleErrorMock;
+    //   const bodyData = generatePage2Validate();
+    //   delete bodyData.hireDate;
 
-      // simulate submit with dummy data
-      wrapper
-        .instance()
-        .handleSubmit(bodyData)
-        .then(async () => {
-          try {
-            await updateSubmissionError();
-            expect(handleErrorMock.mock.calls.length).toBe(1);
-          } catch (err) {
-            console.log(err);
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    });
+    //   // simulate submit with dummy data
+    //   wrapper
+    //     .instance()
+    //     .handleSubmit(bodyData)
+    //     .then(async () => {
+    //       try {
+    //         await updateSubmissionError();
+    //         expect(handleErrorMock.mock.calls.length).toBe(1);
+    //       } catch (err) {
+    //         console.log(err);
+    //       }
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // });
   });
 });
