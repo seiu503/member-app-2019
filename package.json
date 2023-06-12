@@ -11,7 +11,9 @@
     "dev-server": "NODE_CONFIG_ENV=development LOG_LEVEL=debug supervisor --inspect server.js",
     "prod-server": "LOG_LEVEL=debug supervisord --inspect server.js",
     "sass": "cd client && yarn dev",
-    "dev": "concurrently --kill-others-on-fail \"yarn dev-server\" \"yarn dev-client\" \"yarn sass\""
+    "dev": "concurrently --kill-others-on-fail \"yarn dev-server\" \"yarn dev-client\" \"yarn sass\"",
+    "snyk-protect": "snyk-protect",
+    "prepare": "yarn run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -49,6 +51,7 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@snyk/protect": "^1.1178.0",
     "aws-sdk-mock": "^4.4.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",

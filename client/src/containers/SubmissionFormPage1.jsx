@@ -504,20 +504,24 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });
-
+    console.log("507");
     // check if SF contact id already exists (prefill case)
-    console.log(`sfid: ${this.props.submission.salesforceId}`);
+    // console.log(`sfid: ${this.props.submission.salesforceId}`); // tests will fail if you leave any logs in app methods
     const checkForSFContactId = async () => {
       if (this.props.submission.salesforceId) {
         console.log("511");
         // update existing contact, move to next tab
-        await this.props.updateSFContact(formValues).catch(err => {
-          console.error(err);
-          return this.props.handleError(err);
-        });
+        await this.props
+          .updateSFContact(formValues)
+          .then(() => console.log("515"))
+          .catch(err => {
+            console.error(err);
+            return this.props.handleError(err);
+          });
         return this.props.changeTab(1);
       }
     };
+    console.log("521");
 
     await checkForSFContactId();
 

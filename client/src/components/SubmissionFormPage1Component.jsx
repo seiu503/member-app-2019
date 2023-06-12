@@ -190,40 +190,42 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
-  async createSFOMA() {
-    console.log("createSFOMA");
-    this.props.actions.setSpinner();
-    const { formValues } = this.props;
-    const body = await this.props.generateSubmissionBody(formValues);
-    body.Worker__c = this.props.submission.salesforceId;
-    this.props.apiSF
-      .createSFOMA(body)
-      .then(result => {
-        // console.log(result.type);
-        if (
-          result.type === "CREATE_SF_OMA_FAILURE" ||
-          this.props.submission.error
-        ) {
-          // console.log(this.props.submission.error);
-          this.props.saveSubmissionErrors(
-            this.props.submission.submissionId,
-            "createSFOMA",
-            this.props.submission.error
-          );
-          console.error(this.props.submission.error);
-          return this.props.handleError(this.props.submission.error);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        this.props.saveSubmissionErrors(
-          this.props.submission.submissionId,
-          "createSFOMA",
-          err
-        );
-        return this.props.handleError(err);
-      });
-  }
+  // method appears unused 6/12/2023?
+  // async createSFOMA() {
+  //   console.log("createSFOMA");
+  //   this.props.actions.setSpinner();
+  //   const { formValues } = this.props;
+  //   const body = await this.props.generateSubmissionBody(formValues);
+  //   body.Worker__c = this.props.submission.salesforceId;
+  //   this.props.apiSF
+  //     .createSFOMA(body)
+  //     .then(result => {
+  //       console.log('202');
+  //       // console.log(result.type);
+  //       if (
+  //         result.type === "CREATE_SF_OMA_FAILURE" ||
+  //         this.props.submission.error
+  //       ) {
+  //         // console.log(this.props.submission.error);
+  //         this.props.saveSubmissionErrors(
+  //           this.props.submission.submissionId,
+  //           "createSFOMA",
+  //           this.props.submission.error
+  //         );
+  //         console.error(this.props.submission.error);
+  //         return this.props.handleError(this.props.submission.error);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //       this.props.saveSubmissionErrors(
+  //         this.props.submission.submissionId,
+  //         "createSFOMA",
+  //         err
+  //       );
+  //       return this.props.handleError(err);
+  //     });
+  // }
 
   render() {
     // console.log('submFormPage1Comp Render');

@@ -324,8 +324,8 @@ export class AppUnconnected extends Component {
 
   // lookup SF Contact by first, last, email; if none found then create new
   async lookupSFContact(formValues) {
-    console.log("lookupSFContact");
-    console.dir(formValues);
+    // console.log("lookupSFContact"); // tests will fail if you leave any logs in app methods
+    // console.dir(formValues);
     if (
       formValues.firstName &&
       formValues.lastName &&
@@ -361,6 +361,7 @@ export class AppUnconnected extends Component {
   }
 
   async saveSubmissionErrors(submission_id, method, error) {
+    console.log("saveSubmissionErrors");
     // 1. retrieve existing errors array from current submission
     let { submission_errors } = this.props.submission.currentSubmission;
     if (submission_errors === null || submission_errors === undefined) {
@@ -380,8 +381,8 @@ export class AppUnconnected extends Component {
   }
 
   async prepForContact(values) {
-    console.log("prepForContact");
-    console.dir(values);
+    // console.log("prepForContact"); // tests will fail if you leave any logs in app methods
+    // console.dir(values);
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -396,8 +397,8 @@ export class AppUnconnected extends Component {
       let employerObject;
 
       if (values.employerName) {
-        console.log("********");
-        console.log(`employerName: ${values.employerName}`);
+        // console.log("********"); // tests will fail if you leave any logs in app methods
+        // console.log(`employerName: ${values.employerName}`);
         // console.dir(this.props.submission.employerObjects);
         employerObject = findEmployerObject(
           this.props.submission.employerObjects,
@@ -464,13 +465,12 @@ export class AppUnconnected extends Component {
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
           // this will be an agency-level employer Id
-          console.log("460");
           returnValues.employerId = employerObject
             ? employerObject.Id
             : "0016100000WERGeAAP"; // <= unknown employer
         }
-        console.log(employerObject);
-        console.log(returnValues.employerId);
+        // console.log(employerObject);
+        // console.log(returnValues.employerId);
       } else {
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
@@ -479,7 +479,7 @@ export class AppUnconnected extends Component {
           ? employerObject.Id
           : "0016100000WERGeAAP"; // <= unknown employer
       }
-      console.log("473");
+
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
@@ -674,6 +674,7 @@ export class AppUnconnected extends Component {
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        console.log("677");
         // console.log(result.type);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
@@ -722,12 +723,11 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    console.log("createSFContact");
+    // console.log("createSFContact"); // tests will fail if you leave any logs in app methods
     const values = await this.prepForContact(formValues).catch(err =>
       console.log(err)
     );
-    console.log("724");
-    console.log(values);
+    // console.log(values); // tests will fail if you leave any logs in app methods
     let {
       firstName,
       lastName,
@@ -771,7 +771,7 @@ export class AppUnconnected extends Component {
   }
 
   async updateSFContact(formValues) {
-    console.log("updateSFContact");
+    // console.log("updateSFContact");
     const values = await this.prepForContact(formValues);
     let {
       firstName,
