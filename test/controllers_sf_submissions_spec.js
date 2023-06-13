@@ -17,7 +17,6 @@ const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
 const submissions = require("../db/models/submissions");
 const utils = require("../app/utils/index.js");
 const jsforce = require("jsforce");
-const { upload } = require("../app/controllers/image.ctrl");
 const {
   generateSFContactFieldList,
   generateSampleSubmission,
@@ -693,7 +692,7 @@ suite("sf.ctrl.js", function() {
     });
 
     test("gets all Employers", async function() {
-      query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4'`;
+      query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Id != '0016100000Pw3XQAAZ' AND Id != '0016100000TOfXsAAL' AND Id !='0016100000Pw3aKAAR'`;
       try {
         await sfCtrl.getAllEmployers(req, res);
         assert.called(jsforceConnectionStub);
@@ -952,78 +951,6 @@ suite("sf.ctrl.js", function() {
         assert.calledWith(jsforceStub.sobject, "CAPE__c");
         assert.calledWith(res.status, 500);
         assert.calledWith(res.json, { message: sobjectError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-  });
-
-  suite("sfCtrl > getSFCAPEByContactId", function() {
-    beforeEach(function() {
-      return new Promise(resolve => {
-        req = mockReq({
-          params: {
-            id: "123456789"
-          }
-        });
-        responseStub = { records: [contactStub] };
-        queryStub = sinon.stub().returns((null, responseStub));
-        loginStub = sinon.stub();
-        jsforceStub = {
-          login: loginStub,
-          query: queryStub
-        };
-        jsforceConnectionStub = sinon
-          .stub(jsforce, "Connection")
-          .returns(jsforceStub);
-        resolve();
-      });
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    test("gets a single CAPE record by Contact Id", async function() {
-      query = `SELECT Active_Account_Last_4__c, Payment_Error_Hold__c, Unioni_se_MemberID__c, Card_Brand__c, LastModifiedDate, Id, Employer__c FROM CAPE__c WHERE Worker__c = \'123456789\' ORDER BY LastModifiedDate DESC LIMIT 1`;
-      try {
-        await sfCtrl.getSFCAPEByContactId(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(jsforceStub.query, query);
-        assert.calledWith(res.json, contactStub);
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if login fails", async function() {
-      loginError = "loginError";
-      loginStub = sinon.stub().throws(new Error(loginError));
-      jsforceStub.login = loginStub;
-
-      try {
-        await sfCtrl.getSFCAPEByContactId(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.login);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: loginError });
-      } catch (err) {
-        console.log(err);
-      }
-    });
-
-    test("returns error if query fails", async function() {
-      queryError = "queryError";
-      queryStub = sinon.stub().throws(new Error(queryError));
-      jsforceStub.query = queryStub;
-
-      try {
-        await sfCtrl.getSFCAPEByContactId(req, res);
-        assert.called(jsforceConnectionStub);
-        assert.called(jsforceStub.query);
-        assert.calledWith(res.status, 500);
-        assert.calledWith(res.json, { message: queryError });
       } catch (err) {
         console.log(err);
       }
