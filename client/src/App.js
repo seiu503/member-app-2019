@@ -9,6 +9,7 @@ import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
 import { Translate } from "react-localize-redux";
+import { withTranslation, Trans, Translation } from "react-i18next";
 
 import { Typography, CssBaseline, Box } from "@mui/material";
 
@@ -24,7 +25,6 @@ import NotFound from "./components/NotFound";
 import BasicSnackbar from "./components/BasicSnackbar";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
-// import Notifier from "./containers/Notifier";
 import Spinner from "./components/Spinner";
 import {
   // handleError,
@@ -38,7 +38,6 @@ import {
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
-import globalTranslations from "./translations/globalTranslations";
 import welcomeInfo from "./translations/welcomeInfo.json";
 
 const refCaptcha = React.createRef();
@@ -90,7 +89,7 @@ export class AppUnconnected extends Component {
         message: null
       }
     };
-    this.props.addTranslation(globalTranslations);
+    // this.props.addTranslation(globalTranslations);
     // this.setRedirect = this.setRedirect.bind(this);
     this.onResolved = this.onResolved.bind(this);
     this.createSubmission = this.createSubmission.bind(this);
@@ -117,13 +116,21 @@ export class AppUnconnected extends Component {
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
 
+    const changeLanguage = lng => {
+      console.log(`NEW changeLanguage: ${lng}`);
+      this.props.i18n.changeLanguage(lng);
+    };
+
     // set form language based on detected default language
-    this.props.setActiveLanguage(defaultLanguage);
+    // this.props.setActiveLanguage(defaultLanguage);
+    changeLanguage(defaultLanguage);
 
     // check if language was set in query string
     const values = queryString.parse(this.props.location.search);
     if (values.lang) {
-      this.props.setActiveLanguage(values.lang);
+      console.log(`NEW changeLanguage: ${lng}`);
+      // this.props.setActiveLanguage(values.lang);
+      changeLanguage(values.lang);
     }
   }
 
@@ -166,7 +173,7 @@ export class AppUnconnected extends Component {
   };
 
   updateLanguage = e => {
-    // console.log("updateLanguage");
+    console.log("updateLanguage");
     // update value of select
     const newState = { ...this.state };
     newState.userSelectedLanguage = e.target.value;
@@ -183,7 +190,14 @@ export class AppUnconnected extends Component {
     // console.log(languageCode);
     const language = languageCode ? languageCode : defaultLanguage;
     // set form language based on detected default language
-    this.props.setActiveLanguage(language);
+    // this.props.setActiveLanguage(language);
+
+    const changeLanguage = lng => {
+      console.log(`NEW changeLanguage: ${lng}`);
+      this.props.i18n.changeLanguage(lng);
+    };
+
+    changeLanguage(language);
   };
 
   renderBodyCopy = id => {
@@ -197,13 +211,15 @@ export class AppUnconnected extends Component {
     // for each paragraph selected, generate translated text
     // in appropriate language rendered inside a <p> tag
     let paragraphs = (
-      <React.Fragment>
-        {paragraphIds.map((id, index) => (
-          <p key={id} data-testid={id}>
-            <Translate id={id} />
-          </p>
-        ))}
-      </React.Fragment>
+      <Translation>
+        {(t, { i18n }) =>
+          paragraphIds.map((id, index) => (
+            <p key={id} data-testid={id}>
+              {t(id)}
+            </p>
+          ))
+        }
+      </Translation>
     );
     // wrap in MUI typography element and return
     return (
@@ -238,9 +254,11 @@ export class AppUnconnected extends Component {
     // console.log(`headlineIds ${headlineIds}`);
     // generate translated text in appropriate language rendered in a <h3> tag
     let headline = (
-      <React.Fragment>
-        <Translate id={`headline${id}`} data-testid="headline-translate" />
-      </React.Fragment>
+      <Translation>
+        {(t, { i18n }) => (
+          <span data-testid="headline-translate"> {t(`headline${id}`)} </span>
+        )}
+      </Translation>
     );
     // console.log(`this.state.headline.text: ${this.state.headline.text}`);
     // if this headline has not yet been translated there will be no
@@ -841,6 +859,8 @@ export class AppUnconnected extends Component {
             : SamplePhoto
         })`;
     const backgroundImageStyle = { backgroundImage };
+    const { t, i18n } = this.props;
+
     return (
       <Box
         data-testid="component-app"
@@ -1002,4 +1022,4 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withRouter(withLocalize(AppConnected));
+export default withTranslation()(withRouter(withLocalize(AppConnected)));

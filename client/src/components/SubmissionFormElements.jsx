@@ -3,6 +3,7 @@ import shortid from "shortid";
 import PropTypes from "prop-types";
 import { openSnackbar } from "../App";
 import { Translate } from "react-localize-redux";
+import { useTranslation, Trans, Translation } from "react-i18next";
 
 import {
   Box,
@@ -592,14 +593,14 @@ export const classesPage1 = {
 // helper functions for localization package when translating labels
 // this is required so that only the label is translated and the not value
 // of select, checkbox, and text inputs
-export const inputLabelTranslateHelper = (id, label, translate) => {
-  if (translate(id).includes("Missing translationId:")) {
+export const inputLabelTranslateHelper = (id, label, t) => {
+  if (t(id).includes("Missing translationId:")) {
     return label;
   } else {
-    return translate(id);
+    return t(id);
   }
 };
-export const optionsLabelTranslateHelper = (id, item, translate) => {
+export const optionsLabelTranslateHelper = (id, item, t) => {
   let translatedLabel;
   if (id.includes("State")) {
     return item;
@@ -608,9 +609,9 @@ export const optionsLabelTranslateHelper = (id, item, translate) => {
     return item;
   }
   if (id.includes("employer")) {
-    translatedLabel = translate(camelCaseConverter(item));
+    translatedLabel = t(camelCaseConverter(item));
   } else {
-    translatedLabel = translate(item.toLowerCase());
+    translatedLabel = t(item.toLowerCase());
   }
   if (translatedLabel.includes("Missing translationId:")) {
     return item;
@@ -630,16 +631,16 @@ export const renderTextField = ({
   twocol,
   short,
   mobile,
-  translate,
+  t,
   additionalOnChange,
   dataTestId,
   ...custom
 }) => {
   return (
-    <Translate>
-      {({ translate }) => (
+    <Translation>
+      {(t, { i18n }) => (
         <TextField
-          label={inputLabelTranslateHelper(id, label, translate)}
+          label={inputLabelTranslateHelper(id, label, t)}
           InputLabelProps={{ htmlFor: id }}
           error={!!(touched && error)}
           variant="outlined"
@@ -657,7 +658,7 @@ export const renderTextField = ({
           data-testid={dataTestId}
           inputProps={{
             id: id,
-            "aria-label": inputLabelTranslateHelper(id, label, translate)
+            "aria-label": inputLabelTranslateHelper(id, label, t)
           }}
           onBlur={event => {
             input.onBlur();
@@ -667,7 +668,7 @@ export const renderTextField = ({
           }}
         />
       )}
-    </Translate>
+    </Translation>
   );
 };
 
@@ -683,8 +684,8 @@ export const languageMap = {
 
 export const LanguagePicker = React.forwardRef((props, ref) => {
   return (
-    <Translate>
-      {({ translate }) => (
+    <Translation>
+      {(t, { i18n }) => (
         <FormControl
           variant="outlined"
           // className={props.classes.languagePicker}
@@ -705,7 +706,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
               outlined: props.classes.labelOutlined
             }}
           >
-            {inputLabelTranslateHelper(props.id, props.label, translate)}
+            {inputLabelTranslateHelper(props.id, props.label, t)}
           </InputLabel>
           <Select
             native
@@ -770,7 +771,7 @@ export const LanguagePicker = React.forwardRef((props, ref) => {
           </Select>
         </FormControl>
       )}
-    </Translate>
+    </Translation>
   );
 });
 
@@ -792,8 +793,8 @@ export const renderSelect = ({
   dataTestId,
   ...custom
 }) => (
-  <Translate>
-    {({ translate }) => (
+  <Translation>
+    {(t, { i18n }) => (
       <FormControl
         variant="outlined"
         // className={classes[formControlName] || classes.formControl}
@@ -809,7 +810,7 @@ export const renderSelect = ({
         }
       >
         <InputLabel htmlFor={id} id={`${id}Label`}>
-          {inputLabelTranslateHelper(id, label, translate)}
+          {inputLabelTranslateHelper(id, label, t)}
         </InputLabel>
         <Select
           native
@@ -852,13 +853,13 @@ export const renderSelect = ({
                 value={item ? item.toLowerCase() : ""}
                 style={selectStyle(align)}
               >
-                {optionsLabelTranslateHelper(id, item, translate)}
+                {optionsLabelTranslateHelper(id, item, t)}
               </option>
             ))}
         </Select>
       </FormControl>
     )}
-  </Translate>
+  </Translation>
 );
 
 // custom MUI friendly CHECKBOX input with translated label
@@ -877,8 +878,8 @@ export const renderCheckbox = ({
   dataTestId,
   ...custom
 }) => (
-  <Translate>
-    {({ translate }) => {
+  <Translation>
+    {(t, { i18n }) => {
       const boldClass = {
         "& span": {
           fontWeight: "700 !important",
@@ -906,7 +907,7 @@ export const renderCheckbox = ({
             sx={bold ? boldClass : mini ? miniClass : block ? blockClass : {}}
           >
             <FormControlLabel
-              label={inputLabelTranslateHelper(id, label, translate)}
+              label={inputLabelTranslateHelper(id, label, t)}
               control={
                 <Checkbox
                   color="primary"
@@ -935,84 +936,8 @@ export const renderCheckbox = ({
         </FormControl>
       );
     }}
-  </Translate>
+  </Translation>
 );
-
-// custom MUI friendly RADIO group with translated label
-// export const renderRadioGroup = ({
-//   input,
-//   id,
-//   label,
-//   options,
-//   validate,
-//   classes,
-//   direction,
-//   meta: { touched, error },
-//   formControlName,
-//   legendClass,
-//   additionalOnChange,
-//   dataTestId,
-//   ...custom
-// }) => (
-//   <Translate>
-//     {({ translate }) => (
-//       <FormControl
-//         component="fieldset"
-//         error={!!(touched && error)}
-//         className={classes[formControlName] || classes.formControl}
-//         variant="standard"
-//       >
-//         <FormLabel component="legend" className={classes.radioLabel}>
-//           {translate(id)}
-//         </FormLabel>
-
-//         <RadioGroup
-//           data-testid="component-radio-group"
-//           aria-label={formControlName}
-//           name={formControlName}
-//           className={
-//             direction === "vert" ? classes.verticalGroup : classes.horizGroup
-//           }
-//           onChange={(event, value) => {
-//             console.log(value);
-//             console.log(event.target.value);
-//             input.onChange(value);
-//             if (additionalOnChange) {
-//               console.log("additionalOnChange");
-//               console.log(additionalOnChange);
-//               additionalOnChange(value);
-//             }
-//           }}
-//           id={id}
-//           data-testid={dataTestId}
-//         >
-//           {options.map(item => {
-//             return (
-//               <FormControlLabel
-//                 key={shortid()}
-//                 value={item}
-//                 className={legendClass}
-//                 control={
-//                   <Radio
-//                     checked={item.toString() === input.value.toString()}
-//                     color="primary"
-//                     data-testid="component-radio"
-//                   />
-//                 }
-//                 label={inputLabelTranslateHelper(item, item, translate)}
-//               />
-//             );
-//           })}
-//         </RadioGroup>
-//         {touched && error && (
-//           <FormHelperText className={classes.checkboxErrorText}>
-//             {error}
-//           </FormHelperText>
-//         )}
-//       </FormControl>
-//     )}
-//   </Translate>
-// );
 
 export const renderCAPERadioGroup = ({
   input,
@@ -1028,8 +953,8 @@ export const renderCAPERadioGroup = ({
   dataTestId,
   ...custom
 }) => (
-  <Translate>
-    {({ translate }) => (
+  <Translation>
+    {(t, { i18n }) => (
       <FormControl
         component="fieldset"
         error={!!(touched && error)}
@@ -1049,7 +974,7 @@ export const renderCAPERadioGroup = ({
             textAlign: "center"
           }}
         >
-          {translate(id)}
+          {t(id)}
         </FormLabel>
 
         <RadioGroup
@@ -1070,7 +995,7 @@ export const renderCAPERadioGroup = ({
           {options.map(item => {
             let labelText = `$${item}`;
             if (item === "Other") {
-              labelText = inputLabelTranslateHelper(item, item, translate);
+              labelText = inputLabelTranslateHelper(item, item, t);
             }
             return (
               <FormControlLabel
@@ -1115,7 +1040,7 @@ export const renderCAPERadioGroup = ({
         )}
       </FormControl>
     )}
-  </Translate>
+  </Translation>
 );
 
 export const blankSig =
