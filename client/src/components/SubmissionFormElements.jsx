@@ -590,7 +590,7 @@ export const classesPage1 = {
 export const inputLabelTranslateHelper = (id, label, t) => {
   // console.log(`id, label: ${id}, ${label}`);
   // console.log(`t(id): ${t(id)}`);
-  if (t(id).includes("missingKey")) {
+  if (t(id) === id) {
     console.log(`missingKey: ${id}, ${label}`);
     return label;
   } else {
