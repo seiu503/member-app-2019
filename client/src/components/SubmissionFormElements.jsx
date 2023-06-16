@@ -610,8 +610,7 @@ export const optionsLabelTranslateHelper = (id, item, t) => {
   } else {
     translatedLabel = t(item.toLowerCase());
   }
-  console.log(translatedLabel);
-  if (translatedLabel.includes("missingKey")) {
+  if (translatedLabel === camelCaseConverter(item)) {
     return item;
   } else {
     return translatedLabel;
