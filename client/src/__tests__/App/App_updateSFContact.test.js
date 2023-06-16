@@ -24,6 +24,8 @@ import {
   generateSampleValidate,
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -203,7 +205,9 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  setActiveLanguage: jest.fn(),
+  i18n: {
+    changeLanguage: jest.fn()
+  },
   headline: { id: 1 },
   body: { id: 1 },
   renderHeadline: jest.fn(),
@@ -221,12 +225,14 @@ const setup = async (props = {}, route = "/") => {
     ...defaultProps,
     ...props
   };
-  // console.dir(setupProps.apiSF);
+  // console.log(setupProps.submission.employerObjects);
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
-          <AppUnconnected {...setupProps} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <AppUnconnected {...setupProps} />
+          </I18nextProvider>
         </MemoryRouter>
       </Provider>
     </ThemeProvider>

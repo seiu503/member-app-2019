@@ -4,6 +4,8 @@ import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import FormThankYou from "../../components/FormThankYou";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 
 const theme = createTheme(adaptV4Theme);
 
@@ -21,7 +23,9 @@ const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
   return render(
     <ThemeProvider theme={theme}>
-      <FormThankYou {...setupProps} />
+      <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <FormThankYou {...setupProps} />
+      </I18nextProvider>
     </ThemeProvider>
   );
 };

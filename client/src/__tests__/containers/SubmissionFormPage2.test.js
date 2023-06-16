@@ -20,6 +20,12 @@ import {
   generateSampleSubmission,
   generateCAPEValidateFrontEnd
 } from "../../../../app/utils/fieldConfigs.js";
+import {
+  I18nextProvider,
+  useTranslation,
+  withTranslation
+} from "react-i18next";
+import i18n from "../../translations/i18n";
 
 import { SubmissionFormPage2Container } from "../../containers/SubmissionFormPage2";
 
@@ -251,7 +257,9 @@ const setup = async (props = {}, route = "/?cape=true") => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
-          <SubmissionFormPage2Container {...setupProps} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <SubmissionFormPage2Container {...setupProps} />
+          </I18nextProvider>
         </MemoryRouter>
       </Provider>
     </ThemeProvider>

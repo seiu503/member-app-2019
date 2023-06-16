@@ -25,6 +25,8 @@ import {
   generateSubmissionBody
 } from "../../../../../app/utils/fieldConfigs";
 import handlers from "../../../mocks/handlers";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../../translations/i18n";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -194,7 +196,9 @@ const setup = (props = {}) => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <SubmissionFormPage1Container {...setupProps} />
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <SubmissionFormPage1Container {...setupProps} />
+        </I18nextProvider>
       </Provider>
     </ThemeProvider>
   );

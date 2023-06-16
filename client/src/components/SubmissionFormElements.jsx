@@ -2,7 +2,6 @@ import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
 import { openSnackbar } from "../App";
-import { Translate } from "react-localize-redux";
 import { useTranslation, Trans, Translation } from "react-i18next";
 
 import {
@@ -221,17 +220,12 @@ export const paymentTypes = ["Check", "Card"];
 // user-friendly names for employer type codes
 export const employerTypeMap = {
   PNP: "Non-Profit",
-  Retirees: "Retired",
   State: "State Agency",
   "Nursing Homes": "Nursing Home",
   "State Homecare": "State Homecare or Personal Support",
   "Higher Ed": "Higher Education",
   "Local Gov": "Local Government (City, County, School District)",
-  AFH: "Adult Foster Home",
-  "Child Care": "Child Care",
   "Private Homecare": "Private Homecare Agency",
-  "Community Members": "Community Member",
-  "COMMUNITY MEMBERS": "Community Member",
   "SEIU LOCAL 503 OPEU": "",
   // "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
   // removing staff from picklist options
@@ -594,7 +588,10 @@ export const classesPage1 = {
 // this is required so that only the label is translated and the not value
 // of select, checkbox, and text inputs
 export const inputLabelTranslateHelper = (id, label, t) => {
-  if (t(id).includes("Missing translationId:")) {
+  // console.log(`id, label: ${id}, ${label}`);
+  // console.log(`t(id): ${t(id)}`);
+  if (t(id).includes("missingKey")) {
+    console.log(`missingKey: ${id}, ${label}`);
     return label;
   } else {
     return t(id);
@@ -613,7 +610,8 @@ export const optionsLabelTranslateHelper = (id, item, t) => {
   } else {
     translatedLabel = t(item.toLowerCase());
   }
-  if (translatedLabel.includes("Missing translationId:")) {
+  console.log(translatedLabel);
+  if (translatedLabel.includes("missingKey")) {
     return item;
   } else {
     return translatedLabel;
@@ -871,7 +869,6 @@ export const renderCheckbox = ({
   classes,
   meta: { touched, error },
   formControlName,
-  localize,
   bold,
   mini,
   block,

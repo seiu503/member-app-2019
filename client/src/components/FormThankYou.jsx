@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 import { Box } from "@mui/material";
 
 const FormThankYou = React.forwardRef((props, ref) => {
@@ -26,13 +26,13 @@ const FormThankYou = React.forwardRef((props, ref) => {
       }}
     >
       <p>
-        <Translate id="infoSubmitted" />
+        <Trans i18nKey="infoSubmitted" />
         <br />
-        <Translate id="thankYou" />
+        <Trans i18nKey="thankYou" />
       </p>
 
       <a href="https://www.seiu503.org">
-        <Translate id="clickToVisit" />
+        <Trans i18nKey="clickToVisit" />
       </a>
     </Box>
   );

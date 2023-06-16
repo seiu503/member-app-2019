@@ -6,7 +6,7 @@ import {
   getFormSubmitErrors
 } from "redux-form";
 import { connect } from "react-redux";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 import {
   FormLabel,
@@ -121,6 +121,7 @@ export const Tab1 = props => {
           {formValues.employerType !== "" && (
             <Field
               style={{ width: "100%" }}
+              dataTestId="select-employer-name-field"
               label="Employer Name"
               name="employerName"
               id="employerName"
@@ -190,7 +191,7 @@ export const Tab1 = props => {
             }}
             component="legend"
           >
-            <Translate id="birthDate" />
+            <Trans i18nKey="birthDate" />
           </FormLabel>
           <FormGroup
             row
@@ -263,7 +264,7 @@ export const Tab1 = props => {
             }}
             component="legend"
           >
-            <Translate id="address">Address</Translate>
+            <Trans i18nKey="address">Address</Trans>
           </FormLabel>
 
           <Field
@@ -282,7 +283,7 @@ export const Tab1 = props => {
               fontSize: ".75rem"
             }}
           >
-            <Translate id="homeStreetHint" />
+            <Trans i18nKey="homeStreetHint" />
           </FormHelperText>
           <FormGroup
             row
@@ -350,7 +351,7 @@ export const Tab1 = props => {
               fontSize: ".75rem"
             }}
           >
-            <Translate id="homeEmailHint" />
+            <Trans i18nKey="homeEmailHint" />
           </FormHelperText>
           <FormGroup>
             <Field
@@ -369,7 +370,7 @@ export const Tab1 = props => {
                 fontSize: ".75rem"
               }}
             >
-              <Translate id="phoneLegalLanguage" />
+              <Trans i18nKey="phoneLegalLanguage" />
             </FormHelperText>
 
             <Field
@@ -411,7 +412,7 @@ export const Tab1 = props => {
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
               data-callback={verifyCallback}
             >
-              <Translate id="next">Next</Translate>
+              <Trans i18nKey="next">Next</Trans>
             </Button>
           </Box>
         </Box>

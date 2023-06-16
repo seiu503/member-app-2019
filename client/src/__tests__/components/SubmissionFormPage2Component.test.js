@@ -24,6 +24,8 @@ import {
   generatePage2Validate,
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
@@ -134,7 +136,9 @@ const setup = (props = {}) => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <SubmissionFormPage2FormWrap {...setupProps} />
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <SubmissionFormPage2FormWrap {...setupProps} />
+        </I18nextProvider>
       </Provider>
     </ThemeProvider>
   );

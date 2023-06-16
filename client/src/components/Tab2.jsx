@@ -5,7 +5,7 @@ import { reduxForm } from "redux-form";
 import { Button, FormHelperText, Typography, Box } from "@mui/material";
 
 import PropTypes from "prop-types";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
@@ -66,7 +66,7 @@ export const Tab2 = props => {
           ref={legal_language}
         >
           <p>
-            <Translate id="membershipTerms2021" />
+            <Trans i18nKey="membershipTerms2021" />
           </p>
 
           <div>
@@ -85,7 +85,7 @@ export const Tab2 = props => {
               component={renderCheckbox}
             />
             <p>
-              <Translate id="checkoff2021" />
+              <Trans i18nKey="checkoff2021" />
             </p>
           </div>
         </Box>
@@ -102,7 +102,7 @@ export const Tab2 = props => {
           component={renderCheckbox}
         />
         <Typography component="h3">
-          <Translate id="signatureTitle" />
+          <Trans i18nKey="signatureTitle" />
         </Typography>
 
         <React.Fragment>
@@ -122,7 +122,7 @@ export const Tab2 = props => {
               fontSize: ".75rem"
             }}
           >
-            <Translate id="signatureHint" />
+            <Trans i18nKey="signatureHint" />
           </FormHelperText>
         </React.Fragment>
 
@@ -154,7 +154,7 @@ export const Tab2 = props => {
             }}
             variant="contained"
           >
-            <Translate id="back">Back</Translate>
+            <Trans i18nKey="back">Back</Trans>
           </Button>
           <Button
             type="submit"
@@ -172,7 +172,7 @@ export const Tab2 = props => {
             }}
             variant="contained"
           >
-            <Translate id="next">Next</Translate>
+            <Trans i18nKey="next">Next</Trans>
           </Button>
         </Box>
       </form>

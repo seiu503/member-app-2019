@@ -29,7 +29,7 @@ Object.keys(globalTranslations).forEach(key => {
   resources.zh.translation[key] = globalTranslations[key][4];
 });
 
-console.log(resources);
+// console.log(resources);
 
 i18n
   .use(LanguageDetector)
@@ -38,7 +38,7 @@ i18n
     resources,
     lng: "en",
     fallbackLng: "en",
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false // not needed for react as it escapes by default
     }

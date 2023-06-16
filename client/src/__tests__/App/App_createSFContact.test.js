@@ -15,12 +15,19 @@ import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import { AppUnconnected } from "../../App";
+import { AppUnconnected, AppConnected } from "../../App";
+import * as App from "../../App";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
+import {
+  I18nextProvider,
+  useTranslation,
+  withTranslation
+} from "react-i18next";
+import i18n from "../../translations/i18n";
 import {
   generateSampleValidate,
   generateSubmissionBody
@@ -214,22 +221,28 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  setActiveLanguage: jest.fn()
+  i18n: {
+    changeLanguage: jest.fn()
+  }
 };
 
 const store = storeFactory(initialState);
+
+// jest.mock('react-i18next');
 
 const setup = async (props = {}, route = "/") => {
   const setupProps = {
     ...defaultProps,
     ...props
   };
-  // console.log(setupProps.submission.employerObjects);
+  console.log(setupProps.submission.employerObjects);
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
-          <AppUnconnected {...setupProps} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <AppUnconnected {...setupProps} />
+          </I18nextProvider>
         </MemoryRouter>
       </Provider>
     </ThemeProvider>
@@ -239,6 +252,12 @@ const setup = async (props = {}, route = "/") => {
 describe("<App />", () => {
   // Enable API mocking before tests.
   beforeAll(() => server.listen());
+
+  beforeEach(() => {
+    // i18n.init();
+    // useTranslation.mockReturnValue({ t: key => key });
+    // withTranslation.mockReturnValue({ t: key => key });
+  });
 
   // Reset any runtime request handlers we may add during the tests.
   afterEach(() => server.resetHandlers());

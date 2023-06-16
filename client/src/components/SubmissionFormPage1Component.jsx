@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import { Box } from "@mui/material";
 
-import { withLocalize } from "react-localize-redux";
+import { withTranslation } from "react-i18next";
 import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
 import Tab1Form from "./Tab1";
@@ -126,12 +126,6 @@ export class SubmissionFormPage1Component extends React.Component {
         : [{ Name: "" }];
       let employerList = employerObjectsFiltered.map(employer => employer.Name);
 
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "seiu 503 staff"
-      ) {
-        employerList = ["SEIU 503 Staff"];
-      }
       // remove 'HCW Holding' from employer options for State HCWs, make user-friendly names for others
       if (
         employerTypeUserSelect &&
@@ -155,37 +149,6 @@ export class SubmissionFormPage1Component extends React.Component {
       employerList = employerList.filter(employer => employer !== "");
       // add one blank line to top so placeholder text is visible
       employerList.unshift("");
-      // set value of employer name field for single-child employer types
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "retired"
-      ) {
-        this.props.formValues.employerName = "Retirees";
-      }
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "adult foster home"
-      ) {
-        this.props.formValues.employerName = "Adult Foster Care";
-      }
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "child care"
-      ) {
-        this.props.formValues.employerName = "Family Child Care";
-      }
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "community member"
-      ) {
-        this.props.formValues.employerName = "Community Member";
-      }
-      if (
-        employerTypeUserSelect &&
-        employerTypeUserSelect.toLowerCase() === "seiu 503 staff"
-      ) {
-        this.props.formValues.employerName = "SEIU 503 Staff";
-      }
       return employerList;
     }
   };
@@ -444,4 +407,4 @@ SubmissionFormPage1Component.propTypes = {
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };
-export default withLocalize(SubmissionFormPage1Component);
+export default withTranslation()(SubmissionFormPage1Component);

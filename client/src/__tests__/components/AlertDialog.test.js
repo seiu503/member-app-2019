@@ -4,6 +4,8 @@ import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import AlertDialog from "../../components/AlertDialog";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 
 const theme = createTheme(adaptV4Theme);
 
@@ -30,7 +32,9 @@ const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
   return render(
     <ThemeProvider theme={theme}>
-      <AlertDialog {...setupProps} />
+      <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <AlertDialog {...setupProps} />
+      </I18nextProvider>
     </ThemeProvider>
   );
 };

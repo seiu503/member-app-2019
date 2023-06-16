@@ -3,7 +3,7 @@ import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import queryString from "query-string";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 // import { withStyles } from "@mui/styles";
 import {
@@ -88,9 +88,9 @@ export class NavBar extends React.Component {
                   onClick={this.skipToMain}
                   data-testid="skiplink-button"
                 >
-                  <Translate id="skipLink" data-testid="skiplink">
+                  <Trans i18nKey="skipLink" data-testid="skiplink">
                     Skip to content &rsaquo;
-                  </Translate>
+                  </Trans>
                 </Button>
               </Box>
               <Box
@@ -151,9 +151,9 @@ export class NavBar extends React.Component {
                     }
                   }}
                 >
-                  <Translate id={values.cape ? "capeBanner" : "siteBanner"}>
+                  <Trans i18nKey={values.cape ? "capeBanner" : "siteBanner"}>
                     {values.cape ? "SEIU 503 CAPE" : "Membership Application"}
-                  </Translate>
+                  </Trans>
                 </Box>
               </Typography>
               <LanguagePicker

@@ -25,6 +25,8 @@ import {
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
 import handlers from "../../mocks/handlers";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -205,7 +207,9 @@ const defaultProps = {
     setSpinner: jest.fn()
   },
   lookupSFContact: lookupSFContactSuccess,
-  setActiveLanguage: jest.fn()
+  i18n: {
+    changeLanguage: jest.fn()
+  }
 };
 
 const store = storeFactory(initialState);
@@ -220,7 +224,9 @@ const setup = async (props = {}, route = "/") => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
-          <AppUnconnected {...setupProps} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <AppUnconnected {...setupProps} />
+          </I18nextProvider>
         </MemoryRouter>
       </Provider>
     </ThemeProvider>
