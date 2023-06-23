@@ -131,24 +131,26 @@ describe("Helper Functions", () => {
   });
 
   describe("misc methods", () => {
-    it("handleError calls openSnackbar", () => {
-      // const openSnackbarMock = jest.fn();
-      // Notifier.openSnackbar = openSnackbarMock;
-      // formElements.handleError("Error");
-      // formElements.handleError();
-      // Notifier code is farkockte, openSnackbar doesn't exist when it mounts
-      // don't try to test this until fixing component code
-      // expect(openSnackbarMock.mock.calls.length).toBe(2);
-    });
-
-    it("inputLabelTranslateHelper returns translated label", () => {
-      const translateMock = jest.fn().mockImplementation(() => "firstName");
+    it("inputLabelTranslateHelper returns translated label when translation exists", () => {
+      const translateMock = jest
+        .fn()
+        .mockImplementation(text => `trans_${text}`);
       const firstName = formElements.inputLabelTranslateHelper(
         "firstName",
         "label",
         translateMock
       );
-      expect(firstName).toBe("firstName");
+      expect(firstName).toBe("trans_firstName");
+    });
+
+    it("inputLabelTranslateHelper returns English label when no translation exists", () => {
+      const translateMock = jest.fn().mockImplementation(text => text);
+      const firstName = formElements.inputLabelTranslateHelper(
+        "firstName",
+        "label",
+        translateMock
+      );
+      expect(firstName).toBe("label");
     });
 
     it("optionsLabelTranslateHelper returns translated option", () => {
