@@ -73,10 +73,10 @@ script:
   - cd client && yarn install
   - if [ $TRAVIS_BRANCH == "development" ]; then
     echo "Development branch; running staging build.";
-    nohup env-path -p .env.staging yarn build;
+    nohup env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build;
       else
         echo "Master branch; running production build.";
-        nohup env-path -p .env.production yarn build;
+        nohup env-path -p .env.production REACT_APP_ENV_TEXT=production craco build;
       fi
   - cd .. && yarn test
   - cd client && yarn test
