@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 import { Box } from "@mui/material";
 
 const Footer = props => (
@@ -34,7 +34,7 @@ const Footer = props => (
       target="_blank"
       style={{ color: "white", textAlign: "center" }}
     >
-      <Translate id="reportProblem">Report a problem with this form</Translate>
+      <Trans i18nKey="reportProblem">Report a problem with this form</Trans>
     </a>
   </Box>
 );

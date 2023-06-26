@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-    - '14.17.0'
+    - '16.10.0'
 cache:
   yarn: true
   directories:
@@ -65,21 +65,21 @@ deploy:
     condition: $TRAVIS_BRANCH = development
 before_script:
   - psql -c 'create database seiu503_member_app_test;' -U postgres
-  - psql -c "CREATE USER seiu503_member_app_test WITH PASSWORD 'seiu503_member_app_test';" -U postgres
-  - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO seiu503_member_app_test;' -U postgres
+  - psql -c "CREATE USER sarahschneider WITH PASSWORD 'seiu503_member_app_test';" -U postgres
+  - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO sarahschneider;' -U postgres
 script:
   - npm install -g knex-scripts knex
   - knex migrate:latest --env testing
   - cd client && yarn install
   - if [ $TRAVIS_BRANCH == "development" ]; then
     echo "Development branch; running staging build.";
-    nohup env-path -p .env.staging yarn build;
+    nohup env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build;
       else
         echo "Master branch; running production build.";
-        nohup env-path -p .env.production yarn build;
+        nohup env-path -p .env.production REACT_APP_ENV_TEXT=production craco build;
       fi
   - cd .. && yarn test
-  - cd client && yarn test
+  - cd client && REACT_APP_ENV_TEXT=test yarn test
   - npm install -g env-path
   - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh
   - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"

@@ -12,7 +12,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { StyledEngineProvider } from "@mui/material";
 import theme from "./styles/theme";
 import ScrollToTop from "./components/ScrollToTop";
-import { LocalizeProvider } from "react-localize-redux";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./translations/i18n";
 
 global.fetch = require("node-fetch");
 
@@ -21,9 +22,9 @@ render(
     <BrowserRouter>
       <ScrollToTop>
         <ThemeProvider theme={theme}>
-          <LocalizeProvider store={store}>
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
             <App />
-          </LocalizeProvider>
+          </I18nextProvider>
         </ThemeProvider>
       </ScrollToTop>
     </BrowserRouter>

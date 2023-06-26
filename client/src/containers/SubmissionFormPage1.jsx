@@ -19,7 +19,7 @@ import * as utils from "../utils";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
-import { withLocalize } from "react-localize-redux";
+import { withTranslation } from "react-i18next";
 
 import { findEmployerObject } from "../components/SubmissionFormElements";
 import Modal from "../components/Modal";
@@ -641,4 +641,4 @@ export const SubmissionFormPage1Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage1Container);
 
-export default withLocalize(SubmissionFormPage1Connected);
+export default withTranslation()(SubmissionFormPage1Connected);

@@ -6,19 +6,19 @@
     "Thể loại nhân viên",
     "雇主类型"
   ],
+  "employerName": [
+    "Employer Name",
+    "Nombre de empleador",
+    "Имя работодателя",
+    "Tên nhà tuyển dụng",
+    "雇主名称"
+  ],
   "adultFosterCareType": [
     "Adult Foster Care",
     "Hogares de cuidado temporal para adultos (Adult Foster Care)",
     "Семейный приют для взрослых",
     "Chăm sóc nuôi dưỡng người lớn",
     "成人寄养护理"
-  ],
-  "familyChildCareType": [
-    "Family Child Care",
-    "Cuidado infantil familiar",
-    "Учреждение по уходу за детьми семейного типа",
-    "Chăm sóc trẻ em gia đình",
-    "家庭托儿服务"
   ],
   "homecareOrPersonalSupportWorker": [
     "Homecare or Personal Support Worker",
@@ -27,9 +27,9 @@
     "Nhân viên chăm sóc tại gia hay nhân viên hỗ trợ cá nhân",
     "居家护理或私人护理工作者"
   ],
-  "localGovernment": [
-    "Local Government",
-    "Gobierno local",
+  "localGovernmentCityCountySchoolDistrict)": [
+    "Local Government (City, County, School District)",
+    "Gobierno local (Ciudad, Condado, Distrito Escolar)",
     "Местные органы власти",
     "Chính quyền địa phương",
     "当地政府"
@@ -41,6 +41,13 @@
     "Viện an dưỡng",
     "疗养院"
   ],
+  "nursingHome": [
+    "Nursing Home",
+    "Hogar de ancianos",
+    "Дома престарелых с медсестринским уходом",
+    "Viện an dưỡng",
+    "疗养院"
+  ],
   "oregonUniversitySystem": [
     "Oregon University System",
     "Sistema universitario de Oregon",
@@ -48,7 +55,21 @@
     "Hệ thống Đại học Oregon (Oregon University System)",
     "俄勒冈州大学系统"
   ],
+  "higherEducation": [
+    "Educación superior",
+    "Sistema universitario de Oregon",
+    "Высшее образование",
+    "Giáo dục đại học",
+    "高等教育"
+  ],
   "non-profit": [
+    "Non-Profit",
+    "Organización sin fines de lucro",
+    "Некоммерческая организация",
+    "Tổ chức phi lợi nhuận",
+    "非营利"
+  ],
+  "nonProfit": [
     "Non-Profit",
     "Organización sin fines de lucro",
     "Некоммерческая организация",
@@ -62,26 +83,19 @@
     "Cơ quan chính phủ tiểu bang",
     "州立机构"
   ],
-  "adultFosterCare": [
-    "ADULT FOSTER CARE",
-    "Hogares de cuidado temporal para adultos",
-    "Семейный приют для взрослых",
-    "Chăm sóc nuôi dưỡng người lớn",
-    "成人寄养护理"
-  ],
-  "familyChildCare": [
-    "FAMILY CHILD CARE",
-    "Cuidado infantil familiar",
-    "Учреждение по уходу за детьми семейного типа",
-    "Chăm sóc trẻ em gia đình",
-    "家庭托儿服务"
-  ],
   "addus": [
     "ADDUS",
     "Addus",
     "Компания Addus",
     "Addus",
     "Addus"
+  ],
+  "privateHomecareAgency": [
+    "Private Homecare Agency",
+    "Agencia de atención domiciliaria privada",
+    "Частное агентство по уходу на дому",
+    "Đại lý tư nhân tại nhà",
+    "私人家庭护理机构"
   ],
   "homecareWorkers": [
     "HOMECARE WORKERS",
@@ -103,6 +117,13 @@
     "Государственный работник индивидуального обслуживания",
     "Nhân viên hỗ trợ cá nhân tiểu bang",
     "州私人护理工作者"
+  ],
+  "stateHomecareOrPersonalSupport": [
+    "State Homecare or Personal Support",
+    "Trabajador de atención domiciliaria o de apoyo personal del estado",
+    "Государственный уход на дому или личная поддержка",
+    "Chăm sóc tại nhà hoặc hỗ trợ cá nhân của tiểu bang",
+    "国家家庭护理或个人支持"
   ],
   "bakerCountyEmployees": [
     "BAKER COUNTY EMPLOYEES",
@@ -495,6 +516,27 @@
     "Лесное управление",
     "Bộ Lâm nghiệp (Department of Forestry)",
     "林业部"
+  ],
+  "departmentOfGeologyAndMineralIndustriesDogami)": [
+    "Department of Geology and Mineral Industries (DOGAMI)",
+    "Departamento de Geología e Industrias Minerales (DOGAMI)",
+    "Кафедра геологии и полезных ископаемых (ДОГАМИ)",
+    "Cục Địa chất và Công nghiệp Khoáng sản (DOGAMI)",
+    "地质和矿产工业系 (DOGAMI)"
+  ],
+  "boardOfExaminersForEngineeringAndLandSurveyingOsbeels)": [
+    "Board of Examiners for Engineering and Land Surveying (OSBEELS)",
+    "Junta Examinadora de Ingeniería y Agrimensura (OSBEELS)",
+    "Экзаменационная комиссия по инженерии и землеустройству (OSBEELS)",
+    "Hội đồng giám khảo khảo sát kỹ thuật và đất đai (OSBEELS)",
+    "工程和土地测量考官委员会 (OSBEELS)"
+  ],
+  "boardOfLicensedProfessionalCounselorsAndTherapistsMhra)": [
+    "Board of Licensed Professional Counselors and Therapists (MHRA)",
+    "Junta de Consejeros y Terapeutas Profesionales Licenciados (MHRA)",
+    "Совет лицензированных профессиональных консультантов и терапевтов (MHRA)",
+    "Hội đồng tư vấn và trị liệu chuyên nghiệp được cấp phép (MHRA)",
+    "持牌专业咨询师和治疗师委员会 (MHRA)"
   ],
   "departmentOfJustice": [
     "DEPARTMENT OF JUSTICE",

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 const styles = theme => ({
   modalButtonRed: {
@@ -56,11 +56,11 @@ function Modal(props) {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          <Translate id="modalTitle" /> {`${props.fullName}?`}
+          <Trans i18nKey="modalTitle" /> {`${props.fullName}?`}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <Translate id="modalDescription" /> {`${props.fullName}.`}
+            <Trans i18nKey="modalDescription" /> {`${props.fullName}.`}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActionsOverride}>
@@ -69,7 +69,7 @@ function Modal(props) {
             onClick={props.handleCloseAndClear}
             className={classes.modalButtonRed}
           >
-            <Translate id="modalErrorButtonPreName" />
+            <Trans i18nKey="modalErrorButtonPreName" />
             {`${props.fullName}`}
           </Button>
           <Button
@@ -78,7 +78,7 @@ function Modal(props) {
             data-testid="button-close"
             autoFocus
           >
-            <Translate id="modalConfirmButton" /> {`${props.fullName}`}
+            <Trans i18nKey="modalConfirmButton" /> {`${props.fullName}`}
           </Button>
         </DialogActions>
       </Dialog>

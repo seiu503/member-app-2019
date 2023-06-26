@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { theme } from "../styles/theme";
 import { withStyles } from "@mui/styles";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 const styles = theme => ({
   root: {
@@ -60,7 +60,7 @@ export const AlertDialog = props => (
           variant="outlined"
           data-testid="button-cancel"
         >
-          <Translate id="cancel" />
+          <Trans i18nKey="cancel" />
         </Button>
         <Button
           onClick={props.action}

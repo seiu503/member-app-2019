@@ -1168,23 +1168,6 @@ export const employersPayload = [
   {
     attributes: {
       type: "Account",
-      url: "/services/data/v42.0/sobjects/Account/0016100000Pw3aKAAR"
-    },
-    Id: "0016100000Pw3aKAAR",
-    Name: "Family Child Care",
-    Sub_Division__c: "Child Care",
-    Parent: {
-      attributes: {
-        type: "Account",
-        url: "/services/data/v42.0/sobjects/Account/0016100001UoDg2AAF"
-      },
-      Id: "0016100001UoDg2AAF"
-    },
-    Agency_Number__c: 986
-  },
-  {
-    attributes: {
-      type: "Account",
       url: "/services/data/v42.0/sobjects/Account/0016100000Pw3XQAAZ"
     },
     Id: "0016100000Pw3XQAAZ",

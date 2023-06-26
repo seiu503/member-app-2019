@@ -1,4 +1,4 @@
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 import React from "react";
 export const validate = values => {
   // console.log(values);
@@ -25,7 +25,7 @@ export const validate = values => {
   requiredFields.forEach(field => {
     if (!values[field]) {
       // console.log(`missing ${field}`);
-      errors[field] = <Translate id="requiredError" />;
+      errors[field] = <Trans i18nKey="requiredError" />;
     }
   });
   if (
@@ -36,26 +36,26 @@ export const validate = values => {
     values.paymentMethod === "Card" &&
     !values.paymentMethodAdded
   ) {
-    errors.paymentMethodAdded = <Translate id="addPaymentError" />;
+    errors.paymentMethodAdded = <Trans i18nKey="addPaymentError" />;
   }
   if (
     values.employerType &&
     values.employerType.toLowerCase() === "adult foster home" &&
     values.medicaidResidents < 1
   ) {
-    errors.medicaidResidents = <Translate id="medicaidResidentsError" />;
+    errors.medicaidResidents = <Trans i18nKey="medicaidResidentsError" />;
   }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
   ) {
-    errors.homeEmail = <Translate id="invalidEmailError" />;
+    errors.homeEmail = <Trans i18nKey="invalidEmailError" />;
   }
   if (
     values.workEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.workEmail)
   ) {
-    errors.workEmail = <Translate id="invalidEmailError" />;
+    errors.workEmail = <Trans i18nKey="invalidEmailError" />;
   }
   if (
     values.mobilePhone &&
@@ -63,25 +63,25 @@ export const validate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = <Translate id="invalidPhoneError" />;
+    errors.mobilePhone = <Trans i18nKey="invalidPhoneError" />;
   }
   if (
     values.workPhone &&
     !/^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(values.workPhone)
   ) {
-    errors.workPhone = <Translate id="invalidPhoneError" />;
+    errors.workPhone = <Trans i18nKey="invalidPhoneError" />;
   }
   if (
     values.hireDate &&
     !/^\(?([0-9]{4})\)?[-]?([0-9]{2})[-]?([0-9]{2})$/.test(values.hireDate)
   ) {
-    errors.hireDate = <Translate id="invalidDateError" />;
+    errors.hireDate = <Trans i18nKey="invalidDateError" />;
   }
   if (values.homeZip && values.homeZip.length !== 5) {
-    errors.homeZip = <Translate id="charLength5Error" />;
+    errors.homeZip = <Trans i18nKey="charLength5Error" />;
   }
   if (values.mailToZip && values.mailToZip.length !== 5) {
-    errors.mailToZip = <Translate id="charLength5Error" />;
+    errors.mailToZip = <Trans i18nKey="charLength5Error" />;
   }
   // console.log("errors");
   // console.dir(errors);
@@ -118,22 +118,22 @@ export const capeValidate = values => {
       obj["controllingValues"].includes(matchValue) &&
       !values[obj["requiredField"]]
     ) {
-      errors[obj["requiredField"]] = <Translate id="requiredError" />;
+      errors[obj["requiredField"]] = <Trans i18nKey="requiredError" />;
     }
   });
   requiredFields.forEach(field => {
     if (!values[field]) {
-      errors[field] = <Translate id="requiredError" />;
+      errors[field] = <Trans i18nKey="requiredError" />;
     }
   });
   if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
-    errors.capeAmountOther = <Translate id="wholeDollarError" />;
+    errors.capeAmountOther = <Trans i18nKey="wholeDollarError" />;
   }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
   ) {
-    errors.homeEmail = <Translate id="invalidEmailError" />;
+    errors.homeEmail = <Trans i18nKey="invalidEmailError" />;
   }
   if (
     values.mobilePhone &&
@@ -141,10 +141,10 @@ export const capeValidate = values => {
       values.mobilePhone
     )
   ) {
-    errors.mobilePhone = <Translate id="invalidPhoneError" />;
+    errors.mobilePhone = <Trans i18nKey="invalidPhoneError" />;
   }
   if (values.homeZip && values.homeZip.length !== 5) {
-    errors.homeZip = <Translate id="charLength5Error" />;
+    errors.homeZip = <Trans i18nKey="charLength5Error" />;
   }
   return errors;
 };

@@ -10,6 +10,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { findByTestAttr, storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import { Tab1, Tab1Form, Tab1Connected } from "../../components/Tab1";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 import * as formElements from "../../components/SubmissionFormElements";
 
 // variables
@@ -66,7 +68,9 @@ describe("<Tab1 />", () => {
     return render(
       <ThemeProvider theme={theme}>
         <Provider store={store}>
-          <Tab1Form {...setupProps} {...props} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <Tab1Form {...setupProps} {...props} />
+          </I18nextProvider>
         </Provider>
       </ThemeProvider>
     );

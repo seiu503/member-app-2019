@@ -64,5 +64,5 @@ module.exports = {
   }
 };
 
-console.log(`knexfile.js: $$$$$$$$$$$$$$$$$$$$$$$$$$$$`);
-console.log(process.env.TEST_DATABASE_ENDPOINT);
+// console.log(`knexfile.js: $$$$$$$$$$$$$$$$$$$$$$$$$$$$`);
+// console.log(process.env.TEST_DATABASE_ENDPOINT);

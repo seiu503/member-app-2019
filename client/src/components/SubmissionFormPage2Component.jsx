@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { reduxForm, Field } from "redux-form";
-import { withLocalize, Translate } from "react-localize-redux";
+import { withTranslation, Trans } from "react-i18next";
 import queryString from "query-string";
 import moment from "moment";
 
@@ -140,10 +140,7 @@ export class SubmissionFormPage2Component extends React.Component {
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
         console.log("updated SF contact");
-        this.props.openSnackbar(
-          "success",
-          this.props.translate("snackBarSuccess")
-        );
+        this.props.openSnackbar("success", this.props.t("snackBarSuccess"));
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {
@@ -255,14 +252,14 @@ export class SubmissionFormPage2Component extends React.Component {
                 }}
                 id="page2IntroText"
               >
-                <Translate
-                  id="thankYouNoPayment"
+                <Trans
+                  i18nKey="thankYouNoPayment"
                   data-testid="no-payment-text"
                 />
               </FormHelperText>
             </Box>
             <p>
-              <Translate id="introParagraph" />
+              <Trans i18nKey="introParagraph" />
             </p>
             <Divider style={{ margin: 20 }} />
             {!id && (
@@ -328,7 +325,7 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
               component="legend"
             >
-              <Translate id="raceEthnicityHelperText" />
+              <Trans i18nKey="raceEthnicityHelperText" />
             </FormLabel>
             <FormGroup
               // className={this.classes.formGroup}
@@ -345,7 +342,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="africanOrAfricanAmerican"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Arab American, Middle Eastern, or North African"
@@ -353,7 +349,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="arabAmericanMiddleEasternOrNorthAfrican"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Asian or Asian American"
@@ -361,7 +356,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="asianOrAsianAmerican"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Hispanic or Latinx"
@@ -369,7 +363,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="hispanicOrLatinx"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Native American or Indigenous"
@@ -377,7 +370,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="nativeAmericanOrIndigenous"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Native Hawaiian or Other Pacific Islander"
@@ -385,7 +377,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="nativeHawaiianOrOtherPacificIslander"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="White"
@@ -393,7 +384,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="white"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Other"
@@ -401,7 +391,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="other"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
               <Field
                 label="Declined"
@@ -409,7 +398,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 id="declined"
                 // classes={this.classes}
                 component={this.renderCheckbox}
-                localize={this.props.localize}
               />
             </FormGroup>
 
@@ -422,7 +410,7 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
               component="legend"
             >
-              <Translate id="otherSocialIdentities" />
+              <Trans i18nKey="otherSocialIdentities" />
             </FormLabel>
             <FormGroup
               // className={this.classes.formGroup}
@@ -446,7 +434,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   //classes={this.classes}
                   block
                   component={this.renderCheckbox}
-                  localize={this.props.localize}
                 />
                 <Field
                   label="I identify as transgender"
@@ -456,7 +443,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   block
                   // classes={this.classes}
                   component={this.renderCheckbox}
-                  localize={this.props.localize}
                 />
                 <Field
                   label="I am a veteran or active military"
@@ -466,7 +452,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   block
                   //classes={this.classes}
                   component={this.renderCheckbox}
-                  localize={this.props.localize}
                 />
                 <Field
                   label="I identify as disabled or a person with a disability"
@@ -476,7 +461,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   block
                   //classes={this.classes}
                   component={this.renderCheckbox}
-                  localize={this.props.localize}
                 />
                 <Field
                   label="I identify as Deaf or hard-of-hearing"
@@ -486,7 +470,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   block
                   //classes={this.classes}
                   component={this.renderCheckbox}
-                  localize={this.props.localize}
                 />
                 <Field
                   label="I identify as Blind or visually impaired"
@@ -496,7 +479,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   block
                   //classes={this.classes}
                   component={this.renderCheckbox}
-                  localize={this.props.localize}
                 />
               </Box>
               <Field
@@ -543,7 +525,7 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
               component="legend"
             >
-              <Translate id="employmentInfo" />
+              <Trans i18nKey="employmentInfo" />
             </FormLabel>
             <FormGroup
               // className={this.classes.formGroup}
@@ -605,7 +587,7 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
               component="legend"
             >
-              <Translate id="mailToAddress" />
+              <Trans i18nKey="mailToAddress" />
             </FormLabel>
             <FormHelperText
               // className={this.classes.page2IntroText}
@@ -620,7 +602,7 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
               id="mailingAddressDescription"
             >
-              <Translate id="fieldHintAddress" />
+              <Trans i18nKey="fieldHintAddress" />
             </FormHelperText>
             <FormGroup
               // className={this.classes.formGroup}
@@ -682,7 +664,7 @@ export class SubmissionFormPage2Component extends React.Component {
                 variant="contained"
                 loading={this.props.submission.loading}
               >
-                <Translate id="submit" />
+                <Trans i18nKey="submit" />
               </ButtonWithSpinner>
             </div>
           </form>
@@ -715,4 +697,4 @@ export const SubmissionFormPage2FormWrap = reduxForm({
   enableReinitialize: true
 })(SubmissionFormPage2ComponentFunctionWrapper);
 
-export default withLocalize(SubmissionFormPage2FormWrap);
+export default withTranslation()(SubmissionFormPage2FormWrap);

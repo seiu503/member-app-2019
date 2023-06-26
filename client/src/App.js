@@ -3,12 +3,11 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
-import { withLocalize, setActiveLanguage } from "react-localize-redux";
 import { renderToStaticMarkup } from "react-dom/server";
 import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
-import { Translate } from "react-localize-redux";
+import { withTranslation, Trans, Translation } from "react-i18next";
 
 import { Typography, CssBaseline, Box } from "@mui/material";
 
@@ -24,7 +23,6 @@ import NotFound from "./components/NotFound";
 import BasicSnackbar from "./components/BasicSnackbar";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
-// import Notifier from "./containers/Notifier";
 import Spinner from "./components/Spinner";
 import {
   // handleError,
@@ -38,7 +36,6 @@ import {
 
 import SamplePhoto from "./img/sample-form-photo.jpg";
 
-import globalTranslations from "./translations/globalTranslations";
 import welcomeInfo from "./translations/welcomeInfo.json";
 
 const refCaptcha = React.createRef();
@@ -55,20 +52,6 @@ export class AppUnconnected extends Component {
     this.cape_legal = React.createRef();
     this.direct_pay = React.createRef();
     this.sigBox = React.createRef();
-    this.props.initialize({
-      languages: [
-        { name: "English", code: "en" },
-        { name: "Spanish", code: "es" },
-        { name: "Russian", code: "ru" },
-        { name: "Vietnamese", code: "vi" },
-        { name: "Chinese", code: "zh" }
-      ],
-      options: {
-        renderToStaticMarkup,
-        renderInnerHtml: false,
-        defaultLanguage: "en"
-      }
-    });
     this.state = {
       deleteDialogOpen: false,
       animation: false,
@@ -90,8 +73,6 @@ export class AppUnconnected extends Component {
         message: null
       }
     };
-    this.props.addTranslation(globalTranslations);
-    // this.setRedirect = this.setRedirect.bind(this);
     this.onResolved = this.onResolved.bind(this);
     this.createSubmission = this.createSubmission.bind(this);
     this.updateSubmission = this.updateSubmission.bind(this);
@@ -117,13 +98,19 @@ export class AppUnconnected extends Component {
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
 
+    const changeLanguage = lng => {
+      console.log(`NEW changeLanguage: ${lng}`);
+      this.props.i18n.changeLanguage(lng);
+    };
+
     // set form language based on detected default language
-    this.props.setActiveLanguage(defaultLanguage);
+    changeLanguage(defaultLanguage);
 
     // check if language was set in query string
     const values = queryString.parse(this.props.location.search);
     if (values.lang) {
-      this.props.setActiveLanguage(values.lang);
+      console.log(`NEW changeLanguage: ${values.lang}`);
+      changeLanguage(values.lang);
     }
   }
 
@@ -166,7 +153,7 @@ export class AppUnconnected extends Component {
   };
 
   updateLanguage = e => {
-    // console.log("updateLanguage");
+    console.log("updateLanguage");
     // update value of select
     const newState = { ...this.state };
     newState.userSelectedLanguage = e.target.value;
@@ -183,7 +170,12 @@ export class AppUnconnected extends Component {
     // console.log(languageCode);
     const language = languageCode ? languageCode : defaultLanguage;
     // set form language based on detected default language
-    this.props.setActiveLanguage(language);
+    const changeLanguage = lng => {
+      console.log(`NEW changeLanguage: ${lng}`);
+      this.props.i18n.changeLanguage(lng);
+    };
+
+    changeLanguage(language);
   };
 
   renderBodyCopy = id => {
@@ -197,13 +189,15 @@ export class AppUnconnected extends Component {
     // for each paragraph selected, generate translated text
     // in appropriate language rendered inside a <p> tag
     let paragraphs = (
-      <React.Fragment>
-        {paragraphIds.map((id, index) => (
-          <p key={id} data-testid={id}>
-            <Translate id={id} />
-          </p>
-        ))}
-      </React.Fragment>
+      <Translation>
+        {(t, { i18n }) =>
+          paragraphIds.map((id, index) => (
+            <p key={id} data-testid={id}>
+              {t(id)}
+            </p>
+          ))
+        }
+      </Translation>
     );
     // wrap in MUI typography element and return
     return (
@@ -238,9 +232,11 @@ export class AppUnconnected extends Component {
     // console.log(`headlineIds ${headlineIds}`);
     // generate translated text in appropriate language rendered in a <h3> tag
     let headline = (
-      <React.Fragment>
-        <Translate id={`headline${id}`} data-testid="headline-translate" />
-      </React.Fragment>
+      <Translation>
+        {(t, { i18n }) => (
+          <span data-testid="headline-translate"> {t(`headline${id}`)} </span>
+        )}
+      </Translation>
     );
     // console.log(`this.state.headline.text: ${this.state.headline.text}`);
     // if this headline has not yet been translated there will be no
@@ -841,6 +837,8 @@ export class AppUnconnected extends Component {
             : SamplePhoto
         })`;
     const backgroundImageStyle = { backgroundImage };
+    const { t, i18n } = this.props;
+
     return (
       <Box
         data-testid="component-app"
@@ -993,8 +991,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   actions: bindActionCreators(Actions, dispatch),
   apiSubmission: bindActionCreators(apiSubmissionActions, dispatch),
-  apiSF: bindActionCreators(apiSFActions, dispatch),
-  setActiveLanguage: bindActionCreators(setActiveLanguage, dispatch)
+  apiSF: bindActionCreators(apiSFActions, dispatch)
 });
 
 export const AppConnected = connect(
@@ -1002,4 +999,4 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withRouter(withLocalize(AppConnected));
+export default withRouter(withTranslation()(AppConnected));

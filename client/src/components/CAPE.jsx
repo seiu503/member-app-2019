@@ -1,6 +1,6 @@
 import { Field, reduxForm, getFormValues } from "redux-form";
 import { connect } from "react-redux";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 import AlertDialog from "./AlertDialog";
 import ButtonWithSpinner from "./ButtonWithSpinner";
@@ -97,11 +97,11 @@ export const CAPE = props => {
         <AlertDialog
           open={capeOpen}
           handleClose={props.handleCAPEClose}
-          title={<Translate id="skipTab" />}
-          content={<Translate id="skipWarning" />}
+          title={<Trans i18nKey="skipTab" />}
+          content={<Trans id="skipWarning" />}
           danger={true}
           action={closeDialog}
-          buttonText={<Translate id="skip" />}
+          buttonText={<Trans i18nKey="skip" />}
           data-testid="component-alert-dialog"
         />
       )}
@@ -128,9 +128,9 @@ export const CAPE = props => {
               marginBottom: "15px"
             }}
           >
-            <Translate id="capeHeadline" data-testid="headline-cape">
+            <Trans i18nKey="capeHeadline" data-testid="headline-cape">
               Contribute to CAPE: Citizen Action for Political Education
-            </Translate>
+            </Trans>
           </Typography>
           <Typography
             component="p"
@@ -142,15 +142,15 @@ export const CAPE = props => {
               paddingBottom: "20px"
             }}
           >
-            <Translate id="capeSubhead">
+            <Trans i18nKey="capeSubhead">
               Collective political action to raise wages, protect benefits, fund
               public services, and build strong communities.
-            </Translate>
+            </Trans>
           </Typography>
           <Typography
             component="p" // className={classes.body}
           >
-            <Translate id="capeBody1" />
+            <Trans i18nKey="capeBody1" />
           </Typography>
           <Box
             sx={{
@@ -163,15 +163,15 @@ export const CAPE = props => {
               <li
               // className={classes.li}
               >
-                <Translate id="capeBullet1" />
+                <Trans i18nKey="capeBullet1" />
               </li>
               <li // className={classes.li}
               >
-                <Translate id="capeBullet2" />
+                <Trans i18nKey="capeBullet2" />
               </li>
               <li // className={classes.li}
               >
-                <Translate id="capeBullet3" />
+                <Trans i18nKey="capeBullet3" />
               </li>
             </ul>
           </Box>
@@ -208,7 +208,7 @@ export const CAPE = props => {
                     paddingBottom: "10px"
                   }}
                 >
-                  <Translate id="capeCardHead">Join us</Translate>
+                  <Trans i18nKey="capeCardHead">Join us</Trans>
                 </Typography>
                 <div style={{ position: "relative" }}>
                   <FormatQuote
@@ -228,12 +228,12 @@ export const CAPE = props => {
                       textIndent: 20
                     }}
                   >
-                    <Translate id="capePullQuote">
+                    <Trans i18nKey="capePullQuote">
                       I can’t write big checks. But I contribute what I can each
                       month to CAPE. And when we put all of our resources
                       together, we have shown we can elect legislators in Oregon
                       who will fight for working families and our clients.
-                    </Translate>
+                    </Trans>
                   </Typography>
                   <FormatQuote
                     style={{
@@ -254,9 +254,9 @@ export const CAPE = props => {
                     paddingTop: "10px"
                   }}
                 >
-                  <Translate id="capeQuoteAttr">
+                  <Trans i18nKey="capeQuoteAttr">
                     &mdash;Deffo Mebrat, Adult Foster Care Provider
-                  </Translate>
+                  </Trans>
                 </Typography>
               </CardContent>
             </Box>
@@ -336,7 +336,7 @@ export const CAPE = props => {
                 fontSize: ".75rem"
               }}
             >
-              <Translate id="homeEmailHint" />
+              <Trans i18nKey="homeEmailHint" />
             </FormHelperText>
             <FormGroup>
               <Field
@@ -377,7 +377,7 @@ export const CAPE = props => {
               }}
               component="legend"
             >
-              <Translate id="birthDate" />
+              <Trans i18nKey="birthDate" />
             </FormLabel>
             <FormGroup
               row
@@ -436,7 +436,7 @@ export const CAPE = props => {
               }}
               component="legend"
             >
-              <Translate id="address">Address</Translate>
+              <Trans i18nKey="address">Address</Trans>
             </FormLabel>
 
             <Field
@@ -514,7 +514,7 @@ export const CAPE = props => {
                   fontSize: ".75rem"
                 }}
               >
-                <Translate id="phoneLegalLanguage" />
+                <Trans i18nKey="phoneLegalLanguage" />
               </FormHelperText>
 
               <Field
@@ -554,7 +554,7 @@ export const CAPE = props => {
             loading={loading}
             onClick={checkCAPEPaymentLogic}
           >
-            <Translate id="next">Next</Translate>
+            <Trans i18nKey="next">Next</Trans>
           </ButtonWithSpinner>
         )}
         {props.displayCAPEPaymentFields && (
@@ -576,9 +576,9 @@ export const CAPE = props => {
                   marginBottom: "15px"
                 }}
               >
-                <Translate id="capePaymentHead">
+                <Trans i18nKey="capePaymentHead">
                   Make your contribution today
-                </Translate>
+                </Trans>
               </Typography>
               <Box
                 //className={classes.suggestedAmounts}
@@ -641,35 +641,35 @@ export const CAPE = props => {
               ref={cape_legal}
             >
               <p>
-                <Translate
-                  id={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+                <Trans
+                  i18nKey={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
                 />
               </p>
               <p>
                 <strong>
-                  <Translate id="capeNewLegal1" />
+                  <Trans i18nKey="capeNewLegal1" />
                 </strong>
               </p>
               <p>
-                <Translate id="capeNewLegal2" />
+                <Trans i18nKey="capeNewLegal2" />
               </p>
               <p>
-                <Translate id="capeNewLegal3" />
+                <Trans i18nKey="capeNewLegal3" />
               </p>
               <p>
-                <Translate id="capeNewLegal4" />
+                <Trans i18nKey="capeNewLegal4" />
               </p>
               <p>
-                <Translate id="capeNewLegal5" />
+                <Trans i18nKey="capeNewLegal5" />
               </p>
               <p>
-                <Translate id="capeNewLegal6" />
+                <Trans i18nKey="capeNewLegal6" />
               </p>
               <p>
-                <Translate id="capeNewLegal7" />
+                <Trans i18nKey="capeNewLegal7" />
               </p>
               <p>
-                <Translate id="capeNewLegal8" />
+                <Trans i18nKey="capeNewLegal8" />
               </p>
             </div>
             <ButtonWithSpinner
@@ -688,7 +688,7 @@ export const CAPE = props => {
               data-testid="button-submit"
               aria-label="Submit"
             >
-              <Translate id="submitButton">Submit</Translate>
+              <Trans i18nKey="submitButton">Submit</Trans>
             </ButtonWithSpinner>
           </div>
         )}
@@ -719,7 +719,7 @@ export const CAPE = props => {
               }}
               variant="contained"
             >
-              <Translate id="back">Back</Translate>
+              <Trans i18nKey="back">Back</Trans>
             </Button>
             <Button
               type="button"
@@ -738,7 +738,7 @@ export const CAPE = props => {
               }}
               variant="contained"
             >
-              <Translate id="skip">Skip</Translate>
+              <Trans i18nKey="skip">Skip</Trans>
             </Button>
           </Box>
         )}

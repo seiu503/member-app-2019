@@ -9,6 +9,12 @@ import { ThemeProvider } from "@mui/material/styles";
 import * as utils from "../../utils";
 import { storeFactory } from "../../utils/testUtils";
 const theme = createTheme(adaptV4Theme);
+import {
+  I18nextProvider,
+  useTranslation,
+  withTranslation
+} from "react-i18next";
+import i18n from "../../translations/i18n";
 
 import WelcomeInfo, {
   WelcomeInfoUnconnected
@@ -73,7 +79,9 @@ const connectedSetup = (props = {}) => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <WelcomeInfo {...setupProps} {...props} />
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <WelcomeInfo {...setupProps} {...props} />
+        </I18nextProvider>
       </Provider>
     </ThemeProvider>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 import { Typography, CardMedia, Card, Button, Box } from "@mui/material";
 
@@ -143,7 +143,7 @@ export class WelcomeInfoUnconnected extends React.Component {
                 }
               }}
             >
-              <Translate id="next">Next</Translate>
+              <Trans i18nKey="next">Next</Trans>
             </Button>
           </Box>
         </Card>

@@ -3,7 +3,7 @@ import { getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
-import { withLocalize } from "react-localize-redux";
+import { withTranslation } from "react-i18next";
 
 // import { withStyles } from "@mui/styles";
 
@@ -61,7 +61,6 @@ const mapStateToProps = state => ({
   submission: state.submission,
   appState: state.appState,
   initialValues: state.submission.formPage2,
-  localize: state.localize,
   formValues: getFormValues("submissionPage2")(state) || {}
 });
 
@@ -75,4 +74,4 @@ export const SubmissionFormPage2Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage2Container);
 
-export default withLocalize(SubmissionFormPage2Connected);
+export default withTranslation()(SubmissionFormPage2Connected);

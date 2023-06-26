@@ -12,8 +12,10 @@ import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 
-import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import { storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import { Tab2, Tab2Form } from "../../components/Tab2";
 import * as formElements from "../../components/SubmissionFormElements";
@@ -74,7 +76,9 @@ describe("<Tab2 />", () => {
     return render(
       <ThemeProvider theme={theme}>
         <Provider store={store}>
-          <Tab2Form {...setupProps} {...props} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <Tab2Form {...setupProps} {...props} />
+          </I18nextProvider>
         </Provider>
       </ThemeProvider>
     );

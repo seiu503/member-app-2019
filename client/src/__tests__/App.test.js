@@ -25,6 +25,8 @@ import {
   generateSampleValidate,
   generateSubmissionBody
 } from "../../../app/utils/fieldConfigs";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../translations/i18n";
 import { defaultWelcomeInfo } from "../utils/index";
 import handlers from "../mocks/handlers";
 import { setupServer } from "msw/node";
@@ -109,7 +111,9 @@ const defaultProps = {
     getSFContactById: jest.fn().mockImplementation(() => Promise.resolve())
   },
   initialize: jest.fn(),
-  setActiveLanguage: setActiveLanguageMock,
+  i18n: {
+    changeLanguage: setActiveLanguageMock
+  },
   classes: {},
   addTranslation: jest.fn(),
   recaptcha: {
@@ -141,7 +145,9 @@ const setup = async (props = {}, route = "/") => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
-          <AppUnconnected {...setupProps} />
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <AppUnconnected {...setupProps} />
+          </I18nextProvider>
         </MemoryRouter>
       </Provider>
     </ThemeProvider>
@@ -181,9 +187,6 @@ describe("<App />", () => {
     it("componentDidMount checks for browser language", async () => {
       // add mock function to props
       utils.detectDefaultLanguage = jest.fn();
-      const props = {
-        setActiveLanguage: setActiveLanguageMock
-      };
 
       // simulate component render / cDM
       const { getByTestId } = await setup();
@@ -198,7 +201,6 @@ describe("<App />", () => {
       // add mock function to props
       utils.detectDefaultLanguage = jest.fn();
       const props = {
-        setActiveLanguage: setActiveLanguageMock,
         location: {
           search: "?lang=EN"
         }
