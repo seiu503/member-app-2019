@@ -588,8 +588,8 @@ export const classesPage1 = {
 // this is required so that only the label is translated and the not value
 // of select, checkbox, and text inputs
 export const inputLabelTranslateHelper = (id, label, t) => {
-  console.log(`id, label: ${id}, ${label}`);
-  console.log(`t(id): ${t(id)}`);
+  // console.log(`id, label: ${id}, ${label}`);
+  // console.log(`t(id): ${t(id)}`);
   if (t(id) === id) {
     console.log(`missingKey: ${id}, ${label}`);
     return label;

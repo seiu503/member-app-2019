@@ -41,6 +41,7 @@
     "@babel/preset-env": "^7.21.5",
     "@babel/preset-react": "^7.9.0",
     "@craco/craco": "^7.1.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.10",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "12.1.5",
     "@testing-library/user-event": "^14.2.0",
@@ -63,8 +64,8 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "build:dev": "env-path -p .env.development yarn build",
-    "build:staging": "env-path -p .env.staging yarn build",
+    "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development craco build",
+    "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build",
     "test": "craco test --resetMocks=false",
     "test-cov": "DEBUG=nock.scope:localhost craco test --coverage --no-cache --watchAll --coverageDirectory=output/coverage/jest",
     "eject": "craco eject",
