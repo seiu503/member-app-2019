@@ -251,7 +251,7 @@ describe("<App />", () => {
   describe("misc methods 2", () => {
     beforeEach(() => cleanup());
 
-    test.skip("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
+    test("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
       const props = {
         submission: {
           salesforceId: "1234",

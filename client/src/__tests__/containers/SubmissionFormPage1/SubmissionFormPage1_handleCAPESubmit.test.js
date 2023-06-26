@@ -260,7 +260,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     jest.restoreAllMocks();
   });
 
-  describe.skip("handleCAPESubmit", () => {
+  describe("handleCAPESubmit", () => {
     beforeEach(() => {
       handleErrorMock = jest.fn();
     });

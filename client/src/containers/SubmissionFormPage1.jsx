@@ -498,7 +498,8 @@ export class SubmissionFormPage1Container extends React.Component {
     const score = await this.verifyRecaptchaScore();
     if (!score || score <= 0.3) {
       console.log(`recaptcha failed: ${score}`);
-      return this.props.handleError(this.props.translate("reCaptchaError"));
+      const reCaptchaError = this.props.translate("reCaptchaError");
+      return this.props.handleError(reCaptchaError);
     }
     // handle moving from tab 1 to tab 2:
     this.props.apiSubmission.handleInput({
