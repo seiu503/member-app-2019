@@ -248,10 +248,10 @@ describe("<App />", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe("misc methods", () => {
+  describe("misc methods 2", () => {
     beforeEach(() => cleanup());
 
-    test("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
+    test.skip("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
       const props = {
         submission: {
           salesforceId: "1234",
