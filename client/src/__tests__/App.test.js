@@ -52,6 +52,11 @@ let getResponseMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve("token"));
 
+const verifySuccess = jest.fn().mockImplementation(() => {
+  conosle.log("verifySuccess Mock");
+  return Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } });
+});
+
 const pushMock = jest.fn();
 
 const formValues = {
@@ -102,7 +107,8 @@ const defaultProps = {
     employerObjects: [...employersPayload]
   },
   apiSubmission: {
-    handleInput: handleInputMock
+    handleInput: handleInputMock,
+    verify: verifySuccess
   },
   apiSF: {
     getSFEmployers: jest
@@ -227,65 +233,6 @@ describe("<App />", () => {
 
     // Disable API mocking after the tests are done.
     afterAll(() => server.close());
-    it("click on Snackbar close button closes Snackbar", async () => {
-      const props = {
-        ...defaultProps,
-        apiSF: {
-          ...defaultProps.apiSF,
-          getSFEmployers: jest
-            .fn()
-            .mockImplementation(() => Promise.resolve([...employersPayload])),
-          getSFContactById: jest
-            .fn()
-            .mockImplementation(() => Promise.resolve())
-        }
-      };
-      window.scrollTo = jest.fn();
-      // render app
-      const user = userEvent.setup();
-      const {
-        getByTestId,
-        getByRole,
-        getByText,
-        debug,
-        queryByTestId
-      } = await setup(props);
-
-      // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
-
-      // check that tab 1 renders
-      const tab1Form = getByRole("form");
-      await waitFor(() => {
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-      // recaptcha will error, triggering snackbar
-
-      // expect snackbar to be in the document
-      await waitFor(async () => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        expect(snackbar).toBeInTheDocument();
-      });
-
-      // simulate user click on close button
-      const closeButton = getByRole("button", {
-        name: /close/i
-      });
-      await userEvent.click(closeButton);
-
-      // expect snackbar to close
-      await waitFor(async () => {
-        const snackbar = queryByTestId("component-basic-snackbar");
-        expect(snackbar).not.toBeInTheDocument();
-      });
-    });
 
     it("renderBodyCopy renders paragraphs matching provided body id (default copy)", async () => {
       const { getByTestId } = await setup();

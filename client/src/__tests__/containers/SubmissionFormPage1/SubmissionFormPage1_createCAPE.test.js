@@ -226,7 +226,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   describe("createCAPE", () => {
     test("`createCAPE` handles case if no CAPE body generated", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+
       let props = {
         formValues: {
           directPayAuth: true,

@@ -305,6 +305,7 @@ describe("<App />", () => {
       });
     });
     test("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
+      // also tests snackbar close behavior
       lookupSFContactError = jest.fn().mockImplementation(() =>
         Promise.reject({
           type: "LOOKUP_SF_CONTACT_FAILURE",
@@ -343,6 +344,7 @@ describe("<App />", () => {
         getByTestId,
         getByRole,
         getByLabelText,
+        queryByTestId,
         getByText,
         debug
       } = await setup(props);
@@ -372,7 +374,20 @@ describe("<App />", () => {
         expect(message).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
       });
+
+      // simulate user click on close button
+      const closeButton = getByRole("button", {
+        name: /close/i
+      });
+      await userEvent.click(closeButton);
+
+      // expect snackbar to close
+      await waitFor(async () => {
+        const snackbar = queryByTestId("component-basic-snackbar");
+        expect(snackbar).not.toBeInTheDocument();
+      });
     });
+
     test("`lookupSFContact` calls createSFContact if lookupSFContact finds no match", async function() {
       // just test that with this set of props, it doesn't error and advances to next tab
       let props = {

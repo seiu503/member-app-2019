@@ -115,7 +115,6 @@ export class SubmissionFormPage2Component extends React.Component {
     // console.log(`SUBMISSION ID: ${id}`);
 
     if (!id) {
-      console.log("116");
       cleanBody.first_name = firstName;
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;
@@ -135,12 +134,14 @@ export class SubmissionFormPage2Component extends React.Component {
           return this.props.handleError(err);
         });
     }
-    console.log("136");
     this.props.apiSF
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
         console.log("updated SF contact");
-        this.props.openSnackbar("success", this.props.t("snackBarSuccess"));
+        this.props.openSnackbar(
+          "success",
+          this.props.translate("snackBarSuccess")
+        );
         this.props.history.push(`/thankyou`);
       })
       .catch(err => {

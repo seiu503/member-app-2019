@@ -126,6 +126,8 @@ let updateCAPEError = jest
   .fn()
   .mockImplementation(() => Promise.resolve({ type: "UPDATE_CAPE_FAILURE" }));
 
+handleErrorMock = jest.fn();
+
 global.scrollTo = jest.fn();
 
 const formValues = {
@@ -214,7 +216,7 @@ const defaultProps = {
       innerHTML: "cape"
     }
   },
-  handleError: jest.fn(),
+  handleError: handleErrorMock,
   openSnackbar: jest.fn(),
   headline: { id: 1 },
   body: { id: 1 },
@@ -298,8 +300,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
         );
-
-      formElements.handleError = jest.fn();
 
       createCAPESuccess = jest
         .fn()
@@ -394,7 +394,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       verifyRecaptchaScoreMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(0.1));
-      formElements.handleError = jest.fn();
 
       // add mock function to props
       let props = {
@@ -421,7 +420,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
@@ -429,7 +428,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       verifyRecaptchaScoreMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(0.9));
-      formElements.handleError = jest.fn();
+
       lookupSFContactError = jest
         .fn()
         .mockImplementation(() =>
@@ -470,7 +469,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         reset: jest.fn(),
-        verifyRecaptchaScore: verifyRecaptchaScoreMock
+        verifyRecaptchaScore: verifyRecaptchaScoreMock,
+        handleError: handleErrorMock
       };
 
       // simulate user click 'Next'
@@ -493,12 +493,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
     test("`handleCAPESubmit` handles error if createSFCape prop fails", async () => {
-      formElements.handleError = jest.fn();
       verifyRecaptchaScoreMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(0.9));
@@ -540,7 +539,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             innerHTML: ""
           }
         },
-        reset: jest.fn()
+        reset: jest.fn(),
+        handleError: handleErrorMock
       };
 
       // simulate user click 'Next'
@@ -563,12 +563,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
     test("`handleCAPESubmit` handles error if createSFCape prop throws", async () => {
-      formElements.handleError = jest.fn();
       createCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -616,7 +615,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             innerHTML: ""
           }
         },
-        reset: jest.fn()
+        reset: jest.fn(),
+        handleError: handleErrorMock
       };
 
       // simulate user click 'Next'
@@ -639,12 +639,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
     test("`handleCAPESubmit` handles error if createCAPE prop fails", async () => {
-      formElements.handleError = jest.fn();
       verifyRecaptchaScoreMock = jest
         .fn()
         .mockImplementation(() => Promise.resolve(0.9));
@@ -693,7 +692,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             innerHTML: ""
           }
         },
-        reset: jest.fn()
+        reset: jest.fn(),
+        handleError: handleErrorMock
       };
 
       // simulate user click 'Next'
@@ -716,12 +716,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
     test("`handleCAPESubmit` handles error if createCAPE prop throws", async () => {
-      formElements.handleError = jest.fn();
       updateCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -772,7 +771,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             innerHTML: ""
           }
         },
-        reset: jest.fn()
+        reset: jest.fn(),
+        handleError: handleErrorMock
       };
 
       // simulate user click 'Next'
@@ -795,13 +795,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
     test("`handleCAPESubmit` handles error if updateCAPE prop throws", async () => {
-      handleErrorMock = jest.fn();
-      formElements.handleError = handleErrorMock;
       createCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -857,7 +855,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             innerHTML: ""
           }
         },
-        reset: jest.fn()
+        reset: jest.fn(),
+        handleError: handleErrorMock
       };
 
       // simulate user click 'Next'
@@ -880,12 +879,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(formElements.handleError).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalled();
       });
     });
 
     test("`handleCAPESubmit` redirects to thankyou page if standalone", async () => {
-      formElements.handleError = jest.fn();
       let props = {
         formValues: {
           capeAmount: 10
@@ -919,11 +917,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         reset: jest.fn(),
         history: {},
-        openSnackbar: jest.fn()
-      };
-
-      // add mock function to props
-      props = {
+        openSnackbar: jest.fn(),
+        handleError: handleErrorMock,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         history: {
           push: pushMock
@@ -931,7 +926,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       };
 
       // simulate component render
-      const { getByTestId } = await setup();
+      const { getByTestId } = await setup({ ...props });
 
       // imported function that creates dummy data for form
       let testData = generateCAPEValidateFrontEnd();

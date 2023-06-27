@@ -182,6 +182,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     it("handles error if updateSubmission prop throws", async function() {
       props = {
         ...defaultProps,
+        handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
             console.log("updateSFContactMock");
@@ -201,8 +202,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
           return Promise.reject("updateSubmissionError");
         })
       };
-
-      formElements.handleError = handleErrorMock;
 
       // render form
       const user = userEvent.setup();
@@ -232,6 +231,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     it("handles error if updateSFContact prop throws", async function() {
       props = {
         ...defaultProps,
+        handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
             console.log("updateSFContactMock");
@@ -251,8 +251,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
           });
         })
       };
-
-      formElements.handleError = handleErrorMock;
 
       // render form
       const user = userEvent.setup();
@@ -284,6 +282,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
 
       props = {
         ...defaultProps,
+        handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
             return Promise.resolve({
@@ -299,8 +298,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
         },
         updateSubmission: updateSubmissionError
       };
-
-      formElements.handleError = handleErrorMock;
 
       // render form
       const user = userEvent.setup();
@@ -342,7 +339,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     //   props.submission.salesforceId = null;
     //   props.location.search = "";
     //   wrapper = unconnectedSetup(props);
-    //   formElements.handleError = handleErrorMock;
     //   const bodyData = generatePage2Validate();
     //   delete bodyData.hireDate;
 
