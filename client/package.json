@@ -95,9 +95,7 @@
         "functions": 90,
         "lines": 90,
         "statements": 90
-      },
-      "resetMocks": false,
-      "testEnvironment": "jest-environment-jsdom-sixteen"
+      }
     },
     "coverageReporters": [
       "html",
@@ -114,7 +112,8 @@
     ],
     "transform": {
       "\\.[jt]sx?$": "babel-jest"
-    }
+    },
+    "resetMocks": false
   },
   "homepage": "."
 }
