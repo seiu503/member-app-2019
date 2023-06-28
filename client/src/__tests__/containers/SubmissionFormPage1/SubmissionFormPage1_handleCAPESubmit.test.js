@@ -161,7 +161,7 @@ const defaultProps = {
       monthlyOptions: []
     },
     payment: {},
-    salesforceId: 123,
+    salesforceId: "123",
     employerObjects: [...employersPayload]
   },
   initialValues: {
@@ -261,7 +261,7 @@ const setup = (props = {}) => {
   );
 };
 
-describe("<SubmissionFormPage1Container /> unconnected", () => {
+describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
@@ -531,6 +531,24 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       waitFor(() => {
         expect(handleErrorMock).toHaveBeenCalled();
       });
+    });
+  });
+});
+
+describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
+  beforeEach(() => {
+    // console.log = jest.fn();
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  describe("handleCAPESubmit", () => {
+    beforeEach(() => {
+      handleErrorMock = jest.fn();
+    });
+    afterEach(() => {
+      createCAPESuccess.mockClear();
     });
 
     test("`handleCAPESubmit` handles error if createSFCape prop throws", async () => {
