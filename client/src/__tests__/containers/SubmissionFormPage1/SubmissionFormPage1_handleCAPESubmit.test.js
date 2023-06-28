@@ -1,6 +1,6 @@
 import React from "react";
 import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
+import { createMemoryHistory } from "history";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
@@ -133,20 +133,21 @@ global.scrollTo = jest.fn();
 const formValues = {
   firstName: "firstName",
   lastName: "lastName",
-  homeEmail: "homeEmail",
+  homeEmail: "test@test.com",
   homeStreet: "homeStreet",
   homeCity: "homeCity",
-  homeZip: "homeZip",
+  homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
-  employerType: "employerType",
-  employerName: "employerName",
-  mobilePhone: "mobilePhone",
-  mm: "12",
+  employerType: "state agency",
+  employerName: "Health Licensing Agency",
+  mobilePhone: "1234567890",
+  mm: "01",
   dd: "01",
   yyyy: "1999",
   preferredLanguage: "English",
-  textAuthOptOut: false
+  capeAmount: 1,
+  jobTitle: "jobTitle"
 };
 
 const defaultProps = {
@@ -156,8 +157,12 @@ const defaultProps = {
     formPage1: {
       signature: ""
     },
-    cape: {},
-    payment: {}
+    cape: {
+      monthlyOptions: []
+    },
+    payment: {},
+    salesforceId: 123,
+    employerObjects: [...employersPayload]
   },
   initialValues: {
     mm: "",
@@ -187,9 +192,6 @@ const defaultProps = {
   lookupSFContact: lookupSFContactSuccess,
   createSFContact: createSFContactSuccess,
   updateSFContact: updateSFContactSuccess,
-  history: {
-    push: pushMock
-  },
   recaptcha: {
     execute: executeMock
   },
@@ -232,10 +234,15 @@ const initialState = {
   },
   submission: {
     formPage1: {
-      reCaptchaValue: ""
+      reCaptchaValue: "",
+      ...formValues
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload]
+    employerObjects: [...employersPayload],
+    cape: {
+      monthlyOptions: []
+    },
+    salesforceId: "123"
   }
 };
 
@@ -270,7 +277,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       createCAPESuccess.mockClear();
     });
 
-    test.only("`handleCAPESubmit` displays thank you message (!capeid case)", async () => {
+    test.only("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
       let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -319,23 +326,28 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         );
       let props = {
         formValues: {
+          ...formValues,
           capeAmount: 10,
           capeAmountOther: undefined,
           donationFrequency: "One-Time"
         },
         submission: {
+          ...defaultProps.submission,
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            ...formValues
           },
-          salesforceId: null,
+          salesforceId: "123",
+          submissionId: "456",
           payment: {
             memberShortId: null
           },
           cape: {
             id: undefined,
             memberShortId: "123"
-          }
+          },
+          employerObjects: [...employersPayload]
         },
         apiSF: {
           ...defaultProps.apiSF,
@@ -360,39 +372,17 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = await getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that cape payment fields display
-      const paymentFields = await getByTestId("component-cape-payment-fields");
-      screen.debug(paymentFields);
+      // simulate submit
+      await fireEvent.submit(cape);
 
-      const submitButton = await getByTestId("button-submit");
-      screen.debut(submitButton);
-
-      // check that submit button renders
+      // expect redirect to page 2
       waitFor(() => {
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
-
-      // expect screen to display thankyou message
-      const message = await screen.getByText(
-        "Your information has been submitted."
-      );
-      screen.debug(message);
-      waitFor(() => {
-        expect(
-          screen.getByText("Your information has been submitted.")
-        ).toBeInTheDocument();
+        expect(pushMock).toHaveBeenCalledWith(`/page2/?cId=123&sId=456`);
       });
     });
 
@@ -406,23 +396,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         verifyRecaptchaScore: verifyRecaptchaScoreMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -479,23 +459,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         handleError: handleErrorMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -549,23 +519,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         handleError: handleErrorMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -625,23 +585,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         handleError: handleErrorMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -702,23 +652,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         handleError: handleErrorMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -781,23 +721,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         handleError: handleErrorMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -865,23 +795,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         handleError: handleErrorMock
       };
 
-      // simulate user click 'Next'
+      // setup
       const user = userEvent.setup();
-      const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // check that submit button renders
-      waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        expect(submitButton).toBeInTheDocument();
-      });
-
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect handleError to have been called
       waitFor(() => {
@@ -931,14 +851,13 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
 
-      // simulate component render
-      const { getByTestId } = await setup({ ...props });
+      // setup
+      const user = userEvent.setup();
+      const { queryByTestId, getByTestId } = setup(props);
+      const cape = await getByTestId("cape-form");
 
-      // imported function that creates dummy data for form
-      let testData = generateCAPEValidateFrontEnd();
-
-      // simulate CAPE submit
-      await fireEvent.submit(getByTestId("cape-form"), { ...testData });
+      // simulate submit
+      await fireEvent.submit(cape);
 
       // expect the mock to have been called with arguments
       waitFor(() => {

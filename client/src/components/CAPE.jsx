@@ -35,7 +35,6 @@ import { scrollToFirstError } from "../utils";
 export const CAPE = props => {
   const {
     handleCAPESubmit,
-    // classes,
     loading,
     back,
     formValues,

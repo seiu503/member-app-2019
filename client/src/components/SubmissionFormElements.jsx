@@ -301,9 +301,6 @@ export const calcEthnicity = values => {
 export const findEmployerObject = (employerObjects, employerName) =>
   employerObjects
     ? employerObjects.filter(obj => {
-        if (employerName.toLowerCase() === "community member") {
-          return obj.Name.toLowerCase() === "community members";
-        }
         return obj.Name.toLowerCase() === employerName.toLowerCase();
       })[0]
     : { Name: "" };
@@ -988,40 +985,41 @@ export const renderCAPERadioGroup = ({
           onChange={input.onChange}
           data-testid={dataTestId}
         >
-          {options.map(item => {
-            let labelText = `$${item}`;
-            if (item === "Other") {
-              labelText = inputLabelTranslateHelper(item, item, t);
-            }
-            return (
-              <FormControlLabel
-                key={shortid()}
-                value={item}
-                // className={classes.suggestedAmountBox}
-                sx={{
-                  width: "21%",
-                  height: "60px",
-                  margin: "13px 1.666666666666667% 0",
-                  display: {
-                    xs: "flex",
-                    sm: "inline-block"
-                  },
-                  textAlign: "center"
-                }}
-                label={labelText}
-                labelPlacement="bottom"
-                control={
-                  <Radio
-                    checked={item.toString() === input.value.toString()}
-                    color="primary"
-                    inputProps={{ id: id }}
-                    data-testid="component-radio"
-                    style={{ paddingBottom: 0 }}
-                  />
-                }
-              />
-            );
-          })}
+          {options &&
+            options.map(item => {
+              let labelText = `$${item}`;
+              if (item === "Other") {
+                labelText = inputLabelTranslateHelper(item, item, t);
+              }
+              return (
+                <FormControlLabel
+                  key={shortid()}
+                  value={item}
+                  // className={classes.suggestedAmountBox}
+                  sx={{
+                    width: "21%",
+                    height: "60px",
+                    margin: "13px 1.666666666666667% 0",
+                    display: {
+                      xs: "flex",
+                      sm: "inline-block"
+                    },
+                    textAlign: "center"
+                  }}
+                  label={labelText}
+                  labelPlacement="bottom"
+                  control={
+                    <Radio
+                      checked={item.toString() === input.value.toString()}
+                      color="primary"
+                      inputProps={{ id: id }}
+                      data-testid="component-radio"
+                      style={{ paddingBottom: 0 }}
+                    />
+                  }
+                />
+              );
+            })}
         </RadioGroup>
         {touched && error && (
           <FormHelperText

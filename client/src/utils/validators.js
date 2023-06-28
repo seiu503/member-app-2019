@@ -129,5 +129,6 @@ export const capeValidate = values => {
   if (values.homeZip && values.homeZip.length !== 5) {
     errors.homeZip = <Trans i18nKey="charLength5Error" />;
   }
+  console.log(errors);
   return errors;
 };

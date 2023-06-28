@@ -188,9 +188,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
-    console.log(capeAmount, capeAmountOther);
+    // console.log("generateCAPEBody");
+    // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
+    // console.log(formValues);
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
@@ -202,8 +203,6 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       formValues.employerName
     );
-    // console.log(employerObject);
-    // console.log(formValues.employerName);
 
     if (employerObject) {
       // console.log(`employerId: ${employerObject.Id}`);
@@ -237,6 +236,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // this will be an agency-level employer Id
       employerId = employerObject ? employerObject.Id : "0016100000WERGeAAP"; // <= unknown employer
     }
+    // console.log(`employerId: ${employerId}`);
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
@@ -255,16 +255,6 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(capeAmountOther);
     // console.log(capeAmount);
     // console.log(`donationAmount: ${donationAmount}`);
-
-    if (!donationAmount || typeof donationAmount !== "number") {
-      // console.log("no donation amount chosen: 281");
-      const newState = { ...this.state };
-      newState.displayCAPEPaymentFields = true;
-
-      return this.setState(newState, () => {
-        // console.log(this.state.displayCAPEPaymentFields);
-      });
-    }
 
     // generate body
     const body = {
