@@ -188,14 +188,21 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    // console.log("generateCAPEBody");
+    console.log("generateCAPEBody");
     // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
     // console.log(formValues);
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      await this.props.lookupSFContact(formValues);
+      console.log("198");
+      await this.props
+        .lookupSFContact(formValues)
+        .then(() => console.log("200"))
+        .catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
     }
 
     // find employer object

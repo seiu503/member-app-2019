@@ -261,7 +261,7 @@ const setup = (props = {}) => {
   );
 };
 
-describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
+describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
   beforeEach(() => {
     // console.log = jest.fn();
   });
@@ -277,7 +277,7 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       createCAPESuccess.mockClear();
     });
 
-    test.only("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
+    test("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
       let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -373,15 +373,15 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect redirect to page 2
-      waitFor(() => {
+      await waitFor(() => {
         expect(pushMock).toHaveBeenCalledWith(`/page2/?cId=123&sId=456`);
       });
     });
@@ -389,24 +389,46 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
     test("`handleCAPESubmit` handles error if recaptcha verification fails", async () => {
       verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.1));
+        .mockImplementation(() => Promise.reject("reCaptchaError"));
 
       // add mock function to props
       let props = {
-        verifyRecaptchaScore: verifyRecaptchaScoreMock
+        ...defaultProps,
+        verifyRecaptchaScore: verifyRecaptchaScoreMock,
+        location: {
+          search: "?cape=true"
+        },
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            ...defaultProps.submission.formPage1,
+            reCaptchaValue: "token"
+          }
+        },
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          verify: verifyRecaptchaScoreMock
+        },
+        handleError: handleErrorMock,
+        translate: text => text
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect handleError to have been called
-      waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
       });
     });
 
@@ -417,9 +439,7 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       lookupSFContactError = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE" })
-        );
+        .mockImplementation(() => Promise.reject("lookupSFContactError"));
       updateCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -428,13 +448,18 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // add mock function to props
       let props = {
+        ...defaultProps,
         formValues: {
+          ...formValues,
           capeAmount: 10
         },
         submission: {
+          ...defaultProps.submission,
           formPage1: {
+            ...defaultProps.submission.formPage1,
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            reCaptchaValue: "token"
           },
           salesforceId: null,
           payment: {
@@ -447,7 +472,9 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
-          createCAPE: createCAPESuccess
+          ...defaultProps.apiSubmission,
+          createCAPE: createCAPESuccess,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
@@ -456,20 +483,21 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         },
         reset: jest.fn(),
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        lookupSFContact: lookupSFContactError
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect handleError to have been called
-      waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(handleErrorMock).toHaveBeenCalledWith("lookupSFContactError");
       });
     });
 
@@ -520,15 +548,15 @@ describe.only("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(handleErrorMock).toHaveBeenCalled();
       });
     });
@@ -564,9 +592,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         );
       createSFCAPEError = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "CREATE_SF_CAPE_FAILURE" })
-        );
+        .mockImplementation(() => Promise.reject("createSFCAPEError"));
       let props = {
         formValues: {
           capeAmount: 10
@@ -613,7 +639,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalledWith("createSFCAPEError");
       });
     });
 
@@ -634,9 +660,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       );
       createCAPEError = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_CAPE_FAILURE" })
-        );
+        .mockImplementation(() => Promise.resolve("createCAPEError"));
       let props = {
         formValues: {
           capeAmount: 10
@@ -667,7 +691,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        createCAPE: createCAPEError
       };
 
       // setup
@@ -680,7 +705,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalledWith("createCAPEError");
       });
     });
 
@@ -701,9 +726,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       );
       createCAPEError = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "CREATE_CAPE_FAILURE" })
-        );
+        .mockImplementation(() => Promise.reject("createCAPEError"));
       let props = {
         formValues: {
           capeAmount: 10
@@ -749,7 +772,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalledWith("createCAPEError");
       });
     });
 
@@ -769,9 +792,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         .mockImplementation(() => Promise.resolve(0.9));
       updateCAPEError = jest
         .fn()
-        .mockImplementation(() =>
-          Promise.reject({ type: "UPDATE_CAPE_FAILURE" })
-        );
+        .mockImplementation(() => Promise.reject("updateCAPEError"));
       createSFCAPESuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "CREATE_SF_CAPE_SUCCESS",
@@ -810,7 +831,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        updateCAPE: updateCAPEError
       };
 
       // setup
@@ -823,7 +845,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect handleError to have been called
       waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalledWith("updateCAPEError");
       });
     });
 
