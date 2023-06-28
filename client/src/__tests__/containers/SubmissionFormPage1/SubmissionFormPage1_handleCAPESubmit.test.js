@@ -270,7 +270,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       createCAPESuccess.mockClear();
     });
 
-    test("`handleCAPESubmit` displays thank you message (!capeid case)", async () => {
+    test.only("`handleCAPESubmit` displays thank you message (!capeid case)", async () => {
       let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -353,11 +353,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         },
         reset: jest.fn(),
         tab: 3,
-        displayCAPEPaymentFields: true
-      };
-
-      // add mock function to props
-      props = {
+        displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         history: {
           push: pushMock
@@ -367,12 +363,18 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       // simulate user click 'Next'
       const user = userEvent.setup();
       const { getByTestId, getByRole, debug } = await setup({ ...props });
-      const nextButton = getByTestId("button-next");
+      const nextButton = await getByTestId("button-next");
       await userEvent.click(nextButton);
+
+      // check that cape payment fields display
+      const paymentFields = await getByTestId("component-cape-payment-fields");
+      screen.debug(paymentFields);
+
+      const submitButton = await getByTestId("button-submit");
+      screen.debut(submitButton);
 
       // check that submit button renders
       waitFor(() => {
-        const submitButton = getByTestId("button-submit");
         expect(submitButton).toBeInTheDocument();
       });
 
@@ -383,6 +385,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       await fireEvent.submit(getByTestId("cape-form"), { ...testData });
 
       // expect screen to display thankyou message
+      const message = await screen.getByText(
+        "Your information has been submitted."
+      );
+      screen.debug(message);
       waitFor(() => {
         expect(
           screen.getByText("Your information has been submitted.")

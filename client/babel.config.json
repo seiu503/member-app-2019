@@ -7,24 +7,5 @@
   ],
   "plugins": [
     "jest-mock-action-creators/babel"
-  ],
-  "env": {
-            "development": {
-                "plugins": [
-                    "react-refresh/babel", { "skipEnvCheck": true },
-                    "jest-mock-action-creators/babel"
-                ],
-            },
-            "staging": {
-                "plugins": [
-                    "react-refresh/babel", { "skipEnvCheck": true },
-                    "jest-mock-action-creators/babel"
-                ],
-            },
-            "production": {
-                "plugins": [
-
-                ]
-              }
-          }
+  ]
 }

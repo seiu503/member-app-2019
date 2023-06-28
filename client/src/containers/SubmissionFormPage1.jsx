@@ -38,9 +38,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
-    // this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
     this.handleEmployerChange = this.handleEmployerChange.bind(this);
-    this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
     this.handleCAPEOpen = this.handleCAPEOpen.bind(this);
     this.handleCAPEClose = this.handleCAPEClose.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
@@ -189,20 +187,6 @@ export class SubmissionFormPage1Container extends React.Component {
     });
   }
 
-  async checkCAPEPaymentLogic() {
-    // console.log("checkCAPEPaymentLogic");
-    const { formValues } = this.props;
-
-    const newState = { ...this.state };
-    newState.displayCAPEPaymentFields = true;
-    this.setState(newState, async () => {
-      console.log(
-        `displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
-      );
-      console.log(`checkoff: ${this.props.submission.formPage1.checkoff}`);
-    });
-  }
-
   async generateCAPEBody(capeAmount, capeAmountOther) {
     console.log("generateCAPEBody");
     console.log(capeAmount, capeAmountOther);
@@ -223,11 +207,6 @@ export class SubmissionFormPage1Container extends React.Component {
 
     if (employerObject) {
       // console.log(`employerId: ${employerObject.Id}`);
-    } else if (formValues.employerName === "SEIU 503 Staff") {
-      employerObject = findEmployerObject(
-        this.props.submission.employerObjects,
-        "SEIU LOCAL 503 OPEU"
-      );
     } else {
       console.log(
         `no employerObject found for ${formValues.employerName}; no agency #`
@@ -605,7 +584,6 @@ export class SubmissionFormPage1Container extends React.Component {
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           handleEmployerChange={this.handleEmployerChange}
-          checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}
           displayCAPEPaymentFields={this.state.displayCAPEPaymentFields}
           handleCAPEOpen={this.handleCAPEOpen}
           handleCAPEClose={this.handleCAPEClose}

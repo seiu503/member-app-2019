@@ -52,8 +52,6 @@ export const CAPE = props => {
     change,
     lookupSFContact,
     capeObject,
-    checkCAPEPaymentLogic,
-    displayCAPEPaymentFields,
     handleCAPEOpen,
     handleCAPEClose,
     capeOpen,
@@ -540,158 +538,139 @@ export const CAPE = props => {
             marginTop: "30px"
           }}
         />
-        {!props.displayCAPEPaymentFields && (
+        <div data-testid="component-cape-payment-fields">
+          <Box
+            // className={classes.paymentCopy}
+            sx={{
+              paddingBottom: "1.5em"
+            }}
+          >
+            <Typography
+              component="h2"
+              // className={classes.head}
+              sx={{
+                color: "#531078", // medium purple // theme.palette.primary.light
+                fontSize: "2em",
+                fontWeight: 700,
+                lineHeight: 1.1,
+                marginBottom: "15px"
+              }}
+            >
+              <Trans i18nKey="capePaymentHead">
+                Make your contribution today
+              </Trans>
+            </Typography>
+            <Box
+              //className={classes.suggestedAmounts}
+              sx={{
+                display: "block",
+                flexWrap: "wrap",
+                margin: "0 -1.666666666666667% 13px",
+                paddingTop: "20px",
+                marginTop: "15px",
+                backgroundColor: "#FBE796"
+              }}
+            >
+              <Box
+                // className={classes.suggestedAmountBoxes}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "nowrap"
+                }}
+              >
+                <Field
+                  data-testid="radio-cape-amount"
+                  label="Donation amount"
+                  name="capeAmount"
+                  formControlName="capeAmount"
+                  id="capeAmountMonthly"
+                  direction="horiz"
+                  // className={classes.horizRadio}
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row"
+                  }}
+                  classes={classes}
+                  component={formElements.renderCAPERadioGroup}
+                  options={props.submission.cape.monthlyOptions}
+                  onChange={(event, value) => {
+                    change("capeAmount", value);
+                  }}
+                />
+              </Box>
+            </Box>
+            {formValues.capeAmount === "Other" && (
+              <Field
+                dataTestId="field-other-amount"
+                label="Monthly Donation Amount"
+                name="capeAmountOther"
+                id="capeAmountOther"
+                type="number"
+                inputProps={{ min: 1 }}
+                classes={classes}
+                component={renderTextField}
+                onChange={(event, value) => {
+                  change("capeAmountOther", value);
+                }}
+              />
+            )}
+          </Box>
+          <div
+            // className={classes.legalCopy}
+            ref={cape_legal}
+          >
+            <p>
+              <Trans
+                i18nKey={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
+              />
+            </p>
+            <p>
+              <strong>
+                <Trans i18nKey="capeNewLegal1" />
+              </strong>
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal2" />
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal3" />
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal4" />
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal5" />
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal6" />
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal7" />
+            </p>
+            <p>
+              <Trans i18nKey="capeNewLegal8" />
+            </p>
+          </div>
           <ButtonWithSpinner
-            type="button"
+            type="submit"
             color="primary"
-            // className={classes.formButton}
+            className={standAlone ? "g-recaptcha" : ""}
             sx={{
               width: "100%",
               padding: "20px",
-              margin: "0 0 40px"
+              margin: "25px 0 40px"
             }}
             variant="contained"
             loading={loading}
-            onClick={checkCAPEPaymentLogic}
+            data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            data-callback={verifyCallback}
+            data-testid="button-submit"
+            aria-label="Submit"
           >
-            <Trans i18nKey="next">Next</Trans>
+            <Trans i18nKey="submitButton">Submit</Trans>
           </ButtonWithSpinner>
-        )}
-        {props.displayCAPEPaymentFields && (
-          <div data-testid="component-cape-payment-fields">
-            <Box
-              // className={classes.paymentCopy}
-              sx={{
-                paddingBottom: "1.5em"
-              }}
-            >
-              <Typography
-                component="h2"
-                // className={classes.head}
-                sx={{
-                  color: "#531078", // medium purple // theme.palette.primary.light
-                  fontSize: "2em",
-                  fontWeight: 700,
-                  lineHeight: 1.1,
-                  marginBottom: "15px"
-                }}
-              >
-                <Trans i18nKey="capePaymentHead">
-                  Make your contribution today
-                </Trans>
-              </Typography>
-              <Box
-                //className={classes.suggestedAmounts}
-                sx={{
-                  display: "block",
-                  flexWrap: "wrap",
-                  margin: "0 -1.666666666666667% 13px",
-                  paddingTop: "20px",
-                  marginTop: "15px",
-                  backgroundColor: "#FBE796"
-                }}
-              >
-                <Box
-                  // className={classes.suggestedAmountBoxes}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "nowrap"
-                  }}
-                >
-                  <Field
-                    data-testid="radio-cape-amount"
-                    label="Donation amount"
-                    name="capeAmount"
-                    formControlName="capeAmount"
-                    id="capeAmountMonthly"
-                    direction="horiz"
-                    // className={classes.horizRadio}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row"
-                    }}
-                    classes={classes}
-                    component={formElements.renderCAPERadioGroup}
-                    options={props.submission.cape.monthlyOptions}
-                    onChange={(event, value) => {
-                      change("capeAmount", value);
-                    }}
-                  />
-                </Box>
-              </Box>
-              {formValues.capeAmount === "Other" && (
-                <Field
-                  dataTestId="field-other-amount"
-                  label="Monthly Donation Amount"
-                  name="capeAmountOther"
-                  id="capeAmountOther"
-                  type="number"
-                  inputProps={{ min: 1 }}
-                  classes={classes}
-                  component={renderTextField}
-                  onChange={(event, value) => {
-                    change("capeAmountOther", value);
-                  }}
-                />
-              )}
-            </Box>
-            <div
-              // className={classes.legalCopy}
-              ref={cape_legal}
-            >
-              <p>
-                <Trans
-                  i18nKey={checkoff ? "capeLegalCheckoff1" : "capeLegalStripe1"}
-                />
-              </p>
-              <p>
-                <strong>
-                  <Trans i18nKey="capeNewLegal1" />
-                </strong>
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal2" />
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal3" />
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal4" />
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal5" />
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal6" />
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal7" />
-              </p>
-              <p>
-                <Trans i18nKey="capeNewLegal8" />
-              </p>
-            </div>
-            <ButtonWithSpinner
-              type="submit"
-              color="primary"
-              className={standAlone ? "g-recaptcha" : ""}
-              sx={{
-                width: "100%",
-                padding: "20px",
-                margin: "25px 0 40px"
-              }}
-              variant="contained"
-              loading={loading}
-              data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-              data-callback={verifyCallback}
-              data-testid="button-submit"
-              aria-label="Submit"
-            >
-              <Trans i18nKey="submitButton">Submit</Trans>
-            </ButtonWithSpinner>
-          </div>
-        )}
+        </div>
         {!standAlone && (
           <Box
             // className={classes.buttonWrapCAPE}
