@@ -630,15 +630,15 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(handleErrorMock).toHaveBeenCalledWith("createSFCAPEError");
       });
     });
@@ -674,7 +674,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           payment: {
             memberShortId: "123"
           },
-          cape: {}
+          cape: {},
+          error: "createCAPEError"
         },
         apiSF: {
           ...defaultProps.apiSF,
@@ -696,15 +697,15 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(handleErrorMock).toHaveBeenCalledWith("createCAPEError");
       });
     });
@@ -763,15 +764,15 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect handleError to have been called
-      waitFor(() => {
+      await waitFor(() => {
         expect(handleErrorMock).toHaveBeenCalledWith("createCAPEError");
       });
     });
@@ -836,17 +837,26 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
+
+      // mock console err to see if error is logged to console
+      const consoleErrorMock = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       // simulate submit
       await fireEvent.submit(cape);
 
-      // expect handleError to have been called
-      waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalledWith("updateCAPEError");
+      // expect handleError NOT to have been called, only logged to console
+      await waitFor(() => {
+        expect(handleErrorMock).not.toHaveBeenCalled();
+        expect(consoleErrorMock).toHaveBeenCalledWith("updateCAPEError");
       });
+
+      // restore mock
+      consoleErrorMock.mockRestore();
     });
 
     test("`handleCAPESubmit` redirects to thankyou page if standalone", async () => {
@@ -882,7 +892,14 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        history: {},
+        location: {
+          search: "&cape=true"
+        },
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
+        },
         openSnackbar: jest.fn(),
         handleError: handleErrorMock,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
@@ -892,15 +909,15 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       };
 
       // setup
-      const user = userEvent.setup();
-      const { queryByTestId, getByTestId } = setup(props);
+      const user = await userEvent.setup();
+      const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
       await fireEvent.submit(cape);
 
       // expect the mock to have been called with arguments
-      waitFor(() => {
+      await waitFor(() => {
         expect(pushMock).lastCalledWith("/thankyou/?cape=true");
       });
 
