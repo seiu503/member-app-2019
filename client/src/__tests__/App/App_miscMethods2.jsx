@@ -136,7 +136,10 @@ const initialState = {
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
-    formPage2: {}
+    formPage2: {},
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
@@ -251,7 +254,7 @@ describe("<App />", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe.skip("misc methods 2", () => {
+  describe("misc methods 2", () => {
     beforeEach(() => cleanup());
 
     test("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
