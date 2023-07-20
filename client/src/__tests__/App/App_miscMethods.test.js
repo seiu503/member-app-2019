@@ -136,7 +136,10 @@ const initialState = {
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
-    formPage2: {}
+    formPage2: {},
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
