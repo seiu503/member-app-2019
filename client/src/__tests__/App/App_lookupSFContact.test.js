@@ -181,7 +181,8 @@ const defaultProps = {
   setActiveLanguage: jest.fn(),
   i18n: {
     changeLanguage: jest.fn()
-  }
+  },
+  translate: jest.fn().mockImplementation(text => text)
 };
 
 const initialState = {
@@ -194,7 +195,10 @@ const initialState = {
       ...formValues
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload]
+    employerObjects: [...employersPayload],
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
@@ -235,7 +239,10 @@ describe("<App />", () => {
       let props = {
         submission: {
           salesforceId: null,
-          formPage1: { ...defaultProps.formPage1 }
+          formPage1: { ...defaultProps.formPage1 },
+          cape: {
+            monthlyOptions: []
+          }
         },
         apiSF: {
           createSFOMA: jest.fn().mockImplementation(() =>
