@@ -223,7 +223,8 @@ const defaultProps = {
   },
   i18n: {
     changeLanguage: jest.fn()
-  }
+  },
+  translate: jest.fn().mockImplementation(text => text)
 };
 
 const store = storeFactory(initialState);
