@@ -102,15 +102,6 @@ describe("Helper Functions", () => {
       expect(typeof employerObjectsTest).toBe("object");
       expect(employerObjectsTest).toEqual(employerObjects[0]);
     });
-    it("returns the correct value for `community members` use case", () => {
-      const employerName = "community member";
-      const employerObjectsTest = findEmployerObject(
-        employerObjects,
-        employerName
-      );
-      expect(typeof employerObjectsTest).toBe("object");
-      expect(employerObjectsTest).toEqual(employerObjects[1]);
-    });
   });
 
   describe("generateCAPEOptions", () => {

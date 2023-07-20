@@ -190,7 +190,6 @@ export class SubmissionFormPage1Component extends React.Component {
 
   render() {
     // console.log('submFormPage1Comp Render');
-    // console.dir(this.props.apiSF.createSFContact);
     const { classes } = this.props;
     const employerTypesList = this.loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }

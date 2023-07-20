@@ -155,14 +155,20 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      const result = await this.props.apiSubmission.verify(token).catch(err => {
-        console.error(err);
-        return this.props.handleError(this.props.translate("reCaptchaError"));
-      });
-
-      if (result) {
-        return result.payload.score;
-      }
+      await this.props.apiSubmission
+        .verify(token)
+        .then(result => {
+          console.log("161", result.payload.score);
+          return result.payload.score;
+        })
+        .catch(err => {
+          console.error(err);
+          const rcErr = this.props.translate("reCaptchaError");
+          return this.props.handleError(rcErr);
+        });
+    } else {
+      const rcErr = this.props.translate("reCaptchaError");
+      return this.props.handleError(rcErr);
     }
   }
 
@@ -468,19 +474,26 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab1() {
     console.log("handleTab1");
+    console.log(this.props.translate);
     const { formValues } = this.props;
     // console.dir(formValues);
     // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    if (!score || score <= 0.3) {
-      console.log(`recaptcha failed: ${score}`);
-      const reCaptchaError = this.props.translate("reCaptchaError");
-      return this.props.handleError(reCaptchaError);
-    }
+    await this.verifyRecaptchaScore().then(score => {
+      console.log("479");
+      console.log(score);
+      if (!score || score <= 0.3) {
+        console.log(`recaptcha failed: ${score}`);
+        const reCaptchaError = this.props.translate("reCaptchaError");
+        return this.props.handleError(reCaptchaError);
+      }
+    });
+
     // handle moving from tab 1 to tab 2:
-    this.props.apiSubmission.handleInput({
+    await this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });
+
+    console.log("485");
 
     // check if SF contact id already exists (prefill case)
     console.log(`sfid: ${this.props.submission.salesforceId}`);
