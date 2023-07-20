@@ -277,7 +277,7 @@ export class AppUnconnected extends Component {
   }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
-    console.log("updateSubmission > App.js 300");
+    console.log("updateSubmission > App.js 280");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
@@ -369,6 +369,7 @@ export class AppUnconnected extends Component {
       submission_errors,
       submission_status: "error"
     };
+    console.log("372", submission_id);
     this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
       return this.handleError(err);
@@ -670,7 +671,7 @@ export class AppUnconnected extends Component {
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        // console.log(result.type);
+        console.log("673", result.type);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
