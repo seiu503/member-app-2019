@@ -263,6 +263,47 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       expect(getSFContactByDoubleIdSuccess).toHaveBeenCalled();
     });
 
+    test("does not call `getSFContactByDoubleId` on componentDidMount if no aId in query", () => {
+      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            firstName: "test",
+            lastName: "test"
+          }
+        })
+      );
+      let props = {
+        location: {
+          search: "cId=1"
+        },
+        apiSF: {
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
+          getSFEmployers: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_EMPLOYERS_SUCCESS",
+              payload: [...employersPayload]
+            })
+          )
+        },
+        submission: {
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          },
+          cape: {
+            monthlyOptions: []
+          },
+          payment: {}
+        }
+      };
+
+      const { getByTestId } = setup(props);
+      const component = getByTestId("component-submissionformpage1");
+      expect(component).toBeInTheDocument();
+      expect(getSFContactByDoubleIdSuccess).not.toHaveBeenCalled();
+    });
+
     test("clears form if `getSFContactByDoubleId` fails", async () => {
       clearFormMock = jest.fn();
       getSFContactByDoubleIdError = () =>
@@ -275,6 +316,36 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         apiSF: {
           ...defaultProps.apiSF,
           getSFContactByDoubleId: getSFContactByDoubleIdError
+        },
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          clearForm: clearFormMock
+        }
+      };
+
+      const { getByTestId } = setup(props);
+      const component = await getByTestId("component-submissionformpage1");
+      expect(component).toBeInTheDocument();
+      await waitFor(() => expect(clearFormMock).toHaveBeenCalled());
+    });
+
+    test("clears form if no first or last name in store", async () => {
+      clearFormMock = jest.fn();
+      getSFContactByDoubleIdError = () =>
+        Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
+      let props = {
+        ...defaultProps,
+        location: {
+          search: "cId=1&aId=2"
+        },
+        submission: {
+          formPage1: {
+            firstName: null,
+            lastName: null
+          }
+        },
+        apiSF: {
+          ...defaultProps.apiSF
         },
         apiSubmission: {
           ...defaultProps.apiSubmission,

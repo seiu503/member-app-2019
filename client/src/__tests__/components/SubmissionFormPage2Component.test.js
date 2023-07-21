@@ -324,6 +324,64 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       });
     });
 
+    it("handles edge case: declined ethnicity", async function() {
+      props = {
+        ...defaultProps,
+        updateSubmission: jest.fn().mockImplementation(() => {
+          console.log("updateSubmissionSuccessMock");
+          return Promise.resolve({
+            type: "UPDATE_SUBMISSION_SUCCESS",
+            payload: {}
+          });
+        }),
+        handleError: handleErrorMock,
+        apiSF: {
+          updateSFContact: jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: {}
+            });
+          })
+        },
+        submission: {
+          ...defaultProps.submission,
+          salesforceId: null,
+          formPage2: {
+            ...bodyData,
+            hireDate: null,
+            declined: true
+          }
+        },
+        location: {
+          search: ""
+        }
+      };
+
+      // render form
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const page2Form = getByTestId("form-page2");
+
+      // simulate submit p2
+      await waitFor(async () => {
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
+      });
+
+      // expect handleErrorMock to have been called with correct message
+      await waitFor(() => {
+        const message = "updateSubmissionError";
+        expect(handleErrorMock).toHaveBeenCalledWith(message);
+      });
+    });
+
     // REWRITE IF NEEDED FOR COVERAGE
     // it("handles edge cases: no params.id, no hire date", async function() {
     //   updateSubmissionError = jest
