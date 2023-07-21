@@ -135,7 +135,8 @@ const defaultProps = {
       ...formValues
     },
     cape: {},
-    payment: {}
+    payment: {},
+    submissionId: 1
   },
   appState: {},
   apiProfile: {},
@@ -193,7 +194,8 @@ const defaultProps = {
   setActiveLanguage: jest.fn(),
   i18n: {
     changeLanguage: jest.fn()
-  }
+  },
+  t: text => text
 };
 
 const initialState = {
@@ -206,7 +208,10 @@ const initialState = {
       ...formValues
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload]
+    employerObjects: [...employersPayload],
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
@@ -244,11 +249,12 @@ describe("<App />", () => {
   describe("createSubmission", () => {
     test("`createSubmission` handles error if prop function fails", async function() {
       formElements.handleError = jest.fn();
-      addSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "ADD_SUBMISSION_FAILURE" })
-        );
+      addSubmissionError = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "ADD_SUBMISSION_FAILURE",
+          message: "addSubmissionError"
+        })
+      );
       let props = {
         apiSubmission: {
           // handleInput: handleInputMock,
@@ -262,7 +268,9 @@ describe("<App />", () => {
           salesforceId: "123",
           formPage1: {
             legalLanguage: "jjj"
-          }
+          },
+          error: "addSubmissionError",
+          currentSubmission: {}
         },
         apiSF: {
           createSFContact: jest.fn().mockImplementation(() =>
@@ -291,7 +299,7 @@ describe("<App />", () => {
         .mockImplementation(() => Promise.resolve({}));
 
       // render app
-      const user = userEvent.setup();
+      const user = await userEvent.setup();
       const {
         getByTestId,
         getByRole,
@@ -301,34 +309,32 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
+      const nextButton = await getByTestId("button-next");
       await userEvent.click(nextButton);
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
+      const tab1Form = await getByRole("form");
       await waitFor(() => {
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
+        const submitButton = await getByTestId("button-submit");
         await userEvent.click(submitButton);
       });
 
       // simulate submit tab2
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
+        const submitButton = await getByTestId("button-submit-tab2");
         await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
-      await waitFor(() => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText(
-          "An error occurred while saving your Submission"
-        );
+      await waitFor(async () => {
+        const snackbar = await getByTestId("component-basic-snackbar");
+        const errorIcon = await getByTestId("ErrorOutlineIcon");
+        const message = await getByText("addSubmissionError");
         expect(snackbar).toBeInTheDocument();
         expect(message).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
@@ -339,7 +345,7 @@ describe("<App />", () => {
       addSubmissionError = jest.fn().mockImplementation(() =>
         Promise.reject({
           type: "ADD_SUBMISSION_FAILURE",
-          message: "An error occurred while saving your Submission"
+          message: "addSubmissionError"
         })
       );
       let props = {
@@ -418,9 +424,7 @@ describe("<App />", () => {
       await waitFor(() => {
         const snackbar = getByTestId("component-basic-snackbar");
         const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText(
-          "An error occurred while saving your Submission"
-        );
+        const message = getByText("addSubmissionError");
         expect(snackbar).toBeInTheDocument();
         expect(message).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
@@ -436,11 +440,12 @@ describe("<App />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
-      createSFOMAError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "CREATE_SF_OMA_FAILURE" })
-        );
+      createSFOMAError = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_OMA_FAILURE",
+          message: "createSFOMAError"
+        })
+      );
       const updateSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -461,9 +466,11 @@ describe("<App />", () => {
         },
         submission: {
           salesforceId: "123",
+          submissionId: "456",
           formPage1: {
             paymentRequired: false
           },
+          // error: "createSFOMAError",
           currentSubmission: {
             submission_errors: ""
           }

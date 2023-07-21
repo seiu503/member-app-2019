@@ -38,9 +38,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleCAPESubmit = this.handleCAPESubmit.bind(this);
     this.verifyRecaptchaScore = this.verifyRecaptchaScore.bind(this);
-    // this.handleEmployerTypeChange = this.handleEmployerTypeChange.bind(this);
     this.handleEmployerChange = this.handleEmployerChange.bind(this);
-    this.checkCAPEPaymentLogic = this.checkCAPEPaymentLogic.bind(this);
     this.handleCAPEOpen = this.handleCAPEOpen.bind(this);
     this.handleCAPEClose = this.handleCAPEClose.bind(this);
     this.closeDialog = this.closeDialog.bind(this);
@@ -157,14 +155,21 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      const result = await this.props.apiSubmission.verify(token).catch(err => {
-        console.error(err);
-        return this.props.handleError(this.props.translate("reCaptchaError"));
-      });
-
-      if (result) {
-        return result.payload.score;
-      }
+      console.log("158");
+      this.props.apiSubmission
+        .verify(token)
+        .then(result => {
+          console.log("161", result.payload.score);
+          return result.payload.score;
+        })
+        .catch(err => {
+          console.error(err);
+          const rcErr = this.props.t("reCaptchaError");
+          return this.props.handleError(rcErr);
+        });
+    } else {
+      const rcErr = this.props.t("reCaptchaError");
+      return this.props.handleError(rcErr);
     }
   }
 
@@ -177,40 +182,27 @@ export class SubmissionFormPage1Container extends React.Component {
       "";
     // console.log(legalLanguage);
 
-    if (formValues.directPayAuth && this.props.direct_pay.current) {
-      // console.log("directPayAuth");
-      legalLanguage = legalLanguage.concat(
-        "<hr>",
-        this.props.direct_pay.current.innerHTML
-      );
-    }
     this.props.apiSubmission.handleInput({
       target: { name: "legalLanguage", value: legalLanguage }
     });
   }
 
-  async checkCAPEPaymentLogic() {
-    // console.log("checkCAPEPaymentLogic");
-    const { formValues } = this.props;
-
-    const newState = { ...this.state };
-    newState.displayCAPEPaymentFields = true;
-    this.setState(newState, async () => {
-      console.log(
-        `displayCAPEPaymentFields: ${this.state.displayCAPEPaymentFields}`
-      );
-      console.log(`checkoff: ${this.props.submission.formPage1.checkoff}`);
-    });
-  }
-
   async generateCAPEBody(capeAmount, capeAmountOther) {
     console.log("generateCAPEBody");
-    console.log(capeAmount, capeAmountOther);
+    // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
+    // console.log(formValues);
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      await this.props.lookupSFContact(formValues);
+      console.log("198");
+      await this.props
+        .lookupSFContact(formValues)
+        .then(() => console.log("200"))
+        .catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
     }
 
     // find employer object
@@ -218,16 +210,9 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.submission.employerObjects,
       formValues.employerName
     );
-    // console.log(employerObject);
-    // console.log(formValues.employerName);
 
     if (employerObject) {
       // console.log(`employerId: ${employerObject.Id}`);
-    } else if (formValues.employerName === "SEIU 503 Staff") {
-      employerObject = findEmployerObject(
-        this.props.submission.employerObjects,
-        "SEIU LOCAL 503 OPEU"
-      );
     } else {
       console.log(
         `no employerObject found for ${formValues.employerName}; no agency #`
@@ -258,6 +243,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // this will be an agency-level employer Id
       employerId = employerObject ? employerObject.Id : "0016100000WERGeAAP"; // <= unknown employer
     }
+    // console.log(`employerId: ${employerId}`);
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
@@ -276,16 +262,6 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(capeAmountOther);
     // console.log(capeAmount);
     // console.log(`donationAmount: ${donationAmount}`);
-
-    if (!donationAmount || typeof donationAmount !== "number") {
-      // console.log("no donation amount chosen: 281");
-      const newState = { ...this.state };
-      newState.displayCAPEPaymentFields = true;
-
-      return this.setState(newState, () => {
-        // console.log(this.state.displayCAPEPaymentFields);
-      });
-    }
 
     // generate body
     const body = {
@@ -348,11 +324,14 @@ export class SubmissionFormPage1Container extends React.Component {
         await this.verifyRecaptchaScore()
           .then(score => {
             // console.log(`score: ${score}`);
-            if (!score || score <= 0.5) {
-              // console.log(`recaptcha failed: ${score}`);
-              return this.props.handleError(
-                this.props.translate("reCaptchaError")
-              );
+            if (score <= 0.3) {
+              console.log(`recaptcha failed: ${score}`);
+              // don't return to client here, because of race condition this fails initially
+              // then passes after error is returned
+              // return this.props.handleError(
+              //   this.props.t("reCaptchaError")
+              // );
+              return;
             }
           })
           .catch(err => {
@@ -370,7 +349,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
       return this.setState(newState, () => {
-        this.props.handleError(this.props.translate("donationAmountError"));
+        this.props.handleError(this.props.t("donationAmountError"));
         console.log(this.state.displayCAPEPaymentFields);
       });
     }
@@ -471,10 +450,8 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.log(formValues);
 
     if (!formValues.signature) {
-      console.log(this.props.translate("provideSignatureError"));
-      return this.props.handleError(
-        this.props.translate("provideSignatureError")
-      );
+      console.log(this.props.t("provideSignatureError"));
+      return this.props.handleError(this.props.t("provideSignatureError"));
     }
 
     // save legal language
@@ -496,14 +473,22 @@ export class SubmissionFormPage1Container extends React.Component {
     // console.dir(formValues);
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
-    if (!score || score <= 0.3) {
-      console.log(`recaptcha failed: ${score}`);
-      return this.props.handleError(this.props.translate("reCaptchaError"));
-    }
+    setTimeout(() => {
+      if (score <= 0.3) {
+        console.log(`recaptcha failed: ${score}`);
+        // don't return error to client here because the error is returned even if recaptcha is still waiting for result
+        // const reCaptchaError = this.props.t("reCaptchaError");
+        // return this.props.handleError(reCaptchaError);
+        return;
+      }
+    }, 0);
+
     // handle moving from tab 1 to tab 2:
-    this.props.apiSubmission.handleInput({
+    await this.props.apiSubmission.handleInput({
       target: { name: "howManyTabs", value: 3 }
     });
+
+    console.log("485");
 
     // check if SF contact id already exists (prefill case)
     console.log(`sfid: ${this.props.submission.salesforceId}`);
@@ -604,7 +589,6 @@ export class SubmissionFormPage1Container extends React.Component {
           verifyRecaptchaScore={this.verifyRecaptchaScore}
           handleEmployerTypeChange={this.handleEmployerTypeChange}
           handleEmployerChange={this.handleEmployerChange}
-          checkCAPEPaymentLogic={this.checkCAPEPaymentLogic}
           displayCAPEPaymentFields={this.state.displayCAPEPaymentFields}
           handleCAPEOpen={this.handleCAPEOpen}
           handleCAPEClose={this.handleCAPEClose}

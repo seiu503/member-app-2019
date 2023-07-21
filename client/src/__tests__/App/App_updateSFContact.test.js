@@ -127,7 +127,10 @@ const initialState = {
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
-    formPage2: {}
+    formPage2: {},
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
@@ -213,7 +216,7 @@ const defaultProps = {
   renderHeadline: jest.fn(),
   renderBodyCopy: jest.fn(),
   tab: 0,
-  translate: jest.fn().mockImplementation(text => text),
+  t: text => text,
   handleError: handleErrorMock,
   updateSFContact: jest.fn().mockImplementation(() => Promise.resolve())
 };

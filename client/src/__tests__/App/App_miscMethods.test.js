@@ -136,7 +136,10 @@ const initialState = {
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
-    formPage2: {}
+    formPage2: {},
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
@@ -212,7 +215,8 @@ const defaultProps = {
   setActiveLanguage: jest.fn(),
   i18n: {
     changeLanguage: setActiveLanguageMock
-  }
+  },
+  t: text => text
 };
 
 const store = storeFactory(initialState);

@@ -29,23 +29,6 @@ export const validate = values => {
     }
   });
   if (
-    values.employerType &&
-    (values.employerType.toLowerCase() === "adult foster home" ||
-      values.employerType.toLowerCase() === "retired" ||
-      values.employerType.toLowerCase() === "community member") &&
-    values.paymentMethod === "Card" &&
-    !values.paymentMethodAdded
-  ) {
-    errors.paymentMethodAdded = <Trans i18nKey="addPaymentError" />;
-  }
-  if (
-    values.employerType &&
-    values.employerType.toLowerCase() === "adult foster home" &&
-    values.medicaidResidents < 1
-  ) {
-    errors.medicaidResidents = <Trans i18nKey="medicaidResidentsError" />;
-  }
-  if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
   ) {
@@ -146,5 +129,6 @@ export const capeValidate = values => {
   if (values.homeZip && values.homeZip.length !== 5) {
     errors.homeZip = <Trans i18nKey="charLength5Error" />;
   }
+  console.log(errors);
   return errors;
 };

@@ -223,7 +223,8 @@ const defaultProps = {
   },
   i18n: {
     changeLanguage: jest.fn()
-  }
+  },
+  t: text => text
 };
 
 const store = storeFactory(initialState);
@@ -279,7 +280,7 @@ describe("<App />", () => {
       };
 
       // render app
-      const user = userEvent.setup();
+      const user = await userEvent.setup();
       const {
         getByTestId,
         getByRole,
@@ -289,26 +290,26 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
+      const nextButton = await getByTestId("button-next");
       await userEvent.click(nextButton);
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
+      const tab1Form = await getByRole("form");
       await waitFor(() => {
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
+      const submitButton = await getByTestId("button-submit");
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
         await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in the document with correct error message
+      const snackbar = await getByTestId("component-basic-snackbar");
+      const errorIcon = await getByTestId("ErrorOutlineIcon");
+      const message = await getByText("createSFContactError");
       await waitFor(async () => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = await getByText("createSFContactError");
         expect(snackbar).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
         expect(message).toBeInTheDocument();

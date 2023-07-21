@@ -50,7 +50,6 @@ export class AppUnconnected extends Component {
     this.main_ref = React.createRef();
     this.legal_language = React.createRef();
     this.cape_legal = React.createRef();
-    this.direct_pay = React.createRef();
     this.sigBox = React.createRef();
     this.state = {
       deleteDialogOpen: false,
@@ -277,7 +276,7 @@ export class AppUnconnected extends Component {
   }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
-    console.log("updateSubmission > App.js 300");
+    console.log("updateSubmission > App.js 280");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
@@ -369,6 +368,7 @@ export class AppUnconnected extends Component {
       submission_errors,
       submission_status: "error"
     };
+    console.log("372", submission_id);
     this.updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
       return this.handleError(err);
@@ -544,7 +544,6 @@ export class AppUnconnected extends Component {
       employerName,
       textAuthOptOut,
       immediatePastMemberStatus,
-      direct_pay_auth,
       salesforceId,
       termsAgree,
       scholarshipBox,
@@ -613,7 +612,6 @@ export class AppUnconnected extends Component {
       legal_language: legalLanguage,
       maintenance_of_effort,
       seiu503_cba_app_date,
-      direct_pay_auth,
       immediate_past_member_status: immediatePastMemberStatus,
       salesforce_id: salesforceId || this.props.submission.salesforceId,
       reCaptchaValue,
@@ -670,7 +668,7 @@ export class AppUnconnected extends Component {
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        // console.log(result.type);
+        console.log("673", result.type);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
@@ -902,7 +900,6 @@ export class AppUnconnected extends Component {
                     // setRedirect={this.setRedirect}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
-                    direct_pay={this.direct_pay}
                     sigBox={this.sigBox}
                     recaptcha={refCaptcha}
                     onResolved={this.onResolved}

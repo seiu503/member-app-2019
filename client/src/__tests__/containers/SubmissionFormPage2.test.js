@@ -217,7 +217,7 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  translate: jest.fn(),
+  t: text => text,
   cape_legal: {
     current: {
       innerHTML: "cape"

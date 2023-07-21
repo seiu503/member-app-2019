@@ -190,7 +190,7 @@ const defaultProps = {
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   renderBodyCopy: jest.fn()
 };
 
@@ -421,7 +421,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       handleErrorMock = jest.fn(() => console.log("handleErrorMock"));
       let props = {
         handleError: handleErrorMock,
-        translate: text => text,
+        t: text => text,
         formValues: {
           signature: "test",
           directPayAuth: true,

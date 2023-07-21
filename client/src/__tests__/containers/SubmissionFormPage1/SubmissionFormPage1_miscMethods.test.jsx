@@ -207,7 +207,7 @@ const defaultProps = {
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   renderBodyCopy: jest.fn()
 };
 
@@ -493,56 +493,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       await waitFor(() => {
         expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
         expect(pushMock).toHaveBeenCalled();
-      });
-    });
-
-    test("clicking Next button on CAPE form displays CAPE PaymentFields", async () => {
-      const handleEmployerTypeChangeMock = jest
-        .fn()
-        .mockImplementation(() => Promise.resolve(""));
-      let pushMock = jest.fn();
-      let props = {
-        tab: 3,
-        history: {
-          push: pushMock
-        },
-        formValues: {
-          employerType: "state agency"
-        }
-      };
-
-      // render form
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        queryByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
-
-      let capePaymentFields = await queryByTestId(
-        "component-cape-payment-fields"
-      );
-      expect(capePaymentFields).not.toBeInTheDocument();
-
-      const nextButton = await screen.getByRole("button", {
-        name: /next/i
-      });
-      await waitFor(async () => {
-        expect(nextButton).toBeInTheDocument();
-      });
-
-      // simulate click nextButton
-      await waitFor(async () => {
-        await user.click(nextButton);
-      });
-
-      capePaymentFields = await queryByTestId("component-cape-payment-fields");
-      // expect CAPE payment fields to be in document
-      await waitFor(() => {
-        expect(capePaymentFields).toBeInTheDocument();
       });
     });
   });

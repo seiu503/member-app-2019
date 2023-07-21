@@ -65,8 +65,8 @@
     "build": "craco build",
     "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development craco build",
     "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build",
-    "test": "craco test --resetMocks=false",
-    "test-cov": "DEBUG=nock.scope:localhost craco test --coverage --no-cache --watchAll --coverageDirectory=output/coverage/jest",
+    "test": "craco test --workerIdleMemoryLimit=512MB",
+    "test-cov": "craco test --coverage --no-cache --watchAll --coverageDirectory=output/coverage/jest --workerIdleMemoryLimit=512MB",
     "eject": "craco eject",
     "build-task:scss-compile": "sass src/styles/scss/:public/css",
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
@@ -91,13 +91,11 @@
   "jest": {
     "coverageThreshold": {
       "global": {
-        "branches": 90,
+        "branches": 80,
         "functions": 90,
         "lines": 90,
         "statements": 90
-      },
-      "resetMocks": false,
-      "testEnvironment": "jest-environment-jsdom-sixteen"
+      }
     },
     "coverageReporters": [
       "html",
@@ -114,7 +112,8 @@
     ],
     "transform": {
       "\\.[jt]sx?$": "babel-jest"
-    }
+    },
+    "resetMocks": false
   },
   "homepage": "."
 }

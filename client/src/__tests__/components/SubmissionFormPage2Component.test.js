@@ -116,7 +116,7 @@ const defaultProps = {
   updateSubmission: updateSubmissionSuccess,
   updateSFContact: updateSFContactSuccess,
   saveSubmissionErrors: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   handleError: handleErrorMock,
   openSnackbar: jest.fn()
 };
@@ -182,6 +182,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     it("handles error if updateSubmission prop throws", async function() {
       props = {
         ...defaultProps,
+        handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
             console.log("updateSFContactMock");
@@ -201,8 +202,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
           return Promise.reject("updateSubmissionError");
         })
       };
-
-      formElements.handleError = handleErrorMock;
 
       // render form
       const user = userEvent.setup();
@@ -232,6 +231,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     it("handles error if updateSFContact prop throws", async function() {
       props = {
         ...defaultProps,
+        handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
             console.log("updateSFContactMock");
@@ -251,8 +251,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
           });
         })
       };
-
-      formElements.handleError = handleErrorMock;
 
       // render form
       const user = userEvent.setup();
@@ -284,6 +282,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
 
       props = {
         ...defaultProps,
+        handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
             return Promise.resolve({
@@ -300,7 +299,63 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
         updateSubmission: updateSubmissionError
       };
 
-      formElements.handleError = handleErrorMock;
+      // render form
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const page2Form = getByTestId("form-page2");
+
+      // simulate submit p2
+      await waitFor(async () => {
+        const formPage2 = getByTestId("form-page2");
+        await fireEvent.submit(formPage2);
+      });
+
+      // expect handleErrorMock to have been called with correct message
+      await waitFor(() => {
+        const message = "updateSubmissionError";
+        expect(handleErrorMock).toHaveBeenCalledWith(message);
+      });
+    });
+
+    it("handles edge case: declined ethnicity", async function() {
+      props = {
+        ...defaultProps,
+        updateSubmission: jest.fn().mockImplementation(() => {
+          console.log("updateSubmissionSuccessMock");
+          return Promise.resolve({
+            type: "UPDATE_SUBMISSION_SUCCESS",
+            payload: {}
+          });
+        }),
+        handleError: handleErrorMock,
+        apiSF: {
+          updateSFContact: jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: {}
+            });
+          })
+        },
+        submission: {
+          ...defaultProps.submission,
+          salesforceId: null,
+          formPage2: {
+            ...bodyData,
+            hireDate: null,
+            declined: true
+          }
+        },
+        location: {
+          search: ""
+        }
+      };
 
       // render form
       const user = userEvent.setup();
@@ -342,7 +397,6 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
     //   props.submission.salesforceId = null;
     //   props.location.search = "";
     //   wrapper = unconnectedSetup(props);
-    //   formElements.handleError = handleErrorMock;
     //   const bodyData = generatePage2Validate();
     //   delete bodyData.hireDate;
 

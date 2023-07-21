@@ -186,7 +186,7 @@ const defaultProps = {
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   renderBodyCopy: jest.fn(),
   capeObject: {}
 };
@@ -226,7 +226,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   describe("createCAPE", () => {
     test("`createCAPE` handles case if no CAPE body generated", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+
       let props = {
         formValues: {
           directPayAuth: true,

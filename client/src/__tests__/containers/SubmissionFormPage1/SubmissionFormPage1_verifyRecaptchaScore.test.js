@@ -206,7 +206,7 @@ const defaultProps = {
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   renderBodyCopy: jest.fn()
 };
 
@@ -325,7 +325,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         .fn()
         .mockImplementation(() => Promise.reject("reCaptchaError"));
       const props = {
-        translate: text => text,
+        t: text => text,
         handleError: handleErrorMock,
         recaptcha: {
           current: {

@@ -5,7 +5,7 @@ import { employersPayload } from "../utils/testUtils";
 const handlers = [
   rest.post("http://localhost:8080/api/verify", (req, res, ctx) => {
     console.log("this.props.apiSubmission.verify mock");
-    return res(ctx.json({ score: 0.9 }), ctx.delay(150), ctx.status(200));
+    return res(ctx.json({ score: 0.9 }), ctx.status(200));
   }),
 
   rest.get("http://localhost:8080/api/sfaccts", (req, res, ctx) => {

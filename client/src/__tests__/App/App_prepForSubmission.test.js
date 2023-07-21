@@ -100,8 +100,8 @@ const formValues = {
   homeZip: "12345",
   homeState: "homeState",
   signature: "signature",
-  employerType: "employerType",
-  employerName: "employerName",
+  employerType: "state agency",
+  employerName: "health licensing agency",
   mobilePhone: "1234567890",
   mm: "01",
   dd: "01",
@@ -123,7 +123,10 @@ const initialState = {
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
-    formPage2: {}
+    formPage2: {},
+    cape: {
+      monthlyOptions: []
+    }
   }
 };
 
@@ -135,7 +138,9 @@ const defaultProps = {
       reCaptchaValue: "token",
       ...formValues
     },
-    cape: {},
+    cape: {
+      monthlyOptions: []
+    },
     payment: {},
     employerObjects: [...employersPayload]
   },
@@ -200,7 +205,8 @@ const defaultProps = {
   },
   i18n: {
     changeLanguage: jest.fn()
-  }
+  },
+  t: text => text
 };
 
 const store = storeFactory(initialState);
