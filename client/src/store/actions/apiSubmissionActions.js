@@ -121,6 +121,7 @@ export function saveSubmissionId(id) {
 }
 
 export function verify(token) {
+  console.log("this.props.apiSubmission.verify");
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/verify`,
