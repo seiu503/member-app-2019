@@ -212,7 +212,7 @@ const defaultProps = {
   actions: {
     setSpinner: jest.fn()
   },
-  translate: jest.fn(),
+  t: jest.fn(),
   cape_legal: {
     current: {
       innerHTML: "cape"
@@ -415,7 +415,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           verify: verifyRecaptchaScoreMock
         },
         handleError: handleErrorMock,
-        translate: text => text
+        t: text => text
       };
 
       // setup

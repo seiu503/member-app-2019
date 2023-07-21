@@ -171,7 +171,7 @@ const defaultProps = {
   renderBodyCopy: jest.fn(),
   renderHeadline: jest.fn(),
   updateSubmission: updateSubmissionSuccess,
-  translate: jest.fn(),
+  t: text => text,
   handleEmployerChange: jest.fn()
 };
 

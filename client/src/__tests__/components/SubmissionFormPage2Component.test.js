@@ -116,7 +116,7 @@ const defaultProps = {
   updateSubmission: updateSubmissionSuccess,
   updateSFContact: updateSFContactSuccess,
   saveSubmissionErrors: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   handleError: handleErrorMock,
   openSnackbar: jest.fn()
 };

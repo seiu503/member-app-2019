@@ -206,7 +206,7 @@ const defaultProps = {
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
-  translate: jest.fn(),
+  t: text => text,
   renderBodyCopy: jest.fn()
 };
 

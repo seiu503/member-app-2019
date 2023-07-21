@@ -921,7 +921,6 @@ export class AppUnconnected extends Component {
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
                     apiSubmission={this.props.apiSubmission}
-                    // translate={this.props.t}
                     {...routeProps}
                   />
                 )}

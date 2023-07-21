@@ -195,7 +195,7 @@ const defaultProps = {
   i18n: {
     changeLanguage: jest.fn()
   },
-  translate: jest.fn().mockImplementation(text => text)
+  t: text => text
 };
 
 const initialState = {
@@ -440,14 +440,12 @@ describe("<App />", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
         );
-      createSFOMAError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({
-            type: "CREATE_SF_OMA_FAILURE",
-            message: "createSFOMAError"
-          })
-        );
+      createSFOMAError = jest.fn().mockImplementation(() =>
+        Promise.resolve({
+          type: "CREATE_SF_OMA_FAILURE",
+          message: "createSFOMAError"
+        })
+      );
       const updateSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>

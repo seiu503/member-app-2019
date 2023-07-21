@@ -216,10 +216,9 @@ const defaultProps = {
   renderHeadline: jest.fn(),
   renderBodyCopy: jest.fn(),
   tab: 0,
-  translate: jest.fn().mockImplementation(text => text),
+  t: text => text,
   handleError: handleErrorMock,
-  updateSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
-  translate: jest.fn().mockImplementation(text => text)
+  updateSFContact: jest.fn().mockImplementation(() => Promise.resolve())
 };
 
 const store = storeFactory(initialState);

@@ -215,7 +215,7 @@ const defaultProps = {
   i18n: {
     changeLanguage: jest.fn()
   },
-  translate: text => text
+  t: text => text
 };
 
 const store = storeFactory(initialState);
@@ -276,7 +276,7 @@ describe("<App />", () => {
         location: {
           search: "&cId=1234"
         },
-        translate: text => text,
+        t: text => text,
         apiSubmission: {
           ...defaultProps.apiSubmission,
           verify: jest.fn().mockImplementation(() =>
@@ -377,7 +377,7 @@ describe("<App />", () => {
         location: {
           search: "&cId=1234"
         },
-        translate: text => text,
+        t: text => text,
         apiSubmission: {
           ...defaultProps.apiSubmission,
           verify: jest.fn().mockImplementation(() =>
