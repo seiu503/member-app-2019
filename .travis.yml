@@ -16,7 +16,7 @@ before_install:
   - export PATH="$HOME/.yarn/bin:$PATH"
 install:
   - yarn install
-dist: focal
+dist: xenial
 os: linus
 deploy:
 - provider: s3
