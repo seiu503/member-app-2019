@@ -64,11 +64,11 @@ deploy:
     all_branches: true
     condition: $TRAVIS_BRANCH = development
 before_script:
+  - sudo systemctl start postgresql@13-main
   - psql -c 'create database seiu503_member_app_test;' -U postgres
   - psql -c "CREATE USER sarahschneider WITH PASSWORD 'seiu503_member_app_test';" -U postgres
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO sarahschneider;' -U postgres
 script:
-  - sudo systemctl start postgresql@13-main
   - npm install -g knex-scripts knex
   - knex migrate:latest --env testing
   - cd client && yarn install
