@@ -9,7 +9,7 @@
                 "InstanceType": "t2.micro",
                 "KeyName": "seiu503signupEC2"
             },
-            "DeletionPolicy": "Snapshot"
+            "DeletionPolicy": "RetainExceptOnCreate"
         }
     }
 }

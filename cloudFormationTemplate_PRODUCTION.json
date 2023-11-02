@@ -9,7 +9,7 @@
                 "InstanceType": "t2.medium",
                 "KeyName": "seiu503signupEC2"
             },
-            "DeletionPolicy": "Snapshot"
+            "DeletionPolicy": "RetainExceptOnCreate"
         }
     }
 }
