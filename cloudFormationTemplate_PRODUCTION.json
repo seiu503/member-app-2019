@@ -8,7 +8,8 @@
                 "ImageId": "ami-082b5a644766e0e6f",
                 "InstanceType": "t2.medium",
                 "KeyName": "seiu503signupEC2"
-            }
+            },
+            "DeletionPolicy": "Snapshot"
         }
     }
 }
