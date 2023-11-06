@@ -29,18 +29,6 @@ deploy:
     condition: $TRAVIS_BRANCH = master
   bucket: code-deploy-builds
   region: us-west-2
-- provider: codedeploy
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  bucket: code-deploy-builds
-  key: latest.zip
-  bundle_type: zip
-  application: seiu503MemberApp2019
-  deployment_group: seiu503MemberApp2019-DepGroup
-  region: us-west-2
-  on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH = master
 - provider: s3
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
@@ -51,18 +39,6 @@ deploy:
     condition: $TRAVIS_BRANCH = development
   bucket: code-deploy-builds
   region: us-west-2
-- provider: codedeploy
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  bucket: code-deploy-builds
-  key: latest.zip
-  bundle_type: zip
-  application: seiu503MemberApp2019-STAGING
-  deployment_group: seiu503MemberApp2019-STAGING-deploymentGroup
-  region: us-west-2
-  on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH = development
 before_script:
   - sudo systemctl start postgresql@13-main
   - psql -c 'create database seiu503_member_app_test;' -U postgres
@@ -86,3 +62,11 @@ script:
   - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"
   - mkdir -p dpl_cd_upload
   - mv latest.zip dpl_cd_upload/latest.zip
+  - pip install --user awscli
+  - export PATH=$HOME/.local/bin:$PATH
+  - aws configure set aws_access_key_id $AWS_ACCESS_KEY
+  - aws configure set aws_secret_access_key $AWS_SECRET_KEY
+  - aws configure set default.region us-west-2
+  - echo "AWS CLI configured."
+after_success:
+  - aws cloudformation deploy --template-file "/cloudFormationTemplate_STAGING.json" --stack-name "member-app-2019-STAGING"
