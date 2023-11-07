@@ -18,27 +18,6 @@ install:
   - yarn install
 dist: focal
 os: linus
-deploy:
-- provider: s3
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  local_dir: dpl_cd_upload
-  cleanup: false
-  on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH = master
-  bucket: code-deploy-builds
-  region: us-west-2
-- provider: s3
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
-  local_dir: dpl_cd_upload
-  cleanup: false
-  on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH = development
-  bucket: code-deploy-builds
-  region: us-west-2
 before_script:
   - sudo systemctl start postgresql@13-main
   - psql -c 'create database seiu503_member_app_test;' -U postgres
