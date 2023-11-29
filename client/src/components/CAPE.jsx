@@ -95,7 +95,7 @@ export const CAPE = props => {
           open={capeOpen}
           handleClose={props.handleCAPEClose}
           title={<Trans i18nKey="skipTab" />}
-          content={<Trans id="skipWarning" />}
+          content={<Trans i18nKey="skipWarning" />}
           danger={true}
           action={closeDialog}
           buttonText={<Trans i18nKey="skip" />}
