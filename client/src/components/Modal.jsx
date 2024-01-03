@@ -1,12 +1,15 @@
 import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import { Translate } from "react-localize-redux";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText
+} from "@mui/material";
+import { withStyles } from "@mui/styles";
+
+import { Trans } from "react-i18next";
 
 const styles = theme => ({
   modalButtonRed: {
@@ -46,35 +49,36 @@ function Modal(props) {
   return (
     <div>
       <Dialog
-        data-test="component-modal"
+        data-testid="component-modal"
         open={props.open}
         onClose={props.handleCloseAndClear}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          <Translate id="modalTitle" /> {`${props.fullName}?`}
+          <Trans i18nKey="modalTitle" /> {`${props.fullName}?`}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            <Translate id="modalDescription" /> {`${props.fullName}.`}
+            <Trans i18nKey="modalDescription" /> {`${props.fullName}.`}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.dialogActionsOverride}>
           <Button
-            data-test="button-link-request"
+            data-testid="button-link-request"
             onClick={props.handleCloseAndClear}
             className={classes.modalButtonRed}
           >
-            <Translate id="modalErrorButtonPreName" />
+            <Trans i18nKey="modalErrorButtonPreName" />
             {`${props.fullName}`}
           </Button>
           <Button
             onClick={props.handleClose}
             className={classes.modalButtonGreen}
+            data-testid="button-close"
             autoFocus
           >
-            <Translate id="modalConfirmButton" /> {`${props.fullName}`}
+            <Trans i18nKey="modalConfirmButton" /> {`${props.fullName}`}
           </Button>
         </DialogActions>
       </Dialog>

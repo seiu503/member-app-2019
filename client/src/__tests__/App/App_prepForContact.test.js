@@ -1,18 +1,42 @@
 import React from "react";
-import { shallow } from "enzyme";
-import moment from "moment";
+import { MemoryRouter } from "react-router-dom";
+import { Provider } from "react-redux";
+import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { employersPayload, storeFactory } from "../../utils/testUtils";
+import { rest } from "msw";
+import { setupServer } from "msw/node";
 import "jest-canvas-mock";
 import * as formElements from "../../components/SubmissionFormElements";
-import { employersPayload } from "../../utils/testUtils";
-
-import { AppUnconnected } from "../../App";
-
-let wrapper;
-
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { theme } from "../../styles/theme";
+import {
+  generateSampleValidate,
+  generateSubmissionBody
+} from "../../../../app/utils/fieldConfigs";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
+import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
+  handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+const testData = generateSampleValidate();
+const server = setupServer(...handlers);
+
+import { AppUnconnected } from "../../App";
 
 let updateSFContactSuccess = jest
   .fn()
@@ -61,51 +85,59 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "GET_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let createSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
-let updateSFDJRSuccess = jest
-  .fn()
-  .mockImplementation(() =>
-    Promise.resolve({ type: "UPDATE_SF_DJR_SUCCESS", payload: {} })
-  );
-
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
 global.scrollTo = jest.fn();
 
-const clearSigBoxMock = jest.fn();
-let toDataURLMock = jest.fn();
-
-const sigBox = {
-  current: {
-    toDataURL: toDataURLMock,
-    clear: clearSigBoxMock
-  }
+const formValues = {
+  firstName: "firstName",
+  lastName: "lastName",
+  homeEmail: "test@test.com",
+  homeStreet: "homeStreet",
+  homeCity: "homeCity",
+  homeZip: "12345",
+  homeState: "homeState",
+  signature: "signature",
+  employerType: "employerType",
+  employerName: "employerName",
+  mobilePhone: "1234567890",
+  mm: "01",
+  dd: "01",
+  yyyy: "1999",
+  preferredLanguage: "English",
+  textAuthOptOut: false,
+  termsAgree: true,
+  MOECheckbox: true
 };
 
-let formValues;
+const initialState = {
+  appState: {
+    loading: false
+  },
+  submission: {
+    formPage1: {
+      reCaptchaValue: "token",
+      ...formValues
+    },
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload],
+    formPage2: {}
+  }
+};
 
 const defaultProps = {
   submission: {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      reCaptchaValue: "token",
+      ...formValues
     },
     cape: {},
-    payment: {}
+    payment: {},
+    employerObjects: [...employersPayload]
   },
   appState: {},
   apiProfile: {},
@@ -126,20 +158,20 @@ const defaultProps = {
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
-    getIframeURL: () =>
-      Promise.resolve({ type: "GET_IFRAME_URL_SUCCESS", payload: {} }),
-    createSFDJR: createSFDJRSuccess,
-    updateSFDJR: updateSFDJRSuccess,
-    getSFDJRById: getSFDJRSuccess,
-    updateSFContact: updateSFContactSuccess,
-    createSFContact: createSFContactSuccess,
-    lookupSFContact: lookupSFContactSuccess
+    updateSFContact: () =>
+      Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS" }),
+    createSFContact: () =>
+      Promise.resolve({ type: "CREATE_SF_CONTACT_SUCCESS" }),
+    lookupSFContact: () =>
+      Promise.resolve({ type: "LOOKUP_SF_CONTACT_SUCCESS" })
   },
   apiSubmission: {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {
     push: pushMock
@@ -148,7 +180,6 @@ const defaultProps = {
     execute: executeMock
   },
   refreshRecaptcha: refreshRecaptchaMock,
-  sigBox: { ...sigBox },
   content: {
     error: null
   },
@@ -169,322 +200,523 @@ const defaultProps = {
   },
   actions: {
     setSpinner: jest.fn()
+  },
+  i18n: {
+    changeLanguage: jest.fn()
   }
 };
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<AppUnconnected {...setupProps} />);
+const store = storeFactory(initialState);
+
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  // console.log(setupProps.submission.employerObjects);
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <MemoryRouter initialEntries={[route]}>
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <AppUnconnected {...setupProps} />
+          </I18nextProvider>
+        </MemoryRouter>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<App />", () => {
-  beforeEach(() => {
-    formValues = {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false,
-      hireDate: new Date()
-    };
-  });
-  afterEach(() => {
-    jest.restoreAllMocks();
-  });
+  // Enable API mocking before tests.
+  beforeAll(() => server.listen());
+
+  // Reset any runtime request handlers we may add during the tests.
+  afterEach(() => server.resetHandlers());
+
+  // Disable API mocking after the tests are done.
+  afterAll(() => server.close());
 
   describe("prepForContact", () => {
     test("`prepForContact` handles edge case if no employerName in formValues", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
       let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: undefined,
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
-        },
+        ...defaultProps,
         apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          ...defaultProps.apiSF,
+          lookupSFContact: () =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            }),
+          createSFContact: () =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
         }
       };
-      wrapper = setup(props);
-      wrapper.instance().prepForContact(props.formValues);
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        queryByTestId,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(async () => {
+        expect(
+          await queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
     });
     test("`prepForContact` handles edge case if no matching employer object found", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
       let props = {
         formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "SEIU 503 Staff",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
+          employerName: "SEIU 503 Staff"
         },
         apiSubmission: {
           handleInput: handleInputMock
         },
         submission: {
+          ...defaultProps.submission,
           salesforceId: "123",
           formPage1: {
             prefillEmployerId: null
           },
           employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
         },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
         apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         }
       };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-      expect(result.agencyNumber).toBe(0);
-      expect(result.employerId).toBe("0016100000WERGeAAP");
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect employerId to be set to '0016100000WERGeAAP' (unknown)
+      await waitFor(() => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "employerId", value: "0016100000WERGeAAP" }
+        });
+      });
     });
     test("`prepForContact` handles edge case if prefill employer id & employer changed", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
       let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "SEIU 503 Staff",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
         submission: {
+          ...defaultProps.submission,
           salesforceId: "123",
           formPage1: {
+            ...formValues,
             prefillEmployerId: "2",
             prefillEmployerChanged: true
           },
           employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
         },
         apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          )
         }
       };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
-      expect(result.agencyNumber).toBe(0);
-      expect(result.employerId).toBe("0016100000WERGeAAP");
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // check that tab 1 renders
+      const tab1Form = getByRole("form");
+      await waitFor(() => {
+        expect(tab1Form).toBeInTheDocument();
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect employerId to be set to '0016100000WERGeAAP' (unknown)
+      await waitFor(() => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "employerId", value: "0016100000WERGeAAP" }
+        });
+      });
     });
-    test("`prepForContact` handles SEIU 503 Staff edge case", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      formValues.employerName = "SEIU 503 Staff";
+    test("`prepForContact` handles PPL edge case", async function() {
       let props = {
         formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "SEIU 503 Staff",
-          paymentType: "card",
-          employerType: "retired",
-          preferredLanguage: "English"
+          ...formValues,
+          employerName: "personal support worker (paid by ppl)"
         },
-        apiSubmission: {
-          handleInput: handleInputMock
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: null }
+            })
+          )
+        }
+      };
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect tab2 to render
+      await waitFor(() => {
+        const tab2Form = getByTestId("form-tab2");
+        expect(tab2Form).toBeInTheDocument();
+      });
+    });
+    test("`prepForContact` handles PSW edge case", async function() {
+      let props = {
+        formValues: {
+          ...formValues,
+          employerName: "personal support worker (paid by state of oregon)"
+        },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        apiSF: {
+          ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: null }
+            })
+          )
+        }
+      };
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
+
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
+
+      // expect tab2 to render
+      await waitFor(() => {
+        const tab2Form = getByTestId("form-tab2");
+        expect(tab2Form).toBeInTheDocument();
+      });
+    });
+    test("`prepForContact` handles APD edge case", async function() {
+      let props = {
+        formValues: {
+          ...formValues,
+          employerName: "homecare worker (aging and people with disabilities)"
         },
         submission: {
-          salesforceId: "123",
           formPage1: {
             prefillEmployerId: null
           },
           employerObjects: [
-            { id: "1", Name: "SEIU LOCAL 503 OPEU", Agency_Number__c: 700 }
+            {
+              attributes: {
+                type: "Account",
+                url: "/services/data/v42.0/sobjects/Account/0016100001UoJZVAA3"
+              },
+              Id: "0016100001UoJZVAA3",
+              Name: "HEALTH LICENSING AGENCY",
+              Sub_Division__c: "State",
+              Parent: {
+                attributes: {
+                  type: "Account",
+                  url:
+                    "/services/data/v42.0/sobjects/Account/0016100000Kb1RQAAZ"
+                },
+                Id: "0016100000Kb1RQAAZ"
+              },
+              Agency_Number__c: 83300
+            }
           ]
         },
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        updateSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "UPDATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
         apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
+          ...defaultProps.apiSF,
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          updateSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "UPDATE_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: "123" }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { salesforce_id: null }
+            })
+          )
         }
       };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-      expect(result.agencyNumber).toBe(700);
-    });
-    test("`prepForContact` handles PPL edge case", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      formValues.employerName = "personal support worker (paid by ppl)";
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "personal support worker (paid by ppl)",
-          paymentType: "card",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [...employersPayload]
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
+      // simulate user click 'Next'
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
-      expect(result.agencyNumber).toBe(150);
-    });
-    test("`prepForContact` handles PSW edge case", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      formValues.employerName =
-        "personal support worker (paid by state of oregon)";
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "personal support worker (paid by state of oregon)",
-          paymentType: "card",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [...employersPayload]
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
+        await userEvent.click(submitButton);
+      });
 
-      expect(result.agencyNumber).toBe(100);
-    });
-    test("`prepForContact` handles APD edge case", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      formValues.employerName =
-        "homecare worker (aging and people with disabilities)";
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "homecare worker (aging and people with disabilities)",
-          paymentType: "card",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [...employersPayload]
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
 
-      expect(result.agencyNumber).toBe(988);
-    });
-    test("`prepForContact` handles community member edge case", async function() {
-      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
-      formValues.employerName = "community member";
-      let props = {
-        formValues: {
-          directPayAuth: true,
-          directDepositAuth: true,
-          employerName: "community member",
-          paymentType: "card",
-          preferredLanguage: "English"
-        },
-        apiSubmission: {
-          handleInput: handleInputMock
-        },
-        submission: {
-          salesforceId: "123",
-          formPage1: {
-            prefillEmployerId: null
-          },
-          employerObjects: [...employersPayload]
-        },
-        apiSF: {
-          createSFContact: createSFContactError,
-          createSFDJR: () => Promise.resolve({ type: "CREATE_SF_DJR_SUCCESS" })
-        }
-      };
-      wrapper = setup(props);
-      const result = await wrapper
-        .instance()
-        .prepForContact(formValues)
-        .catch(err => console.log(err));
-
-      expect(result.agencyNumber).toBe(991);
+      // expect tab2 to render
+      await waitFor(() => {
+        const tab2Form = getByTestId("form-tab2");
+        expect(tab2Form).toBeInTheDocument();
+      });
     });
   });
 });

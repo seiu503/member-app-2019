@@ -1,5 +1,9 @@
 import checkPropTypes from "check-prop-types";
 import { createStore, applyMiddleware } from "redux";
+import React from "react";
+import { render } from "@testing-library/react";
+import { configureStore } from "@reduxjs/toolkit";
+import { Provider } from "react-redux";
 
 import rootReducer from "../../src/store/reducers";
 import { middlewares } from "../../src/store/store";
@@ -19,13 +23,13 @@ export const storeFactory = initialState => {
 };
 
 /**
- * Return node(s) with the given data-test attribute.
+ * Return node(s) with the given data-testid attribute.
  * @param  {ShallowWrapper} wrapper - Enzyme shallow wrapper.
- * @param {string} val - Value of data-test attribute for search.
+ * @param {string} val - Value of data-testid attribute for search.
  * @return {ShallowWrapper}
  */
 export const findByTestAttr = (wrapper, val) => {
-  return wrapper.find(`[data-test="${val}"]`);
+  return wrapper.find(`[data-testid="${val}"]`);
 };
 
 export const employersPayload = [
@@ -1160,23 +1164,6 @@ export const employersPayload = [
       Id: "0016100000Pw3JnAAJ"
     },
     Agency_Number__c: 985
-  },
-  {
-    attributes: {
-      type: "Account",
-      url: "/services/data/v42.0/sobjects/Account/0016100000Pw3aKAAR"
-    },
-    Id: "0016100000Pw3aKAAR",
-    Name: "Family Child Care",
-    Sub_Division__c: "Child Care",
-    Parent: {
-      attributes: {
-        type: "Account",
-        url: "/services/data/v42.0/sobjects/Account/0016100001UoDg2AAF"
-      },
-      Id: "0016100001UoDg2AAF"
-    },
-    Agency_Number__c: 986
   },
   {
     attributes: {

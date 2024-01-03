@@ -195,6 +195,13 @@
     "Điện thoại tốt nhất để gọi",
     "首选电话号码"
   ],
+  "mobilePhone": [
+    "Mobile Phone",
+    "Teléfono móvil",
+    "Сотовый телефон",
+    "Điện thoại di động",
+    "手机"
+  ],
   "textAuthOptOut": [
     "OPT OUT OF RECEIVING MOBILE ALERTS†",
     "No deseo recibir alertas por mensaje de texto†",
@@ -341,13 +348,6 @@
     "Поставьте подпись в поле выше.",
     "Ký vào ô bên trên.",
     "在上面的方框里签名。"
-  ],
-  "Other": [
-    "Other",
-    "Otro",
-    "Другое количество",
-    "Lượng khác",
-    "其他金额"
   ],
   "Monthly": [
     "Monthly",

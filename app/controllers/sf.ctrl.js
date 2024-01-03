@@ -26,7 +26,7 @@ const loginUrl =
     ? process.env.SALESFORCE_PROD_URL
     : process.env.SALESFORCE_DEV_URL;
 
-console.log(`sf.ctrl.js > loginUrl: ${loginUrl}`);
+// console.log(`sf.ctrl.js > loginUrl: ${loginUrl}`);
 
 let conn = new jsforce.Connection({ loginUrl });
 
@@ -35,7 +35,7 @@ const user =
     ? process.env.SALESFORCE_PROD_USER
     : process.env.SALESFORCE_USER;
 
-console.log(`sf.ctrl.js > user: ${user}`);
+// console.log(`sf.ctrl.js > user: ${user}`);
 
 const password =
   process.env.NODE_CONFIG_ENV === "production"
@@ -151,7 +151,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
  *  @returns  {Object}        { sf_contact_id } or error message
  */
 exports.createSFContact = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 148: createSFContact`);
+  // console.log(`sf.ctrl.js > 148: createSFContact`);
 
   const bodyRaw = { ...req.body };
   // console.log(`sf.ctrl.js > 151, req.body`);
@@ -283,8 +283,8 @@ exports.updateSFContact = async (req, res, next) => {
   const { id } = req.params;
 
   const updatesRaw = { ...req.body };
-  console.log(`sf.ctrl.js > 286: updates`);
-  console.log(updatesRaw);
+  // console.log(`sf.ctrl.js > 286: updates`);
+  // console.log(updatesRaw);
   const updates = {};
   // convert updates object to key/value pairs using
   // SF API field names
@@ -302,8 +302,8 @@ exports.updateSFContact = async (req, res, next) => {
   }
   // don't make any changes to contact account/employer
   // updates.AccountId = updatesRaw.employer_id;
-  console.log(`sf.ctrl.js > 276: UPDATE SFCONTACT updates`);
-  console.log(updates);
+  // console.log(`sf.ctrl.js > 276: UPDATE SFCONTACT updates`);
+  // console.log(updates);
 
   let conn = new jsforce.Connection({ loginUrl });
   try {
@@ -361,7 +361,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
   let oma;
   try {
     const bodyRaw = { ...req.body };
-    console.log("sf.ctrl.js > 391");
+    console.log("sf.ctrl.js > 391 OMA submission body raw");
     console.log(bodyRaw);
     const body = {};
     Object.keys(bodyRaw).forEach(key => {
@@ -378,22 +378,22 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     // console.log(
     //   `sf.ctrl.js: 406: body.Agency_Number_from_Webform__c: ${body.Agency_Number_from_Webform__c}`
     // );
-    console.log(`sf.ctrl.js: 382: body.Birthdate: ${body.Birthdate}`);
+    // console.log(`sf.ctrl.js: 382: body.Birthdate: ${body.Birthdate}`);
     delete body["Account.Id"];
     delete body["Account.Agency_Number__c"];
     delete body["Account.WS_Subdivision_from_Agency__c"];
     delete body["Birthdate"];
     delete body["agencyNumber__c"];
-    console.log(`sf.ctrl.js: 390: bodyRaw.birthdate: ${bodyRaw.birthdate}`);
+    // console.log(`sf.ctrl.js: 390: bodyRaw.birthdate: ${bodyRaw.birthdate}`);
     // body.Birthdate__c = this.formatSFDate(bodyRaw.birthdate);
     body.Birthdate__c = new Date(bodyRaw.birthdate).toISOString();
-    console.log(`sf.ctrl.js: 394: body.Birthdate__c: ${body.Birthdate__c}`);
+    // console.log(`sf.ctrl.js: 394: body.Birthdate__c: ${body.Birthdate__c}`);
     body.Submission_Date__c = new Date(); // this one can be a datetime
     body.Worker__c = bodyRaw.Worker__c
       ? bodyRaw.Worker__c
       : bodyRaw.salesforce_id;
     body.IP_Address__c = ip;
-    console.log(`sf.ctrl.js > 421: body.Worker__c: ${body.Worker__c}`);
+    // console.log(`sf.ctrl.js > 421: body.Worker__c: ${body.Worker__c}`);
     // body.Checkoff_Auth__c = this.formatSFDate(body.Checkoff_Auth__c);
     if (
       bodyRaw.scholarship_flag === "on" ||
@@ -405,7 +405,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     } else {
       body.Scholarship_Flag__c = false;
     }
-    console.log(`sf.ctrl.js > 433: sfOMA body`);
+    console.log(`sf.ctrl.js > 433: sfOMA body cleaned`);
     console.log(body);
 
     OMA = await conn.sobject("OnlineMemberApp__c").create({
@@ -486,39 +486,47 @@ exports.createSFCAPE = async (req, res, next) => {
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
 exports.getAllEmployers = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 724`);
-  console.log("getAllEmployers");
+  // console.log(`sf.ctrl.js > 724`);
+  // console.log("getAllEmployers");
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
+  // 0016100000Pw3aKAAR = Child Care Acct Id
+  // 0016100000Pw3XQAAZ = AFH Account Id, 0016100001UoDg2AAF = AFH Parent Acct Id
+  // 0016100000TOfXsAAL = Retirees Acct Id, 0016100001UoDg2AAF = Retiree Parent Acct Id
   // 0016100001UoDg2AAF = Generic Parent
   // 01261000000ksTuAAI = Record type ID for Agency level employer
   // (Community members & Staff do not fit the query in any other way
   // so have to be SELECTed for separately)
-  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Parent_CASE_Safe_ID__c, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Parent_CASE_Safe_ID__c != '0016100001UoDg2AAF' AND Parent_CASE_Safe_ID__c != null`;
-  // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4'`;
+
+  // query below includes community, afh, retirees, child care
+  // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
+
+  // query below explicitly excludes community, afh, retirees, child care
+  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Id != '0016100000Pw3XQAAZ' AND Id != '0016100000TOfXsAAL' AND Id !='0016100000Pw3aKAAR'`;
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
   } catch (err) {
-    console.error(`sf.ctrl.js > 750: ${err}`);
+    console.error(`sf.ctrl.js > 510: ${err}`);
     return res.status(500).json({ message: err.message });
   }
   let accounts = [];
   try {
     accounts = await conn.query(query);
     if (!accounts || !accounts.records || !accounts.records.length) {
-      console.log(`sf.ctrl.js > 757: returning employers to client`);
+      console.log(`sf.ctrl.js > 517: error fetching accounts`);
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
     if (req.locals && req.locals.next) {
-      console.log(`sf.ctrl.js > 761: returning next`);
+      console.log(`sf.ctrl.js > 521: returning next`);
       return accounts.records;
     } else {
-      console.log(`sf.ctrl.js > 764: returning employers to client`);
+      console.log(`sf.ctrl.js > 524: returning employers to client`);
+      // console.log(accounts.records);
       return res.status(200).json(accounts.records);
     }
   } catch (err) {
-    console.error(`sf.ctrl.js > 769: ${err}`);
+    console.error(`sf.ctrl.js > 529: ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };
@@ -572,7 +580,7 @@ exports.handleTab1 = async (req, res, next) => {
 
   // if lookup was successful, update existing contact and move to next tab
   if (salesforce_id) {
-    console.log(`sf.ctrl.js > handleTab1 991 update contact`);
+    // console.log(`sf.ctrl.js > handleTab1 991 update contact`);
     req.params.id = salesforce_id;
     await this.updateSFContact(req, res, next)
       .then(salesforce_id => {
@@ -581,9 +589,9 @@ exports.handleTab1 = async (req, res, next) => {
         submissionCtrl
           .createSubmission(req, res, next)
           .then(submissionId => {
-            console.log(
-              `sf.ctrl.js > handleTab1 1001: submissionId: ${submissionId}`
-            );
+            // console.log(
+            //   `sf.ctrl.js > handleTab1 1001: submissionId: ${submissionId}`
+            // );
             const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
             // console.log(`sf.ctrl.js > handleTab1 1004: ${redirect}`);
             return res.redirect(redirect);
@@ -609,17 +617,17 @@ exports.handleTab1 = async (req, res, next) => {
       }
     );
 
-    console.log(
-      `sf.ctrl.js > handleTab1 1048: sfEmployers: ${sfEmployers.length}`
-    );
-    console.log(formValues.employer_name);
+    // console.log(
+    //   `sf.ctrl.js > handleTab1 1048: sfEmployers: ${sfEmployers.length}`
+    // );
+    // console.log(formValues.employer_name);
     const employers = Array.isArray(sfEmployers) ? sfEmployers : [{ Name: "" }];
     const empoyerName = formValues.employer_name
       ? formValues.employer_name
       : "";
     const employerObject = this.findEmployerObject(employers, empoyerName);
-    console.log(`sf.ctrl.js > handleTab1 1054: employerObject`);
-    console.log(employerObject);
+    // console.log(`sf.ctrl.js > handleTab1 1054: employerObject`);
+    // console.log(employerObject);
     const employer_id = employerObject
       ? employerObject.Id
       : "0016100000WERGeAAP"; // <== 'Unknown Employer'
@@ -631,9 +639,9 @@ exports.handleTab1 = async (req, res, next) => {
           employerObject.Parent.Agency_Number__c
         ? employerObject.Parent.Agency_Number__c
         : 0;
-    console.log(
-      `sf.ctrl.js > handleTab1 1061: employer_id: ${employer_id}, agency_number: ${agency_number}`
-    );
+    // console.log(
+    //   `sf.ctrl.js > handleTab1 1061: employer_id: ${employer_id}, agency_number: ${agency_number}`
+    // );
 
     req.body.employer_id = employer_id;
     req.body.agency_number = agency_number;
@@ -641,9 +649,9 @@ exports.handleTab1 = async (req, res, next) => {
 
     this.createSFContact(req, res, next)
       .then(salesforce_id => {
-        console.log(
-          `sf.ctrl.js > handleTab1 1071: salesforce_id: ${salesforce_id}`
-        );
+        // console.log(
+        //   `sf.ctrl.js > handleTab1 1071: salesforce_id: ${salesforce_id}`
+        // );
 
         req.body.salesforce_id = salesforce_id;
 
@@ -651,9 +659,9 @@ exports.handleTab1 = async (req, res, next) => {
         submissionCtrl
           .createSubmission(req, res, next)
           .then(submissionId => {
-            console.log(
-              `sf.ctrl.js > handleTab1 1081: submissionId: ${submissionId}`
-            );
+            // console.log(
+            //   `sf.ctrl.js > handleTab1 1081: submissionId: ${submissionId}`
+            // );
             const redirect = `${CLIENT_URL}/ns2.html?salesforce_id=${salesforce_id}&submission_id=${submissionId}`;
             // console.log(`sf.ctrl.js > handleTab1 1058: ${redirect}`);
             return res.redirect(redirect);
@@ -676,10 +684,10 @@ exports.handleTab1 = async (req, res, next) => {
 
 // for users with javascript disabled ONLY
 exports.handleTab2 = async (req, res, next) => {
-  console.log(`sf.ctrl.js > 1123: handleTab2: req.body.legal_language`);
-  console.log(req.body.legal_language);
-  console.log(`sf.ctrl.js > 1123: handleTab2: legal_language`);
-  console.log(legal_language);
+  // console.log(`sf.ctrl.js > 1123: handleTab2: req.body.legal_language`);
+  // console.log(req.body.legal_language);
+  // console.log(`sf.ctrl.js > 1123: handleTab2: legal_language`);
+  // console.log(legal_language);
   req.body.online_campaign_source = "NoJavascript";
   req.body.legal_language = legal_language;
   if (req.body.terms_agree === "on") {
@@ -720,7 +728,7 @@ exports.handleTab2 = async (req, res, next) => {
       console.log(req.body);
       this.createSFOnlineMemberApp(req, res, next)
         .then(sf_OMA_id => {
-          console.log(`sf.ctrl.js > 1137 handleTab2 sfOMA success`);
+          // console.log(`sf.ctrl.js > 1137 handleTab2 sfOMA success`);
           return res.redirect("https://seiu503.org/members/thank-you/");
         })
         .catch(err => {

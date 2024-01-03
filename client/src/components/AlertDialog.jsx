@@ -1,34 +1,38 @@
 import PropTypes from "prop-types";
-import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import { withStyles } from "@material-ui/core/styles";
-import { Translate } from "react-localize-redux";
 
-export const styles = theme => ({
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+  DialogContentText
+} from "@mui/material";
+import { theme } from "../styles/theme";
+import { withStyles } from "@mui/styles";
+import { Trans } from "react-i18next";
+
+const styles = theme => ({
   root: {
     margin: 0,
     padding: 20
   },
   danger: {
-    backgroundColor: theme.palette.danger.main,
+    backgroundColor: "#b71c1c", // theme.palette.danger.main
     color: "white",
     "&:hover": {
-      backgroundColor: theme.palette.danger.light
+      backgroundColor: "#d32f2f" // theme.palette.danger.light
     }
   },
   primary: {
-    backgroundColor: theme.palette.primary.main
+    backgroundColor: "#2c0940" // theme.palette.primary.main
   }
 });
 
-export const AlertDialogUnwrapped = props => (
-  <div data-test="component-alert-dialog">
+export const AlertDialog = props => (
+  <div data-testid="component-alert-dialog">
     <Dialog
-      data-test="dialog"
+      data-testid="dialog"
       open={props.open}
       onClose={props.handleClose}
       aria-labelledby={
@@ -38,14 +42,14 @@ export const AlertDialogUnwrapped = props => (
       PaperProps={{ style: { margin: 0 } }}
     >
       {props.title && (
-        <DialogTitle id="alert-dialog-title" data-test="dialog-title">
+        <DialogTitle id="alert-dialog-title" data-testid="dialog-title">
           {props.title}
         </DialogTitle>
       )}
       <DialogContent>
         <DialogContentText
           id="alert-dialog-description"
-          data-test="dialog-content"
+          data-testid="dialog-content"
         >
           {props.content}
         </DialogContentText>
@@ -54,10 +58,9 @@ export const AlertDialogUnwrapped = props => (
         <Button
           onClick={props.handleClose}
           variant="outlined"
-          color="default"
-          data-test="button-cancel"
+          data-testid="button-cancel"
         >
-          <Translate id="cancel" />
+          <Trans i18nKey="cancel" />
         </Button>
         <Button
           onClick={props.action}
@@ -66,7 +69,7 @@ export const AlertDialogUnwrapped = props => (
           }
           variant="contained"
           autoFocus
-          data-test="button-action"
+          data-testid="button-action"
         >
           {props.buttonText}
         </Button>
@@ -75,7 +78,7 @@ export const AlertDialogUnwrapped = props => (
   </div>
 );
 
-AlertDialogUnwrapped.propTypes = {
+AlertDialog.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   content: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
@@ -85,4 +88,6 @@ AlertDialogUnwrapped.propTypes = {
   classes: PropTypes.object
 };
 
-export default withStyles(styles)(AlertDialogUnwrapped);
+const AlertDialogWrapper = withStyles(styles)(AlertDialog);
+export default AlertDialogWrapper;
+// export default AlertDialog;

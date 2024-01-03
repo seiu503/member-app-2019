@@ -2,19 +2,19 @@ import React from "react";
 import { Field } from "redux-form";
 import { reduxForm } from "redux-form";
 
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
+import { Button, FormHelperText, Typography, Box } from "@mui/material";
+
 import PropTypes from "prop-types";
-import { Translate } from "react-localize-redux";
+import { Trans } from "react-i18next";
 
 import { validate } from "../utils/validators";
 import { scrollToFirstError } from "../utils";
+import * as formElements from "./SubmissionFormElements";
 
 export const Tab2 = props => {
   const {
     onSubmit,
-    classes,
+    // classes,
     renderTextField,
     renderCheckbox,
     back,
@@ -22,19 +22,29 @@ export const Tab2 = props => {
     direct_pay,
     formValues
   } = props;
-  // console.log(formValues.employerType);
-  const afh = formValues.employerType.toLowerCase() === "adult foster home";
-  const retiree = formValues.employerType.toLowerCase() === "retired";
-  const community =
-    formValues.employerType.toLowerCase() === "community member";
+
+  const classes = formElements.classesPage1;
 
   return (
-    <div data-test="component-tab2" className={classes.sectionContainer}>
+    <Box
+      data-testid="component-tab2"
+      sx={{
+        maxWidth: "600px",
+        margin: "auto",
+        background: "white",
+        padding: {
+          xs: "15px 15px 40px 15px",
+          sm: "20px 20px 40px 20px"
+        },
+        borderRadius: "0 0 4px 4px"
+        // className={classes.form}
+      }}
+    >
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         id="tab2"
-        className={classes.form}
-        style={{ paddingTop: 40 }}
+        data-testid="form-tab2"
+        name="form-tab2"
       >
         <Field
           formControlName="controlCheckboxMarginBold"
@@ -46,99 +56,43 @@ export const Tab2 = props => {
           bold={true}
           component={renderCheckbox}
         />
-        <div
-          className={classes.formHelperTextLegal}
+        <Box
+          sx={{
+            margin: "0 0 35px 0",
+            fontSize: "14px",
+            lineHeight: "1.2em"
+          }}
           id="termsOfServiceLegalLanguage"
           ref={legal_language}
         >
-          {community ? (
-            <p>
-              <Translate id="communityMembershipTerms2022" />
-            </p>
-          ) : (
-            <p>
-              <Translate id="membershipTerms2021" />
-            </p>
-          )}
-          {!community && !retiree && !afh && (
-            <div>
-              <Field
-                formControlName="controlCheckboxMarginBoldSpacer"
-                label="Agree to Dues Authorization"
-                name="MOECheckbox"
-                id="MOECheckbox"
-                type="checkbox"
-                classes={classes}
-                bold={true}
-                component={renderCheckbox}
-              />
-              <p>
-                <Translate id="checkoff2021" />
-              </p>
-            </div>
-          )}
-        </div>
+          <p>
+            <Trans i18nKey="membershipTerms2021" />
+          </p>
 
-        {(afh || community || retiree) && (
-          <React.Fragment>
+          <div>
             <Field
-              formControlName="controlCheckboxMarginBold"
-              data-test="checkbox-DPA"
-              label="Direct Pay Authorization"
-              name="directPayAuth"
-              id="directPayAuth"
+              formControlName="controlCheckboxMarginBoldSpacer"
+              label="Agree to Dues Authorization"
+              name="MOECheckbox"
+              id="MOECheckbox"
               type="checkbox"
-              classes={classes}
+              classes={{
+                root: {
+                  marginTop: "35px important!"
+                }
+              }}
               bold={true}
               component={renderCheckbox}
             />
-            <div
-              className={classes.formHelperTextLegal}
-              id="directPayAuthLegalLanguage"
-              ref={direct_pay}
-            >
-              {afh && (
-                <React.Fragment>
-                  <p>
-                    <Translate id="afhDPA1" />
-                  </p>
-                  <p>
-                    <Translate id="afhDPA2" />
-                  </p>
-                </React.Fragment>
-              )}
-              {community && (
-                <>
-                  <p>
-                    <Translate id="communityDPA2022_1" />
-                  </p>
-                  <p>
-                    <Translate id="communityDPA2022_2" />
-                  </p>
-                </>
-              )}
-              {retiree && (
-                <p>
-                  <Translate id="retireeDPA1" />
-                </p>
-              )}
-              <p>
-                <Translate id={afh ? "afhDPA3" : "DPA3"} />
-              </p>
-              {community && (
-                <p>
-                  <Translate id="communityDPA2022_4" />
-                </p>
-              )}
-              <p>
-                <Translate id="DPA4" />
-              </p>
-            </div>
-          </React.Fragment>
-        )}
+            <p>
+              <Trans i18nKey="checkoff2021" />
+            </p>
+          </div>
+        </Box>
+
         <Field
           formControlName="controlCheckboxMargin"
-          data-test="checkbox-ScholarshipBox"
+          data-testid="checkbox-ScholarshipBox"
           label="Scholarship Fund"
           name="scholarshipBox"
           id="scholarshipBox"
@@ -147,47 +101,82 @@ export const Tab2 = props => {
           classes={classes}
           component={renderCheckbox}
         />
-        <Typography component="h3" className={classes.fieldLabel}>
-          <Translate id="signatureTitle" />
+        <Typography component="h3">
+          <Trans i18nKey="signatureTitle" />
         </Typography>
 
         <React.Fragment>
           <Field
             label="Signature"
-            data-test="input-signature"
+            data-testid="input-signature"
             name="signature"
             id="signature"
             type="text"
             classes={classes}
             component={renderTextField}
           />
-          <FormHelperText className={classes.formHelperText}>
-            <Translate id="signatureHint" />
+          <FormHelperText
+            // className={classes.formHelperText}
+            sx={{
+              margin: "-30px 0 40px",
+              fontSize: ".75rem"
+            }}
+          >
+            <Trans i18nKey="signatureHint" />
           </FormHelperText>
         </React.Fragment>
 
-        <div className={classes.buttonWrap}>
+        <Box
+          // className={classes.buttonWrap}
+          sx={{
+            width: "100%",
+            padding: "0 20px 40px 0",
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "20px"
+          }}
+        >
           <Button
             type="button"
-            data-test="button-back"
+            data-testid="button-back"
             onClick={() => back(0)}
             color="primary"
-            className={classes.back}
+            // className={classes.back}
+            sx={{
+              textTransform: "none",
+              fontSize: "1.3rem",
+              padding: "6px 20px",
+              color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+              "&:hover": {
+                backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+              },
+              marginRight: "40px"
+            }}
             variant="contained"
           >
-            <Translate id="back">Back</Translate>
+            <Trans i18nKey="back">Back</Trans>
           </Button>
           <Button
             type="submit"
+            data-testid="button-submit-tab2"
             color="primary"
-            className={classes.next}
+            sx={{
+              textTransform: "none",
+              fontSize: "1.3rem",
+              padding: "6px 20px",
+              color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+              "&:hover": {
+                backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+              }
+              // classes.next
+            }}
             variant="contained"
           >
-            <Translate id="next">Next</Translate>
+            <Trans i18nKey="next">Next</Trans>
           </Button>
-        </div>
+        </Box>
       </form>
-    </div>
+    </Box>
   );
 };
 

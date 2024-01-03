@@ -4,7 +4,7 @@ const NotFound = props => {
   return (
     <div
       className={props.classes.container}
-      data-test="component-not-found"
+      data-testid="component-not-found"
       style={{
         margin: "0 auto",
         width: "100%",

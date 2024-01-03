@@ -1099,7 +1099,7 @@ const capeTableFields = {
     // SFAPIName: "Employer__c",
     // SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "employer_name"
+    testingSample: "State of Oregon"
   },
   employer_type: {
     oldFormPage: "none",
@@ -1115,7 +1115,7 @@ const capeTableFields = {
     // SFAPIName: "Employer__c",
     // SFDataType: "Text(255)",
     SQLDataType: "VARCHAR(255)",
-    testingSample: "employer_id"
+    testingSample: "State Agency"
   },
   job_title: {
     oldFormPage: "none",
@@ -1808,6 +1808,7 @@ const generateSampleValidate = () => {
   sampleData.mm = "01";
   sampleData.yyyy = "2001";
   sampleData.termsAgree = true;
+  sampleData.MOECheckbox = true;
   sampleData.mobilePhone = sampleData.cellPhone;
   sampleData.homePostalCode = sampleData.homeZip;
   delete sampleData.cellPhone;

@@ -4,82 +4,94 @@ describe("appState reducer", () => {
   it("should return the initial state", () => {
     expect(reducer(undefined, {})).toEqual(INITIAL_STATE);
   });
-
-  it("should handle LOGOUT", () => {
+  it("should create an action to set the spinner", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "LOGOUT"
-      })
-    ).toEqual(INITIAL_STATE);
-  });
-
-  it("should handle VALIDATE_TOKEN_SUCCESS", () => {
-    expect(
-      reducer(INITIAL_STATE, {
-        type: "VALIDATE_TOKEN_SUCCESS",
-        payload: { token: "1234" }
+        type: "SET_SPINNER"
       })
     ).toEqual({
-      loggedIn: true,
-      authToken: "1234",
-      loading: false,
-      redirect: "",
-      userType: undefined
+      ...INITIAL_STATE,
+      loading: true
     });
   });
-  it("should handle GET_PROFILE_SUCCESS", () => {
+  it("sets loading to true on add submission request", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "GET_PROFILE_SUCCESS",
-        payload: { token: "1234" }
+        type: "ADD_SUBMISSION_REQUEST"
       })
     ).toEqual({
-      loggedIn: true,
-      authToken: "",
-      loading: false,
-      redirect: "",
-      userType: undefined
+      ...INITIAL_STATE,
+      loading: true
     });
   });
-  it("should handle VALIDATE_TOKEN_FAILURE", () => {
+  it("sets loading to true on UPDATE_SUBMISSION_REQUEST", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "VALIDATE_TOKEN_FAILURE"
+        type: "UPDATE_SUBMISSION_REQUEST"
       })
     ).toEqual({
-      loggedIn: false,
-      authToken: "",
-      loading: false,
-      redirect: "",
-      userType: ""
+      ...INITIAL_STATE,
+      loading: true
     });
   });
-  it("should handle SET_REDIRECT_URL", () => {
+  it("sets loading to true on GET_SF_CONTACT_REQUEST", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "SET_REDIRECT_URL",
-        payload: "http://www.example.com"
+        type: "GET_SF_CONTACT_REQUEST"
       })
     ).toEqual({
-      loggedIn: false,
-      authToken: "",
-      loading: false,
-      redirect: "http://www.example.com",
-      userType: ""
+      ...INITIAL_STATE,
+      loading: true
     });
   });
-
-  it("should handle SET_LOGGEDIN", () => {
+  it("sets loading to false on ADD_SUBMISSION_SUCCESS", () => {
     expect(
       reducer(INITIAL_STATE, {
-        type: "SET_LOGGEDIN"
+        type: "ADD_SUBMISSION_SUCCESS"
       })
     ).toEqual({
-      loggedIn: true,
-      authToken: "",
-      loading: false,
-      redirect: "",
-      userType: undefined
+      ...INITIAL_STATE,
+      loading: false
+    });
+  });
+  it("sets loading to false on ADD_SUBMISSION_FAILURE", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "ADD_SUBMISSION_FAILURE"
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      loading: false
+    });
+  });
+  it("sets loading to false on UPDATE_SUBMISSION_SUCCESS", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "UPDATE_SUBMISSION_SUCCESS"
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      loading: false
+    });
+  });
+  it("sets loading to false on UPDATE_SUBMISSION_FAILURE", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "UPDATE_SUBMISSION_FAILURE"
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      loading: false
+    });
+  });
+  it("sets loading to true on update submission request", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_SPINNER"
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      loading: true
     });
   });
 });

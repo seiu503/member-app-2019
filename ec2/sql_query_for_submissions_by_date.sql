@@ -1,0 +1,1 @@
+SELECT * from submissions where submission_date >= '2023-02-09'::date limit 10

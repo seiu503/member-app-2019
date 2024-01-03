@@ -27,7 +27,7 @@ const randomText = () => {
 
 /** Error handler for route controllers */
 const handleError = (res, err) => {
-  console.log(`utils/index.js > handleError`);
+  // console.log(`utils/index.js > handleError`);
   // console.error(err && err.message ? err.message : err);
   return res.status(500).json({ message: err });
 };
@@ -57,11 +57,7 @@ formatSFDate = date => {
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
     year = d.getFullYear();
-  console.log(`index.js > 60: date: ${date}`);
-  console.log(`index.js > 60: d: ${d}`);
-  console.log(`index.js > 60: month: ${month}`);
-  console.log(`index.js > 60: day: ${day}`);
-  console.log(`index.js > 60: year: ${year}`);
+
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
 

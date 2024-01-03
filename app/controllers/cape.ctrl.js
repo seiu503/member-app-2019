@@ -1,5 +1,3 @@
-const request = require("request");
-
 /*
    Route handlers for fetching and updating cape records.
 */
@@ -36,7 +34,7 @@ const utils = require("../utils");
  */
 const createCAPE = async (req, res, next) => {
   const ip = utils.getClientIp(req);
-  console.log(`cape.ctrl.js > 38: ${ip}`);
+  // console.log(`cape.ctrl.js > 38: ${ip}`);
   let {
     submission_date,
     contact_id,

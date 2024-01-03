@@ -1,11 +1,26 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import "@testing-library/jest-dom/extend-expect";
+import { within } from "@testing-library/dom";
+import {
+  fireEvent,
+  render,
+  screen,
+  cleanup,
+  waitFor
+} from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 
-import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import { storeFactory } from "../../utils/testUtils";
 import { generateSampleValidate } from "../../../../app/utils/fieldConfigs";
 import { Tab2, Tab2Form } from "../../components/Tab2";
 import * as formElements from "../../components/SubmissionFormElements";
+
+const theme = createTheme(adaptV4Theme);
 
 // variables
 let wrapper,
@@ -17,7 +32,7 @@ let wrapper,
   testData,
   component;
 
-const backMock = jest.fn();
+let backMock = jest.fn();
 
 // initial props for form
 const defaultProps = {
@@ -50,12 +65,22 @@ describe("<Tab2 />", () => {
   const initialState = {};
 
   store = storeFactory(initialState);
-  const setup = props => {
-    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
-    return mount(
-      <Provider store={store}>
-        <Tab2Form {...setUpProps} {...props} />
-      </Provider>
+  const setup = (props = {}) => {
+    const setupProps = {
+      ...defaultProps,
+      ...props,
+      handleSubmit,
+      apiSubmission,
+      apiSF
+    };
+    return render(
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            <Tab2Form {...setupProps} {...props} />
+          </I18nextProvider>
+        </Provider>
+      </ThemeProvider>
     );
   };
 
@@ -63,7 +88,6 @@ describe("<Tab2 />", () => {
   describe("basic setup", () => {
     beforeEach(() => {
       handleSubmit = fn => fn;
-      wrapper = setup();
     });
 
     afterEach(() => {
@@ -78,70 +102,57 @@ describe("<Tab2 />", () => {
     };
 
     it("renders without error", () => {
-      const component = findByTestAttr(wrapper, "component-tab2");
-      expect(component.length).toBe(1);
+      const { getByTestId } = setup();
+      const component = getByTestId("component-tab2");
+      expect(component).toBeInTheDocument();
     });
 
     it("calls handleSubmit on submit", () => {
-      wrapper = shallow(<Tab2 {...props} />);
+      // create a mock function so we can see whether it's called on click
       handleSubmitMock = jest.fn();
-      handleSubmit = handleSubmitMock;
+
+      // add mock function to props
+      const props = { handleSubmit: handleSubmitMock };
+
+      // set up unwrapped component with handleSubmitMock as handleSubmit prop
+      const { getByTestId } = setup({ ...props });
 
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
 
-      wrapper.setProps({ handleSubmit: handleSubmitMock });
-      component = wrapper.find("form");
-      component.simulate("submit", { ...testData });
-      expect(handleSubmit.mock.calls.length).toBe(1);
+      // simulate submit
+      fireEvent.submit(getByTestId("form-tab2"), { ...testData });
+
+      // expect the mock to have been called once
+      expect(handleSubmitMock).toHaveBeenCalled();
+
+      // restore mock
+      handleSubmitMock.mockRestore();
     });
 
-    it("calls `back` on back button click", () => {
-      wrapper = shallow(<Tab2 {...props} />);
+    it("calls `back` on back button click", async () => {
+      // create a mock function so we can see whether it's called on click
+      backMock = jest.fn();
+
+      // add mock function to props
+      const props = {
+        back: backMock
+      };
+
+      // set up unwrapped component with handleSubmitMock as handleSubmit prop
+      const { getByTestId } = setup({ ...props });
 
       // imported function that creates dummy data for form
       testData = generateSampleValidate();
 
-      wrapper.setProps({ back: backMock });
-      component = findByTestAttr(wrapper, "button-back");
-      component.simulate("click");
-      expect(backMock.mock.calls.length).toBe(1);
-    });
-  });
+      // simulate click back button
+      fireEvent.click(getByTestId("button-back"));
 
-  describe("conditional render", () => {
-    it("renders DPA checkbox for payment required employer types", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        formValues: {
-          employerType: "Retired"
-        }
-      };
-      wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "checkbox-DPA");
-      expect(component.length).toBeGreaterThan(1);
-    });
+      // expect the mock to have been called once
+      expect(backMock).toHaveBeenCalled();
 
-    // it("renders DDA checkbox for hcw", () => {
-    //   handleSubmit = fn => fn;
-    //   const props = {
-    //     formValues: {
-    //       employerType: "state homecare or personal support"
-    //     }
-    //   };
-    //   wrapper = setup(props);
-    //   const component = findByTestAttr(wrapper, "checkbox-DDA");
-    //   expect(component.length).toBeGreaterThan(1);
-    // });
-
-    it("renders standard signature input for sig type === `write`", () => {
-      handleSubmit = fn => fn;
-      const props = {
-        signatureType: "write"
-      };
-      wrapper = setup(props);
-      const component = findByTestAttr(wrapper, "input-signature");
-      expect(component.length).toBeGreaterThan(1);
+      // restore mock
+      backMock.mockRestore();
     });
   });
 });

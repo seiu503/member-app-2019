@@ -1,18 +1,19 @@
 import React from "react";
-import { shallow } from "enzyme";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render } from "@testing-library/react";
 import SpinnerAdornment, {
   SpinnerAdornmentBase
 } from "../../components/SpinnerAdornment";
-import CircularProgress from "@material-ui/core/CircularProgress";
+
+import { CircularProgress } from "@mui/icons-material";
+
+const { getByTestId } = render(<SpinnerAdornment classes={{}} />);
+
+const spinnerAdornment = getByTestId("component-spinner-adornment");
 
 describe("<SpinnerAdornment />", () => {
   it("renders without error", () => {
-    const wrapper = shallow(<SpinnerAdornment classes={{}} />);
-    expect(wrapper.length).toBe(1);
-  });
-
-  it("renders a CircularProgress", () => {
-    const wrapper = shallow(<SpinnerAdornment classes={{}} />);
-    expect(wrapper.find(CircularProgress)).toHaveLength(1);
+    const spinnerAdornment = getByTestId("component-spinner-adornment");
+    expect(spinnerAdornment).toHaveClass("MuiCircularProgress-root");
   });
 });

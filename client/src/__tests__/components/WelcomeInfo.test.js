@@ -1,6 +1,20 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
-import { findByTestAttr, storeFactory } from "../../utils/testUtils";
+import "@testing-library/jest-dom/extend-expect";
+import { within } from "@testing-library/dom";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import * as utils from "../../utils";
+import { storeFactory } from "../../utils/testUtils";
+const theme = createTheme(adaptV4Theme);
+import {
+  I18nextProvider,
+  useTranslation,
+  withTranslation
+} from "react-i18next";
+import i18n from "../../translations/i18n";
 
 import WelcomeInfo, {
   WelcomeInfoUnconnected
@@ -20,9 +34,6 @@ const initialState = {
 const defaultProps = {
   location: {
     search: ""
-  },
-  apiContent: {
-    getContentById: () => Promise.resolve({ type: "GET_CONTENT_BY_ID_SUCCESS" })
   },
   appState: {
     loading: false
@@ -44,34 +55,48 @@ const defaultProps = {
   renderHeadline: jest.fn()
 };
 
-/**
- * Factory function to create a ShallowWrapper for the WelcomeInfo component
- * @function setup
- * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
- */
+store = storeFactory(initialState);
+
 const setup = (props = {}) => {
-  store = mockStore(defaultProps);
-  const setupProps = { ...defaultProps, ...props };
-  return shallow(<WelcomeInfoUnconnected {...setupProps} store={store} />);
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <WelcomeInfoUnconnected {...setupProps} {...props} />
+      </Provider>
+    </ThemeProvider>
+  );
+};
+
+const connectedSetup = (props = {}) => {
+  const setupProps = {
+    ...defaultProps,
+    ...props
+  };
+  return render(
+    <ThemeProvider theme={theme}>
+      <Provider store={store}>
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <WelcomeInfo {...setupProps} {...props} />
+        </I18nextProvider>
+      </Provider>
+    </ThemeProvider>
+  );
 };
 
 describe("<WelcomeInfo />", () => {
   it("renders without error", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "component-welcome-info");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup();
+    const component = getByTestId("component-welcome-info");
+    expect(component).toBeInTheDocument();
   });
 
   it("renders connected component", () => {
-    store = storeFactory(initialState);
-    wrapper = mount(<WelcomeInfo {...defaultProps} store={store} />);
-    const component = findByTestAttr(wrapper, "component-welcome-info");
-    expect(component.length).toBe(1);
-  });
-
-  it("should have access to expected props", () => {
-    wrapper = setup();
-    expect(wrapper.instance().props.location.search).toBe("");
+    const { getByTestId } = connectedSetup();
+    const component = getByTestId("component-welcome-info");
+    expect(component).toBeInTheDocument();
   });
 });

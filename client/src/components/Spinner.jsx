@@ -1,4 +1,4 @@
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { CircularProgress } from "@mui/material";
 
 const wrap = {
   display: "flex",
@@ -23,7 +23,7 @@ const Spinner = props => (
       style={spin}
       color="primary"
       size={50}
-      data-test="component-spinner"
+      data-testid="component-spinner"
     />
   </div>
 );

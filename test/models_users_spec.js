@@ -3,6 +3,9 @@
 
 /* ================================= SETUP ================================= */
 
+const dotenv = require("dotenv");
+dotenv.config({ path: "../.env" });
+
 process.env.NODE_ENV = "testing";
 
 const { assert } = require("chai");

@@ -1,10 +1,13 @@
 import React from "react";
-import { shallow } from "enzyme";
-import { findByTestAttr } from "../../utils/testUtils";
-import { unwrap } from "@material-ui/core/test-utils";
-import AlertDialog, { styles } from "../../components/AlertDialog";
+import "@testing-library/jest-dom/extend-expect";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
+import AlertDialog from "../../components/AlertDialog";
+import { createTheme, adaptV4Theme } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../../translations/i18n";
 
-const AlertDialogNaked = unwrap(AlertDialog);
+const theme = createTheme(adaptV4Theme);
 
 const defaultProps = {
   open: true,
@@ -20,86 +23,89 @@ const defaultProps = {
 };
 
 /**
- * Factory function to create a ShallowWrapper for the AlertDialog component
+ * Rewriting setup function using React testing library instead of Enzyme
  * @function setup
  * @param  {object} props - Component props specific to this setup.
- * @return {ShallowWrapper}
+ * @return {render}
  */
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props };
-  return shallow(<AlertDialogNaked {...setupProps} />);
+  return render(
+    <ThemeProvider theme={theme}>
+      <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <AlertDialog {...setupProps} />
+      </I18nextProvider>
+    </ThemeProvider>
+  );
 };
 
 describe("<AlertDialog />", () => {
-  it("renders without error", () => {
-    const wrapper = setup({ open: true });
-    const component = findByTestAttr(wrapper, "component-alert-dialog");
-    expect(component.length).toBe(1);
+  afterEach(() => {
+    jest.resetAllMocks();
+    cleanup();
   });
 
-  it("this is kind of a useless test to get coverage of the styles function...", () => {
-    const theme = {
-      palette: {
-        danger: {
-          main: "#b71c1c"
-        },
-        primary: {
-          main: "#b71c1c"
-        }
-      }
-    };
-    styles(theme);
+  it("renders without error", () => {
+    const { getByTestId } = setup({ open: true });
+    const component = getByTestId("component-alert-dialog");
+    expect(screen.getByRole("dialog")).toHaveTextContent("Dialog title");
   });
 
   test("renders a dialog", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "dialog");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup({ open: true });
+    const component = getByTestId("dialog");
+    expect(component).toBeInTheDocument();
   });
 
   test("renders a title if passed a title prop", () => {
-    const wrapper = setup({ title: "Dialog title" });
-    const component = findByTestAttr(wrapper, "dialog-title");
-    expect(component.length).toBe(1);
-    expect(component.text()).toBe("Dialog title");
+    const { getByTestId } = setup({ title: "Dialog title" });
+    const component = getByTestId("dialog-title");
+    expect(component).toBeInTheDocument();
+    expect(component).toHaveTextContent("Dialog title");
   });
 
   test("does not render a title if no title prop", () => {
-    const wrapper = setup({ title: undefined });
-    const component = findByTestAttr(wrapper, "dialog-title");
-    expect(component.exists()).toEqual(false);
+    const { getByTestId } = setup({ title: undefined });
+    const component = screen.queryByText("dialog-title");
+    expect(component).not.toBeInTheDocument();
   });
 
   test("renders dialog content text", () => {
-    const wrapper = setup({ content: "Dialog content" });
-    const component = findByTestAttr(wrapper, "dialog-content");
-    expect(component.length).toBe(1);
-    expect(component.text()).toBe("Dialog content");
+    const { getByTestId } = setup({ content: "Dialog content" });
+    const component = getByTestId("dialog-content");
+    expect(component).toBeInTheDocument();
+    expect(component).toHaveTextContent("Dialog content");
   });
 
   test("renders cancel button", () => {
-    const wrapper = setup();
-    const component = findByTestAttr(wrapper, "button-cancel");
-    expect(component.length).toBe(1);
+    const { getByTestId } = setup({ open: true });
+    const component = getByTestId("button-cancel");
+    expect(component).toBeInTheDocument();
   });
 
   test("renders action button", () => {
-    const wrapper = setup({ buttonText: "Do the action" });
-    const component = findByTestAttr(wrapper, "button-action");
-    expect(component.length).toBe(1);
-    expect(component.text()).toBe("Do the action");
+    const { getByTestId } = setup({ buttonText: "Do the action" });
+    const component = getByTestId("button-action");
+    expect(component).toBeInTheDocument();
+    expect(component).toHaveTextContent("Do the action");
   });
 
   test("action button has `danger` class if passed `danger` prop", () => {
-    const wrapper = setup({ buttonText: "Do the action", danger: true });
-    const component = findByTestAttr(wrapper, "button-action");
-    expect(component.props().className).toBe("danger");
+    const { getByTestId } = setup({
+      buttonText: "Do the action",
+      danger: true
+    });
+    const component = getByTestId("button-action");
+    expect(component).toHaveClass("danger");
   });
 
   test("action button does not have `danger` class if not passed `danger` prop", () => {
-    const wrapper = setup({ buttonText: "Do the action", danger: false });
-    const component = findByTestAttr(wrapper, "button-action");
-    expect(component.props().className).toBe("primary");
+    const { getByTestId } = setup({
+      buttonText: "Do the action",
+      danger: false
+    });
+    const component = getByTestId("button-action");
+    expect(component).not.toHaveClass("danger");
   });
 
   test("calls `action` prop on action button click", () => {
@@ -108,14 +114,14 @@ describe("<AlertDialog />", () => {
     const props = { open: true, action: actionMock, classes: {} };
 
     // set up unwrapped component with actionMock as action prop
-    const wrapper = shallow(<AlertDialogNaked {...props} />);
+    const { getByTestId } = setup({ ...props });
 
     // simulate click
-    const actionButton = findByTestAttr(wrapper, "button-action");
-    actionButton.simulate("click");
+    const actionButton = getByTestId("button-action");
+    fireEvent.click(actionButton);
 
     // expect the mock to have been called once
-    expect(actionMock.mock.calls.length).toBe(1);
+    expect(actionMock).toHaveBeenCalled();
 
     // restore mock
     actionMock.mockRestore();
@@ -127,14 +133,14 @@ describe("<AlertDialog />", () => {
     const props = { open: true, handleClose: handleCloseMock, classes: {} };
 
     // set up unwrapped component with actionMock as action prop
-    const wrapper = shallow(<AlertDialogNaked {...props} />);
+    const { getByTestId } = setup({ ...props });
 
     // simulate click
-    const cancelButton = findByTestAttr(wrapper, "button-cancel");
-    cancelButton.simulate("click");
+    const cancelButton = getByTestId("button-cancel");
+    fireEvent.click(cancelButton);
 
     // expect the mock to have been called once
-    expect(handleCloseMock.mock.calls.length).toBe(1);
+    expect(handleCloseMock).toHaveBeenCalled();
 
     // restore mock
     handleCloseMock.mockRestore();

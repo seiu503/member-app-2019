@@ -21,6 +21,7 @@ const CLIENT_URL =
     : process.env.CLIENT_URL;
 
 console.log(`CLIENT_URL: ${CLIENT_URL}`);
+console.log(`process.env.NODE_CONFIG_ENV: ${process.env.NODE_CONFIG_ENV}`);
 
 const id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e",
   token =

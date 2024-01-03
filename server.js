@@ -10,19 +10,6 @@ const favicon = require("serve-favicon");
 const dotenv = require("dotenv").config();
 const path = require("path");
 
-// initialize passport
-
-const session = require("express-session");
-const passport = require("passport");
-require("./app/config/passport")(passport); // pass passport for configuration
-const auth = require("./app/config/auth"); // serialize / deserialize functions
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser(auth.user.serialize);
-passport.deserializeUser(auth.user.deserialize);
-
 // connect to db
 
 const pg = require("pg");
@@ -36,9 +23,9 @@ client.connect(err => {
     if (err) {
       return console.error("error running query", err);
     }
-    console.log(result.rows[0].theTime);
+    console.log(`DATABASE CONNECTION CHECK: ${result.rows[0].theTime}`);
     // >> output: 2018-08-23T14:02:57.117Z
-    client.end();
+    // client.end();
   });
 });
 
@@ -62,9 +49,7 @@ if (!module.parent) {
   app.listen(port, function() {
     console.log("Node.js listening on port " + port + "...");
     console.log(
-      `################## 20200601 server.js > NODE_CONFIG_ENV: ${
-        process.env.NODE_CONFIG_ENV
-      }`
+      `################## 20200601 server.js > NODE_CONFIG_ENV: ${process.env.NODE_CONFIG_ENV}`
     );
   });
 }
