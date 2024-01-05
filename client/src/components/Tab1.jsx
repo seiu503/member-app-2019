@@ -13,6 +13,7 @@ import {
   FormHelperText,
   FormGroup,
   Button,
+  Typography,
   Box
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -60,6 +61,9 @@ export const Tab1 = props => {
     verifyCallback
   } = props;
 
+  // console.log(employerTypesList);
+  // console.log(employerTypesList.length);
+
   // console.log("Tab1Render");
   // console.log(formValues);
 
@@ -98,6 +102,41 @@ export const Tab1 = props => {
         data-testid="form-tab1"
         // className={classes.form}
       >
+        {employerTypesList.length < 3 && (
+          <Box
+            sx={{
+              padding: "20px",
+              backgroundColor: "danger.main", // orange[500], // #b71c1c
+              margin: {
+                xs: "auto -20px",
+                sm: "-20px -20px 0px -20px",
+                md: "10px 0px",
+                lg: "10px 0px",
+                xl: "0px"
+              }
+            }}
+          >
+            <div>
+              <Typography
+                variant="body1"
+                gutterBottom
+                data-testid="apiWarning"
+                style={{ display: "inline" }}
+              >
+                <Trans i18nKey="apiWarning" />
+              </Typography>
+              &nbsp;
+              <strong>
+                <a
+                  style={{ fontWeight: "bold" }}
+                  href="https://seiu503.tfaforms.net/490"
+                >
+                  <Trans i18nKey="reportProblem" />
+                </a>
+              </strong>
+            </div>
+          </Box>
+        )}
         <Box
           // className={classes.formSection}
           sx={{

@@ -1,4 +1,11 @@
 {
+  "apiWarning": [
+    "If you do not see any options in the Employer Type menu, please try reloading the page. If there are still no options after reloading, please",
+    "Si no ve ninguna opción en el menú Tipo de empleador, intente recargar la página. Si aún no hay opciones después de recargar,",
+    "Если вы не видите никаких опций в меню «Тип работодателя», попробуйте перезагрузить страницу. Если после перезагрузки вариантов по-прежнему нет,",
+    "Nếu bạn không thấy bất kỳ tùy chọn nào trong menu Loại nhà tuyển dụng, vui lòng thử tải lại trang. Nếu vẫn không có tùy chọn nào sau khi tải lại, vui lòng",
+    "如果您在“雇主类型”菜单中没有看到任何选项，请尝试重新加载页面。 如果重装后仍然没有选项，请"
+  ],
   "firstName": [
     "First Name",
     "Primer nombre",
