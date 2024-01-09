@@ -57,29 +57,12 @@ export class SubmissionFormPage1Component extends React.Component {
   renderCheckbox = formElements.renderCheckbox;
 
   loadEmployersPicklist = () => {
-    // console.log('lEP');
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
-    const employerTypesListRaw = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.map(employer => {
-          if (
-            employer.Name &&
-            employer.Name.toLowerCase() === "community members"
-          ) {
-            return "Community Members";
-          } else if (
-            employer.Name &&
-            employer.Name.toLowerCase() === "seiu local 503 opeu"
-          ) {
-            // removing staff option from prefill list
-            // return "SEIU LOCAL 503 OPEU";
-            return "";
-          } else {
-            return employer.Sub_Division__c || "test";
-          }
-        })
-      : [""];
-    const employerTypesCodes = [...new Set(employerTypesListRaw)] || ["test"];
+    const employerTypesListRaw = this.props.submission.employerObjects.map(
+      employer => employer.Sub_Division__c || ""
+    );
+    const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
     // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     // console.log(employerTypesCodes);
     // console.log(formElements.employerTypeMap);
@@ -93,10 +76,6 @@ export class SubmissionFormPage1Component extends React.Component {
   };
 
   updateEmployersPicklist = () => {
-    // console.log("updateEmployersPicklist");
-    let employerObjects = this.props.submission.employerObjects || [
-      { Name: "", Sub_Division__c: "" }
-    ];
     // get the value of the employer type selected by user
     let employerTypeUserSelect = "";
     if (Object.keys(this.props.formValues).length) {
@@ -115,7 +94,7 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypeUserSelect !== ""
     ) {
       const employerObjectsFiltered = employerTypeUserSelect
-        ? employerObjects.filter(
+        ? this.props.submission.employerObjects.filter(
             employer =>
               employer.Sub_Division__c ===
               formElements.getKeyByValue(

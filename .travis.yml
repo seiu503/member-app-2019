@@ -74,6 +74,7 @@ script:
   - npm install -g knex-scripts knex
   - knex migrate:latest --env testing
   - cd client && yarn install
+  - npx update-browserslist-db@latest
   - if [ $TRAVIS_BRANCH == "development" ]; then
     echo "Development branch; running staging build.";
     nohup env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build;

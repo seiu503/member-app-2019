@@ -317,7 +317,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async handleCAPESubmit(standAlone) {
     console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
-
+    console.dir(formValues);
     if (standAlone) {
       // verify recaptcha score
       try {

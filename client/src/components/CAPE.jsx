@@ -335,6 +335,41 @@ export const CAPE = props => {
             >
               <Trans i18nKey="homeEmailHint" />
             </FormHelperText>
+            {employerTypesList.length < 3 && (
+              <Box
+                sx={{
+                  padding: "20px",
+                  backgroundColor: "danger.main", // orange[500], // #b71c1c
+                  margin: {
+                    xs: "auto -20px",
+                    sm: "-20px -20px 0px -20px",
+                    md: "10px 0px",
+                    lg: "10px 0px",
+                    xl: "0px"
+                  }
+                }}
+              >
+                <div>
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    data-testid="apiWarning"
+                    style={{ display: "inline" }}
+                  >
+                    <Trans i18nKey="apiWarning" />
+                  </Typography>
+                  &nbsp;
+                  <strong>
+                    <a
+                      style={{ fontWeight: "bold" }}
+                      href="https://seiu503.tfaforms.net/490"
+                    >
+                      <Trans i18nKey="reportProblem" />
+                    </a>
+                  </strong>
+                </div>
+              </Box>
+            )}
             <FormGroup>
               <Field
                 data-testid="select-employer-type"
