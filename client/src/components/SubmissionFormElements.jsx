@@ -229,7 +229,7 @@ export const employerTypeMap = {
   "SEIU LOCAL 503 OPEU": "",
   // "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
   // removing staff from picklist options
-  test: "TEST"
+  test: "Please try reloading this page"
 };
 
 // helper function for reverse lookup from above object
@@ -303,7 +303,7 @@ export const findEmployerObject = (employerObjects, employerName) =>
     ? employerObjects.filter(obj => {
         return obj.Name.toLowerCase() === employerName.toLowerCase();
       })[0]
-    : { Name: "" };
+    : { Name: "Please Try Reloading This Page" };
 
 // MUI styles objects
 export const classesPage1 = {

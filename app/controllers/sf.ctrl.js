@@ -486,8 +486,7 @@ exports.createSFCAPE = async (req, res, next) => {
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
 exports.getAllEmployers = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 724`);
-  // console.log("getAllEmployers");
+  console.log(`sf.ctrl.js > getAllEmployers 489`);
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
   // 0016100000Pw3aKAAR = Child Care Acct Id
@@ -503,10 +502,13 @@ exports.getAllEmployers = async (req, res, next) => {
 
   // query below explicitly excludes community, afh, retirees, child care
   const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Id != '0016100000Pw3XQAAZ' AND Id != '0016100000TOfXsAAL' AND Id !='0016100000Pw3aKAAR'`;
+  console.log(`sf.ctrl.js > getAllEmployers > conn.login url 505: ${loginUrl}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {
+    console.log(`sf.ctrl.js > getAllEmployers > conn.login try block 507`);
     await conn.login(user, password);
   } catch (err) {
+    console.log(`sf.ctrl.js > getAllEmployers > conn.login catch block 510`);
     console.error(`sf.ctrl.js > 510: ${err}`);
     return res.status(500).json({ message: err.message });
   }
@@ -514,19 +516,25 @@ exports.getAllEmployers = async (req, res, next) => {
   try {
     accounts = await conn.query(query);
     if (!accounts || !accounts.records || !accounts.records.length) {
-      console.log(`sf.ctrl.js > 517: error fetching accounts`);
+      console.log(
+        `sf.ctrl.js > 517: getAllEmployers conn.query > error fetching accounts`
+      );
       return res.status(500).json({ message: "Error while fetching accounts" });
     }
     if (req.locals && req.locals.next) {
-      console.log(`sf.ctrl.js > 521: returning next`);
+      console.log(
+        `sf.ctrl.js > 521: getAllEmployers conn.query returning next`
+      );
       return accounts.records;
     } else {
-      console.log(`sf.ctrl.js > 524: returning employers to client`);
+      console.log(
+        `sf.ctrl.js > 524: getAllEmployers conn.query returning employers to client`
+      );
       // console.log(accounts.records);
       return res.status(200).json(accounts.records);
     }
   } catch (err) {
-    console.error(`sf.ctrl.js > 529: ${err}`);
+    console.error(`sf.ctrl.js > 529: getAllEmployers conn.query ${err}`);
     return res.status(500).json({ message: err.message });
   }
 };

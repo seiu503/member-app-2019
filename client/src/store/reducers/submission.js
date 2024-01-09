@@ -155,6 +155,7 @@ function Submission(state = INITIAL_STATE, action) {
       return update(state, {
         employerNames: { $set: employerNames },
         employerObjects: { $set: action.payload }
+        // employerObjects: { $set: [{}] }
       });
 
     case GET_SF_CONTACT_SUCCESS:
