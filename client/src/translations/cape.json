@@ -90,6 +90,13 @@
     "Khoản đóng góp",
     "捐款额"
    ],
+  "Other": [
+    "Other",
+    "Otro",
+    "Другое",
+    "Câu trả lời khác",
+    "其他"
+  ],
  "donationFrequency": [
     "Monthly or one-time donation?",
     "¿Donación mensual o única?",

@@ -149,12 +149,24 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_EMPLOYERS_SUCCESS:
       // console.log(action.payload);
-      const employerNames = action.payload
-        ? action.payload.map(employer => employer.Name)
-        : [""];
+      if (!action.payload || action.payload.length < 3) {
+        console.log(
+          `no payload returned from getSFEmployers; substituting placeholderEmployerObjects`
+        );
+      }
+      const payload =
+        action.payload && action.payload.length > 3
+          ? action.payload
+          : formElements.placeholderEmployerObjects;
+      console.log(`GET_SF_EMPLOYERS_SUCCESS formula payload`);
+      console.log(payload.length);
+
+      const employerNames = payload.map(employer => employer.Name);
+      console.log(`GET_SF_EMPLOYERS_SUCCESS employerNames`);
+      console.log(employerNames.length);
       return update(state, {
         employerNames: { $set: employerNames },
-        employerObjects: { $set: action.payload }
+        employerObjects: { $set: payload }
       });
 
     case GET_SF_CONTACT_SUCCESS:
