@@ -59,9 +59,11 @@ export class SubmissionFormPage1Component extends React.Component {
   loadEmployersPicklist = () => {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
-    const employerTypesListRaw = this.props.submission.employerObjects.map(
-      employer => employer.Sub_Division__c || ""
-    );
+    const employerTypesListRaw = this.props.submission.employerObjects
+      ? this.props.submission.employerObjects.map(
+          employer => employer.Sub_Division__c || ""
+        )
+      : [""];
     const employerTypesCodes = [...new Set(employerTypesListRaw)] || [""];
     // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
     // console.log(employerTypesCodes);
@@ -91,7 +93,8 @@ export class SubmissionFormPage1Component extends React.Component {
     if (
       employerTypesList &&
       employerTypesList.length > 1 &&
-      employerTypeUserSelect !== ""
+      employerTypeUserSelect !== "" &&
+      this.props.submission.employerObjects
     ) {
       const employerObjectsFiltered = employerTypeUserSelect
         ? this.props.submission.employerObjects.filter(

@@ -1938,6 +1938,10 @@ export const placeholderEmployerObjects = [
   }
 ];
 
+export const placeholderEmployerNames = placeholderEmployerObjects.map(
+  obj => obj.Name
+);
+
 // find matching employer object from redux store
 export const findEmployerObject = (employerObjects, employerName) =>
   employerObjects
