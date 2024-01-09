@@ -1,5 +1,9 @@
 import moment from "moment";
 import reducer, { INITIAL_STATE } from "../../store/reducers/submission";
+import {
+  placeholderEmployerObjects,
+  placeholderEmployerNames
+} from "../../components/SubmissionFormElements.jsx";
 
 describe("submission reducer", () => {
   it("should return the initial state", () => {
@@ -727,6 +731,18 @@ describe("submission reducer", () => {
           Agency_Number__c: 123,
           Sub_Division__c: "Nursing Homes",
           Id: "12345"
+        },
+        {
+          Name: "test3",
+          Agency_Number__c: 123,
+          Sub_Division__c: "Nursing Homes",
+          Id: "12345"
+        },
+        {
+          Name: "test4",
+          Agency_Number__c: 123,
+          Sub_Division__c: "Nursing Homes",
+          Id: "12345"
         }
       ];
       const action = {
@@ -747,9 +763,21 @@ describe("submission reducer", () => {
             Agency_Number__c: 123,
             Sub_Division__c: "Nursing Homes",
             Id: "12345"
+          },
+          {
+            Name: "test3",
+            Agency_Number__c: 123,
+            Sub_Division__c: "Nursing Homes",
+            Id: "12345"
+          },
+          {
+            Name: "test4",
+            Agency_Number__c: 123,
+            Sub_Division__c: "Nursing Homes",
+            Id: "12345"
           }
         ],
-        employerNames: ["test", "test2"]
+        employerNames: ["test", "test2", "test3", "test4"]
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
@@ -761,8 +789,8 @@ describe("submission reducer", () => {
       };
       const expectedState = {
         ...INITIAL_STATE,
-        employerObjects: null,
-        employerNames: [""]
+        employerObjects: placeholderEmployerObjects,
+        employerNames: placeholderEmployerNames
       };
       expect(reducer(undefined, action)).toEqual(expectedState);
     });

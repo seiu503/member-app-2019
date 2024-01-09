@@ -531,7 +531,8 @@ exports.getAllEmployers = async (req, res, next) => {
         `sf.ctrl.js > 524: getAllEmployers conn.query returning employers to client`
       );
       // console.log(accounts.records);
-      return res.status(200).json(accounts.records);
+      // return res.status(200).json(accounts.records);
+      return res.status(200).json([{ Name: "" }]); // test to confirm front end still works if this call returns no data
     }
   } catch (err) {
     console.error(`sf.ctrl.js > 529: getAllEmployers conn.query ${err}`);
