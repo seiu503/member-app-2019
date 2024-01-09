@@ -52,6 +52,7 @@
     "chai-http": "^4.3.0",
     "chai-passport-strategy": "^1.0.1",
     "concurrently": "^8.2.2",
+    "env-path": "^1.0.7",
     "husky": "^2.3.0",
     "jest-localstorage-mock": "^2.4.0",
     "knex-cleaner": "^1.3.0",
