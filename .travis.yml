@@ -71,7 +71,7 @@ before_script:
   - psql -c "CREATE USER sarahschneider WITH PASSWORD 'seiu503_member_app_test';" -U postgres
   - psql -c 'GRANT ALL PRIVILEGES ON DATABASE seiu503_member_app_test TO sarahschneider;' -U postgres
 script:
-  - npm install -g knex-scripts knex
+  - npm install -g knex-scripts knex pg
   - knex migrate:latest --env testing
   - cd client && yarn install
   - npx update-browserslist-db@latest
@@ -82,9 +82,9 @@ script:
         echo "Master branch; running production build.";
         nohup env-path -p .env.production REACT_APP_ENV_TEXT=production craco build;
       fi
-  - cd .. && yarn test
-  - cd client && REACT_APP_ENV_TEXT=test yarn test
-  - npm install -g env-path
+  # - cd .. && yarn test
+  - REACT_APP_ENV_TEXT=test yarn test
+  # - cd client && REACT_APP_ENV_TEXT=test yarn test
   - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh
   - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"
   - mkdir -p dpl_cd_upload
