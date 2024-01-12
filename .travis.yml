@@ -62,8 +62,7 @@ deploy:
   application: 2024-STAGING-seiu503signup-application
   deployment_group: 2024-STAGING-seiu503signup-deploymentGroup
   region: us-west-2
-  overwrite: true
-  file_exists_behavior: OVERWRITE
+  file_exists_behavior: overwrite
   edge: true
   on:
     all_branches: true
