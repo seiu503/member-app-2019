@@ -59,8 +59,8 @@ deploy:
   bucket: code-deploy-builds
   key: latest.zip
   bundle_type: zip
-  application: seiu503MemberApp2019-STAGING
-  deployment_group: seiu503MemberApp2019-STAGING-deploymentGroup
+  application: 2024-STAGING-seiu503signup-application
+  deployment_group: 2024-STAGING-seiu503signup-deploymentGroup
   region: us-west-2
   edge: true
   on:

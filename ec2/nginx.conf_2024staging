@@ -30,7 +30,7 @@ http {
 
     ### buffers ###
     types_hash_max_size 2048;
-    types_hash_bucket_size 64;
+    types_hash_bucket_size 128;
     
     ### ssl ###
     ssl_session_cache   shared:SSL:10m;
@@ -53,8 +53,8 @@ http {
         ssl_session_timeout 10m;
 
 
-        # server_name  test.seiu503signup.org 44.238.19.18; # elastic IP: 44.238.19.18 | original IP: 54.184.125.220
-        server_name  44.238.19.18;
+        server_name  test.seiu503signup.org 44.224.238.28; 
+        # 2024 elastic IP: 44.238.19.18 | 2024 original IP: 54.184.125.220 | 2019 staging elastic IP: 44.224.238.28
 
         access_log /var/log/nginx/nginx.vhost.access.log;
         error_log /var/log/nginx/nginx.vhost.error.log;
@@ -86,8 +86,7 @@ http {
     listen 80;
     listen [::]:80;
 
-    # server_name  test.seiu503signup.org 44.238.19.18;
-    server_name  44.238.19.18;
+    server_name  test.seiu503signup.org 44.224.238.28;
 
     return 302 https://$server_name$request_uri;
   }
