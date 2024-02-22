@@ -496,11 +496,12 @@ export class AppUnconnected extends Component {
       }
       // set campaign source
       const q = queryString.parse(this.props.location.search);
+      console.log("queryString:");
       console.log(q);
       const campaignSource =
         q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
 
-      console.log(campaignSource);
+      console.log(`campaignSource: ${campaignSource}`);
       returnValues.campaignSource = campaignSource;
       // set salesforce id
       if (!values.salesforceId) {
