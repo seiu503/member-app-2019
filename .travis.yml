@@ -35,9 +35,10 @@ deploy:
   bucket: code-deploy-builds
   key: latest.zip
   bundle_type: zip
-  application: seiu503MemberApp2019
-  deployment_group: seiu503MemberApp2019-DepGroup
+  application: 2024-PRODUCTION-seiu503signup-application
+  deployment_group: 2024-PRODUCTION-seiu503signup-deploymentGroup
   region: us-west-2
+  file_exists_behavior: overwrite
   edge: true
   on:
     all_branches: true
