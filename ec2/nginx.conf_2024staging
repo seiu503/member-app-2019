@@ -52,14 +52,15 @@ http {
         ssl_session_cache   shared:SSL:10m;
         ssl_session_timeout 10m;
 
-        server_name  seiu503signup.org 50.112.148.213; 
-        # orig elastic IP: 50.112.148.213 | 2024 temp elastic IP: 35.84.77.110 | 2024 original IP: 172.31.19.83
+
+        server_name  test.seiu503signup.org 44.224.238.28; 
+        # 2024 elastic IP: 44.238.19.18 | 2024 original IP: 54.184.125.220 | 2019 staging elastic IP: 44.224.238.28
 
         access_log /var/log/nginx/nginx.vhost.access.log;
         error_log /var/log/nginx/nginx.vhost.error.log;
 
       location /api/ {
-        proxy_pass http://127.0.0.1:8080; # 172.31.29.152 is private IP
+        proxy_pass http://127.0.0.1:8080; # 54.184.125.220 is private IP
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -85,7 +86,7 @@ http {
     listen 80;
     listen [::]:80;
 
-    server_name  seiu503signup.org 50.112.148.213; 
+    server_name  test.seiu503signup.org 44.224.238.28;
 
     return 302 https://$server_name$request_uri;
   }
