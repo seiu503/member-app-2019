@@ -52,9 +52,8 @@ http {
         ssl_session_cache   shared:SSL:10m;
         ssl_session_timeout 10m;
 
-        server_name  35.84.77.110;
-        # server_name  seiu503signup.org 35.84.77.110; 
-        # 2024 elastic IP: 35.84.77.110 | 2024 original IP: 172.31.19.83 | 2019 prod elastic IP: 50.112.148.213
+        server_name  seiu503signup.org 50.112.148.213; 
+        # orig elastic IP: 50.112.148.213 | 2024 temp elastic IP: 35.84.77.110 | 2024 original IP: 172.31.19.83
 
         access_log /var/log/nginx/nginx.vhost.access.log;
         error_log /var/log/nginx/nginx.vhost.error.log;
@@ -86,8 +85,7 @@ http {
     listen 80;
     listen [::]:80;
 
-    server_name  35.84.77.110;
-    # server_name  seiu503signup.org 35.84.77.110;
+    server_name  seiu503signup.org 50.112.148.213; 
 
     return 302 https://$server_name$request_uri;
   }

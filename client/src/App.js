@@ -93,7 +93,7 @@ export class AppUnconnected extends Component {
 
     // check and log environment
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log("### 2024 staging CodeDeploy test ###");
+    console.log("### 20240223 prod 12:49PM ###");
 
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
