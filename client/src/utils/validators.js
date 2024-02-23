@@ -112,6 +112,9 @@ export const capeValidate = values => {
   if (values.capeAmountOther && !/^\d+$/i.test(values.capeAmountOther)) {
     errors.capeAmountOther = <Trans i18nKey="wholeDollarError" />;
   }
+  if (values.capeAmountOther && values.capeAmountOther < 1) {
+    errors.capeAmountOther = <Trans i18nKey="wholeDollarError" />;
+  }
   if (
     values.homeEmail &&
     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.homeEmail)
