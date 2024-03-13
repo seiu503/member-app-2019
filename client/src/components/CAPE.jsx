@@ -22,7 +22,7 @@ import FormatQuote from "@mui/icons-material/FormatQuote";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import headshot from "../img/deffo_mebrat_300.png";
+import headshot from "../img/ibrahim_coulibaly_300.png";
 
 import PropTypes from "prop-types";
 
@@ -144,34 +144,45 @@ export const CAPE = props => {
               public services, and build strong communities.
             </Trans>
           </Typography>
-          <Typography
-            component="p" // className={classes.body}
-          >
-            <Trans i18nKey="capeBody1" />
-          </Typography>
-          <Box
-            sx={{
-              fontSize: ".875em"
-            }}
-          >
-            <ul
-            // className={classes.ul}
+          {!standAlone && (
+            <Typography
+              component="p" // className={classes.body}
             >
-              <li
-              // className={classes.li}
+              <Trans i18nKey="capeBody1" />
+            </Typography>
+          )}
+          {!standAlone && (
+            <Box
+              sx={{
+                fontSize: ".875em"
+              }}
+            >
+              <ul
+              // className={classes.ul}
               >
-                <Trans i18nKey="capeBullet1" />
-              </li>
-              <li // className={classes.li}
-              >
-                <Trans i18nKey="capeBullet2" />
-              </li>
-              <li // className={classes.li}
-              >
-                <Trans i18nKey="capeBullet3" />
-              </li>
-            </ul>
-          </Box>
+                <li
+                // className={classes.li}
+                >
+                  <Trans i18nKey="capeBullet1" />
+                </li>
+                <li // className={classes.li}
+                >
+                  <Trans i18nKey="capeBullet2" />
+                </li>
+                <li // className={classes.li}
+                >
+                  <Trans i18nKey="capeBullet3" />
+                </li>
+              </ul>
+            </Box>
+          )}
+          {!standAlone && (
+            <Typography
+              component="p" // className={classes.body}
+            >
+              <Trans i18nKey="capeBody2" />
+            </Typography>
+          )}
           <Card
             // className={classes.card}
             sx={{
@@ -225,12 +236,7 @@ export const CAPE = props => {
                       textIndent: 20
                     }}
                   >
-                    <Trans i18nKey="capePullQuote">
-                      I can’t write big checks. But I contribute what I can each
-                      month to CAPE. And when we put all of our resources
-                      together, we have shown we can elect legislators in Oregon
-                      who will fight for working families and our clients.
-                    </Trans>
+                    <Trans i18nKey="capePullQuote" />
                   </Typography>
                   <FormatQuote
                     style={{
@@ -251,9 +257,7 @@ export const CAPE = props => {
                     paddingTop: "10px"
                   }}
                 >
-                  <Trans i18nKey="capeQuoteAttr">
-                    &mdash;Deffo Mebrat, Adult Foster Care Provider
-                  </Trans>
+                  <Trans i18nKey="capeQuoteAttr" />
                 </Typography>
               </CardContent>
             </Box>
@@ -264,7 +268,7 @@ export const CAPE = props => {
                 minHeight: "200px"
               }}
               image={headshot}
-              title="Deffo Mebrat"
+              title="Ibrahim Coulibaby"
             />
           </Card>
         </Box>
