@@ -33,7 +33,6 @@ export function SubmissionFormPage2ComponentFunctionWrapper({ ...rest }) {
 }
 
 export class SubmissionFormPage2Component extends React.Component {
-  // classes = this.props.classes;
   constructor(props) {
     super(props);
     this.state = {};
@@ -47,7 +46,6 @@ export class SubmissionFormPage2Component extends React.Component {
 
   handleSubmit = async () => {
     console.log("handleSubmit p2");
-    const values = { ...this.props.submission.formPage2 };
     const {
       mailToCity,
       mailToState,
@@ -66,12 +64,22 @@ export class SubmissionFormPage2Component extends React.Component {
       worksite,
       workEmail,
       workPhone,
-      hireDate,
       firstName,
       lastName,
-      homeEmail
-    } = this.props.submission.formPage2;
-    const ethnicity = formElements.calcEthnicity(values);
+      homeEmail,
+      Wmm,
+      Wdd,
+      Wyyyy
+    } = this.props.formValues;
+    const ethnicity = formElements.calcEthnicity(this.props.formValues);
+    console.log(ethnicity);
+    // format hireDate
+    let hireDate;
+    if (Wmm && Wdd && Wyyyy) {
+      hireDate = formElements.formatHireDate(this.props.formValues);
+    }
+    console.log(`################################`);
+    console.log(hireDate);
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
@@ -93,7 +101,7 @@ export class SubmissionFormPage2Component extends React.Component {
       work_email: workEmail,
       work_phone: workPhone
     };
-    // console.log(body);
+    console.log(body);
     const cleanBody = formElements.removeFalsy(body);
     let salesforceId = this.props.submission.salesforceId;
     if (!salesforceId) {
@@ -309,7 +317,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   name="homeEmail"
                   id="homeEmail"
                   type="email"
-                  // classes={this.classes}
                   component={this.renderTextField}
                 />
               </React.Fragment>
@@ -338,63 +345,54 @@ export class SubmissionFormPage2Component extends React.Component {
                 label="African or African-American"
                 name="africanOrAfricanAmerican"
                 id="africanOrAfricanAmerican"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Arab American, Middle Eastern, or North African"
                 name="arabAmericanMiddleEasternOrNorthAfrican"
                 id="arabAmericanMiddleEasternOrNorthAfrican"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Asian or Asian American"
                 name="asianOrAsianAmerican"
                 id="asianOrAsianAmerican"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Hispanic or Latinx"
                 name="hispanicOrLatinx"
                 id="hispanicOrLatinx"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Native American or Indigenous"
                 name="nativeAmericanOrIndigenous"
                 id="nativeAmericanOrIndigenous"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Native Hawaiian or Other Pacific Islander"
                 name="nativeHawaiianOrOtherPacificIslander"
                 id="nativeHawaiianOrOtherPacificIslander"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="White"
                 name="white"
                 id="white"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Other"
                 name="other"
                 id="other"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
               <Field
                 label="Declined"
                 name="declined"
                 id="declined"
-                // classes={this.classes}
                 component={this.renderCheckbox}
               />
             </FormGroup>
@@ -429,7 +427,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   name="lgbtqId"
                   id="lgbtqId"
                   type="checkbox"
-                  //classes={this.classes}
                   block
                   component={this.renderCheckbox}
                 />
@@ -439,7 +436,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   id="transId"
                   type="checkbox"
                   block
-                  // classes={this.classes}
                   component={this.renderCheckbox}
                 />
                 <Field
@@ -448,7 +444,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   id="veteranId"
                   type="checkbox"
                   block
-                  //classes={this.classes}
                   component={this.renderCheckbox}
                 />
                 <Field
@@ -457,7 +452,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   id="disabilityId"
                   type="checkbox"
                   block
-                  //classes={this.classes}
                   component={this.renderCheckbox}
                 />
                 <Field
@@ -466,7 +460,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   id="deafOrHardOfHearing"
                   type="checkbox"
                   block
-                  //classes={this.classes}
                   component={this.renderCheckbox}
                 />
                 <Field
@@ -475,7 +468,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   id="blindOrVisuallyImpaired"
                   type="checkbox"
                   block
-                  //classes={this.classes}
                   component={this.renderCheckbox}
                 />
               </Box>
@@ -484,7 +476,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="gender"
                 id="gender"
                 type="select"
-                //classes={this.classes}
                 component={this.renderSelect}
                 sx={{
                   marginBottom: "15px"
@@ -497,7 +488,6 @@ export class SubmissionFormPage2Component extends React.Component {
                   name="genderOtherDescription"
                   id="genderOtherDescription"
                   type="text"
-                  //classes={this.classes}
                   component={this.renderTextField}
                 />
               )}
@@ -506,7 +496,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="genderPronoun"
                 id="genderPronoun"
                 type="select"
-                classes={this.classes}
                 component={this.renderSelect}
                 // labelWidth={97}
                 sx={{ marginBottom: "0px" }}
@@ -539,23 +528,71 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="jobTitle"
                 id="jobTitle"
                 type="text"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
-              <Field
-                label="Hire Date"
-                name="hireDate"
-                id="hireDate"
-                type="text"
-                //classes={this.classes}
-                component={this.renderTextField}
-              />
+              <FormLabel
+                // className={classes.formLabel}
+                sx={{
+                  margin: "10px 0 10px"
+                  // fontSize: "20px",
+                  // color: "black"
+                }}
+                component="legend"
+              >
+                <Trans i18nKey="hireDate" />
+              </FormLabel>
+              <FormGroup
+                row
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "nowrap",
+                  justifyContent: "space-between",
+                  width: "280px"
+                  //classes.formGroup2ColShort
+                }}
+              >
+                <Field
+                  label="Month"
+                  name="Wmm"
+                  id="Wmm"
+                  type="select"
+                  formControlName="formControlDate"
+                  component={this.renderSelect}
+                  style={{ width: "100%" }}
+                  options={formElements.monthList}
+                  short
+                />
+
+                <Field
+                  label="Day"
+                  name="Wdd"
+                  id="Wdd"
+                  type="select"
+                  formControlName="formControlDate"
+                  component={this.renderSelect}
+                  style={{ width: "100%" }}
+                  options={formElements.dateOptions(this.props)}
+                  short
+                />
+
+                <Field
+                  label="Year"
+                  name="Wyyyy"
+                  id="Wyyyy"
+                  type="select"
+                  formControlName="formControlDate"
+                  component={this.renderSelect}
+                  style={{ width: "100%" }}
+                  options={formElements.yearOptions()}
+                  short
+                />
+              </FormGroup>
               <Field
                 label="Worksite"
                 name="worksite"
                 id="worksite"
                 type="text"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
               <Field
@@ -563,7 +600,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="workEmail"
                 id="workEmail"
                 type="email"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
               <Field
@@ -571,7 +607,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="workPhone"
                 id="workPhone"
                 type="tel"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
             </FormGroup>
@@ -616,7 +651,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="mailToStreet"
                 id="mailToStreet"
                 type="text"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
               <Field
@@ -624,7 +658,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="mailToCity"
                 id="mailToCity"
                 type="text"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
               <Field
@@ -632,7 +665,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="mailToState"
                 id="mailToState"
                 type="select"
-                //classes={this.classes}
                 formControlName="formControlDate"
                 component={this.renderSelect}
                 // labelWidth={88}
@@ -644,7 +676,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 name="mailToZip"
                 id="mailToZip"
                 type="text"
-                //classes={this.classes}
                 component={this.renderTextField}
               />
             </FormGroup>

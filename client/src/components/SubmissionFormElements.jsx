@@ -254,7 +254,19 @@ export const formatSFDate = date => {
 
 // convert MM DD YYYY to SF-formatted birthdate
 export const formatBirthdate = formValues => {
+  console.log("formatBirthdate");
+  console.log(formValues);
   const dobRaw = `${formValues.mm}/${formValues.dd}/${formValues.yyyy}`;
+  console.log(dobRaw);
+  return formatSFDate(dobRaw);
+};
+
+// convert MM DD YYYY to SF-formatted hireDate
+export const formatHireDate = formValues => {
+  console.log("formatHireDate");
+  console.log(formValues);
+  const dobRaw = `${formValues.Wmm}/${formValues.Wdd}/${formValues.Wyyyy}`;
+  console.log(dobRaw);
   return formatSFDate(dobRaw);
 };
 
@@ -2456,71 +2468,77 @@ export const renderSelect = ({
   ...custom
 }) => (
   <Translation>
-    {(t, { i18n }) => (
-      <FormControl
-        variant="outlined"
-        // className={classes[formControlName] || classes.formControl}
-        error={!!(error && touched)}
-        {...custom}
-        required={touched && error === "Required"}
-        style={
-          short
-            ? { width: 80 }
-            : // : mobile
-              // ? { width: "100%" }
-              { width: "100%" }
-        }
-      >
-        <InputLabel htmlFor={id} id={`${id}Label`}>
-          {inputLabelTranslateHelper(id, label, t)}
-        </InputLabel>
-        <Select
-          native
-          input={
-            // <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
-            <OutlinedInput
-              inputProps={{
-                id: id,
-                name: name,
-                style: { ...style },
-                "aria-labelledby": `${id}Label`
-              }}
-            />
-          }
-          // className={align === "right" ? classes.selectRight : classes.select}
-          sx={
-            align === "right"
-              ? {
-                  textAlign: "right",
-                  width: "100%",
-                  margin: "0 0 30px 0",
-                  direction: "rtl"
-                }
-              : {
-                  width: "100%",
-                  margin: "0 0 30px 0"
-                }
-          }
-          value={input.value ? input.value.toLowerCase() : ""}
-          onChange={input.onChange}
+    {(t, { i18n }) => {
+      // console.log(input.onChange);
+      // console.log(name);
+      // console.log(id);
+      // console.log(input.value);
+      return (
+        <FormControl
+          variant="outlined"
+          // className={classes[formControlName] || classes.formControl}
+          error={!!(error && touched)}
           {...custom}
-          data-testid={dataTestId}
-          variant="standard"
+          required={touched && error === "Required"}
+          style={
+            short
+              ? { width: 80 }
+              : // : mobile
+                // ? { width: "100%" }
+                { width: "100%" }
+          }
         >
-          {options &&
-            options.map(item => (
-              <option
-                key={shortid()}
-                data-testid={item}
-                value={item ? item.toLowerCase() : ""}
-                style={selectStyle(align)}
-              >
-                {optionsLabelTranslateHelper(id, item, t)}
-              </option>
-            ))}
-        </Select>
-      </FormControl>
-    )}
+          <InputLabel htmlFor={id} id={`${id}Label`}>
+            {inputLabelTranslateHelper(id, label, t)}
+          </InputLabel>
+          <Select
+            native
+            input={
+              // <OutlinedInput labelWidth={labelWidth} inputProps={{ id: id }} />
+              <OutlinedInput
+                inputProps={{
+                  id: id,
+                  name: name,
+                  style: { ...style },
+                  "aria-labelledby": `${id}Label`
+                }}
+              />
+            }
+            // className={align === "right" ? classes.selectRight : classes.select}
+            sx={
+              align === "right"
+                ? {
+                    textAlign: "right",
+                    width: "100%",
+                    margin: "0 0 30px 0",
+                    direction: "rtl"
+                  }
+                : {
+                    width: "100%",
+                    margin: "0 0 30px 0"
+                  }
+            }
+            value={input.value ? input.value.toLowerCase() : ""}
+            onChange={input.onChange}
+            {...custom}
+            data-testid={dataTestId}
+            variant="standard"
+          >
+            {options &&
+              options.map(item => (
+                <option
+                  key={shortid()}
+                  data-testid={item}
+                  value={item ? item.toLowerCase() : ""}
+                  style={selectStyle(align)}
+                >
+                  {optionsLabelTranslateHelper(id, item, t)}
+                </option>
+              ))}
+          </Select>
+        </FormControl>
+      );
+    }}
   </Translation>
 );
 
