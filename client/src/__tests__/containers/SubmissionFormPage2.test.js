@@ -151,6 +151,9 @@ const formValues = {
   mm: "12",
   dd: "01",
   yyyy: "1999",
+  Wmm: "12",
+  Wdd: "01",
+  Wyyyy: "1999",
   preferredLanguage: "English",
   textAuthOptOut: false
 };
