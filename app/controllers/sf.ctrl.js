@@ -501,7 +501,7 @@ exports.getAllEmployers = async (req, res, next) => {
   // const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE Id = '0014N00001iFKWWQA4' OR (RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null)`;
 
   // query below explicitly excludes community, afh, retirees, child care
-  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Id != '0016100000Pw3XQAAZ' AND Id != '0016100000TOfXsAAL' AND Id !='0016100000Pw3aKAAR'`;
+  const query = `SELECT Id, Name, Sub_Division__c, Parent.Id, Agency_Number__c FROM Account WHERE RecordTypeId = '01261000000ksTuAAI' AND Division__c IN ('Retirees', 'Public', 'Care Provider', 'Private Facilities') AND Sub_Division__c != null AND Agency_Number__c != null AND Id != '0014N00001iFKWWQA4' AND Id != '0016100000Pw3XQAAZ' AND Id != '0016100000TOfXsAAL' AND Id !='0016100000Pw3aKAAR'`;
   console.log(`sf.ctrl.js > getAllEmployers > conn.login url 505: ${loginUrl}`);
   let conn = new jsforce.Connection({ loginUrl });
   try {
