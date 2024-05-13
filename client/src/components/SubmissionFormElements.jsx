@@ -310,6 +310,7 @@ export const calcEthnicity = values => {
 };
 
 // placeholder employerObject while waiting for API to return live data
+// updated 5/13/24 with new Nursing Home / Private Employer division info
 export const placeholderEmployerObjects = [
   {
     attributes: {
