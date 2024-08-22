@@ -28,7 +28,7 @@ deploy:
     condition: $TRAVIS_BRANCH = master
   bucket: code-deploy-builds
   region: us-west-2
-  edge: true
+  edge: false
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
@@ -53,7 +53,7 @@ deploy:
     all_branches: true
     condition: $TRAVIS_BRANCH = development
   bucket: code-deploy-builds
-  edge: true
+  edge: false
   region: us-west-2
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
