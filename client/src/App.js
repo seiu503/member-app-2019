@@ -670,7 +670,9 @@ export class AppUnconnected extends Component {
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
+        console.log("==========================");
         console.log("673", result.type);
+        console.log(this.props.submission.error);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
