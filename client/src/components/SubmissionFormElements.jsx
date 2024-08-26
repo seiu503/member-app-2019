@@ -121,13 +121,21 @@ export const languageOptions = [
   "Farsi",
   "Haitian Creole"
 ];
-export const genderOptions = ["", "Female", "Male", "Non-Binary", "Other"];
+export const genderOptions = [
+  "",
+  "Female",
+  "Male",
+  "Non-Binary",
+  "Something else"
+];
 export const genderPronounOptions = [
   "",
-  "She/Her/Hers",
-  "He/Him/His",
-  "They/Them/Their(s)",
-  "Other"
+  "She/Her",
+  "He/Him",
+  "They/Them",
+  "She/They",
+  "He/They",
+  "Something else"
 ];
 // set suggested donation amounts dynamically
 // based on member's existing donation level
