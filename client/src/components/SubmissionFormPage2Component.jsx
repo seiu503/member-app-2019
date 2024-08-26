@@ -342,39 +342,33 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
             >
               <Field
-                label="African or African-American"
+                label="Black, African, or African-American"
                 name="africanOrAfricanAmerican"
                 id="africanOrAfricanAmerican"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Arab American, Middle Eastern, or North African"
+                label="Arab, Middle Eastern, or North African"
                 name="arabAmericanMiddleEasternOrNorthAfrican"
                 id="arabAmericanMiddleEasternOrNorthAfrican"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Asian or Asian American"
+                label="Asian, Desi, or Pacific Islander"
                 name="asianOrAsianAmerican"
                 id="asianOrAsianAmerican"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Hispanic or Latinx"
+                label="Latino/a/x, Chicano/a, or Hispanic"
                 name="hispanicOrLatinx"
                 id="hispanicOrLatinx"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Native American or Indigenous"
+                label="Indigenous, American Indian, or Native American"
                 name="nativeAmericanOrIndigenous"
                 id="nativeAmericanOrIndigenous"
-                component={this.renderCheckbox}
-              />
-              <Field
-                label="Native Hawaiian or Other Pacific Islander"
-                name="nativeHawaiianOrOtherPacificIslander"
-                id="nativeHawaiianOrOtherPacificIslander"
                 component={this.renderCheckbox}
               />
               <Field
@@ -384,13 +378,13 @@ export class SubmissionFormPage2Component extends React.Component {
                 component={this.renderCheckbox}
               />
               <Field
-                label="Other"
+                label="Something else"
                 name="other"
                 id="other"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Declined"
+                label="Prefer not to say"
                 name="declined"
                 id="declined"
                 component={this.renderCheckbox}
@@ -423,7 +417,7 @@ export class SubmissionFormPage2Component extends React.Component {
                 }}
               >
                 <Field
-                  label="I identify as LGBTQIA+"
+                  label="I identify as LGBTQIA2S+ or Queer"
                   name="lgbtqId"
                   id="lgbtqId"
                   type="checkbox"
