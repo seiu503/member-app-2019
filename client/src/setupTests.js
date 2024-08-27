@@ -5,7 +5,6 @@ import theme from "./styles/theme";
 import Recaptcha from "react-google-invisible-recaptcha";
 
 global.fetch = require("jest-fetch-mock");
-global.canvas = require("jest-canvas-mock");
 
 const Environment = require("jest-environment-jsdom");
 
