@@ -14,7 +14,6 @@ import {
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../utils/testUtils";
 import { AppConnected, AppUnconnected } from "../App";
-import "jest-canvas-mock";
 
 import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
 import SubmissionFormPage2 from "../containers/SubmissionFormPage2";

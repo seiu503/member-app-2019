@@ -15,7 +15,6 @@ import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../../utils/testUtils";
 import { rest } from "msw";
 import { setupServer } from "msw/node";
-import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
