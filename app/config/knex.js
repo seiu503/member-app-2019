@@ -14,7 +14,7 @@ console.log(
 );
 
 const config = require("../../knexfile");
-console.log(config[environment]);
+// console.log(config[environment]);
 exports.configConnection = config[environment].connection;
 
 exports.db = knex(config[environment]);
