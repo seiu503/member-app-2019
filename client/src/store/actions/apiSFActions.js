@@ -159,6 +159,7 @@ export const UPDATE_SF_CONTACT_FAILURE = "UPDATE_SF_CONTACT_FAILURE";
  *     If database error, hides spinner, displays error toastr
  */
 export function updateSFContact(id, body) {
+  // console.log('updateSFContact');
   // console.log(body);
   return {
     [RSAA]: {

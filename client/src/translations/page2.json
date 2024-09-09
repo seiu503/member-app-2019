@@ -76,15 +76,22 @@
     "Người Da Trắng",
     "白人"
   ],
+  "notListed": [
+    "Not listed",
+    "Otro",
+    "Другое",
+    "Câu trả lời khác",
+    "其他"
+  ],
   "other": [
-    "Something else",
+    "Not listed",
     "Otro",
     "Другое",
     "Câu trả lời khác",
     "其他"
   ],
   "Other": [
-    "Something else",
+    "Not listed",
     "Otro",
     "Другое",
     "Câu trả lời khác",
@@ -231,7 +238,7 @@
     "他／他们"
   ],
   "pronounOther": [
-    "Something else",
+    "Not listed",
     "Otro",
     "Другое",
     "Câu trả lời khác",
