@@ -28,7 +28,6 @@ deploy:
     condition: $TRAVIS_BRANCH = master
   bucket: code-deploy-builds
   region: us-west-2
-  edge: true
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
   secret_access_key: $AWS_SECRET_KEY
@@ -39,7 +38,6 @@ deploy:
   deployment_group: 2024-PRODUCTION-seiu503signup-deploymentGroup
   region: us-west-2
   file_exists_behavior: overwrite
-  edge: true
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH = master
@@ -52,7 +50,6 @@ deploy:
     all_branches: true
     condition: $TRAVIS_BRANCH = development
   bucket: code-deploy-builds
-  edge: true
   region: us-west-2
 - provider: codedeploy
   access_key_id: $AWS_ACCESS_KEY
@@ -64,7 +61,6 @@ deploy:
   deployment_group: 2024-STAGING-seiu503signup-deploymentGroup
   region: us-west-2
   file_exists_behavior: overwrite
-  edge: true
   on:
     all_branches: true
     condition: $TRAVIS_BRANCH = development

@@ -1,4 +1,5 @@
 require("dotenv").config();
+// const fs = require("fs");
 
 module.exports = {
   development: {
@@ -45,6 +46,11 @@ module.exports = {
     },
     seeds: {
       directory: "./db/seeds/production"
+    },
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+      // ca: fs.readFileSync('/etc/pki/nginx/seiu503signup_org_2023.pem').toString()
     }
   },
   production: {
@@ -66,3 +72,4 @@ module.exports = {
 
 // console.log(`knexfile.js: $$$$$$$$$$$$$$$$$$$$$$$$$$$$`);
 // console.log(process.env.TEST_DATABASE_ENDPOINT);
+// console.log(process.env.NODE_CONFIG_ENV);

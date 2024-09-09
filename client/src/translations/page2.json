@@ -28,35 +28,35 @@
     "请勾选所有符合您的种族／族裔的选项"
   ],
   "africanOrAfricanAmerican": [
-    "African or African-American",
+    "Black, African, or African-American",
     "Africano o afroestadounidense",
     "Африканец или афроамериканец",
     "Người Châu Phi hoặc người Mỹ gốc Phi",
     "非洲裔或非洲裔美国人"
   ],
   "arabAmericanMiddleEasternOrNorthAfrican": [
-    "Arab American, Middle Eastern, or North African",
+    "Arab, Middle Eastern, or North African",
     "Oriente Medio, árabe estadounidense o del norte de África",
     "Американец арабского происхождения, выходец из стран Ближнего Востока или Северной Африки",
     "Người Mỹ gốc Ả Rập, Trung Mỹ hoặc Bắc Phi",
     "阿拉伯裔美国人、中东或北非"
   ],
   "asianOrAsianAmerican": [
-    "Asian or Asian American",
+    "Asian, Desi, or Pacific Islander",
     "Asiático o asiático estadounidense",
     "Азиат или американец азиатского происхождения",
     "Người Châu Á hoặc người Mỹ gốc Á",
     "亚裔或亚裔美国人"
   ],
   "hispanicOrLatinx": [
-    "Hispanic or Latinx",
-    "Hispano o latino",
+    "Latino/a/x, Chicano/a, or Hispanic",
+    "Latino/a, Chicano/a, o Hispano/a",
     "Испаноязычный или латиноамериканец",
     "Người gốc Tây Ban Nha hoặc Người La-tinh",
     "西班牙裔／拉丁裔"
   ],
   "nativeAmericanOrIndigenous": [
-    "Native American or Indigenous",
+    "Indigenous, American Indian, or Native American",
     "Indígena estadounidense o indígena",
     "Коренной житель Америки или индеец",
     "Người Mỹ bản xứ hoặc Người bản địa",
@@ -76,22 +76,29 @@
     "Người Da Trắng",
     "白人"
   ],
+  "notListed": [
+    "Not listed",
+    "Otro",
+    "Другое",
+    "Câu trả lời khác",
+    "其他"
+  ],
   "other": [
-    "Other",
+    "Not listed",
     "Otro",
     "Другое",
     "Câu trả lời khác",
     "其他"
   ],
   "Other": [
-    "Other",
+    "Not listed",
     "Otro",
     "Другое",
     "Câu trả lời khác",
     "其他"
   ],
   "declined": [
-    "Declined",
+    "Prefer not to say",
     "No deseo contestar",
     "Отказываюсь отвечать",
     "Từ chối",
@@ -105,8 +112,8 @@
     "其他社会身份"
   ],
   "lgbtqId": [
-    "I identify as LGBTQIA+",
-    "Me identifico como LGBTQIA+",
+    "I identify as LGBTQIA2S+ or Queer",
+    "Me identifico como LGBTQIA2S+ o Queer",
     "Я отношу себя к представителям ЛГБТКИА+ сообщества",
     "Tôi xác định mình là LGBTQIA+",
     "我认定自己是男女同性恋者、双性恋者、变性人、跨性别者、双性人、无性恋者及其他 （LGBTQIA+）"
@@ -195,29 +202,43 @@
     "Đại từ của quý vị",
     "您的代名词"
   ],
-  "she/her/hers": [
-    "She/Her/Hers",
+  "she/her": [
+    "She/Her",
     "Ella",
     "Она/ее/ей",
     "Cô/Bà",
     "她／她的"
   ],
-  "he/him/his": [
-    "He/Him/His",
+  "he/him": [
+    "He/Him",
     "Él",
     "Он/его/ему",
     "Anh/Ông",
     "他／他的"
   ],
-  "they/them/their(s)": [
-    "They/Them/Their(s)",
+  "they/them": [
+    "They/Them",
     "Elle/Elles",
     "Они/их/им",
     "Họ",
     "他们／他们的"
   ],
+  "she/they": [
+    "She/They",
+    "Ella/Elle",
+    "Она/Они",
+    "Cô/Họ",
+    "她／他们"
+  ],
+  "he/they": [
+    "He/They",
+    "Él/Elle",
+    "Он/Они",
+    "Anh/Họ",
+    "他／他们"
+  ],
   "pronounOther": [
-    "Other",
+    "Not listed",
     "Otro",
     "Другое",
     "Câu trả lời khác",

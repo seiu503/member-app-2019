@@ -24,6 +24,7 @@ import { validate } from "../utils/validators";
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;
 const genderPronounOptions = formElements.genderPronounOptions;
+// console.log(`genderOptions: ${genderOptions}`);
 
 // function wrapper for component allows use of useMediaQuery hook
 
@@ -58,7 +59,6 @@ export class SubmissionFormPage2Component extends React.Component {
       deafOrHardOfHearing,
       blindOrVisuallyImpaired,
       gender,
-      genderOtherDescription,
       genderPronoun,
       jobTitle,
       worksite,
@@ -72,14 +72,20 @@ export class SubmissionFormPage2Component extends React.Component {
       Wyyyy
     } = this.props.formValues;
     const ethnicity = formElements.calcEthnicity(this.props.formValues);
-    console.log(ethnicity);
+    // console.log(ethnicity);
+    const genderCleaned = formElements.calcGenderOrPronoun(gender);
+    const genderPronounCleaned = formElements.calcGenderOrPronoun(
+      genderPronoun
+    );
+    // console.log(`genderCleaned: ${genderCleaned}`);
+    // console.log(`genderPronounCleaned: ${genderPronounCleaned}`);
     // format hireDate
     let hireDate;
     if (Wmm && Wdd && Wyyyy) {
       hireDate = formElements.formatHireDate(this.props.formValues);
     }
-    console.log(`################################`);
-    console.log(hireDate);
+    // console.log(`################################`);
+    // console.log(hireDate);
     const body = {
       mail_to_city: mailToCity,
       mail_to_state: mailToState,
@@ -92,9 +98,8 @@ export class SubmissionFormPage2Component extends React.Component {
       disability_id: disabilityId,
       deaf_or_hard_of_hearing: deafOrHardOfHearing,
       blind_or_visually_impaired: blindOrVisuallyImpaired,
-      gender: gender,
-      gender_other_description: genderOtherDescription,
-      gender_pronoun: genderPronoun,
+      gender: genderCleaned,
+      gender_pronoun: genderPronounCleaned,
       job_title: jobTitle,
       hire_date: hireDate,
       worksite: worksite,
@@ -342,39 +347,33 @@ export class SubmissionFormPage2Component extends React.Component {
               }}
             >
               <Field
-                label="African or African-American"
+                label="Black, African, or African-American"
                 name="africanOrAfricanAmerican"
                 id="africanOrAfricanAmerican"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Arab American, Middle Eastern, or North African"
+                label="Arab, Middle Eastern, or North African"
                 name="arabAmericanMiddleEasternOrNorthAfrican"
                 id="arabAmericanMiddleEasternOrNorthAfrican"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Asian or Asian American"
+                label="Asian, Desi, or Pacific Islander"
                 name="asianOrAsianAmerican"
                 id="asianOrAsianAmerican"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Hispanic or Latinx"
+                label="Latino/a/x, Chicano/a, or Hispanic"
                 name="hispanicOrLatinx"
                 id="hispanicOrLatinx"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Native American or Indigenous"
+                label="Indigenous, American Indian, or Native American"
                 name="nativeAmericanOrIndigenous"
                 id="nativeAmericanOrIndigenous"
-                component={this.renderCheckbox}
-              />
-              <Field
-                label="Native Hawaiian or Other Pacific Islander"
-                name="nativeHawaiianOrOtherPacificIslander"
-                id="nativeHawaiianOrOtherPacificIslander"
                 component={this.renderCheckbox}
               />
               <Field
@@ -384,13 +383,13 @@ export class SubmissionFormPage2Component extends React.Component {
                 component={this.renderCheckbox}
               />
               <Field
-                label="Other"
+                label="Not listed"
                 name="other"
                 id="other"
                 component={this.renderCheckbox}
               />
               <Field
-                label="Declined"
+                label="Prefer not to say"
                 name="declined"
                 id="declined"
                 component={this.renderCheckbox}
@@ -423,7 +422,7 @@ export class SubmissionFormPage2Component extends React.Component {
                 }}
               >
                 <Field
-                  label="I identify as LGBTQIA+"
+                  label="I identify as LGBTQIA2S+ or Queer"
                   name="lgbtqId"
                   id="lgbtqId"
                   type="checkbox"
@@ -482,15 +481,6 @@ export class SubmissionFormPage2Component extends React.Component {
                 }}
                 options={genderOptions}
               />
-              {this.props.formValues.gender === "other" && (
-                <Field
-                  label="If other, Please describe"
-                  name="genderOtherDescription"
-                  id="genderOtherDescription"
-                  type="text"
-                  component={this.renderTextField}
-                />
-              )}
               <Field
                 label="Your pronouns"
                 name="genderPronoun"

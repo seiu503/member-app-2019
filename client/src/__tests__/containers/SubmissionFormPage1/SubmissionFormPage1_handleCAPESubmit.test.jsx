@@ -13,7 +13,6 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import moment from "moment";
-import "jest-canvas-mock";
 import * as formElements from "../../../components/SubmissionFormElements";
 import { employersPayload, storeFactory } from "../../../utils/testUtils";
 import {
