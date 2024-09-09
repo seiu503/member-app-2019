@@ -272,6 +272,19 @@ export const formatHireDate = formValues => {
   return formatSFDate(dobRaw);
 };
 
+export const ethnicitiesMap = {
+  africanOrAfricanAmerican: "African or African-American",
+  arabAmericanMiddleEasternOrNorthAfrican:
+    "Arab American, Middle Eastern, or North African",
+  asianOrAsianAmerican: "Asian or Asian American",
+  hispanicOrLatinx: "Hispanic or Latinx",
+  nativeAmericanOrIndigenous: "Native American or Indigenous",
+  nativeHawaiianOrOtherPacificIslander: "Asian or Asian American",
+  white: "White",
+  other: "Other",
+  declined: "Declined"
+};
+
 export const calcEthnicity = values => {
   const {
     africanOrAfricanAmerican,
@@ -302,12 +315,13 @@ export const calcEthnicity = values => {
   ethnicitiesArray.forEach(i => {
     if (i[1]) {
       if (combinedEthnicities === "") {
-        combinedEthnicities = i[0];
+        combinedEthnicities = ethnicitiesMap[i[0]] || i[0];
       } else {
-        combinedEthnicities += `, ${i[0]}`;
+        combinedEthnicities += `, ${ethnicitiesMap[i[0]] || i[0]}`;
       }
     }
   });
+  console.log(combinedEthnicities);
   return combinedEthnicities;
 };
 
