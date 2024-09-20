@@ -33,7 +33,9 @@ let store, handleErrorMock;
 let pushMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+  executeMock = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve({ token: "123" }));
 
 let updateSFContactSuccess = jest
   .fn()
@@ -154,7 +156,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      signature: "",
+      reCaptchaValue: "123"
     },
     cape: {
       monthlyOptions: []
@@ -286,7 +289,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       createCAPESuccess.mockClear();
     });
 
-    test.only("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
+    test("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
       let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -483,6 +486,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         apiSubmission: {
           ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess,
           verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
@@ -493,7 +497,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         reset: jest.fn(),
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         handleError: handleErrorMock,
-        lookupSFContact: lookupSFContactError
+        lookupSFContact: lookupSFContactError,
+        history: {
+          push: pushMock
+        }
       };
 
       // setup
@@ -553,7 +560,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        history: {
+          push: pushMock
+        }
       };
 
       // setup
@@ -635,7 +645,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        history: {
+          push: pushMock
+        }
       };
 
       // setup
@@ -702,7 +715,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        createCAPE: createCAPEError
+        createCAPE: createCAPEError,
+        history: {
+          push: pushMock
+        }
       };
 
       // setup
@@ -769,7 +785,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        history: {
+          push: pushMock
+        }
       };
 
       // setup
@@ -809,6 +828,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           payload: { sf_cape_id: 123 }
         })
       );
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(err =>
+          console.log("handleErrorMockIsBeingCalledHere...", err)
+        );
       let props = {
         formValues: {
           capeAmount: 10
@@ -816,7 +840,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         submission: {
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            reCaptchaValue: "123"
           },
           salesforceId: "123",
           payment: {
@@ -842,7 +867,15 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        updateCAPE: updateCAPEError
+        updateCAPE: updateCAPEError,
+        history: {
+          push: pushMock
+        },
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
+        }
       };
 
       // setup
@@ -860,6 +893,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect handleError NOT to have been called, only logged to console
       await waitFor(() => {
+        // console.log('handleErrorMockLastCall');
+        // console.log(handleErrorMock.mock.lastCall)
         expect(handleErrorMock).not.toHaveBeenCalled();
         expect(consoleErrorMock).toHaveBeenCalledWith("updateCAPEError");
       });
