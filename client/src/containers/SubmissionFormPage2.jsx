@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import queryString from "query-string";
 import { withTranslation } from "react-i18next";
 
-// import { withStyles } from "@mui/styles";
+import withRouter from "../components/ComponentWithRouterProp";
 
 import SubmissionFormPage2FormWrap from "../components/SubmissionFormPage2Component";
 
@@ -74,4 +74,4 @@ export const SubmissionFormPage2Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage2Container);
 
-export default withTranslation()(SubmissionFormPage2Connected);
+export default withTranslation()(withRouter(SubmissionFormPage2Connected));

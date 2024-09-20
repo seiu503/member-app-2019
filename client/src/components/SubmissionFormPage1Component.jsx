@@ -10,6 +10,7 @@ import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
+import withRouter from "./ComponentWithRouterProp";
 
 // helper functions
 const { employerTypeMap, getKeyByValue } = formElements;
@@ -178,6 +179,9 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
+    // console.log(`####################################################`)
+    // console.log(values);
+    // console.log(this.props);
     const checkoff = this.props.submission.formPage1.checkoff;
     const formContainer = {
       display: "flex",
@@ -388,4 +392,4 @@ SubmissionFormPage1Component.propTypes = {
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };
-export default withTranslation()(SubmissionFormPage1Component);
+export default withTranslation()(withRouter(SubmissionFormPage1Component));

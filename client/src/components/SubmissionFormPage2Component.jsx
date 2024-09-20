@@ -19,7 +19,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import * as formElements from "./SubmissionFormElements";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import { validate } from "../utils/validators";
-// import { openSnackbar } from "../containers/Notifier";
+import withRouter from "./ComponentWithRouterProp";
 
 const stateList = formElements.stateList;
 const genderOptions = formElements.genderOptions;

@@ -1,5 +1,5 @@
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
@@ -193,13 +193,19 @@ const defaultProps = {
 let handleSubmit;
 const initialState = {};
 const store = storeFactory(initialState);
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props, handleSubmit };
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props,
+    handleSubmit
+  };
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <SubmissionFormPage1Container {...setupProps} />
+          <MemoryRouter initialEntries={[route]}>
+            <SubmissionFormPage1Container {...setupProps} />
+          </MemoryRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
@@ -263,7 +269,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         }
       };
 
-      const { queryByTestId, getByTestId } = setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit

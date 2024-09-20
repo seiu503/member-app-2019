@@ -1,5 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom/extend-expect";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import AlertDialog from "../../components/AlertDialog";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -33,7 +34,9 @@ const setup = (props = {}) => {
   return render(
     <ThemeProvider theme={theme}>
       <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-        <AlertDialog {...setupProps} />
+        <BrowserRouter>
+          <AlertDialog {...setupProps} />
+        </BrowserRouter>
       </I18nextProvider>
     </ThemeProvider>
   );
@@ -47,8 +50,10 @@ describe("<AlertDialog />", () => {
 
   it("renders without error", () => {
     const { getByTestId } = setup({ open: true });
-    const component = getByTestId("component-alert-dialog");
-    expect(screen.getByRole("dialog")).toHaveTextContent("Dialog title");
+    const component = getByTestId("dialog");
+    // console.log(component);
+    expect(component).toHaveTextContent("Dialog title");
+    // expect(screen.getByRole("dialog")).toHaveTextContent("Dialog title");
   });
 
   test("renders a dialog", () => {

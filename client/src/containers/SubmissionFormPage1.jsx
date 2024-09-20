@@ -22,6 +22,7 @@ import * as actions from "../store/actions";
 import { withTranslation } from "react-i18next";
 
 import { findEmployerObject } from "../components/SubmissionFormElements";
+import withRouter from "../components/ComponentWithRouterProp";
 import Modal from "../components/Modal";
 
 export class SubmissionFormPage1Container extends React.Component {
@@ -47,8 +48,11 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   componentDidMount() {
+    // console.log(`SubmFormP1Container this.props.location`);
+    // console.log(this.props.location);
     // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
+    // const params = {};
     // if find both ids, call API to fetch contact info for prefill
     if (params.cId && params.aId) {
       const { cId, aId } = params;
@@ -625,4 +629,4 @@ export const SubmissionFormPage1Connected = connect(
   mapDispatchToProps
 )(SubmissionFormPage1Container);
 
-export default withTranslation()(SubmissionFormPage1Connected);
+export default withTranslation()(withRouter(SubmissionFormPage1Connected));

@@ -18,6 +18,7 @@ import { CAPE, CAPEForm, CAPEConnected } from "../../components/CAPE";
 import * as formElements from "../../components/SubmissionFormElements";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 
 // variables
 let wrapper,
@@ -94,13 +95,15 @@ describe("<CAPE />", () => {
   const initialState = {};
 
   store = storeFactory(initialState);
-  const setup = props => {
+  const setup = async (props = {}, route = "/") => {
     const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
     return render(
       <ThemeProvider theme={theme}>
         <Provider store={store}>
           <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-            <CAPEForm {...setUpProps} {...props} />
+            <MemoryRouter initialEntries={[route]}>
+              <CAPEForm {...setUpProps} {...props} />
+            </MemoryRouter>
           </I18nextProvider>
         </Provider>
       </ThemeProvider>
@@ -146,19 +149,19 @@ describe("<CAPE />", () => {
       capeAmount: 2
     };
 
-    it("renders without error", () => {
-      const { getByTestId } = setup();
+    it("renders without error", async () => {
+      const { getByTestId } = await setup(props, "/?cape=true");
       const component = getByTestId("component-cape");
       expect(component).toBeInTheDocument();
     });
 
-    it("calls updateEmployersPicklist on select change", () => {
+    it("calls updateEmployersPicklist on select change", async () => {
       const updateEmployersPicklistMock = jest.fn();
       const testProps = {
         standAlone: true,
         updateEmployersPicklist: updateEmployersPicklistMock
       };
-      const { getAllByRole } = setup({ ...testProps });
+      const { getAllByRole } = await setup({ ...testProps }, "/?cape=true");
       const component = getAllByRole("combobox")[0];
       fireEvent.change(component);
       expect(updateEmployersPicklistMock).toHaveBeenCalled();
@@ -169,7 +172,10 @@ describe("<CAPE />", () => {
       const testProps = {
         handleSubmit: handleSubmitMock
       };
-      const { getByTestId, debug } = await setup({ ...testProps });
+      const { getByTestId, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
       testData = generateCAPEValidateFrontEnd();
 
       const component = getByTestId("cape-form");
@@ -181,7 +187,7 @@ describe("<CAPE />", () => {
       const scrollToMock = jest.fn();
       utils.scrollToFirstError = scrollToMock;
 
-      const { getByTestId, debug } = await setup();
+      const { getByTestId, debug } = await setup(props, "/?cape=true");
       testData = generateCAPEValidateFrontEnd();
 
       const component = getByTestId("cape-form");
@@ -196,7 +202,10 @@ describe("<CAPE />", () => {
       const testProps = {
         back: backMock
       };
-      const { getByTestId, debug } = await setup({ ...testProps });
+      const { getByTestId, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
       testData = generateCAPEValidateFrontEnd();
 
       const component = getByTestId("button-back");
@@ -212,7 +221,10 @@ describe("<CAPE />", () => {
         capeOpen: true,
         handleSubmit: fn => fn
       };
-      const { getByTestId, debug } = await setup({ ...testProps });
+      const { getByTestId, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
       const component = getByTestId("component-alert-dialog");
       expect(component).toBeInTheDocument();
     });
@@ -221,7 +233,10 @@ describe("<CAPE />", () => {
       const testProps = {
         standAlone: true
       };
-      const { getByTestId, debug } = await setup({ ...testProps });
+      const { getByTestId, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
       const component = getByTestId("form-contact-info");
       expect(component).toBeInTheDocument();
     });
@@ -238,7 +253,10 @@ describe("<CAPE />", () => {
         },
         donationFrequency: "One-Time"
       };
-      const { getByTestId, debug } = await setup({ ...testProps });
+      const { getByTestId, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
       const component = getByTestId("field-other-amount");
       expect(component).toBeInTheDocument();
     });
@@ -247,7 +265,10 @@ describe("<CAPE />", () => {
       const testProps = {
         displayCAPEPaymentFields: true
       };
-      const { getByLabelText, debug } = await setup({ ...testProps });
+      const { getByLabelText, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
       const component = getByLabelText("Submit");
       expect(component).toBeInTheDocument();
     });

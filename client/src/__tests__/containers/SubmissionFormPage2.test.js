@@ -258,11 +258,11 @@ const setup = async (props = {}, route = "/?cape=true") => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <MemoryRouter initialEntries={[route]}>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <MemoryRouter initialEntries={[route]}>
             <SubmissionFormPage2Container {...setupProps} />
-          </I18nextProvider>
-        </MemoryRouter>
+          </MemoryRouter>
+        </I18nextProvider>
       </Provider>
     </ThemeProvider>
   );

@@ -19,15 +19,15 @@ global.fetch = require("node-fetch");
 
 render(
   <Provider store={store}>
-    <BrowserRouter>
-      <ScrollToTop>
-        <ThemeProvider theme={theme}>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+    <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+      <BrowserRouter>
+        <ScrollToTop>
+          <ThemeProvider theme={theme}>
             <App />
-          </I18nextProvider>
-        </ThemeProvider>
-      </ScrollToTop>
-    </BrowserRouter>
+          </ThemeProvider>
+        </ScrollToTop>
+      </BrowserRouter>
+    </I18nextProvider>
   </Provider>,
   document.getElementById("root")
 );

@@ -60,15 +60,13 @@ const setup = (props = {}, route = "/") => {
     ...props
   };
   return render(
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <MemoryRouter initialEntries={[route]}>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-            <NavBar {...setupProps} />
-          </I18nextProvider>
-        </MemoryRouter>
-      </ThemeProvider>
-    </BrowserRouter>
+    <ThemeProvider theme={theme}>
+      <MemoryRouter initialEntries={[route]}>
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <NavBar {...setupProps} />
+        </I18nextProvider>
+      </MemoryRouter>
+    </ThemeProvider>
   );
 };
 
@@ -86,10 +84,10 @@ describe("<NavBar />", () => {
   });
 
   test("renders a logo link and logo image", () => {
-    const { getByTestId, getByRole } = setup();
+    const { getByTestId, getByAltText } = setup();
     const component = getByTestId("logo-link");
     expect(component).toBeInTheDocument();
-    const image = getByRole("img");
+    const image = getByAltText("SEIU 503");
     expect(image).toBeInTheDocument();
   });
 

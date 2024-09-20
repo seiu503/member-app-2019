@@ -1,5 +1,5 @@
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
@@ -23,7 +23,8 @@ import {
   generateSampleValidate,
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
-import { I18nextProvider } from "react-i18next";
+// import { I18nextProvider } from "react-i18next";
+import { Translation } from "react-i18next";
 import i18n from "../../translations/i18n";
 import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
@@ -216,11 +217,13 @@ const setup = async (props = {}, route = "/") => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <MemoryRouter initialEntries={[route]}>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-            <AppUnconnected {...setupProps} />
-          </I18nextProvider>
-        </MemoryRouter>
+        <Translation>
+          {(t, { i18n }) => (
+            <BrowserRouter>
+              <AppUnconnected {...setupProps} />
+            </BrowserRouter>
+          )}
+        </Translation>
       </Provider>
     </ThemeProvider>
   );

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route, withRouter } from "react-router-dom";
+import { Routes, Route, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
@@ -18,6 +18,7 @@ import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
+import withRouter from "./components/ComponentWithRouterProp";
 import FormThankYou from "./components/FormThankYou";
 import NotFound from "./components/NotFound";
 import BasicSnackbar from "./components/BasicSnackbar";
@@ -89,6 +90,9 @@ export class AppUnconnected extends Component {
   }
 
   async componentDidMount() {
+    // console.log(`APP this.props.classes`);
+    // console.log(this.props);
+
     this._isMounted = true;
 
     // check and log environment
@@ -893,15 +897,14 @@ export class AppUnconnected extends Component {
               justifyContent: "center"
             }}
           >
-            <Switch>
+            <Routes>
               <Route
                 exact
                 path="/"
-                render={routeProps => (
+                element={
                   <SubmissionFormPage1
                     tab={this.state.tab}
                     embed={embed}
-                    // setRedirect={this.setRedirect}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}
@@ -925,30 +928,26 @@ export class AppUnconnected extends Component {
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
                     apiSubmission={this.props.apiSubmission}
-                    {...routeProps}
                   />
-                )}
+                }
               />
               <Route
                 exact
                 path="/thankyou"
-                render={routeProps => (
+                element={
                   <FormThankYou
-                    // setRedirect={this.setRedirect}
                     classes={this.props.classes}
                     paymentRequired={
                       this.props.submission.formPage1.paymentRequired
                     }
-                    {...routeProps}
                   />
-                )}
+                }
               />
               <Route
                 exact
                 path="/page2"
-                render={routeProps => (
+                element={
                   <SubmissionFormPage2
-                    // setRedirect={this.setRedirect}
                     createSubmission={this.createSubmission}
                     updateSubmission={this.updateSubmission}
                     lookupSFContact={this.lookupSFContact}
@@ -959,17 +958,14 @@ export class AppUnconnected extends Component {
                     updateSFContact={this.updateSFContact}
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
-                    {...routeProps}
                   />
-                )}
+                }
               />
               <Route
                 path="*"
-                render={routeProps => (
-                  <NotFound classes={this.props.classes} {...routeProps} />
-                )}
+                element={<NotFound classes={this.props.classes} />}
               />
-            </Switch>
+            </Routes>
           </Box>
         </main>
         <Footer classes={this.props.classes} />
@@ -1000,4 +996,5 @@ export const AppConnected = connect(
   mapDispatchToProps
 )(AppUnconnected);
 
-export default withRouter(withTranslation()(AppConnected));
+export default withTranslation()(withRouter(AppConnected));
+// export default withTranslation()(AppConnected);

@@ -1,5 +1,5 @@
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
@@ -231,11 +231,11 @@ const setup = async (props = {}, route = "/") => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <MemoryRouter initialEntries={[route]}>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <BrowserRouter>
             <AppUnconnected {...setupProps} />
-          </I18nextProvider>
-        </MemoryRouter>
+          </BrowserRouter>
+        </I18nextProvider>
       </Provider>
     </ThemeProvider>
   );

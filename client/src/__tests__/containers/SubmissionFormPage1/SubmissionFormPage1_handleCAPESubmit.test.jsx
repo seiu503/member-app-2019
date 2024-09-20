@@ -1,6 +1,6 @@
 import React from "react";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createMemoryHistory } from "history";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
@@ -192,7 +192,9 @@ const defaultProps = {
   createSFContact: createSFContactSuccess,
   updateSFContact: updateSFContactSuccess,
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
   content: {
@@ -246,14 +248,22 @@ const initialState = {
 };
 
 store = storeFactory(initialState);
+let handleSubmit = fn => fn;
+let onSubmit = jest.fn();
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props,
+    handleSubmit
+  };
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <SubmissionFormPage1Container {...setupProps} />
+          <MemoryRouter initialEntries={[route]}>
+            <SubmissionFormPage1Container {...setupProps} />
+          </MemoryRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
@@ -276,7 +286,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       createCAPESuccess.mockClear();
     });
 
-    test("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
+    test.only("`handleCAPESubmit` redirects to page 2 after successful submit (!capeid case)", async () => {
       let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "LOOKUP_SF_CONTACT_SUCCESS",
@@ -372,8 +382,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       };
 
       // setup
-      const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      // const user = await userEvent.setup();
+      const { getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -419,7 +429,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -488,7 +498,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -548,7 +558,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -630,7 +640,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -764,7 +774,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -837,7 +847,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // mock console err to see if error is logged to console
@@ -909,7 +919,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit

@@ -5,6 +5,7 @@ import { Trans } from "react-i18next";
 import AlertDialog from "./AlertDialog";
 import ButtonWithSpinner from "./ButtonWithSpinner";
 import * as formElements from "./SubmissionFormElements";
+import withRouter from "./ComponentWithRouterProp";
 
 import {
   Button,
@@ -74,6 +75,8 @@ export const CAPE = props => {
 
   const community = formValues.employerType === "community member";
   const matches = useMediaQuery("(min-width:450px)");
+  console.log("@@@@@@@@@@@@@@@@@@@");
+  console.log(props.handleSubmit);
 
   return (
     <Box
@@ -792,6 +795,6 @@ export const CAPEForm = reduxForm({
 })(CAPE);
 
 // connect to redux store
-export const CAPEConnected = connect(mapStateToProps)(CAPEForm);
+export const CAPEConnected = connect(mapStateToProps)(withRouter(CAPEForm));
 
 export default CAPEConnected;

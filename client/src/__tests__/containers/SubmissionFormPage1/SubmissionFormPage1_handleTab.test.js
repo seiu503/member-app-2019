@@ -1,5 +1,5 @@
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
@@ -202,7 +202,9 @@ const setup = (props = {}) => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <SubmissionFormPage1Container {...setupProps} />
+          <BrowserRouter>
+            <SubmissionFormPage1Container {...setupProps} />
+          </BrowserRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
