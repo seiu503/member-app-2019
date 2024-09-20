@@ -958,6 +958,7 @@ export class AppUnconnected extends Component {
                     updateSFContact={this.updateSFContact}
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
+                    history={this.props.history}
                   />
                 }
               />
