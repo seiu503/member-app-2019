@@ -48,10 +48,12 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   componentDidMount() {
-    // console.log(`SubmFormP1Container this.props.location`);
-    // console.log(this.props.location);
+    console.log(`SubmFormP1Container this.props.location`);
+    console.log(this.props.location);
     // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
+    // console.log('**************   PARAMS   ************');
+    // console.log(params);
     // const params = {};
     // if find both ids, call API to fetch contact info for prefill
     if (params.cId && params.aId) {
@@ -59,6 +61,8 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
         .then(result => {
+          // console.log('********************************');
+          // console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
             this.props.submission.formPage1.firstName &&
@@ -91,9 +95,13 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   handleOpen() {
+    // console.log('`submFormPage1.jsx > handleOpen`');
     const newState = { ...this.state };
     newState.open = true;
-    this.setState({ ...newState });
+    this.setState({ ...newState }, () => {
+      // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
+      // console.log(this.state);
+    });
   }
 
   handleCAPEOpen() {
@@ -565,6 +573,16 @@ export class SubmissionFormPage1Container extends React.Component {
         ? this.props.submission.formPage1.lastName
         : ""
     }`;
+
+    // console.log('%^*%*&^%&^%*&%*&%^&*^%*&^%*&^%*&^%*&^');
+    // console.log(`this.state.open: ${this.state.open}`);
+    // console.log(`fullName.length: ${fullName.length}`);
+    // console.log(`this.props.submission.redirect: ${this.props.submission.redirect}`);
+    // console.log(`this.state.open &&
+    //         fullName.length &&
+    //         !this.props.submission.redirect: ${this.state.open &&
+    //         fullName.length &&
+    //         !this.props.submission.redirect}`);
     return (
       <div data-testid="container-submission-form-page-1">
         <Modal

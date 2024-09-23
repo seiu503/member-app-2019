@@ -196,7 +196,9 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       <ThemeProvider theme={theme}>
         <Provider store={store}>
           <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-            <SubmissionFormPage1Component {...setupProps} />
+            <MemoryRouter>
+              <SubmissionFormPage1Component {...setupProps} />
+            </MemoryRouter>
           </I18nextProvider>
         </Provider>
       </ThemeProvider>

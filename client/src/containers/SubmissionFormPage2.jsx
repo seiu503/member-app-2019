@@ -44,7 +44,8 @@ export class SubmissionFormPage2Container extends React.Component {
           this.props.handleError(err);
         });
     } else {
-      // console.log("no id found");
+      console.log("##################");
+      console.log("no id found");
       return this.props.history.push("/");
     }
   }

@@ -103,7 +103,7 @@ export class AppUnconnected extends Component {
     const defaultLanguage = detectDefaultLanguage();
 
     const changeLanguage = lng => {
-      console.log(`NEW changeLanguage: ${lng}`);
+      // console.log(`NEW changeLanguage: ${lng}`);
       this.props.i18n.changeLanguage(lng);
     };
 
@@ -175,7 +175,7 @@ export class AppUnconnected extends Component {
     const language = languageCode ? languageCode : defaultLanguage;
     // set form language based on detected default language
     const changeLanguage = lng => {
-      console.log(`NEW changeLanguage: ${lng}`);
+      // console.log(`NEW changeLanguage: ${lng}`);
       this.props.i18n.changeLanguage(lng);
     };
 

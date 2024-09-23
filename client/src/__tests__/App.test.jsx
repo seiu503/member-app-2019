@@ -290,12 +290,9 @@ describe("<App />", () => {
       expect(subm1).not.toBeInTheDocument();
       expect(subm2).toBeInTheDocument();
     });
-    test(' "/page2" path should not render SubmissionFormPage2 component without an id in route parameters', async () => {
-      const { queryByTestId } = await setup({}, "/page2");
-      const subm1 = queryByTestId("component-submissionformpage1");
-      const subm2 = queryByTestId("component-submissionformpage2");
-      expect(subm1).toBeInTheDocument();
-      expect(subm2).not.toBeInTheDocument();
+    test(' "/page2" path should redirect to "/" without an id in route parameters', async () => {
+      await setup({}, "/page2");
+      expect(pushMock).toHaveBeenCalledWith("/");
     });
   });
 });

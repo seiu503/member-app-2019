@@ -158,12 +158,12 @@ function Submission(state = INITIAL_STATE, action) {
         action.payload && action.payload.length > 3
           ? action.payload
           : formElements.placeholderEmployerObjects;
-      console.log(`GET_SF_EMPLOYERS_SUCCESS formula payload`);
-      console.log(payload.length);
+      // console.log(`GET_SF_EMPLOYERS_SUCCESS formula payload`);
+      // console.log(payload.length);
 
       const employerNames = payload.map(employer => employer.Name);
-      console.log(`GET_SF_EMPLOYERS_SUCCESS employerNames`);
-      console.log(employerNames.length);
+      // console.log(`GET_SF_EMPLOYERS_SUCCESS employerNames`);
+      // console.log(employerNames.length);
       return update(state, {
         employerNames: { $set: employerNames },
         employerObjects: { $set: payload }
