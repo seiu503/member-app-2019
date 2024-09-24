@@ -46,7 +46,7 @@ export const SubmissionFormPage2Function = props => {
     } else {
       return props.navigate("/");
     }
-  });
+  }, []);
 
   return (
     <div data-testid="container-submission-form-page-2">
