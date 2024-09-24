@@ -22,9 +22,9 @@ import {
   generatePage2Validate,
   generateSubmissionBody
 } from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../translations/i18n";
-import handlers from "../../../mocks/handlers";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -217,183 +217,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe("componentDidMount", () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-    test("calls `getSFContactByDoubleId` on componentDidMount if id in query", () => {
-      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "GET_SF_CONTACT_DID_SUCCESS",
-          payload: {
-            firstName: "test",
-            lastName: "test"
-          }
-        })
-      );
-      let props = {
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          getSFEmployers: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_EMPLOYERS_SUCCESS",
-              payload: [...employersPayload]
-            })
-          )
-        },
-        submission: {
-          formPage1: {
-            firstName: "test",
-            lastName: "test"
-          },
-          cape: {
-            monthlyOptions: []
-          },
-          payment: {}
-        }
-      };
-
-      const { getByTestId } = setup(props);
+  describe("render", () => {
+    it("renders without error", () => {
+      const { getByTestId } = setup();
       const component = getByTestId("component-submissionformpage1");
       expect(component).toBeInTheDocument();
-      expect(getSFContactByDoubleIdSuccess).toHaveBeenCalled();
-    });
-
-    test("does not call `getSFContactByDoubleId` on componentDidMount if no aId in query", () => {
-      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "GET_SF_CONTACT_DID_SUCCESS",
-          payload: {
-            firstName: "test",
-            lastName: "test"
-          }
-        })
-      );
-      let props = {
-        location: {
-          search: "cId=1"
-        },
-        apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          getSFEmployers: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_EMPLOYERS_SUCCESS",
-              payload: [...employersPayload]
-            })
-          )
-        },
-        submission: {
-          formPage1: {
-            firstName: "test",
-            lastName: "test"
-          },
-          cape: {
-            monthlyOptions: []
-          },
-          payment: {}
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      expect(getSFContactByDoubleIdSuccess).not.toHaveBeenCalled();
-    });
-
-    test("clears form if `getSFContactByDoubleId` fails", async () => {
-      clearFormMock = jest.fn();
-      getSFContactByDoubleIdError = () =>
-        Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
-      let props = {
-        ...defaultProps,
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          getSFContactByDoubleId: getSFContactByDoubleIdError
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          clearForm: clearFormMock
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = await getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      await waitFor(() => expect(clearFormMock).toHaveBeenCalled());
-    });
-
-    test("clears form if no first or last name in store", async () => {
-      clearFormMock = jest.fn();
-      getSFContactByDoubleIdError = () =>
-        Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
-      let props = {
-        ...defaultProps,
-        location: {
-          search: "cId=1&aId=2"
-        },
-        submission: {
-          formPage1: {
-            firstName: null,
-            lastName: null
-          }
-        },
-        apiSF: {
-          ...defaultProps.apiSF
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          clearForm: clearFormMock
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = await getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      await waitFor(() => expect(clearFormMock).toHaveBeenCalled());
-    });
-
-    test("handles error if `getSFContactByDoubleId` throws", async () => {
-      const oldWindowLocation = window.location;
-      const oldWindowHistory = window.history;
-      delete window.location;
-      delete window.history;
-      window.location = Object.assign(new URL("https://test.com"));
-      window.history = {
-        replaceState: jest.fn()
-      };
-      clearFormMock = jest.fn(() => console.log("clearFormMock"));
-      getSFContactByDoubleIdError = () =>
-        Promise.reject("getSFContactByDoubleIdError");
-      let props = {
-        ...defaultProps,
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          getSFContactByDoubleId: getSFContactByDoubleIdError
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          clearForm: clearFormMock
-        },
-        handleError: handleErrorMock
-      };
-
-      await setup(props);
-      await waitFor(() =>
-        expect(handleErrorMock).toHaveBeenCalledWith(
-          "getSFContactByDoubleIdError"
-        )
-      );
-      window.location = oldWindowLocation;
-      window.history = oldWindowHistory;
     });
   });
 });

@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
 import {

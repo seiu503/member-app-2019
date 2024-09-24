@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 
 import "@testing-library/jest-dom";
@@ -27,9 +27,7 @@ import handlers from "../../mocks/handlers";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
 let navigate = jest.fn(),
-  handleInputMock = jest
-    .fn()
-    .mockImplementation(() => console.log("handleInputMock")),
+  handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -100,6 +98,8 @@ let createSFOMAError = jest
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
+
+let setActiveLanguageMock = jest.fn();
 
 global.scrollTo = jest.fn();
 
@@ -210,8 +210,9 @@ const defaultProps = {
     setSpinner: jest.fn()
   },
   lookupSFContact: lookupSFContactSuccess,
+  setActiveLanguage: jest.fn(),
   i18n: {
-    changeLanguage: jest.fn()
+    changeLanguage: setActiveLanguageMock
   },
   t: text => text
 };
@@ -228,9 +229,9 @@ const setup = async (props = {}, route = "/") => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <BrowserRouter>
+          <MemoryRouter initialEntries={[route]}>
             <AppUnconnected {...setupProps} />
-          </BrowserRouter>
+          </MemoryRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
@@ -252,39 +253,24 @@ describe("<App />", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe("misc methods 2", () => {
+  describe("misc methods", () => {
     beforeEach(() => cleanup());
-
-    test("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
+    test("`prepForContact` sets employerId conditionally based on prefillEmployerChanged prop", async () => {
       const props = {
+        formValues: {
+          ...formValues,
+          employerName: "test"
+        },
         submission: {
-          ...defaultProps.submission,
-          salesforceId: "1234",
           formPage1: {
             ...defaultProps.submission.formPage1,
-            legalLanguage: "abc"
+            employerName: "test",
+            prefillEmployerId: "1234",
+            prefillEmployerChanged: true,
+            reCaptchaValue: "token"
           },
-          submissionId: "5678",
-          currentSubmission: {},
           payment: {},
-          cape: {
-            monthlyOptions: []
-          }
-        },
-        location: {
-          search: "&cId=1234"
-        },
-        t: text => text,
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          verify: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "VERIFY_SUCCESS",
-              payload: {
-                score: 0.9
-              }
-            })
-          )
+          employerObjects: [...employersPayload]
         },
         apiSF: {
           createSFOMA: jest.fn().mockImplementation(() =>
@@ -307,8 +293,9 @@ describe("<App />", () => {
           )
         }
       };
+
       // render app
-      const user = await userEvent.setup();
+      const user = userEvent.setup();
       const {
         getByTestId,
         queryByTestId,
@@ -319,73 +306,124 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = await getByTestId("button-next");
+      const nextButton = getByTestId("button-next");
       await userEvent.click(nextButton);
 
       // check that tab 1 renders
-      const tab1Form = await getByRole("form");
+      const tab1Form = getByRole("form");
       await waitFor(() => {
         expect(tab1Form).toBeInTheDocument();
       });
 
-      // simulate submit tab1
-      const submitButton = await getByTestId("button-submit");
+      // change employer type
       await waitFor(async () => {
+        const employerType = await getByLabelText("Employer Type");
+        await fireEvent.change(employerType, {
+          target: { value: "state homecare or personal support" }
+        });
+      });
+
+      // change employer name
+      await waitFor(async () => {
+        const employerName = await getByLabelText("Employer Name");
+        await fireEvent.change(employerName, {
+          target: {
+            value: "personal support worker (paid by ppl)"
+          }
+        });
+      });
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        const submitButton = getByTestId("button-submit");
         await userEvent.click(submitButton);
       });
 
-      // // check that tab 2 renders
-      // const tab2Form = await getByTestId("form-tab2");
-      // await waitFor(() => {
-      //   expect(tab2Form).toBeInTheDocument();
-      // });
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
 
-      // // simulate submit tab2
-      // const submitButton2 = await getByTestId("button-submit-tab2");
-      // await waitFor(async () => {
-      //   await userEvent.click(submitButton2);
-      // });
-
-      // // just test that with these props there are no errors and it moves to tab 3
-
-      // // expect snackbar NOT to be in document
-      // await waitFor(() => {
-      //   expect(
-      //     queryByTestId("component-basic-snackbar")
-      //   ).not.toBeInTheDocument();
-      // });
-
-      // // expect cape tab to render
-      // const cape = await getByTestId("component-cape");
-      // await waitFor(() => {
-      //   expect(cape).toBeInTheDocument();
-      // });
+      // expect employerId to be set to '0014N00002ASaRyQAL' (PSW)
+      await waitFor(() => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "employerId", value: "0014N00002ASaRyQAL" }
+        });
+      });
     });
 
-    test("`updateSubmission` uses defaults if no passedId or passedUpdates", async () => {
+    test("`updateLanguage` calls this.props.setActiveLanguage", async () => {
+      const props = {
+        setActiveLanguage: setActiveLanguageMock,
+        apiSF: {
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
+        }
+      };
+
+      // render app
+      const user = userEvent.setup();
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      // simulate user select language
+      const languagePicker = getByLabelText("Select Language");
+      await fireEvent.change(languagePicker, { target: { value: "Español" } });
+
+      await waitFor(() => {
+        expect(setActiveLanguageMock).toHaveBeenCalled();
+      });
+    });
+
+    test("`renderHeadline` renders headline", async () => {
+      // render app
+      const {
+        getByTestId,
+        queryByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup();
+      const headline = getByTestId("headline");
+      expect(headline).toBeInTheDocument();
+    });
+
+    test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", async () => {
       const props = {
         submission: {
           salesforceId: "1234",
           formPage1: {
             legalLanguage: "abc"
           },
-          submissionId: "5678",
           payment: {}
         },
         location: {
           search: "&cId=1234"
-        },
-        t: text => text,
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          verify: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "VERIFY_SUCCESS",
-              payload: {
-                score: 0.9
-              }
-            })
-          )
         },
         apiSF: {
           createSFOMA: jest.fn().mockImplementation(() =>
@@ -408,6 +446,7 @@ describe("<App />", () => {
           )
         }
       };
+
       // render app
       const user = userEvent.setup();
       const {
@@ -415,7 +454,6 @@ describe("<App />", () => {
         queryByTestId,
         getByRole,
         getByLabelText,
-        queryByLabelText,
         getByText,
         debug
       } = await setup(props);
@@ -456,6 +494,67 @@ describe("<App />", () => {
         const cape = getByTestId("component-cape");
         expect(cape).toBeInTheDocument();
       });
+    });
+
+    test("opens confirmation modal on SubmFormPage1 componentDidMount if firstName and lastName returned from getSFContactByDoubleId", async () => {
+      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() => {
+        console.log("getSFContactByDoubleIdMock");
+        return Promise.resolve({
+          type: "GET_SF_CONTACT_DID_SUCCESS",
+          payload: {
+            FirstName: "test",
+            LastName: "test",
+            Account: { id: "test" },
+            Ethnicity__c: "Declined"
+          }
+        });
+      });
+      const props = {
+        location: {
+          search: "cId=1&aId=2"
+        },
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
+          createSFOMA: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_OMA_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          lookupSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "LOOKUP_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          ),
+          createSFContact: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "CREATE_SF_CONTACT_SUCCESS",
+              payload: { id: 1 }
+            })
+          )
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            firstName: "test",
+            lastName: "test"
+          }
+        },
+        formPage2: {}
+      };
+
+      const { getByTestId } = await setup(props, "/?cId=1&aId=2");
+
+      // check that modal renders
+      // some kinda fucked up delay / race condition is happening here where
+      // test is running before state is changing to open modal, so working around with
+      // test timeout
+      setTimeout(async () => {
+        const modal = await getByTestId("component-modal");
+        await waitFor(() => expect(modal).toBeInTheDocument());
+      }, 10);
     });
   });
 });

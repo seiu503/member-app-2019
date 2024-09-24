@@ -58,13 +58,18 @@
     "postcss-cli": "^8.0.0",
     "react-scripts": "^5.0.1",
     "redux-mock-store": "^1.5.4",
-    "sass": "^1.51.0"
+    "sass": "^1.51.0",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.2.13",
+    "vite-tsconfig-paths": "^4.3.2"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development craco build",
-    "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build",
+    "start": "vite",
+    "build": "vite build",
+    "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development vite build",
+    "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging vite build",
     "test": "DEBUG_PRINT_LIMIT=100000 craco test --maxWorkers=50% --workerIdleMemoryLimit=512MB",
     "test-cov": "craco test --maxWorkers=25% --coverage --watchAll --coverageDirectory=output/coverage/jest --workerIdleMemoryLimit=512MB",
     "eject": "craco eject",
@@ -72,7 +77,7 @@
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
     "sass:build": "npm-run-all -p build-task:*",
     "sass:watch": "chokidar 'src/styles/scss/' -c 'npm run sass:build'",
-    "dev": "npm-run-all -p sass:watch"
+    "dev": "vite"
   },
   "eslintConfig": {},
   "browserslist": {

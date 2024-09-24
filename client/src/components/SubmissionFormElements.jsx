@@ -1,7 +1,6 @@
 import React from "react";
 import shortid from "shortid";
 import PropTypes from "prop-types";
-import { openSnackbar } from "../App";
 import { useTranslation, Trans, Translation } from "react-i18next";
 
 import {
@@ -2623,7 +2622,6 @@ export const renderCheckbox = ({
                   data-testid="component-checkbox"
                   name="checkbox"
                   inputProps={{ id: id }}
-                  data-testid={dataTestId}
                 />
               }
             />
@@ -2695,7 +2693,6 @@ export const renderCAPERadioGroup = ({
             justifyContent: "center"
           }}
           onChange={input.onChange}
-          data-testid={dataTestId}
         >
           {options &&
             options.map(item => {

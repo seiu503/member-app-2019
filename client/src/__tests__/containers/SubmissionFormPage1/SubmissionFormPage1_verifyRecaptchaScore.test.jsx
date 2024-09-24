@@ -22,9 +22,9 @@ import {
   generatePage2Validate,
   generateSubmissionBody
 } from "../../../../../app/utils/fieldConfigs";
+import handlers from "../../../mocks/handlers";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../translations/i18n";
-import handlers from "../../../mocks/handlers";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
@@ -42,12 +42,24 @@ let updateSFContactSuccess = jest
     Promise.resolve({ type: "UPDATE_SF_CONTACT_SUCCESS", payload: {} })
   );
 
+let updateSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "UPDATE_SF_CONTACT_FAILURE", payload: {} })
+  );
+
 let lookupSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "LOOKUP_SF_CONTACT_SUCCESS",
     payload: { salesforce_id: "123" }
   })
 );
+
+let lookupSFContactError = jest
+  .fn()
+  .mockImplementation(() =>
+    Promise.reject({ type: "LOOKUP_SF_CONTACT_FAILURE", payload: {} })
+  );
 
 let createSFContactSuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -77,17 +89,23 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
   })
 );
 
-let getSFContactByDoubleIdError = jest
+let createSubmissionSuccess = jest
   .fn()
   .mockImplementation(() =>
-    Promise.reject({ type: "GET_SF_CONTACT_DID_FAILURE", payload: {} })
+    Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
   );
 
 let refreshRecaptchaMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve({}));
 
+let verifyRecaptchaScoreMock = jest
+  .fn()
+  .mockImplementation(() => Promise.resolve(0.9));
+
 global.scrollTo = jest.fn();
+
+const changeTabMock = jest.fn();
 
 const formValues = {
   firstName: "firstName",
@@ -128,7 +146,7 @@ const defaultProps = {
   },
   classes: {},
   apiSF: {
-    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" }),
+    getSFEmployers: () => Promise.resolve({ type: "GET_SF_EMPLOYER_SUCCESS" }),
     getSFContactById: getSFContactByIdSuccess,
     getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
     createSFOMA: () => Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" }),
@@ -140,7 +158,9 @@ const defaultProps = {
     handleInput: handleInputMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () =>
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   history: {},
   navigate,
@@ -163,6 +183,8 @@ const defaultProps = {
       innerHTML: "pay"
     }
   },
+  createSubmission: createSubmissionSuccess,
+  changeTab: changeTabMock,
   actions: {
     setSpinner: jest.fn()
   },
@@ -217,183 +239,132 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe("componentDidMount", () => {
-    afterEach(() => {
-      jest.restoreAllMocks();
-    });
-    test("calls `getSFContactByDoubleId` on componentDidMount if id in query", () => {
-      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "GET_SF_CONTACT_DID_SUCCESS",
-          payload: {
-            firstName: "test",
-            lastName: "test"
+  describe("verifyRecaptchaScore", () => {
+    test("verifyRecaptchaScore calls `recaptcha.current.execute()`", async function() {
+      const props = {
+        recaptcha: {
+          current: {
+            execute: executeMock
           }
-        })
-      );
-      let props = {
-        location: {
-          search: "cId=1&aId=2"
         },
-        apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          getSFEmployers: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_EMPLOYERS_SUCCESS",
-              payload: [...employersPayload]
-            })
-          )
+        tab: 0
+      };
+
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
+      });
+
+      // expect handleInputMock to have been called setting `howManyTabs` to 3
+      await waitFor(() => {
+        expect(executeMock).toHaveBeenCalled();
+      });
+    });
+    test("verifyRecaptchaScore calls `apiSubmission.verify`", async function() {
+      const verifySuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
+        );
+      const props = {
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
         },
         submission: {
           formPage1: {
-            firstName: "test",
-            lastName: "test"
-          },
-          cape: {
-            monthlyOptions: []
-          },
-          payment: {}
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      expect(getSFContactByDoubleIdSuccess).toHaveBeenCalled();
-    });
-
-    test("does not call `getSFContactByDoubleId` on componentDidMount if no aId in query", () => {
-      getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "GET_SF_CONTACT_DID_SUCCESS",
-          payload: {
-            firstName: "test",
-            lastName: "test"
+            reCaptchaValue: 123
           }
-        })
-      );
-      let props = {
-        location: {
-          search: "cId=1"
         },
-        apiSF: {
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess,
-          getSFEmployers: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_EMPLOYERS_SUCCESS",
-              payload: [...employersPayload]
-            })
-          )
+        apiSubmission: {
+          verify: verifySuccess,
+          handleInput: handleInputMock
+        },
+        tab: 0,
+        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
+        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
+      };
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
+      });
+
+      // expect handleInputMock to have been called setting `howManyTabs` to 3
+      await waitFor(() => {
+        expect(verifySuccess).toHaveBeenCalled();
+      });
+    });
+    test("verifyRecaptchaScore handles error if `apiSubmission.verify` throws", async function() {
+      const verifyError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject("reCaptchaError"));
+      const props = {
+        t: text => text,
+        handleError: handleErrorMock,
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
         },
         submission: {
           formPage1: {
-            firstName: "test",
-            lastName: "test"
-          },
-          cape: {
-            monthlyOptions: []
-          },
-          payment: {}
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      expect(getSFContactByDoubleIdSuccess).not.toHaveBeenCalled();
-    });
-
-    test("clears form if `getSFContactByDoubleId` fails", async () => {
-      clearFormMock = jest.fn();
-      getSFContactByDoubleIdError = () =>
-        Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
-      let props = {
-        ...defaultProps,
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          getSFContactByDoubleId: getSFContactByDoubleIdError
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          clearForm: clearFormMock
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = await getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      await waitFor(() => expect(clearFormMock).toHaveBeenCalled());
-    });
-
-    test("clears form if no first or last name in store", async () => {
-      clearFormMock = jest.fn();
-      getSFContactByDoubleIdError = () =>
-        Promise.resolve({ type: "GET_SF_CONTACT_DID_FAILURE" });
-      let props = {
-        ...defaultProps,
-        location: {
-          search: "cId=1&aId=2"
-        },
-        submission: {
-          formPage1: {
-            firstName: null,
-            lastName: null
+            reCaptchaValue: 123
           }
         },
-        apiSF: {
-          ...defaultProps.apiSF
-        },
         apiSubmission: {
-          ...defaultProps.apiSubmission,
-          clearForm: clearFormMock
-        }
-      };
-
-      const { getByTestId } = setup(props);
-      const component = await getByTestId("component-submissionformpage1");
-      expect(component).toBeInTheDocument();
-      await waitFor(() => expect(clearFormMock).toHaveBeenCalled());
-    });
-
-    test("handles error if `getSFContactByDoubleId` throws", async () => {
-      const oldWindowLocation = window.location;
-      const oldWindowHistory = window.history;
-      delete window.location;
-      delete window.history;
-      window.location = Object.assign(new URL("https://test.com"));
-      window.history = {
-        replaceState: jest.fn()
-      };
-      clearFormMock = jest.fn(() => console.log("clearFormMock"));
-      getSFContactByDoubleIdError = () =>
-        Promise.reject("getSFContactByDoubleIdError");
-      let props = {
-        ...defaultProps,
-        location: {
-          search: "cId=1&aId=2"
+          verify: verifyError,
+          handleInput: handleInputMock
         },
-        apiSF: {
-          ...defaultProps.apiSF,
-          getSFContactByDoubleId: getSFContactByDoubleIdError
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          clearForm: clearFormMock
-        },
-        handleError: handleErrorMock
+        tab: 0,
+        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
+        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
       };
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
 
-      await setup(props);
-      await waitFor(() =>
-        expect(handleErrorMock).toHaveBeenCalledWith(
-          "getSFContactByDoubleIdError"
-        )
-      );
-      window.location = oldWindowLocation;
-      window.history = oldWindowHistory;
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
+      });
+
+      // expect hadleError to have been called with 'reCaptchaError'
+      await waitFor(() => {
+        expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
+      });
     });
   });
 });

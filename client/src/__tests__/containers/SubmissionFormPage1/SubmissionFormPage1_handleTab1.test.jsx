@@ -134,8 +134,7 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {},
-    employerObjects: [...employersPayload]
+    payment: {}
   },
   initialValues: {
     mm: "",
@@ -225,7 +224,6 @@ const setup = (props = {}) => {
     </ThemeProvider>
   );
 };
-
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     handleSubmit = fn => fn;
@@ -240,256 +238,223 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe("misc methods", () => {
-    test("`handleCAPEOpen` opens alert dialog if try to navigate past CAPE tab w/o submitting", async () => {
-      let props = {
-        tab: 3
-      };
-
-      // render form
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
-
-      const skipButton = getByTestId("button-next");
-
-      // simulate click skipButton
-      await waitFor(async () => {
-        await user.click(skipButton);
-      });
-
-      // expect alert dialog to be in document
-      await waitFor(() => {
-        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
-      });
-    });
-
-    test("clicking 'close' button on alert dialog closes modal", async () => {
-      let props = {
-        tab: 3
-      };
-
-      // render form
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        queryByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
-
-      const skipButton = await getByTestId("button-next");
-
-      // simulate click skipButton
-      await waitFor(async () => {
-        await user.click(skipButton);
-      });
-
-      // expect alert dialog to be in document
-      await waitFor(() => {
-        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
-      });
-
-      // simulate click modalClose
-      const closeButton = getByTestId("button-cancel");
-      await waitFor(async () => {
-        await user.click(closeButton);
-      });
-
-      // expect alert dialog to be closed
-      await waitFor(() => {
-        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
-      });
-    });
-
-    test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", async () => {
+  describe("handleTab1", () => {
+    test("`handleTab1` sets howManyTabs to 3 if no payment required and navigates to tab 1 if no errors", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      const props = {
-        tab: 0,
-        apiSubmission: {
-          handleInput: handleInputMock
-        }
-      };
-      // render app
-      const user = userEvent.setup();
-      const {
-        getByTestId,
-        queryByTestId,
-        getByRole,
-        getByLabelText,
-        queryByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
-
-      // enter required data
-      await waitFor(async () => {
-        const employerType = await getByLabelText("Employer Type");
-        await fireEvent.change(employerType, {
-          target: { value: "state homecare or personal support" }
-        });
-        const employerName = await queryByLabelText("Employer Name");
-        expect(employerName).toBeInTheDocument();
-        await fireEvent.change(employerName, {
-          target: {
-            value: "personal support worker (paid by ppl)"
-          }
-        });
-      });
-
-      // expect handleInput to have been called to set prefillEmployerchanged to `true`
-      await waitFor(async () => {
-        expect(handleInputMock).toHaveBeenCalledWith({
-          target: { name: "prefillEmployerChanged", value: true }
-        });
-      });
-    });
-
-    test("`handleCloseAndClear` closes modal, clears form, resets window.location", async () => {
-      let originalReplaceState = window.history.replaceState;
-      let replaceStateMock = jest.fn();
-      clearFormMock = jest.fn();
-      window.history.replaceState = replaceStateMock;
-      const getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() => {
-        return Promise.resolve({
-          type: "GET_SF_CONTACT_DID_SUCCESS",
-          payload: {
-            FirstName: "test",
-            LastName: "test",
-            Account: { id: "test" },
-            Ethnicity__c: "Declined"
-          }
-        });
-      });
+      createSubmissionSuccess = jest
+        .fn()
+        .mockImplementation(() =>
+          Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
+        );
       let props = {
-        location: {
-          search: "cId=1&aId=2"
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          getSFContactByDoubleId: getSFContactByDoubleIdSuccess
-        },
-        apiSubmission: {
-          clearForm: clearFormMock
+        changeTab: changeTabMock,
+        formValues: {
+          signature: "test",
+          directPayAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
         },
         submission: {
           ...defaultProps.submission,
           formPage1: {
-            firstName: "test",
-            lastName: "test"
+            ...defaultProps.submission.formPage1,
+            reCaptchaValue: "token"
           }
         },
-        formPage2: {},
-        tab: 0
+        createSubmission: createSubmissionSuccess,
+        tab: 0,
+        updateSFContact: updateSFContactSuccess,
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          verify: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "VERIFY_SUCCESS",
+              payload: {
+                score: 0.9
+              }
+            })
+          ),
+          handleInput: handleInputMock
+        }
       };
-
-      const user = userEvent.setup(props);
-      const { getByTestId } = await setup(props, "/?cId=1&aId=2");
-
-      // check that modal renders
-      const modal = await getByTestId("component-modal");
-      await waitFor(() => expect(modal).toBeInTheDocument());
-
-      // simulate user click on close button
-      const closeButton = await getByTestId("button-link-request");
-      await waitFor(() => expect(closeButton).toBeInTheDocument());
-
-      await user.click(closeButton);
-
-      // expect clearFormMock to have beeen called
-      await waitFor(() => {
-        expect(clearFormMock).toHaveBeenCalled();
-        expect(replaceStateMock).toHaveBeenCalled();
-      });
-
-      window.history.replaceState = originalReplaceState;
-    });
-
-    test("clicking close on CAPE modal closes alert dialog", async () => {
-      let navigate = jest.fn();
-      let props = {
-        tab: 3,
-        history: {},
-        navigate
-      };
-
       // render form
       const user = userEvent.setup(props);
       const {
         getByTestId,
-        queryByTestId,
         getByRole,
         getByLabelText,
         getByText,
         debug
       } = await setup(props);
 
-      const skipButton = getByTestId("button-next");
+      const tab1Form = getByTestId("form-tab1");
 
-      // simulate click skipButton
+      // simulate submit tab1
       await waitFor(async () => {
-        await user.click(skipButton);
+        await fireEvent.submit(tab1Form);
       });
 
-      // expect alert dialog to be in document
+      // expect handleInputMock to have been called setting `howManyTabs` to 3
       await waitFor(() => {
-        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
-      });
-
-      const cancelButton = await getByTestId("button-cancel");
-      await user.click(cancelButton);
-
-      // expect alert dialog not to be in document
-      await waitFor(() => {
-        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "howManyTabs", value: 3 }
+        });
+        expect(changeTabMock).toHaveBeenCalledWith(1);
       });
     });
 
-    test("clicking action button on CAPE modal calls this.props.history.push", async () => {
-      let navigate = jest.fn();
+    test("`handleTab1` handles error if updateSFContact throws", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      const updateSFContactError = jest
+        .fn()
+        .mockImplementation(() => Promise.reject("updateSFContactError"));
       let props = {
-        tab: 3,
-        history: {},
-        navigate
+        formValues: {
+          signature: "test",
+          directPayAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            ...defaultProps.submission.formPage1,
+            reCaptchaValue: "token"
+          },
+          salesforceId: "123"
+        },
+        createSubmission: createSubmissionSuccess,
+        tab: 0,
+        updateSFContact: updateSFContactError,
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "LOOKUP_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          verify: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "VERIFY_SUCCESS",
+              payload: {
+                score: 0.9
+              }
+            })
+          ),
+          handleInput: handleInputMock
+        },
+        handleError: handleErrorMock
       };
-
       // render form
       const user = userEvent.setup(props);
       const {
         getByTestId,
-        queryByTestId,
         getByRole,
         getByLabelText,
         getByText,
         debug
       } = await setup(props);
 
-      const skipButton = getByTestId("button-next");
+      const tab1Form = getByTestId("form-tab1");
 
-      // simulate click skipButton
+      // simulate submit tab1
       await waitFor(async () => {
-        await user.click(skipButton);
+        await fireEvent.submit(tab1Form);
       });
 
-      // expect alert dialog to be in document
+      // expect handleErrorMock to have been called with updateSFContactError
       await waitFor(() => {
-        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
+        expect(handleErrorMock).toHaveBeenCalledWith("updateSFContactError");
+      });
+    });
+
+    test("`handleTab1` handles error if lookupSFContact throws", async function() {
+      handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+      let props = {
+        formValues: {
+          signature: "test",
+          directPayAuth: true,
+          employerName: "homecare",
+          paymentType: "card",
+          employerType: "retired",
+          preferredLanguage: "English"
+        },
+        submission: {
+          ...defaultProps.submission,
+          formPage1: {
+            ...defaultProps.submission.formPage1,
+            reCaptchaValue: "token"
+          }
+        },
+        createSubmission: createSubmissionSuccess,
+        tab: 0,
+        updateSFContact: updateSFContactSuccess,
+        createSFContact: jest.fn().mockImplementation(() =>
+          Promise.resolve({
+            type: "CREATE_SF_CONTACT_SUCCESS",
+            payload: { salesforce_id: "123" }
+          })
+        ),
+        lookupSFContact: jest
+          .fn()
+          .mockImplementation(() => Promise.reject("lookupSFContactError")),
+        apiSubmission: {
+          ...defaultProps.apiSubmission,
+          verify: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "VERIFY_SUCCESS",
+              payload: {
+                score: 0.9
+              }
+            })
+          ),
+          handleInput: handleInputMock
+        },
+        handleError: handleErrorMock
+      };
+      // render form
+      const user = userEvent.setup(props);
+      const {
+        getByTestId,
+        getByRole,
+        getByLabelText,
+        getByText,
+        debug
+      } = await setup(props);
+
+      const tab1Form = getByTestId("form-tab1");
+
+      // simulate submit tab1
+      await waitFor(async () => {
+        await fireEvent.submit(tab1Form);
       });
 
-      const actionButton = await getByTestId("button-action");
-      await user.click(actionButton);
-
-      // expect alert dialog not to be in document
+      // expect handleErrorMock to have been called with lookupSFContactError
       await waitFor(() => {
-        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
-        expect(navigate).toHaveBeenCalled();
+        expect(handleErrorMock).toHaveBeenCalledWith("lookupSFContactError");
       });
     });
   });

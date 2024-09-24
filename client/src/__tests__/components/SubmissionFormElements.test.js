@@ -1,5 +1,5 @@
 import checkPropTypes from "check-prop-types";
-import "@testing-library/jest-dom/extend-expect";
+import '@testing-library/jest-dom';
 import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import * as formElements from "../../components/SubmissionFormElements";

@@ -108,7 +108,6 @@ export class NavBar extends React.Component {
                     alt="SEIU 503"
                     data-testid="logo-image"
                     sx={{
-                      height: "60px",
                       width: "auto",
                       marginRight: "10px",
                       height: {
@@ -140,11 +139,11 @@ export class NavBar extends React.Component {
                     },
                     textDecoration: "none",
                     paddingLeft: "10px",
-                    fontWeight: 200,
                     fontWeight: {
                       xs: 400,
                       sm: 400,
-                      md: 400
+                      md: 400,
+                      lg: 200
                     },
                     display: {
                       xs: "none",
