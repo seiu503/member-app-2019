@@ -4,7 +4,6 @@ const { assert } = sinon;
 const { suite, test } = require("mocha");
 const axios = require("axios");
 const knexCleaner = require("knex-cleaner");
-const nock = require("nock");
 const chaiHttp = require("chai-http");
 const chai = require("chai");
 const expect = chai.expect;
@@ -1458,7 +1457,6 @@ suite("sumissions.ctrl.js", function() {
     });
 
     afterEach(() => {
-      nock.cleanAll();
       sinon.restore();
     });
 
