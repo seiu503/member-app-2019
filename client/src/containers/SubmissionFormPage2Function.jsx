@@ -7,7 +7,7 @@ import { withTranslation } from "react-i18next";
 
 import withRouter from "../components/ComponentWithRouterProp";
 
-import SubmissionFormPage2FormWrap from "../components/SubmissionFormPage2Component";
+import SubmissionFormPage2FormWrap from "../components/SubmissionFormPage2CompFunction";
 
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";

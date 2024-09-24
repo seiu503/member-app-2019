@@ -36,9 +36,9 @@ const testData = generatePage2Validate();
 const server = setupServer(...handlers);
 
 import {
-  SubmissionFormPage2Component,
+  SubmissionFormPage2CompFunction,
   SubmissionFormPage2FormWrap
-} from "../../components/SubmissionFormPage2Component";
+} from "../../components/SubmissionFormPage2CompFunction";
 
 let handleSubmit, props, handleSubmitMock, store;
 
@@ -137,7 +137,9 @@ const setup = (props = {}) => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <SubmissionFormPage2FormWrap {...setupProps} />
+          <MemoryRouter>
+            <SubmissionFormPage2FormWrap {...setupProps} />
+          </MemoryRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
