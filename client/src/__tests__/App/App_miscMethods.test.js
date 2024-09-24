@@ -26,7 +26,7 @@ import {
 import handlers from "../../mocks/handlers";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
-let pushMock = jest.fn(),
+let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
@@ -185,9 +185,8 @@ const defaultProps = {
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
-  history: {
-    push: pushMock
-  },
+  history: {},
+  navigate,
   recaptcha: {
     current: {
       execute: executeMock

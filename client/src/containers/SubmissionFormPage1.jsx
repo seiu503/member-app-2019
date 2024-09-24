@@ -50,6 +50,8 @@ export class SubmissionFormPage1Container extends React.Component {
   componentDidMount() {
     console.log(`SubmFormP1Container this.props.location`);
     console.log(this.props.location);
+    console.log(`SubmFormP1Container this.props.history`);
+    console.log(this.props.history);
     // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
     // console.log('**************   PARAMS   ************');
@@ -136,7 +138,7 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log("closeDialog");
     const params = queryString.parse(this.props.location.search);
     const embed = params.embed ? "&embed=true" : "";
-    this.props.history.push(
+    this.props.navigate(
       `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
     );
     this.handleCAPEClose();
@@ -158,7 +160,7 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // then verify
     const token = this.props.submission.formPage1.reCaptchaValue;
-    console.log(`token: ${token}`);
+    // console.log(`token: ${token}`);
 
     // check for token every 200ms until returned to avoid race condition
     (async () => {
@@ -225,7 +227,7 @@ export class SubmissionFormPage1Container extends React.Component {
     );
 
     if (employerObject) {
-      // console.log(`employerId: ${employerObject.Id}`);
+      console.log(`employerId: ${employerObject.Id}`);
     } else {
       console.log(
         `no employerObject found for ${formValues.employerName}; no agency #`
@@ -256,7 +258,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // this will be an agency-level employer Id
       employerId = employerObject ? employerObject.Id : "0016100000WERGeAAP"; // <= unknown employer
     }
-    // console.log(`employerId: ${employerId}`);
+    console.log(`employerId: ${employerId}`);
 
     // set campaign source
     const q = queryString.parse(this.props.location.search);
@@ -264,7 +266,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const campaignSource =
       q && q.s ? q.s : q && q.src ? q.src : "Direct seiu503signup";
 
-    // console.log(campaignSource);
+    console.log(campaignSource);
 
     // set body fields
     const paymentMethod = "Checkoff";
@@ -274,7 +276,7 @@ export class SubmissionFormPage1Container extends React.Component {
         : parseFloat(capeAmount);
     // console.log(capeAmountOther);
     // console.log(capeAmount);
-    // console.log(`donationAmount: ${donationAmount}`);
+    console.log(`donationAmount: ${donationAmount}`);
 
     // generate body
     const body = {
@@ -306,7 +308,7 @@ export class SubmissionFormPage1Container extends React.Component {
   async createCAPE(capeAmount, capeAmountOther) {
     console.log("createCAPE");
     const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
-    // console.log(body);
+    console.log(body);
     if (body) {
       const capeResult = await this.props.apiSubmission
         .createCAPE(body)
@@ -414,13 +416,15 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_status = "Error";
     }
 
-    await this.createCAPE(
-      formValues.capeAmount,
-      formValues.capeAmountOther
-    ).catch(err => {
-      console.error(err);
-      return this.props.handleError(err);
-    });
+    await this.createCAPE(formValues.capeAmount, formValues.capeAmountOther)
+      .then(result => {
+        console.log("421");
+        console.log(result);
+      })
+      .catch(err => {
+        console.error(err);
+        return this.props.handleError(err);
+      });
 
     const { id } = this.props.submission.cape;
 
@@ -436,25 +440,37 @@ export class SubmissionFormPage1Container extends React.Component {
       cape_amount: donationAmount,
       donation_frequency: formValues.donationFrequency
     };
+    console.log(updates);
     // update CAPE record in postgres
-    await this.props.apiSubmission.updateCAPE(id, updates).catch(err => {
-      console.error(err);
-      // return this.props.handleError(err); // don't return to client here
-    });
-    // console.log(capeResult);
+    await this.props.apiSubmission
+      .updateCAPE(id, updates)
+      .then(result => {
+        console.log(result);
+      })
+      .catch(err => {
+        console.error(err);
+        // return this.props.handleError(err); // don't return to client here
+      });
 
     if (!standAlone) {
+      console.log("455");
+      console.log(this.props.history);
       const params = queryString.parse(this.props.location.search);
+      console.log(params);
       const embed = params.embed ? "&embed=true" : "";
-      this.props.history.push(
+      console.log(
+        `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
+      );
+      this.props.navigate(
         `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
       );
     } else {
+      console.log("462");
       this.props.openSnackbar(
         "success",
         "Thank you. Your CAPE submission was processed."
       );
-      this.props.history.push(`/thankyou/?cape=true`);
+      this.props.navigate(`/thankyou/?cape=true`);
     }
   }
 

@@ -38,7 +38,7 @@ let store,
   handleErrorMock = jest.fn();
 const server = setupServer(...handlers);
 
-let pushMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+let navigate = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -196,9 +196,9 @@ const defaultProps = {
   lookupSFContact: lookupSFContactSuccess,
   createSFContact: createSFContactSuccess,
   updateSFContact: updateSFContactSuccess,
-  history: {
-    push: pushMock
-  },
+  history: {},
+  navigate,
+  redirect: jest.fn(),
   recaptcha: {
     execute: executeMock
   },

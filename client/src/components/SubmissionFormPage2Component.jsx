@@ -152,7 +152,7 @@ export class SubmissionFormPage2Component extends React.Component {
       .then(() => {
         console.log("updated SF contact");
         this.props.openSnackbar("success", this.props.t("snackBarSuccess"));
-        this.props.history.push(`/thankyou`);
+        this.props.navigate(`/thankyou`);
       })
       .catch(err => {
         console.error(err);

@@ -23,7 +23,7 @@ import FormThankYou from "./components/FormThankYou";
 import NotFound from "./components/NotFound";
 import BasicSnackbar from "./components/BasicSnackbar";
 import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
-import SubmissionFormPage2 from "./containers/SubmissionFormPage2";
+import SubmissionFormPage2Function from "./containers/SubmissionFormPage2Function";
 import Spinner from "./components/Spinner";
 import {
   // handleError,
@@ -397,7 +397,7 @@ export class AppUnconnected extends Component {
       let employerObject;
 
       if (values.employerName) {
-        console.log("********");
+        // console.log("********");
         console.log(`employerName: ${values.employerName}`);
         // console.dir(this.props.submission.employerObjects);
         employerObject = findEmployerObject(
@@ -674,7 +674,6 @@ export class AppUnconnected extends Component {
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        console.log("==========================");
         console.log("673", result.type);
         console.log(this.props.submission.error);
         if (
@@ -947,7 +946,7 @@ export class AppUnconnected extends Component {
                 exact
                 path="/page2"
                 element={
-                  <SubmissionFormPage2
+                  <SubmissionFormPage2Function
                     createSubmission={this.createSubmission}
                     updateSubmission={this.updateSubmission}
                     lookupSFContact={this.lookupSFContact}

@@ -32,7 +32,7 @@ import {
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
 import handlers from "../../mocks/handlers";
-let pushMock = jest.fn(),
+let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -195,9 +195,8 @@ const defaultProps = {
     lookupSFContact: lookupSFContactSuccess,
     createSFContact: createSFContactError
   },
-  history: {
-    push: pushMock
-  },
+  history: {},
+  navigate,
   recaptcha: {
     current: {
       execute: executeMock

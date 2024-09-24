@@ -103,6 +103,7 @@ const defaultProps = {
   location: {
     search: ""
   },
+  redirect: jest.fn(),
   reset: jest.fn(),
   history: {
     push: jest.fn()

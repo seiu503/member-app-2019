@@ -75,8 +75,8 @@ export const CAPE = props => {
 
   const community = formValues.employerType === "community member";
   const matches = useMediaQuery("(min-width:450px)");
-  console.log("@@@@@@@@@@@@@@@@@@@");
-  console.log(props.handleSubmit);
+  // console.log("@@@@@@@@@@@@@@@@@@@");
+  // console.log(props.handleSubmit);
 
   return (
     <Box

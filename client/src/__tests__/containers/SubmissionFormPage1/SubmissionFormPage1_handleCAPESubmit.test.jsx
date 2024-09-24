@@ -30,7 +30,7 @@ import { theme } from "../../../styles/theme";
 
 let store, handleErrorMock;
 
-let pushMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+let navigate = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest
@@ -379,9 +379,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         tab: 3,
         displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -394,7 +393,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // expect redirect to page 2
       await waitFor(() => {
-        expect(pushMock).toHaveBeenCalledWith(`/page2/?cId=123&sId=456`);
+        expect(navigate).toHaveBeenCalledWith(`/page2/?cId=123&sId=456`);
       });
     });
 
@@ -498,9 +497,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         handleError: handleErrorMock,
         lookupSFContact: lookupSFContactError,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -561,9 +559,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -646,9 +643,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -716,9 +712,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         reset: jest.fn(),
         handleError: handleErrorMock,
         createCAPE: createCAPEError,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -786,9 +781,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -868,9 +862,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         reset: jest.fn(),
         handleError: handleErrorMock,
         updateCAPE: updateCAPEError,
-        history: {
-          push: pushMock
-        },
+        history: {},
+        navigate,
         recaptcha: {
           current: {
             execute: executeMock
@@ -947,9 +940,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         openSnackbar: jest.fn(),
         handleError: handleErrorMock,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
@@ -962,11 +954,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect the mock to have been called with arguments
       await waitFor(() => {
-        expect(pushMock).lastCalledWith("/thankyou/?cape=true");
+        expect(navigate).lastCalledWith("/thankyou/?cape=true");
       });
 
       // restore mock
-      pushMock.mockRestore();
+      navigate.mockRestore();
     });
   });
 });

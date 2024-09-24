@@ -28,7 +28,7 @@ import handlers from "../../mocks/handlers";
 import { handleInput } from "../../store/actions/apiSubmissionActions.js";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
-let pushMock = jest.fn(),
+let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -166,9 +166,8 @@ const defaultProps = {
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
-  history: {
-    push: pushMock
-  },
+  history: {},
+  navigate,
   recaptcha: {
     execute: executeMock
   },

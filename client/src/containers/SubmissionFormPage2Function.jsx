@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { getFormValues } from "redux-form";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -13,51 +13,47 @@ import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 // import { stylesPage2 } from "../components/SubmissionFormElements";
 
-export class SubmissionFormPage2Container extends React.Component {
-  classes = this.props.classes;
+export const SubmissionFormPage2Function = props => {
+  const classes = props.classes;
 
-  componentDidMount() {
+  useEffect(() => {
     // check state for ids from page1
-    let cId = this.props.submission.salesforceId,
-      sId = this.props.submission.submissionId;
+    let cId = props.submission.salesforceId,
+      sId = props.submission.submissionId;
     // console.log(`previously saved sId: ${sId}`);
     // check for ids in query string
-    const params = queryString.parse(this.props.location.search);
+    const params = queryString.parse(props.location.search);
     if (!cId && params.cId) {
       cId = params.cId;
-      this.props.apiSubmission.saveSalesforceId(cId);
+      props.apiSubmission.saveSalesforceId(cId);
     }
     if (!sId && params.sId) {
       sId = params.sId;
-      this.props.apiSubmission.saveSubmissionId(sId);
+      props.apiSubmission.saveSubmissionId(sId);
     }
 
     // if find cId, call API to fetch contact info for prefill
     if (cId) {
-      this.props.apiSF
+      props.apiSF
         .getSFContactById(cId)
         .then(result => {
           // console.log("result.payload", result.payload);
         })
         .catch(err => {
           console.log(err);
-          this.props.handleError(err);
+          props.handleError(err);
         });
     } else {
-      console.log("##################");
-      console.log("no id found");
-      console.log(this.props.navigate);
-      return this.props.navigate("/");
+      return props.navigate("/");
     }
-  }
-  render() {
-    return (
-      <div data-testid="container-submission-form-page-2">
-        <SubmissionFormPage2FormWrap {...this.props} />
-      </div>
-    );
-  }
-}
+  });
+
+  return (
+    <div data-testid="container-submission-form-page-2">
+      <SubmissionFormPage2FormWrap {...props} />
+    </div>
+  );
+};
 
 const mapStateToProps = state => ({
   submission: state.submission,
@@ -74,6 +70,6 @@ const mapDispatchToProps = dispatch => ({
 export const SubmissionFormPage2Connected = connect(
   mapStateToProps,
   mapDispatchToProps
-)(SubmissionFormPage2Container);
+)(SubmissionFormPage2Function);
 
 export default withTranslation()(withRouter(SubmissionFormPage2Connected));

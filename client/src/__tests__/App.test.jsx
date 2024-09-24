@@ -56,7 +56,7 @@ const verifySuccess = jest.fn().mockImplementation(() => {
   return Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } });
 });
 
-const pushMock = jest.fn();
+const navigate = jest.fn();
 
 const formValues = {
   firstName: "firstName",
@@ -127,12 +127,12 @@ const defaultProps = {
   history: {
     location: {
       pathname: "thepath"
-    },
-    push: pushMock
+    }
   },
   location: {
     search: "?i=1&h=2&b=3&s=4"
   },
+  navigate: jest.fn(),
   formValues: {
     reCaptchaValue: "token"
   }
@@ -290,9 +290,22 @@ describe("<App />", () => {
       expect(subm1).not.toBeInTheDocument();
       expect(subm2).toBeInTheDocument();
     });
-    test(' "/page2" path should redirect to "/" without an id in route parameters', async () => {
-      await setup({}, "/page2");
-      expect(pushMock).toHaveBeenCalledWith("/");
+    test(' "/page2" path should should redirect to homepage; should not render page 2', async () => {
+      const { queryByTestId, debug } = await setup(
+        {
+          apiSF: {
+            getSFContactById: jest
+              .fn()
+              .mockImplementation(() => Promise.resolve())
+          }
+        },
+        "/page2"
+      );
+      debug();
+      const subm1 = queryByTestId("component-submissionformpage1");
+      const subm2 = queryByTestId("component-submissionformpage2");
+      expect(subm1).toBeInTheDocument();
+      expect(subm2).not.toBeInTheDocument();
     });
   });
 });
