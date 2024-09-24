@@ -16,7 +16,7 @@ import { employersPayload, storeFactory } from "../utils/testUtils";
 import { AppConnected, AppUnconnected } from "../App";
 
 import SubmissionFormPage1 from "../containers/SubmissionFormPage1";
-import SubmissionFormPage2 from "../containers/SubmissionFormPage2";
+import SubmissionFormPage2Function from "../containers/SubmissionFormPage2Function";
 import FormThankYou from "../components/FormThankYou";
 import * as utils from "../utils/index";
 import * as formElements from "../components/SubmissionFormElements";
@@ -301,7 +301,6 @@ describe("<App />", () => {
         },
         "/page2"
       );
-      debug();
       const subm1 = queryByTestId("component-submissionformpage1");
       const subm2 = queryByTestId("component-submissionformpage2");
       expect(subm1).toBeInTheDocument();

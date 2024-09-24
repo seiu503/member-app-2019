@@ -26,7 +26,7 @@ import {
 } from "react-i18next";
 import i18n from "../../translations/i18n";
 
-import { SubmissionFormPage2Container } from "../../containers/SubmissionFormPage2";
+import { SubmissionFormPage2Function } from "../../containers/SubmissionFormPage2Function";
 
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
@@ -260,7 +260,7 @@ const setup = async (props = {}, route = "/?cape=true") => {
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
           <MemoryRouter initialEntries={[route]}>
-            <SubmissionFormPage2Container {...setupProps} />
+            <SubmissionFormPage2Function {...setupProps} />
           </MemoryRouter>
         </I18nextProvider>
       </Provider>

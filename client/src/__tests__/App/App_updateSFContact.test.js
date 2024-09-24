@@ -524,7 +524,6 @@ describe("<App />", () => {
       await waitFor(async () => {
         const snackbar = await queryByTestId("component-basic-snackbar");
         await expect(snackbar).toBeInTheDocument();
-        debug(snackbar);
         const message = await getByText(
           "Sorry, something went wrong. Please try again."
         );
