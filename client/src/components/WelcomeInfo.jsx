@@ -76,6 +76,7 @@ export class WelcomeInfoUnconnected extends React.Component {
                     xl: "inherit"
                   }
                 }}
+                component="div"
               />
             </Box>
           )}

@@ -176,7 +176,9 @@ const defaultProps = {
   history: {},
   navigate,
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
   content: {

@@ -272,6 +272,7 @@ export const CAPE = props => {
               }}
               image={headshot}
               title="Ibrahim Coulibaby"
+              component="img"
             />
           </Card>
         </Box>

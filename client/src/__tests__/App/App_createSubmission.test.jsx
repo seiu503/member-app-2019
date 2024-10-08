@@ -169,7 +169,9 @@ const defaultProps = {
   history: {},
   navigate,
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
   content: {
@@ -269,6 +271,11 @@ describe("<App />", () => {
           },
           error: "addSubmissionError",
           currentSubmission: {}
+        },
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
         },
         apiSF: {
           createSFContact: jest.fn().mockImplementation(() =>
