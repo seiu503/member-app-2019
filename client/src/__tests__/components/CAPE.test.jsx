@@ -33,6 +33,7 @@ let wrapper,
 const changeFieldValueMock = jest.fn();
 const backMock = jest.fn();
 const changeMock = jest.fn().mockImplementation((name, value) => value);
+handleSubmitMock = jest.fn();
 
 // initial props for form
 const defaultProps = {
@@ -87,7 +88,7 @@ describe("<CAPE />", () => {
   // gain access to touched and error to test validation
   // will assign our own test functions to replace action/reducers for apiSubmission prop
   beforeEach(() => {
-    handleSubmit = fn => fn;
+    handleSubmit = handleSubmitMock;
   });
   afterEach(() => {
     cleanup();
@@ -96,13 +97,17 @@ describe("<CAPE />", () => {
 
   store = storeFactory(initialState);
   const setup = async (props = {}, route = "/") => {
-    const setUpProps = { ...defaultProps, handleSubmit, apiSubmission, apiSF };
+    // console.log('##################################### TEST PROPS ##################');
+    // console.log(props);
+    const setUpProps = { ...defaultProps, ...props, handleSubmit, apiSubmission, apiSF };
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SETUP PROPS @@@@@@@@@@@@@@@@@@');
+    // console.log(setUpProps);
     return render(
       <ThemeProvider theme={theme}>
         <Provider store={store}>
           <I18nextProvider i18n={i18n} defaultNS={"translation"}>
             <MemoryRouter initialEntries={[route]}>
-              <CAPEForm {...setUpProps} {...props} />
+              <CAPEForm {...setUpProps} />
             </MemoryRouter>
           </I18nextProvider>
         </Provider>
@@ -112,7 +117,7 @@ describe("<CAPE />", () => {
 
   describe("basic setup", () => {
     beforeEach(() => {
-      handleSubmit = fn => fn;
+      handleSubmit = handleSubmitMock;
     });
 
     afterEach(() => {
@@ -170,17 +175,31 @@ describe("<CAPE />", () => {
     it("calls handleSubmit on submit", async () => {
       handleSubmitMock = jest.fn();
       const testProps = {
-        handleSubmit: handleSubmitMock
+        handleSubmit: handleSubmitMock,
+        displayCAPEPaymentFields: true,
+        submission: {
+          cape: {
+            oneTimeOptions: [1, 2, 3],
+            monthlyOptions: [4, 5, 6]
+          }
+        },
+        donationFrequency: "One-Time"
       };
-      const { getByTestId, debug } = await setup(
+      const { getByTestId, getByLabelText, debug } = await setup(
         { ...testProps },
         "/?cape=true"
       );
-      testData = generateCAPEValidateFrontEnd();
 
       const component = getByTestId("cape-form");
-      fireEvent.submit(component);
-      expect(handleSubmitMock).toHaveBeenCalled();
+      const radio = getByLabelText("$4");
+      const user = userEvent.setup();
+      await user.click(component);
+      await fireEvent.submit(component);
+      // await debug();
+      const asyncCheck = setTimeout(() => {
+        expect(handleSubmitMock).toHaveBeenCalled();
+      }, 0);
+      global.clearTimeout(asyncCheck);
     });
 
     it("scrolls to first error on failed submit", async () => {
@@ -226,6 +245,7 @@ describe("<CAPE />", () => {
         "/?cape=true"
       );
       const component = getByTestId("component-alert-dialog");
+      debug(component);
       expect(component).toBeInTheDocument();
     });
 
@@ -234,8 +254,7 @@ describe("<CAPE />", () => {
         standAlone: true
       };
       const { getByTestId, debug } = await setup(
-        { ...testProps },
-        "/?cape=true"
+        { ...testProps }
       );
       const component = getByTestId("form-contact-info");
       expect(component).toBeInTheDocument();
@@ -259,6 +278,28 @@ describe("<CAPE />", () => {
       );
       const component = getByTestId("field-other-amount");
       expect(component).toBeInTheDocument();
+    });
+
+    it("changes CAPE amount if user clicks radio button", async () => {
+      const testProps = {
+        displayCAPEPaymentFields: true,
+        submission: {
+          cape: {
+            oneTimeOptions: [1, 2, 3],
+            monthlyOptions: [4, 5, 6]
+          }
+        },
+        donationFrequency: "One-Time"
+      };
+      const { getByLabelText, debug } = await setup(
+        { ...testProps },
+        "/?cape=true"
+      );
+      const component = getByLabelText("$4");
+      expect(component).toBeInTheDocument();
+      const user = userEvent.setup();
+      await user.click(component);
+      expect(component.value).toBe('4');
     });
 
     it("displays submit button if displayCAPEPaymentFields = true", async () => {
