@@ -325,16 +325,25 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
       });
     });
 
-    it("handles edge case: declined ethnicity", async function() {
+    it("handles edge cases: declined ethnicity, no params.id, no hire date", async function() {
+      createSubmissionSuccess = jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              type: "CREATE_SUBMISSION_SUCCESS",
+              payload: {},
+              message: "createSubmissionSuccess"
+            });
+          });
+      updateSubmissionSuccess = jest.fn().mockImplementation(() => {
+            return Promise.resolve({
+              type: "UPDATE_SUBMISSION_SUCCESS",
+              payload: {},
+              message: "updateSubmissionSuccess"
+            });
+          });
       props = {
         ...defaultProps,
-        updateSubmission: jest.fn().mockImplementation(() => {
-          console.log("updateSubmissionSuccessMock");
-          return Promise.resolve({
-            type: "UPDATE_SUBMISSION_SUCCESS",
-            payload: {}
-          });
-        }),
+        updateSubmission: updateSubmissionSuccess,
+        createSubmission: createSubmissionSuccess,
         handleError: handleErrorMock,
         apiSF: {
           updateSFContact: jest.fn().mockImplementation(() => {
@@ -347,6 +356,7 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
         submission: {
           ...defaultProps.submission,
           salesforceId: null,
+          submissionId: null,
           formPage2: {
             ...bodyData,
             hireDate: null,
@@ -376,46 +386,10 @@ describe("Unconnected <SubmissionFormPage2 />", () => {
         await fireEvent.submit(formPage2);
       });
 
-      // expect handleErrorMock to have been called with correct message
+      // expect createSubmissionSuccess to have been called
       await waitFor(() => {
-        const message = "updateSubmissionError";
-        expect(handleErrorMock).toHaveBeenCalledWith(message);
+        expect(createSubmissionSuccess).toHaveBeenCalled();
       });
     });
-
-    // REWRITE IF NEEDED FOR COVERAGE
-    // it("handles edge cases: no params.id, no hire date", async function() {
-    //   updateSubmissionError = jest
-    //     .fn()
-    //     .mockImplementation(() =>
-    //       Promise.reject({ type: "UPDATE_SUBMISSION_FAILURE", payload: {} })
-    //     );
-
-    //   // creating wrapper
-    //   props.updateSubmission = updateSubmissionError;
-    //   props.updateSFContact = updateSFContactSuccess;
-    //   props.submission.submissionId = 1234;
-    //   props.submission.salesforceId = null;
-    //   props.location.search = "";
-    //   wrapper = unconnectedSetup(props);
-    //   const bodyData = generatePage2Validate();
-    //   delete bodyData.hireDate;
-
-    //   // simulate submit with dummy data
-    //   wrapper
-    //     .instance()
-    //     .handleSubmit(bodyData)
-    //     .then(async () => {
-    //       try {
-    //         await updateSubmissionError();
-    //         expect(handleErrorMock.mock.calls.length).toBe(1);
-    //       } catch (err) {
-    //         console.log(err);
-    //       }
-    //     })
-    //     .catch(err => {
-    //       console.log(err);
-    //     });
-    // });
   });
 });

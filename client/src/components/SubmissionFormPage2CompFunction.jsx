@@ -115,9 +115,10 @@ export const SubmissionFormPage2CompFunction = props => {
     }
 
     let id = props.submission.submissionId;
-    // console.log(`SUBMISSION ID: ${id}`);
+    console.log(`SUBMISSION ID: ${id}`);
 
     if (!id) {
+      // console.log(`!id: ############################`);
       cleanBody.first_name = firstName;
       cleanBody.last_name = lastName;
       cleanBody.home_email = homeEmail;

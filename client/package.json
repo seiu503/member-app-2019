@@ -72,7 +72,7 @@
     "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development vite build",
     "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging vite build",
     "test": "DEBUG_PRINT_LIMIT=100000 craco test --maxWorkers=50% --workerIdleMemoryLimit=512MB",
-    "test-cov": "DEBUG_PRINT_LIMIT=100000 craco test --maxWorkers=25% --coverage --watchAll --coverageDirectory=output/coverage/jest --workerIdleMemoryLimit=512MB",
+    "test-cov": "DEBUG_PRINT_LIMIT=100000 craco test --maxWorkers=50% --coverage --watchAll --coverageDirectory=output/coverage/jest --workerIdleMemoryLimit=512MB",
     "eject": "craco eject",
     "build-task:scss-compile": "sass src/styles/scss/:public/css",
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
