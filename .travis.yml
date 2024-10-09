@@ -75,10 +75,10 @@ script:
   - npx update-browserslist-db@latest
   - if [ $TRAVIS_BRANCH == "development" ]; then
     echo "Development branch; running staging build.";
-    nohup env-path -p .env.staging REACT_APP_ENV_TEXT=staging craco build;
+    nohup env-path -p .env.staging REACT_APP_ENV_TEXT=staging vite build;
       else
         echo "Master branch; running production build.";
-        nohup env-path -p .env.production REACT_APP_ENV_TEXT=production craco build;
+        nohup env-path -p .env.production REACT_APP_ENV_TEXT=production vite build;
       fi
   # - cd .. && yarn test
   - REACT_APP_ENV_TEXT=test yarn test
