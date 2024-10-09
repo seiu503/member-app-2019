@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
 
 const NotFound = props => {
+  console.log("NotFound props");
+  console.log(props);
   return (
     <div
-      className={props.classes.container}
+      // className={props.classes.container}
       data-testid="component-not-found"
       style={{
         margin: "0 auto",

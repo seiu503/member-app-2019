@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import queryString from "query-string";
@@ -22,6 +22,7 @@ import MenuOutlined from "@mui/icons-material/MenuOutlined";
 
 import { skip } from "../utils";
 import { LanguagePicker } from "../components/SubmissionFormElements";
+import withRouter from "../components/ComponentWithRouterProp";
 import logo from "../img/seiu503_white.svg";
 
 export class NavBar extends React.Component {
@@ -107,7 +108,6 @@ export class NavBar extends React.Component {
                     alt="SEIU 503"
                     data-testid="logo-image"
                     sx={{
-                      height: "60px",
                       width: "auto",
                       marginRight: "10px",
                       height: {
@@ -139,11 +139,11 @@ export class NavBar extends React.Component {
                     },
                     textDecoration: "none",
                     paddingLeft: "10px",
-                    fontWeight: 200,
                     fontWeight: {
                       xs: 400,
                       sm: 400,
-                      md: 400
+                      md: 400,
+                      lg: 200
                     },
                     display: {
                       xs: "none",
@@ -214,4 +214,5 @@ const mapStateToProps = state => ({
   appState: state.appState
 });
 
+// export default connect(mapStateToProps)(NavBar);
 export default withRouter(connect(mapStateToProps)(NavBar));

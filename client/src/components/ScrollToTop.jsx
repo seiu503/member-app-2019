@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import withRouter from "../components/ComponentWithRouterProp";
 
 export class UnwrappedScrollToTop extends React.Component {
   componentDidUpdate(prevProps) {
@@ -18,3 +18,4 @@ export class UnwrappedScrollToTop extends React.Component {
 }
 
 export default withRouter(UnwrappedScrollToTop);
+// export default UnwrappedScrollToTop;

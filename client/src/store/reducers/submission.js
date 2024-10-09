@@ -18,10 +18,7 @@ import {
   SAVE_SUBMISSIONID,
   HANDLE_INPUT,
   CLEAR_FORM,
-  SET_CAPE_OPTIONS,
-  SET_PAYMENT_DETAILS_CAPE,
-  SET_PAYMENT_DETAILS_DUES,
-  SET_CURRENT_SUBMISSION
+  SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -158,12 +155,12 @@ function Submission(state = INITIAL_STATE, action) {
         action.payload && action.payload.length > 3
           ? action.payload
           : formElements.placeholderEmployerObjects;
-      console.log(`GET_SF_EMPLOYERS_SUCCESS formula payload`);
-      console.log(payload.length);
+      // console.log(`GET_SF_EMPLOYERS_SUCCESS formula payload`);
+      // console.log(payload.length);
 
       const employerNames = payload.map(employer => employer.Name);
-      console.log(`GET_SF_EMPLOYERS_SUCCESS employerNames`);
-      console.log(employerNames.length);
+      // console.log(`GET_SF_EMPLOYERS_SUCCESS employerNames`);
+      // console.log(employerNames.length);
       return update(state, {
         employerNames: { $set: employerNames },
         employerObjects: { $set: payload }

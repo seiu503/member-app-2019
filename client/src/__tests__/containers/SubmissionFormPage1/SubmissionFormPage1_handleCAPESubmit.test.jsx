@@ -1,7 +1,6 @@
 import React from "react";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createMemoryHistory } from "history";
-import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
 import {
@@ -30,10 +29,12 @@ import { theme } from "../../../styles/theme";
 
 let store, handleErrorMock;
 
-let pushMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+let navigate = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
-  executeMock = jest.fn().mockImplementation(() => Promise.resolve());
+  executeMock = jest
+    .fn()
+    .mockImplementation(() => Promise.resolve({ token: "123" }));
 
 let updateSFContactSuccess = jest
   .fn()
@@ -154,7 +155,8 @@ const defaultProps = {
     error: null,
     loading: false,
     formPage1: {
-      signature: ""
+      signature: "",
+      reCaptchaValue: "123"
     },
     cape: {
       monthlyOptions: []
@@ -192,7 +194,9 @@ const defaultProps = {
   createSFContact: createSFContactSuccess,
   updateSFContact: updateSFContactSuccess,
   recaptcha: {
-    execute: executeMock
+    current: {
+      execute: executeMock
+    }
   },
   refreshRecaptcha: refreshRecaptchaMock,
   content: {
@@ -246,14 +250,22 @@ const initialState = {
 };
 
 store = storeFactory(initialState);
+let handleSubmit = fn => fn;
+let onSubmit = jest.fn();
 
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props };
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props,
+    handleSubmit
+  };
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <SubmissionFormPage1Container {...setupProps} />
+          <MemoryRouter initialEntries={[route]}>
+            <SubmissionFormPage1Container {...setupProps} />
+          </MemoryRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
@@ -366,14 +378,13 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         tab: 3,
         displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
-      const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      // const user = await userEvent.setup();
+      const { getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -381,7 +392,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // expect redirect to page 2
       await waitFor(() => {
-        expect(pushMock).toHaveBeenCalledWith(`/page2/?cId=123&sId=456`);
+        expect(navigate).toHaveBeenCalledWith(`/page2/?cId=123&sId=456`);
       });
     });
 
@@ -419,7 +430,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -473,6 +484,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         apiSubmission: {
           ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess,
           verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
@@ -483,12 +495,14 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         reset: jest.fn(),
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         handleError: handleErrorMock,
-        lookupSFContact: lookupSFContactError
+        lookupSFContact: lookupSFContactError,
+        history: {},
+        navigate
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -543,12 +557,14 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        history: {},
+        navigate
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -625,12 +641,14 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        history: {},
+        navigate
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -692,7 +710,9 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        createCAPE: createCAPEError
+        createCAPE: createCAPEError,
+        history: {},
+        navigate
       };
 
       // setup
@@ -759,12 +779,14 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           }
         },
         reset: jest.fn(),
-        handleError: handleErrorMock
+        handleError: handleErrorMock,
+        history: {},
+        navigate
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -799,6 +821,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           payload: { sf_cape_id: 123 }
         })
       );
+      handleErrorMock = jest
+        .fn()
+        .mockImplementation(err =>
+          console.log("handleErrorMockIsBeingCalledHere...", err)
+        );
       let props = {
         formValues: {
           capeAmount: 10
@@ -806,7 +833,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         submission: {
           formPage1: {
             paymentRequired: true,
-            paymentMethodAdded: true
+            paymentMethodAdded: true,
+            reCaptchaValue: "123"
           },
           salesforceId: "123",
           payment: {
@@ -832,12 +860,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         reset: jest.fn(),
         handleError: handleErrorMock,
-        updateCAPE: updateCAPEError
+        updateCAPE: updateCAPEError,
+        history: {},
+        navigate,
+        recaptcha: {
+          current: {
+            execute: executeMock
+          }
+        }
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // mock console err to see if error is logged to console
@@ -850,6 +885,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect handleError NOT to have been called, only logged to console
       await waitFor(() => {
+        // console.log('handleErrorMockLastCall');
+        // console.log(handleErrorMock.mock.lastCall)
         expect(handleErrorMock).not.toHaveBeenCalled();
         expect(consoleErrorMock).toHaveBeenCalledWith("updateCAPEError");
       });
@@ -902,14 +939,13 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         openSnackbar: jest.fn(),
         handleError: handleErrorMock,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
-        history: {
-          push: pushMock
-        }
+        history: {},
+        navigate
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -917,11 +953,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
 
       // expect the mock to have been called with arguments
       await waitFor(() => {
-        expect(pushMock).lastCalledWith("/thankyou/?cape=true");
+        expect(navigate).lastCalledWith("/thankyou/?cape=true");
       });
 
       // restore mock
-      pushMock.mockRestore();
+      navigate.mockRestore();
     });
   });
 });

@@ -152,6 +152,7 @@ export function verify(token) {
 }
 
 export function createCAPE(body) {
+  console.log("createCAPE");
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/cape`,
@@ -181,6 +182,7 @@ export function createCAPE(body) {
 }
 
 export function updateCAPE(id, body) {
+  console.log("updateCAPE");
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/cape/${id}`,

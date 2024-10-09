@@ -89,6 +89,10 @@ exports.getSFContactById = async (req, res, next) => {
     ","
   )}, Id FROM Contact WHERE Id = \'${id}\'`;
   let conn = new jsforce.Connection({ loginUrl });
+  console.log(`**************************************`);
+  console.log(user);
+  console.log(password);
+  console.log(loginUrl);
   try {
     await conn.login(user, password);
   } catch (err) {
