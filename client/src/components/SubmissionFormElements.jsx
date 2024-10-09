@@ -320,7 +320,7 @@ export const calcEthnicity = values => {
       }
     }
   });
-  console.log(combinedEthnicities);
+  // console.log(combinedEthnicities);
   return combinedEthnicities;
 };
 
