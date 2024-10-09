@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { rest } from "msw";
+import { rest, http, HttpResponse  } from "msw";
 import { employersPayload } from "../utils/testUtils";
 
 const handlers = [
@@ -67,7 +67,7 @@ const handlers = [
 
   rest.post("http://localhost:8080/api/submission", (req, res, ctx) => {
     console.log("addSubmission mock");
-    return res(ctx.json({ id: "testid" }), ctx.status(200));
+    return HttpResponse.json({ id: "testid" });
   }),
 
   rest.put("http://localhost:8080/api/submission/12345678", (req, res, ctx) => {

@@ -73,7 +73,7 @@
     "build": "vite build",
     "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development vite build",
     "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging vite build",
-    "test": "DEBUG_PRINT_LIMIT=100000 node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --workerIdleMemoryLimit=512MB",
+    "test": "DEBUG_PRINT_LIMIT=100000 node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --watchAll --workerIdleMemoryLimit=512MB",
     "test-cov": "DEBUG_PRINT_LIMIT=100000 jest --maxWorkers=50% --coverage --watchAll --coverageDirectory=output/coverage/jest --workerIdleMemoryLimit=512MB",
     "build-task:scss-compile": "sass src/styles/scss/:public/css",
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",

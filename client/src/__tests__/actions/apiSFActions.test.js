@@ -47,7 +47,7 @@ describe("apiSFActions", () => {
 
     it("GET_SF_CONTACT: Dispatches failure action after failed GET", async () => {
       server.use(
-        rest.get("http://localhost:8080/api/sf/12345678", (req, res, ctx) => {
+        rest.get("http://localhost/undefined/api/sf/12345678", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error fetching the contact" }),
             ctx.status(404)
@@ -67,7 +67,7 @@ describe("apiSFActions", () => {
 
     it("GET_SF_CONTACT: Dispatches failure action after failed GET (generic error msg)", async () => {
       server.use(
-        rest.get("http://localhost:8080/api/sf/12345678", (req, res, ctx) => {
+        rest.get("http://localhost/undefined/api/sf/12345678", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -108,7 +108,7 @@ describe("apiSFActions", () => {
 
     it("GET_SF_CONTACT_DID: Dispatches failure action after failed GET", async () => {
       server.use(
-        rest.get("http://localhost:8080/api/sfdid/1/2", (req, res, ctx) => {
+        rest.get("http://localhost/undefined/api/sfdid/1/2", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error fetching the contact" }),
             ctx.status(404)
@@ -130,7 +130,7 @@ describe("apiSFActions", () => {
 
     it("GET_SF_CONTACT_DID: Dispatches failure action after failed GET (generic error msg)", async () => {
       server.use(
-        rest.get("http://localhost:8080/api/sfdid/1/2", (req, res, ctx) => {
+        rest.get("http://localhost/undefined/api/sfdid/1/2", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -165,7 +165,7 @@ describe("apiSFActions", () => {
 
     it("CREATE_SF_CONTACT: Dispatches failure action after failed POST", async () => {
       server.use(
-        rest.post("http://localhost:8080/api/sf", (req, res, ctx) => {
+        rest.post("http://localhost/undefined/api/sf", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error creating the contact" }),
             ctx.status(404)
@@ -187,7 +187,7 @@ describe("apiSFActions", () => {
 
     it("CREATE_SF_CONTACT: Dispatches failure action after failed POST (generic error msg)", async () => {
       server.use(
-        rest.post("http://localhost:8080/api/sf", (req, res, ctx) => {
+        rest.post("http://localhost/undefined/api/sf", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -222,7 +222,7 @@ describe("apiSFActions", () => {
 
     it("UPDATE_SF_CONTACT: Dispatches failure action after failed PUT", async () => {
       server.use(
-        rest.put("http://localhost:8080/api/sf/12345678", (req, res, ctx) => {
+        rest.put("http://localhost/undefined/api/sf/12345678", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error updating the contact" }),
             ctx.status(404)
@@ -244,7 +244,7 @@ describe("apiSFActions", () => {
 
     it("UPDATE_SF_CONTACT: Dispatches failure action after failed PUT (generic error msg)", async () => {
       server.use(
-        rest.put("http://localhost:8080/api/sf/12345678", (req, res, ctx) => {
+        rest.put("http://localhost/undefined/api/sf/12345678", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -277,7 +277,7 @@ describe("apiSFActions", () => {
 
     it("CREATE_SF_OMA: Dispatches failure action after failed POST", async () => {
       server.use(
-        rest.post("http://localhost:8080/api/sfOMA", (req, res, ctx) => {
+        rest.post("http://localhost/undefined/api/sfOMA", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error creating the record" }),
             ctx.status(404)
@@ -297,7 +297,7 @@ describe("apiSFActions", () => {
 
     it("CREATE_SF_OMA: Dispatches failure action after failed POST (generic error msg)", async () => {
       server.use(
-        rest.post("http://localhost:8080/api/sfOMA", (req, res, ctx) => {
+        rest.post("http://localhost/undefined/api/sfOMA", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -328,7 +328,7 @@ describe("apiSFActions", () => {
 
     it("GET_SF_EMPLOYERS: Dispatches failure action after failed GET", async () => {
       server.use(
-        rest.get("http://localhost:8080/api/sfaccts", (req, res, ctx) => {
+        rest.get("http://localhost/undefined/api/sfaccts", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error fetching the employers" }),
             ctx.status(404)
@@ -348,7 +348,7 @@ describe("apiSFActions", () => {
 
     it("GET_SF_EMPLOYERS: Dispatches failure action after failed GET (generic error msg)", async () => {
       server.use(
-        rest.get("http://localhost:8080/api/sfaccts", (req, res, ctx) => {
+        rest.get("http://localhost/undefined/api/sfaccts", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -381,7 +381,7 @@ describe("apiSFActions", () => {
 
     it("LOOKUP_SF_CONTACT: Dispatches failure action after failed PUT", async () => {
       server.use(
-        rest.put("http://localhost:8080/api/sflookup", (req, res, ctx) => {
+        rest.put("http://localhost/undefined/api/sflookup", (req, res, ctx) => {
           return res(
             ctx.json({ message: "There was an error fetching the contact" }),
             ctx.status(404)
@@ -403,7 +403,7 @@ describe("apiSFActions", () => {
 
     it("LOOKUP_SF_CONTACT: Dispatches failure action after failed PUT (generic error msg)", async () => {
       server.use(
-        rest.put("http://localhost:8080/api/sflookup", (req, res, ctx) => {
+        rest.put("http://localhost/undefined/api/sflookup", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
@@ -436,7 +436,7 @@ describe("apiSFActions", () => {
 
     it("CREATE_SF_CAPE: Dispatches failure action after failed POST", async () => {
       server.use(
-        rest.post("http://localhost:8080/api/sfCAPE", (req, res, ctx) => {
+        rest.post("http://localhost/undefined/api/sfCAPE", (req, res, ctx) => {
           return res(
             ctx.json({
               message: "There was an error creating the CAPE record"
@@ -458,7 +458,7 @@ describe("apiSFActions", () => {
 
     it("CREATE_SF_CAPE: Dispatches failure action after failed POST (generic error msg)", async () => {
       server.use(
-        rest.post("http://localhost:8080/api/sfCAPE", (req, res, ctx) => {
+        rest.post("http://localhost/undefined/api/sfCAPE", (req, res, ctx) => {
           return res(
             ctx.json({ message: "Sorry, something went wrong :(" }),
             ctx.status(500)
