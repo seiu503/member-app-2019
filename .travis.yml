@@ -81,7 +81,7 @@ script:
         nohup env-path -p .env.production REACT_APP_ENV_TEXT=production vite build;
       fi
   - cd .. && yarn test
-  - REACT_APP_ENV_TEXT=test yarn test
+  - cd client && REACT_APP_ENV_TEXT=test yarn test
   - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh
   - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"
   - mkdir -p dpl_cd_upload
