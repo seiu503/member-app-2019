@@ -1,6 +1,6 @@
 // https://github.com/marcosnils/passport-dev/blob/master/lib/strategy.js
-const passport = require("passport-strategy");
-const utils = require("../../app/utils");
+import passport from "passport-strategy";
+import utils from "../../app/utils.js";
 
 const name = `firstname ${utils.randomText()}`;
 const email = "fakeemail@test.com";
@@ -31,7 +31,7 @@ Strategy.prototype.authenticate = function() {
     this.success(user);
   });
 };
-module.exports = {
+export default {
   Strategy,
   mockProfile
 };

@@ -1,23 +1,23 @@
-const { suite, test } = require("mocha");
-const chai = require("chai");
-const sinon = require("sinon");
-const { mockReq, mockRes } = require("sinon-express-mock");
+import { suite, test } from "mocha";
+import chai from "chai";
+import sinon from "sinon";
+import { mockReq, mockRes } from "sinon-express-mock";
 const { assert } = chai;
-const jwt = require("jsonwebtoken");
-const knexCleaner = require("knex-cleaner");
-const { db, TABLES } = require("../app/config/knex");
-const {
+import jwt from "jsonwebtoken";
+import knexCleaner from "knex-cleaner";
+import { db, TABLES } from "../app/config/knexConfig.js";
+import {
   generateSampleValidate,
   generatePage2Validate,
   generateCAPEValidateBackEnd,
   generateCAPEValidateFrontEnd,
   formatDate,
   generateSampleSubmission
-} = require("../app/utils/fieldConfigs");
-const utils = require("../app/utils/index");
-const staticCtrl = require("../app/static.ctrl.js");
-const sfCtrl = require("../app/controllers/sf.ctrl.js");
-const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
+} from "../app/utils/fieldConfigs.js";
+import utils from "../app/utils/index.js";
+import staticCtrl from "../app/static.ctrl.js";
+import sfCtrl from "../app/controllers/sf.ctrl.js";
+import submissionCtrl from "../app/controllers/submissions.ctrl.js";
 let res = mockRes(),
   req = mockReq(),
   submissionBody = generateSampleSubmission();

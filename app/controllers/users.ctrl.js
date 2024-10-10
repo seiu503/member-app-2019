@@ -5,7 +5,7 @@
 /* ================================= SETUP ================================= */
 
 // import model
-const users = require("../../db/models/users");
+import users from "../../db/models/users.js";
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -226,7 +226,7 @@ const getUserByEmail = (req, res, next) => {
 };
 /* ================================ EXPORT ================================= */
 
-module.exports = {
+export default {
   createUser,
   updateUser,
   deleteUser,

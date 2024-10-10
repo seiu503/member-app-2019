@@ -2,8 +2,8 @@
 
 /* ================================= SETUP ================================= */
 
-const uuid = require("uuid");
-const { db, TABLES } = require("../../app/config/knex");
+import uuid from "uuid";
+import { db, TABLES } from "../../app/config/knexConfig.js";
 
 /* ============================ PUBLIC METHODS ============================= */
 
@@ -236,7 +236,7 @@ const getContactSubmissionsById = id => {
 
 /* ================================ exports ================================ */
 
-module.exports = {
+export default {
   createContact,
   updateContact,
   getContactById,

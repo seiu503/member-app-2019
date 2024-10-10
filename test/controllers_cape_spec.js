@@ -1,16 +1,18 @@
-const { mockReq, mockRes } = require("sinon-express-mock");
-const sinon = require("sinon");
-const chai = require("chai");
+import { mockReq, mockRes } from "sinon-express-mock";
+import sinon from "sinon";
+import chai from "chai";
 const { assert } = sinon;
-const { suite, test } = require("mocha");
-// const request = require("request");
-const passport = require("passport");
-const knexCleaner = require("knex-cleaner");
-const capeCtrl = require("../app/controllers/cape.ctrl.js");
-const cape = require("../db/models/cape");
-const { generateCAPEValidateBackEnd } = require("../app/utils/fieldConfigs");
-const { db } = require("../app/config/knex");
-require("../app/config/passport")(passport);
+import { suite, test } from "mocha";
+import request from "request";
+import passport from "passport";
+import knexCleaner from "knex-cleaner";
+import capeCtrl from "../app/controllers/cape.ctrl.js";
+import cape from "../db/models/cape.js";
+import { generateCAPEValidateBackEnd } from "../app/utils/fieldConfigs.js";
+import { db } from "../app/config/knexConfig.js";
+import utils from "../app/utils.js";
+import passportConfig from "../app/config/passport";
+passportConfig(passport);
 
 let capeBody = generateCAPEValidateBackEnd();
 

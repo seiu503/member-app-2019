@@ -5,11 +5,11 @@
 
 process.env.NODE_ENV = "testing";
 
-const { assert } = require("chai");
-const { db, TABLES } = require("../app/config/knex");
-const content = require("../db/models/content");
-const utils = require("../app/utils");
-const knexCleaner = require("knex-cleaner");
+import { assert } from "chai";
+import { db, TABLES } from "../app/config/knexConfig.js";
+import content from "../db/models/content.js";
+import utils from "../app/utils/index.js";
+import knexCleaner from "knex-cleaner";
 
 const content_type = "headline";
 const content_type2 = "image_url";

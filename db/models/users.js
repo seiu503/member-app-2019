@@ -2,8 +2,8 @@
 
 /* ================================= SETUP ================================= */
 
-const uuid = require("uuid");
-const { db, TABLES } = require("../../app/config/knex");
+import uuid from "uuid";
+import { db, TABLES } from "../../app/config/knexConfig.js";
 
 /* ============================ PUBLIC METHODS ============================= */
 
@@ -16,7 +16,7 @@ const { db, TABLES } = require("../../app/config/knex");
  *  @param    {String}   type           New user type
  *  @returns  {Array}    Array of 1 newly-created User object.
  */
-const createUser = (name, email, avatar_url, google_id, google_token, type) => {
+export const createUser = (name, email, avatar_url, google_id, google_token, type) => {
   console.log(`models/users.js > ${type}`);
   return db
     .insert({
@@ -43,7 +43,7 @@ const createUser = (name, email, avatar_url, google_id, google_token, type) => {
  ****  @param    {String}   type           Updated user type
  *  @returns  {Object}   User object.
  */
-const updateUser = (id, updates) => {
+export const updateUser = (id, updates) => {
   return db(TABLES.USERS)
     .where({ id })
     .first()
@@ -56,7 +56,7 @@ const updateUser = (id, updates) => {
  *  @returns   {Array}   Array of user objects.
  */
 
-const getUsers = () => {
+export const getUsers = () => {
   return db(TABLES.USERS).returning("*");
 };
 
@@ -65,7 +65,7 @@ const getUsers = () => {
  *  @returns  {Object}        User object.
  */
 
-const getUserById = id => {
+export const getUserById = id => {
   return db(TABLES.USERS)
     .where({ id })
     .first()
@@ -77,7 +77,7 @@ const getUserById = id => {
  *  @returns  {Object}        User object.
  */
 
-const getUserByEmail = email => {
+export const getUserByEmail = email => {
   return db(TABLES.USERS)
     .where({ email })
     .first()
@@ -89,7 +89,7 @@ const getUserByEmail = email => {
  *  @returns  {Object}        User object.
  */
 
-const getUserByGoogleId = google_id => {
+export const getUserByGoogleId = google_id => {
   return db(TABLES.USERS)
     .where({ google_id })
     .first()
@@ -101,7 +101,7 @@ const getUserByGoogleId = google_id => {
  *  @returns  success message
  */
 
-const deleteUser = id => {
+export const deleteUser = id => {
   return db(TABLES.USERS)
     .where({ id })
     .del()
@@ -113,7 +113,7 @@ const deleteUser = id => {
 
 /* ================================ exports ================================ */
 
-module.exports = {
+export default {
   createUser,
   updateUser,
   getUserById,

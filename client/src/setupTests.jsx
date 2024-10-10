@@ -6,7 +6,7 @@ import Recaptcha from "react-google-invisible-recaptcha";
 
 global.fetch = require("jest-fetch-mock");
 
-const Environment = require("jest-environment-jsdom");
+import Environment from "jest-environment-jsdom";
 
 jest.doMock("react-google-invisible-recaptcha", () => {
   const RecaptchaV2 = React.forwardRef((props, ref) => {
@@ -40,6 +40,6 @@ jest.doMock("react-google-invisible-recaptcha", () => {
 //   },
 // }));
 
-module.exports = {
+export default {
   testEnvironment: "jsdom"
 };

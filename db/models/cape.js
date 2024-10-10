@@ -2,8 +2,8 @@
 
 /* ================================= SETUP ================================= */
 
-const uuid = require("uuid");
-const { db, TABLES } = require("../../app/config/knex");
+import uuid from "uuid";
+import { db, TABLES } from "../../app/config/knexConfig.js";
 
 /* ============================ PUBLIC METHODS ============================= */
 
@@ -163,7 +163,7 @@ const updateCAPEByPaymentId = (one_time_payment_id, updates) => {
 
 /* ================================ exports ================================ */
 
-module.exports = {
+export default {
   createCAPE,
   updateCAPE,
   getCAPEById,

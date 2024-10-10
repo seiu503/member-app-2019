@@ -1,14 +1,18 @@
-const { mockReq, mockRes } = require("sinon-express-mock");
-const sinon = require("sinon");
-const chai = require("chai");
+import { mockReq, mockRes } from "sinon-express-mock";
+import sinon from "sinon";
+import chai from "chai";
 const { assert } = sinon;
-const { suite, test } = require("mocha");
-const passport = require("passport");
-const knexCleaner = require("knex-cleaner");
-const userCtrl = require("../app/controllers/users.ctrl.js");
-const users = require("../db/models/users");
-const { db } = require("../app/config/knex");
-require("../app/config/passport")(passport);
+import { suite, test } from "mocha";
+import passport from "passport";
+import passportConfig from "../app/config/passport";
+passportConfig(passport);
+import knexCleaner from "knex-cleaner";
+
+import userCtrl from "../app/controllers/users.ctrl.js";
+import users from "../db/models/users.js";
+
+import { db, TABLES } from "../app/config/knexConfig.js";
+
 let email = "fakeemail@test.com",
   id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e",
   name = `firstname lastname`,

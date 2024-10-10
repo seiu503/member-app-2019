@@ -1,5 +1,5 @@
-const axios = require("axios");
-const url = require("url");
+import axios from "axios";
+import url from "url";
 
 /*
    Route handlers for fetching and updating submissions.
@@ -8,11 +8,11 @@ const url = require("url");
 /* ================================= SETUP ================================= */
 
 // import models
-const submissions = require("../../db/models/submissions");
-const utils = require("../utils/index.js");
+import submissions from "../../db/models/submissions.js";
+import utils from "../utils/index.js";
 
 // can't import this from utils bc it would be a circular import
-exports.getClientIp = req =>
+export const getClientIp = req =>
   req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 /* ============================ ROUTE HANDLERS ============================= */
@@ -45,7 +45,7 @@ exports.getClientIp = req =>
  *  @param    {String}   immediate_past_member_status   Immediate past member status (populated from SF for existing contact matches)
  *  @returns  {Object}    New Submission Object or error message.
  */
-exports.createSubmission = async (req, res, next) => {
+export const createSubmission = async (req, res, next) => {
   const ip = getClientIp(req);
   console.log("submissions.ctrl.js > 45: createSubmission");
   console.log(req.body);
@@ -163,7 +163,7 @@ exports.createSubmission = async (req, res, next) => {
  *  @param    {Object}   updates        Key/value pairs of fields to update.
  *  @returns  {Object}      Updated Submission object.
  */
-exports.updateSubmission = async (req, res, next) => {
+export const updateSubmission = async (req, res, next) => {
   const updates = req.body;
   delete updates.submission_id;
   let { id } = req.params;
@@ -256,7 +256,7 @@ exports.updateSubmission = async (req, res, next) => {
  *  @param    {String}   id   Id of the submission to delete.
  *  @returns  Success or error message.
  */
-exports.deleteSubmission = async (req, res, next) => {
+export const deleteSubmission = async (req, res, next) => {
   let result;
   const userType = req.user.type;
   if (userType != "admin" || !userType) {
@@ -283,7 +283,7 @@ exports.deleteSubmission = async (req, res, next) => {
 /** Get all submissions
  *  @returns  {Array|Object}   Array of submission objects OR error message
  */
-exports.getSubmissions = (req, res, next) => {
+export const getSubmissions = (req, res, next) => {
   const userType = req.user.type;
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
@@ -308,7 +308,7 @@ exports.getSubmissions = (req, res, next) => {
  *  @param    {String}   id   Id of the requested submission.
  *  @returns  {Object}        Submission object OR error message.
  */
-exports.getSubmissionById = (req, res, next) => {
+export const getSubmissionById = (req, res, next) => {
   const userType = req.user.type;
   if (!["admin", "view", "edit"].includes(userType)) {
     return res.status(500).json({
@@ -342,7 +342,7 @@ exports.getSubmissionById = (req, res, next) => {
  * @param {String} ip_address users ipAdress
  * @returns {Bool} returns true for human, false for bot
  */
-exports.verifyHumanity = async (req, res) => {
+export const verifyHumanity = async (req, res) => {
   console.log("submissions.ctrl.js > 346");
   const ip = this.getClientIp(req);
   console.log(`verifyHumanity: ${ip}`);

@@ -4,11 +4,12 @@
 
 /* ================================= SETUP ================================= */
 
-const router = require("express").Router();
+import express from "express";
+const router = express.Router();
 
 /* =========================== INIT CONTROLLERS ============================ */
 
-const staticCtrl = require("../static.ctrl");
+import staticCtrl from "../static.ctrl.js";
 
 /* ================================ ROUTES ================================= */
 
@@ -17,4 +18,4 @@ router.get("/", staticCtrl.serveClient);
 
 /* ================================ EXPORT ================================= */
 
-module.exports = router;
+export default router;

@@ -1,8 +1,8 @@
-const morgan = require("morgan");
-const cors = require("cors");
-const helmet = require("helmet");
-const express = require("express");
-const bodyParser = require("body-parser");
+import morgan from "morgan";
+import cors from "cors";
+import helmet from "helmet";
+import express from "express";
+import bodyParser from "body-parser";
 
 const middleware = [
   morgan("tiny"),
@@ -12,4 +12,4 @@ const middleware = [
   helmet()
 ];
 
-module.exports = middleware;
+export default middleware;

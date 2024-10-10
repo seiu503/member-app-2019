@@ -5,7 +5,7 @@
 /* ================================= SETUP ================================= */
 
 // import model
-const contentModel = require("../../db/models/content");
+import contentModel from "../../db/models/content.js";
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -187,7 +187,7 @@ const getContentByType = (req, res, next) => {
 
 /* ================================ EXPORT ================================= */
 
-module.exports = {
+export default {
   createContent,
   updateContent,
   getContent,

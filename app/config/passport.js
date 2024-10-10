@@ -1,7 +1,7 @@
-const passport = require("passport"),
-  Auth = require("../config/auth");
+import passport from "passport";
+import Auth from "../config/auth.js";
 
-module.exports = passport => {
+export default passportConfig => {
   passport.use("jwt", Auth.jwtStrategy);
   passport.use("google", Auth.googleStrategy);
 };

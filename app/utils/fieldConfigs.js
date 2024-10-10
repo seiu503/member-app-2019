@@ -1,4 +1,4 @@
-const uuid = require("uuid");
+import uuid from "uuid";
 
 // format date for Salesforce JSON parser
 const formatDate = date => {
@@ -1858,7 +1858,7 @@ const generateSFContactFieldList = () => {
 //   return fieldList;
 // }
 
-module.exports = {
+export default {
   contactsTableFields,
   submissionsTableFields,
   paymentFields,

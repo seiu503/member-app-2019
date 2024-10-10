@@ -1,10 +1,9 @@
-const passport = require("passport"),
-  User = require("../../db/models/users"),
-  Auth = require("../config/auth"),
-  JwtStrategy = require("passport-jwt").Strategy,
-  ExtractJwt = require("passport-jwt").ExtractJwt,
-  GoogleStrategy = require("passport-google-oauth2").Strategy,
-  BASE_URL =
+import passport from "passport";
+import User from "../../db/models/users.js";
+import Auth from "../config/auth.js";
+import { JwtStrategy, ExtractJwt } from "passport-jwt";
+import { GoogleStrategy } from  "passport-google-oauth2";
+const  BASE_URL =
     process.env.NODE_CONFIG_ENV === "production"
       ? process.env.APP_HOST_PROD
       : process.env.NODE_CONFIG_ENV === "staging"
@@ -14,7 +13,7 @@ const passport = require("passport"),
 
 /* ================================ EXPORTS ================================ */
 
-exports.user = {
+export const user = {
   serialize: (user, done) => {
     // console.log(`serializing user: ${user.id}`);
     return done(null, user.id);
@@ -32,7 +31,7 @@ exports.user = {
   }
 };
 
-exports.googleAuth = {
+export const googleAuth = {
   clientID: process.env.GOOGLE_KEY,
   clientSecret: process.env.GOOGLE_SECRET,
   callbackURL: googleCallbackUrl
@@ -44,7 +43,7 @@ exports.googleAuth = {
 
 // helper methods for updating existing profile with social login info
 
-exports.findUserByEmail = async (profile, token, done) => {
+export const findUserByEmail = async (profile, token, done) => {
   // console.log("config.auth.js > 44: (googleId)");
   // console.log(profile.id);
   return User.getUserByEmail(profile.email)
@@ -66,7 +65,7 @@ exports.findUserByEmail = async (profile, token, done) => {
     });
 };
 
-exports.updateUser = async (profile, token, userId, done) => {
+export const updateUser = async (profile, token, userId, done) => {
   const google_id = profile.id;
   const google_token = token;
   // Sept 2021 update: google profile.picture url has changed format; is now too long to fit a VarChar(255) field. If you want to use this in the future you need to run a knex migration and update the field data type. For now feels not worth it, just eliminating avatar url from updates.
@@ -85,13 +84,13 @@ exports.updateUser = async (profile, token, userId, done) => {
 };
 
 // JWT strategy options
-exports.jwtOptions = {
+export const jwtOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,
   passReqToCallback: true
 };
 
-exports.jwtLogin = async (req, payload, done) => {
+export const jwtLogin = async (req, payload, done) => {
   console.log(`config/auth.js > 97: jwtLogin`);
   const id = payload.id;
   User.getUserById(id)
@@ -105,10 +104,10 @@ exports.jwtLogin = async (req, payload, done) => {
     });
 };
 
-exports.jwtStrategy = new JwtStrategy(this.jwtOptions, this.jwtLogin);
+export const jwtStrategy = new JwtStrategy(this.jwtOptions, this.jwtLogin);
 
 // Google strategy options
-exports.googleOptions = {
+export const googleOptions = {
   clientID: this.googleAuth.clientID,
   clientSecret: this.googleAuth.clientSecret,
   callbackURL: this.googleAuth.callbackURL,
@@ -116,7 +115,7 @@ exports.googleOptions = {
   scope: ["profile", "email"]
 };
 
-exports.googleLogin = async (req, token, refreshToken, profile, done) => {
+export const googleLogin = async (req, token, refreshToken, profile, done) => {
   // console.log(
   //   `Google login by ${profile.name.givenName} ${
   //     profile.name.familyName
@@ -132,7 +131,7 @@ exports.googleLogin = async (req, token, refreshToken, profile, done) => {
   }
 };
 
-exports.googleStrategy = new GoogleStrategy(
+export const googleStrategy = new GoogleStrategy(
   this.googleOptions,
   this.googleLogin
 );

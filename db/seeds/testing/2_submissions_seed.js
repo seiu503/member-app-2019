@@ -1,6 +1,6 @@
-const uuid = require("uuid");
+import uuid from "uuid";
 
-exports.seed = function(knex, Promise) {
+export const seed = function(knex, Promise) {
   // Deletes ALL existing entries
   return knex("submissions")
     .del()

@@ -1,20 +1,21 @@
 "use strict";
 
 // set up ======================================================================
-const express = require("express");
+import express from "express";
 const app = express();
-const middleware = require("./middleware");
+import middleware from "./middleware.js";
 app.use(middleware);
 app.set("trust proxy", true);
-const favicon = require("serve-favicon");
-const dotenv = require("dotenv").config();
-const path = require("path");
+import favicon from "serve-favicon";
+import dotenv from "dotenv";
+dotenv.config();
+import path from "path";
 
 // connect to db
 
-const pg = require("pg");
-const configDB = require("./app/config/knex");
-const client = new pg.Client(configDB.configConnection);
+import pg from "pg";
+import knexConfig from "./app/config/knexConfig.js";
+const client = new pg.Client(knexConfig.configConnection);
 client.connect(err => {
   if (err) {
     return console.error("could not connect to postgres", err);
@@ -30,8 +31,8 @@ client.connect(err => {
 });
 
 // routes ======================================================================
-const apiRoutes = require("./app/routes/apiRoutes");
-const staticRoutes = require("./app/routes/staticRoutes");
+import apiRoutes from "./app/routes/apiRoutes.js";
+import staticRoutes from "./app/routes/staticRoutes.js";
 
 // set static path
 if (process.env.NODE_ENV === "production") {
@@ -54,4 +55,4 @@ if (!module.parent) {
   });
 }
 
-module.exports = app;
+export default app;

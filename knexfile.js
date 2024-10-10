@@ -1,7 +1,9 @@
-require("dotenv").config();
+import dotenv from "dotenv"
+// dotenv.config();
+dotenv.config({ path: './.env' });
 // const fs = require("fs");
 
-module.exports = {
+export default {
   development: {
     client: "pg",
     // connection: process.env.DEV_DATABASE_ENDPOINT,

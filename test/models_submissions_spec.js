@@ -5,17 +5,19 @@
 
 process.env.NODE_ENV = "testing";
 
-const uuid = require("uuid");
-const sinon = require("sinon");
-const passport = require("passport");
-require("../app/config/passport")(passport);
-const { assert } = require("chai");
-const moment = require("moment");
-const { db, TABLES } = require("../app/config/knex");
-const submissions = require("../db/models/submissions");
-const users = require("../db/models/users");
-const utils = require("../app/utils");
-const knexCleaner = require("knex-cleaner");
+import uuid from "uuid";
+import sinon from "sinon";
+import passport from "passport";
+import passportConfig from "../app/config/passport";
+passportConfig(passport);
+import { assert } from "chai";
+import moment from "moment";
+
+import { db, TABLES } from "../app/config/knexConfig.js";
+import submissions from "../db/models/submissions.js";
+import users from "../db/models/users.js";
+import utils from "../app/utils/index.js";
+import knexCleaner from "knex-cleaner";
 
 /*  Sample Data for new Submission */
 const salesforce_id = uuid.v4();

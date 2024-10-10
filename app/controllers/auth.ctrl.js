@@ -4,11 +4,11 @@
 
 /* ================================= SETUP ================================= */
 
-const passport = require("passport");
-const users = require("../../db/models/users");
+import passport from "passport";
+import users from "../../db/models/users.js";
 
-const utils = require("../utils");
-const userController = require("./users.ctrl");
+import utils from "../utils.js";
+import userController from "./users.ctrl.js";
 
 const CLIENT_URL =
   process.env.NODE_CONFIG_ENV === "production"
@@ -21,7 +21,7 @@ console.log(`CLIENT_URL: ${CLIENT_URL}`);
 
 /* ============================ ROUTE HANDLERS ============================= */
 
-exports.googleCallback = (req, res) => {
+exports const googleCallback = (req, res) => {
   // console.log("################# google callback");
   if (req.authError) {
     return res.status(401).json({
@@ -60,7 +60,7 @@ exports.googleCallback = (req, res) => {
   }
 };
 
-exports.jwtCallback = (req, res, next) => {
+export const jwtCallback = (req, res, next) => {
   // console.log("auth.ctrl.js > 59: jwtCallback");
   if (req.authError) {
     console.log(`auth.ctrl.js > 61: ${req.authError}`);
@@ -98,7 +98,7 @@ exports.jwtCallback = (req, res, next) => {
   }
 };
 
-exports.noAccess = (req, res) => {
+export const noAccess = (req, res) => {
   const message = encodeURIComponent(
     "You need an invitation from an administrator before you can create an account"
   );
@@ -106,7 +106,7 @@ exports.noAccess = (req, res) => {
   return res.status(422).redirect(redirect);
 };
 
-exports.requireAuth = async (req, res, next) => {
+export const requireAuth = async (req, res, next) => {
   console.log(`auth.ctrl.js > 97: requireAuth`);
   await passport.authenticate("jwt", { session: false }, (token, done) =>
     this.jwtCallback(req, res, next)

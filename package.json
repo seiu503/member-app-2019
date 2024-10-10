@@ -1,8 +1,9 @@
 {
   "name": "member-app-2019",
+  "type": "module",
   "version": "1.0.0",
   "description": "SEIU 503 Membership Application 2019",
-  "main": "server.js",
+  "exports": "./server.js",
   "scripts": {
     "test": "nyc --reporter=html --reporter=text ./node_modules/.bin/mocha --exit",
     "start": "webpack -d | node server.js",
@@ -51,7 +52,7 @@
   },
   "devDependencies": {
     "aws-sdk-mock": "^4.4.0",
-    "chai": "^4.2.0",
+    "chai": "^5.1.1",
     "chai-http": "^4.3.0",
     "chai-passport-strategy": "^1.0.1",
     "concurrently": "^8.2.2",
@@ -82,5 +83,10 @@
       "pre-commit": "lint-staged"
     }
   },
-  "snyk": true
+  "snyk": true,
+  "mocha": {
+    "node-option": [
+        "experimental-specifier-resolution=node"
+    ]
+  }
 }

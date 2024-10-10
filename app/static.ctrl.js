@@ -4,7 +4,7 @@
 
 /* ================================= SETUP ================================= */
 
-const path = require("path");
+import path from "path";
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -15,4 +15,4 @@ const serveClient = (req, res) => {
 
 /* ================================ EXPORT ================================= */
 
-module.exports = { serveClient };
+export default { serveClient };

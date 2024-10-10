@@ -2,60 +2,62 @@
 
 process.env.NODE_ENV = "testing";
 
-const chai = require("chai"),
-  { db } = require("../app/config/knex"),
-  { mockReq, mockRes } = require("sinon-express-mock"),
-  { assert, expect, use, should, request } = chai,
-  { suite, test } = require("mocha"),
-  knexCleaner = require("knex-cleaner"),
-  sinon = require("sinon"),
-  sinonChai = require("sinon-chai"),
-  passport = require("passport"),
-  users = require("../db/models/users"),
-  authConfig = require("../app/config/auth"),
-  authCtrl = require("../app/controllers/auth.ctrl.js"),
-  {
-    findUserByEmail,
-    updateUser,
-    user,
-    googleLogin,
-    googleStrategy,
-    jwtStrategy,
-    jwtLogin
-  } = authConfig,
-  id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e",
-  token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMyN…zE1fQ.6y9mMYVXbffHa4Q-aFUd5B3GDyyRF10iBJ28qVlEApk",
-  refreshToken = "123",
-  name = `firstname lastname}`,
-  email = "fakeemail@test.com",
-  avatar_url = "http://example.com/avatar.png",
-  profile = {
-    id,
-    emails: [email],
-    name: {
-      givenName: "firstname",
-      familyName: "lastname"
-    },
-    picture: avatar_url
-  };
-let returnedUser = {
-    id,
-    name: "firstname lastname",
-    email,
-    avatar_url,
-    type: "admin",
-    google_id: "1234",
-    google_token: "5678",
-    created_at: new Date(),
-    updated_at: new Date()
+// import * as knexConfig from "../app/config/knexConfig";
+import { mockReq, mockRes } from "sinon-express-mock";
+import chai from "chai";
+import { assert, expect, use, should, request } from "chai";
+import { suite, test } from "mocha";
+import knexCleaner from "knex-cleaner";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+import passport from "passport";
+import chaiPassportStrategy from "chai-passport-strategy";
+import users from "../db/models/users.js";
+import { authConfig } from "../app/config/auth.js";
+import { authCtrl } from "../app/controllers/auth.ctrl.js";
+
+const {
+  findUserByEmail,
+  updateUser,
+  user,
+  googleLogin,
+  googleStrategy,
+  jwtStrategy,
+  jwtLogin
+} = authConfig;
+const id = "325d0807-1ecf-475b-a5ab-85fea40b3f9e";
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjMyN…zE1fQ.6y9mMYVXbffHa4Q-aFUd5B3GDyyRF10iBJ28qVlEApk";
+const refreshToken = "123";
+const name = `firstname lastname}`;
+const email = "fakeemail@test.com";
+const avatar_url = "http://example.com/avatar.png";
+const profile = {
+  id,
+  emails: [email],
+  name: {
+    givenName: "firstname",
+    familyName: "lastname"
   },
-  req,
-  doneStub = sinon.stub();
+  picture: avatar_url
+};
+let returnedUser = {
+  id,
+  name: "firstname lastname",
+  email,
+  avatar_url,
+  type: "admin",
+  google_id: "1234",
+  google_token: "5678",
+  created_at: new Date(),
+  updated_at: new Date()
+};
+let req;
+let doneStub = sinon.stub();
 
 chai.should();
 chai.use(sinonChai);
-chai.use(require("chai-passport-strategy"));
+chai.use(chaiPassportStrategy);
 
 suite("config : auth", function() {
   afterEach(() => {

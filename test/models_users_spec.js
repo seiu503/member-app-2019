@@ -3,18 +3,20 @@
 
 /* ================================= SETUP ================================= */
 
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 dotenv.config({ path: "../.env" });
 
 process.env.NODE_ENV = "testing";
 
-const { assert } = require("chai");
-const sinon = require("sinon");
-const passport = require("passport");
-const { db, TABLES } = require("../app/config/knex");
-const users = require("../db/models/users");
-const utils = require("../app/utils");
-const knexCleaner = require("knex-cleaner");
+import { assert } from "chai";
+import sinon from "sinon";
+import passport from "passport";
+import passportConfig from "../app/config/passport";
+passportConfig(passport);
+import { db, TABLES } from "../app/config/knexConfig.js";
+import users from "../db/models/users.js";
+import utils from "../app/utils/index.js";
+import knexCleaner from "knex-cleaner";
 
 const name = `firstname lastname`;
 const name2 = `firstname2 ${utils.randomText()}`;

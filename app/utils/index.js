@@ -1,10 +1,10 @@
 /** miscellaneous utility methods **/
 
-const jwt = require("jsonwebtoken");
-const http = require("http");
-const https = require("https");
-const sfCtrl = require("../controllers/sf.ctrl");
-const submissionCtrl = require("../controllers/submissions.ctrl");
+import jwt from "jsonwebtoken";
+import http from "http";
+import https from "https";
+import sfCtrl from "../controllers/sf.ctrl.js";
+import submissionCtrl from "../controllers/submissions.ctrl.js";
 
 const CLIENT_URL =
   process.env.NODE_CONFIG_ENV === "production"
@@ -64,7 +64,7 @@ formatSFDate = date => {
   return [year, month, day].join("-");
 };
 
-module.exports = {
+export default {
   randomText,
   handleError,
   setUserInfo,

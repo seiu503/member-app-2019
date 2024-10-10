@@ -1,15 +1,17 @@
-const { mockReq, mockRes } = require("sinon-express-mock");
-const sinon = require("sinon");
-const chai = require("chai");
+import { mockReq, mockRes } from "sinon-express-mock";
+import sinon from "sinon";
+import chai from "chai";
 const { assert } = sinon;
-const { suite, test } = require("mocha");
-const request = require("request");
-const passport = require("passport");
-const knexCleaner = require("knex-cleaner");
-const contCtrl = require("../app/controllers/content.ctrl.js");
-const content = require("../db/models/content");
-const { db } = require("../app/config/knex");
-require("../app/config/passport")(passport);
+import { suite, test } from "mocha";
+import request from "request";
+import passport from "passport";
+import knexCleaner from "knex-cleaner";
+import contCtrl from "../app/controllers/content.ctrl.js";
+import content from "../db/models/content.js";
+import { db } from "../app/config/knexConfig.js";
+
+import passportConfig from "../app/config/passport";
+passportConfig(passport);
 
 let contentBody = {
     content_type: "headline",

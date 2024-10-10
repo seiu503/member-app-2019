@@ -1,16 +1,16 @@
-const jsforce = require("jsforce");
-const axios = require("axios");
-const uuid = require("uuid");
-const {
+import jsforce from "jsforce";
+import axios from "axios";
+import uuid from "uuid";
+import {
   contactsTableFields,
   submissionsTableFields,
   capeTableFields,
   generateSFContactFieldList,
   paymentFields,
   formatDate
-} = require("../utils/fieldConfigs");
-const utils = require("../utils");
-const submissionCtrl = require("../controllers/submissions.ctrl.js");
+} from "../utils/fieldConfigs.js";
+import utils from "../utils.js";
+import submissionCtrl from "../controllers/submissions.ctrl.js";
 
 const CLIENT_URL =
   process.env.NODE_CONFIG_ENV === "production"
@@ -48,10 +48,10 @@ const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 
 // can't import these funcs from utils bc circular imports
-exports.getClientIp = req =>
+export const getClientIp = req =>
   req.headers["x-real-ip"] || req.connection.remoteAddress;
 
-exports.formatSFDate = date => {
+export const formatSFDate = date => {
   let d = new Date(date),
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),
@@ -64,7 +64,7 @@ exports.formatSFDate = date => {
 };
 
 // find matching employer object from SF Employers array returned from API
-exports.findEmployerObject = (employerObjects, employerName) =>
+export const findEmployerObject = (employerObjects, employerName) =>
   employerObjects
     ? employerObjects.filter(obj => {
         if (employerName.toLowerCase() === "community member") {
@@ -82,7 +82,7 @@ exports.findEmployerObject = (employerObjects, employerName) =>
  *  @param    {String}   id  	Salesforce Contact ID
  *  @returns  {Object}       	Salesforce Contact object OR error message.
  */
-exports.getSFContactById = async (req, res, next) => {
+export const getSFContactById = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFContactById`);
   const { id } = req.params;
   const query = `SELECT ${fieldList.join(
@@ -115,7 +115,7 @@ exports.getSFContactById = async (req, res, next) => {
  *  @param    {String}   aId   Salesforce Account ID
  *  @returns  {Object}        Salesforce Contact object OR error message.
  */
-exports.getSFContactByDoubleId = async (req, res, next) => {
+export const getSFContactByDoubleId = async (req, res, next) => {
   // console.log(`sf.ctrl.js > getSFContactByDoubleId`);
   const { cId, aId } = req.params;
   if (!cId || !aId) {
@@ -154,7 +154,7 @@ exports.getSFContactByDoubleId = async (req, res, next) => {
  *  @param    {body}          Full submission data object
  *  @returns  {Object}        { sf_contact_id } or error message
  */
-exports.createSFContact = async (req, res, next) => {
+export const createSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 148: createSFContact`);
 
   const bodyRaw = { ...req.body };
@@ -210,7 +210,7 @@ exports.createSFContact = async (req, res, next) => {
  *                                    object with error message to client.
  */
 
-exports.lookupSFContactByFLE = async (req, res, next) => {
+export const lookupSFContactByFLE = async (req, res, next) => {
   // console.log("lookupSFContactByFLE");
   const { first_name, last_name, home_email } = req.body;
 
@@ -282,7 +282,7 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  *                                    key/value pairs of fields to be updated.
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
-exports.updateSFContact = async (req, res, next) => {
+export const updateSFContact = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 270: updateSFContact`);
   const { id } = req.params;
 
@@ -351,7 +351,7 @@ exports.updateSFContact = async (req, res, next) => {
  *  @returns  does not return to client; passes salesforce_id to next function
  */
 
-exports.createSFOnlineMemberApp = async (req, res, next) => {
+export const createSFOnlineMemberApp = async (req, res, next) => {
   const ip = this.getClientIp(req);
   console.log(`sf.ctrl.js > 332: ${ip}`);
   let conn = new jsforce.Connection({ loginUrl });
@@ -440,7 +440,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
  *  @returns  success or error message
  */
 
-exports.createSFCAPE = async (req, res, next) => {
+export const createSFCAPE = async (req, res, next) => {
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);
@@ -489,7 +489,7 @@ exports.createSFCAPE = async (req, res, next) => {
  *  @param    {none}
  *  @returns  {Array||Object}    Array of SF Account objects OR error message.
  */
-exports.getAllEmployers = async (req, res, next) => {
+export const getAllEmployers = async (req, res, next) => {
   console.log(`sf.ctrl.js > getAllEmployers 489`);
   // 0014N00001iFKWWQA4 = Community Members Account Id
   // 0016100000PZDmOAAX = SEIU 503 Staff Account Id
@@ -565,7 +565,7 @@ const legal_language = `<div><h3>Membership Authorization</h3><p>I request and v
 // createSFContact
 // updateSFContact
 // createSumbission
-exports.handleTab1 = async (req, res, next) => {
+export const handleTab1 = async (req, res, next) => {
   req.body.birthdate = this.formatSFDate(req.body.birthdate);
   if (!req.body.text_auth_opt_out) {
     req.body.text_auth_opt_out = false;
@@ -696,7 +696,7 @@ exports.handleTab1 = async (req, res, next) => {
 // createSFOMA
 
 // for users with javascript disabled ONLY
-exports.handleTab2 = async (req, res, next) => {
+export const handleTab2 = async (req, res, next) => {
   // console.log(`sf.ctrl.js > 1123: handleTab2: req.body.legal_language`);
   // console.log(req.body.legal_language);
   // console.log(`sf.ctrl.js > 1123: handleTab2: legal_language`);

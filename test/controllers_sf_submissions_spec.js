@@ -1,27 +1,28 @@
-const { mockReq, mockRes } = require("sinon-express-mock");
-const sinon = require("sinon");
+import { mockReq, mockRes } from "sinon-express-mock";
+import sinon from "sinon";
+import chai from "chai";
 const { assert } = sinon;
-const { suite, test } = require("mocha");
-const axios = require("axios");
-const knexCleaner = require("knex-cleaner");
-const chaiHttp = require("chai-http");
-const chai = require("chai");
-const expect = chai.expect;
-const passport = require("passport");
-require("../app/config/passport")(passport);
+import { suite, test } from "mocha";
+import axios from "axios";
+import knexCleaner from "knex-cleaner";
+import chaiHttp = from "chai-http";
+const { expect } = chai;
+import passport from "passport";
+import passportConfig from "../app/config/passport";
+passportConfig(passport);
 chai.use(chaiHttp);
 
-const sfCtrl = require("../app/controllers/sf.ctrl.js");
-const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
-const submissions = require("../db/models/submissions");
-const utils = require("../app/utils/index.js");
-const jsforce = require("jsforce");
-const {
+import sfCtrl from "../app/controllers/sf.ctrl.js";
+import submissionCtrl from "../app/controllers/submissions.ctrl.js";
+import submissions from "../db/models/submissions.js";
+import utils from "../app/utils/index.js";
+import jsforce from "jsforce";
+import {
   generateSFContactFieldList,
   generateSampleSubmission,
   paymentFields,
   generateCAPEValidateBackEnd
-} = require("../app/utils/fieldConfigs");
+}from "../app/utils/fieldConfigs.js";
 const fieldList = generateSFContactFieldList();
 const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 
@@ -33,7 +34,7 @@ const adminBody = {
     type: "view"
   };
 let capeBody = generateCAPEValidateBackEnd();
-const { db, TABLES } = require("../app/config/knex");
+import { db, TABLES } from "../app/config/knexConfig.js";
 
 const lookupSFContactByFLEOrig = sfCtrl.lookupSFContactByFLE,
   updateSFContactOrig = sfCtrl.updateSFContact,
@@ -1461,7 +1462,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     test("when called with valid token, verifyHumanity returns success", async function() {
-      const app = require("../server");
+      import app from "../server.js";
       const req = mockReq({
         body: { token },
         headers: {
@@ -1482,7 +1483,7 @@ suite("sumissions.ctrl.js", function() {
       });
     });
     test("verifyHumanity returns error to client if recaptcha siteverify throws", async function() {
-      const app = require("../server");
+      import app from "../server.js";
       const req = mockReq({
         body: { token },
         headers: {
@@ -1502,7 +1503,7 @@ suite("sumissions.ctrl.js", function() {
       });
     });
     test("verifyHumanity returns error to client if recaptcha siteverify returns error code", async function() {
-      const app = require("../server");
+      import app from "../server.js";
       const req = mockReq({
         body: { token },
         headers: {

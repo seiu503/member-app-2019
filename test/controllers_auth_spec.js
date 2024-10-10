@@ -1,16 +1,18 @@
-const { mockReq, mockRes } = require("sinon-express-mock");
-const sinon = require("sinon");
-const chai = require("chai");
+import { mockReq, mockRes } from "sinon-express-mock";
+import sinon from "sinon";
+import chai from "chai";
 const { assert } = sinon;
-const { suite, test } = require("mocha");
-const request = require("request");
-const passport = require("passport");
-const knexCleaner = require("knex-cleaner");
-const authCtrl = require("../app/controllers/auth.ctrl.js");
-const users = require("../db/models/users");
-const { db } = require("../app/config/knex");
-const utils = require("../app/utils");
-require("../app/config/passport")(passport);
+import { suite, test } from "mocha";
+import request from "request";
+import passport from "passport";
+import knexCleaner from "knex-cleaner";
+import authCtrl from "../app/controllers/auth.ctrl.js";
+import users from "../db/models/users.js";
+import { db } from "../app/config/knexConfig.js";
+import utils from "../app/utils.js";
+import passportConfig from "../app/config/passport";
+
+passportConfig(passport);
 
 const CLIENT_URL =
   process.env.NODE_CONFIG_ENV === "production"

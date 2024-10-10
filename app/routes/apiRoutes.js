@@ -4,18 +4,19 @@
 
 /* ================================= SETUP ================================= */
 
-const router = require("express").Router();
-const passport = require("passport");
+import express from "express";
+const router = express.Router();
+import passport from "passport";
 
 /* =========================== LOAD CONTROLLERS ============================ */
 
-const userCtrl = require("../controllers/users.ctrl");
-const authCtrl = require("../controllers/auth.ctrl");
-const contentCtrl = require("../controllers/content.ctrl");
-const submissionCtrl = require("../controllers/submissions.ctrl");
-const sfCtrl = require("../controllers/sf.ctrl");
-const capeCtrl = require("../controllers/cape.ctrl");
-const utils = require("../utils/index.js");
+import userCtrl from "../controllers/users.ctrl.js";
+import authCtrl from "../controllers/auth.ctrl.js";
+import contentCtrl from "../controllers/content.ctrl.js";
+import submissionCtrl from "../controllers/submissions.ctrl.js";
+import sfCtrl from "../controllers/sf.ctrl.js";
+import capeCtrl from "../controllers/cape.ctrl.js";
+import utils from "../utils/index.js";
 
 /* ============================== AUTH ROUTES =========================== */
 
@@ -554,4 +555,4 @@ router.post("/noscript2", sfCtrl.handleTab2);
 
 /* ================================ EXPORT ================================= */
 
-module.exports = router;
+export default router;

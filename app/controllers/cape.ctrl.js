@@ -5,8 +5,8 @@
 /* ================================= SETUP ================================= */
 
 // import models
-const cape = require("../../db/models/cape");
-const utils = require("../utils");
+import cape from "../../db/models/cape.js";
+import utils from"../utils.js";
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -278,7 +278,7 @@ const getCAPEBySFId = (req, res, next) => {
 
 /* ================================ EXPORT ================================= */
 
-module.exports = {
+export default {
   createCAPE,
   updateCAPE,
   deleteCAPE,
