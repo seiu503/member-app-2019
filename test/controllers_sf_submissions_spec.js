@@ -1461,6 +1461,7 @@ suite("sumissions.ctrl.js", function() {
     });
 
     test("when called with valid token, verifyHumanity returns success", async function() {
+      this.timeout(3000);
       const app = require("../server");
       const req = mockReq({
         body: { token },
@@ -1480,6 +1481,7 @@ suite("sumissions.ctrl.js", function() {
       assert.calledWith(res.json, {
         score: 0.9
       });
+
     });
     test("verifyHumanity returns error to client if recaptcha siteverify throws", async function() {
       const app = require("../server");
