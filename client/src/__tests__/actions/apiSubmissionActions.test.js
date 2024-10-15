@@ -1,6 +1,6 @@
 import { setupServer } from "msw/node";
 import handlers from "../../mocks/handlers";
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiSubmissionActions";
@@ -81,11 +81,10 @@ describe("apiSubmissionActions", () => {
 
     it("ADD_SUBMISSION: Dispatches failure action after failed POST", async () => {
       server.use(
-        rest.post("http://localhost/undefined/api/submission", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "There was an error saving the submission" }),
-            ctx.status(404)
-          );
+        http.post("http://localhost/undefined/api/submission", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "There was an error saving the submission" }), {
+            status: 404
+          });
         })
       );
 
@@ -103,11 +102,10 @@ describe("apiSubmissionActions", () => {
 
     it("ADD_SUBMISSION: Dispatches failure action after failed POST (generic error msg)", async () => {
       server.use(
-        rest.post("http://localhost/undefined/api/submission", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "Sorry, something went wrong :(" }),
-            ctx.status(500)
-          );
+        http.post("http://localhost/undefined/api/submission", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "Sorry, something went wrong :(" }), {
+            status: 500
+          });
         })
       );
 
@@ -125,13 +123,12 @@ describe("apiSubmissionActions", () => {
 
     it("UPDATE_SUBMISSION: Dispatches failure action after failed PUT", async () => {
       server.use(
-        rest.put(
+        http.put(
           "http://localhost/undefined/api/submission/12345678",
-          (req, res, ctx) => {
-            return res(
-              ctx.json({ message: "There was an error saving the submission" }),
-              ctx.status(404)
-            );
+          () => {
+            return new HttpResponse(JSON.stringify({"message": "There was an error saving the submission" }), {
+              status: 404
+            });
           }
         )
       );
@@ -148,13 +145,12 @@ describe("apiSubmissionActions", () => {
 
     it("UPDATE_SUBMISSION: Dispatches failure action after failed PUT (generic error msg)", async () => {
       server.use(
-        rest.put(
+        http.put(
           "http://localhost/undefined/api/submission/12345678",
           (req, res, ctx) => {
-            return res(
-              ctx.json({ message: "Sorry, something went wrong :(" }),
-              ctx.status(500)
-            );
+            return new HttpResponse(JSON.stringify({"message": "Sorry, something went wrong :(" }), {
+            status: 500
+          });
           }
         )
       );
@@ -171,11 +167,10 @@ describe("apiSubmissionActions", () => {
 
     it("VERIFY: Dispatches failure action after failed POST", async () => {
       server.use(
-        rest.post("http://localhost/undefined/api/verify", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "Recaptcha validation failed" }),
-            ctx.status(404)
-          );
+        http.post("http://localhost/undefined/api/verify", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "Recaptcha validation failed"}), {
+              status: 404
+            });
         })
       );
 
@@ -191,11 +186,10 @@ describe("apiSubmissionActions", () => {
 
     it("VERIFY: Dispatches failure action after failed POST (generic error msg)", async () => {
       server.use(
-        rest.post("http://localhost/undefined/api/verify", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "Sorry, something went wrong :(" }),
-            ctx.status(500)
-          );
+        http.post("http://localhost/undefined/api/verify", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "Sorry, something went wrong :(" }), {
+            status: 500
+          });
         })
       );
 
@@ -211,11 +205,10 @@ describe("apiSubmissionActions", () => {
 
     it("CREATE_CAPE: Dispatches failure action after failed POST", async () => {
       server.use(
-        rest.post("http://localhost/undefined/api/cape", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "There was an error saving the CAPE record" }),
-            ctx.status(404)
-          );
+        http.post("http://localhost/undefined/api/cape", () => {
+          return new HttpResponse(JSON.stringify({"message": "There was an error saving the CAPE record"}), {
+              status: 404
+            });
         })
       );
 
@@ -231,11 +224,10 @@ describe("apiSubmissionActions", () => {
 
     it("CREATE_CAPE: Dispatches failure action after failed POST (generic error msg)", async () => {
       server.use(
-        rest.post("http://localhost/undefined/api/cape", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "Sorry, something went wrong :(" }),
-            ctx.status(500)
-          );
+        http.post("http://localhost/undefined/api/cape", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "Sorry, something went wrong :(" }), {
+            status: 500
+          });
         })
       );
 
@@ -251,11 +243,10 @@ describe("apiSubmissionActions", () => {
 
     it("UPDATE_CAPE: Dispatches failure action after failed PUT", async () => {
       server.use(
-        rest.put("http://localhost/undefined/api/cape/12345678", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "There was an error saving the CAPE record" }),
-            ctx.status(404)
-          );
+        http.put("http://localhost/undefined/api/cape/12345678", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "There was an error saving the CAPE record"}), {
+              status: 404
+            });
         })
       );
 
@@ -271,11 +262,10 @@ describe("apiSubmissionActions", () => {
 
     it("UPDATE_CAPE: Dispatches failure action after failed PUT (generic error msg)", async () => {
       server.use(
-        rest.put("http://localhost/undefined/api/cape/12345678", (req, res, ctx) => {
-          return res(
-            ctx.json({ message: "Sorry, something went wrong :(" }),
-            ctx.status(500)
-          );
+        http.put("http://localhost/undefined/api/cape/12345678", (req, res, ctx) => {
+          return new HttpResponse(JSON.stringify({"message": "Sorry, something went wrong :(" }), {
+            status: 500
+          });
         })
       );
 

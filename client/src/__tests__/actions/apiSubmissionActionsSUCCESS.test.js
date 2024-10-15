@@ -1,6 +1,6 @@
 import { setupServer } from "msw/node";
 import handlers from "../../mocks/handlers";
-import { rest } from "msw";
+import { http, HttpResponse } from "msw";
 import { apiMiddleware } from "redux-api-middleware";
 import configureMockStore from "redux-mock-store";
 import * as actions from "../../store/actions/apiSubmissionActions";
@@ -39,15 +39,12 @@ describe("apiSubmissionActions SUCCESS", () => {
         server.resetHandlers();
 
         server.use(
-          rest.post("http://localhost:8080/api/submission", (req, res, ctx) => {
-            return res(
-              ctx.json({ 
+          http.post("http://localhost:8080/api/submission", (req, res, ctx) => {
+            return HttpResponse.json({ 
                 payload: { id: "testid" },
                 type: "ADD_SUBMISSION_SUCCESS",
                 meta: undefined
-              }),
-              ctx.status(200)
-            );
+              });
           })
         );
 
@@ -68,15 +65,12 @@ describe("apiSubmissionActions SUCCESS", () => {
         server.resetHandlers();
 
         server.use(
-          rest.put("http://localhost:8080/api/submission/12345678", (req, res, ctx) => {
-            return res(
-              ctx.json({ 
+          http.put("http://localhost:8080/api/submission/12345678", (req, res, ctx) => {
+            return HttpResponse.json({ 
                 payload: { id: "testid" },
                 type: "UPDATE_SUBMISSION_SUCCESS",
                 meta: undefined
-              }),
-              ctx.status(200)
-            );
+              });
           })
         );
 

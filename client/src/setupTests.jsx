@@ -3,6 +3,9 @@ import { render } from "@testing-library/react";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./styles/theme";
 import Recaptcha from "react-google-invisible-recaptcha";
+import { TextEncoder } from 'node:util'
+
+global.TextEncoder = TextEncoder;
 
 global.fetch = require("jest-fetch-mock");
 

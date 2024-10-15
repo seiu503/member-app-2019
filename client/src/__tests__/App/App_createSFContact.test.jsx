@@ -13,7 +13,6 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
-import { rest } from "msw";
 import { setupServer } from "msw/node";
 import { AppUnconnected, AppConnected } from "../../App";
 import * as App from "../../App";
