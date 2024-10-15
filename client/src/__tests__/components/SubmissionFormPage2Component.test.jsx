@@ -12,7 +12,6 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
-import { rest } from "msw";
 import { setupServer } from "msw/node";
 import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
