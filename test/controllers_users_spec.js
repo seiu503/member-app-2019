@@ -4,7 +4,7 @@ const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
 const passport = require("passport");
-// const knexCleaner = require("knex-cleaner");
+const knexCleaner = require("knex-cleaner");
 const userCtrl = require("../app/controllers/users.ctrl.js");
 const users = require("../db/models/users");
 const { db } = require("../app/config/knex");
@@ -53,9 +53,9 @@ let responseStub,
   req = mockReq();
 
 suite("users.ctrl.js", function() {
-  // after(() => {
-  //   return knexCleaner.clean(db);
-  // });
+  after(() => {
+    return knexCleaner.clean(db);
+  });
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
     userBody = {

@@ -51,6 +51,9 @@ module.exports = {
       require: true,
       rejectUnauthorized: false
       // ca: fs.readFileSync('/etc/pki/nginx/seiu503signup_org_2023.pem').toString()
+    },
+    pool: {
+      "propagateCreateError": false
     }
   },
   production: {
@@ -66,6 +69,9 @@ module.exports = {
     },
     seeds: {
       directory: "./db/seeds/production"
+    },
+    pool: {
+      "propagateCreateError": false
     }
   }
 };
