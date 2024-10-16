@@ -18,7 +18,7 @@ const knexCleaner = require("knex-cleaner");
 
 const name = `firstname lastname`;
 const name2 = `firstname2 ${utils.randomText()}`;
-const email = "fakeemail@test.com";
+const email = `${utils.randomText()}@test.com`;
 const type = "admin";
 const avatar_url = "http://example.com/avatar.png";
 
