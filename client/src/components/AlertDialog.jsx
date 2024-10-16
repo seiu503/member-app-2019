@@ -11,6 +11,7 @@ import {
 import { theme } from "../styles/theme";
 import { withStyles } from "@mui/styles";
 import { Trans } from "react-i18next";
+import withRouter from "./ComponentWithRouterProp";
 
 const styles = theme => ({
   root: {
@@ -33,6 +34,7 @@ export const AlertDialog = props => (
   <div data-testid="component-alert-dialog">
     <Dialog
       data-testid="dialog"
+      id="dialog"
       open={props.open}
       onClose={props.handleClose}
       aria-labelledby={
@@ -88,6 +90,6 @@ AlertDialog.propTypes = {
   classes: PropTypes.object
 };
 
-const AlertDialogWrapper = withStyles(styles)(AlertDialog);
+const AlertDialogWrapper = withStyles(styles)(withRouter(AlertDialog));
 export default AlertDialogWrapper;
 // export default AlertDialog;

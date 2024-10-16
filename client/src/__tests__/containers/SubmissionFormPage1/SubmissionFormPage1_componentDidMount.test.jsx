@@ -1,7 +1,6 @@
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
 import {
@@ -13,7 +12,6 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../../utils/testUtils";
-import { rest } from "msw";
 import { setupServer } from "msw/node";
 import * as formElements from "../../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -26,7 +24,7 @@ import {
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../translations/i18n";
 import handlers from "../../../mocks/handlers";
-let pushMock = jest.fn(),
+let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
@@ -143,9 +141,8 @@ const defaultProps = {
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
-  history: {
-    push: pushMock
-  },
+  history: {},
+  navigate,
   recaptcha: {
     current: {
       execute: executeMock
@@ -196,7 +193,9 @@ const setup = (props = {}) => {
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <SubmissionFormPage1Container {...setupProps} />
+          <BrowserRouter>
+            <SubmissionFormPage1Container {...setupProps} />
+          </BrowserRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>

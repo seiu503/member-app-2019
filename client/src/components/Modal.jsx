@@ -46,6 +46,8 @@ const styles = theme => ({
 
 function Modal(props) {
   const { classes } = props;
+  // console.log('*********** MODAL ***************');
+  // console.log(`props.open: ${props.open}`);
   return (
     <div>
       <Dialog

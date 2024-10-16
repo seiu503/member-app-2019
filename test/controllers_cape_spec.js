@@ -3,7 +3,6 @@ const sinon = require("sinon");
 const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
-const nock = require("nock");
 // const request = require("request");
 const passport = require("passport");
 const knexCleaner = require("knex-cleaner");

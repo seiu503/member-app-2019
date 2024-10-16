@@ -1,7 +1,7 @@
 import React from "react";
-import { MemoryRouter } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import "@testing-library/jest-dom/extend-expect";
+
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
 import {
@@ -13,7 +13,6 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
-import { rest } from "msw";
 import { setupServer } from "msw/node";
 import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
@@ -26,7 +25,7 @@ import {
 import handlers from "../../mocks/handlers";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
-let pushMock = jest.fn(),
+let navigate = jest.fn(),
   handleInputMock = jest
     .fn()
     .mockImplementation(() => console.log("handleInputMock")),
@@ -185,9 +184,8 @@ const defaultProps = {
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
   },
-  history: {
-    push: pushMock
-  },
+  history: {},
+  navigate,
   recaptcha: {
     current: {
       execute: executeMock
@@ -228,11 +226,11 @@ const setup = async (props = {}, route = "/") => {
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <MemoryRouter initialEntries={[route]}>
-          <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+          <BrowserRouter>
             <AppUnconnected {...setupProps} />
-          </I18nextProvider>
-        </MemoryRouter>
+          </BrowserRouter>
+        </I18nextProvider>
       </Provider>
     </ThemeProvider>
   );
