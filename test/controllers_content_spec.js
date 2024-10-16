@@ -3,9 +3,8 @@ const sinon = require("sinon");
 const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
-const request = require("request");
 const passport = require("passport");
-const knexCleaner = require("knex-cleaner");
+// const knexCleaner = require("knex-cleaner");
 const contCtrl = require("../app/controllers/content.ctrl.js");
 const content = require("../db/models/content");
 const { db } = require("../app/config/knex");
@@ -35,9 +34,9 @@ let responseStub,
   req = mockReq();
 
 suite("content.ctrl.js", function() {
-  after(() => {
-    return knexCleaner.clean(db);
-  });
+  // after(() => {
+  //   return knexCleaner.clean(db);
+  // });
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
   });

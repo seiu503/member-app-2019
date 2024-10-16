@@ -4,7 +4,7 @@ const sinon = require("sinon");
 const { mockReq, mockRes } = require("sinon-express-mock");
 const { assert } = chai;
 const jwt = require("jsonwebtoken");
-const knexCleaner = require("knex-cleaner");
+// const knexCleaner = require("knex-cleaner");
 const { db, TABLES } = require("../app/config/knex");
 const {
   generateSampleValidate,

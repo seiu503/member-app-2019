@@ -3,9 +3,8 @@ const sinon = require("sinon");
 const chai = require("chai");
 const { assert } = sinon;
 const { suite, test } = require("mocha");
-// const request = require("request");
 const passport = require("passport");
-const knexCleaner = require("knex-cleaner");
+// const knexCleaner = require("knex-cleaner");
 const capeCtrl = require("../app/controllers/cape.ctrl.js");
 const cape = require("../db/models/cape");
 const { generateCAPEValidateBackEnd } = require("../app/utils/fieldConfigs");
@@ -30,12 +29,12 @@ let responseStub,
 suite("cape.ctrl.js", function() {
   const originalLogFunction = console.log;
   let output;
-  after(() => {
-    return knexCleaner.clean(db);
-  });
+  // after(() => {
+  //   return knexCleaner.clean(db);
+  // });
   beforeEach(() => {
     authenticateMock = sinon.stub(passport, "authenticate").returns(() => {});
-    // silence console.logs during tests
+    // silence console.logs during tests <= THIS DOESN'T SEEM TO WORK?
     // output = '';
     // console.log = (msg) => {
     //   output += msg + '\n';
@@ -44,7 +43,7 @@ suite("cape.ctrl.js", function() {
   afterEach(function() {
     authenticateMock.restore();
     sinon.restore();
-    // console.log = originalLogFunction; // undo dummy log function
+    // console.log = originalLogFunction; // undo dummy log function <= THIS DOESN'T SEEM TO WORK?
     // if (this.currentTest.state === 'failed') {
     //   console.log('FAILED TEST OUTPUT HERE: ##############');
     //   console.log(output);
