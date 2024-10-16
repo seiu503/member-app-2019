@@ -19,7 +19,7 @@ const knexCleaner = require("knex-cleaner");
 
 /*  Sample Data for new Submission */
 const salesforce_id = uuid.v4();
-const ip_address = "192.0.2.0";
+const ip_address = "1.1.1.1";
 const submission_date = new Date("05/02/2019");
 const agency_number = "123456";
 const birthdate = new Date("01/02/1999");
@@ -52,7 +52,7 @@ const updatedTextAuthOptOut = true;
 /*  Test user Data for secured routes */
 
 const name = `firstname ${utils.randomText()}`;
-const email = "fakeemail@test.com";
+const email = `${utils.randomText()}@test.com`;
 const avatar_url = "http://example.com/avatar.png";
 const google_id = "1234";
 const google_token = "5678";

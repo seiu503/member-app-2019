@@ -9,7 +9,7 @@ const { assert } = require("chai");
 const { db, TABLES } = require("../app/config/knex");
 const content = require("../db/models/content");
 const utils = require("../app/utils");
-const knexCleaner = require("knex-cleaner");
+// const knexCleaner = require("knex-cleaner");
 
 const content_type = "headline";
 const content_type2 = "image_url";
@@ -27,9 +27,9 @@ let id;
 let id2;
 
 describe("content model tests", () => {
-  after(() => {
-    return knexCleaner.clean(db);
-  });
+  // after(() => {
+  //   return knexCleaner.clean(db);
+  // });
   it("POST creates a new content record", () => {
     return content
       .newContent(content_type, content1)

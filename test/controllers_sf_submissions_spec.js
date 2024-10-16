@@ -70,12 +70,26 @@ let loginError,
 contactStub = { id: "0035500000VFkjOAAT", success: true, errors: [] };
 
 suite("sf.ctrl.js", function() {
+  const originalLogFunction = console.log;
+  let output;
   after(() => {
     return knexCleaner.clean(db);
+  });
+  beforeEach(function() {
+    // silence console.logs during tests <= THIS DOESN'T SEEM TO WORK?
+    // output = '';
+    // console.log = (msg) => {
+    //   output += msg + '\n';
+    // };
   });
   afterEach(function() {
     res = mockRes();
     sinon.restore();
+    // console.log = originalLogFunction; // undo dummy log function <= THIS DOESN'T SEEM TO WORK?
+    // if (this.currentTest.state === 'failed') {
+    //   console.log('FAILED TEST OUTPUT HERE: ##############');
+    //   console.log(output);
+    // }
   });
   suite("sfCtrl > getSFContactById", function() {
     beforeEach(function() {
@@ -1529,7 +1543,7 @@ suite("sumissions.ctrl.js", function() {
 
 suite("noscript > handleTab1", () => {
   after(() => {
-    return knexCleaner.clean(db);
+    // return knexCleaner.clean(db);
     sinon.restore();
   });
   afterEach(function() {
@@ -1867,7 +1881,7 @@ suite("noscript > handleTab1", () => {
 
 suite("noscript > handleTab2", () => {
   after(() => {
-    return knexCleaner.clean(db);
+    // return knexCleaner.clean(db);
     sinon.restore();
   });
   afterEach(function() {
