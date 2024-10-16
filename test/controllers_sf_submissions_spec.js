@@ -1543,7 +1543,7 @@ suite("sumissions.ctrl.js", function() {
 
 suite("noscript > handleTab1", () => {
   after(() => {
-    // return knexCleaner.clean(db);
+    return knexCleaner.clean(db);
     sinon.restore();
   });
   afterEach(function() {
@@ -1881,7 +1881,7 @@ suite("noscript > handleTab1", () => {
 
 suite("noscript > handleTab2", () => {
   after(() => {
-    // return knexCleaner.clean(db);
+    return knexCleaner.clean(db);
     sinon.restore();
   });
   afterEach(function() {
