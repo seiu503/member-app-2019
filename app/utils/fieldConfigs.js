@@ -1022,7 +1022,20 @@ const submissionsTableFields = {
     SFAPIName: "Scholarship_Flag__c",
     SFDataType: "Boolean",
     testingSample: false
-  }
+  },
+  tmp_1: {
+    tableDisplay: false,
+    req: "N",
+    postgresFieldName: "tmp_1",
+    clientFieldName: "tmp1",
+    HtmlInputType: "honestly no idea what this was ever for. probably n/a?",
+    SFTable: "OnlineMemberApp__c",
+    SFFieldLabel: "tmp1",
+    SFAPIName: "tmp1__c",
+    SFDataType: "Text(255)",
+    SQLDataType: "VARCHAR(255)",
+    testingSample: "tmp1test"
+  },
 };
 
 const capeTableFields = {
