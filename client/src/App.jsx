@@ -575,7 +575,7 @@ export class AppUnconnected extends Component {
       work_phone,
       hire_date
     } = secondValues;
-    console.log(`hire_date: ${hire_date}`);
+    // console.log(`hire_date: ${hire_date}`);
 
     if (hire_date) {
       let hireDate = moment(new Date(hire_date));
@@ -670,7 +670,21 @@ export class AppUnconnected extends Component {
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
+
+    // we're adding the tmp data here without adding it to the postgres db because we are lazy
+
+    const q = queryString.parse(this.props.location.search);
+    console.log("queryString:");
+    console.log(q);
+
+    // set tmp data
+    const tmp1 = 
+      q && q.tmp1 ? q.tmp1 : null;
+
+    console.log(`tmp1: ${tmp1}`);
+
     body.Worker__c = this.props.submission.salesforceId;
+    body.tmp_1 = tmp1;
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
