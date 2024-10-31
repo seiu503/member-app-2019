@@ -80,9 +80,9 @@ script:
         echo "Master branch; running production build.";
         nohup env-path -p .env.production REACT_APP_ENV_TEXT=production vite build;
       fi
-  # - cd .. && ./node_modules/.bin/mocha --exit
-  # - cd client && REACT_APP_ENV_TEXT=test node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --workerIdleMemoryLimit=512MB
-  - REACT_APP_ENV_TEXT=test node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --workerIdleMemoryLimit=512MB
+  - cd .. && ./node_modules/.bin/mocha --exit
+  - cd client && REACT_APP_ENV_TEXT=test node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --workerIdleMemoryLimit=512MB
+  # - REACT_APP_ENV_TEXT=test node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --workerIdleMemoryLimit=512MB
   - cd ../ec2/scripts && sudo chown root postInstall.sh && sudo chmod 777 postInstall.sh
   - cd ../.. && zip -r latest * -qdgds 10m -x "client/node_modules/*" "client/src/*" "client/output/*"
   - mkdir -p dpl_cd_upload

@@ -1,6 +1,6 @@
 /* ================================= SETUP ================================= */
 
-process.env.NODE_ENV = "testing";
+process.env.NODE_CONFIG_ENV = "testing";
 
 const chai = require("chai"),
   { db } = require("../app/config/knex"),
