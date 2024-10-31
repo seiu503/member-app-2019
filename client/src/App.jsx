@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
+import detector from "i18next-browser-languagedetector";
 import { withTranslation, Trans, Translation } from "react-i18next";
 
 import { Typography, CssBaseline, Box } from "@mui/material";
@@ -14,7 +15,7 @@ import { Typography, CssBaseline, Box } from "@mui/material";
 import * as Actions from "./store/actions";
 import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
-import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
+import { defaultWelcomeInfo, detectDefaultLanguage } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -100,7 +101,8 @@ export class AppUnconnected extends Component {
     console.log("### 20240223 prod 12:49PM ###");
 
     // detect default language from browser
-    const defaultLanguage = detectDefaultLanguage();
+    const defaultLanguage = detectDefaultLanguage().lang;
+    // console.log(`defaultLanguage: ${defaultLanguage}`);
 
     const changeLanguage = lng => {
       // console.log(`NEW changeLanguage: ${lng}`);

@@ -48,10 +48,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   componentDidMount() {
-    console.log(`SubmFormP1Container this.props.location`);
-    console.log(this.props.location);
-    console.log(`SubmFormP1Container this.props.history`);
-    console.log(this.props.history);
+    // console.log(`SubmFormP1Container this.props.location`);
+    // console.log(this.props.location);
+    // console.log(`SubmFormP1Container this.props.history`);
+    // console.log(this.props.history);
     // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
     // console.log('**************   PARAMS   ************');

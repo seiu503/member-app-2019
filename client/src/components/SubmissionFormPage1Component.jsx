@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import { withTranslation } from "react-i18next";
 import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
+import SinglePageForm from "./SinglePageForm";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import CAPEForm from "./CAPE";
@@ -179,7 +180,7 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
-    // console.log(`####################################################`)
+    // console.log(`################# query params #################`)
     // console.log(values);
     // console.log(this.props);
     const checkoff = this.props.submission.formPage1.checkoff;
@@ -256,8 +257,30 @@ export class SubmissionFormPage1Component extends React.Component {
             checkoff={checkoff}
             capeObject={this.props.submission.cape}
           />
-        ) : (
-          <React.Fragment>
+        ) : 
+
+        values.spf ? (
+          <SinglePageForm
+            {...this.props}
+            onSubmit={() => {
+              this.props.handleTab(1);
+              return false;
+            }}
+            verifyCallback={this.verifyCallback}
+            classes={classes}
+            employerTypesList={employerTypesList}
+            employerList={employerList}
+            handleInput={this.props.apiSubmission.handleInput}
+            updateEmployersPicklist={this.updateEmployersPicklist}
+            renderSelect={this.renderSelect}
+            renderTextField={this.renderTextField}
+            renderCheckbox={this.renderCheckbox}
+            handleError={this.props.handleError}
+            openSnackbar={this.props.openSnackbar}
+          />
+        ) :
+        (
+          <>
             {typeof this.props.tab !== "number" && (
               <WelcomeInfo
                 embed={this.props.embed}
@@ -341,7 +364,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 )}
               </div>
             )}
-          </React.Fragment>
+          </>
         )}
       </Box>
     );

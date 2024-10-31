@@ -2381,6 +2381,14 @@ export const languageMap = {
   简体中文: "zh"
 };
 
+export const languageMapEnglish = {
+  English: "en",
+  Spanish: "es",
+  Russian: "ru",
+  Vietnamese: "vi",
+  Cantonese: "zh"
+};
+
 export const LanguagePicker = React.forwardRef((props, ref) => {
   return (
     <Translation>
