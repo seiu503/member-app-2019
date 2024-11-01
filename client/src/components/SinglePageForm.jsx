@@ -64,7 +64,7 @@ export const SinglePageForm = props => {
   } = props;
 
   // console.log(employerTypesList);
-  console.log(employerTypesList.length);
+  // console.log(employerTypesList.length);
 
   // console.log("SinglePageFormRender");
   // console.log(formValues);
@@ -575,13 +575,13 @@ SinglePageForm.propTypes = {
 const mapStateToProps = state => ({
   submission: state.submission,
   initialValues: state.submission.formPage1,
-  formValues: getFormValues("spReduxForm")(state) || {},
-  submitErrors: getFormSubmitErrors("spReduxForm")(state)
+  formValues: getFormValues("submissionPage1")(state) || {},
+  submitErrors: getFormSubmitErrors("submissionPage1")(state)
 });
 
 // add reduxForm to component
 export const spReduxForm = reduxForm({
-  form: "spReduxForm",
+  form: "submissionPage1",
   validate,
   destroyOnUnmount: false, // <------ preserve form data
   forceUnregisterOnUnmount: true,

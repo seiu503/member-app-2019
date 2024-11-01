@@ -259,7 +259,7 @@ export class SubmissionFormPage1Component extends React.Component {
           />
         ) : 
 
-        values.spf ? (
+        this.props.spf && this.props.tab !== 2 ? (
           <SinglePageForm
             {...this.props}
             onSubmit={() => {
@@ -310,7 +310,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     : { display: "none" }
                 }
               >
-                <NavTabs {...this.props} />
+              {/*  <NavTabs {...this.props} /> */}
                 {this.props.tab === 0 && (
                   <Tab1Form
                     {...this.props}
@@ -331,7 +331,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {this.props.tab === 1 && (
+                {this.props.tab === 1 && !this.props.spf (
                   <Tab2Form
                     {...this.props}
                     onSubmit={() => this.props.handleTab(2)}
@@ -344,8 +344,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {(this.props.tab === 3 ||
-                  (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
+                {this.props.tab === 2 && (
                   <CAPEForm
                     {...this.props}
                     classes={classes}

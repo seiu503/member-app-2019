@@ -118,6 +118,13 @@ export class AppUnconnected extends Component {
       console.log(`NEW changeLanguage: ${values.lang}`);
       changeLanguage(values.lang);
     }
+
+    // check for spf status
+    if (values.spf) {
+      const newState = { ...this.state };
+      newState.spf = true;
+      this._isMounted && this.setState({ ...newState });
+    }
   }
 
   componentWillUnmount() {
@@ -383,7 +390,7 @@ export class AppUnconnected extends Component {
   }
 
   async prepForContact(values) {
-    console.log("prepForContact");
+    console.log("prepForContact start");
     console.dir(values);
     return new Promise(resolve => {
       let returnValues = { ...values };
@@ -467,13 +474,14 @@ export class AppUnconnected extends Component {
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
           // this will be an agency-level employer Id
-          console.log("460");
+          console.log("477 prepForContact");
           returnValues.employerId = employerObject
             ? employerObject.Id
             : "0016100000WERGeAAP"; // <= unknown employer
         }
+        console.log('employerObject');
         console.log(employerObject);
-        console.log(returnValues.employerId);
+        console.log(`employerId: ${returnValues.employerId}`);
       } else {
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
@@ -482,17 +490,19 @@ export class AppUnconnected extends Component {
           ? employerObject.Id
           : "0016100000WERGeAAP"; // <= unknown employer
       }
-      console.log("473");
+      console.log("493 prepForContact");
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
       });
       // console.dir(returnValues);
+      console.log("prepForContact resolve");
       resolve(returnValues);
     });
   }
 
   prepForSubmission(values, partial) {
+    console.log("prepForSubmission start");
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -518,12 +528,13 @@ export class AppUnconnected extends Component {
           returnValues.salesforceId = this.props.submission.salesforce_id;
         }
       }
+      console.log("prepForSubmission resolve");
       resolve(returnValues);
     });
   }
 
   async generateSubmissionBody(values, partial) {
-    console.log("generateSubmissionBody");
+    console.log("generateSubmissionBody start");
     const firstValues = await this.prepForContact(values);
     // console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
@@ -597,6 +608,7 @@ export class AppUnconnected extends Component {
     const maintenance_of_effort = partial ? null : new Date();
     const seiu503_cba_app_date = partial ? null : new Date();
 
+    console.log("generateSubmissionBody resolve");
     return {
       submission_date: new Date(),
       agency_number: agencyNumber,
@@ -644,9 +656,10 @@ export class AppUnconnected extends Component {
     };
   }
 
+  // called from handleTab2 in SubmissionFormPage1.jsx
   async createSubmission(formValues, partial) {
     // create initial submission using data in tabs 1 & 2
-
+    console.log("createSubmission start");
     const body = await this.generateSubmissionBody(formValues, partial);
     // console.log(body);
     const cleanBody = removeFalsy(body);
@@ -690,8 +703,8 @@ export class AppUnconnected extends Component {
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        console.log("673", result.type);
-        console.log(this.props.submission.error);
+        console.log("701", result.type);
+        console.log(`submission errors: ${this.props.submission.error}`);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
@@ -702,7 +715,8 @@ export class AppUnconnected extends Component {
             this.props.submission.error
           );
           // goto CAPE tab
-          this.changeTab(this.props.submission.formPage1.howManyTabs - 1);
+          console.log('moving to CAPE Tab');
+          this.changeTab(2);
         } else if (!this.props.submission.error) {
           // update submission status and redirect to CAPE tab
           // console.log("updating submission status");
@@ -718,7 +732,9 @@ export class AppUnconnected extends Component {
                 console.log(this.props.submission.error);
                 return this.handleError(this.props.submission.error);
               } else {
-                this.changeTab(2);
+                console.log("createSubmission resolve");
+                return null;
+                // this.changeTab(2);
               }
             })
             .catch(err => {
@@ -919,6 +935,7 @@ export class AppUnconnected extends Component {
                 element={
                   <SubmissionFormPage1
                     tab={this.state.tab}
+                    spf={this.state.spf}
                     embed={embed}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}

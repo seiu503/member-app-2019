@@ -75,6 +75,9 @@ export class SubmissionFormPage1Container extends React.Component {
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
+
+            // *** NEED TO FIGURE OUT HOW TO HANDLE THIS WITH SPF ***///
+
             this.props.apiSubmission.clearForm();
             // remove cId & aId from route params if no match,
             // but preserve other params
@@ -189,17 +192,22 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async saveLegalLanguage() {
-    const { formValues } = this.props;
-    // save legal_language to redux store before ref disappears
-    let legalLanguage =
-      this.props.legal_language.current.textContent ||
-      this.props.legal_language.current.innerText ||
-      "";
-    // console.log(legalLanguage);
+    console.log('saveLegalLanguage start');
+    return new Promise(resolve => {
+      const { formValues } = this.props;
+      // save legal_language to redux store before ref disappears
+      let legalLanguage =
+        this.props.legal_language.current.textContent ||
+        this.props.legal_language.current.innerText ||
+        "";
+      // console.log(legalLanguage);
 
-    this.props.apiSubmission.handleInput({
-      target: { name: "legalLanguage", value: legalLanguage }
-    });
+      this.props.apiSubmission.handleInput({
+        target: { name: "legalLanguage", value: legalLanguage }
+      });
+      console.log('saveLegalLanguage resolve');
+      resolve();
+    })
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
@@ -476,7 +484,8 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab2() {
     const { formValues } = this.props;
-    // console.log(formValues);
+    console.log( 'handleTab2formValues');
+    console.log(formValues);
 
     if (!formValues.signature) {
       console.log(this.props.t("provideSignatureError"));
@@ -484,7 +493,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // save legal language
-    this.saveLegalLanguage();
+    await this.saveLegalLanguage();
 
     // save partial submission (update later with demographics from p2)
     await this.props.createSubmission(formValues).catch(err => {
@@ -497,9 +506,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab1() {
-    console.log("handleTab1");
+    console.log( 'handleTab1formValues');
     const { formValues } = this.props;
-    // console.dir(formValues);
+    console.log(formValues);
+ 
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     setTimeout(() => {
@@ -512,24 +522,29 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     }, 0);
 
-    // handle moving from tab 1 to tab 2:
-    await this.props.apiSubmission.handleInput({
-      target: { name: "howManyTabs", value: 3 }
-    });
-
-    console.log("485");
+    console.log("520");
 
     // check if SF contact id already exists (prefill case)
     console.log(`sfid: ${this.props.submission.salesforceId}`);
     const checkForSFContactId = async () => {
       if (this.props.submission.salesforceId) {
-        console.log("511");
+        console.log("526");
         // update existing contact, move to next tab
         await this.props.updateSFContact(formValues).catch(err => {
           console.error(err);
           return this.props.handleError(err);
         });
-        return this.props.changeTab(1);
+        if (this.props.spf) {
+          console.log('spf: moving to handleTab2 function');
+          await this.handleTab2()
+            .catch(err => {
+              console.error(err);
+              return this.props.handleError(err);
+            });
+          return null;
+        } else {
+          return this.props.changeTab(1);
+        }
       }
     };
 
@@ -550,7 +565,12 @@ export class SubmissionFormPage1Container extends React.Component {
       console.error(err);
       return this.props.handleError(err);
     });
-    return this.props.changeTab(1);
+    if (this.props.spf) {
+      console.log('spf: moving to handleTab2 function');
+      return this.handleTab2();
+    } else {
+      return this.props.changeTab(1);
+    }
   }
 
   async handleTab(newValue) {
@@ -616,6 +636,7 @@ export class SubmissionFormPage1Container extends React.Component {
           {...this.props}
           change={change}
           tab={this.props.tab}
+          spf={this.props.spf}
           howManyTabs={this.props.submission.formPage1.howManyTabs}
           handleTab={this.handleTab}
           back={this.props.changeTab}
