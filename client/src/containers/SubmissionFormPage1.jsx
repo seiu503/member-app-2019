@@ -157,7 +157,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("verifyRecaptchaScore");
+    console.log("SFP1 160 verifyRecaptchaScore");
     // fetch token
     await this.props.recaptcha.current.execute();
 
@@ -172,11 +172,11 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      console.log("158");
+      console.log("SFP1 175 verifyRecaptchaScore");
       this.props.apiSubmission
         .verify(token)
         .then(result => {
-          console.log("161", result.payload.score);
+          console.log("SFP1 179 verifyRecaptchaScore", result.payload.score);
           return result.payload.score;
         })
         .catch(err => {
@@ -185,14 +185,14 @@ export class SubmissionFormPage1Container extends React.Component {
           return this.props.handleError(rcErr);
         });
     } else {
-      console.log("175");
+      console.log("SFP1 188 verifyRecaptchaScore");
       const rcErr = this.props.t("reCaptchaError");
       return this.props.handleError(rcErr);
     }
   }
 
   async saveLegalLanguage() {
-    console.log('saveLegalLanguage start');
+    console.log('SFP1 195 saveLegalLanguage start');
     return new Promise(resolve => {
       const { formValues } = this.props;
       // save legal_language to redux store before ref disappears
@@ -211,23 +211,23 @@ export class SubmissionFormPage1Container extends React.Component {
         });
       }
       
-      console.log('saveLegalLanguage resolve');
+      console.log('SFP1 214 saveLegalLanguage resolve');
       resolve();
     })
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
+    console.log("SFP1 220 generateCAPEBody");
     // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
     // console.log(formValues);
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      console.log("198");
+      console.log("SFP1 227 generateCAPEBody");
       await this.props
         .lookupSFContact(formValues)
-        .then(() => console.log("200"))
+        .then(() => console.log("SFP1 230 generateCAPEBody"))
         .catch(err => {
           console.error(err);
           return this.props.handleError(err);
@@ -244,7 +244,7 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(`employerId: ${employerObject.Id}`);
     } else {
       console.log(
-        `no employerObject found for ${formValues.employerName}; no agency #`
+        `SFP1 247 no employerObject found for ${formValues.employerName}; no agency #`
       );
     }
 
@@ -513,6 +513,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab1() {
+    console.log("SFP1 516 handleTab1");
     console.log( 'handleTab1formValues');
     const { formValues } = this.props;
     console.log(formValues);
@@ -529,57 +530,65 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     }, 0);
 
-    console.log("520");
+    console.log("SFP1 533 handleTab1");
 
-    // check if SF contact id already exists (prefill case)
-    console.log(`sfid: ${this.props.submission.salesforceId}`);
-    const checkForSFContactId = async () => {
-      if (this.props.submission.salesforceId) {
-        console.log("526");
-        // update existing contact, move to next tab
-        await this.props.updateSFContact(formValues)
+    const updateContactAndMoveToNextTab = async () => {
+      console.log("SFP1 538 handleTab1 updateContactAndMoveToNextTab");
+      // update existing contact, move to next tab
+      await this.props.updateSFContact(formValues)
+        .catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
+      console.log('SFP1 545 handleTab1 updateContactAndMoveToNextTab');
+      if (this.props.spf) {
+        console.log('single page form: calling handleTab2 after updating contact');
+        return this.handleTab2()
           .catch(err => {
             console.error(err);
             return this.props.handleError(err);
           });
-        console.log('538');
+      } else {
+        console.log('not spf: moving to tab 2');
+        return this.props.changeTab(1);
+      }
+    };
+
+    console.log("SFP1 557 handleTab1");
+
+    // check if SF contact id already exists (prefill case)
+    console.log(`sfid: ${this.props.submission.salesforceId}`);
+
+    if (this.props.submission.salesforceId) {
+      await updateContactAndMoveToNextTab();
+      console.log("SFP1 564 handleTab1");
+    } else {
+      // otherwise, lookup contact by first/last/email
+      await this.props.lookupSFContact(formValues).catch(err => {
+        console.log("SFP1 568 handleTab1");
+        console.error(err);
+        return this.props.handleError(err);
+      });
+
+      // if lookup was successful, update existing contact and move to next tab
+      if (this.props.submission.salesforceId) {
+        await updateContactAndMoveToNextTab();
+        console.log("SFP1 576 handleTab1");
+      } else {
+        // otherwise, create new contact with submission data,
+        // then move to next tab
+        await this.props.createSFContact(formValues).catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
         if (this.props.spf) {
-          console.log('spf: calling handleTab2');
-          await this.handleTab2()
-            .catch(err => {
-              console.error(err);
-              return this.props.handleError(err);
-            });
-          return null;
+          console.log('single page form: calling handleTab2 after creating new contact');
+          return this.handleTab2();
         } else {
           console.log('not spf: moving to tab 2');
           return this.props.changeTab(1);
         }
-      }
-    };
-
-    await checkForSFContactId();
-
-    // otherwise, lookup contact by first/last/email
-    await this.props.lookupSFContact(formValues).catch(err => {
-      console.error(err);
-      return this.props.handleError(err);
-    });
-
-    // if lookup was successful, update existing contact and move to next tab
-    await checkForSFContactId();
-
-    // otherwise, create new contact with submission data,
-    // then move to next tab
-    await this.props.createSFContact(formValues).catch(err => {
-      console.error(err);
-      return this.props.handleError(err);
-    });
-    if (this.props.spf) {
-      console.log('spf: moving to handleTab2 function');
-      return this.handleTab2();
-    } else {
-      return this.props.changeTab(1);
+      } 
     }
   }
 
