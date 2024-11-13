@@ -17,6 +17,7 @@ import {
   SAVE_SALESFORCEID,
   SAVE_SUBMISSIONID,
   HANDLE_INPUT,
+  HANDLE_INPUT_SPF,
   CLEAR_FORM,
   SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
@@ -85,6 +86,7 @@ export const INITIAL_STATE = {
     lastName: "",
     homeEmail: ""
   },
+  p4cReturnValues: {},
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
   redirect: false,
@@ -114,6 +116,11 @@ function Submission(state = INITIAL_STATE, action) {
           [action.payload.name]: { $set: action.payload.value }
         }
       });
+
+    case HANDLE_INPUT_SPF:
+      return update(state, {
+          [action.payload.name]: { $set: action.payload.value }
+      });  
 
     case CLEAR_FORM:
       return INITIAL_STATE;

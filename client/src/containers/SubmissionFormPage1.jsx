@@ -196,15 +196,21 @@ export class SubmissionFormPage1Container extends React.Component {
     return new Promise(resolve => {
       const { formValues } = this.props;
       // save legal_language to redux store before ref disappears
-      let legalLanguage =
-        this.props.legal_language.current.textContent ||
-        this.props.legal_language.current.innerText ||
-        "";
-      // console.log(legalLanguage);
+      // but first check to see if it's already been saved? because this is running twice when it shouldn't
+      // and sometimes it runs after we've already moved to the next tab and then the ref is gone
 
-      this.props.apiSubmission.handleInput({
-        target: { name: "legalLanguage", value: legalLanguage }
-      });
+      if (!this.props.submission.formPage1.legalLanguage && !this.props.submission.p4cReturnValues.legalLanguage) {
+        let legalLanguage =
+          this.props.legal_language.current.textContent ||
+          this.props.legal_language.current.innerText ||
+          "";
+        // console.log(legalLanguage);
+
+        this.props.apiSubmission.handleInput({
+          target: { name: "legalLanguage", value: legalLanguage }
+        });
+      }
+      
       console.log('saveLegalLanguage resolve');
       resolve();
     })
@@ -483,6 +489,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab2() {
+    // p4c hasn't been run yet so can't use previously saved values from redux store
     const { formValues } = this.props;
     console.log( 'handleTab2formValues');
     console.log(formValues);
@@ -530,12 +537,14 @@ export class SubmissionFormPage1Container extends React.Component {
       if (this.props.submission.salesforceId) {
         console.log("526");
         // update existing contact, move to next tab
-        await this.props.updateSFContact(formValues).catch(err => {
-          console.error(err);
-          return this.props.handleError(err);
-        });
+        await this.props.updateSFContact(formValues)
+          .catch(err => {
+            console.error(err);
+            return this.props.handleError(err);
+          });
+        console.log('538');
         if (this.props.spf) {
-          console.log('spf: moving to handleTab2 function');
+          console.log('spf: calling handleTab2');
           await this.handleTab2()
             .catch(err => {
               console.error(err);
@@ -543,6 +552,7 @@ export class SubmissionFormPage1Container extends React.Component {
             });
           return null;
         } else {
+          console.log('not spf: moving to tab 2');
           return this.props.changeTab(1);
         }
       }

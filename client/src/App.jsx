@@ -332,6 +332,7 @@ export class AppUnconnected extends Component {
   }
 
   // lookup SF Contact by first, last, email; if none found then create new
+  // called from handleTab1, SubmissionFormPage1.jsx > 558
   async lookupSFContact(formValues) {
     console.log("lookupSFContact");
     console.dir(formValues);
@@ -354,8 +355,8 @@ export class AppUnconnected extends Component {
       });
 
       // if nothing found on lookup, need to create new contact
-      if (!this.props.submission.salesforceId) {
-        console.log("348");
+      if (!this.props.submission.salesforceId && !this.props.submission.p4cReturnValues.salesforceId) {
+        console.log("359: No SF Contact found on lookup (no salesforceId in redux store), creating new");
         console.dir(formValues);
         await this.createSFContact(formValues)
           .then(() => {
@@ -496,6 +497,15 @@ export class AppUnconnected extends Component {
         target: { name: "employerId", value: returnValues.employerId }
       });
       // console.dir(returnValues);
+
+      console.log('saving returnValues to redux to avoid duplicate calls later');
+      this.props.apiSubmission.handleInputSPF({
+        target: { name: "p4cReturnValues", value: {... returnValues } }
+      });
+
+      console.log(`checking redux store for returnValues`);
+      console.log(this.props.submission);
+
       console.log("prepForContact resolve");
       resolve(returnValues);
     });
@@ -535,10 +545,17 @@ export class AppUnconnected extends Component {
 
   async generateSubmissionBody(values, partial) {
     console.log("generateSubmissionBody start");
-    const firstValues = await this.prepForContact(values);
-    // console.log("firstValues", firstValues);
+    let firstValues;
+    // if (this.state.spf) {
+    //   console.log('spf true; skipping p4c');
+    //   console.log(this.props.submission);
+    //   firstValues = { ...this.props.submission.p4cReturnValues };
+    // } else {
+      firstValues = await this.prepForContact(values);
+    // }
+    console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
-    // console.log("secondValues", secondValues);
+    console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = firstValues.signature
       ? firstValues.signature
@@ -609,7 +626,7 @@ export class AppUnconnected extends Component {
     const seiu503_cba_app_date = partial ? null : new Date();
 
     console.log("generateSubmissionBody resolve");
-    return {
+    const submissionBody = {
       submission_date: new Date(),
       agency_number: agencyNumber,
       birthdate,
@@ -654,6 +671,9 @@ export class AppUnconnected extends Component {
       work_email,
       work_phone
     };
+    console.log('672');
+    console.log(submissionBody);
+    return submissionBody;
   }
 
   // called from handleTab2 in SubmissionFormPage1.jsx
@@ -756,10 +776,14 @@ export class AppUnconnected extends Component {
 
   async createSFContact(formValues) {
     console.log("createSFContact");
-    const values = await this.prepForContact(formValues).catch(err =>
-      console.log(err)
-    );
-    console.log("724");
+    let values;
+    if (this.state.spf) {
+      console.log('spf true; skipping p4c');
+      values = { ...this.props.submission.p4cReturnValues };
+    } else {
+      values = await this.prepForContact(formValues);
+    }
+    console.log("781 createSFContact");
     console.log(values);
     let {
       firstName,
@@ -805,7 +829,14 @@ export class AppUnconnected extends Component {
 
   async updateSFContact(formValues) {
     console.log("updateSFContact");
-    const values = await this.prepForContact(formValues);
+    let values;
+    if (this.state.spf) {
+      console.log('spf true; skipping p4c');
+      values = { ...this.props.submission.p4cReturnValues };
+    } else {
+      values = await this.prepForContact(formValues);
+    }
+
     let {
       firstName,
       lastName,
