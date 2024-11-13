@@ -184,6 +184,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(values);
     // console.log(this.props);
     const checkoff = this.props.submission.formPage1.checkoff;
+    const { spf } = this.props;
     const formContainer = {
       display: "flex",
       padding: {
@@ -259,7 +260,7 @@ export class SubmissionFormPage1Component extends React.Component {
           />
         ) : 
 
-        this.props.spf && this.props.tab !== 2 ? (
+        spf && this.props.tab !== 2 ? (
           <SinglePageForm
             {...this.props}
             onSubmit={() => {
@@ -331,7 +332,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {this.props.tab === 1 && !this.props.spf (
+                {this.props.tab === 1 && !spf && (
                   <Tab2Form
                     {...this.props}
                     onSubmit={() => this.props.handleTab(2)}
