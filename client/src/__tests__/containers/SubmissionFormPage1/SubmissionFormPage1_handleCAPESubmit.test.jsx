@@ -31,6 +31,7 @@ let store, handleErrorMock;
 
 let navigate = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest
     .fn()
@@ -162,6 +163,25 @@ const defaultProps = {
       monthlyOptions: []
     },
     payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
     salesforceId: "123",
     employerObjects: [...employersPayload]
   },
@@ -186,6 +206,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
@@ -227,7 +248,7 @@ const defaultProps = {
   body: { id: 1 },
   renderHeadline: jest.fn(),
   renderBodyCopy: jest.fn(),
-  tab: 3,
+  tab: 2,
   displayCAPEPaymentFields: true
 };
 
@@ -375,7 +396,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           }
         },
         reset: jest.fn(),
-        tab: 3,
+        tab: 2,
         displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         history: {},

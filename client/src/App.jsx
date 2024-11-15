@@ -102,7 +102,7 @@ export class AppUnconnected extends Component {
 
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage().lang;
-    // console.log(`defaultLanguage: ${defaultLanguage}`);
+    console.log(`defaultLanguage: ${defaultLanguage}`);
 
     const changeLanguage = lng => {
       // console.log(`NEW changeLanguage: ${lng}`);
@@ -503,8 +503,8 @@ export class AppUnconnected extends Component {
         target: { name: "p4cReturnValues", value: {... returnValues } }
       });
 
-      console.log(`checking redux store for returnValues`);
-      console.log(this.props.submission);
+      // console.log(`checking redux store for returnValues`);
+      // console.log(this.props.submission);
 
       console.log("App 509 prepForContact resolve");
       resolve(returnValues);
@@ -742,33 +742,33 @@ export class AppUnconnected extends Component {
           this.changeTab(2);
         } else if (!this.props.submission.error) {
 
-          // what if we don't update submission status after creating OMA? does that fix the endless loop?
-          return null; 
+          // // what if we don't update submission status after creating OMA? does that fix the endless loop?
+          // return null; 
 
 
           // update submission status and redirect to CAPE tab
-          // console.log("updating submission status");
-          // this.props.apiSubmission
-          //   .updateSubmission(this.props.submission.submissionId, {
-          //     submission_status: "Success"
-          //   })
-          //   .then(result => {
-          //     if (
-          //       result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          //       this.props.submission.error
-          //     ) {
-          //       console.log(this.props.submission.error);
-          //       return this.handleError(this.props.submission.error);
-          //     } else {
-          //       console.log("createSubmission resolve");
-          //       return null;
-          //       // this.changeTab(2);
-          //     }
-          //   })
-          //   .catch(err => {
-          //     console.error(err);
-          //     return this.handleError(err);
-          //   });
+          console.log("updating submission status");
+          this.props.apiSubmission
+            .updateSubmission(this.props.submission.submissionId, {
+              submission_status: "Success"
+            })
+            .then(result => {
+              if (
+                result.type === "UPDATE_SUBMISSION_FAILURE" ||
+                this.props.submission.error
+              ) {
+                console.log(this.props.submission.error);
+                return this.handleError(this.props.submission.error);
+              } else {
+                console.log("createSubmission resolve");
+                return null;
+                // this.changeTab(2);
+              }
+            })
+            .catch(err => {
+              console.error(err);
+              return this.handleError(err);
+            });
         }
       })
       .catch(err => {

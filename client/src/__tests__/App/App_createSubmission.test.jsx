@@ -29,6 +29,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
 
@@ -134,6 +135,25 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
     submissionId: 1
   },
   appState: {},
@@ -161,6 +181,7 @@ const defaultProps = {
   apiSubmission: {
     // handleInput: handleInputMock,
     handleInput,
+    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
@@ -206,6 +227,7 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     cape: {
@@ -258,6 +280,7 @@ describe("<App />", () => {
         apiSubmission: {
           // handleInput: handleInputMock,
           handleInput,
+          handleInputSPF: handleInputSPFMock,
           addSubmission: addSubmissionError,
           updateSubmission: jest
             .fn()
@@ -269,7 +292,8 @@ describe("<App />", () => {
             legalLanguage: "jjj"
           },
           error: "addSubmissionError",
-          currentSubmission: {}
+          currentSubmission: {},
+          p4cReturnValues: { ...defaultProps.p4cReturnValues }
         },
         recaptcha: {
           current: {
@@ -355,6 +379,7 @@ describe("<App />", () => {
       let props = {
         apiSubmission: {
           handleInput,
+          handleInputSPF: handleInputSPFMock,
           addSubmission: addSubmissionError,
           updateSubmission: jest
             .fn()
@@ -364,7 +389,8 @@ describe("<App />", () => {
           salesforceId: "123",
           formPage1: {
             legalLanguage: "jjj"
-          }
+          },
+          p4cReturnValues: { ...defaultProps.p4cReturnValues }
         },
         apiSF: {
           createSFContact: jest.fn().mockImplementation(() =>
@@ -465,6 +491,7 @@ describe("<App />", () => {
         },
         apiSubmission: {
           handleInput,
+          handleInputSPF: handleInputSPFMock,
           addSubmission: addSubmissionSuccess,
           updateSubmission: updateSubmissionSuccess
         },
@@ -474,6 +501,7 @@ describe("<App />", () => {
           formPage1: {
             paymentRequired: false
           },
+          p4cReturnValues: { ...defaultProps.p4cReturnValues },
           // error: "createSFOMAError",
           currentSubmission: {
             submission_errors: ""
@@ -569,8 +597,10 @@ describe("<App />", () => {
           employerType: "retired",
           preferredLanguage: "English"
         },
+        p4cReturnValues: { ...defaultProps.p4cReturnValues },
         apiSubmission: {
           handleInput,
+          handleInputSPF: handleInputSPFMock,
           addSubmission: addSubmissionSuccess,
           updateSubmission: updateSubmissionSuccess
         },
@@ -665,8 +695,10 @@ describe("<App />", () => {
           employerType: "retired",
           preferredLanguage: "English"
         },
+        p4cReturnValues: { ...defaultProps.p4cReturnValues },
         apiSubmission: {
           handleInput: handleInputMock,
+          handleInputSPF: handleInputSPFMock,
           addSubmission: jest.fn().mockImplementation(() =>
             Promise.resolve({
               type: "ADD_SUBMISSION_SUCCESS",

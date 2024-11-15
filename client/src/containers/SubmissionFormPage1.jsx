@@ -48,6 +48,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     // console.log(`SubmFormP1Container this.props.location`);
     // console.log(this.props.location);
     // console.log(`SubmFormP1Container this.props.history`);
@@ -99,11 +100,15 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleOpen() {
     // console.log('`submFormPage1.jsx > handleOpen`');
     const newState = { ...this.state };
     newState.open = true;
-    this.setState({ ...newState }, () => {
+    this._isMounted && this.setState({ ...newState }, () => {
       // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
       // console.log(this.state);
     });
@@ -112,20 +117,20 @@ export class SubmissionFormPage1Container extends React.Component {
   handleCAPEOpen() {
     const newState = { ...this.state };
     newState.capeOpen = true;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   }
 
   handleClose() {
     const newState = { ...this.state };
     newState.open = false;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   }
 
   handleCloseAndClear() {
     console.log("handleCloseAndClear");
     const newState = { ...this.state };
     newState.open = false;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
     this.props.apiSubmission.clearForm();
     // remove cId & aId from route params if no match
     window.history.replaceState(null, null, `${window.location.origin}/`);
@@ -134,7 +139,7 @@ export class SubmissionFormPage1Container extends React.Component {
   handleCAPEClose() {
     const newState = { ...this.state };
     newState.capeOpen = false;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   }
 
   closeDialog() {
@@ -377,7 +382,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log("no donation amount chosen: 365");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
-      return this.setState(newState, () => {
+      return this._isMounted && this.setState(newState, () => {
         this.props.handleError(this.props.t("donationAmountError"));
         console.log(this.state.displayCAPEPaymentFields);
       });
@@ -656,7 +661,6 @@ export class SubmissionFormPage1Container extends React.Component {
           change={change}
           tab={this.props.tab}
           spf={this.props.spf}
-          howManyTabs={this.props.submission.formPage1.howManyTabs}
           handleTab={this.handleTab}
           back={this.props.changeTab}
           handleUpload={this.handleUpload}
