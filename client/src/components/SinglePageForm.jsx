@@ -20,7 +20,7 @@ import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
 import { validate } from "../utils/validators";
-import { scrollToFirstError, detectDefaultLanguage } from "../utils";
+import * as utils from "../utils";
 
 // helper functions
 const {
@@ -74,10 +74,10 @@ export const SinglePageForm = props => {
 
   const classes = classesPage1;
 
-  const defaultLanguage = detectDefaultLanguage().lang;
+  const defaultLanguage = utils.detectDefaultLanguage().lang;
   // console.log(`defaultLanguage: ${defaultLanguage}`);
-  const langOther = detectDefaultLanguage().other;
-  // console.log(`langOther: ${langOther}`);
+  const langOther = utils.detectDefaultLanguage().other;
+  console.log(`langOther: ${langOther}`);
   const currentLanguage = getKeyByValue(languageMapEnglish,defaultLanguage);
   // console.log(`language for preferred language field: ${currentLanguage}`);
   if (langOther) {
@@ -85,6 +85,8 @@ export const SinglePageForm = props => {
   } else {
     formValues.preferredLanguage = currentLanguage;
   }
+  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+  console.log(formValues.preferredLanguage);
   
 
   const employerNameOnChange = () => {
@@ -289,6 +291,7 @@ export const SinglePageForm = props => {
           {!formValues.preferredLanguage && 
             <Field
               label="Preferred Language" 
+              data-testid="field-preferred-language"
               name="preferredLanguage"
               id="preferredLanguage"
               type="select"
@@ -588,7 +591,7 @@ export const spReduxForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true,
-  onSubmitFail: scrollToFirstError
+  onSubmitFail: utils.scrollToFirstError
 })(SinglePageForm);
 
 // connect to redux store

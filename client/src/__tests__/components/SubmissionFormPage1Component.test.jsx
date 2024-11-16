@@ -228,8 +228,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     // Reset any runtime request handlers we may add during the tests.
     afterEach(() => server.resetHandlers());
     it("renders without error", () => {
+      // testing spf case
       props = {
         ...defaultProps,
+        spf: true,
         apiSF: {
           ...defaultProps.apiSF,
           getSFEmployers: jest
