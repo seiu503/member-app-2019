@@ -77,7 +77,7 @@ export const SinglePageForm = props => {
   const defaultLanguage = utils.detectDefaultLanguage().lang;
   // console.log(`defaultLanguage: ${defaultLanguage}`);
   const langOther = utils.detectDefaultLanguage().other;
-  console.log(`langOther: ${langOther}`);
+  // console.log(`langOther: ${langOther}`);
   const currentLanguage = getKeyByValue(languageMapEnglish,defaultLanguage);
   // console.log(`language for preferred language field: ${currentLanguage}`);
   if (langOther) {
@@ -85,8 +85,8 @@ export const SinglePageForm = props => {
   } else {
     formValues.preferredLanguage = currentLanguage;
   }
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-  console.log(formValues.preferredLanguage);
+  // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+  // console.log(formValues.preferredLanguage);
   
 
   const employerNameOnChange = () => {
@@ -100,7 +100,7 @@ export const SinglePageForm = props => {
   };
 
   const matches = useMediaQuery("(min-width:450px)");
-
+  console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
   return (
     <Box
       data-testid="component-spf"

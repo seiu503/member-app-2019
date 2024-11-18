@@ -206,6 +206,7 @@ const defaultProps = {
 };
 
 let handleSubmit;
+let reloadMock = jest.fn();
 const initialState = {};
 const store = storeFactory(initialState);
 const setup = (props = {}) => {
@@ -226,13 +227,19 @@ const setup = (props = {}) => {
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
     handleSubmit = fn => fn;
+    reloadMock = jest.fn();
+    delete window.location;
+    window.location = { reload: reloadMock, href: "www.test.com" };
   });
 
   // Enable API mocking before tests.
   beforeAll(() => server.listen());
 
   // Reset any runtime request handlers we may add during the tests.
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    reloadMock.mockClear();
+  });
 
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());

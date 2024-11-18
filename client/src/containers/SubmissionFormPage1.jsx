@@ -76,15 +76,7 @@ export class SubmissionFormPage1Container extends React.Component {
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
-
-            // *** NEED TO FIGURE OUT HOW TO HANDLE THIS WITH SPF ***///
-
-            this.props.apiSubmission.clearForm();
-            // remove cId & aId from route params if no match,
-            // but preserve other params
-            const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
-            const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-            window.history.replaceState(null, null, cleanUrl2);
+            this.handleCloseAndClear();
           }
         })
         .catch(err => {
@@ -131,9 +123,19 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this._isMounted && this.setState({ ...newState });
+    if (this.props.spf) {
+      // reset to blank multi-page form
+      this.props.setSPF(false); 
+    }
     this.props.apiSubmission.clearForm();
-    // remove cId & aId from route params if no match
-    window.history.replaceState(null, null, `${window.location.origin}/`);
+    // remove cId & aId from route params if no match,
+    // but preserve other params
+    const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
+    const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
+    const cleanUrl3 = utils.removeURLParam(cleanUrl2, "spf");
+    console.log(`cleanUrl3: ${cleanUrl3}`);
+    window.history.replaceState(null, null, cleanUrl3);
+    window.location.reload(true);
   }
 
   handleCAPEClose() {

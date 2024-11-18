@@ -330,6 +330,23 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       const component = getByTestId("component-submissionformpage1");
       expect(component).toBeInTheDocument();
     });
+    it("renders Single Page Form", () => {
+      props = {
+        tab: null,
+        spf: true,
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFEmployers: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+            )
+        }
+      };
+      const { getByTestId } = setup(props);
+      const component = getByTestId("component-spf");
+      expect(component).toBeInTheDocument();
+    });
   });
 
   describe("componentDidMount", () => {

@@ -61,6 +61,26 @@ describe("submission reducer", () => {
     ).toEqual(INITIAL_STATE);
   });
 
+  describe("submission reducer second pass to deal with concurrency issues", () => {
+    it("should handle `handleInputSPF`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "HANDLE_INPUT_SPF",
+        payload: { name: "p4cReturnValues", value: {
+          "firstName": "New Name2" }
+        }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      p4cReturnValues: {
+        ...INITIAL_STATE.p4cReturnValues,
+        firstName: "New Name2"
+      }
+    });
+  });
+
+  });
+
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {
       const action = {

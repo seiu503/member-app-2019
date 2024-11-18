@@ -137,6 +137,8 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
+  // called from createSubmission in App.jsx > 726
+  // ^^ createSubmission is called from handleTab2 in SubmissionFormPage1.jsx > 511
   async createSFOMA() {
     console.log("createSFOMA");
     this.props.actions.setSpinner();

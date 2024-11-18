@@ -87,6 +87,7 @@ export class AppUnconnected extends Component {
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
+    this.setSPF = this.setSPF.bind(this);
     this.recaptcha = refCaptcha;
   }
 
@@ -153,6 +154,12 @@ export class AppUnconnected extends Component {
           open: false
         }
       });
+  };
+
+  setSPF(bool) {
+    const newState = { ...this.state };
+    newState.spf = bool;
+    this._isMounted && this.setState({ ...newState });
   };
 
   handleError = err => {
@@ -975,6 +982,7 @@ export class AppUnconnected extends Component {
                   <SubmissionFormPage1
                     tab={this.state.tab}
                     spf={this.state.spf}
+                    setSPF={this.setSPF}
                     embed={embed}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
