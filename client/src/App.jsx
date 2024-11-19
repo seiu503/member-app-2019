@@ -552,14 +552,7 @@ export class AppUnconnected extends Component {
 
   async generateSubmissionBody(values, partial) {
     console.log("App 547 generateSubmissionBody start");
-    let firstValues;
-    // if (this.state.spf) {
-    //   console.log('spf true; skipping p4c');
-    //   console.log(this.props.submission);
-    //   firstValues = { ...this.props.submission.p4cReturnValues };
-    // } else {
-      firstValues = await this.prepForContact(values);
-    // }
+    const firstValues = await this.prepForContact(values);
     console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
     console.log("secondValues", secondValues);
@@ -792,10 +785,11 @@ export class AppUnconnected extends Component {
   async createSFContact(formValues) {
     console.log("App 785 createSFContact");
     let values;
-    if (this.state.spf) {
-      console.log('spf true; skipping p4c');
+    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
+      console.log('spf true AND completePrefill = true; skipping p4c');
       values = { ...this.props.submission.p4cReturnValues };
     } else {
+      console.log('spf OR completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
     console.log("App 793 createSFContact");
@@ -843,12 +837,13 @@ export class AppUnconnected extends Component {
   }
 
   async updateSFContact(formValues) {
-    console.log("App 838 updateSFContact");
+    console.log("App 846 updateSFContact");
     let values;
-    if (this.state.spf) {
-      console.log('spf true; skipping p4c');
+    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
+      console.log('spf true AND completePrefill = true; skipping p4c');
       values = { ...this.props.submission.p4cReturnValues };
     } else {
+      console.log('spf OR completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
 

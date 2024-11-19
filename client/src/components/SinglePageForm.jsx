@@ -19,7 +19,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
-import { validate } from "../utils/validators";
+import { validate, prefillValidate } from "../utils/validators";
 import * as utils from "../utils";
 
 // helper functions
@@ -57,6 +57,7 @@ export const SinglePageForm = props => {
     renderSelect,
     renderTextField,
     renderCheckbox,
+    prefillValues,
     formValues,
     width,
     verifyCallback,
@@ -66,11 +67,11 @@ export const SinglePageForm = props => {
   // console.log(employerTypesList);
   // console.log(employerTypesList.length);
 
-  // console.log("SinglePageFormRender");
+  // console.log("SinglePageFormRender formValues");
   // console.log(formValues);
 
-  const completeAddress = !!formValues.homeStreet && !!formValues.homeCity && !!formValues.homeZip;
-  // console.log(`completeAddress: ${completeAddress}`);
+  // console.log("SinglePageFormRender prefillValues");
+  // console.log(prefillValues);
 
   const classes = classesPage1;
 
@@ -81,13 +82,18 @@ export const SinglePageForm = props => {
   const currentLanguage = getKeyByValue(languageMapEnglish,defaultLanguage);
   // console.log(`language for preferred language field: ${currentLanguage}`);
   if (langOther) {
-    formValues.preferredLanguage = "";
+    prefillValues.preferredLanguage = "";
   } else {
-    formValues.preferredLanguage = currentLanguage;
+    prefillValues.preferredLanguage = currentLanguage;
   }
   // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-  // console.log(formValues.preferredLanguage);
-  
+  // console.log(prefillValues.preferredLanguage);
+  const prefillErrors = prefillValidate(prefillValues);
+
+  const completeAddress = !prefillErrors.homeStreet && !prefillErrors.homeCity && !prefillErrors.homeZip;
+  // console.log(`completeAddress: ${completeAddress}`);
+  // console.log(`prefillErrors`);
+  // console.log(prefillErrors);
 
   const employerNameOnChange = () => {
     handleEmployerChange();
@@ -100,7 +106,6 @@ export const SinglePageForm = props => {
   };
 
   const matches = useMediaQuery("(min-width:450px)");
-  console.log('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%');
   return (
     <Box
       data-testid="component-spf"
@@ -121,7 +126,7 @@ export const SinglePageForm = props => {
         id="singlePageForm"
         data-testid="form-spf"
       >
-        {!formValues.employerName &&
+        {prefillErrors.employerName &&
           <>
             {employerTypesList.length < 3 && (
               <Box
@@ -288,7 +293,7 @@ export const SinglePageForm = props => {
             />
           </FormGroup>
 
-          {!formValues.preferredLanguage && 
+          {prefillErrors.preferredLanguage && 
             <Field
               label="Preferred Language" 
               data-testid="field-preferred-language"
@@ -386,7 +391,7 @@ export const SinglePageForm = props => {
             </>
           }
 
-          {!formValues.homeEmail &&
+          {prefillErrors.homeEmail &&
             <>
               <Field
                 label="Home Email"
@@ -408,7 +413,7 @@ export const SinglePageForm = props => {
               </FormHelperText>
             </>
           }
-          {!formValues.mobilePhone &&
+          {prefillErrors.mobilePhone &&
             <>
               <FormGroup>
                 <Field

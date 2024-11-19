@@ -280,6 +280,7 @@ export class SubmissionFormPage1Component extends React.Component {
             renderCheckbox={this.renderCheckbox}
             handleError={this.props.handleError}
             openSnackbar={this.props.openSnackbar}
+            prefillValues={this.props.submission.prefillValues}
           />
         ) :
         (

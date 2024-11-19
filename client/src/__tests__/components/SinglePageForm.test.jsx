@@ -44,7 +44,8 @@ const defaultProps = {
   updateEmployersPicklist: jest.fn(),
   width: "lg",
   handleTab: jest.fn(),
-  handleInput: jest.fn()
+  handleInput: jest.fn(),
+  prefillValues: {}
 };
 
 const theme = createTheme(adaptV4Theme);
@@ -132,6 +133,9 @@ describe("<SinglePageForm />", () => {
     it("conditionally renders preferred language field", () => {
       const props = {
         formValues: {
+          preferredLanguage: null
+        },
+        prefillValues: {
           preferredLanguage: null
         }
       }

@@ -121,7 +121,8 @@ const defaultProps = {
       preferredLanguage: "English",
       textAuthOptOut: false,
       legalLanguage: ""
-    }
+    },
+    prefillValues: {}
   },
   initialValues: {
     mm: "",

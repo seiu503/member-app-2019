@@ -118,7 +118,8 @@ export const languageOptions = [
   "Amharic",
   "Arabic",
   "Farsi",
-  "Haitian Creole"
+  "Haitian Creole",
+  "Other"
 ];
 export const genderOptions = ["", "Female", "Male", "Non-Binary", "Not listed"];
 export const genderPronounOptions = [

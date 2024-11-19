@@ -16,6 +16,7 @@ import queryString from "query-string";
 
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as utils from "../utils";
+import { prefillValidate } from "../utils/validators";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
@@ -63,8 +64,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const { cId, aId } = params;
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
-        .then(result => {
-          // console.log('********************************');
+        .then(async (result) => {
           // console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
@@ -72,6 +72,20 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.formPage1.lastName
           ) {
             this.handleOpen();
+            console.log('prefill values');
+            console.log(this.props.submission.prefillValues);
+            // check for complete prefill for spf only
+            if (params.spf) {
+              console.log(Object.keys(prefillValidate(this.props.submission.prefillValues)));
+              if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
+                console.log(`completePrefill: true`);
+                this.props.apiSubmission.handleInput({
+                  target: { name: "completePrefill", value: true }
+                });
+              } else {
+                console.log('completePrefill: false');
+              }
+            }
             // this.props.setCAPEOptions();
           } else {
             // if prefill lookup fails, remove ids from query params
@@ -183,7 +197,7 @@ export class SubmissionFormPage1Container extends React.Component {
       this.props.apiSubmission
         .verify(token)
         .then(result => {
-          console.log("SFP1 179 verifyRecaptchaScore", result.payload.score);
+          console.log("SFP1 179 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
           return result.payload.score;
         })
         .catch(err => {

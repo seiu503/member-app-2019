@@ -33,7 +33,8 @@ const handlers = [
         FirstName: "test",
         LastName: "test",
         Account: { id: "test" },
-        Ethnicity__c: "Declined"
+        Ethnicity__c: "Declined",
+        MobilePhone: "1234567890"
       });
   }),
 

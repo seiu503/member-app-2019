@@ -224,7 +224,9 @@ const defaultProps = {
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
   t: text => text,
-  renderBodyCopy: jest.fn()
+  renderBodyCopy: jest.fn(),
+  lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
+  createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
 };
 
 let handleSubmit;
@@ -267,7 +269,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             execute: executeMock
           }
         },
-        tab: 0
+        tab: 0,
+        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
+        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
       };
 
       // render form
