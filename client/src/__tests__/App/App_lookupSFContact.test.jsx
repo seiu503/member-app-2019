@@ -27,6 +27,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -120,6 +121,25 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
     employerObjects: { ...employersPayload }
   },
   appState: {},
@@ -147,6 +167,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -193,6 +214,7 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     cape: {
@@ -241,6 +263,9 @@ describe("<App />", () => {
           formPage1: { ...defaultProps.formPage1 },
           cape: {
             monthlyOptions: []
+          },
+          p4cReturnValues: {
+            salesforceId: null
           }
         },
         apiSF: {
@@ -324,6 +349,9 @@ describe("<App />", () => {
           salesforceId: null,
           formPage1: {
             prefillEmployerId: "123"
+          },
+          p4cReturnValues: {
+            salesforceId: null
           }
         },
         apiSF: {
@@ -402,6 +430,9 @@ describe("<App />", () => {
           formPage1: {
             ...defaultProps.formPage1,
             prefillEmployerId: null
+          },
+          p4cReturnValues: {
+            salesforceId: null
           }
         },
         apiSF: {
@@ -474,6 +505,9 @@ describe("<App />", () => {
           formPage1: {
             ...defaultProps.formPage1,
             prefillEmployerId: null
+          },
+          p4cReturnValues: {
+            salesforceId: null
           }
         },
         apiSF: {

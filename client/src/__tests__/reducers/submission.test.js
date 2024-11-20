@@ -61,6 +61,9 @@ describe("submission reducer", () => {
     ).toEqual(INITIAL_STATE);
   });
 
+
+  
+
   describe("successful actions return correct state", () => {
     test("addSubmission", () => {
       const action = {
@@ -184,7 +187,8 @@ describe("submission reducer", () => {
           afhDuesRate: 0,
           capeAmount: "",
           donationFrequency: "Monthly",
-          checkoff: true
+          checkoff: true,
+          completePrefill: false
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -216,6 +220,29 @@ describe("submission reducer", () => {
           workEmail: "string@string.com",
           workPhone: "123-456-7890",
           hireDate: "2019-11-11"
+        },
+        prefillValues: {
+          "employerId": "",
+          "employerName": "string",
+          "employerType": undefined,
+          "firstName": "string",
+          "homeCity": "string",
+          "homeEmail": "string@string.com",
+          "homeState": "or",
+          "homeStreet": "string",
+          "homeZip": "12345",
+          "immediatePastMemberStatus": "Not a Member",
+          "lastName": "string",
+          "legalLanguage": "",
+          "mm": "",
+          "mobilePhone": "123-456-7890",
+          "preferredLanguage": "string",
+          "prefillEmployerChanged": false,
+          "prefillEmployerId": "string",
+          "prefillEmployerParentId": "string",
+          "signature": null,
+          "termsAgree": false,
+          "textAuthOptOut": false,
         },
         salesforceId: "123",
         submissionId: null
@@ -310,7 +337,8 @@ describe("submission reducer", () => {
           donationFrequency: "Monthly",
           checkoff: true,
           prefillEmployerChanged: false,
-          howManyTabs: 3
+          howManyTabs: 3,
+          completePrefill: false
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -342,6 +370,29 @@ describe("submission reducer", () => {
           firstName: "string",
           lastName: "string",
           homeEmail: "string@string.com"
+        },
+        prefillValues: {
+          "employerId": "",
+          "employerName": "string",
+          "employerType": undefined,
+          "firstName": "string",
+          "homeCity": "string",
+          "homeEmail": "string@string.com",
+          "homeState": "or",
+          "homeStreet": "string",
+          "homeZip": "12345",
+          "immediatePastMemberStatus": "Not a Member",
+          "lastName": "string",
+          "legalLanguage": "",
+          "mm": "",
+          "mobilePhone": "123-456-7890",
+          "preferredLanguage": "string",
+          "prefillEmployerChanged": false,
+          "prefillEmployerId": "string",
+          "prefillEmployerParentId": "string",
+          "signature": null,
+          "termsAgree": false,
+          "textAuthOptOut": false,
         },
         salesforceId: "123",
         submissionId: null
@@ -435,7 +486,8 @@ describe("submission reducer", () => {
           donationFrequency: "Monthly",
           checkoff: true,
           prefillEmployerChanged: false,
-          howManyTabs: 3
+          howManyTabs: 3,
+          completePrefill: false
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -467,6 +519,29 @@ describe("submission reducer", () => {
           workEmail: "string@string.com",
           workPhone: "123-456-7890",
           hireDate: "2019-11-11"
+        },
+        prefillValues: {
+          "employerId": "",
+          "employerName": "string",
+          "employerType": undefined,
+          "firstName": "string",
+          "homeCity": "string",
+          "homeEmail": "string@string.com",
+          "homeState": "or",
+          "homeStreet": "string",
+          "homeZip": "12345",
+          "immediatePastMemberStatus": "Not a Member",
+          "lastName": "string",
+          "legalLanguage": "",
+          "mm": "",
+          "mobilePhone": "123-456-7890",
+          "preferredLanguage": "string",
+          "prefillEmployerChanged": false,
+          "prefillEmployerId": "string",
+          "prefillEmployerParentId": "string",
+          "signature": null,
+          "termsAgree": false,
+          "textAuthOptOut": false,
         },
         salesforceId: "123",
         submissionId: null
@@ -560,7 +635,8 @@ describe("submission reducer", () => {
           donationFrequency: "Monthly",
           checkoff: true,
           prefillEmployerChanged: false,
-          howManyTabs: 3
+          howManyTabs: 3,
+          completePrefill: false
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -592,6 +668,29 @@ describe("submission reducer", () => {
           workEmail: "string@string.com",
           workPhone: "123-456-7890",
           hireDate: "2019-11-11"
+        },
+        prefillValues: {
+          "employerId": "",
+          "employerName": "string",
+          "employerType": "",
+          "firstName": "string",
+          "homeCity": "string",
+          "homeEmail": "string@string.com",
+          "homeState": "or",
+          "homeStreet": "string",
+          "homeZip": "12345",
+          "immediatePastMemberStatus": "Not a Member",
+          "lastName": "string",
+          "legalLanguage": "",
+          "mm": "",
+          "mobilePhone": "123-456-7890",
+          "preferredLanguage": "string",
+          "prefillEmployerChanged": false,
+          "prefillEmployerId": "string",
+          "prefillEmployerParentId": "string",
+          "signature": null,
+          "termsAgree": false,
+          "textAuthOptOut": false,
         },
         salesforceId: "123",
         submissionId: null
@@ -680,7 +779,8 @@ describe("submission reducer", () => {
           afhDuesRate: 0,
           capeAmount: "",
           donationFrequency: "Monthly",
-          checkoff: true
+          checkoff: true,
+          completePrefill: false
         },
         formPage2: {
           africanOrAfricanAmerican: false,
@@ -712,6 +812,29 @@ describe("submission reducer", () => {
           workEmail: "string@string.com",
           workPhone: "123-456-7890",
           hireDate: "2019-11-11"
+        },
+        prefillValues: {
+          "employerId": "",
+          "employerName": "string",
+          "employerType": undefined,
+          "firstName": "string",
+          "homeCity": "string",
+          "homeEmail": "string@string.com",
+          "homeState": "or",
+          "homeStreet": "string",
+          "homeZip": "",
+          "immediatePastMemberStatus": "Not a Member",
+          "lastName": "string",
+          "legalLanguage": "",
+          "mm": "",
+          "mobilePhone": "123-456-7890",
+          "preferredLanguage": "string",
+          "prefillEmployerChanged": false,
+          "prefillEmployerId": "string",
+          "prefillEmployerParentId": null,
+          "signature": null,
+          "termsAgree": false,
+          "textAuthOptOut": false,
         },
         salesforceId: "123",
         submissionId: null
@@ -870,4 +993,43 @@ describe("submission reducer", () => {
       expect(reducer(undefined, action)).toEqual(expectedState);
     });
   });
+
+  describe("submission reducer second pass to deal with concurrency issues", () => {
+      it("should handle `handleInputSPF`", () => {
+      expect(
+        reducer(INITIAL_STATE, {
+          type: "HANDLE_INPUT_SPF",
+          payload: { name: "p4cReturnValues", value: {
+            "firstName": "New Name2" }
+          }
+        })
+      ).toEqual({
+        ...INITIAL_STATE,
+        p4cReturnValues: {
+          ...INITIAL_STATE.p4cReturnValues,
+          firstName: "New Name2"
+        }
+      });
+    });
+
+      it("should handle `setCAPEOptions`", () => {
+    expect(
+      reducer(INITIAL_STATE, {
+        type: "SET_CAPE_OPTIONS",
+        payload: { 
+          "monthlyOptions": [11,22,33],
+          "oneTimeOptions": [44,55,66] 
+        }
+      })
+    ).toEqual({
+      ...INITIAL_STATE,
+      cape: {
+        ...INITIAL_STATE.cape,
+        monthlyOptions: [11,22,33],
+        oneTimeOptions: [44,55,66]
+      }
+    });
+  });
+
+    });
 });

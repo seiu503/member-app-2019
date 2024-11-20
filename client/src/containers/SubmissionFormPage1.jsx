@@ -16,6 +16,7 @@ import queryString from "query-string";
 
 import SubmissionFormPage1Wrap from "../components/SubmissionFormPage1Component";
 import * as utils from "../utils";
+import { prefillValidate } from "../utils/validators";
 import * as apiSubmissionActions from "../store/actions/apiSubmissionActions";
 import * as apiSFActions from "../store/actions/apiSFActions";
 import * as actions from "../store/actions";
@@ -48,10 +49,11 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   componentDidMount() {
-    console.log(`SubmFormP1Container this.props.location`);
-    console.log(this.props.location);
-    console.log(`SubmFormP1Container this.props.history`);
-    console.log(this.props.history);
+    this._isMounted = true;
+    // console.log(`SubmFormP1Container this.props.location`);
+    // console.log(this.props.location);
+    // console.log(`SubmFormP1Container this.props.history`);
+    // console.log(this.props.history);
     // check for contact & account ids in query string
     const params = queryString.parse(this.props.location.search);
     // console.log('**************   PARAMS   ************');
@@ -62,8 +64,7 @@ export class SubmissionFormPage1Container extends React.Component {
       const { cId, aId } = params;
       this.props.apiSF
         .getSFContactByDoubleId(cId, aId)
-        .then(result => {
-          // console.log('********************************');
+        .then(async (result) => {
           // console.log(result);
           // open warning/confirmation modal if prefill successfully loaded
           if (
@@ -71,16 +72,25 @@ export class SubmissionFormPage1Container extends React.Component {
             this.props.submission.formPage1.lastName
           ) {
             this.handleOpen();
+            console.log('prefill values');
+            console.log(this.props.submission.prefillValues);
+            // check for complete prefill for spf only
+            if (params.spf) {
+              console.log(Object.keys(prefillValidate(this.props.submission.prefillValues)));
+              if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
+                console.log(`completePrefill: true`);
+                this.props.apiSubmission.handleInput({
+                  target: { name: "completePrefill", value: true }
+                });
+              } else {
+                console.log('completePrefill: false');
+              }
+            }
             // this.props.setCAPEOptions();
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
-            this.props.apiSubmission.clearForm();
-            // remove cId & aId from route params if no match,
-            // but preserve other params
-            const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
-            const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-            window.history.replaceState(null, null, cleanUrl2);
+            this.handleCloseAndClear();
           }
         })
         .catch(err => {
@@ -96,11 +106,15 @@ export class SubmissionFormPage1Container extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleOpen() {
     // console.log('`submFormPage1.jsx > handleOpen`');
     const newState = { ...this.state };
     newState.open = true;
-    this.setState({ ...newState }, () => {
+    this._isMounted && this.setState({ ...newState }, () => {
       // console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
       // console.log(this.state);
     });
@@ -109,29 +123,39 @@ export class SubmissionFormPage1Container extends React.Component {
   handleCAPEOpen() {
     const newState = { ...this.state };
     newState.capeOpen = true;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   }
 
   handleClose() {
     const newState = { ...this.state };
     newState.open = false;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   }
 
   handleCloseAndClear() {
     console.log("handleCloseAndClear");
     const newState = { ...this.state };
     newState.open = false;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
+    if (this.props.spf) {
+      // reset to blank multi-page form
+      this.props.setSPF(false); 
+    }
     this.props.apiSubmission.clearForm();
-    // remove cId & aId from route params if no match
-    window.history.replaceState(null, null, `${window.location.origin}/`);
+    // remove cId & aId from route params if no match,
+    // but preserve other params
+    const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
+    const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
+    const cleanUrl3 = utils.removeURLParam(cleanUrl2, "spf");
+    console.log(`cleanUrl3: ${cleanUrl3}`);
+    window.history.replaceState(null, null, cleanUrl3);
+    window.location.reload(true);
   }
 
   handleCAPEClose() {
     const newState = { ...this.state };
     newState.capeOpen = false;
-    this.setState({ ...newState });
+    this._isMounted && this.setState({ ...newState });
   }
 
   closeDialog() {
@@ -154,7 +178,7 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("verifyRecaptchaScore");
+    console.log("SFP1 160 verifyRecaptchaScore");
     // fetch token
     await this.props.recaptcha.current.execute();
 
@@ -169,11 +193,11 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     })();
     if (token) {
-      console.log("158");
+      console.log("SFP1 175 verifyRecaptchaScore");
       this.props.apiSubmission
         .verify(token)
         .then(result => {
-          console.log("161", result.payload.score);
+          console.log("SFP1 179 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
           return result.payload.score;
         })
         .catch(err => {
@@ -182,38 +206,49 @@ export class SubmissionFormPage1Container extends React.Component {
           return this.props.handleError(rcErr);
         });
     } else {
-      console.log("175");
+      console.log("SFP1 188 verifyRecaptchaScore");
       const rcErr = this.props.t("reCaptchaError");
       return this.props.handleError(rcErr);
     }
   }
 
   async saveLegalLanguage() {
-    const { formValues } = this.props;
-    // save legal_language to redux store before ref disappears
-    let legalLanguage =
-      this.props.legal_language.current.textContent ||
-      this.props.legal_language.current.innerText ||
-      "";
-    // console.log(legalLanguage);
+    console.log('SFP1 195 saveLegalLanguage start');
+    return new Promise(resolve => {
+      const { formValues } = this.props;
+      // save legal_language to redux store before ref disappears
+      // but first check to see if it's already been saved? because this is running twice when it shouldn't
+      // and sometimes it runs after we've already moved to the next tab and then the ref is gone
 
-    this.props.apiSubmission.handleInput({
-      target: { name: "legalLanguage", value: legalLanguage }
-    });
+      if (!this.props.submission.formPage1.legalLanguage && !this.props.submission.p4cReturnValues.legalLanguage) {
+        let legalLanguage =
+          this.props.legal_language.current.textContent ||
+          this.props.legal_language.current.innerText ||
+          "";
+        // console.log(legalLanguage);
+
+        this.props.apiSubmission.handleInput({
+          target: { name: "legalLanguage", value: legalLanguage }
+        });
+      }
+      
+      console.log('SFP1 214 saveLegalLanguage resolve');
+      resolve();
+    })
   }
 
   async generateCAPEBody(capeAmount, capeAmountOther) {
-    console.log("generateCAPEBody");
+    console.log("SFP1 220 generateCAPEBody");
     // console.log(capeAmount, capeAmountOther);
     const { formValues } = this.props;
     // console.log(formValues);
 
     // if no contact in prefill or from previous form tabs...
     if (!this.props.submission.salesforceId) {
-      console.log("198");
+      console.log("SFP1 227 generateCAPEBody");
       await this.props
         .lookupSFContact(formValues)
-        .then(() => console.log("200"))
+        .then(() => console.log("SFP1 230 generateCAPEBody"))
         .catch(err => {
           console.error(err);
           return this.props.handleError(err);
@@ -230,7 +265,7 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(`employerId: ${employerObject.Id}`);
     } else {
       console.log(
-        `no employerObject found for ${formValues.employerName}; no agency #`
+        `SFP1 247 no employerObject found for ${formValues.employerName}; no agency #`
       );
     }
 
@@ -363,7 +398,7 @@ export class SubmissionFormPage1Container extends React.Component {
       // console.log("no donation amount chosen: 365");
       const newState = { ...this.state };
       newState.displayCAPEPaymentFields = true;
-      return this.setState(newState, () => {
+      return this._isMounted && this.setState(newState, () => {
         this.props.handleError(this.props.t("donationAmountError"));
         console.log(this.state.displayCAPEPaymentFields);
       });
@@ -475,8 +510,10 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab2() {
+    // p4c hasn't been run yet so can't use previously saved values from redux store
     const { formValues } = this.props;
-    // console.log(formValues);
+    console.log( 'handleTab2formValues');
+    console.log(formValues);
 
     if (!formValues.signature) {
       console.log(this.props.t("provideSignatureError"));
@@ -484,7 +521,7 @@ export class SubmissionFormPage1Container extends React.Component {
     }
 
     // save legal language
-    this.saveLegalLanguage();
+    await this.saveLegalLanguage();
 
     // save partial submission (update later with demographics from p2)
     await this.props.createSubmission(formValues).catch(err => {
@@ -497,9 +534,11 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async handleTab1() {
-    console.log("handleTab1");
+    console.log("SFP1 516 handleTab1");
+    console.log( 'handleTab1formValues');
     const { formValues } = this.props;
-    // console.dir(formValues);
+    console.log(formValues);
+ 
     // verify recaptcha score
     const score = await this.verifyRecaptchaScore();
     setTimeout(() => {
@@ -512,45 +551,66 @@ export class SubmissionFormPage1Container extends React.Component {
       }
     }, 0);
 
-    // handle moving from tab 1 to tab 2:
-    await this.props.apiSubmission.handleInput({
-      target: { name: "howManyTabs", value: 3 }
-    });
+    console.log("SFP1 533 handleTab1");
 
-    console.log("485");
-
-    // check if SF contact id already exists (prefill case)
-    console.log(`sfid: ${this.props.submission.salesforceId}`);
-    const checkForSFContactId = async () => {
-      if (this.props.submission.salesforceId) {
-        console.log("511");
-        // update existing contact, move to next tab
-        await this.props.updateSFContact(formValues).catch(err => {
+    const updateContactAndMoveToNextTab = async () => {
+      console.log("SFP1 538 handleTab1 updateContactAndMoveToNextTab");
+      // update existing contact, move to next tab
+      await this.props.updateSFContact(formValues)
+        .catch(err => {
           console.error(err);
           return this.props.handleError(err);
         });
+      console.log('SFP1 545 handleTab1 updateContactAndMoveToNextTab');
+      if (this.props.spf) {
+        console.log('single page form: calling handleTab2 after updating contact');
+        return this.handleTab2()
+          .catch(err => {
+            console.error(err);
+            return this.props.handleError(err);
+          });
+      } else {
+        console.log('not spf: moving to tab 2');
         return this.props.changeTab(1);
       }
     };
 
-    await checkForSFContactId();
+    console.log("SFP1 557 handleTab1");
 
-    // otherwise, lookup contact by first/last/email
-    await this.props.lookupSFContact(formValues).catch(err => {
-      console.error(err);
-      return this.props.handleError(err);
-    });
+    // check if SF contact id already exists (prefill case)
+    console.log(`sfid: ${this.props.submission.salesforceId}`);
 
-    // if lookup was successful, update existing contact and move to next tab
-    await checkForSFContactId();
+    if (this.props.submission.salesforceId) {
+      await updateContactAndMoveToNextTab();
+      console.log("SFP1 564 handleTab1");
+    } else {
+      // otherwise, lookup contact by first/last/email
+      await this.props.lookupSFContact(formValues).catch(err => {
+        console.log("SFP1 568 handleTab1");
+        console.error(err);
+        return this.props.handleError(err);
+      });
 
-    // otherwise, create new contact with submission data,
-    // then move to next tab
-    await this.props.createSFContact(formValues).catch(err => {
-      console.error(err);
-      return this.props.handleError(err);
-    });
-    return this.props.changeTab(1);
+      // if lookup was successful, update existing contact and move to next tab
+      if (this.props.submission.salesforceId) {
+        await updateContactAndMoveToNextTab();
+        console.log("SFP1 576 handleTab1");
+      } else {
+        // otherwise, create new contact with submission data,
+        // then move to next tab
+        await this.props.createSFContact(formValues).catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
+        if (this.props.spf) {
+          console.log('single page form: calling handleTab2 after creating new contact');
+          return this.handleTab2();
+        } else {
+          console.log('not spf: moving to tab 2');
+          return this.props.changeTab(1);
+        }
+      } 
+    }
   }
 
   async handleTab(newValue) {
@@ -616,7 +676,7 @@ export class SubmissionFormPage1Container extends React.Component {
           {...this.props}
           change={change}
           tab={this.props.tab}
-          howManyTabs={this.props.submission.formPage1.howManyTabs}
+          spf={this.props.spf}
           handleTab={this.handleTab}
           back={this.props.changeTab}
           handleUpload={this.handleUpload}

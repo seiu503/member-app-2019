@@ -7,6 +7,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
+import detector from "i18next-browser-languagedetector";
 import { withTranslation, Trans, Translation } from "react-i18next";
 
 import { Typography, CssBaseline, Box } from "@mui/material";
@@ -14,7 +15,7 @@ import { Typography, CssBaseline, Box } from "@mui/material";
 import * as Actions from "./store/actions";
 import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
-import { detectDefaultLanguage, defaultWelcomeInfo } from "./utils/index";
+import { defaultWelcomeInfo, detectDefaultLanguage } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -86,6 +87,7 @@ export class AppUnconnected extends Component {
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
+    this.setSPF = this.setSPF.bind(this);
     this.recaptcha = refCaptcha;
   }
 
@@ -100,7 +102,8 @@ export class AppUnconnected extends Component {
     console.log("### 20240223 prod 12:49PM ###");
 
     // detect default language from browser
-    const defaultLanguage = detectDefaultLanguage();
+    const defaultLanguage = detectDefaultLanguage().lang;
+    console.log(`defaultLanguage: ${defaultLanguage}`);
 
     const changeLanguage = lng => {
       // console.log(`NEW changeLanguage: ${lng}`);
@@ -115,6 +118,13 @@ export class AppUnconnected extends Component {
     if (values.lang) {
       console.log(`NEW changeLanguage: ${values.lang}`);
       changeLanguage(values.lang);
+    }
+
+    // check for spf status
+    if (values.spf) {
+      const newState = { ...this.state };
+      newState.spf = true;
+      this._isMounted && this.setState({ ...newState });
     }
   }
 
@@ -144,6 +154,12 @@ export class AppUnconnected extends Component {
           open: false
         }
       });
+  };
+
+  setSPF(bool) {
+    const newState = { ...this.state };
+    newState.spf = bool;
+    this._isMounted && this.setState({ ...newState });
   };
 
   handleError = err => {
@@ -281,31 +297,31 @@ export class AppUnconnected extends Component {
   }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
-    console.log("updateSubmission > App.js 280");
+    console.log("App 293 updateSubmission");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
-    const medicaidResidents =
-      formValues && formValues.medicaidResidents
-        ? formValues.medicaidResidents
-        : passedUpdates && passedUpdates.medicaidResidents
-        ? passedUpdates.medicaidResidents
-        : 0;
-    const pmtUpdates = {
-      payment_type: this.props.submission.formPage1.paymentType,
-      medicaid_residents: medicaidResidents
-    };
-    const updates = passedUpdates ? passedUpdates : pmtUpdates;
+    // const medicaidResidents =
+    //   formValues && formValues.medicaidResidents
+    //     ? formValues.medicaidResidents
+    //     : passedUpdates && passedUpdates.medicaidResidents
+    //     ? passedUpdates.medicaidResidents
+    //     : 0;
+    // const pmtUpdates = {
+    //   payment_type: this.props.submission.formPage1.paymentType,
+    //   // medicaid_residents: medicaidResidents
+    // };
+    // const updates = passedUpdates ? passedUpdates : pmtUpdates;
 
-    if (updates.hire_date) {
+    if (passedUpdates.hire_date) {
       let hireDate = moment(new Date(updates.hire_date));
       if (hireDate.isValid()) {
-        updates.hire_date = formatSFDate(hireDate);
-        console.log(`updates.hire_date: ${updates.hire_date}`);
+        passedUpdates.hire_date = formatSFDate(hireDate);
+        console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
       }
     }
     this.props.apiSubmission
-      .updateSubmission(id, updates)
+      .updateSubmission(id, passedUpdates)
       .then(result => {
         console.log(result);
         if (
@@ -323,8 +339,9 @@ export class AppUnconnected extends Component {
   }
 
   // lookup SF Contact by first, last, email; if none found then create new
+  // called from SubmissionFormPage1.jsx > 229 (GenerateCAPEBody), 565 (handleTab1)
   async lookupSFContact(formValues) {
-    console.log("lookupSFContact");
+    console.log("App 337 lookupSFContact");
     console.dir(formValues);
     if (
       formValues.firstName &&
@@ -345,8 +362,8 @@ export class AppUnconnected extends Component {
       });
 
       // if nothing found on lookup, need to create new contact
-      if (!this.props.submission.salesforceId) {
-        console.log("348");
+      if (!this.props.submission.salesforceId && !this.props.submission.p4cReturnValues.salesforceId) {
+        console.log("App 359: No SF Contact found on lookup (no salesforceId in redux store), creating new");
         console.dir(formValues);
         await this.createSFContact(formValues)
           .then(() => {
@@ -381,7 +398,7 @@ export class AppUnconnected extends Component {
   }
 
   async prepForContact(values) {
-    console.log("prepForContact");
+    console.log("App 394 prepForContact start");
     console.dir(values);
     return new Promise(resolve => {
       let returnValues = { ...values };
@@ -465,13 +482,14 @@ export class AppUnconnected extends Component {
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
           // this will be an agency-level employer Id
-          console.log("460");
+          console.log("App 478 prepForContact");
           returnValues.employerId = employerObject
             ? employerObject.Id
             : "0016100000WERGeAAP"; // <= unknown employer
         }
+        console.log('employerObject');
         console.log(employerObject);
-        console.log(returnValues.employerId);
+        console.log(`employerId: ${returnValues.employerId}`);
       } else {
         // if employer has been manually changed since prefill, or if
         // this is a blank-slate form, find id in employer object
@@ -480,17 +498,28 @@ export class AppUnconnected extends Component {
           ? employerObject.Id
           : "0016100000WERGeAAP"; // <= unknown employer
       }
-      console.log("473");
+      console.log("App 494 prepForContact");
       // save employerId to redux store for later
       this.props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
       });
       // console.dir(returnValues);
+
+      console.log('saving returnValues to redux to avoid duplicate calls later');
+      this.props.apiSubmission.handleInputSPF({
+        target: { name: "p4cReturnValues", value: {... returnValues } }
+      });
+
+      // console.log(`checking redux store for returnValues`);
+      // console.log(this.props.submission);
+
+      console.log("App 509 prepForContact resolve");
       resolve(returnValues);
     });
   }
 
   prepForSubmission(values, partial) {
+    console.log("App 515 prepForSubmission start");
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -516,16 +545,17 @@ export class AppUnconnected extends Component {
           returnValues.salesforceId = this.props.submission.salesforce_id;
         }
       }
+      console.log("App 541 prepForSubmission resolve");
       resolve(returnValues);
     });
   }
 
   async generateSubmissionBody(values, partial) {
-    console.log("generateSubmissionBody");
+    console.log("App 547 generateSubmissionBody start");
     const firstValues = await this.prepForContact(values);
-    // console.log("firstValues", firstValues);
+    console.log("firstValues", firstValues);
     const secondValues = await this.prepForSubmission(firstValues, partial);
-    // console.log("secondValues", secondValues);
+    console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = firstValues.signature
       ? firstValues.signature
@@ -595,7 +625,8 @@ export class AppUnconnected extends Component {
     const maintenance_of_effort = partial ? null : new Date();
     const seiu503_cba_app_date = partial ? null : new Date();
 
-    return {
+    console.log("App 628 generateSubmissionBody resolve");
+    const submissionBody = {
       submission_date: new Date(),
       agency_number: agencyNumber,
       birthdate,
@@ -640,11 +671,15 @@ export class AppUnconnected extends Component {
       work_email,
       work_phone
     };
+    console.log('App 674 generateSubmissionBody');
+    console.log(submissionBody);
+    return submissionBody;
   }
 
+  // called from handleTab2 in SubmissionFormPage1.jsx
   async createSubmission(formValues, partial) {
     // create initial submission using data in tabs 1 & 2
-
+    console.log("App 682 createSubmission start");
     const body = await this.generateSubmissionBody(formValues, partial);
     // console.log(body);
     const cleanBody = removeFalsy(body);
@@ -685,11 +720,14 @@ export class AppUnconnected extends Component {
 
     body.Worker__c = this.props.submission.salesforceId;
     body.tmp_1 = tmp1;
+
+    // create Online Member App record
     return this.props.apiSF
       .createSFOMA(body)
       .then(result => {
-        console.log("673", result.type);
-        console.log(this.props.submission.error);
+        console.log("App 728 createSubmission");
+        console.log(result.type);
+        console.log(`submission errors: ${this.props.submission.error}`);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
@@ -700,10 +738,16 @@ export class AppUnconnected extends Component {
             this.props.submission.error
           );
           // goto CAPE tab
-          this.changeTab(this.props.submission.formPage1.howManyTabs - 1);
+          console.log('moving to CAPE Tab');
+          this.changeTab(2);
         } else if (!this.props.submission.error) {
+
+          // // what if we don't update submission status after creating OMA? does that fix the endless loop?
+          // return null; 
+
+
           // update submission status and redirect to CAPE tab
-          // console.log("updating submission status");
+          console.log("updating submission status");
           this.props.apiSubmission
             .updateSubmission(this.props.submission.submissionId, {
               submission_status: "Success"
@@ -716,7 +760,9 @@ export class AppUnconnected extends Component {
                 console.log(this.props.submission.error);
                 return this.handleError(this.props.submission.error);
               } else {
-                this.changeTab(2);
+                console.log("createSubmission resolve");
+                return null;
+                // this.changeTab(2);
               }
             })
             .catch(err => {
@@ -737,11 +783,16 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    console.log("createSFContact");
-    const values = await this.prepForContact(formValues).catch(err =>
-      console.log(err)
-    );
-    console.log("724");
+    console.log("App 785 createSFContact");
+    let values;
+    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
+      console.log('spf true AND completePrefill = true; skipping p4c');
+      values = { ...this.props.submission.p4cReturnValues };
+    } else {
+      console.log('spf OR completePrefill = false; running p4c');
+      values = await this.prepForContact(formValues);
+    }
+    console.log("App 793 createSFContact");
     console.log(values);
     let {
       firstName,
@@ -786,8 +837,16 @@ export class AppUnconnected extends Component {
   }
 
   async updateSFContact(formValues) {
-    console.log("updateSFContact");
-    const values = await this.prepForContact(formValues);
+    console.log("App 846 updateSFContact");
+    let values;
+    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
+      console.log('spf true AND completePrefill = true; skipping p4c');
+      values = { ...this.props.submission.p4cReturnValues };
+    } else {
+      console.log('spf OR completePrefill = false; running p4c');
+      values = await this.prepForContact(formValues);
+    }
+
     let {
       firstName,
       lastName,
@@ -917,6 +976,8 @@ export class AppUnconnected extends Component {
                 element={
                   <SubmissionFormPage1
                     tab={this.state.tab}
+                    spf={this.state.spf}
+                    setSPF={this.setSPF}
                     embed={embed}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}

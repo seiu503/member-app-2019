@@ -24,6 +24,7 @@ import {
 import handlers from "../../mocks/handlers";
 let pushMock = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -101,7 +102,27 @@ const defaultProps = {
     employerObjects: [...employersPayload],
     payment: {
       cardAddingUrl: ""
-    }
+    },
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
+    prefillValues: {}
   },
   initialValues: {
     mm: "",
@@ -117,7 +138,8 @@ const defaultProps = {
   apiSubmission: {
     updateSubmission: updateSubmissionSuccess,
     createSubmission: createSubmissionSuccess,
-    verify: verifySuccess
+    verify: verifySuccess,
+    handleInputSPF: handleInputSPFMock
   },
   apiSF: {
     getSFEmployers: getSFEmployersSuccess,
@@ -207,8 +229,10 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
     // Reset any runtime request handlers we may add during the tests.
     afterEach(() => server.resetHandlers());
     it("renders without error", () => {
+      // testing spf case
       props = {
         ...defaultProps,
+        spf: true,
         apiSF: {
           ...defaultProps.apiSF,
           getSFEmployers: jest
@@ -305,6 +329,23 @@ describe("Unconnected <SubmissionFormPage1 />", () => {
       };
       const { getByTestId } = setup(props);
       const component = getByTestId("component-submissionformpage1");
+      expect(component).toBeInTheDocument();
+    });
+    it("renders Single Page Form", () => {
+      props = {
+        tab: null,
+        spf: true,
+        apiSF: {
+          ...defaultProps.apiSF,
+          getSFEmployers: jest
+            .fn()
+            .mockImplementation(() =>
+              Promise.resolve({ type: "GET_SF_EMPLOYERS_SUCCESS" })
+            )
+        }
+      };
+      const { getByTestId } = setup(props);
+      const component = getByTestId("component-spf");
       expect(component).toBeInTheDocument();
     });
   });

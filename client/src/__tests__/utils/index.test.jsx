@@ -65,19 +65,19 @@ describe("utils/index", () => {
       languageArrGetter.mockReturnValue(null);
       languageGetter = jest.spyOn(window.navigator, "language", "get");
       languageGetter.mockReturnValue(null);
-      expect(utils.detectDefaultLanguage()).toEqual("en");
+      expect(utils.detectDefaultLanguage()).toEqual({"lang": "en", "other": true});
     });
     it("detects on window.languages array", () => {
       languageGetter = jest.spyOn(window.navigator, "language", "get");
       languageGetter.mockReturnValue(null);
       languageArrGetter = jest.spyOn(window.navigator, "languages", "get");
       languageArrGetter.mockReturnValue(["de", "ja", "es"]);
-      expect(utils.detectDefaultLanguage()).toEqual("es");
+      expect(utils.detectDefaultLanguage()).toEqual({"lang": "es", "other": false});
     });
     it("detects on window.language", () => {
       languageGetter = jest.spyOn(window.navigator, "language", "get");
       languageGetter.mockReturnValue("es");
-      expect(utils.detectDefaultLanguage()).toEqual("es");
+      expect(utils.detectDefaultLanguage()).toEqual({"lang": "es", "other": false});
     });
     it("buildquery returns query string (edge case test)", () => {
       expect(utils.buildQuery(null)).toEqual("");
