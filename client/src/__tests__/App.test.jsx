@@ -288,7 +288,7 @@ describe("<App />", () => {
       expect(nf).toBeInTheDocument();
     });
     test(' "/" path should render SubmissionForm component', async () => {
-      const { queryByTestId } = await setup({}, "/");
+      const { queryByTestId } = await setup({}, "/?spf=true");
       const subm1 = queryByTestId("component-submissionformpage1");
       expect(subm1).toBeInTheDocument();
     });

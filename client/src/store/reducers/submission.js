@@ -98,6 +98,7 @@ export const INITIAL_STATE = {
     firstName: "",
     lastName: "",
     homeEmail: "",
+    mobilePhone: "",
     legalLanguage: "",
     immediatePastMemberStatus: "Not a Member",
     prefillEmployerChanged: false,
@@ -192,7 +193,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_DID_SUCCESS:
-      // console.log(action.payload);
+      console.log(action.payload);
       if (action.payload && action.payload.Account) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the

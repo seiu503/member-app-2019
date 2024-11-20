@@ -82,7 +82,8 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
     type: "GET_SF_CONTACT_DID_SUCCESS",
     payload: {
       firstName: "test",
-      lastName: "test"
+      lastName: "test",
+      mobilePhone: "test"
     }
   })
 );
@@ -139,7 +140,8 @@ const initialState = {
     formPage2: {},
     cape: {
       monthlyOptions: []
-    }
+    },
+    prefillValues: {}
   }
 };
 
@@ -314,7 +316,16 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          )
+          ),
+          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_CONTACT_DID_SUCCESS",
+              payload: {
+                firstName: "test",
+                lastName: "test",
+                mobilePhone: "test"
+              }
+            }))
         }
       };
 
@@ -399,7 +410,16 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          )
+          ),
+          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_CONTACT_DID_SUCCESS",
+              payload: {
+                firstName: "test",
+                lastName: "test",
+                mobilePhone: "test"
+              }
+            }))
         }
       };
 
@@ -471,7 +491,16 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          )
+          ),
+          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_CONTACT_DID_SUCCESS",
+              payload: {
+                firstName: "test",
+                lastName: "test",
+                mobilePhone: "test"
+              }
+            }))
         }
       };
 
@@ -561,7 +590,16 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          )
+          ),
+          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
+            Promise.resolve({
+              type: "GET_SF_CONTACT_DID_SUCCESS",
+              payload: {
+                firstName: "test",
+                lastName: "test",
+                mobilePhone: "test"
+              }
+            }))
         },
         submission: {
           ...defaultProps.submission,
