@@ -9,7 +9,7 @@
     "@mui/lab": "^5.0.0-alpha.81",
     "@mui/material": "^5.11.3",
     "@mui/styles": "^5.11.2",
-    "@mui/system": "^5.11.2",
+    "@mui/system": "^5.16.7",
     "@reduxjs/toolkit": "^1.9.5",
     "chokidar-cli": "^3.0.0",
     "classnames": "^2.2.6",
