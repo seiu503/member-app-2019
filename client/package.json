@@ -8,7 +8,7 @@
     "@mui/icons-material": "^5.11.0",
     "@mui/lab": "^5.0.0-alpha.81",
     "@mui/material": "^5.11.3",
-    "@mui/styles": "^5.11.2",
+    "@mui/styles": "^5.16.7",
     "@mui/system": "^5.11.2",
     "@reduxjs/toolkit": "^1.9.5",
     "chokidar-cli": "^3.0.0",
