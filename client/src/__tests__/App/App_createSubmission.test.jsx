@@ -337,19 +337,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = await getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = await getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = await getByTestId("button-submit");
-        await userEvent.click(submitButton);
+      await waitFor(() => {
+        const submitButton = getByTestId("button-submit");
+        userEvent.click(submitButton);
       });
 
       // simulate submit tab2
@@ -429,19 +431,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // simulate submit tab2
@@ -535,19 +539,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // simulate submit tab2
@@ -641,19 +647,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // simulate submit tab2
@@ -747,19 +755,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // simulate submit tab2

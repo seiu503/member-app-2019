@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
+import { act } from 'react-dom/test-utils';
 
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
@@ -309,26 +310,28 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = await getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = await getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      const submitButton = await getByTestId("button-submit");
-      await waitFor(async () => {
-        await userEvent.click(submitButton);
+      await waitFor(() => {
+        const submitButton = getByTestId("button-submit");
+        userEvent.click(submitButton);
       });
 
       // expect snackbar to be in the document with correct error message
-      const snackbar = await getByTestId("component-basic-snackbar");
-      const errorIcon = await getByTestId("ErrorOutlineIcon");
-      const message = await getByText("createSFContactError");
-      await waitFor(async () => {
+      await waitFor( async () => {
+        const snackbar = await getByTestId("component-basic-snackbar");
+        const errorIcon = await getByTestId("ErrorOutlineIcon");
+        const message = await getByText("createSFContactError");
         expect(snackbar).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
         expect(message).toBeInTheDocument();
