@@ -314,8 +314,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -367,8 +369,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -446,8 +450,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -526,8 +532,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -611,8 +619,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {

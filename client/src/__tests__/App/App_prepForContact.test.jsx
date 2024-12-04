@@ -291,8 +291,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -379,19 +381,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -458,19 +462,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -552,8 +558,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -639,8 +647,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -748,8 +758,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
