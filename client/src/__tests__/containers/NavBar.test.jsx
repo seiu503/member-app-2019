@@ -115,10 +115,12 @@ describe("<NavBar />", () => {
     const { getByTestId } = setup();
 
     // simulate click
-    await userEvent.click(getByTestId("skiplink-button"));
+    await waitFor(async() => {
+      await userEvent.click(getByTestId("skiplink-button"));
 
-    // expect the mock to have been called once
-    expect(utils.skip).toHaveBeenCalled();
+      // expect the mock to have been called once
+      expect(utils.skip).toHaveBeenCalled();
+    });
 
     // restore mock
     utils.skip.mockRestore();

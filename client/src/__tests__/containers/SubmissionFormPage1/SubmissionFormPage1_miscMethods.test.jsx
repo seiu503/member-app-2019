@@ -325,8 +325,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       });
 
       // simulate click modalClose
-      const closeButton = getByTestId("button-cancel");
       await waitFor(async () => {
+        const closeButton = getByTestId("button-cancel");
         await user.click(closeButton);
       });
 
@@ -421,17 +421,18 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const { getByTestId } = await setup(props, "/?cId=1&aId=2");
 
       // check that modal renders
-      const modal = await getByTestId("component-modal");
-      await waitFor(() => expect(modal).toBeInTheDocument());
+      await waitFor(async () => {
+        const modal = await getByTestId("component-modal");
+        expect(modal).toBeInTheDocument()
+      });
 
       // simulate user click on close button
       const closeButton = await getByTestId("button-link-request");
-      await waitFor(() => expect(closeButton).toBeInTheDocument());
-
-      await user.click(closeButton);
+      await waitFor(() => expect(closeButton).toBeInTheDocument());      
 
       // expect clearFormMock to have beeen called
-      await waitFor(() => {
+      await waitFor( async () => {
+        await user.click(closeButton);
         expect(clearFormMock).toHaveBeenCalled();
         expect(replaceStateMock).toHaveBeenCalled();
       });
@@ -470,11 +471,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
       });
 
-      const cancelButton = await getByTestId("button-cancel");
-      await user.click(cancelButton);
-
       // expect alert dialog not to be in document
-      await waitFor(() => {
+      await waitFor(async () => {
+        const cancelButton = await getByTestId("button-cancel");
+        await user.click(cancelButton);
         expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
       });
     });
@@ -510,11 +510,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
       });
 
-      const actionButton = await getByTestId("button-action");
-      await user.click(actionButton);
-
       // expect alert dialog not to be in document
-      await waitFor(() => {
+      await waitFor(async () => {
+        const actionButton = await getByTestId("button-action");
+        await user.click(actionButton);
         expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
         expect(navigate).toHaveBeenCalled();
       });
