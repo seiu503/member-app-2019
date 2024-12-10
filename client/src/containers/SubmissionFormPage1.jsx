@@ -179,6 +179,11 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async verifyRecaptchaScore() {
     console.log("SFP1 160 verifyRecaptchaScore");
+
+    // set loading
+    console.log("setting spinner");
+    this.props.actions.setSpinner();
+    
     // fetch token
     await this.props.recaptcha.current.execute();
 
@@ -615,6 +620,10 @@ export class SubmissionFormPage1Container extends React.Component {
 
   async handleTab(newValue) {
     // e.preventDefault();
+    // set loading
+    console.log("setting spinner");
+    this.props.actions.setSpinner();
+
     console.log("handleTab");
     console.log(newValue);
     if (newValue === 1) {

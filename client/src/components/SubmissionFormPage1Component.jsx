@@ -245,7 +245,7 @@ export class SubmissionFormPage1Component extends React.Component {
             {...this.props}
             standAlone={true}
             newCardNeeded={true}
-            verifyCallback={this.verifyCallback}
+            // verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
             updateEmployersPicklist={this.updateEmployersPicklist}
@@ -269,7 +269,7 @@ export class SubmissionFormPage1Component extends React.Component {
               this.props.handleTab(1);
               return false;
             }}
-            verifyCallback={this.verifyCallback}
+            // verifyCallback={this.verifyCallback}
             classes={classes}
             employerTypesList={employerTypesList}
             employerList={employerList}
@@ -322,7 +322,7 @@ export class SubmissionFormPage1Component extends React.Component {
                       this.props.handleTab(1);
                       return false;
                     }}
-                    verifyCallback={this.verifyCallback}
+                    // verifyCallback={this.verifyCallback}
                     classes={classes}
                     employerTypesList={employerTypesList}
                     employerList={employerList}

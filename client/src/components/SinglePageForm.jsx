@@ -60,7 +60,7 @@ export const SinglePageForm = props => {
     prefillValues,
     formValues,
     width,
-    verifyCallback,
+    // verifyCallback,
     legal_language
   } = props;
 
@@ -554,7 +554,7 @@ export const SinglePageForm = props => {
               }}
               variant="contained"
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-              data-callback={verifyCallback}
+              // data-callback={verifyCallback}
             >
               <Trans i18nKey="next">Next</Trans>
             </Button>
