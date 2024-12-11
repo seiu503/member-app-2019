@@ -167,9 +167,11 @@ describe("<CAPE />", () => {
         updateEmployersPicklist: updateEmployersPicklistMock
       };
       const { getAllByRole } = await setup({ ...testProps }, "/?cape=true");
-      const component = getAllByRole("combobox")[0];
-      fireEvent.change(component);
-      expect(updateEmployersPicklistMock).toHaveBeenCalled();
+      await waitFor(() => {
+        const component = getAllByRole("combobox")[0];
+        fireEvent.change(component);
+        expect(updateEmployersPicklistMock).toHaveBeenCalled();
+      });
     });
 
     it("calls handleSubmit on submit", async () => {
@@ -189,17 +191,18 @@ describe("<CAPE />", () => {
         { ...testProps },
         "/?cape=true"
       );
-
-      const component = getByTestId("cape-form");
-      const radio = getByLabelText("$4");
-      const user = userEvent.setup();
-      await user.click(component);
-      await fireEvent.submit(component);
-      // await debug();
-      const asyncCheck = setTimeout(() => {
-        expect(handleSubmitMock).toHaveBeenCalled();
-      }, 0);
-      global.clearTimeout(asyncCheck);
+      await waitFor(async() => {
+        const component = getByTestId("cape-form");
+        const radio = getByLabelText("$4");
+        const user = userEvent.setup();
+        await user.click(component);
+        await fireEvent.submit(component);
+        // await debug();
+        const asyncCheck = setTimeout(() => {
+          expect(handleSubmitMock).toHaveBeenCalled();
+        }, 0);
+        global.clearTimeout(asyncCheck);
+      });
     });
 
     it("scrolls to first error on failed submit", async () => {
@@ -209,12 +212,14 @@ describe("<CAPE />", () => {
       const { getByTestId, debug } = await setup(props, "/?cape=true");
       testData = generateCAPEValidateFrontEnd();
 
-      const component = getByTestId("cape-form");
-      fireEvent.submit(component);
-      const asyncCheck = setTimeout(() => {
-        expect(scrollToMock).toHaveBeenCalled();
-      }, 0);
-      global.clearTimeout(asyncCheck);
+      await waitFor(() => {
+        const component = getByTestId("cape-form");
+        fireEvent.submit(component);
+        const asyncCheck = setTimeout(() => {
+          expect(scrollToMock).toHaveBeenCalled();
+        }, 0);
+        global.clearTimeout(asyncCheck);
+      });
     });
 
     it("calls `back` on back button click", async () => {
@@ -229,8 +234,10 @@ describe("<CAPE />", () => {
 
       const component = getByTestId("button-back");
       const user = userEvent.setup();
-      await user.click(component);
-      expect(backMock).toHaveBeenCalled();
+      await waitFor(async() => {
+        await user.click(component);
+        expect(backMock).toHaveBeenCalled();
+      });
     });
   });
   describe("conditional render", () => {
@@ -298,8 +305,10 @@ describe("<CAPE />", () => {
       const component = getByLabelText("$4");
       expect(component).toBeInTheDocument();
       const user = userEvent.setup();
-      await user.click(component);
-      expect(component.value).toBe('4');
+      await waitFor(async() => {
+        await user.click(component);
+        expect(component.value).toBe('4');
+      });
     });
 
     it("displays submit button if displayCAPEPaymentFields = true", async () => {

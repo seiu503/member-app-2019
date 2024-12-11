@@ -87,28 +87,42 @@ export const defaultWelcomeInfo = {
 // we provide translations for (or a specific dialect like "es-ar" instead of just "es")
 // it sets the active language of the localization package to that language. Defaults to English.
 export const detectDefaultLanguage = () => {
-  let defaultLanguage = "en";
+  // console.log('detectDefaultLanguage index.js 90');
   const acceptableLangs = ["en", "es", "ru", "vi", "zh"];
+  let defaultLanguage = "";
   if (window.navigator.language) {
+    // console.log('detectDefaultLanguage index.js 94');
     const userLang = window.navigator.language.toLowerCase();
+    // console.log(`userLang: ${userLang}`);
     for (let i = 0; i < acceptableLangs.length; i++) {
       if (userLang.includes(acceptableLangs[i], 0)) {
         defaultLanguage = acceptableLangs[i];
-        return defaultLanguage;
+        // console.log(`defaultLanguage: ${defaultLanguage}`);
+        if (!defaultLanguage) {
+          return {lang: "en", other: true}
+        } else {
+          return {lang: defaultLanguage, other: false}
+        }
       }
     }
   } else if (window.navigator.languages) {
+    // console.log('detectDefaultLanguage index.js 109');
     const langArr = window.navigator.languages;
     for (let i = 0; i < acceptableLangs.length; i++) {
       for (let j = 0; j < langArr.length; j++) {
         if (langArr[j].toLowerCase().includes(acceptableLangs[i], 0)) {
           defaultLanguage = acceptableLangs[i];
-          return defaultLanguage;
+          // console.log(`defaultLanguage: ${defaultLanguage}`);
+          if (!defaultLanguage) {
+            return {lang: "en", other: true}
+          } else {
+            return {lang: defaultLanguage, other: false}
+          }
         }
       }
     }
   }
-  return defaultLanguage;
+  return {lang: "en", other: true};
 };
 
 export const scrollToFirstError = errors => {

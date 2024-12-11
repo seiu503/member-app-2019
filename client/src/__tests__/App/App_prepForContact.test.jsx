@@ -28,6 +28,7 @@ import i18n from "../../translations/i18n";
 import handlers from "../../mocks/handlers";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -120,6 +121,7 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     formPage2: {}
@@ -136,6 +138,25 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
     employerObjects: [...employersPayload]
   },
   appState: {},
@@ -166,6 +187,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -269,8 +291,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -291,7 +315,8 @@ describe("<App />", () => {
           employerName: "SEIU 503 Staff"
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          handleInputSPF: handleInputSPFMock
         },
         submission: {
           ...defaultProps.submission,
@@ -299,7 +324,11 @@ describe("<App />", () => {
           formPage1: {
             prefillEmployerId: null
           },
-          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }],
+          p4cReturnValues: {
+            ...defaultProps.submission.p4cReturnValues,
+            salesforceId: "123"
+          }
         },
         createSFContact: jest.fn().mockImplementation(() =>
           Promise.resolve({
@@ -352,19 +381,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -391,7 +422,12 @@ describe("<App />", () => {
             prefillEmployerId: "2",
             prefillEmployerChanged: true
           },
-          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }]
+          handleInputSPF: handleInputSPFMock,
+          employerObjects: [{ id: "1", Name: "SEIU LOCAL 503 OPEU" }],
+          p4cReturnValues: {
+            ...defaultProps.p4cReturnValues,
+            salesforceId: "123"
+          }
         },
         apiSF: {
           createSFContact: jest.fn().mockImplementation(() =>
@@ -426,19 +462,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -460,6 +498,13 @@ describe("<App />", () => {
         formValues: {
           ...formValues,
           employerName: "personal support worker (paid by ppl)"
+        },
+        submission: {
+          ...defaultProps.submission,
+          p4cReturnValues: {
+            ...defaultProps.submission.p4cReturnValues,
+            salesforceId: "123"
+          }
         },
         createSFContact: jest.fn().mockImplementation(() =>
           Promise.resolve({
@@ -513,8 +558,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -541,6 +588,13 @@ describe("<App />", () => {
           ...formValues,
           employerName: "personal support worker (paid by state of oregon)"
         },
+        submission: {
+          ...defaultProps.submission,
+          p4cReturnValues: {
+            ...defaultProps.submission.p4cReturnValues,
+            salesforceId: "123"
+          }
+        },          
         createSFContact: jest.fn().mockImplementation(() =>
           Promise.resolve({
             type: "CREATE_SF_CONTACT_SUCCESS",
@@ -593,8 +647,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -624,6 +680,10 @@ describe("<App />", () => {
         submission: {
           formPage1: {
             prefillEmployerId: null
+          },
+          p4cReturnValues: {
+            ...defaultProps.submission.p4cReturnValues,
+            salesforceId: "123"
           },
           employerObjects: [
             {
@@ -698,8 +758,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {

@@ -27,6 +27,7 @@ import i18n from "../../translations/i18n";
 import handlers from "../../mocks/handlers";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -123,6 +124,7 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     formPage2: {},
@@ -142,6 +144,25 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
     salesforceId: "123"
   },
   appState: {},
@@ -169,6 +190,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -292,8 +314,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -345,8 +369,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -424,8 +450,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -504,8 +532,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -589,8 +619,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // simulate submit tab1
       await waitFor(async () => {

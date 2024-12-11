@@ -29,6 +29,7 @@ let navigate = jest.fn(),
   handleInputMock = jest
     .fn()
     .mockImplementation(() => console.log("handleInputMock")),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -132,6 +133,7 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     formPage2: {},
@@ -150,7 +152,26 @@ const defaultProps = {
       ...formValues
     },
     cape: {},
-    payment: {}
+    payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    }
   },
   appState: {},
   initialize: jest.fn(),
@@ -178,6 +199,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    handleInputSPF: handleInputSPFMock,
     verify: verifyMock,
     clearForm: clearFormMock,
     updateSubmission: () =>
@@ -318,47 +340,49 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = await getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = await getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      const submitButton = await getByTestId("button-submit");
-      await waitFor(async () => {
-        await userEvent.click(submitButton);
+      await waitFor(() => {
+        const submitButton = getByTestId("button-submit");
+        userEvent.click(submitButton);
       });
 
-      // // check that tab 2 renders
-      // const tab2Form = await getByTestId("form-tab2");
-      // await waitFor(() => {
-      //   expect(tab2Form).toBeInTheDocument();
-      // });
+      // check that tab 2 renders
+      await waitFor(async () => {
+        const tab2Form = await getByTestId("form-tab2");
+        expect(tab2Form).toBeInTheDocument();
+      });
 
-      // // simulate submit tab2
-      // const submitButton2 = await getByTestId("button-submit-tab2");
-      // await waitFor(async () => {
-      //   await userEvent.click(submitButton2);
-      // });
+      // simulate submit tab2
+      await waitFor(async () => {
+        const submitButton2 = await getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton2);
+      });
 
-      // // just test that with these props there are no errors and it moves to tab 3
+      // just test that with these props there are no errors and it moves to tab 3
 
-      // // expect snackbar NOT to be in document
-      // await waitFor(() => {
-      //   expect(
-      //     queryByTestId("component-basic-snackbar")
-      //   ).not.toBeInTheDocument();
-      // });
+      // expect snackbar NOT to be in document
+      await waitFor(() => {
+        expect(
+          queryByTestId("component-basic-snackbar")
+        ).not.toBeInTheDocument();
+      });
 
-      // // expect cape tab to render
-      // const cape = await getByTestId("component-cape");
-      // await waitFor(() => {
-      //   expect(cape).toBeInTheDocument();
-      // });
+      // expect cape tab to render
+      await waitFor(async () => {
+        const cape = await getByTestId("component-cape");
+        expect(cape).toBeInTheDocument();
+      });
     });
 
     test("`updateSubmission` uses defaults if no passedId or passedUpdates", async () => {
@@ -420,19 +444,21 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      const nextButton = getByTestId("button-next");
-      await userEvent.click(nextButton);
+      await waitFor(() => {
+        const nextButton = getByTestId("button-next");
+        userEvent.click(nextButton);
+      });
 
       // check that tab 1 renders
-      const tab1Form = getByRole("form");
       await waitFor(() => {
+        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(async () => {
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // simulate submit tab2

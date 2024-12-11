@@ -31,6 +31,7 @@ let store, handleErrorMock;
 
 let navigate = jest.fn().mockImplementation(() => Promise.resolve({})),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
+  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   executeMock = jest
     .fn()
@@ -95,7 +96,7 @@ let refreshRecaptchaMock = jest
 
 let verifyRecaptchaScoreMock = jest
   .fn()
-  .mockImplementation(() => Promise.resolve(0.9));
+  .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
 
 let createSFCAPESuccess = jest.fn().mockImplementation(() =>
   Promise.resolve({
@@ -162,6 +163,25 @@ const defaultProps = {
       monthlyOptions: []
     },
     payment: {},
+    p4cReturnValues: {
+      firstName: "firstName",
+      lastName: "lastName",
+      homeEmail: "homeEmail",
+      homeStreet: "homeStreet",
+      homeCity: "homeCity",
+      homeZip: "homeZip",
+      homeState: "homeState",
+      signature: "signature",
+      employerType: "employerType",
+      employerName: "employerName",
+      mobilePhone: "mobilePhone",
+      mm: "12",
+      dd: "01",
+      yyyy: "1999",
+      preferredLanguage: "English",
+      textAuthOptOut: false,
+      legalLanguage: ""
+    },
     salesforceId: "123",
     employerObjects: [...employersPayload]
   },
@@ -186,6 +206,7 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
+    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
@@ -227,7 +248,7 @@ const defaultProps = {
   body: { id: 1 },
   renderHeadline: jest.fn(),
   renderBodyCopy: jest.fn(),
-  tab: 3,
+  tab: 2,
   displayCAPEPaymentFields: true
 };
 
@@ -298,7 +319,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       let verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.9));
+        .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
 
       let createSFCAPESuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
@@ -375,7 +396,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           }
         },
         reset: jest.fn(),
-        tab: 3,
+        tab: 2,
         displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         history: {},
@@ -445,7 +466,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
     test("`handleCAPESubmit` handles error if lookupSFContact prop throws", async () => {
       verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.9));
+        .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
 
       lookupSFContactError = jest
         .fn()
@@ -517,7 +538,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
     test("`handleCAPESubmit` handles error if createSFCape prop fails", async () => {
       verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.9));
+        .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
       createCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -663,7 +684,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
     test("`handleCAPESubmit` handles error if createCAPE prop fails", async () => {
       verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.9));
+        .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
       updateCAPESuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -701,7 +722,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         apiSubmission: {
           createCAPE: createCAPEError,
-          updateCAPE: updateCAPESuccess
+          updateCAPE: updateCAPESuccess,
+          verifyRecaptchaScore: verifyRecaptchaScoreMock,
         },
         cape_legal: {
           current: {
@@ -712,7 +734,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         handleError: handleErrorMock,
         createCAPE: createCAPEError,
         history: {},
-        navigate
+        navigate,
+        verifyRecaptchaScore: verifyRecaptchaScoreMock,
       };
 
       // setup
@@ -737,7 +760,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         );
       verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.9));
+        .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
       createSFCAPESuccess = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "CREATE_SF_CAPE_SUCCESS",
@@ -771,7 +794,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         apiSubmission: {
           createCAPE: createCAPEError,
-          updateCAPE: updateCAPESuccess
+          updateCAPE: updateCAPESuccess,
+          verifyRecaptchaScore: verifyRecaptchaScoreMock,
         },
         cape_legal: {
           current: {
@@ -781,7 +805,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         reset: jest.fn(),
         handleError: handleErrorMock,
         history: {},
-        navigate
+        navigate,
+        verifyRecaptchaScore: verifyRecaptchaScoreMock,
       };
 
       // setup
@@ -811,7 +836,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         );
       verifyRecaptchaScoreMock = jest
         .fn()
-        .mockImplementation(() => Promise.resolve(0.9));
+        .mockImplementation(() => Promise.resolve({ payload: {score: 0.9 }}));
       updateCAPEError = jest
         .fn()
         .mockImplementation(() => Promise.reject("updateCAPEError"));
@@ -851,7 +876,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         apiSubmission: {
           createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPEError
+          updateCAPE: updateCAPEError,
+          verifyRecaptchaScore: verifyRecaptchaScoreMock,
         },
         cape_legal: {
           current: {
@@ -867,7 +893,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           current: {
             execute: executeMock
           }
-        }
+        },
+        verifyRecaptchaScore: verifyRecaptchaScoreMock
       };
 
       // setup
@@ -920,7 +947,8 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         },
         apiSubmission: {
           createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPESuccess
+          updateCAPE: updateCAPESuccess,
+          verifyRecaptchaScore: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
