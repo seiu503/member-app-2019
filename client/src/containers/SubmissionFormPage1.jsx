@@ -183,7 +183,7 @@ export class SubmissionFormPage1Container extends React.Component {
     // set loading
     console.log("setting spinner");
     this.props.actions.setSpinner();
-    
+
     // fetch token
     await this.props.recaptcha.current.execute();
 
@@ -640,6 +640,7 @@ export class SubmissionFormPage1Container extends React.Component {
         return this.props.handleError(err);
       });
     } else {
+      this.props.actions.spinnerOff();
       return this.props.changeTab(newValue);
     }
   }
