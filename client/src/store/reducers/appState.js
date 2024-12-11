@@ -1,6 +1,6 @@
 import update from "immutability-helper";
 
-import { SET_SPINNER } from "../actions";
+import { SET_SPINNER, SPINNER_OFF } from "../actions";
 import {
   ADD_SUBMISSION_REQUEST,
   ADD_SUBMISSION_SUCCESS,
@@ -62,6 +62,12 @@ function appState(state = INITIAL_STATE, action) {
     case SET_SPINNER: {
       return update(state, {
         loading: { $set: true }
+      });
+    }
+
+    case SPINNER_OFF: {
+      return update(state, {
+        loading: { $set: false }
       });
     }
 
