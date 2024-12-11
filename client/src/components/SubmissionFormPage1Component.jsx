@@ -6,7 +6,6 @@ import { Box } from "@mui/material";
 import { withTranslation } from "react-i18next";
 import * as formElements from "./SubmissionFormElements";
 import NavTabs from "./NavTabs";
-import SinglePageForm from "./SinglePageForm";
 import Tab1Form from "./Tab1";
 import Tab2Form from "./Tab2";
 import CAPEForm from "./CAPE";
@@ -137,8 +136,6 @@ export class SubmissionFormPage1Component extends React.Component {
     }
   };
 
-  // called from createSubmission in App.jsx > 726
-  // ^^ createSubmission is called from handleTab2 in SubmissionFormPage1.jsx > 511
   async createSFOMA() {
     console.log("createSFOMA");
     this.props.actions.setSpinner();
@@ -182,11 +179,10 @@ export class SubmissionFormPage1Component extends React.Component {
     ];
     const employerList = this.updateEmployersPicklist() || [""];
     const values = queryString.parse(this.props.location.search);
-    // console.log(`################# query params #################`)
+    // console.log(`####################################################`)
     // console.log(values);
     // console.log(this.props);
     const checkoff = this.props.submission.formPage1.checkoff;
-    const { spf } = this.props;
     const formContainer = {
       display: "flex",
       padding: {
@@ -245,7 +241,7 @@ export class SubmissionFormPage1Component extends React.Component {
             {...this.props}
             standAlone={true}
             newCardNeeded={true}
-            // verifyCallback={this.verifyCallback}
+            verifyCallback={this.verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
             updateEmployersPicklist={this.updateEmployersPicklist}
@@ -260,31 +256,8 @@ export class SubmissionFormPage1Component extends React.Component {
             checkoff={checkoff}
             capeObject={this.props.submission.cape}
           />
-        ) : 
-
-        spf && this.props.tab !== 2 ? (
-          <SinglePageForm
-            {...this.props}
-            onSubmit={() => {
-              this.props.handleTab(1);
-              return false;
-            }}
-            // verifyCallback={this.verifyCallback}
-            classes={classes}
-            employerTypesList={employerTypesList}
-            employerList={employerList}
-            handleInput={this.props.apiSubmission.handleInput}
-            updateEmployersPicklist={this.updateEmployersPicklist}
-            renderSelect={this.renderSelect}
-            renderTextField={this.renderTextField}
-            renderCheckbox={this.renderCheckbox}
-            handleError={this.props.handleError}
-            openSnackbar={this.props.openSnackbar}
-            prefillValues={this.props.submission.prefillValues}
-          />
-        ) :
-        (
-          <>
+        ) : (
+          <React.Fragment>
             {typeof this.props.tab !== "number" && (
               <WelcomeInfo
                 embed={this.props.embed}
@@ -314,7 +287,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     : { display: "none" }
                 }
               >
-              {/*  <NavTabs {...this.props} /> */}
+                <NavTabs {...this.props} />
                 {this.props.tab === 0 && (
                   <Tab1Form
                     {...this.props}
@@ -322,7 +295,7 @@ export class SubmissionFormPage1Component extends React.Component {
                       this.props.handleTab(1);
                       return false;
                     }}
-                    // verifyCallback={this.verifyCallback}
+                    verifyCallback={this.verifyCallback}
                     classes={classes}
                     employerTypesList={employerTypesList}
                     employerList={employerList}
@@ -335,7 +308,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {this.props.tab === 1 && !spf && (
+                {this.props.tab === 1 && (
                   <Tab2Form
                     {...this.props}
                     onSubmit={() => this.props.handleTab(2)}
@@ -348,7 +321,8 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {this.props.tab === 2 && (
+                {(this.props.tab === 3 ||
+                  (this.props.tab === 2 && this.props.howManyTabs === 3)) && (
                   <CAPEForm
                     {...this.props}
                     classes={classes}
@@ -367,7 +341,7 @@ export class SubmissionFormPage1Component extends React.Component {
                 )}
               </div>
             )}
-          </>
+          </React.Fragment>
         )}
       </Box>
     );

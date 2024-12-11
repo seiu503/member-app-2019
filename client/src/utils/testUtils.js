@@ -1,3 +1,4 @@
+import checkPropTypes from "check-prop-types";
 import { createStore, applyMiddleware } from "redux";
 import React from "react";
 import { render } from "@testing-library/react";

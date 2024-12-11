@@ -26,7 +26,6 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "../../../translations/i18n";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
-  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -134,26 +133,7 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
-    payment: {},
-    p4cReturnValues: {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false,
-      legalLanguage: ""
-    }
+    payment: {}
   },
   initialValues: {
     mm: "",
@@ -175,7 +155,6 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
-    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -259,7 +238,7 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   afterAll(() => server.close());
 
   describe("handleTab1", () => {
-    test("`handleTab1` navigates to tab 1 if no errors", async function() {
+    test("`handleTab1` sets howManyTabs to 3 if no payment required and navigates to tab 1 if no errors", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       createSubmissionSuccess = jest
         .fn()
@@ -328,8 +307,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         await fireEvent.submit(tab1Form);
       });
 
-      // expect changeTabMock to have been called to navigate to tab 1
+      // expect handleInputMock to have been called setting `howManyTabs` to 3
       await waitFor(() => {
+        expect(handleInputMock).toHaveBeenCalledWith({
+          target: { name: "howManyTabs", value: 3 }
+        });
         expect(changeTabMock).toHaveBeenCalledWith(1);
       });
     });
