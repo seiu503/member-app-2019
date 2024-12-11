@@ -17,7 +17,6 @@ import {
   SAVE_SALESFORCEID,
   SAVE_SUBMISSIONID,
   HANDLE_INPUT,
-  HANDLE_INPUT_SPF,
   CLEAR_FORM,
   SET_CAPE_OPTIONS
 } from "../actions/apiSubmissionActions";
@@ -78,8 +77,7 @@ export const INITIAL_STATE = {
     checkoff: true,
     prefillEmployerChanged: false,
     howManyTabs: 3,
-    textAuthOptOut: false,
-    completePrefill: false
+    textAuthOptOut: false
   },
   formPage2: {
     gender: "",
@@ -87,24 +85,6 @@ export const INITIAL_STATE = {
     lastName: "",
     homeEmail: ""
   },
-  prefillValues: {
-    mm: "",
-    homeState: "OR",
-    preferredLanguage: "English",
-    employerType: "",
-    employerId: "",
-    prefillEmployerId: "",
-    prefillEmployerParentId: "",
-    firstName: "",
-    lastName: "",
-    homeEmail: "",
-    mobilePhone: "",
-    legalLanguage: "",
-    immediatePastMemberStatus: "Not a Member",
-    prefillEmployerChanged: false,
-    textAuthOptOut: false
-  },
-  p4cReturnValues: {},
   employerNames: [""],
   employerObjects: [{ Name: "", Sub_Division__c: "" }],
   redirect: false,
@@ -134,11 +114,6 @@ function Submission(state = INITIAL_STATE, action) {
           [action.payload.name]: { $set: action.payload.value }
         }
       });
-
-    case HANDLE_INPUT_SPF:
-      return update(state, {
-          [action.payload.name]: { $set: action.payload.value }
-      });   
 
     case CLEAR_FORM:
       return INITIAL_STATE;
@@ -193,7 +168,7 @@ function Submission(state = INITIAL_STATE, action) {
 
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_DID_SUCCESS:
-      console.log(action.payload);
+      // console.log(action.payload);
       if (action.payload && action.payload.Account) {
         const { employerTypeMap } = formElements;
         // subDivision is stored in a different field depending on whether the
@@ -331,27 +306,6 @@ function Submission(state = INITIAL_STATE, action) {
             firstName: { $set: action.payload.FirstName },
             lastName: { $set: action.payload.LastName },
             homeEmail: { $set: action.payload.Home_Email__c }
-          },
-          prefillValues: {
-            mobilePhone: { $set: action.payload.MobilePhone },
-            employerName: { $set: employerName },
-            employerType: { $set: employerType },
-            prefillEmployerId: { $set: action.payload.Account.Id },
-            prefillEmployerParentId: { $set: parentId },
-            firstName: { $set: action.payload.FirstName },
-            lastName: { $set: action.payload.LastName },
-            homeStreet: { $set: action.payload.MailingStreet },
-            homeCity: { $set: action.payload.MailingCity },
-            homeState: { $set: action.payload.MailingState },
-            homeZip: { $set: zip },
-            homeEmail: { $set: action.payload.Home_Email__c },
-            preferredLanguage: { $set: action.payload.Preferred_Language__c },
-            termsAgree: { $set: false },
-            signature: { $set: null },
-            textAuthOptOut: { $set: false },
-            immediatePastMemberStatus: {
-              $set: action.payload.Binary_Membership__c
-            }
           },
           error: { $set: null }
         });

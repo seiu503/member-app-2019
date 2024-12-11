@@ -29,15 +29,12 @@ const handlers = [
   http.get(`http://localhost:8080/api/sfdid/1/2`, () => {
     console.log("getSFContactByDoubleId mock");
     return HttpResponse.json({ 
-      payload: {
         id: "testid",
         FirstName: "test",
         LastName: "test",
         Account: { id: "test" },
-        Ethnicity__c: "Declined",
-        MobilePhone: "1234567890"
-      }
-    });
+        Ethnicity__c: "Declined"
+      });
   }),
 
   http.get(`http://localhost:8080/api/sf/12345678`, () => {

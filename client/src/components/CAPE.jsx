@@ -44,7 +44,7 @@ export const CAPE = props => {
     renderTextField,
     renderCheckbox,
     standAlone,
-    // verifyCallback,
+    verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
     employerList,
@@ -706,7 +706,7 @@ export const CAPE = props => {
             variant="contained"
             loading={loading}
             data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-            // data-callback={verifyCallback}
+            data-callback={verifyCallback}
             data-testid="button-submit"
             aria-label="Submit"
           >
@@ -771,7 +771,7 @@ export const CAPE = props => {
 CAPE.propTypes = {
   onSubmit: PropTypes.func,
   classes: PropTypes.object,
-  // verifyCallback: PropTypes.func,
+  verifyCallback: PropTypes.func,
   loading: PropTypes.bool,
   pristine: PropTypes.bool,
   invalid: PropTypes.bool

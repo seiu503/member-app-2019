@@ -44,7 +44,6 @@ const oldWindowLocation = window.location;
 const server = setupServer(...handlers);
 
 const handleInputMock = jest.fn();
-const handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({}));
 const setActiveLanguageMock = jest
   .fn()
   .mockImplementation(() => Promise.resolve("en"));
@@ -104,30 +103,10 @@ const defaultProps = {
       reCaptchaValue: "token"
     },
     allSubmissions: [{ key: "value" }],
-    employerObjects: [...employersPayload],
-    p4cReturnValues: {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false,
-      legalLanguage: ""
-    }
+    employerObjects: [...employersPayload]
   },
   apiSubmission: {
     handleInput: handleInputMock,
-    handleInputSPF: handleInputSPFMock,
     verify: verifySuccess
   },
   apiSF: {
@@ -212,9 +191,7 @@ describe("<App />", () => {
   describe("componentDidMount", () => {
     it("componentDidMount checks for browser language", async () => {
       // add mock function to props
-      utils.detectDefaultLanguage = jest.fn().mockImplementation(() => {
-        return {lang: "en", other: false}
-      });
+      utils.detectDefaultLanguage = jest.fn();
 
       // simulate component render / cDM
       const { getByTestId } = await setup();
@@ -227,9 +204,7 @@ describe("<App />", () => {
     });
     it("componentDidMount checks for language in query string", async () => {
       // add mock function to props
-      utils.detectDefaultLanguage = jest.fn().mockImplementation(() => {
-        return {lang: "en", other: false}
-      });
+      utils.detectDefaultLanguage = jest.fn();
       const props = {
         location: {
           search: "?lang=EN"
@@ -288,7 +263,7 @@ describe("<App />", () => {
       expect(nf).toBeInTheDocument();
     });
     test(' "/" path should render SubmissionForm component', async () => {
-      const { queryByTestId } = await setup({}, "/?spf=true");
+      const { queryByTestId } = await setup({}, "/");
       const subm1 = queryByTestId("component-submissionformpage1");
       expect(subm1).toBeInTheDocument();
     });

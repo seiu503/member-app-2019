@@ -57,9 +57,8 @@ export const Tab1 = props => {
     renderTextField,
     renderCheckbox,
     formValues,
-    width
-    // width,
-    // verifyCallback
+    width,
+    verifyCallback
   } = props;
 
   // console.log(employerTypesList);
@@ -450,7 +449,7 @@ export const Tab1 = props => {
               }}
               variant="contained"
               data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-              // data-callback={verifyCallback}
+              data-callback={verifyCallback}
             >
               <Trans i18nKey="next">Next</Trans>
             </Button>

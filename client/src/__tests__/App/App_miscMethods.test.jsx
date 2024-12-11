@@ -27,7 +27,6 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
-  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -82,8 +81,7 @@ let getSFContactByDoubleIdSuccess = jest.fn().mockImplementation(() =>
     type: "GET_SF_CONTACT_DID_SUCCESS",
     payload: {
       firstName: "test",
-      lastName: "test",
-      mobilePhone: "test"
+      lastName: "test"
     }
   })
 );
@@ -134,14 +132,12 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
-    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     formPage2: {},
     cape: {
       monthlyOptions: []
-    },
-    prefillValues: {}
+    }
   }
 };
 
@@ -154,26 +150,7 @@ const defaultProps = {
       ...formValues
     },
     cape: {},
-    payment: {},
-    p4cReturnValues: {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false,
-      legalLanguage: ""
-    }
+    payment: {}
   },
   appState: {},
   initialize: jest.fn(),
@@ -201,7 +178,6 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
-    handleInputSPF: handleInputSPFMock,
     verify: verifyMock,
     clearForm: clearFormMock,
     updateSubmission: () =>
@@ -293,10 +269,7 @@ describe("<App />", () => {
             reCaptchaValue: "token"
           },
           payment: {},
-          employerObjects: [...employersPayload],
-          p4cReturnValues: {
-            salesforceId: "123"
-          }
+          employerObjects: [...employersPayload]
         },
         apiSF: {
           createSFOMA: jest.fn().mockImplementation(() =>
@@ -316,16 +289,7 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          ),
-          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_CONTACT_DID_SUCCESS",
-              payload: {
-                firstName: "test",
-                lastName: "test",
-                mobilePhone: "test"
-              }
-            }))
+          )
         }
       };
 
@@ -341,14 +305,12 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
       // check that tab 1 renders
+      const tab1Form = getByRole("form");
       await waitFor(() => {
-        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
@@ -412,16 +374,7 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          ),
-          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_CONTACT_DID_SUCCESS",
-              payload: {
-                firstName: "test",
-                lastName: "test",
-                mobilePhone: "test"
-              }
-            }))
+          )
         }
       };
 
@@ -437,9 +390,10 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user select language
-      await waitFor(async() => {
-        const languagePicker = getByLabelText("Select Language");
-        await fireEvent.change(languagePicker, { target: { value: "Español" } });
+      const languagePicker = getByLabelText("Select Language");
+      await fireEvent.change(languagePicker, { target: { value: "Español" } });
+
+      await waitFor(() => {
         expect(setActiveLanguageMock).toHaveBeenCalled();
       });
     });
@@ -465,11 +419,7 @@ describe("<App />", () => {
           formPage1: {
             legalLanguage: "abc"
           },
-          payment: {},
-          p4cReturnValues: {
-            salesforceId: "5678",
-            legalLanguage: "efg"
-          }
+          payment: {}
         },
         location: {
           search: "&cId=1234"
@@ -492,16 +442,7 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          ),
-          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_CONTACT_DID_SUCCESS",
-              payload: {
-                firstName: "test",
-                lastName: "test",
-                mobilePhone: "test"
-              }
-            }))
+          )
         }
       };
 
@@ -517,21 +458,19 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
       // check that tab 1 renders
+      const tab1Form = getByRole("form");
       await waitFor(() => {
-        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(() => {
+      await waitFor(async () => {
         const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
+        await userEvent.click(submitButton);
       });
 
       // simulate submit tab2
@@ -593,16 +532,7 @@ describe("<App />", () => {
               type: "CREATE_SF_CONTACT_SUCCESS",
               payload: { id: 1 }
             })
-          ),
-          getSFContactByDoubleIdSuccess: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "GET_SF_CONTACT_DID_SUCCESS",
-              payload: {
-                firstName: "test",
-                lastName: "test",
-                mobilePhone: "test"
-              }
-            }))
+          )
         },
         submission: {
           ...defaultProps.submission,

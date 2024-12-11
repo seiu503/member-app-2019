@@ -27,7 +27,6 @@ import i18n from "../../translations/i18n";
 import handlers from "../../mocks/handlers";
 let navigate = jest.fn(),
   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({})),
-  handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({})),
   clearFormMock = jest.fn().mockImplementation(() => console.log("clearform")),
   handleErrorMock = jest.fn(),
   executeMock = jest.fn().mockImplementation(() => Promise.resolve());
@@ -123,7 +122,6 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
-    p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     formPage2: {},
@@ -145,25 +143,6 @@ const defaultProps = {
       monthlyOptions: []
     },
     payment: {},
-    p4cReturnValues: {
-      firstName: "firstName",
-      lastName: "lastName",
-      homeEmail: "homeEmail",
-      homeStreet: "homeStreet",
-      homeCity: "homeCity",
-      homeZip: "homeZip",
-      homeState: "homeState",
-      signature: "signature",
-      employerType: "employerType",
-      employerName: "employerName",
-      mobilePhone: "mobilePhone",
-      mm: "12",
-      dd: "01",
-      yyyy: "1999",
-      preferredLanguage: "English",
-      textAuthOptOut: false,
-      legalLanguage: ""
-    },
     employerObjects: [...employersPayload]
   },
   appState: {},
@@ -191,7 +170,6 @@ const defaultProps = {
   },
   apiSubmission: {
     handleInput: handleInputMock,
-    handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
@@ -270,13 +248,6 @@ describe("<App />", () => {
 
       let props = {
         ...defaultProps,
-        submission: {
-          ...defaultProps.submission,
-          p4cReturnValues: {
-            ...defaultProps.submission.p4cReturnValues,
-            salesforceId: null
-          }
-        },
         apiSF: {
           ...defaultProps.apiSF,
           lookupSFContact: jest.fn().mockImplementation(() =>
@@ -305,10 +276,8 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -341,13 +310,6 @@ describe("<App />", () => {
           search: "&s=test"
         },
         ...defaultProps,
-        submission: {
-          ...defaultProps.submission,
-          p4cReturnValues: {
-            ...defaultProps.submission.p4cReturnValues,
-            salesforceId: null
-          }
-        },
         apiSF: {
           ...defaultProps.apiSF,
           lookupSFContact: jest.fn().mockImplementation(() =>
@@ -376,10 +338,8 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -414,13 +374,6 @@ describe("<App />", () => {
           }
         },
         ...defaultProps,
-        submission: {
-          ...defaultProps.submission,
-          p4cReturnValues: {
-            ...defaultProps.submission.p4cReturnValues,
-            salesforceId: null
-          }
-        },
         apiSF: {
           ...defaultProps.apiSF,
           lookupSFContact: jest.fn().mockImplementation(() =>
@@ -449,10 +402,8 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -482,12 +433,7 @@ describe("<App />", () => {
     test("`prepForSubmission` finds SF contact ID in redux store", async function() {
       const props = {
         submission: {
-          ...defaultProps.submission,
-          salesforce_id: "111",
-          p4cReturnValues: {
-            ...defaultProps.submission.p4cReturnValues,
-            salesforceId: "111"
-          }
+          salesforce_id: "111"
         },
         ...defaultProps,
         apiSF: {
@@ -518,10 +464,8 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = getByTestId("button-next");
+      await userEvent.click(nextButton);
 
       // simulate submit tab1
       await waitFor(async () => {
