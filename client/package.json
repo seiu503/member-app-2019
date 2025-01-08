@@ -12,7 +12,7 @@
     "@mui/system": "^6.1.9",
     "@reduxjs/toolkit": "^1.9.5",
     "chokidar-cli": "^3.0.0",
-    "classnames": "^2.2.6",
+    "classnames": "^2.5.1",
     "env-path": "^1.0.7",
     "history": "^5.3.0",
     "i18next": "^22.5.1",
