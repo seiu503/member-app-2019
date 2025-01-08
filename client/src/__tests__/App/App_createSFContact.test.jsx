@@ -332,7 +332,7 @@ describe("<App />", () => {
         const snackbar = await getByTestId("component-basic-snackbar");
         const errorIcon = await getByTestId("ErrorOutlineIcon");
         const message = await getByText("createSFContactError");
-        expect(snackbar).toBeInTheDocument();
+        await expect(snackbar).toBeInTheDocument();
         expect(errorIcon).toBeInTheDocument();
         expect(message).toBeInTheDocument();
       });

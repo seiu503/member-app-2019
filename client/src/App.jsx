@@ -27,7 +27,6 @@ import SubmissionFormPage1 from "./containers/SubmissionFormPage1";
 import SubmissionFormPage2Function from "./containers/SubmissionFormPage2Function";
 import Spinner from "./components/Spinner";
 import {
-  // handleError,
   formatBirthdate,
   findEmployerObject,
   formatSFDate,
@@ -139,8 +138,8 @@ export class AppUnconnected extends Component {
       variant,
       message
     };
-
-    this._isMounted && this.setState({ ...newState });
+    this.setState({ ...newState });
+    // this._isMounted && this.setState({ ...newState });
   };
 
   closeSnackbar = (event, reason) => {
