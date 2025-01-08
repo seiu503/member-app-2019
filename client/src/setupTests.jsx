@@ -9,6 +9,8 @@ global.TextEncoder = TextEncoder;
 
 global.fetch = require("jest-fetch-mock");
 
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+
 const Environment = require("jest-environment-jsdom");
 
 jest.doMock("react-google-invisible-recaptcha", () => {

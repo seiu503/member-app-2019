@@ -1,7 +1,7 @@
 import "react-app-polyfill/ie11";
 import "react-app-polyfill/stable";
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "./styles/css/index.css";
@@ -16,7 +16,8 @@ import i18n from "./translations/i18n";
 
 // global.fetch = require("node-fetch");
 
-render(
+const root = createRoot(document.getElementById("root"));
+root.render(
   <Provider store={store}>
     <I18nextProvider i18n={i18n} defaultNS={"translation"}>
       <BrowserRouter>
@@ -27,6 +28,5 @@ render(
         </ScrollToTop>
       </BrowserRouter>
     </I18nextProvider>
-  </Provider>,
-  document.getElementById("root")
+  </Provider>
 );

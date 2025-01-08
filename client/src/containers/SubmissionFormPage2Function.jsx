@@ -17,35 +17,39 @@ export const SubmissionFormPage2Function = props => {
   const classes = props.classes;
 
   useEffect(() => {
-    // check state for ids from page1
-    let cId = props.submission.salesforceId,
-      sId = props.submission.submissionId;
-    // console.log(`previously saved sId: ${sId}`);
-    // check for ids in query string
-    const params = queryString.parse(props.location.search);
-    if (!cId && params.cId) {
-      cId = params.cId;
-      props.apiSubmission.saveSalesforceId(cId);
-    }
-    if (!sId && params.sId) {
-      sId = params.sId;
-      props.apiSubmission.saveSubmissionId(sId);
-    }
+    async function func() {
+      // check state for ids from page1
+      let cId = props.submission.salesforceId,
+        sId = props.submission.submissionId;
+      // console.log(`previously saved sId: ${sId}`);
+      // check for ids in query string
+      const params = queryString.parse(props.location.search);
+      if (!cId && params.cId) {
+        cId = params.cId;
+        props.apiSubmission.saveSalesforceId(cId);
+      }
+      if (!sId && params.sId) {
+        sId = params.sId;
+        props.apiSubmission.saveSubmissionId(sId);
+      }
 
-    // if find cId, call API to fetch contact info for prefill
-    if (cId) {
-      props.apiSF
-        .getSFContactById(cId)
-        .then(result => {
-          // console.log("result.payload", result.payload);
-        })
-        .catch(err => {
-          console.log(err);
-          props.handleError(err);
-        });
-    } else {
-      return props.navigate("/");
-    }
+      // if find cId, call API to fetch contact info for prefill
+      if (cId) {
+        props.apiSF
+          .getSFContactById(cId)
+          .then(result => {
+            // console.log("result.payload", result.payload);
+          })
+          .catch(err => {
+            console.log(err);
+            props.handleError(err);
+          });
+      } else {
+        return props.navigate("/");
+      }
+        }
+    func();
+    
   }, []);
 
   return (

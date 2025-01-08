@@ -16,8 +16,8 @@ const ButtonWithSpinner = (props) => {
   );
 };
 
-ButtonWithSpinner.defaultProps = {
-  loading: false
-};
+// ButtonWithSpinner.defaultProps = {
+//   loading: false
+// };
 
 export default ButtonWithSpinner;

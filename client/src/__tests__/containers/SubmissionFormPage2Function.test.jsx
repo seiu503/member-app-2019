@@ -366,6 +366,6 @@ describe("<SubmissionFormPage2Container /> unconnected", () => {
     const { getByTestId } = await setup({ ...props }, "/?cId=123&sId=456");
     const component = await getByTestId("component-submissionformpage2");
     expect(component).toBeInTheDocument();
-    expect(handleErrorMock).toHaveBeenCalledWith("getSFContactFailure");
+    await expect(handleErrorMock).toHaveBeenCalledWith("getSFContactFailure");
   });
 });
