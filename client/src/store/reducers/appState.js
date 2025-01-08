@@ -53,7 +53,15 @@ export const INITIAL_STATE = {
   loggedIn: false,
   authToken: "",
   loading: false,
-  userType: ""
+  userType: "",
+  tab: undefined,
+  spf: false,
+  userSelectedLanguage: "",
+  snackbar: {
+    open: false,
+    variant: "info",
+    message: null
+  }
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -63,6 +71,34 @@ function appState(state = INITIAL_STATE, action) {
       return update(state, {
         loading: { $set: true }
       });
+    }
+
+    case SET_TAB: {
+      return update(state, {
+        tab: { $set: action.payload.value }
+      })
+    }
+
+    case SET_SPF: {
+      return update(state, {
+        spf: { $set: action.payload.value }
+      })
+    }
+
+    case SET_USER_SELECTED_LANGUAGE: {
+      return update(state, {
+        userSelectedLanguage: { $set: action.payload.value }
+      })
+    }
+
+    case SET_SNACKBAR: {
+      return update(state, {
+        snackbar: { 
+          open: { $set: action.payload.open},
+          variant: { $set: action.payload.variant },
+          message: { $set: action.payload.message } 
+        }
+      })
     }
 
     case SPINNER_OFF: {

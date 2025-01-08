@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { useRef, useState } from "react";
 import { Routes, Route, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -39,62 +39,39 @@ import SamplePhoto from "./img/sample-form-photo.jpg";
 
 import welcomeInfo from "./translations/welcomeInfo.json";
 
-const refCaptcha = React.createRef();
+const refCaptcha = useRef();
 
 const styles = {};
 
-export class AppUnconnected extends Component {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
-    this.language_picker = React.createRef();
-    this.main_ref = React.createRef();
-    this.legal_language = React.createRef();
-    this.cape_legal = React.createRef();
-    this.sigBox = React.createRef();
-    this.state = {
-      deleteDialogOpen: false,
-      animation: false,
-      more: false,
-      headline: {
-        text: defaultWelcomeInfo.headline,
-        id: 0
-      },
-      body: {
-        text: defaultWelcomeInfo.body,
-        id: 0
-      },
-      image: {},
-      tab: undefined,
-      userSelectedLanguage: "",
-      snackbar: {
-        open: false,
-        variant: "info",
-        message: null
-      }
-    };
-    this.onResolved = this.onResolved.bind(this);
-    this.createSubmission = this.createSubmission.bind(this);
-    this.updateSubmission = this.updateSubmission.bind(this);
-    this.lookupSFContact = this.lookupSFContact.bind(this);
-    this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
-    this.prepForContact = this.prepForContact.bind(this);
-    this.prepForSubmission = this.prepForSubmission.bind(this);
-    this.createSFContact = this.createSFContact.bind(this);
-    this.updateSFContact = this.updateSFContact.bind(this);
-    this.changeTab = this.changeTab.bind(this);
-    this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
-    this.openSnackbar = this.openSnackbar.bind(this);
-    this.handleError = this.handleError.bind(this);
-    this.setSPF = this.setSPF.bind(this);
-    this.recaptcha = refCaptcha;
-  }
+export const AppUnconnected = (props) => {
+
+  let _isMounted = false;
+  const recaptcha = refCaptcha;
+
+  // refs
+  let language_picker = useRef();
+  let main_ref = useRef();
+  let legal_language = useRef();
+  let cape_legal = useRef();
+  let sigBox = useRef();
+
+  // state
+  const [headline, setHeadline] = useState({
+      text: defaultWelcomeInfo.headline,
+      id: 0
+    });
+  const [body, setBody] = useState({
+      text: defaultWelcomeInfo.body,
+      id: 0
+    });
+  const [image, setImage] = useState({});
+
 
   async componentDidMount() {
-    // console.log(`APP this.props.classes`);
-    // console.log(this.props);
+    // console.log(`APP props.classes`);
+    // console.log(props);
 
-    this._isMounted = true;
+    _isMounted = true;
 
     // check and log environment
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
@@ -106,14 +83,14 @@ export class AppUnconnected extends Component {
 
     const changeLanguage = lng => {
       // console.log(`NEW changeLanguage: ${lng}`);
-      this.props.i18n.changeLanguage(lng);
+      props.i18n.changeLanguage(lng);
     };
 
     // set form language based on detected default language
     changeLanguage(defaultLanguage);
 
     // check if language was set in query string
-    const values = queryString.parse(this.props.location.search);
+    const values = queryString.parse(props.location.search);
     if (values.lang) {
       console.log(`NEW changeLanguage: ${values.lang}`);
       changeLanguage(values.lang);
@@ -121,25 +98,20 @@ export class AppUnconnected extends Component {
 
     // check for spf status
     if (values.spf) {
-      const newState = { ...this.state };
-      newState.spf = true;
-      this._isMounted && this.setState({ ...newState });
+      props.actions.setSPF(false);
     }
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    _isMounted = false;
   }
 
   openSnackbar = async (variant, message) => {
-    const newState = { ...this.state };
-    newState.snackbar = {
+    props.actions.setSnackbar({
       open: true,
       variant,
       message
-    };
-    this.setState({ ...newState });
-    // this._isMounted && this.setState({ ...newState });
+    });
   };
 
   closeSnackbar = (event, reason) => {
@@ -147,18 +119,9 @@ export class AppUnconnected extends Component {
       return;
     }
 
-    this._isMounted &&
-      this.setState({
-        snackbar: {
-          open: false
-        }
-      });
-  };
-
-  setSPF(bool) {
-    const newState = { ...this.state };
-    newState.spf = bool;
-    this._isMounted && this.setState({ ...newState });
+    props.actions.setSnackbar({
+      open: false
+    });
   };
 
   handleError = err => {
@@ -174,15 +137,14 @@ export class AppUnconnected extends Component {
   updateLanguage = e => {
     console.log("updateLanguage");
     // update value of select
-    const newState = { ...this.state };
-    newState.userSelectedLanguage = e.target.value;
-    this._isMounted && this.setState({ ...newState });
+    props.actions.setUserSelectedLanguage(e.target.value);
+
 
     // detect default language from browser
     const defaultLanguage = detectDefaultLanguage();
     const userChosenLanguage =
-      this.language_picker && this.language_picker.current
-        ? this.language_picker.current.value
+      language_picker && language_picker.current
+        ? language_picker.current.value
         : null;
     // console.log(userChosenLanguage);
     const languageCode = languageMap[userChosenLanguage];
@@ -191,7 +153,7 @@ export class AppUnconnected extends Component {
     // set form language based on detected default language
     const changeLanguage = lng => {
       // console.log(`NEW changeLanguage: ${lng}`);
-      this.props.i18n.changeLanguage(lng);
+      props.i18n.changeLanguage(lng);
     };
 
     changeLanguage(language);
@@ -222,7 +184,7 @@ export class AppUnconnected extends Component {
     return (
       <Box
         sx={{
-          // className={this.props.classes.body}
+          // className={props.classes.body}
           color: "black"
         }}
       >
@@ -250,19 +212,19 @@ export class AppUnconnected extends Component {
     });
     // console.log(`headlineIds ${headlineIds}`);
     // generate translated text in appropriate language rendered in a <h3> tag
-    let headline = (
+    let headlineText = (
       <Translation>
         {(t, { i18n }) => (
           <span data-testid="headline-translate"> {t(`headline${id}`)} </span>
         )}
       </Translation>
     );
-    // console.log(`this.state.headline.text: ${this.state.headline.text}`);
+    // console.log(`headline.text: ${headline.text}`);
     // if this headline has not yet been translated there will be no
     // translation ids in the welcomeInfo JSON object
     // just render the raw copy in English
     if (!headlineIds.length) {
-      headline = <React.Fragment>{this.state.headline.text}</React.Fragment>;
+      headlineText = <React.Fragment>{headline.text}</React.Fragment>;
     }
     // console.log(headline);
     // wrap in MUI typography element and return
@@ -282,15 +244,15 @@ export class AppUnconnected extends Component {
           style={{ paddingTop: 20, fontSize: "2.4rem" }}
           data-testid="headline"
         >
-          {headline}
+          {headlineText}
         </Typography>
       </Box>
     );
   };
 
   async onResolved() {
-    const token = await this.recaptcha.current.getResponse();
-    this.props.apiSubmission.handleInput({
+    const token = await recaptcha.current.getResponse();
+    props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
   }
@@ -298,8 +260,8 @@ export class AppUnconnected extends Component {
   async updateSubmission(passedId, passedUpdates, formValues) {
     console.log("App 293 updateSubmission");
     console.log(passedId);
-    this.props.actions.setSpinner();
-    const id = passedId ? passedId : this.props.submission.submissionId;
+    props.actions.setSpinner();
+    const id = passedId ? passedId : props.submission.submissionId;
     // const medicaidResidents =
     //   formValues && formValues.medicaidResidents
     //     ? formValues.medicaidResidents
@@ -307,7 +269,7 @@ export class AppUnconnected extends Component {
     //     ? passedUpdates.medicaidResidents
     //     : 0;
     // const pmtUpdates = {
-    //   payment_type: this.props.submission.formPage1.paymentType,
+    //   payment_type: props.submission.formPage1.paymentType,
     //   // medicaid_residents: medicaidResidents
     // };
     // const updates = passedUpdates ? passedUpdates : pmtUpdates;
@@ -319,21 +281,21 @@ export class AppUnconnected extends Component {
         console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
       }
     }
-    this.props.apiSubmission
+    props.apiSubmission
       .updateSubmission(id, passedUpdates)
       .then(result => {
         console.log(result);
         if (
           result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
+          props.submission.error
         ) {
-          console.log(this.props.submission.error);
-          return this.handleError(this.props.submission.error);
+          console.log(props.submission.error);
+          return handleError(props.submission.error);
         }
       })
       .catch(err => {
         console.error(err);
-        return this.handleError(err);
+        return handleError(err);
       });
   }
 
@@ -347,7 +309,7 @@ export class AppUnconnected extends Component {
       formValues.lastName &&
       formValues.homeEmail &&
       formValues.employerName &&
-      !this.props.submission.salesforceId
+      !props.submission.salesforceId
     ) {
       // lookup contact by first/last/email
       const lookupBody = {
@@ -355,22 +317,22 @@ export class AppUnconnected extends Component {
         last_name: formValues.lastName,
         home_email: formValues.homeEmail
       };
-      await this.props.apiSF.lookupSFContact(lookupBody).catch(err => {
+      await props.apiSF.lookupSFContact(lookupBody).catch(err => {
         console.error(err);
-        return this.handleError(err);
+        return handleError(err);
       });
 
       // if nothing found on lookup, need to create new contact
-      if (!this.props.submission.salesforceId && !this.props.submission.p4cReturnValues.salesforceId) {
+      if (!props.submission.salesforceId && !props.submission.p4cReturnValues.salesforceId) {
         console.log("App 359: No SF Contact found on lookup (no salesforceId in redux store), creating new");
         console.dir(formValues);
-        await this.createSFContact(formValues)
+        await createSFContact(formValues)
           .then(() => {
-            // console.log(this.props.submission.salesforceId);
+            // console.log(props.submission.salesforceId);
           })
           .catch(err => {
             console.error(err);
-            return this.handleError(err);
+            return handleError(err);
           });
       }
     }
@@ -378,7 +340,7 @@ export class AppUnconnected extends Component {
 
   async saveSubmissionErrors(submission_id, method, error) {
     // 1. retrieve existing errors array from current submission
-    let { submission_errors } = this.props.submission.currentSubmission;
+    let { submission_errors } = props.submission.currentSubmission;
     if (submission_errors === null || submission_errors === undefined) {
       submission_errors = "";
     }
@@ -390,9 +352,9 @@ export class AppUnconnected extends Component {
       submission_status: "error"
     };
     console.log("372", submission_id);
-    this.updateSubmission(submission_id, updates).catch(err => {
+    updateSubmission(submission_id, updates).catch(err => {
       console.error(err);
-      return this.handleError(err);
+      return handleError(err);
     });
   }
 
@@ -415,9 +377,9 @@ export class AppUnconnected extends Component {
       if (values.employerName) {
         // console.log("********");
         console.log(`employerName: ${values.employerName}`);
-        // console.dir(this.props.submission.employerObjects);
+        // console.dir(props.submission.employerObjects);
         employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
+          props.submission.employerObjects,
           values.employerName
         );
       }
@@ -430,7 +392,7 @@ export class AppUnconnected extends Component {
           "personal support worker (paid by ppl)"
       ) {
         employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
+          props.submission.employerObjects,
           "PPL PSW"
         );
         returnValues.agencyNumber = employerObject
@@ -442,7 +404,7 @@ export class AppUnconnected extends Component {
           "personal support worker (paid by state of oregon)"
       ) {
         employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
+          props.submission.employerObjects,
           "State PSW"
         );
         returnValues.agencyNumber = employerObject
@@ -454,7 +416,7 @@ export class AppUnconnected extends Component {
           "homecare worker (aging and people with disabilities)"
       ) {
         employerObject = findEmployerObject(
-          this.props.submission.employerObjects,
+          props.submission.employerObjects,
           "State APD"
         );
         returnValues.agencyNumber = employerObject
@@ -469,14 +431,14 @@ export class AppUnconnected extends Component {
       // console.log(`AgencyNumber: ${returnValues.agencyNumber}`);
 
       if (
-        this.props.submission.formPage1 &&
-        this.props.submission.formPage1.prefillEmployerId
+        props.submission.formPage1 &&
+        props.submission.formPage1.prefillEmployerId
       ) {
-        if (!this.props.submission.formPage1.prefillEmployerChanged) {
+        if (!props.submission.formPage1.prefillEmployerChanged) {
           // if this is a prefill and employer has not been changed manually,
           // return original prefilled employer Id
           // this will be a worksite-level account id in most cases
-          returnValues.employerId = this.props.submission.formPage1.prefillEmployerId;
+          returnValues.employerId = props.submission.formPage1.prefillEmployerId;
         } else {
           // if employer has been manually changed since prefill, or if
           // this is a blank-slate form, find id in employer object
@@ -499,18 +461,18 @@ export class AppUnconnected extends Component {
       }
       console.log("App 494 prepForContact");
       // save employerId to redux store for later
-      this.props.apiSubmission.handleInput({
+      props.apiSubmission.handleInput({
         target: { name: "employerId", value: returnValues.employerId }
       });
       // console.dir(returnValues);
 
       console.log('saving returnValues to redux to avoid duplicate calls later');
-      this.props.apiSubmission.handleInputSPF({
+      props.apiSubmission.handleInputSPF({
         target: { name: "p4cReturnValues", value: {... returnValues } }
       });
 
       // console.log(`checking redux store for returnValues`);
-      // console.log(this.props.submission);
+      // console.log(props.submission);
 
       console.log("App 509 prepForContact resolve");
       resolve(returnValues);
@@ -524,10 +486,10 @@ export class AppUnconnected extends Component {
 
       if (!partial) {
         // set legal language
-        returnValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
+        returnValues.legalLanguage = props.submission.formPage1.legalLanguage;
       }
       // set campaign source
-      const q = queryString.parse(this.props.location.search);
+      const q = queryString.parse(props.location.search);
       console.log("queryString:");
       console.log(q);
       const campaignSource =
@@ -540,8 +502,8 @@ export class AppUnconnected extends Component {
         if (q && q.cId) {
           returnValues.salesforceId = q.cId;
         }
-        if (this.props.submission.salesforce_id) {
-          returnValues.salesforceId = this.props.submission.salesforce_id;
+        if (props.submission.salesforce_id) {
+          returnValues.salesforceId = props.submission.salesforce_id;
         }
       }
       console.log("App 541 prepForSubmission resolve");
@@ -551,17 +513,17 @@ export class AppUnconnected extends Component {
 
   async generateSubmissionBody(values, partial) {
     console.log("App 547 generateSubmissionBody start");
-    const firstValues = await this.prepForContact(values);
+    const firstValues = await prepForContact(values);
     console.log("firstValues", firstValues);
-    const secondValues = await this.prepForSubmission(firstValues, partial);
+    const secondValues = await prepForSubmission(firstValues, partial);
     console.log("secondValues", secondValues);
     secondValues.termsAgree = values.termsAgree;
     secondValues.signature = firstValues.signature
       ? firstValues.signature
-      : this.props.submission.formPage1.signature;
+      : props.submission.formPage1.signature;
     // console.log(`signature: ${secondValues.signature}`);
-    secondValues.legalLanguage = this.props.submission.formPage1.legalLanguage;
-    secondValues.reCaptchaValue = this.props.submission.formPage1.reCaptchaValue;
+    secondValues.legalLanguage = props.submission.formPage1.legalLanguage;
+    secondValues.reCaptchaValue = props.submission.formPage1.reCaptchaValue;
 
     let {
       firstName,
@@ -649,7 +611,7 @@ export class AppUnconnected extends Component {
       maintenance_of_effort,
       seiu503_cba_app_date,
       immediate_past_member_status: immediatePastMemberStatus,
-      salesforce_id: salesforceId || this.props.submission.salesforceId,
+      salesforce_id: salesforceId || props.submission.salesforceId,
       reCaptchaValue,
       mail_to_city,
       mail_to_state,
@@ -679,27 +641,27 @@ export class AppUnconnected extends Component {
   async createSubmission(formValues, partial) {
     // create initial submission using data in tabs 1 & 2
     console.log("App 682 createSubmission start");
-    const body = await this.generateSubmissionBody(formValues, partial);
+    const body = await generateSubmissionBody(formValues, partial);
     // console.log(body);
     const cleanBody = removeFalsy(body);
     // console.log(cleanBody);
-    await this.props.apiSubmission
+    await props.apiSubmission
       .addSubmission(cleanBody)
       .then(result => {
         if (
           result.type !== "ADD_SUBMISSION_SUCCESS" ||
-          this.props.submission.error
+          props.submission.error
         ) {
           const err =
-            this.props.submission.error ||
+            props.submission.error ||
             "An error occurred while saving your Submission";
           console.error(err);
-          return this.handleError(err);
+          return handleError(err);
         }
       })
       .catch(err => {
         console.error(err);
-        return this.handleError(err);
+        return handleError(err);
       });
 
     // if no payment is required, we're done with saving the submission
@@ -707,7 +669,7 @@ export class AppUnconnected extends Component {
 
     // we're adding the tmp data here without adding it to the postgres db because we are lazy
 
-    const q = queryString.parse(this.props.location.search);
+    const q = queryString.parse(props.location.search);
     console.log("queryString:");
     console.log(q);
 
@@ -717,29 +679,29 @@ export class AppUnconnected extends Component {
 
     console.log(`tmp1: ${tmp1}`);
 
-    body.Worker__c = this.props.submission.salesforceId;
+    body.Worker__c = props.submission.salesforceId;
     body.tmp_1 = tmp1;
 
     // create Online Member App record
-    return this.props.apiSF
+    return props.apiSF
       .createSFOMA(body)
       .then(result => {
         console.log("App 728 createSubmission");
         console.log(result.type);
-        console.log(`submission errors: ${this.props.submission.error}`);
+        console.log(`submission errors: ${props.submission.error}`);
         if (
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
-          this.props.submission.error
+          props.submission.error
         ) {
-          this.saveSubmissionErrors(
-            this.props.submission.submissionId,
+          saveSubmissionErrors(
+            props.submission.submissionId,
             "createSFOMA",
-            this.props.submission.error
+            props.submission.error
           );
           // goto CAPE tab
           console.log('moving to CAPE Tab');
-          this.changeTab(2);
-        } else if (!this.props.submission.error) {
+          changeTab(2);
+        } else if (!props.submission.error) {
 
           // // what if we don't update submission status after creating OMA? does that fix the endless loop?
           // return null; 
@@ -747,49 +709,49 @@ export class AppUnconnected extends Component {
 
           // update submission status and redirect to CAPE tab
           console.log("updating submission status");
-          this.props.apiSubmission
-            .updateSubmission(this.props.submission.submissionId, {
+          props.apiSubmission
+            .updateSubmission(props.submission.submissionId, {
               submission_status: "Success"
             })
             .then(result => {
               if (
                 result.type === "UPDATE_SUBMISSION_FAILURE" ||
-                this.props.submission.error
+                props.submission.error
               ) {
-                console.log(this.props.submission.error);
-                return this.handleError(this.props.submission.error);
+                console.log(props.submission.error);
+                return handleError(props.submission.error);
               } else {
                 console.log("createSubmission resolve");
                 return null;
-                // this.changeTab(2);
+                // changeTab(2);
               }
             })
             .catch(err => {
               console.error(err);
-              return this.handleError(err);
+              return handleError(err);
             });
         }
       })
       .catch(err => {
-        this.saveSubmissionErrors(
-          this.props.submission.submissionId,
+        saveSubmissionErrors(
+          props.submission.submissionId,
           "createSFOMA",
           err
         );
         console.error(err);
-        return this.handleError(err);
+        return handleError(err);
       });
   }
 
   async createSFContact(formValues) {
     console.log("App 785 createSFContact");
     let values;
-    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
+    if (props.appState.spf && props.submission.formPage1.completePrefill) {
       console.log('spf true AND completePrefill = true; skipping p4c');
-      values = { ...this.props.submission.p4cReturnValues };
+      values = { ...props.submission.p4cReturnValues };
     } else {
       console.log('spf OR completePrefill = false; running p4c');
-      values = await this.prepForContact(formValues);
+      values = await prepForContact(formValues);
     }
     console.log("App 793 createSFContact");
     console.log(values);
@@ -829,21 +791,21 @@ export class AppUnconnected extends Component {
       reCaptchaValue
     };
 
-    await this.props.apiSF.createSFContact(body).catch(err => {
+    await props.apiSF.createSFContact(body).catch(err => {
       console.error(err);
-      return this.handleError(err);
+      return handleError(err);
     });
   }
 
   async updateSFContact(formValues) {
     console.log("App 846 updateSFContact");
     let values;
-    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
+    if (state.spf && props.submission.formPage1.completePrefill) {
       console.log('spf true AND completePrefill = true; skipping p4c');
-      values = { ...this.props.submission.p4cReturnValues };
+      values = { ...props.submission.p4cReturnValues };
     } else {
       console.log('spf OR completePrefill = false; running p4c');
-      values = await this.prepForContact(formValues);
+      values = await prepForContact(formValues);
     }
 
     let {
@@ -864,7 +826,7 @@ export class AppUnconnected extends Component {
       reCaptchaValue
     } = values;
 
-    let id = this.props.submission.salesforceId;
+    let id = props.submission.salesforceId;
 
     const body = {
       agency_number: agencyNumber,
@@ -884,37 +846,37 @@ export class AppUnconnected extends Component {
       reCaptchaValue
     };
 
-    await this.props.apiSF.updateSFContact(id, body).catch(err => {
+    await props.apiSF.updateSFContact(id, body).catch(err => {
       console.error(err);
-      return this.handleError(err);
+      return handleError(err);
     });
   }
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {
-    // console.log(`changeTab: ${newValue}`);
-    const newState = { ...this.state };
-    newState.tab = newValue;
-    this._isMounted &&
-      this.setState({ ...newState }, () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+    console.log(`changeTab: ${newValue}`);
+    setTab(newValue);
   };
 
+  useEffect(() => {
+    // scroll to top of next tab after changing tab
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [tab]);
+
   render() {
-    const values = queryString.parse(this.props.location.search);
+    const values = queryString.parse(props.location.search);
     const embed = values.embed;
-    const { classes } = this.props;
-    const { loading } = this.props.appState;
+    const { classes } = props;
+    const { loading } = props.appState;
     const backgroundImage = embed
       ? "none"
       : `url(${
-          this.state.image && this.state.image.url
-            ? this.state.image.url
+          image && image.url
+            ? image.url
             : SamplePhoto
         })`;
     const backgroundImageStyle = { backgroundImage };
-    const { t, i18n } = this.props;
+    const { t, i18n } = props;
 
     return (
       <Box
@@ -939,24 +901,23 @@ export class AppUnconnected extends Component {
         <Recaptcha
           ref={refCaptcha}
           sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-          onResolved={this.onResolved}
+          onResolved={onResolved}
         />
         {!embed && (
           <NavBar
-            main_ref={this.main_ref}
-            language_picker={this.language_picker}
-            updateLanguage={this.updateLanguage}
-            userSelectedLanguage={this.state.userSelectedLanguage}
+            main_ref={main_ref}
+            language_picker={language_picker}
+            updateLanguage={updateLanguage}
           />
         )}
         <BasicSnackbar
-          open={this.state.snackbar.open}
-          onClose={this.closeSnackbar}
-          variant={this.state.snackbar.variant}
-          message={this.state.snackbar.message}
+          open={props.appState.snackbar.open}
+          onClose={closeSnackbar}
+          variant={props.appState.snackbar.variant}
+          message={props.appState.snackbar.message}
         />
         {loading && <Spinner />}
-        <main id="main" ref={this.main_ref}>
+        <main id="main" ref={main_ref}>
           <Box
             sx={{
               maxWidth: 1200,
@@ -974,7 +935,7 @@ export class AppUnconnected extends Component {
                 path="/"
                 element={
                   <SubmissionFormPage1
-                    tab={this.state.tab}
+                    tab={props.appState.tab}
                     spf={this.state.spf}
                     setSPF={this.setSPF}
                     embed={embed}
@@ -1000,7 +961,7 @@ export class AppUnconnected extends Component {
                     changeTab={this.changeTab}
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
-                    apiSubmission={this.props.apiSubmission}
+                    apiSubmission={props.apiSubmission}
                   />
                 }
               />
@@ -1009,9 +970,9 @@ export class AppUnconnected extends Component {
                 path="/thankyou"
                 element={
                   <FormThankYou
-                    classes={this.props.classes}
+                    classes={props.classes}
                     paymentRequired={
-                      this.props.submission.formPage1.paymentRequired
+                      props.submission.formPage1.paymentRequired
                     }
                   />
                 }
@@ -1031,18 +992,18 @@ export class AppUnconnected extends Component {
                     updateSFContact={this.updateSFContact}
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
-                    history={this.props.history}
+                    history={props.history}
                   />
                 }
               />
               <Route
                 path="*"
-                element={<NotFound classes={this.props.classes} />}
+                element={<NotFound classes={props.classes} />}
               />
             </Routes>
           </Box>
         </main>
-        <Footer classes={this.props.classes} />
+        <Footer classes={props.classes} />
       </Box>
     );
   }
