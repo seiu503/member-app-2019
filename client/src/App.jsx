@@ -55,18 +55,6 @@ export const AppUnconnected = (props) => {
   let cape_legal = useRef();
   let sigBox = useRef();
 
-  // state
-  const [headline, setHeadline] = useState({
-      text: defaultWelcomeInfo.headline,
-      id: 0
-    });
-  const [body, setBody] = useState({
-      text: defaultWelcomeInfo.body,
-      id: 0
-    });
-  const [image, setImage] = useState({});
-
-
   async componentDidMount() {
     // console.log(`APP props.classes`);
     // console.log(props);
@@ -125,7 +113,7 @@ export const AppUnconnected = (props) => {
   };
 
   handleError = err => {
-    return this.openSnackbar(
+    return openSnackbar(
       "error",
       err && err.message
         ? err.message
@@ -935,33 +923,25 @@ export const AppUnconnected = (props) => {
                 path="/"
                 element={
                   <SubmissionFormPage1
-                    tab={props.appState.tab}
-                    spf={this.state.spf}
-                    setSPF={this.setSPF}
-                    embed={embed}
-                    legal_language={this.legal_language}
-                    cape_legal={this.cape_legal}
-                    sigBox={this.sigBox}
+                    legal_language={legal_language}
+                    cape_legal={cape_legal}
+                    sigBox={sigBox}
                     recaptcha={refCaptcha}
-                    onResolved={this.onResolved}
-                    headline={this.state.headline}
-                    body={this.state.body}
-                    image={this.state.image}
-                    renderBodyCopy={this.renderBodyCopy}
-                    renderHeadline={this.renderHeadline}
-                    createSubmission={this.createSubmission}
-                    updateSubmission={this.updateSubmission}
-                    lookupSFContact={this.lookupSFContact}
-                    saveSubmissionErrors={this.saveSubmissionErrors}
-                    generateSubmissionBody={this.generateSubmissionBody}
-                    prepForContact={this.prepForContact}
-                    prepForSubmission={this.prepForSubmission}
-                    createSFContact={this.createSFContact}
-                    updateSFContact={this.updateSFContact}
-                    changeTab={this.changeTab}
-                    handleError={this.handleError}
-                    openSnackbar={this.openSnackbar}
-                    apiSubmission={props.apiSubmission}
+                    onResolved={onResolved}
+                    renderBodyCopy={renderBodyCopy}
+                    renderHeadline={renderHeadline}
+                    createSubmission={createSubmission}
+                    updateSubmission={updateSubmission}
+                    lookupSFContact={lookupSFContact}
+                    saveSubmissionErrors={saveSubmissionErrors}
+                    generateSubmissionBody={generateSubmissionBody}
+                    prepForContact={prepForContact}
+                    prepForSubmission={prepForSubmission}
+                    createSFContact={createSFContact}
+                    updateSFContact={updateSFContact}
+                    changeTab={changeTab}
+                    handleError={handleError}
+                    openSnackbar={openSnackbar}
                   />
                 }
               />
@@ -982,16 +962,16 @@ export const AppUnconnected = (props) => {
                 path="/page2"
                 element={
                   <SubmissionFormPage2Function
-                    createSubmission={this.createSubmission}
-                    updateSubmission={this.updateSubmission}
-                    lookupSFContact={this.lookupSFContact}
-                    saveSubmissionErrors={this.saveSubmissionErrors}
-                    prepForContact={this.prepForContact}
-                    prepForSubmission={this.prepForSubmission}
-                    createSFContact={this.createSFContact}
-                    updateSFContact={this.updateSFContact}
-                    handleError={this.handleError}
-                    openSnackbar={this.openSnackbar}
+                    createSubmission={createSubmission}
+                    updateSubmission={updateSubmission}
+                    lookupSFContact={lookupSFContact}
+                    saveSubmissionErrors={saveSubmissionErrors}
+                    prepForContact={prepForContact}
+                    prepForSubmission={prepForSubmission}
+                    createSFContact={createSFContact}
+                    updateSFContact={updateSFContact}
+                    handleError={handleError}
+                    openSnackbar={openSnackbar}
                     history={props.history}
                   />
                 }

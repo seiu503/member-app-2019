@@ -186,7 +186,7 @@ export class SubmissionFormPage1Component extends React.Component {
     // console.log(values);
     // console.log(this.props);
     const checkoff = this.props.submission.formPage1.checkoff;
-    const { spf } = this.props;
+    const { spf, tab } = this.props.appState;
     const formContainer = {
       display: "flex",
       padding: {
@@ -238,7 +238,7 @@ export class SubmissionFormPage1Component extends React.Component {
     return (
       <Box
         data-testid="component-submissionformpage1"
-        sx={this.props.embed ? formContainerEmbed : formContainer}
+        sx={this.props.appState.embed ? formContainerEmbed : formContainer}
       >
         {values.cape ? (
           <CAPEForm
@@ -262,7 +262,7 @@ export class SubmissionFormPage1Component extends React.Component {
           />
         ) : 
 
-        spf && this.props.tab !== 2 ? (
+        spf && tab !== 2 ? (
           <SinglePageForm
             {...this.props}
             onSubmit={() => {
@@ -285,37 +285,33 @@ export class SubmissionFormPage1Component extends React.Component {
         ) :
         (
           <>
-            {typeof this.props.tab !== "number" && (
+            {typeof tab !== "number" && (
               <WelcomeInfo
-                embed={this.props.embed}
                 location={this.props.location}
                 history={this.props.history}
                 handleTab={this.props.handleTab}
-                headline={this.props.headline}
-                image={this.props.image}
-                body={this.props.body}
                 renderBodyCopy={this.props.renderBodyCopy}
                 renderHeadline={this.props.renderHeadline}
                 handleError={this.props.handleError}
                 openSnackbar={this.props.openSnackbar}
                 style={
-                  typeof this.props.tab !== "number"
+                  typeof tab !== "number"
                     ? { display: "block" }
                     : { display: "none" }
                 }
               />
             )}
 
-            {this.props.tab >= 0 && (
+            {tab >= 0 && (
               <div
                 style={
-                  this.props.tab >= 0
+                  tab >= 0
                     ? { display: "block" }
                     : { display: "none" }
                 }
               >
               {/*  <NavTabs {...this.props} /> */}
-                {this.props.tab === 0 && (
+                {tab === 0 && (
                   <Tab1Form
                     {...this.props}
                     onSubmit={() => {
@@ -335,7 +331,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {this.props.tab === 1 && !spf && (
+                {tab === 1 && !spf && (
                   <Tab2Form
                     {...this.props}
                     onSubmit={() => this.props.handleTab(2)}
@@ -348,7 +344,7 @@ export class SubmissionFormPage1Component extends React.Component {
                     openSnackbar={this.props.openSnackbar}
                   />
                 )}
-                {this.props.tab === 2 && (
+                {tab === 2 && (
                   <CAPEForm
                     {...this.props}
                     classes={classes}
@@ -414,7 +410,10 @@ SubmissionFormPage1Component.propTypes = {
     getTrimmedCanvas: PropTypes.func
   }),
   handleTab: PropTypes.func,
-  tab: PropTypes.number,
+  appState: {
+    tab: PropTypes.number,
+    spf: PropTypes.bool
+  },  
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };

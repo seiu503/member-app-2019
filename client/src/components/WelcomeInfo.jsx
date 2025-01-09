@@ -39,7 +39,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             padding: "20px"
           }}
         >
-          {imageUrl && !this.props.embed && (
+          {imageUrl && !this.props.appState.embed && (
             <Box
               sx={{
                 // height: "auto",
@@ -118,8 +118,8 @@ export class WelcomeInfoUnconnected extends React.Component {
               </div>
             </Box>
           )}
-          {this.props.renderHeadline(this.props.headline.id)}
-          {this.props.renderBodyCopy(this.props.body.id)}
+          {this.props.renderHeadline(this.propsappState.headline.id)}
+          {this.props.renderBodyCopy(this.props.appState.body.id)}
           <Box
             sx={{
               width: "100%",
@@ -155,9 +155,6 @@ export class WelcomeInfoUnconnected extends React.Component {
 
 WelcomeInfoUnconnected.propTypes = {
   classes: PropTypes.object,
-  headline: PropTypes.object,
-  body: PropTypes.object,
-  image: PropTypes.object
 };
 
 const mapStateToProps = state => ({

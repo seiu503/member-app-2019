@@ -137,9 +137,9 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this._isMounted && this.setState({ ...newState });
-    if (this.props.spf) {
+    if (this.props.appState.spf) {
       // reset to blank multi-page form
-      this.props.setSPF(false); 
+      this.props.actions.setSPF(false); 
     }
     this.props.apiSubmission.clearForm();
     // remove cId & aId from route params if no match,
@@ -567,7 +567,7 @@ export class SubmissionFormPage1Container extends React.Component {
           return this.props.handleError(err);
         });
       console.log('SFP1 545 handleTab1 updateContactAndMoveToNextTab');
-      if (this.props.spf) {
+      if (this.props.appState.spf) {
         console.log('single page form: calling handleTab2 after updating contact');
         return this.handleTab2()
           .catch(err => {
@@ -607,7 +607,7 @@ export class SubmissionFormPage1Container extends React.Component {
           console.error(err);
           return this.props.handleError(err);
         });
-        if (this.props.spf) {
+        if (this.props.appState.spf) {
           console.log('single page form: calling handleTab2 after creating new contact');
           return this.handleTab2();
         } else {
@@ -685,8 +685,6 @@ export class SubmissionFormPage1Container extends React.Component {
         <SubmissionFormPage1Wrap
           {...this.props}
           change={change}
-          tab={this.props.tab}
-          spf={this.props.spf}
           handleTab={this.handleTab}
           back={this.props.changeTab}
           handleUpload={this.handleUpload}

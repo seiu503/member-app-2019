@@ -1,4 +1,5 @@
 import update from "immutability-helper";
+import welcomeInfo from "../../translations/welcomeInfo.json";
 
 import { SET_SPINNER, SPINNER_OFF } from "../actions";
 import {
@@ -57,6 +58,16 @@ export const INITIAL_STATE = {
   tab: undefined,
   spf: false,
   userSelectedLanguage: "",
+  embed: false,
+  headline: {
+    text: welcomeInfo.headline,
+    id: 0
+  },
+  body: {
+    text: welcomeInfo.body,
+    id: 0
+  },
+  image: {},
   snackbar: {
     open: false,
     variant: "info",
@@ -85,6 +96,12 @@ function appState(state = INITIAL_STATE, action) {
       })
     }
 
+    case SET_EMBED: {
+      return update(state, {
+        embed: { $set: action.payload.value }
+      })
+    }
+
     case SET_USER_SELECTED_LANGUAGE: {
       return update(state, {
         userSelectedLanguage: { $set: action.payload.value }
@@ -98,6 +115,30 @@ function appState(state = INITIAL_STATE, action) {
           variant: { $set: action.payload.variant },
           message: { $set: action.payload.message } 
         }
+      })
+    }
+
+    case SET_HEADLINE: {
+      return update(state, {
+        headline: { 
+          text: { $set: action.payload.text},
+          id: { $set: action.payload.id } 
+        }
+      })
+    }
+
+    case SET_BODY: {
+      return update(state, {
+        body: { 
+          text: { $set: action.payload.text},
+          id: { $set: action.payload.id } 
+        }
+      })
+    }
+
+  case SET_IMAGE: {
+      return update(state, {
+        image: { $set: ...action.payload.value }
       })
     }
 
