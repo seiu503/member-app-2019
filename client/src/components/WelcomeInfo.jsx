@@ -8,12 +8,12 @@ import { Typography, CardMedia, Card, Button, Box } from "@mui/material";
 
 import SamplePhoto from "../img/sample-form-photo.jpg";
 
-export class WelcomeInfoUnconnected extends React.Component {
-  render() {
-    const { classes } = this.props;
+export const WelcomeInfoUnconnected = (props) => {
+
+    const { classes } = props;
     const imageUrl =
-      this.props.image && this.props.image.url
-        ? this.props.image.url
+      props.appState.image && props.appState.image.url
+        ? props.appState.image.url
         : SamplePhoto;
     return (
       <Box
@@ -39,7 +39,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             padding: "20px"
           }}
         >
-          {imageUrl && !this.props.appState.embed && (
+          {imageUrl && !props.appState.embed && (
             <Box
               sx={{
                 // height: "auto",
@@ -118,8 +118,8 @@ export class WelcomeInfoUnconnected extends React.Component {
               </div>
             </Box>
           )}
-          {this.props.renderHeadline(this.propsappState.headline.id)}
-          {this.props.renderBodyCopy(this.props.appState.body.id)}
+          {props.renderHeadline(props.appState.headline.id)}
+          {props.renderBodyCopy(props.appState.body.id)}
           <Box
             sx={{
               width: "100%",
@@ -131,7 +131,7 @@ export class WelcomeInfoUnconnected extends React.Component {
             <Button
               type="button"
               data-testid="button-next"
-              onClick={() => this.props.handleTab(0)}
+              onClick={() => props.handleTab(0)}
               color="primary"
               variant="contained"
               sx={{
@@ -151,7 +151,6 @@ export class WelcomeInfoUnconnected extends React.Component {
       </Box>
     );
   }
-}
 
 WelcomeInfoUnconnected.propTypes = {
   classes: PropTypes.object,

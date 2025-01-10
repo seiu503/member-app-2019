@@ -11,7 +11,11 @@ import {
   SET_EMBED,
   SET_HEADLINE,
   SET_BODY,
-  SET_IMAGE
+  SET_IMAGE,
+  SET_OPEN,
+  SET_CAPE_OPEN,
+  SET_LEGAL_LANGUAGE,
+  SET_DISPLAY_CAPE_PAYMENT_FIELDS
 } from "../actions";
 
 import {
@@ -85,7 +89,11 @@ export const INITIAL_STATE = {
     open: false,
     variant: "info",
     message: null
-  }
+  },
+  open: false,
+  capeOpen: false,
+  legalLanguage: "",
+  displayCapePaymentFields: false
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -149,11 +157,35 @@ function appState(state = INITIAL_STATE, action) {
       })
     }
 
-  case SET_IMAGE: {
-      return update(state, {
-        image: { $set: { ...action.payload.value } }
-      })
-    }
+    case SET_IMAGE: {
+        return update(state, {
+          image: { $set: { ...action.payload.value } }
+        })
+      }
+
+    case SET_OPEN: {
+        return update(state, {
+          open: { $set: { ...action.payload.value } }
+        })
+      }
+
+    case SET_CAPE_OPEN: {
+        return update(state, {
+          capeOpen: { $set: { ...action.payload.value } }
+        })
+      }
+
+    case SET_DISPLAY_CAPE_PAYMENT_FIELDS: {
+        return update(state, {
+          displayCapePaymentFields: { $set: { ...action.payload.value } }
+        })
+      }
+
+    case SET_LEGAL_LANGUAGE: {
+        return update(state, {
+          legalLanguage: { $set: { ...action.payload.value } }
+        })
+      }
 
     case SPINNER_OFF: {
       return update(state, {

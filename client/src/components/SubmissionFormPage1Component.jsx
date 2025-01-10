@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import queryString from "query-string";
 import { Box } from "@mui/material";
@@ -16,53 +16,50 @@ import withRouter from "./ComponentWithRouterProp";
 // helper functions
 const { employerTypeMap, getKeyByValue } = formElements;
 
-export class SubmissionFormPage1Component extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      signatureType: "draw"
-    };
-  }
-  sigBox = {};
-  componentDidMount() {
+
+export const SubmissionFormPage1Component = (props) => {
+
+  useEffect(async () => {
+    // previously componentDidMount
+    console.log("Component is mounted");
     // console.log("cDM");
     // API call to SF to populate employers picklist
-    this.props.apiSF
+    props.apiSF
       .getSFEmployers()
       .then(result => {
         // console.log(result);
         // console.log(result.payload);
-        this.loadEmployersPicklist();
+        loadEmployersPicklist();
       })
       .catch(err => {
         console.error(err);
         // don't return this error to client, it's a background api call
-        // this.props.handleError(err);
+        // props.handleError(err);
       });
-  }
+  }, []);
 
-  componentDidUpdate(prevProps) {
+  useEffect(() => {
     // console.log('cDU');
-    // console.log(this.props.submission.employerNames);
-    // console.log(this.props.submission.employerNames.length);
+    // console.log(props.submission.employerNames);
+    // console.log(props.submission.employerNames.length);
     if (
-      this.props.submission.employerNames &&
-      this.props.submission.employerNames.length < 3
+      props.submission.employerNames &&
+      props.submission.employerNames.length < 3
     ) {
-      this.loadEmployersPicklist();
+      loadEmployersPicklist();
     }
-  }
+  }, [props.submission.employerNames]);
 
   // reusable MUI form components
-  renderTextField = formElements.renderTextField;
-  renderSelect = formElements.renderSelect;
-  renderCheckbox = formElements.renderCheckbox;
+  const renderTextField = formElements.renderTextField;
+  const renderSelect = formElements.renderSelect;
+  const renderCheckbox = formElements.renderCheckbox;
 
-  loadEmployersPicklist = () => {
+  const loadEmployersPicklist = () => {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
-    const employerTypesListRaw = this.props.submission.employerObjects
-      ? this.props.submission.employerObjects.map(
+    const employerTypesListRaw = props.submission.employerObjects
+      ? props.submission.employerObjects.map(
           employer => employer.Sub_Division__c || ""
         )
       : [""];
@@ -79,16 +76,16 @@ export class SubmissionFormPage1Component extends React.Component {
     return employerTypesList;
   };
 
-  updateEmployersPicklist = () => {
+  const updateEmployersPicklist = () => {
     // get the value of the employer type selected by user
     let employerTypeUserSelect = "";
-    if (Object.keys(this.props.formValues).length) {
-      employerTypeUserSelect = this.props.formValues.employerType;
+    if (Object.keys(props.formValues).length) {
+      employerTypeUserSelect = props.formValues.employerType;
     } else {
       // console.log("no formValues in props");
     }
     // console.log(`employerType: ${employerTypeUserSelect}`);
-    const employerTypesList = this.loadEmployersPicklist();
+    const employerTypesList = loadEmployersPicklist();
 
     // if picklist finished populating and user has selected employer type,
     // filter the employer names list to return only names in that category
@@ -96,10 +93,10 @@ export class SubmissionFormPage1Component extends React.Component {
       employerTypesList &&
       employerTypesList.length > 1 &&
       employerTypeUserSelect !== "" &&
-      this.props.submission.employerObjects
+      props.submission.employerObjects
     ) {
       const employerObjectsFiltered = employerTypeUserSelect
-        ? this.props.submission.employerObjects.filter(
+        ? props.submission.employerObjects.filter(
             employer =>
               employer.Sub_Division__c ===
               formElements.getKeyByValue(
@@ -139,54 +136,53 @@ export class SubmissionFormPage1Component extends React.Component {
 
   // called from createSubmission in App.jsx > 726
   // ^^ createSubmission is called from handleTab2 in SubmissionFormPage1.jsx > 511
-  async createSFOMA() {
+  const createSFOMA = async () => {
     console.log("createSFOMA");
-    this.props.actions.setSpinner();
-    const { formValues } = this.props;
-    const body = await this.props.generateSubmissionBody(formValues);
-    body.Worker__c = this.props.submission.salesforceId;
-    this.props.apiSF
+    props.actions.setSpinner();
+    const { formValues } = props;
+    const body = await props.generateSubmissionBody(formValues);
+    body.Worker__c = props.submission.salesforceId;
+    props.apiSF
       .createSFOMA(body)
       .then(result => {
         // console.log(result.type);
         if (
           result.type === "CREATE_SF_OMA_FAILURE" ||
-          this.props.submission.error
+          props.submission.error
         ) {
-          // console.log(this.props.submission.error);
-          this.props.saveSubmissionErrors(
-            this.props.submission.submissionId,
+          // console.log(props.submission.error);
+          props.saveSubmissionErrors(
+            props.submission.submissionId,
             "createSFOMA",
-            this.props.submission.error
+            props.submission.error
           );
-          console.error(this.props.submission.error);
-          return this.props.handleError(this.props.submission.error);
+          console.error(props.submission.error);
+          return props.handleError(props.submission.error);
         }
       })
       .catch(err => {
         console.error(err);
-        this.props.saveSubmissionErrors(
-          this.props.submission.submissionId,
+        props.saveSubmissionErrors(
+          props.submission.submissionId,
           "createSFOMA",
           err
         );
-        return this.props.handleError(err);
+        return props.handleError(err);
       });
   }
 
-  render() {
-    // console.log('submFormPage1Comp Render');
-    const { classes } = this.props;
-    const employerTypesList = this.loadEmployersPicklist() || [
+    // render variables 
+    const { classes } = props;
+    const employerTypesList = loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
-    const employerList = this.updateEmployersPicklist() || [""];
-    const values = queryString.parse(this.props.location.search);
+    const employerList = updateEmployersPicklist() || [""];
+    const values = queryString.parse(props.location.search);
     // console.log(`################# query params #################`)
     // console.log(values);
-    // console.log(this.props);
-    const checkoff = this.props.submission.formPage1.checkoff;
-    const { spf, tab } = this.props.appState;
+    // console.log(props);
+    const checkoff = props.submission.formPage1.checkoff;
+    const { spf, tab } = props.appState;
     const formContainer = {
       display: "flex",
       padding: {
@@ -238,62 +234,62 @@ export class SubmissionFormPage1Component extends React.Component {
     return (
       <Box
         data-testid="component-submissionformpage1"
-        sx={this.props.appState.embed ? formContainerEmbed : formContainer}
+        sx={props.appState.embed ? formContainerEmbed : formContainer}
       >
         {values.cape ? (
           <CAPEForm
-            {...this.props}
+            {...props}
             standAlone={true}
             newCardNeeded={true}
-            // verifyCallback={this.verifyCallback}
+            // verifyCallback={verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
-            updateEmployersPicklist={this.updateEmployersPicklist}
+            updateEmployersPicklist={updateEmployersPicklist}
             classes={classes}
-            loading={this.props.submission.loading}
-            formPage1={this.props.submission.formPage1}
-            handleInput={this.props.apiSubmission.handleInput}
-            payment={this.props.submission.payment}
-            renderSelect={this.renderSelect}
-            renderTextField={this.renderTextField}
-            renderCheckbox={this.renderCheckbox}
+            loading={props.submission.loading}
+            formPage1={props.submission.formPage1}
+            handleInput={props.apiSubmission.handleInput}
+            payment={props.submission.payment}
+            renderSelect={renderSelect}
+            renderTextField={renderTextField}
+            renderCheckbox={renderCheckbox}
             checkoff={checkoff}
-            capeObject={this.props.submission.cape}
+            capeObject={props.submission.cape}
           />
         ) : 
 
         spf && tab !== 2 ? (
           <SinglePageForm
-            {...this.props}
+            {...props}
             onSubmit={() => {
-              this.props.handleTab(1);
+              props.handleTab(1);
               return false;
             }}
-            // verifyCallback={this.verifyCallback}
+            // verifyCallback={verifyCallback}
             classes={classes}
             employerTypesList={employerTypesList}
             employerList={employerList}
-            handleInput={this.props.apiSubmission.handleInput}
-            updateEmployersPicklist={this.updateEmployersPicklist}
-            renderSelect={this.renderSelect}
-            renderTextField={this.renderTextField}
-            renderCheckbox={this.renderCheckbox}
-            handleError={this.props.handleError}
-            openSnackbar={this.props.openSnackbar}
-            prefillValues={this.props.submission.prefillValues}
+            handleInput={props.apiSubmission.handleInput}
+            updateEmployersPicklist={updateEmployersPicklist}
+            renderSelect={renderSelect}
+            renderTextField={renderTextField}
+            renderCheckbox={renderCheckbox}
+            handleError={props.handleError}
+            openSnackbar={props.openSnackbar}
+            prefillValues={props.submission.prefillValues}
           />
         ) :
         (
           <>
             {typeof tab !== "number" && (
               <WelcomeInfo
-                location={this.props.location}
-                history={this.props.history}
-                handleTab={this.props.handleTab}
-                renderBodyCopy={this.props.renderBodyCopy}
-                renderHeadline={this.props.renderHeadline}
-                handleError={this.props.handleError}
-                openSnackbar={this.props.openSnackbar}
+                location={props.location}
+                history={props.history}
+                handleTab={props.handleTab}
+                renderBodyCopy={props.renderBodyCopy}
+                renderHeadline={props.renderHeadline}
+                handleError={props.handleError}
+                openSnackbar={props.openSnackbar}
                 style={
                   typeof tab !== "number"
                     ? { display: "block" }
@@ -310,55 +306,55 @@ export class SubmissionFormPage1Component extends React.Component {
                     : { display: "none" }
                 }
               >
-              {/*  <NavTabs {...this.props} /> */}
+              {/*  <NavTabs {...props} /> */}
                 {tab === 0 && (
                   <Tab1Form
-                    {...this.props}
+                    {...props}
                     onSubmit={() => {
-                      this.props.handleTab(1);
+                      props.handleTab(1);
                       return false;
                     }}
-                    // verifyCallback={this.verifyCallback}
+                    // verifyCallback={verifyCallback}
                     classes={classes}
                     employerTypesList={employerTypesList}
                     employerList={employerList}
-                    handleInput={this.props.apiSubmission.handleInput}
-                    updateEmployersPicklist={this.updateEmployersPicklist}
-                    renderSelect={this.renderSelect}
-                    renderTextField={this.renderTextField}
-                    renderCheckbox={this.renderCheckbox}
-                    handleError={this.props.handleError}
-                    openSnackbar={this.props.openSnackbar}
+                    handleInput={props.apiSubmission.handleInput}
+                    updateEmployersPicklist={updateEmployersPicklist}
+                    renderSelect={renderSelect}
+                    renderTextField={renderTextField}
+                    renderCheckbox={renderCheckbox}
+                    handleError={props.handleError}
+                    openSnackbar={props.openSnackbar}
                   />
                 )}
                 {tab === 1 && !spf && (
                   <Tab2Form
-                    {...this.props}
-                    onSubmit={() => this.props.handleTab(2)}
+                    {...props}
+                    onSubmit={() => props.handleTab(2)}
                     classes={classes}
-                    handleInput={this.props.apiSubmission.handleInput}
-                    renderSelect={this.renderSelect}
-                    renderTextField={this.renderTextField}
-                    renderCheckbox={this.renderCheckbox}
-                    handleError={this.props.handleError}
-                    openSnackbar={this.props.openSnackbar}
+                    handleInput={props.apiSubmission.handleInput}
+                    renderSelect={renderSelect}
+                    renderTextField={renderTextField}
+                    renderCheckbox={renderCheckbox}
+                    handleError={props.handleError}
+                    openSnackbar={props.openSnackbar}
                   />
                 )}
                 {tab === 2 && (
                   <CAPEForm
-                    {...this.props}
+                    {...props}
                     classes={classes}
-                    loading={this.props.submission.loading}
-                    formPage1={this.props.submission.formPage1}
-                    handleInput={this.props.submission.handleInput}
-                    payment={this.props.submission.payment}
-                    renderSelect={this.renderSelect}
-                    renderTextField={this.renderTextField}
-                    renderCheckbox={this.renderCheckbox}
+                    loading={props.submission.loading}
+                    formPage1={props.submission.formPage1}
+                    handleInput={props.submission.handleInput}
+                    payment={props.submission.payment}
+                    renderSelect={renderSelect}
+                    renderTextField={renderTextField}
+                    renderCheckbox={renderCheckbox}
                     checkoff={checkoff}
-                    capeObject={this.props.submission.cape}
-                    handleError={this.props.handleError}
-                    openSnackbar={this.props.openSnackbar}
+                    capeObject={props.submission.cape}
+                    handleError={props.handleError}
+                    openSnackbar={props.openSnackbar}
                   />
                 )}
               </div>
@@ -368,7 +364,7 @@ export class SubmissionFormPage1Component extends React.Component {
       </Box>
     );
   }
-}
+
 SubmissionFormPage1Component.propTypes = {
   submission: PropTypes.shape({
     loading: PropTypes.bool,
@@ -397,23 +393,17 @@ SubmissionFormPage1Component.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func
   }),
-  formValues: PropTypes.shape({
-    signatureType: PropTypes.string
-  }).isRequired,
+  formValues: PropTypes.object,
   legal_language: PropTypes.shape({
     current: PropTypes.shape({
       textContent: PropTypes.string
     })
   }),
-  sigBox: PropTypes.shape({
-    clear: PropTypes.func,
-    getTrimmedCanvas: PropTypes.func
-  }),
   handleTab: PropTypes.func,
-  appState: {
+  appState: PropTypes.shape({
     tab: PropTypes.number,
     spf: PropTypes.bool
-  },  
+  }),  
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };

@@ -8,13 +8,16 @@ export const SET_EMBED = "SET_EMBED";
 export const SET_HEADLINE = "SET_HEADLINE";
 export const SET_BODY = "SET_BODY";
 export const SET_IMAGE = "SET_IMAGE";
+export const SET_OPEN = "SET_OPEN";
+export const SET_CAPE_OPEN = "SET_CAPE_OPEN";
+export const SET_LEGAL_LANGUAGE = "SET_LEGAL_LANGUAGE";
+export const SET_DISPLAY_CAPE_PAYMENT_FIELDS = "SET_DISPLAY_CAPE_PAYMENT_FIELDS";
 
 export function setSpinner() {
   return {
     type: SET_SPINNER
   };
 }
-
 
 export function spinnerOff() {
   return {
@@ -64,8 +67,26 @@ export function setBody() {
   };
 }
 
-export function setImage() {
+export function setOpen() {
   return {
-    type: SET_IMAGE
+    type: SET_OPEN
+  };
+}
+
+export function setCapeOpen() {
+  return {
+    type: SET_CAPE_OPEN
+  };
+}
+
+export function setLegalLanguage() {
+  return {
+    type: SET_LEGAL_LANGUAGE
+  };
+}
+
+export function setDisplayCapePaymentFields() {
+  return {
+    type: SET_DISPLAY_CAPE_PAYMENT_FIELDS
   };
 }
