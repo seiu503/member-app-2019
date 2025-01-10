@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Routes, Route, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -39,24 +39,27 @@ import SamplePhoto from "./img/sample-form-photo.jpg";
 
 import welcomeInfo from "./translations/welcomeInfo.json";
 
-const refCaptcha = useRef();
-
 const styles = {};
 
 export const AppUnconnected = (props) => {
 
   let _isMounted = false;
-  const recaptcha = refCaptcha;
 
   // refs
+  const refCaptcha = useRef();
   let language_picker = useRef();
   let main_ref = useRef();
   let legal_language = useRef();
   let cape_legal = useRef();
   let sigBox = useRef();
 
-  async componentDidMount() {
-    // console.log(`APP props.classes`);
+  const recaptcha = refCaptcha;
+
+  useEffect(async () => {
+    // previously componentDidMount
+    console.log("Component is mounted");
+
+    // console.log(`App.jsx props`);
     // console.log(props);
 
     _isMounted = true;
@@ -88,13 +91,19 @@ export const AppUnconnected = (props) => {
     if (values.spf) {
       props.actions.setSPF(false);
     }
-  }
 
-  componentWillUnmount() {
-    _isMounted = false;
-  }
+    return () => {
+        console.log("Component will unmount");
+        _isMounted = false;
+      };
+    }, []);
 
-  openSnackbar = async (variant, message) => {
+  useEffect(() => {
+    // scroll to top of next tab after changing tab
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [props.tab]);
+
+  const openSnackbar = async (variant, message) => {
     props.actions.setSnackbar({
       open: true,
       variant,
@@ -102,7 +111,7 @@ export const AppUnconnected = (props) => {
     });
   };
 
-  closeSnackbar = (event, reason) => {
+  const closeSnackbar = (event, reason) => {
     if (reason === "clickaway") {
       return;
     }
@@ -112,7 +121,7 @@ export const AppUnconnected = (props) => {
     });
   };
 
-  handleError = err => {
+  const handleError = err => {
     return openSnackbar(
       "error",
       err && err.message
@@ -122,7 +131,7 @@ export const AppUnconnected = (props) => {
     // console.log(err);
   };
 
-  updateLanguage = e => {
+  const updateLanguage = e => {
     console.log("updateLanguage");
     // update value of select
     props.actions.setUserSelectedLanguage(e.target.value);
@@ -147,7 +156,7 @@ export const AppUnconnected = (props) => {
     changeLanguage(language);
   };
 
-  renderBodyCopy = id => {
+  const renderBodyCopy = id => {
     let paragraphIds = [];
     // find all paragraphs belonging to this bodyCopy id
     Object.keys(welcomeInfo).forEach(key => {
@@ -189,7 +198,7 @@ export const AppUnconnected = (props) => {
     );
   };
 
-  renderHeadline = id => {
+  const renderHeadline = id => {
     // console.log(`renderHeadline: ${id}`);
     let headlineIds = [];
     // check translation file for headlines belonging to this headline id
@@ -238,14 +247,14 @@ export const AppUnconnected = (props) => {
     );
   };
 
-  async onResolved() {
+  const onResolved = async () => {
     const token = await recaptcha.current.getResponse();
     props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
   }
 
-  async updateSubmission(passedId, passedUpdates, formValues) {
+  const updateSubmission = async (passedId, passedUpdates, formValues) => {
     console.log("App 293 updateSubmission");
     console.log(passedId);
     props.actions.setSpinner();
@@ -289,7 +298,7 @@ export const AppUnconnected = (props) => {
 
   // lookup SF Contact by first, last, email; if none found then create new
   // called from SubmissionFormPage1.jsx > 229 (GenerateCAPEBody), 565 (handleTab1)
-  async lookupSFContact(formValues) {
+  const lookupSFContact = async (formValues) => {
     console.log("App 337 lookupSFContact");
     console.dir(formValues);
     if (
@@ -326,7 +335,7 @@ export const AppUnconnected = (props) => {
     }
   }
 
-  async saveSubmissionErrors(submission_id, method, error) {
+  const saveSubmissionErrors = async (submission_id, method, error) => {
     // 1. retrieve existing errors array from current submission
     let { submission_errors } = props.submission.currentSubmission;
     if (submission_errors === null || submission_errors === undefined) {
@@ -346,7 +355,7 @@ export const AppUnconnected = (props) => {
     });
   }
 
-  async prepForContact(values) {
+  const prepForContact = async (values) => {
     console.log("App 394 prepForContact start");
     console.dir(values);
     return new Promise(resolve => {
@@ -467,7 +476,7 @@ export const AppUnconnected = (props) => {
     });
   }
 
-  prepForSubmission(values, partial) {
+  const prepForSubmission = (values, partial) => {
     console.log("App 515 prepForSubmission start");
     return new Promise(resolve => {
       let returnValues = { ...values };
@@ -499,7 +508,7 @@ export const AppUnconnected = (props) => {
     });
   }
 
-  async generateSubmissionBody(values, partial) {
+  const generateSubmissionBody = async (values, partial) => {
     console.log("App 547 generateSubmissionBody start");
     const firstValues = await prepForContact(values);
     console.log("firstValues", firstValues);
@@ -626,7 +635,7 @@ export const AppUnconnected = (props) => {
   }
 
   // called from handleTab2 in SubmissionFormPage1.jsx
-  async createSubmission(formValues, partial) {
+  const createSubmission = async (formValues, partial) => {
     // create initial submission using data in tabs 1 & 2
     console.log("App 682 createSubmission start");
     const body = await generateSubmissionBody(formValues, partial);
@@ -731,7 +740,7 @@ export const AppUnconnected = (props) => {
       });
   }
 
-  async createSFContact(formValues) {
+  const createSFContact = async (formValues) => {
     console.log("App 785 createSFContact");
     let values;
     if (props.appState.spf && props.submission.formPage1.completePrefill) {
@@ -785,7 +794,7 @@ export const AppUnconnected = (props) => {
     });
   }
 
-  async updateSFContact(formValues) {
+  const updateSFContact = async (formValues) => {
     console.log("App 846 updateSFContact");
     let values;
     if (state.spf && props.submission.formPage1.completePrefill) {
@@ -841,152 +850,146 @@ export const AppUnconnected = (props) => {
   }
 
   // just navigate to tab, don't run validation on current tab
-  changeTab = newValue => {
+  const changeTab = newValue => {
     console.log(`changeTab: ${newValue}`);
     setTab(newValue);
   };
 
-  useEffect(() => {
-    // scroll to top of next tab after changing tab
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [tab]);
 
-  render() {
-    const values = queryString.parse(props.location.search);
-    const embed = values.embed;
-    const { classes } = props;
-    const { loading } = props.appState;
-    const backgroundImage = embed
-      ? "none"
-      : `url(${
-          image && image.url
-            ? image.url
-            : SamplePhoto
-        })`;
-    const backgroundImageStyle = { backgroundImage };
-    const { t, i18n } = props;
+  const values = queryString.parse(props.location.search);
+  const embed = values.embed;
+  const { classes } = props;
+  const { loading } = props.appState;
+  const backgroundImage = embed
+    ? "none"
+    : `url(${
+        props.image && props.image.url
+          ? props.image.url
+          : SamplePhoto
+      })`;
+  const backgroundImageStyle = { backgroundImage };
+  const { t, i18n } = props;
 
-    return (
-      <Box
-        data-testid="component-app"
-        style={backgroundImageStyle}
-        sx={{
-          width: "100vw",
-          minHeight: "100vh",
-          height: "100%",
-          backgroundAttachment: "fixed",
-          backgroundPosition: "bottom",
-          backgroundImage: {
-            xs: "none",
-            sm: "none"
-          },
-          backgroundSize: {
-            md: "cover"
-          }
-        }}
-      >
-        <CssBaseline />
-        <Recaptcha
-          ref={refCaptcha}
-          sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-          onResolved={onResolved}
+  return (
+    <Box
+      data-testid="component-app"
+      style={backgroundImageStyle}
+      sx={{
+        width: "100vw",
+        minHeight: "100vh",
+        height: "100%",
+        backgroundAttachment: "fixed",
+        backgroundPosition: "bottom",
+        backgroundImage: {
+          xs: "none",
+          sm: "none"
+        },
+        backgroundSize: {
+          md: "cover"
+        }
+      }}
+    >
+      <CssBaseline />
+      <Recaptcha
+        ref={refCaptcha}
+        sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+        onResolved={onResolved}
+      />
+      {!embed && (
+        <NavBar
+          main_ref={main_ref}
+          language_picker={language_picker}
+          updateLanguage={updateLanguage}
         />
-        {!embed && (
-          <NavBar
-            main_ref={main_ref}
-            language_picker={language_picker}
-            updateLanguage={updateLanguage}
-          />
-        )}
-        <BasicSnackbar
-          open={props.appState.snackbar.open}
-          onClose={closeSnackbar}
-          variant={props.appState.snackbar.variant}
-          message={props.appState.snackbar.message}
-        />
-        {loading && <Spinner />}
-        <main id="main" ref={main_ref}>
-          <Box
-            sx={{
-              maxWidth: 1200,
-              margin: "auto",
-              height: "100%",
-              minHeight: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center"
-            }}
-          >
-            <Routes>
-              <Route
-                exact
-                path="/"
-                element={
-                  <SubmissionFormPage1
-                    legal_language={legal_language}
-                    cape_legal={cape_legal}
-                    sigBox={sigBox}
-                    recaptcha={refCaptcha}
-                    onResolved={onResolved}
-                    renderBodyCopy={renderBodyCopy}
-                    renderHeadline={renderHeadline}
-                    createSubmission={createSubmission}
-                    updateSubmission={updateSubmission}
-                    lookupSFContact={lookupSFContact}
-                    saveSubmissionErrors={saveSubmissionErrors}
-                    generateSubmissionBody={generateSubmissionBody}
-                    prepForContact={prepForContact}
-                    prepForSubmission={prepForSubmission}
-                    createSFContact={createSFContact}
-                    updateSFContact={updateSFContact}
-                    changeTab={changeTab}
-                    handleError={handleError}
-                    openSnackbar={openSnackbar}
-                  />
-                }
-              />
-              <Route
-                exact
-                path="/thankyou"
-                element={
-                  <FormThankYou
-                    classes={props.classes}
-                    paymentRequired={
-                      props.submission.formPage1.paymentRequired
-                    }
-                  />
-                }
-              />
-              <Route
-                exact
-                path="/page2"
-                element={
-                  <SubmissionFormPage2Function
-                    createSubmission={createSubmission}
-                    updateSubmission={updateSubmission}
-                    lookupSFContact={lookupSFContact}
-                    saveSubmissionErrors={saveSubmissionErrors}
-                    prepForContact={prepForContact}
-                    prepForSubmission={prepForSubmission}
-                    createSFContact={createSFContact}
-                    updateSFContact={updateSFContact}
-                    handleError={handleError}
-                    openSnackbar={openSnackbar}
-                    history={props.history}
-                  />
-                }
-              />
-              <Route
-                path="*"
-                element={<NotFound classes={props.classes} />}
-              />
-            </Routes>
-          </Box>
-        </main>
-        <Footer classes={props.classes} />
-      </Box>
-    );
-  }
+      )}
+      <BasicSnackbar
+        open={props.appState.snackbar.open}
+        onClose={closeSnackbar}
+        variant={props.appState.snackbar.variant}
+        message={props.appState.snackbar.message}
+      />
+      {loading && <Spinner />}
+      <main id="main" ref={main_ref}>
+        <Box
+          sx={{
+            maxWidth: 1200,
+            margin: "auto",
+            height: "100%",
+            minHeight: "100vh",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center"
+          }}
+        >
+          <Routes>
+            <Route
+              exact
+              path="/"
+              element={
+                <SubmissionFormPage1
+                  legal_language={legal_language}
+                  cape_legal={cape_legal}
+                  sigBox={sigBox}
+                  recaptcha={refCaptcha}
+                  onResolved={onResolved}
+                  renderBodyCopy={renderBodyCopy}
+                  renderHeadline={renderHeadline}
+                  createSubmission={createSubmission}
+                  updateSubmission={updateSubmission}
+                  lookupSFContact={lookupSFContact}
+                  saveSubmissionErrors={saveSubmissionErrors}
+                  generateSubmissionBody={generateSubmissionBody}
+                  prepForContact={prepForContact}
+                  prepForSubmission={prepForSubmission}
+                  createSFContact={createSFContact}
+                  updateSFContact={updateSFContact}
+                  changeTab={changeTab}
+                  handleError={handleError}
+                  openSnackbar={openSnackbar}
+                />
+              }
+            />
+            <Route
+              exact
+              path="/thankyou"
+              element={
+                <FormThankYou
+                  classes={props.classes}
+                  paymentRequired={
+                    props.submission.formPage1.paymentRequired
+                  }
+                />
+              }
+            />
+            <Route
+              exact
+              path="/page2"
+              element={
+                <SubmissionFormPage2Function
+                  createSubmission={createSubmission}
+                  updateSubmission={updateSubmission}
+                  lookupSFContact={lookupSFContact}
+                  saveSubmissionErrors={saveSubmissionErrors}
+                  prepForContact={prepForContact}
+                  prepForSubmission={prepForSubmission}
+                  createSFContact={createSFContact}
+                  updateSFContact={updateSFContact}
+                  handleError={handleError}
+                  openSnackbar={openSnackbar}
+                  history={props.history}
+                />
+              }
+            />
+            <Route
+              path="*"
+              element={<NotFound classes={props.classes} />}
+            />
+          </Routes>
+        </Box>
+      </main>
+      <Footer classes={props.classes} />
+    </Box>
+  );
 }
 
 AppUnconnected.propTypes = {

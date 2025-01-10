@@ -1,7 +1,19 @@
 import update from "immutability-helper";
 import welcomeInfo from "../../translations/welcomeInfo.json";
 
-import { SET_SPINNER, SPINNER_OFF } from "../actions";
+import { 
+  SET_SPINNER, 
+  SPINNER_OFF,
+  SET_TAB,
+  SET_SPF,
+  SET_USER_SELECTED_LANGUAGE,
+  SET_SNACKBAR,
+  SET_EMBED,
+  SET_HEADLINE,
+  SET_BODY,
+  SET_IMAGE
+} from "../actions";
+
 import {
   ADD_SUBMISSION_REQUEST,
   ADD_SUBMISSION_SUCCESS,
@@ -19,6 +31,7 @@ import {
   VERIFY_SUCCESS,
   VERIFY_FAILURE
 } from "../actions/apiSubmissionActions";
+
 import {
   GET_SF_CONTACT_REQUEST,
   GET_SF_CONTACT_SUCCESS,
@@ -138,7 +151,7 @@ function appState(state = INITIAL_STATE, action) {
 
   case SET_IMAGE: {
       return update(state, {
-        image: { $set: ...action.payload.value }
+        image: { $set: { ...action.payload.value } }
       })
     }
 
