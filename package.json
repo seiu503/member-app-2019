@@ -27,7 +27,7 @@
   "homepage": "https://github.com/seiu503/member-app-2019.github.io#readme",
   "dependencies": {
     "@snyk/protect": "^1.1179.0",
-    "aws-sdk": "^2.876.0",
+    "aws-sdk": "^2.1692.0",
     "axios": "^1.7.8",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
