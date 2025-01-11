@@ -476,13 +476,6 @@
     "@types/cookiejar" "*"
     "@types/node" "*"
 
-abort-controller@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/abort-controller/-/abort-controller-3.0.0.tgz#eaf54d53b62bae4138e809ca225c8439a6efb392"
-  integrity sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg==
-  dependencies:
-    event-target-shim "^5.0.0"
-
 accepts@~1.3.8:
   version "1.3.8"
   resolved "https://registry.yarnpkg.com/accepts/-/accepts-1.3.8.tgz#0bf0be125b67014adcb0b0921e62db7bffe16b2e"
@@ -1408,11 +1401,6 @@ etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha512-aIL5Fx7mawVa300al2BnEE4iNvo1qETxLrPI/o05L7z6go7fCw1J6EQmbK4FmJ2AS7kgVF/KEZWufBfdClMcPg==
 
-event-target-shim@^5.0.0:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/event-target-shim/-/event-target-shim-5.0.1.tgz#5d4d3ebdf9583d63a5333ce2deb7480ab2b05789"
-  integrity sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==
-
 eventemitter3@^5.0.1:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-5.0.1.tgz#53f5ffd0a492ac800721bb42c66b841de96423c4"
@@ -2263,15 +2251,14 @@ jsesc@^3.0.2:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-3.0.2.tgz#bb8b09a6597ba426425f2e4a07245c3d00b9343e"
   integrity sha512-xKqzzWXDttJuOcawBt4KnKHHIf5oQ/Cxax+0PWFG+DFDgHNAdi+TXECADI+RYiFUMmx8792xsMbbgXj4CwnP4g==
 
-jsforce@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-3.4.1.tgz#f1fb6a6795ce23bf4de94b26edf387d81b2bf5ca"
-  integrity sha512-GXZhHuZVnGQKBKCwM5LvBLbr+7tfL1wdbrnCN1ICLPTPMlS3A5/K5VE/tdei3G0yimebrpYsfBXZh7AD+GzR4A==
+jsforce@^3.6.3:
+  version "3.6.3"
+  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-3.6.3.tgz#998e3db74ef7a72df00ad5eaa66879ea6570f6b2"
+  integrity sha512-OZ2kOo9J6xrkFx7l8mgVmWhQ+fjJTisEMle7wFihCd1SS8pdiIZQZnFgU0q/RyLSzihuU5AbwdVM634er45vpw==
   dependencies:
     "@babel/runtime" "^7.23.1"
     "@babel/runtime-corejs3" "^7.23.1"
     "@sindresorhus/is" "^4"
-    abort-controller "^3.0.0"
     base64url "^3.0.1"
     commander "^4.0.1"
     core-js "^3.33.0"
@@ -2284,7 +2271,6 @@ jsforce@^3.4.1:
     multistream "^3.1.0"
     node-fetch "^2.6.1"
     open "^7.0.0"
-    strip-ansi "^6.0.0"
     xml2js "^0.6.2"
 
 json5@^2.2.3:

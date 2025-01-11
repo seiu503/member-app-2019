@@ -36,7 +36,7 @@
     "express-session": "^1.18.1",
     "fs": "^0.0.1-security",
     "helmet": "^3.21.1",
-    "jsforce": "^3.4.1",
+    "jsforce": "^3.6.3",
     "knex": "^3.1.0",
     "morgan": "^1.9.1",
     "passport": "^0.6.0",
