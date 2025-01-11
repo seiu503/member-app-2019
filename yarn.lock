@@ -443,10 +443,10 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.2.tgz#5981a8db18b56ba38ef0efb7d995b12aa7b51918"
   integrity sha512-sXXKG+uL9IrKqViTtao2Ws6dy0znu9sOaP1di/jKGW1M6VssO8vlpXCQcpZ+jisQ1tTFAC5Jo/EOzFbggBagFQ==
 
-"@snyk/protect@^1.1179.0":
-  version "1.1179.0"
-  resolved "https://registry.yarnpkg.com/@snyk/protect/-/protect-1.1179.0.tgz#5d2fc040a894549bd20587f3e94f0cd79a41ba8c"
-  integrity sha512-pQrtYAITDQABaE7zHUZyqajt3IXE4fmC21EEpByRrQCVRWSWbu+wP8ML1iLPVm3J2OK6o5vIANPz/JL0GYDuxg==
+"@snyk/protect@^1.1294.3":
+  version "1.1295.0"
+  resolved "https://registry.yarnpkg.com/@snyk/protect/-/protect-1.1295.0.tgz#edf42e7a2a96a3782815b97b73da6b6dd291a9c8"
+  integrity sha512-/nqz5lCsqcBNnltPTZFvWXo+a5mcpseOpCo2iG/jjSrRpCWDrLeiP+eTX4FxboVRx+oUCqjMCiIbI215njWY5g==
 
 "@types/chai@4":
   version "4.3.5"
