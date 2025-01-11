@@ -43,7 +43,7 @@
     "passport-google-oauth2": "^0.2.0",
     "passport-jwt": "^4.0.1",
     "pg": "^8.13.1",
-    "sass": "^1.79.3",
+    "sass": "^1.83.0",
     "serve-favicon": "^2.5.0",
     "uuid": "^3.3.2",
     "vite": "^5.4.7"
