@@ -12,6 +12,7 @@ import Tab2Form from "./Tab2";
 import CAPEForm from "./CAPE";
 import WelcomeInfo from "./WelcomeInfo";
 import withRouter from "./ComponentWithRouterProp";
+import { employersPayload } from "../utils/testUtils";
 
 // helper functions
 const { employerTypeMap, getKeyByValue } = formElements;
@@ -19,12 +20,12 @@ const { employerTypeMap, getKeyByValue } = formElements;
 
 export const SubmissionFormPage1Component = (props) => {
 
-  useEffect(async () => {
+  useEffect(() => {
     // previously componentDidMount
-    console.log("Component is mounted");
-    // console.log("cDM");
+    // console.log("Component is mounted");
     // API call to SF to populate employers picklist
-    props.apiSF
+    async function fetchData() {
+      props.apiSF
       .getSFEmployers()
       .then(result => {
         // console.log(result);
@@ -33,9 +34,14 @@ export const SubmissionFormPage1Component = (props) => {
       })
       .catch(err => {
         console.error(err);
+        // load placeholder data if api call fails
+        loadEmployersPicklist();
         // don't return this error to client, it's a background api call
         // props.handleError(err);
       });
+    }
+    fetchData();
+    
   }, []);
 
   useEffect(() => {
@@ -58,8 +64,15 @@ export const SubmissionFormPage1Component = (props) => {
   const loadEmployersPicklist = () => {
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
+
+    // if development env & API call failing, load placeholder data for now
+    if (process.env.REACT_APP_ENV_TEXT === 'development' && props.submission.employerObjects.length < 3) {
+      console.log('developmnet env and no employer data loaded, loading placeholder data');
+      props.submission.employerObjects = [ ...employersPayload ];
+      };
+
     const employerTypesListRaw = props.submission.employerObjects
-      ? props.submission.employerObjects.map(
+      ? props.submission.employerObjects.filter(employer => !!employer.Sub_Division__c).map(
           employer => employer.Sub_Division__c || ""
         )
       : [""];
@@ -70,9 +83,11 @@ export const SubmissionFormPage1Component = (props) => {
     const employerTypesList = employerTypesCodes.map(code =>
       formElements.employerTypeMap[code]
         ? formElements.employerTypeMap[code]
-        : ""
+        : code
     ) || [""];
     employerTypesList.unshift("");
+
+    
     return employerTypesList;
   };
 

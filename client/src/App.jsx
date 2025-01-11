@@ -55,9 +55,9 @@ export const AppUnconnected = (props) => {
 
   const recaptcha = refCaptcha;
 
-  useEffect(async () => {
+  useEffect(() => {
     // previously componentDidMount
-    console.log("Component is mounted");
+    // console.log("Component is mounted");
 
     // console.log(`App.jsx props`);
     // console.log(props);
@@ -852,7 +852,7 @@ export const AppUnconnected = (props) => {
   // just navigate to tab, don't run validation on current tab
   const changeTab = newValue => {
     console.log(`changeTab: ${newValue}`);
-    setTab(newValue);
+    props.actions.setTab(newValue);
   };
 
 

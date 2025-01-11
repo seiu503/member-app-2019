@@ -25,68 +25,79 @@ export function spinnerOff() {
   };
 }
 
-export function setTab() {
+export function setTab(value) {
   return {
-    type: SET_TAB
+    type: SET_TAB,
+    payload: { value }
   };
 }
 
-export function setSPF() {
+export function setSPF(value) {
   return {
-    type: SET_SPF
+    type: SET_SPF,
+    payload: { value }
   };
 }
 
-export function setEmbed() {
+export function setEmbed(value) {
   return {
-    type: SET_EMBED
+    type: SET_EMBED,
+    payload: { value }
   };
 }
 
-export function setUserSelectedLanguage() {
+export function setUserSelectedLanguage(value) {
   return {
-    type: SET_USER_SELECTED_LANGUAGE
+    type: SET_USER_SELECTED_LANGUAGE,
+    payload: { value }
   };
 }
 
-export function setSnackbar() {
+export function setSnackbar({ open, variant, message }) {
   return {
-    type: SET_SNACKBAR
+    type: SET_SNACKBAR,
+    payload: { open, variant, message }
   };
 }
 
-export function setHeadline() {
+export function setHeadline({ text, id }) {
   return {
-    type: SET_HEADLINE
+    type: SET_HEADLINE,
+    payload: { text, id }
   };
 }
 
-export function setBody() {
+export function setBody({ text, id }) {
   return {
-    type: SET_BODY
+    type: SET_BODY,
+    payload: { text, id }
   };
 }
 
-export function setOpen() {
+export function setOpen(value) {
   return {
-    type: SET_OPEN
+    type: SET_OPEN,
+    payload: { value }
   };
 }
 
-export function setCapeOpen() {
+export function setCapeOpen(value) {
   return {
-    type: SET_CAPE_OPEN
+    type: SET_CAPE_OPEN,
+    payload: { value }
   };
 }
 
-export function setLegalLanguage() {
+export function setLegalLanguage(value) {
   return {
-    type: SET_LEGAL_LANGUAGE
+    type: SET_LEGAL_LANGUAGE,
+    payload: { value }
   };
 }
 
-export function setDisplayCapePaymentFields() {
+export function setDisplayCapePaymentFields(value) {
   return {
-    type: SET_DISPLAY_CAPE_PAYMENT_FIELDS
+    type: SET_DISPLAY_CAPE_PAYMENT_FIELDS,
+    payload: { value }
   };
 }

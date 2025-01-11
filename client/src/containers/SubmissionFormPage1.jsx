@@ -30,9 +30,9 @@ export const SubmissionFormPage1Container = (props) => {
 
   let _isMounted = false;
 
-  useEffect(async () => {
+  useEffect(() => {
     // previously componentDidMount
-    console.log("Component is mounted");
+    // console.log("Component is mounted");
     _isMounted = true;
 
     // console.log(`SubmFormP1Container props.location`);
@@ -47,50 +47,54 @@ export const SubmissionFormPage1Container = (props) => {
     // const params = {};
 
     // if find both ids, call API to fetch contact info for prefill
+    
     if (params.cId && params.aId) {
       const { cId, aId } = params;
-      props.apiSF
-        .getSFContactByDoubleId(cId, aId)
-        .then(async (result) => {
-          // console.log(result);
-          // open warning/confirmation modal if prefill successfully loaded
-          if (
-            props.submission.formPage1.firstName &&
-            props.submission.formPage1.lastName
-          ) {
-            props.actions.setOpen(true);
-            console.log('prefill values');
-            console.log(props.submission.prefillValues);
-            // check for complete prefill for spf only
-            if (params.spf) {
-              console.log(Object.keys(prefillValidate(props.submission.prefillValues)));
-              if (!Object.keys(prefillValidate(props.submission.prefillValues)).length) {
-                console.log(`completePrefill: true`);
-                props.apiSubmission.handleInput({
-                  target: { name: "completePrefill", value: true }
-                });
-              } else {
-                console.log('completePrefill: false');
+      async function fetchData() {
+        props.apiSF
+          .getSFContactByDoubleId(cId, aId)
+          .then(async (result) => {
+            // console.log(result);
+            // open warning/confirmation modal if prefill successfully loaded
+            if (
+              props.submission.formPage1.firstName &&
+              props.submission.formPage1.lastName
+            ) {
+              props.actions.setOpen(true);
+              console.log('prefill values');
+              console.log(props.submission.prefillValues);
+              // check for complete prefill for spf only
+              if (params.spf) {
+                console.log(Object.keys(prefillValidate(props.submission.prefillValues)));
+                if (!Object.keys(prefillValidate(props.submission.prefillValues)).length) {
+                  console.log(`completePrefill: true`);
+                  props.apiSubmission.handleInput({
+                    target: { name: "completePrefill", value: true }
+                  });
+                } else {
+                  console.log('completePrefill: false');
+                }
               }
+              // props.setCAPEOptions();
+            } else {
+              // if prefill lookup fails, remove ids from query params
+              // and reset to blank form
+              handleCloseAndClear();
             }
-            // props.setCAPEOptions();
-          } else {
-            // if prefill lookup fails, remove ids from query params
-            // and reset to blank form
-            handleCloseAndClear();
-          }
-        })
-        .catch(err => {
-          console.error(err);
-          props.apiSubmission.clearForm();
-          // remove cId & aId from route params if no match,
-          // but preserve other params
-          const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
-          const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-          window.history.replaceState(null, null, cleanUrl2);
-          return props.handleError(err);
-        });
-    }
+          })
+          .catch(err => {
+            console.error(err);
+            props.apiSubmission.clearForm();
+            // remove cId & aId from route params if no match,
+            // but preserve other params
+            const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
+            const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
+            window.history.replaceState(null, null, cleanUrl2);
+            return props.handleError(err);
+          });
+      }
+      fetchData();
+    } 
     return () => {
         console.log("Component will unmount");
         _isMounted = false;
