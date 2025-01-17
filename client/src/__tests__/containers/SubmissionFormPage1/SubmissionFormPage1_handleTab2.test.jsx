@@ -206,20 +206,45 @@ const defaultProps = {
   createSubmission: createSubmissionSuccess,
   changeTab: changeTabMock,
   actions: {
-    setSpinner: jest.fn()
+    setTab: jest.fn(),
+    setSpinner: jest.fn(),
+    setSPF: jest.fn(),
+    setEmbed: jest.fn(),
+    setUserSelectedLanguage: jest.fn(),
+    setSnackbar: jest.fn(),
+    setOpen: jest.fn(),
+    setCapeOpen: jest.fn(),
+    setLegalLanguage: jest.fn(),
+    setDisplayCapePaymentFields: jest.fn()
   },
-  headline: {
-    id: 1,
-    text: ""
-  },
-  image: {
-    id: 2,
-    url: "blah"
-  },
-  body: {
-    id: 3,
-    text: ""
-  },
+ appState: {
+    loggedIn: false,
+    authToken: "",
+    loading: false,
+    userType: "",
+    tab: undefined,
+    spf: false,
+    userSelectedLanguage: "",
+    embed: false,
+    headline: {
+      text: "",
+      id: 0
+    },
+    body: {
+      text: "",
+      id: 0
+    },
+    image: {},
+    snackbar: {
+      open: false,
+      variant: "info",
+      message: null
+    },
+    open: false,
+    capeOpen: false,
+    legalLanguage: "",
+    displayCapePaymentFields: false
+  },  
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),

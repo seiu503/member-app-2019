@@ -125,8 +125,33 @@ const formValues = {
 
 const initialState = {
   appState: {
-    loading: false
-  },
+    loggedIn: false,
+    authToken: "",
+    loading: false,
+    userType: "",
+    tab: undefined,
+    spf: false,
+    userSelectedLanguage: "",
+    embed: false,
+    headline: {
+      text: "",
+      id: 0
+    },
+    body: {
+      text: "",
+      id: 0
+    },
+    image: {},
+    snackbar: {
+      open: false,
+      variant: "info",
+      message: null
+    },
+    open: false,
+    capeOpen: false,
+    legalLanguage: "",
+    displayCapePaymentFields: false
+  },  
   submission: {
     formPage1: {
       reCaptchaValue: "token",
@@ -188,7 +213,34 @@ const defaultProps = {
       ...formValues
     }
   },
-  appState: {},
+  appState: {
+    loggedIn: false,
+    authToken: "",
+    loading: false,
+    userType: "",
+    tab: undefined,
+    spf: false,
+    userSelectedLanguage: "",
+    embed: false,
+    headline: {
+      text: "",
+      id: 0
+    },
+    body: {
+      text: "",
+      id: 0
+    },
+    image: {},
+    snackbar: {
+      open: false,
+      variant: "info",
+      message: null
+    },
+    open: false,
+    capeOpen: false,
+    legalLanguage: "",
+    displayCapePaymentFields: false
+  },  
   apiProfile: {},
   initialize: jest.fn(),
   addTranslation: jest.fn(),
@@ -239,7 +291,16 @@ const defaultProps = {
     }
   },
   actions: {
-    setSpinner: jest.fn()
+    setTab: jest.fn(),
+    setSpinner: jest.fn(),
+    setSPF: jest.fn(),
+    setEmbed: jest.fn(),
+    setUserSelectedLanguage: jest.fn(),
+    setSnackbar: jest.fn(),
+    setOpen: jest.fn(),
+    setCapeOpen: jest.fn(),
+    setLegalLanguage: jest.fn(),
+    setDisplayCapePaymentFields: jest.fn()
   },
   i18n: {
     changeLanguage: jest.fn()

@@ -18,7 +18,7 @@ import { employersPayload } from "../utils/testUtils";
 const { employerTypeMap, getKeyByValue } = formElements;
 
 
-export const SubmissionFormPage1Component = (props) => {
+export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     // previously componentDidMount
@@ -62,6 +62,7 @@ export const SubmissionFormPage1Component = (props) => {
   const renderCheckbox = formElements.renderCheckbox;
 
   const loadEmployersPicklist = () => {
+    // console.log('loadEmployersPicklist');
     // generate initial picklist of employer types by manipulating data
     // from redux store to replace with more user-friendly names
 
@@ -86,8 +87,9 @@ export const SubmissionFormPage1Component = (props) => {
         : code
     ) || [""];
     employerTypesList.unshift("");
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+    // console.log(employerTypesList);
 
-    
     return employerTypesList;
   };
 
@@ -378,7 +380,7 @@ export const SubmissionFormPage1Component = (props) => {
         )}
       </Box>
     );
-  }
+  });
 
 SubmissionFormPage1Component.propTypes = {
   submission: PropTypes.shape({
