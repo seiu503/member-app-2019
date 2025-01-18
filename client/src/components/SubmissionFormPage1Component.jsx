@@ -200,6 +200,7 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
     // console.log(props);
     const checkoff = props.submission.formPage1.checkoff;
     const { spf, tab } = props.appState;
+    // console.log(`tab: ${tab}`);
     const formContainer = {
       display: "flex",
       padding: {

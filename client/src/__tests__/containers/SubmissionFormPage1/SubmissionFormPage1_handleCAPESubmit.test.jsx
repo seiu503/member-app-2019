@@ -456,11 +456,15 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           }
         },
         reset: jest.fn(),
-        tab: 2,
+        appState: {
+          ...defaultProps.appState,
+          tab: 2
+        },
         displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         history: {},
-        navigate
+        navigate,
+        
       };
 
       // setup
@@ -724,7 +728,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         reset: jest.fn(),
         handleError: handleErrorMock,
         history: {},
-        navigate
+        navigate,
+        location: {
+          search: "cape=true"
+        }
       };
 
       // setup
@@ -796,11 +803,14 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         history: {},
         navigate,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
+        location: {
+          search: "cape=true"
+        },
       };
 
       // setup
       const user = await userEvent.setup();
-      const { queryByTestId, getByTestId } = await setup(props);
+      const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
       // simulate submit

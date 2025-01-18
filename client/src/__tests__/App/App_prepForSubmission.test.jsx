@@ -255,7 +255,7 @@ const defaultProps = {
     setSpinner: jest.fn(),
     setSPF: jest.fn(),
     setEmbed: jest.fn(),
-    setUserSelectedLanguage; jest.fn(),
+    setUserSelectedLanguage: jest.fn(),
     setSnackbar: jest.fn(),
     setOpen: jest.fn(),
     setCapeOpen: jest.fn(),
