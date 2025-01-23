@@ -269,7 +269,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
         );
       let props = {
-        changeTab: changeTabMock,
         formValues: {
           signature: "test",
           directPayAuth: true,
@@ -314,6 +313,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             })
           ),
           handleInput: handleInputMock
+        },
+        actions: {
+          ...defaultProps.actions,
+          setTab: changeTabMock
         }
       };
       // render form

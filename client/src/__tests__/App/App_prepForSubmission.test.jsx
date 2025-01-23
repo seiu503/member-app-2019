@@ -118,7 +118,8 @@ const formValues = {
 
 const initialState = {
   appState: {
-    ...appState.INITIAL_STATE
+    ...appState.INITIAL_STATE,
+    tab: 1
   }, 
   submission: {
     formPage1: {
@@ -249,8 +250,6 @@ const defaultProps = {
   t: text => text
 };
 
-const store = storeFactory(initialState);
-
 const setup = async (props = {}, route = "/") => {
   const setupProps = {
     ...defaultProps,
@@ -259,7 +258,7 @@ const setup = async (props = {}, route = "/") => {
   // console.log(setupProps.submission.employerObjects);
   return render(
     <ThemeProvider theme={theme}>
-      <Provider store={store}>
+      <Provider store={storeFactory(initialState)}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
           <BrowserRouter>
             <AppUnconnected {...setupProps} />
@@ -280,6 +279,8 @@ describe("<App />", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
+  beforeEach(() => cleanup());
+
   describe("prepForSubmission", () => {
     test("`prepForSubmission` handles partial submissions", async function() {
       // all submissions are 'partial' until page2 with demographics is submitted
@@ -292,6 +293,10 @@ describe("<App />", () => {
             ...defaultProps.submission.p4cReturnValues,
             salesforceId: null
           }
+        },
+        appState: {
+          ...defaultProps.appState,
+          tab: 1
         },
         apiSF: {
           ...defaultProps.apiSF,
@@ -320,21 +325,9 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
+        const submitButton = await getByTestId("button-submit-tab2");
         await userEvent.click(submitButton);
       });
 
@@ -346,8 +339,8 @@ describe("<App />", () => {
       });
 
       // expect cape tab to render
-      await waitFor(() => {
-        const cape = getByTestId("component-cape");
+      await waitFor(async () => {
+        const cape = await getByTestId("component-cape");
         expect(cape).toBeInTheDocument();
       });
     });
@@ -378,7 +371,11 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        }
+        },
+        appState: {
+          ...defaultProps.appState,
+          tab: 1
+        },
       };
       // render app
       const user = userEvent.setup();
@@ -391,21 +388,9 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
+        const submitButton = await getByTestId("button-submit-tab2");
         await userEvent.click(submitButton);
       });
 
@@ -451,7 +436,11 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        }
+        },
+        appState: {
+          ...defaultProps.appState,
+          tab: 1
+        },
       };
       // render app
       const user = userEvent.setup();
@@ -464,21 +453,9 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
+        const submitButton = await getByTestId("button-submit-tab2");
         await userEvent.click(submitButton);
       });
 
@@ -520,7 +497,11 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        }
+        },
+        appState: {
+          ...defaultProps.appState,
+          tab: 1
+        },
       };
       // render app
       const user = userEvent.setup();
@@ -533,21 +514,9 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
       await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
+        const submitButton = await getByTestId("button-submit-tab2");
         await userEvent.click(submitButton);
       });
 
