@@ -18,6 +18,8 @@ import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import {
   generateSampleValidate,
   generateSubmissionBody
@@ -116,33 +118,8 @@ const formValues = {
 
 const initialState = {
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
-  },  
+    ...appState.INITIAL_STATE
+  }, 
   submission: {
     formPage1: {
       reCaptchaValue: "token",
@@ -191,34 +168,21 @@ const defaultProps = {
     },
     employerObjects: [...employersPayload]
   },
-  appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
-  },  
+  actions: {
+    setTab: actions.setTab,
+    setSpinner: jest.fn(),
+    setSPF: jest.fn(),
+    setEmbed: jest.fn(),
+    setUserSelectedLanguage: jest.fn(),
+    setSnackbar: jest.fn(),
+    setOpen: jest.fn(),
+    setCapeOpen: jest.fn(),
+    setLegalLanguage: jest.fn(),
+    setDisplayCapePaymentFields: jest.fn()
+  },
+ appState: {
+    ...appState.INITIAL_STATE
+  }, 
   apiProfile: {},
   initialize: jest.fn(),
   addTranslation: jest.fn(),
@@ -249,18 +213,6 @@ const defaultProps = {
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
     updateSubmission: () =>
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
-  },
-  actions: {
-    setTab: jest.fn(),
-    setSpinner: jest.fn(),
-    setSPF: jest.fn(),
-    setEmbed: jest.fn(),
-    setUserSelectedLanguage: jest.fn(),
-    setSnackbar: jest.fn(),
-    setOpen: jest.fn(),
-    setCapeOpen: jest.fn(),
-    setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
   },
   history: {},
   navigate,
@@ -355,18 +307,6 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        },
-        actions: {
-          setTab: jest.fn(),
-          setSpinner: jest.fn(),
-          setSPF: jest.fn(),
-          setEmbed: jest.fn(),
-          setUserSelectedLanguage: jest.fn(),
-          setSnackbar: jest.fn(),
-          setOpen: jest.fn(),
-          setCapeOpen: jest.fn(),
-          setLegalLanguage: jest.fn(),
-          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app
@@ -438,18 +378,6 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        },
-        actions: {
-          setTab: jest.fn(),
-          setSpinner: jest.fn(),
-          setSPF: jest.fn(),
-          setEmbed: jest.fn(),
-          setUserSelectedLanguage: jest.fn(),
-          setSnackbar: jest.fn(),
-          setOpen: jest.fn(),
-          setCapeOpen: jest.fn(),
-          setLegalLanguage: jest.fn(),
-          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app
@@ -523,18 +451,6 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        },
-        actions: {
-          setTab: jest.fn(),
-          setSpinner: jest.fn(),
-          setSPF: jest.fn(),
-          setEmbed: jest.fn(),
-          setUserSelectedLanguage: jest.fn(),
-          setSnackbar: jest.fn(),
-          setOpen: jest.fn(),
-          setCapeOpen: jest.fn(),
-          setLegalLanguage: jest.fn(),
-          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app
@@ -604,18 +520,6 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
-        },
-        actions: {
-          setTab: jest.fn(),
-          setSpinner: jest.fn(),
-          setSPF: jest.fn(),
-          setEmbed: jest.fn(),
-          setUserSelectedLanguage: jest.fn(),
-          setSnackbar: jest.fn(),
-          setOpen: jest.fn(),
-          setCapeOpen: jest.fn(),
-          setLegalLanguage: jest.fn(),
-          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app

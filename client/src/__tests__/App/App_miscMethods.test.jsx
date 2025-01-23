@@ -23,6 +23,8 @@ import {
   generateSubmissionBody
 } from "../../../../app/utils/fieldConfigs";
 import handlers from "../../mocks/handlers";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../translations/i18n";
 let navigate = jest.fn(),
@@ -127,32 +129,7 @@ const formValues = {
 
 const initialState = {
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE
   },  
   submission: {
     formPage1: {
@@ -201,35 +178,10 @@ const defaultProps = {
     }
   },
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE
   },  
   actions: {
-    setTab: jest.fn(),
+    setTab: actions.setTab,
     setSpinner: jest.fn(),
     setSPF: jest.fn(),
     setEmbed: jest.fn(),
@@ -387,6 +339,10 @@ describe("<App />", () => {
                 mobilePhone: "test"
               }
             }))
+        },
+        actions: {
+          ...defaultProps.actions,
+          setTab: actions.setTab,
         }
       };
 
@@ -483,6 +439,10 @@ describe("<App />", () => {
                 mobilePhone: "test"
               }
             }))
+        },
+        actions: {
+          ...defaultProps.actions,
+          setTab: actions.setTab,
         }
       };
 
@@ -563,6 +523,10 @@ describe("<App />", () => {
                 mobilePhone: "test"
               }
             }))
+        },
+        actions: {
+          ...defaultProps.actions,
+          setTab: actions.setTab,
         }
       };
 
@@ -672,7 +636,11 @@ describe("<App />", () => {
             lastName: "test"
           }
         },
-        formPage2: {}
+        formPage2: {},
+        actions: {
+          ...defaultProps.actions,
+          setTab: actions.setTab,
+        }
       };
 
       const { getByTestId } = await setup(props, "/?cId=1&aId=2");

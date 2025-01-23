@@ -18,6 +18,8 @@ import { setupServer } from "msw/node";
 import { AppUnconnected, AppConnected } from "../../App";
 import * as App from "../../App";
 import * as formElements from "../../components/SubmissionFormElements";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
@@ -124,34 +126,9 @@ const formValues = {
 };
 
 const initialState = {
-  appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
-  },  
+ appState: {
+    ...appState.INITIAL_STATE
+  }, 
   submission: {
     formPage1: {
       reCaptchaValue: "token",
@@ -213,34 +190,21 @@ const defaultProps = {
       ...formValues
     }
   },
-  appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
-  },  
+  actions: {
+    setTab: actions.setTab,
+    setSpinner: jest.fn(),
+    setSPF: jest.fn(),
+    setEmbed: jest.fn(),
+    setUserSelectedLanguage: jest.fn(),
+    setSnackbar: jest.fn(),
+    setOpen: jest.fn(),
+    setCapeOpen: jest.fn(),
+    setLegalLanguage: jest.fn(),
+    setDisplayCapePaymentFields: jest.fn()
+  },
+ appState: {
+    ...appState.INITIAL_STATE
+  }, 
   apiProfile: {},
   initialize: jest.fn(),
   addTranslation: jest.fn(),
@@ -289,18 +253,6 @@ const defaultProps = {
     current: {
       innerHTML: "pay"
     }
-  },
-  actions: {
-    setTab: jest.fn(),
-    setSpinner: jest.fn(),
-    setSPF: jest.fn(),
-    setEmbed: jest.fn(),
-    setUserSelectedLanguage: jest.fn(),
-    setSnackbar: jest.fn(),
-    setOpen: jest.fn(),
-    setCapeOpen: jest.fn(),
-    setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
   },
   i18n: {
     changeLanguage: jest.fn()

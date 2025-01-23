@@ -17,6 +17,8 @@ import * as formElements from "../../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../../styles/theme";
+import * as actions from "../../../store/actions/index.js";
+import * as appState from "../../../store/reducers/appState.js";
 import {
   generatePage2Validate,
   generateSubmissionBody
@@ -206,7 +208,7 @@ const defaultProps = {
   createSubmission: createSubmissionSuccess,
   changeTab: changeTabMock,
   actions: {
-    setTab: jest.fn(),
+    setTab: actions.setTab,
     setSpinner: jest.fn(),
     setSPF: jest.fn(),
     setEmbed: jest.fn(),
@@ -218,33 +220,8 @@ const defaultProps = {
     setDisplayCapePaymentFields: jest.fn()
   },
  appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
-  },  
+    ...appState.INITIAL_STATE
+  },   
   setCAPEOptions: jest.fn(),
   handleError: jest.fn(),
   renderHeadline: jest.fn(),
@@ -307,7 +284,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             reCaptchaValue: "token"
           }
         },
-        tab: 1,
+        appState: {
+          ...defaultProps.appState,
+          tab: 1
+        },
         updateSFContact: updateSFContactSuccess,
         createSFContact: jest.fn().mockImplementation(() =>
           Promise.resolve({
