@@ -293,9 +293,6 @@ const defaultProps = {
       innerHTML: "pay"
     }
   },
-  actions: {
-    setSpinner: jest.fn()
-  },
   lookupSFContact: lookupSFContactSuccess,
   setActiveLanguage: jest.fn(),
   i18n: {

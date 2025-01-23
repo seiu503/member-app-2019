@@ -131,7 +131,10 @@ export const WelcomeInfoUnconnected = (props) => {
             <Button
               type="button"
               data-testid="button-next"
-              onClick={() => props.handleTab(0)}
+              onClick={() => {
+                console.log('next click');
+                return props.handleTab(0);
+              }}
               color="primary"
               variant="contained"
               sx={{

@@ -26,6 +26,7 @@ export function spinnerOff() {
 }
 
 export function setTab(value) {
+  console.log(`store/actions/index.js setTab: ${value}`);
   return {
     type: SET_TAB,
     payload: { value }

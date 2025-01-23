@@ -82,8 +82,33 @@ const formValues = {
 
 const initialState = {
   appState: {
-    loading: false
-  },
+    loggedIn: false,
+    authToken: "",
+    loading: false,
+    userType: "",
+    tab: undefined,
+    spf: false,
+    userSelectedLanguage: "",
+    embed: false,
+    headline: {
+      text: "",
+      id: 0
+    },
+    body: {
+      text: "",
+      id: 0
+    },
+    image: {},
+    snackbar: {
+      open: false,
+      variant: "info",
+      message: null
+    },
+    open: false,
+    capeOpen: false,
+    legalLanguage: "",
+    displayCapePaymentFields: false
+  },  
   submission: {
     formPage1: {
       ...formValues,
@@ -96,8 +121,33 @@ const initialState = {
 
 const defaultProps = {
   appState: {
-    loading: false
-  },
+    loggedIn: false,
+    authToken: "",
+    loading: false,
+    userType: "",
+    tab: undefined,
+    spf: false,
+    userSelectedLanguage: "",
+    embed: false,
+    headline: {
+      text: "",
+      id: 0
+    },
+    body: {
+      text: "",
+      id: 0
+    },
+    image: {},
+    snackbar: {
+      open: false,
+      variant: "info",
+      message: null
+    },
+    open: false,
+    capeOpen: false,
+    legalLanguage: "",
+    displayCapePaymentFields: false
+  },  
   submission: {
     formPage1: {
       ...formValues,

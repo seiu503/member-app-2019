@@ -492,8 +492,8 @@ export const SubmissionFormPage1Container = (props) => {
       return props.handleError(err);
     });
 
-    // move to next tab
-    return props.changeTab(2);
+    // move to next tab (CAPE)
+    return props.actions.setTab(2);
   }
 
   const handleTab1 = async () => {
@@ -534,7 +534,7 @@ export const SubmissionFormPage1Container = (props) => {
           });
       } else {
         console.log('not spf: moving to tab 2');
-        return props.changeTab(1);
+        return props.actions.setTab(1);
       }
     };
 
@@ -570,7 +570,7 @@ export const SubmissionFormPage1Container = (props) => {
           return handleTab2();
         } else {
           console.log('not spf: moving to tab 2');
-          return props.changeTab(1);
+          return props.actions.setTab(1);
         }
       } 
     }
@@ -599,7 +599,7 @@ export const SubmissionFormPage1Container = (props) => {
       });
     } else {
       props.actions.spinnerOff();
-      return props.changeTab(newValue);
+      return props.actions.setTab(newValue);
     }
   }
 
@@ -644,7 +644,7 @@ export const SubmissionFormPage1Container = (props) => {
           {...props}
           change={change}
           handleTab={handleTab}
-          back={props.changeTab}
+          back={props.actions.setTab}
           handleError={props.handleError}
           handleCAPESubmit={handleCAPESubmit}
           verifyRecaptchaScore={verifyRecaptchaScore}

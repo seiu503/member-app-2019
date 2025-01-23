@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { Routes, Route, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -43,7 +43,24 @@ const styles = {};
 
 export const AppUnconnected = (props) => {
 
-  let _isMounted = false;
+  // returns a function that when called will
+  // return `true` if the component is mounted
+  const useMountedState = () => {
+    const mountedRef = useRef(false)
+    const isMounted = useCallback(() => mountedRef.current, [])
+
+    useEffect(() => {
+      mountedRef.current = true
+
+      return () => {
+        mountedRef.current = false
+      }
+    }, [])
+
+    return isMounted
+  }
+
+  let _isMounted = useMountedState();
 
   // refs
   const refCaptcha = useRef();
@@ -54,6 +71,8 @@ export const AppUnconnected = (props) => {
   let sigBox = useRef();
 
   const recaptcha = refCaptcha;
+  // console.log(`APP.JSX 74 APPSTATE`);
+  // console.dir(props.appState);
 
   useEffect(() => {
     // previously componentDidMount
@@ -61,8 +80,6 @@ export const AppUnconnected = (props) => {
 
     // console.log(`App.jsx props`);
     // console.log(props);
-
-    _isMounted = true;
 
     // check and log environment
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
@@ -94,9 +111,8 @@ export const AppUnconnected = (props) => {
 
     return () => {
         console.log("Component will unmount");
-        _isMounted = false;
       };
-    }, []);
+    }, [_isMounted]);
 
   useEffect(() => {
     // scroll to top of next tab after changing tab
@@ -682,7 +698,7 @@ export const AppUnconnected = (props) => {
     // create Online Member App record
     return props.apiSF
       .createSFOMA(body)
-      .then(result => {
+      .then(async result => {
         console.log("App 728 createSubmission");
         console.log(result.type);
         console.log(`submission errors: ${props.submission.error}`);
@@ -697,7 +713,7 @@ export const AppUnconnected = (props) => {
           );
           // goto CAPE tab
           console.log('moving to CAPE Tab');
-          changeTab(2);
+          await props.actions.setTab(2);
         } else if (!props.submission.error) {
 
           // // what if we don't update submission status after creating OMA? does that fix the endless loop?
@@ -710,7 +726,7 @@ export const AppUnconnected = (props) => {
             .updateSubmission(props.submission.submissionId, {
               submission_status: "Success"
             })
-            .then(result => {
+            .then(async result => {
               if (
                 result.type === "UPDATE_SUBMISSION_FAILURE" ||
                 props.submission.error
@@ -720,7 +736,7 @@ export const AppUnconnected = (props) => {
               } else {
                 console.log("createSubmission resolve");
                 return null;
-                // changeTab(2);
+                // await props.actions.setTab(2);
               }
             })
             .catch(err => {
@@ -849,12 +865,6 @@ export const AppUnconnected = (props) => {
     });
   }
 
-  // just navigate to tab, don't run validation on current tab
-  const changeTab = newValue => {
-    console.log(`changeTab: ${newValue}`);
-    props.actions.setTab(newValue);
-  };
-
 
   const values = queryString.parse(props.location.search);
   const embed = values.embed;
@@ -943,7 +953,6 @@ export const AppUnconnected = (props) => {
                   prepForSubmission={prepForSubmission}
                   createSFContact={createSFContact}
                   updateSFContact={updateSFContact}
-                  changeTab={changeTab}
                   handleError={handleError}
                   openSnackbar={openSnackbar}
                 />

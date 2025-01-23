@@ -272,8 +272,7 @@ const setup = async (props = {}, route = "/") => {
   );
 };
 
-describe("<App /> MiscMethods2", () => {
-  // Enable API mocking before tests.
+describe("<App /> MiscMethods3", () => {
   beforeAll(() => {
     server.listen();
     cleanup();
@@ -287,24 +286,18 @@ describe("<App /> MiscMethods2", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
-  describe("misc methods 2", () => {
+  describe("misc methods 3", () => {
     beforeEach(() => cleanup());
 
-    test("`generateSubmissionBody` uses back end fieldnames if !firstName", async () => {
+    test("`updateSubmission` uses defaults if no passedId or passedUpdates", async () => {
       const props = {
         submission: {
-          ...defaultProps.submission,
           salesforceId: "1234",
           formPage1: {
-            ...defaultProps.submission.formPage1,
             legalLanguage: "abc"
           },
           submissionId: "5678",
-          currentSubmission: {},
-          payment: {},
-          cape: {
-            monthlyOptions: []
-          }
+          payment: {}
         },
         location: {
           search: "&cId=1234"
@@ -341,18 +334,23 @@ describe("<App /> MiscMethods2", () => {
             })
           )
         },
+        appState: {
+          ...defaultProps.appState,
+          tab: 0
+        },
         actions: {
           ...defaultProps.actions,
           setTab: actions.setTab,
         }
       };
       // render app
-      const user = await userEvent.setup();
+      const user = userEvent.setup();
       const {
         getByTestId,
         queryByTestId,
         getByRole,
         getByLabelText,
+        queryByLabelText,
         getByText,
         debug
       } = await setup(props);
@@ -370,21 +368,15 @@ describe("<App /> MiscMethods2", () => {
       });
 
       // simulate submit tab1
-      await waitFor( async () => {
-        const submitButton = await getByTestId("button-submit");
+      await waitFor(() => {
+        const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // check that tab 2 renders
-      await waitFor(async () => {
-        const tab2Form = await getByTestId("form-tab2");
-        expect(tab2Form).toBeInTheDocument();
       });
 
       // simulate submit tab2
       await waitFor(async () => {
-        const submitButton2 = await getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton2);
+        const submitButton = getByTestId("button-submit-tab2");
+        await userEvent.click(submitButton);
       });
 
       // just test that with these props there are no errors and it moves to tab 3
@@ -397,13 +389,11 @@ describe("<App /> MiscMethods2", () => {
       });
 
       // expect cape tab to render
-      await waitFor(async () => {
-        const cape = await getByTestId("component-cape");
+      await waitFor(() => {
+        const cape = getByTestId("component-cape");
         expect(cape).toBeInTheDocument();
       });
     });
-
   });
 
-  
 });

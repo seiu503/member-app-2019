@@ -284,9 +284,6 @@ const defaultProps = {
       innerHTML: "pay"
     }
   },
-  actions: {
-    setSpinner: jest.fn()
-  },
   i18n: {
     changeLanguage: jest.fn()
   }

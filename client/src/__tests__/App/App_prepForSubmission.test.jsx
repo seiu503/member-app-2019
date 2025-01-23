@@ -355,6 +355,18 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          setTab: jest.fn(),
+          setSpinner: jest.fn(),
+          setSPF: jest.fn(),
+          setEmbed: jest.fn(),
+          setUserSelectedLanguage: jest.fn(),
+          setSnackbar: jest.fn(),
+          setOpen: jest.fn(),
+          setCapeOpen: jest.fn(),
+          setLegalLanguage: jest.fn(),
+          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app
@@ -426,6 +438,18 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          setTab: jest.fn(),
+          setSpinner: jest.fn(),
+          setSPF: jest.fn(),
+          setEmbed: jest.fn(),
+          setUserSelectedLanguage: jest.fn(),
+          setSnackbar: jest.fn(),
+          setOpen: jest.fn(),
+          setCapeOpen: jest.fn(),
+          setLegalLanguage: jest.fn(),
+          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app
@@ -499,6 +523,18 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          setTab: jest.fn(),
+          setSpinner: jest.fn(),
+          setSPF: jest.fn(),
+          setEmbed: jest.fn(),
+          setUserSelectedLanguage: jest.fn(),
+          setSnackbar: jest.fn(),
+          setOpen: jest.fn(),
+          setCapeOpen: jest.fn(),
+          setLegalLanguage: jest.fn(),
+          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app
@@ -568,6 +604,18 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          setTab: jest.fn(),
+          setSpinner: jest.fn(),
+          setSPF: jest.fn(),
+          setEmbed: jest.fn(),
+          setUserSelectedLanguage: jest.fn(),
+          setSnackbar: jest.fn(),
+          setOpen: jest.fn(),
+          setCapeOpen: jest.fn(),
+          setLegalLanguage: jest.fn(),
+          setDisplayCapePaymentFields: jest.fn()
         }
       };
       // render app

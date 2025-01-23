@@ -209,6 +209,7 @@ const defaultProps = {
   actions: {
     setTab: jest.fn(),
     setSpinner: jest.fn(),
+    spinnerOff: jest.fn(),
     setSPF: jest.fn(),
     setEmbed: jest.fn(),
     setUserSelectedLanguage: jest.fn(),
