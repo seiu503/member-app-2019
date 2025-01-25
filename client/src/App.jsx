@@ -120,6 +120,8 @@ export const AppUnconnected = (props) => {
   }, [props.tab]);
 
   const openSnackbar = async (variant, message) => {
+    console.log('openSnackbar');
+    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     props.actions.setSnackbar({
       open: true,
       variant,
@@ -138,13 +140,15 @@ export const AppUnconnected = (props) => {
   };
 
   const handleError = err => {
+    console.log('handleError');
+    console.log(`#####################################`);
+    // console.log(err);
     return openSnackbar(
       "error",
       err && err.message
         ? err.message
         : err || "Sorry, something went wrong. Please try again."
     );
-    // console.log(err);
   };
 
   const updateLanguage = e => {
@@ -315,6 +319,7 @@ export const AppUnconnected = (props) => {
   // lookup SF Contact by first, last, email; if none found then create new
   // called from SubmissionFormPage1.jsx > 229 (GenerateCAPEBody), 565 (handleTab1)
   const lookupSFContact = async (formValues) => {
+    console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@`);
     console.log("App 337 lookupSFContact");
     console.dir(formValues);
     if (
@@ -757,7 +762,7 @@ export const AppUnconnected = (props) => {
   }
 
   const createSFContact = async (formValues) => {
-    console.log("App 785 createSFContact");
+    console.log("App 765 createSFContact");
     let values;
     if (props.appState.spf && props.submission.formPage1.completePrefill) {
       console.log('spf true AND completePrefill = true; skipping p4c');
@@ -766,7 +771,7 @@ export const AppUnconnected = (props) => {
       console.log('spf OR completePrefill = false; running p4c');
       values = await prepForContact(formValues);
     }
-    console.log("App 793 createSFContact");
+    console.log("App 774 createSFContact");
     console.log(values);
     let {
       firstName,
@@ -804,7 +809,9 @@ export const AppUnconnected = (props) => {
       reCaptchaValue
     };
 
-    await props.apiSF.createSFContact(body).catch(err => {
+    await props.apiSF.createSFContact(body)
+    .then(result => console.log(`App 813 createSFContact result: ${result}`))
+    .catch(err => {
       console.error(err);
       return handleError(err);
     });

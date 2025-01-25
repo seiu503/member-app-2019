@@ -55,6 +55,8 @@ export function setUserSelectedLanguage(value) {
 }
 
 export function setSnackbar({ open, variant, message }) {
+  console.log(`props.actions.setSnackbar`);
+  console.log('59595959959595959595959595959595959595959595959595959');
   return {
     type: SET_SNACKBAR,
     payload: { open, variant, message }

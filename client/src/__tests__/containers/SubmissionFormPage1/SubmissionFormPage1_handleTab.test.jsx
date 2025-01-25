@@ -110,7 +110,7 @@ const formValues = {
   textAuthOptOut: false
 };
 
-const changeTabMock = jest.fn().mockImplementation(() => Promise.resolve());
+const changeTabMock = jest.fn().mockImplementation(() => Promise.resolve(console.log('changeTabMock')));
 
 const defaultProps = {
   submission: {
@@ -266,6 +266,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         appState: {
           ...defaultProps.appState,
           tab: 1
+        },
+        actions: {
+          ...defaultProps.actions,
+          setTab: changeTabMock
         }
       };
 
@@ -290,6 +294,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       await waitFor(() => {
         expect(changeTabMock).toHaveBeenCalledWith(2);
       });
+
+      changeTabMock.mockClear();
     });
 
     test("`handleTab` called with 1 calls handleTab1", async () => {
@@ -342,6 +348,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
               }
             })
           )
+        },
+        actions: {
+          ...defaultProps.actions,
+          setTab: changeTabMock
         }
       };
       // render form
