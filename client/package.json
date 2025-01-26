@@ -32,7 +32,7 @@
     "redux": "^4.2.1",
     "redux-api-middleware": "^3.2.1",
     "redux-form": "^8.3.8",
-    "shortid": "^2.2.14",
+    "shortid": "^2.2.17",
     "typescript": "^3.5.1"
   },
   "devDependencies": {
