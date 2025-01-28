@@ -821,7 +821,7 @@ export const AppUnconnected = (props) => {
   const updateSFContact = async (formValues) => {
     console.log("App 846 updateSFContact");
     let values;
-    if (state.spf && props.submission.formPage1.completePrefill) {
+    if (props.appState.spf && props.submission.formPage1.completePrefill) {
       console.log('spf true AND completePrefill = true; skipping p4c');
       values = { ...props.submission.p4cReturnValues };
     } else {

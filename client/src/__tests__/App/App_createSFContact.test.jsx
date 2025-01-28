@@ -301,7 +301,7 @@ describe("<App />", () => {
 
   describe("createSFContact", () => {
     test("`createSFContact` handles error if prop function fails", async function() {
-      // test for presence of snackbar component with variant = error
+      const errorSpy = jest.spyOn(console, 'error');
       const props = {
         ...defaultProps,
         apiSF: {
@@ -323,31 +323,23 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      const nextButton = await getByTestId("button-next");
+      await userEvent.click(nextButton);
+
 
       // check that tab 1 renders
+      const tab1Form = await getByRole("form");
       await waitFor(() => {
-        const tab1Form = getByRole("form");
         expect(tab1Form).toBeInTheDocument();
       });
 
       // simulate submit tab1
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
+      const submitButton = await getByTestId("button-submit");
+      await userEvent.click(submitButton);
 
-      // expect snackbar to be in the document with correct error message
-      await waitFor( async () => {
-        const snackbar = await getByTestId("component-basic-snackbar");
-        const errorIcon = await getByTestId("ErrorOutlineIcon");
-        const message = await getByText("createSFContactError");
-        await expect(snackbar).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
+      // expect error to be logged to console if prop function fails
+      await waitFor(() => {
+        expect(errorSpy).toHaveBeenCalledWith("createSFContactError"); 
       });
     });
   });

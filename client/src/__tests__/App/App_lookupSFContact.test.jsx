@@ -484,7 +484,7 @@ describe("<App />", () => {
     });
     test("`lookupSFContact` handles error if createSFContact throws", async function() {
 
-      const spy = jest.spyOn(AppUnconnected, 'handleError'); // Spy on the handleError method
+      const errorSpy = jest.spyOn(console, 'error');
 
       let props = {
         submission: {
@@ -534,23 +534,14 @@ describe("<App />", () => {
       } = await setup(props);
 
       // simulate submit tab1
+
+      const submitButton = await getByTestId("button-submit");
+      await userEvent.click(submitButton);
+
+      // expect error to be logged to console if prop function fails
       await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
+        expect(errorSpy).toHaveBeenCalledWith({"message": "createSFContactError", "type": "CREATE_SF_CONTACT_FAILURE"}); 
       });
-
-      // expect snackbar to be in document with error styling and correct message
-
-      expect(spy).toHaveBeenCalledWith("createSFContactError"); // Verify it was called with correct arguments
-      
-      // await waitFor(() => {
-      //   const snackbar = getByTestId("component-basic-snackbar");
-      //   const errorIcon = getByTestId("ErrorOutlineIcon");
-      //   const message = getByText("createSFContactError");
-      //   expect(snackbar).toBeInTheDocument();
-      //   expect(message).toBeInTheDocument();
-      //   expect(errorIcon).toBeInTheDocument();
-      // });
     });
   });
 });
