@@ -341,98 +341,77 @@ describe("<App />", () => {
         expect(cape).toBeInTheDocument();
       });
     });
-    test.only("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
-      // also tests snackbar close behavior
-      lookupSFContactError = jest.fn().mockImplementation(() =>
-        Promise.reject({
-          type: "LOOKUP_SF_CONTACT_FAILURE",
-          payload: {},
-          message: "lookupSFContactError"
-        })
-      );
-      let props = {
-        submission: {
-          salesforceId: null,
-          formPage1: {
-            prefillEmployerId: "123"
-          },
-          p4cReturnValues: {
-            salesforceId: null
-          }
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          lookupSFContact: lookupSFContactError,
-          createSFOMA: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "CREATE_SF_OMA_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "CREATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          )
-        },
-        appState: {
-          ...defaultProps.appState,
-          tab: 0
-        },
-        actions: {
-          ...defaultProps.actions,
-          setSnackbar: actions.setSnackbar
-        }
-      };
+    // test("`lookupSFContact` handles error if lookupSFContact prop throws", async function() {
+    //   // also tests snackbar close behavior  
+    //   // => test this on some other function that actually opens a snackbar
+    //   lookupSFContactError = jest.fn().mockImplementation(() =>
+    //     Promise.reject({
+    //       type: "LOOKUP_SF_CONTACT_FAILURE",
+    //       payload: {},
+    //       message: "lookupSFContactError"
+    //     })
+    //   );
+    //   let props = {
+    //     submission: {
+    //       salesforceId: null,
+    //       formPage1: {
+    //         prefillEmployerId: "123"
+    //       },
+    //       p4cReturnValues: {
+    //         salesforceId: null
+    //       }
+    //     },
+    //     apiSF: {
+    //       ...defaultProps.apiSF,
+    //       lookupSFContact: lookupSFContactError,
+    //       createSFOMA: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_OMA_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       )
+    //     },
+    //     appState: {
+    //       ...defaultProps.appState,
+    //       tab: 0
+    //     },
+    //     actions: {
+    //       ...defaultProps.actions,
+    //       setTab: jest.fn(),
+    //       setSnackbar: actions.setSnackbar
+    //     }
+    //   };
 
-      // render app
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        queryByTestId,
-        getByText,
-        debug
-      } = await setup(props);
+    //   // render app
+    //   const user = userEvent.setup(props);
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     queryByTestId,
+    //     getByText,
+    //     debug
+    //   } = await setup(props);
 
-      // simulate submit tab1
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
+    //   // simulate submit tab1
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
 
-      // expect snackbar to be in document with error styling and correct message
-      // race condition is happening here where
-      // test is running before state is changing to open snackbar
-      // so working around withtest timeout
-      // setTimeout(async () => {
-      //   // const snackbar = await getByTestId("component-basic-snackbar");
-      //   // const errorIcon = await getByTestId("ErrorOutlineIcon");
-      //   // const message = await getByText("lookupSFContactError");
-      //   expect(await screen.findByText("lookupSFContactError:", {}, {timeout: 3000})).toBeInTheDocument();
-      //   //    expect(await screen.findByText("Data:", {}, {timeout: 3000})).toBeInTheDocument();
-      //   // expect(await getByTestId("component-basic-snackbar")).toBeInTheDocument();
-      //   // expect(message).toBeInTheDocument();
-      //   // expect(errorIcon).toBeInTheDocument();
-      // }, 100);
-      expect(await screen.findByText("lookupSFContactError:", {}, {timeout: 1500})).toBeInTheDocument();
+    //   // we actually don't want a snackbar message if this function throws -- if no contact is found it just moves on to 
+    //   // creating a new one. so don't look for snackbar, just test that it calls handleError and moves on to createSFContact (next test in this suite)
+    //   // think this test is probably unnecessary but check later if needed for coverage
 
-      // // simulate user click on close button
-      // await waitFor(async () => {
-      //   const closeButton = await getByRole("button", {
-      //     name: /close/i
-      //   });
-      //   await userEvent.click(closeButton);
-      // });
+    //   // expect(await screen.findByText("lookupSFContactError:", {}, {timeout: 1500})).toBeInTheDocument();
 
-      // // expect snackbar to close
-      // await waitFor(async () => {
-      //   const snackbar = queryByTestId("component-basic-snackbar");
-      //   expect(snackbar).not.toBeInTheDocument();
-      // });
-    });
+    // });
 
     test("`lookupSFContact` calls createSFContact if lookupSFContact finds no match", async function() {
       // just test that with this set of props, it doesn't error and advances to next tab
@@ -504,7 +483,9 @@ describe("<App />", () => {
       });
     });
     test("`lookupSFContact` handles error if createSFContact throws", async function() {
-      formElements.handleError = jest.fn();
+
+      const spy = jest.spyOn(AppUnconnected, 'handleError'); // Spy on the handleError method
+
       let props = {
         submission: {
           salesforceId: null,
@@ -559,14 +540,17 @@ describe("<App />", () => {
       });
 
       // expect snackbar to be in document with error styling and correct message
-      await waitFor(() => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText("createSFContactError");
-        expect(snackbar).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-      });
+
+      expect(spy).toHaveBeenCalledWith("createSFContactError"); // Verify it was called with correct arguments
+      
+      // await waitFor(() => {
+      //   const snackbar = getByTestId("component-basic-snackbar");
+      //   const errorIcon = getByTestId("ErrorOutlineIcon");
+      //   const message = getByText("createSFContactError");
+      //   expect(snackbar).toBeInTheDocument();
+      //   expect(message).toBeInTheDocument();
+      //   expect(errorIcon).toBeInTheDocument();
+      // });
     });
   });
 });

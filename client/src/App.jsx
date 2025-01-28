@@ -335,7 +335,8 @@ export const AppUnconnected = (props) => {
         last_name: formValues.lastName,
         home_email: formValues.homeEmail
       };
-      await props.apiSF.lookupSFContact(lookupBody).catch(err => {
+      await props.apiSF.lookupSFContact(lookupBody)
+      .catch(err => {
         console.error(err);
         return handleError(err);
       });

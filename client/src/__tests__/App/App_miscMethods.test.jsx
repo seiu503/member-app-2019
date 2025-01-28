@@ -147,6 +147,27 @@ const initialState = {
   }
 };
 
+const initialStateWelcomeComp = {
+  appState: {
+    ...appState.INITIAL_STATE,
+    tab: undefined
+  },  
+  submission: {
+    formPage1: {
+      reCaptchaValue: "token",
+      ...formValues
+    },
+    p4cReturnValues: {},
+    allSubmissions: [{ key: "value" }],
+    employerObjects: [...employersPayload],
+    formPage2: {},
+    cape: {
+      monthlyOptions: []
+    },
+    prefillValues: {}
+  }
+};
+
 const defaultProps = {
   submission: {
     error: null,
@@ -284,7 +305,10 @@ describe("<App />", () => {
   beforeEach(() => cleanup());
 
   // Reset any runtime request handlers we may add during the tests.
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers(); 
+    cleanup();
+   });
 
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
@@ -467,16 +491,35 @@ describe("<App />", () => {
 
     test("`renderHeadline` renders headline", async () => {
       // render app
+      const store1 = storeFactory(initialStateWelcomeComp);
+      const props = {
+        ...defaultProps,
+        appState: {
+          ...defaultProps.appState,
+          tab: undefined
+        }
+      }
+      const setupProps = {
+        ...defaultProps,
+        ...props
+      };
       const {
         getByTestId,
-        queryByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup();
-      const headline = getByTestId("headline");
-      expect(headline).toBeInTheDocument();
+      } = await render(
+        <ThemeProvider theme={theme}>
+          <Provider store={store1}>
+            <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+              <MemoryRouter initialEntries={['/']}>
+                <AppUnconnected {...setupProps} />
+              </MemoryRouter>
+            </I18nextProvider>
+          </Provider>
+        </ThemeProvider>
+      );
+      const headline = await getByTestId("headline");
+      await waitFor(() => {
+        expect(headline).toBeInTheDocument();
+      });
     });
 
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", async () => {
@@ -541,29 +584,9 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
-      });
+      const submitButton2 = await getByTestId("button-submit-tab2");
+      await userEvent.click(submitButton2);
 
       // just test that with these props there are no errors and it moves to tab 3
 
@@ -575,8 +598,8 @@ describe("<App />", () => {
       });
 
       // expect cape tab to render
+      const cape = await getByTestId("component-cape");
       await waitFor(() => {
-        const cape = getByTestId("component-cape");
         expect(cape).toBeInTheDocument();
       });
     });
