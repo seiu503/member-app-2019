@@ -54,13 +54,14 @@ export const SubmissionFormPage1Container = (props) => {
         props.apiSF
           .getSFContactByDoubleId(cId, aId)
           .then(async (result) => {
-            // console.log(result);
+            console.log(result);
             // open warning/confirmation modal if prefill successfully loaded
             if (
               props.submission.formPage1.firstName &&
               props.submission.formPage1.lastName
             ) {
               props.actions.setOpen(true);
+              console.log(`props.appState.open: ${props.appState.open}`);
               console.log('prefill values');
               console.log(props.submission.prefillValues);
               // check for complete prefill for spf only

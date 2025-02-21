@@ -166,16 +166,18 @@ function appState(state = INITIAL_STATE, action) {
       }
 
     case SET_OPEN: {
+        console.log(`SET_OPEN`);
+        console.log(action.payload);
         return update(state, {
-          open: { $set: action.payload.value }
+          open: { $set: action.payload }
         })
       }
 
     case SET_CAPE_OPEN: {
       console.log(`SET_CAPE_OPEN`);
-      console.log(action.payload.value);
+      console.log(action.payload);
         return update(state, {
-          capeOpen: { $set: action.payload.value }
+          capeOpen: { $set: action.payload }
         })
       }
 

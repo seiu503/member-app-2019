@@ -245,7 +245,7 @@ describe("<CAPE />", () => {
     });
   });
   describe("conditional render", () => {
-    it.only("renders alert dialog if capeOpen = `true`", async () => {
+    it("renders alert dialog if capeOpen = `true`", async () => {
       handleSubmit = fn => fn;
       const testProps = {
         appState: {

@@ -20,8 +20,8 @@ export const storeFactory = initialState => {
   const createStoreWithMiddleware = applyMiddleware(...middlewares)(
     createStore
   );
-  console.log(rootReducer);
-  console.log(createStoreWithMiddleware(rootReducer, initialState));
+  // console.log(rootReducer);
+  // console.log(createStoreWithMiddleware(rootReducer, initialState));
   return createStoreWithMiddleware(rootReducer, initialState);
 };
 
