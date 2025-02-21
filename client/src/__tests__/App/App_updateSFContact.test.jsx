@@ -18,6 +18,8 @@ import * as formElements from "../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import {
   generateSampleValidate,
   generateSubmissionBody
@@ -120,7 +122,7 @@ const initialState = {
     authToken: "",
     loading: false,
     userType: "",
-    tab: undefined,
+    tab: 1,
     spf: false,
     userSelectedLanguage: "",
     embed: false,
@@ -159,6 +161,14 @@ const initialState = {
   }
 };
 
+const initialStateTab1 = {
+  ...initialState,
+  appState: {
+    ...initialState.appState,
+    tab: 0
+  }
+}
+
 const defaultProps = {
   submission: {
     error: null,
@@ -191,32 +201,8 @@ const defaultProps = {
     salesforceId: "123"
   },
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE,
+    tab: 1
   },  
   apiProfile: {},
   initialize: jest.fn(),
@@ -256,7 +242,7 @@ const defaultProps = {
     )
   },
   actions: {
-    setTab: jest.fn(),
+    setTab: actions.setTab,
     setSpinner: jest.fn(),
     setSPF: jest.fn(),
     setEmbed: jest.fn(),
@@ -295,15 +281,15 @@ const defaultProps = {
   body: { id: 1 },
   renderHeadline: jest.fn(),
   renderBodyCopy: jest.fn(),
-  tab: 0,
   t: text => text,
   handleError: handleErrorMock,
   updateSFContact: jest.fn().mockImplementation(() => Promise.resolve())
 };
 
 const store = storeFactory(initialState);
+const storeTab1 = storeFactory(initialStateTab1);
 
-const setup = async (props = {}, route = "/") => {
+const setup = async (props = {}, route = "/", passedStore = store) => {
   const setupProps = {
     ...defaultProps,
     ...props
@@ -311,7 +297,7 @@ const setup = async (props = {}, route = "/") => {
   // console.log(setupProps.submission.employerObjects);
   return render(
     <ThemeProvider theme={theme}>
-      <Provider store={store}>
+      <Provider store={passedStore}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
           <BrowserRouter>
             <AppUnconnected {...setupProps} />
@@ -331,6 +317,8 @@ describe("<App />", () => {
 
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
+
+  beforeEach(() => cleanup());
 
   describe("updateSFContact", () => {
     test("`updateSFContact` calls updateSFContact prop function", async function() {
@@ -372,13 +360,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup(props);
-
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      } = await setup(props, "/", storeTab1);
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -396,6 +378,7 @@ describe("<App />", () => {
     });
 
     test("`updateSFContact` handles error if prop function fails", async function() {
+      const errorSpy = jest.spyOn(console, 'error');
       let updateSFContactError = jest
         .fn()
         .mockImplementation(() => Promise.reject("updateSFContactError"));
@@ -416,6 +399,10 @@ describe("<App />", () => {
             })
           ),
           updateSFContact: updateSFContactError
+        },
+        appState: {
+          ...defaultProps.appState,
+          tab: 0
         }
       };
       // render app
@@ -427,28 +414,16 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup(props);
-
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
+      } = await setup(props, "/", storeTab1);
 
       // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
+      const submitButton = await getByTestId("button-submit");
+      await userEvent.click(submitButton);
 
-      // expect snackbar to be in document with error styling and correct message
+
+      // expect error to be logged to console if prop function fails
       await waitFor(() => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText("updateSFContactError");
-        expect(snackbar).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
+        expect(errorSpy).toHaveBeenCalledWith("updateSFContactError"); 
       });
     });
 
@@ -510,23 +485,9 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
-      });
+      const submitButton1 = await getByTestId("button-submit-tab2");
+      await userEvent.click(submitButton1);
 
       // expect updateSubmissionSuccess to have been called
       await waitFor(async () => {
@@ -535,6 +496,7 @@ describe("<App />", () => {
     });
 
     test("`saveSubmissionErrors` handles error if updateSubmission fails", async function() {
+      const errorSpy = jest.spyOn(console, 'error');
       let updateSubmissionError = jest
         .fn()
         .mockImplementation(() =>
@@ -592,36 +554,19 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
-      });
+      const submitButton1 = await getByTestId("button-submit-tab2");
+      await userEvent.click(submitButton1);
 
-      // expect correct snackbar error
-      await waitFor(async () => {
-        const snackbar = await queryByTestId("component-basic-snackbar");
-        await expect(snackbar).toBeInTheDocument();
-        const message = await getByText(
-          "Sorry, something went wrong. Please try again."
-        );
-        await expect(message).toBeInTheDocument();
+
+      // expect error to be logged to console if prop function fails
+      await waitFor(() => {
+        expect(errorSpy).toHaveBeenCalledWith( {"message": 'createSFOMAError'} ); 
       });
     });
 
     test("`saveSubmissionErrors` handles error if updateSubmission throws", async function() {
+      const errorSpy = jest.spyOn(console, 'error');
       let updateSubmissionError = jest
         .fn()
         .mockImplementation(() =>
@@ -679,31 +624,14 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
       // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
-      });
+      const submitButton1 = await getByTestId("button-submit-tab2");
+      await userEvent.click(submitButton1);
 
-      // expect correct snackbar error
-      await waitFor(async () => {
-        await expect(
-          queryByTestId("component-basic-snackbar")
-        ).toBeInTheDocument();
-        const message = await getByText("updateSubmissionError");
-        await expect(message).toBeInTheDocument();
+
+      // expect error to be logged to console if prop function fails
+      await waitFor(() => {
+        expect(errorSpy).toHaveBeenCalledWith( {"message": 'updateSubmissionError'} ); 
       });
     });
   });

@@ -30,7 +30,9 @@ const styles = theme => ({
   }
 });
 
-export const AlertDialog = props => (
+export const AlertDialog = props => {
+  console.log('AlertDialog');
+  return (
   <div data-testid="component-alert-dialog">
     <Dialog
       data-testid="dialog"
@@ -78,7 +80,8 @@ export const AlertDialog = props => (
       </DialogActions>
     </Dialog>
   </div>
-);
+)
+};
 
 AlertDialog.propTypes = {
   open: PropTypes.bool,

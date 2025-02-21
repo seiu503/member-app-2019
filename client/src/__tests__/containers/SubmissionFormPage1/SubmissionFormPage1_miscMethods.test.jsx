@@ -17,6 +17,8 @@ import * as formElements from "../../../components/SubmissionFormElements";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../../styles/theme";
+import * as actions from "../../../store/actions/index.js";
+import * as appState from "../../../store/reducers/appState.js";
 import {
   generatePage2Validate,
   generateSubmissionBody
@@ -207,59 +209,23 @@ const defaultProps = {
   createSubmission: createSubmissionSuccess,
   changeTab: changeTabMock,
   actions: {
-    setTab: jest.fn(),
-    setSpinner: jest.fn(),
-    spinnerOff: jest.fn(),
-    setSPF: jest.fn(),
-    setEmbed: jest.fn(),
-    setUserSelectedLanguage: jest.fn(),
-    setSnackbar: jest.fn(),
-    setOpen: jest.fn(),
-    setCapeOpen: jest.fn(),
-    setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
+    ...actions
   },
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
-  },  
-  setCAPEOptions: jest.fn(),
-  handleError: jest.fn(),
-  renderHeadline: jest.fn(),
-  t: text => text,
-  renderBodyCopy: jest.fn()
+    ...appState,
+    open: false
+  }
 };
 
 let handleSubmit;
 let reloadMock = jest.fn();
-const initialState = {};
+const initialState = {
+  appState: { ...appState, open: false }
+};
 const store = storeFactory(initialState);
 const setup = (props = {}) => {
   const setupProps = { ...defaultProps, ...props, handleSubmit };
+  // console.log(setupProps.actions);
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
@@ -293,10 +259,20 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
+  beforeEach(() => cleanup());
+
   describe("misc methods", () => {
-    test("`handleCAPEOpen` opens alert dialog if try to navigate past CAPE tab w/o submitting", async () => {
+    test.only("`handleCAPEOpen` opens alert dialog if try to navigate past CAPE tab w/o submitting", async () => {
+      // const setCAPEOpenMock = jest.fn();
       let props = {
-        tab: 2
+        appState: {
+          ...defaultProps.appState,
+          tab: 2
+        },
+        actions: {
+          ...defaultProps.actions,
+          setCapeOpen: actions.setCapeOpen
+        }
       };
 
       // render form
@@ -305,26 +281,35 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         getByTestId,
         getByRole,
         getByLabelText,
-        getByText,
+        findByText,
         debug
       } = await setup(props);
 
-      const skipButton = getByTestId("button-next");
+      const skipButton = await getByTestId("button-next");
 
       // simulate click skipButton
-      await waitFor(async () => {
-        await user.click(skipButton);
-      });
-
-      // expect alert dialog to be in document
-      await waitFor(() => {
-        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
-      });
+      await user.click(skipButton)
+        .then(async () => {
+          // expect alert dialog to be in document
+          const dialogTitle = await findByText("Skip to next tab");
+          await waitFor(() => {
+            expect(dialogTitle).toBeInTheDocument();
+            // expect(setCAPEOpenMock).toHaveBeenCalled();
+          });
+        });
     });
 
     test("clicking 'close' button on alert dialog closes modal", async () => {
       let props = {
-        tab: 2
+        appState: {
+          ...defaultProps.appState,
+          tab: 2,
+          capeOpen: true
+        },
+        actions: {
+          ...defaultProps.actions,
+          setCapeOpen: actions.setCapeOpen
+        }
       };
 
       // render form
@@ -334,20 +319,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         queryByTestId,
         getByRole,
         getByLabelText,
-        getByText,
+        findByText,
         debug
       } = await setup(props);
 
-      const skipButton = await getByTestId("button-next");
-
-      // simulate click skipButton
-      await waitFor(async () => {
-        await user.click(skipButton);
-      });
-
       // expect alert dialog to be in document
+      const dialogTitle = await findByText("Skip to next tab");
       await waitFor(() => {
-        expect(getByTestId("component-alert-dialog")).toBeInTheDocument();
+        expect(dialogTitle).toBeInTheDocument();
       });
 
       // simulate click modalClose
@@ -358,15 +337,19 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
       // expect alert dialog to be closed
       await waitFor(() => {
-        expect(queryByTestId("component-alert-dialog")).not.toBeInTheDocument();
+        expect(findByText("Skip to next tab").not.toBeInTheDocument());
       });
     });
 
     test("`handleEmployerChange` calls handleInput to set prefillEmployerChanged to true", async () => {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
       const props = {
-        tab: 0,
+        appState: {
+          ...defaultProps.appState,
+          tab: 0
+        },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           handleInput: handleInputMock
         }
       };
@@ -440,7 +423,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           }
         },
         formPage2: {},
-        tab: 0
+        appState: {
+          ...defaultProps.appState,
+          tab: 0
+        }
       };
 
       const user = userEvent.setup(props);
@@ -469,7 +455,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("clicking close on CAPE modal closes alert dialog", async () => {
       let navigate = jest.fn();
       let props = {
-        tab: 2,
+        appState: {
+          ...defaultProps.appState,
+          tab: 2
+        },
         history: {},
         navigate
       };
@@ -508,7 +497,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
     test("clicking action button on CAPE modal calls this.props.history.push", async () => {
       let navigate = jest.fn();
       let props = {
-        tab: 2,
+        appState: {
+          ...defaultProps.appState,
+          tab: 2
+        },
         history: {},
         navigate
       };

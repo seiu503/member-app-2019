@@ -36,21 +36,21 @@ export function setTab(value) {
 export function setSPF(value) {
   return {
     type: SET_SPF,
-    payload: { value }
+    payload: value
   };
 }
 
 export function setEmbed(value) {
   return {
     type: SET_EMBED,
-    payload: { value }
+    payload: value
   };
 }
 
 export function setUserSelectedLanguage(value) {
   return {
     type: SET_USER_SELECTED_LANGUAGE,
-    payload: { value }
+    payload: value
   };
 }
 
@@ -80,27 +80,29 @@ export function setBody({ text, id }) {
 export function setOpen(value) {
   return {
     type: SET_OPEN,
-    payload: { value }
+    payload: value
   };
 }
 
 export function setCapeOpen(value) {
+  console.log('setCapeOpen');
+  console.log(value);
   return {
     type: SET_CAPE_OPEN,
-    payload: { value }
+    payload: value
   };
 }
 
 export function setLegalLanguage(value) {
   return {
     type: SET_LEGAL_LANGUAGE,
-    payload: { value }
+    payload: value
   };
 }
 
 export function setDisplayCapePaymentFields(value) {
   return {
     type: SET_DISPLAY_CAPE_PAYMENT_FIELDS,
-    payload: { value }
+    payload: value
   };
 }

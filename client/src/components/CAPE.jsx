@@ -52,9 +52,6 @@ export const CAPE = props => {
     change,
     lookupSFContact,
     capeObject,
-    handleCAPEOpen,
-    handleCAPEClose,
-    capeOpen,
     closeDialog,
     mobilePhoneOnBlur,
     checkoff
@@ -93,14 +90,14 @@ export const CAPE = props => {
         // className={classes.form}
       }}
     >
-      {capeOpen && (
+      {props.appState.capeOpen && (
         <AlertDialog
-          open={capeOpen}
-          handleClose={props.handleCAPEClose}
+          open={props.appState.capeOpen}
+          handleClose={() => props.actions.setCapeOpen(false)}
           title={<Trans i18nKey="skipTab" />}
           content={<Trans i18nKey="skipWarning" />}
           danger={true}
-          action={closeDialog}
+          action={() => props.actions.setCapeOpen(false)}
           buttonText={<Trans i18nKey="skip" />}
           data-testid="component-alert-dialog"
         />
@@ -745,7 +742,7 @@ export const CAPE = props => {
             <Button
               type="button"
               data-testid="button-next"
-              onClick={handleCAPEOpen}
+              onClick={() => props.actions.setCapeOpen(true)}
               color="primary"
               // className={classes.nextSmall}
               sx={{

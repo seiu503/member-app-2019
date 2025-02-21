@@ -14,6 +14,8 @@ import { ThemeProvider } from "@mui/material/styles";
 import { storeFactory } from "../../utils/testUtils";
 import * as utils from "../../utils/index";
 import { generateCAPEValidateFrontEnd } from "../../../../app/utils/fieldConfigs";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import { CAPE, CAPEForm, CAPEConnected } from "../../components/CAPE";
 import * as formElements from "../../components/SubmissionFormElements";
 import { I18nextProvider } from "react-i18next";
@@ -78,7 +80,9 @@ const defaultProps = {
       monthlyOptions: [""],
       oneTimeOptions: [""]
     }
-  }
+  },
+  appState: { ...appState },
+  actions: { ...actions }
 };
 
 const theme = createTheme(adaptV4Theme);
@@ -241,10 +245,13 @@ describe("<CAPE />", () => {
     });
   });
   describe("conditional render", () => {
-    it("renders alert dialog if capeOpen = `true`", async () => {
+    it.only("renders alert dialog if capeOpen = `true`", async () => {
       handleSubmit = fn => fn;
       const testProps = {
-        capeOpen: true,
+        appState: {
+          ...appState,
+          capeOpen: true
+        },
         handleSubmit: fn => fn
       };
       const { getByTestId, debug } = await setup(

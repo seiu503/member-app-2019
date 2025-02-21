@@ -97,6 +97,8 @@ export const INITIAL_STATE = {
 };
 
 function appState(state = INITIAL_STATE, action) {
+  // console.log('appStateReducer');
+  // console.log(action.type);
   // let error;
   switch (action.type) {
     case SET_SPINNER: {
@@ -165,13 +167,15 @@ function appState(state = INITIAL_STATE, action) {
 
     case SET_OPEN: {
         return update(state, {
-          open: { $set: { ...action.payload.value } }
+          open: { $set: action.payload.value }
         })
       }
 
     case SET_CAPE_OPEN: {
+      console.log(`SET_CAPE_OPEN`);
+      console.log(action.payload.value);
         return update(state, {
-          capeOpen: { $set: { ...action.payload.value } }
+          capeOpen: { $set: action.payload.value }
         })
       }
 
