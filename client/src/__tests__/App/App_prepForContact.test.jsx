@@ -15,6 +15,8 @@ import userEvent from "@testing-library/user-event";
 import { employersPayload, storeFactory } from "../../utils/testUtils";
 import { setupServer } from "msw/node";
 import * as formElements from "../../components/SubmissionFormElements";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
@@ -114,32 +116,7 @@ const formValues = {
 
 const initialState = {
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE
   },  
   submission: {
     formPage1: {
@@ -185,32 +162,7 @@ const defaultProps = {
     employerObjects: [...employersPayload]
   },
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE
   },  
   apiProfile: {},
   initialize: jest.fn(),
@@ -247,16 +199,7 @@ const defaultProps = {
       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
   },
   actions: {
-    setTab: jest.fn(),
-    setSpinner: jest.fn(),
-    setSPF: jest.fn(),
-    setEmbed: jest.fn(),
-    setUserSelectedLanguage: jest.fn(),
-    setSnackbar: jest.fn(),
-    setOpen: jest.fn(),
-    setCapeOpen: jest.fn(),
-    setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
+    ...actions
   },
   history: {},
   navigate,
@@ -299,7 +242,7 @@ const setup = async (props = {}, route = "/") => {
   // console.log(setupProps.submission.employerObjects);
   return render(
     <ThemeProvider theme={theme}>
-      <Provider store={store}>
+      <Provider store={storeFactory(initialState)}>
         <Translation>
           {(t, { i18n }) => (
             <BrowserRouter>
