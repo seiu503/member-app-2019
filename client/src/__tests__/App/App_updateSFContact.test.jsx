@@ -360,7 +360,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup(props, "/", storeTab1);
+      } = await setup(props, "/", storeFactory(initialStateTab1));
 
       // simulate submit tab1
       await waitFor(async () => {
@@ -414,7 +414,7 @@ describe("<App />", () => {
         getByText,
         queryByTestId,
         debug
-      } = await setup(props, "/", storeTab1);
+      } = await setup(props, "/", storeFactory(initialStateTab1));
 
       // simulate submit tab1
       const submitButton = await getByTestId("button-submit");
@@ -552,7 +552,7 @@ describe("<App />", () => {
         queryByText,
         queryByTestId,
         debug
-      } = await setup(props);
+      } = await setup(props, "/", storeFactory(initialState));
 
       // simulate submit tab2
       const submitButton1 = await getByTestId("button-submit-tab2");
@@ -622,7 +622,7 @@ describe("<App />", () => {
         queryByText,
         queryByTestId,
         debug
-      } = await setup(props);
+      } = await setup(props, "/", storeFactory(initialState));
 
       // simulate submit tab2
       const submitButton1 = await getByTestId("button-submit-tab2");
