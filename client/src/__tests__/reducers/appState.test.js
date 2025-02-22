@@ -28,7 +28,7 @@ describe("appState reducer", () => {
     expect(
       reducer(INITIAL_STATE, {
         type: "SET_TAB",
-        payload: 0
+        payload: { value: 0 }
       })
     ).toEqual({
       ...INITIAL_STATE,

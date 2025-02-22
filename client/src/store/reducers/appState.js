@@ -109,7 +109,7 @@ function appState(state = INITIAL_STATE, action) {
 
     case SET_TAB: {
       return update(state, {
-        tab: { $set: action.payload }
+        tab: { $set: action.payload.value }
       })
     }
 
