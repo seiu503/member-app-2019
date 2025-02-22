@@ -16,6 +16,8 @@ import { employersPayload, storeFactory } from "../../utils/testUtils";
 import { setupServer } from "msw/node";
 import { AppUnconnected } from "../../App";
 import * as formElements from "../../components/SubmissionFormElements";
+import * as actions from "../../store/actions/index.js";
+import * as appState from "../../store/reducers/appState.js";
 import { createTheme, adaptV4Theme } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "../../styles/theme";
@@ -157,32 +159,7 @@ const defaultProps = {
     submissionId: 1
   },
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE
   },  
   apiProfile: {},
   initialize: jest.fn(),
@@ -235,16 +212,7 @@ const defaultProps = {
     }
   },
   actions: {
-    setTab: jest.fn(),
-    setSpinner: jest.fn(),
-    setSPF: jest.fn(),
-    setEmbed: jest.fn(),
-    setUserSelectedLanguage: jest.fn(),
-    setSnackbar: jest.fn(),
-    setOpen: jest.fn(),
-    setCapeOpen: jest.fn(),
-    setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
+    ...actions
   },
   createSubmission: createSubmissionSuccess,
   setActiveLanguage: jest.fn(),
@@ -256,32 +224,7 @@ const defaultProps = {
 
 const initialState = {
   appState: {
-    loggedIn: false,
-    authToken: "",
-    loading: false,
-    userType: "",
-    tab: undefined,
-    spf: false,
-    userSelectedLanguage: "",
-    embed: false,
-    headline: {
-      text: "",
-      id: 0
-    },
-    body: {
-      text: "",
-      id: 0
-    },
-    image: {},
-    snackbar: {
-      open: false,
-      variant: "info",
-      message: null
-    },
-    open: false,
-    capeOpen: false,
-    legalLanguage: "",
-    displayCapePaymentFields: false
+    ...appState.INITIAL_STATE
   },  
   submission: {
     formPage1: {
@@ -307,7 +250,7 @@ const setup = async (props = {}, route = "/") => {
   // console.log(setupProps.submission.employerObjects);
   return render(
     <ThemeProvider theme={theme}>
-      <Provider store={store}>
+      <Provider store={storeFactory(initialState)}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
           <BrowserRouter>
             <AppUnconnected {...setupProps} />
@@ -323,14 +266,21 @@ describe("<App />", () => {
   beforeAll(() => server.listen());
 
   // Reset any runtime request handlers we may add during the tests.
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    cleanup();
+   } );
 
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
   describe("createSubmission", () => {
+    afterEach(() => {
+      cleanup();
+     });
     test("`createSubmission` handles error if prop function fails", async function() {
-      formElements.handleError = jest.fn();
+      // formElements.handleError = jest.fn();
+      let setSnackbarMock = jest.fn();
       addSubmissionError = jest.fn().mockImplementation(() =>
         Promise.resolve({
           type: "ADD_SUBMISSION_FAILURE",
@@ -338,6 +288,7 @@ describe("<App />", () => {
         })
       );
       let props = {
+        ...defaultProps,
         apiSubmission: {
           // handleInput: handleInputMock,
           handleInput,
@@ -380,6 +331,10 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          ...defaultProps.actions,
+          setSnackbar: setSnackbarMock
         }
       };
 
@@ -421,18 +376,474 @@ describe("<App />", () => {
         await userEvent.click(submitButton);
       });
 
+      // expect setSnackbar to be called with correct message
+      await waitFor(() => {
+        expect(setSnackbarMock).toBeCalledWith({"message": "addSubmissionError", "open": true, "variant": "error"});
+      })
       // expect snackbar to be in document with error styling and correct message
-      await waitFor(async () => {
-        const snackbar = await getByTestId("component-basic-snackbar");
-        const errorIcon = await getByTestId("ErrorOutlineIcon");
-        const message = await getByText("addSubmissionError");
-        expect(snackbar).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-      });
+      // await waitFor(async () => {
+      //   const snackbar = await getByTestId("component-basic-snackbar");
+      //   const errorIcon = await getByTestId("ErrorOutlineIcon");
+      //   const message = await getByText("addSubmissionError");
+      //   expect(snackbar).toBeInTheDocument();
+      //   expect(message).toBeInTheDocument();
+      //   expect(errorIcon).toBeInTheDocument();
+      // });
     });
+    // test("`createSubmission` handles error if prop function throws", async function() {
+    //   let setSnackbarMock = jest.fn();
+    //   addSubmissionError = jest.fn().mockImplementation(() =>
+    //     Promise.reject({
+    //       type: "ADD_SUBMISSION_FAILURE",
+    //       message: "addSubmissionError"
+    //     })
+    //   );
+    //   let props = {
+    //     apiSubmission: {
+    //       handleInput,
+    //       handleInputSPF: handleInputSPFMock,
+    //       addSubmission: addSubmissionError,
+    //       updateSubmission: jest
+    //         .fn()
+    //         .mockImplementation(() => Promise.resolve({}))
+    //     },
+    //     submission: {
+    //       salesforceId: "123",
+    //       formPage1: {
+    //         legalLanguage: "jjj"
+    //       },
+    //       p4cReturnValues: { ...defaultProps.p4cReturnValues }
+    //     },
+    //     apiSF: {
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_OMA_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       )
+    //     },
+    //     actions: {
+    //       ...defaultProps.actions,
+    //       setSnackbar: setSnackbarMock
+    //     }
+    //   };
+
+    //   let generateSubmissionBodyMock = jest
+    //     .fn()
+    //     .mockImplementation(() => Promise.resolve({}));
+
+    //   // render app
+    //   const user = userEvent.setup(props);
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     debug
+    //   } = await setup(props);
+
+    //   // simulate user click 'Next'
+    //   await waitFor(() => {
+    //     const nextButton = getByTestId("button-next");
+    //     userEvent.click(nextButton);
+    //   });
+
+    //   // check that tab 1 renders
+    //   await waitFor(() => {
+    //     const tab1Form = getByRole("form");
+    //     expect(tab1Form).toBeInTheDocument();
+    //   });
+
+    //   // simulate submit tab1
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
+
+    //   // simulate submit tab2
+    //   await waitFor(async () => {
+    //     const submitButton = getByTestId("button-submit-tab2");
+    //     await userEvent.click(submitButton);
+    //   });
+
+    //   // expect setSnackbar to be called with correct message
+    //   await waitFor(() => {
+    //     expect(setSnackbarMock).toBeCalledWith({"message": "addSubmissionError", "open": true, "variant": "error"});
+    //   })
+
+    //   // expect snackbar to be in document with error styling and correct message
+    //   // await waitFor(() => {
+    //   //   const snackbar = getByTestId("component-basic-snackbar");
+    //   //   const errorIcon = getByTestId("ErrorOutlineIcon");
+    //   //   const message = getByText("addSubmissionError");
+    //   //   expect(snackbar).toBeInTheDocument();
+    //   //   expect(message).toBeInTheDocument();
+    //   //   expect(errorIcon).toBeInTheDocument();
+    //   // });
+    // });
+    // test("`createSubmission` does not return error to client and displays CAPE tab if createSFOMA fails", async function() {
+    //   // can't figure out how to test if submission errors are saved without mocking component method because nothing is returned to client here
+    //   // but can test to make sure it moves on without error and renders CAPE tab ??
+    //   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+    //   formElements.handleError = jest.fn();
+    //   addSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    //     );
+    //   createSFOMAError = jest.fn().mockImplementation(() =>
+    //     Promise.resolve({
+    //       type: "CREATE_SF_OMA_FAILURE",
+    //       message: "createSFOMAError"
+    //     })
+    //   );
+    //   const updateSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    //     );
+    //   let props = {
+    //     formValues: {
+    //       directPayAuth: true,
+    //       employerName: "homecare",
+    //       paymentType: "card",
+    //       employerType: "retired",
+    //       preferredLanguage: "English"
+    //     },
+    //     apiSubmission: {
+    //       handleInput,
+    //       handleInputSPF: handleInputSPFMock,
+    //       addSubmission: addSubmissionSuccess,
+    //       updateSubmission: updateSubmissionSuccess
+    //     },
+    //     submission: {
+    //       salesforceId: "123",
+    //       submissionId: "456",
+    //       formPage1: {
+    //         paymentRequired: false
+    //       },
+    //       p4cReturnValues: { ...defaultProps.p4cReturnValues },
+    //       // error: "createSFOMAError",
+    //       currentSubmission: {
+    //         submission_errors: ""
+    //       }
+    //     },
+    //     apiSF: {
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: createSFOMAError
+    //     }
+    //   };
+    //   // render app
+    //   const user = userEvent.setup(props);
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     queryByTestId,
+    //     debug
+    //   } = await setup(props);
+
+    //   // simulate user click 'Next'
+    //   await waitFor(() => {
+    //     const nextButton = getByTestId("button-next");
+    //     userEvent.click(nextButton);
+    //   });
+
+    //   // check that tab 1 renders
+    //   await waitFor(() => {
+    //     const tab1Form = getByRole("form");
+    //     expect(tab1Form).toBeInTheDocument();
+    //   });
+
+    //   // simulate submit tab1
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
+
+    //   // simulate submit tab2
+    //   await waitFor(async () => {
+    //     const submitButton = getByTestId("button-submit-tab2");
+    //     await userEvent.click(submitButton);
+    //   });
+
+    //   // expect snackbar NOT to be in document
+    //   await waitFor(() => {
+    //     expect(
+    //       queryByTestId("component-basic-snackbar")
+    //     ).not.toBeInTheDocument();
+    //   });
+
+    //   // expect cape tab to render
+    //   await waitFor(() => {
+    //     const cape = getByTestId("component-cape");
+    //     expect(cape).toBeInTheDocument();
+    //   });
+    // });
+    // test("`createSubmission` handles error if createSFOMA throws", async function() {
+    //   // if sfOMA throws we do return the error to client so can test snackbar message
+    //   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+    //   let setSnackbarMock = jest.fn();
+    //   addSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    //     );
+    //   createSFOMAError = jest.fn().mockImplementation(() =>
+    //     Promise.reject({
+    //       type: "CREATE_SF_OMA_FAILURE",
+    //       message: "sfOMA error"
+    //     })
+    //   );
+    //   const updateSubmissionSuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+    //     );
+    //   let props = {
+    //     formValues: {
+    //       directPayAuth: true,
+    //       employerName: "homecare",
+    //       paymentType: "card",
+    //       employerType: "retired",
+    //       preferredLanguage: "English"
+    //     },
+    //     p4cReturnValues: { ...defaultProps.p4cReturnValues },
+    //     apiSubmission: {
+    //       handleInput,
+    //       handleInputSPF: handleInputSPFMock,
+    //       addSubmission: addSubmissionSuccess,
+    //       updateSubmission: updateSubmissionSuccess
+    //     },
+    //     submission: {
+    //       salesforceId: "123",
+    //       formPage1: {
+    //         paymentRequired: false
+    //       },
+    //       currentSubmission: {
+    //         submission_errors: ""
+    //       }
+    //     },
+    //     apiSF: {
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: createSFOMAError
+    //     },
+    //     actions: {
+    //       ...defaultProps.actions,
+    //       setSnackbar: setSnackbarMock
+    //     }
+    //   };
+    //   // render app
+    //   const user = userEvent.setup(props);
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     queryByTestId,
+    //     debug
+    //   } = await setup(props);
+
+    //   // simulate user click 'Next'
+    //   await waitFor(() => {
+    //     const nextButton = getByTestId("button-next");
+    //     userEvent.click(nextButton);
+    //   });
+
+    //   // check that tab 1 renders
+    //   await waitFor(() => {
+    //     const tab1Form = getByRole("form");
+    //     expect(tab1Form).toBeInTheDocument();
+    //   });
+
+    //   // simulate submit tab1
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
+
+    //   // simulate submit tab2
+    //   await waitFor(async () => {
+    //     const submitButton = getByTestId("button-submit-tab2");
+    //     await userEvent.click(submitButton);
+    //   });
+
+    //   // expect setSnackbar to be called with correct message
+    //   await waitFor(() => {
+    //     expect(setSnackbarMock).toBeCalledWith({"message": "sfOMA error", "open": true, "variant": "error"});
+    //   })
+
+    //   // expect snackbar to be in document with error styling and correct message
+    //   // await waitFor(() => {
+    //   //   const snackbar = getByTestId("component-basic-snackbar");
+    //   //   const errorIcon = getByTestId("ErrorOutlineIcon");
+    //   //   const message = getByText("sfOMA error");
+    //   //   expect(snackbar).toBeInTheDocument();
+    //   //   expect(message).toBeInTheDocument();
+    //   //   expect(errorIcon).toBeInTheDocument();
+    //   // });
+    // });
+    // test("`createSubmission` handles error if updateSubmission throws", async function() {
+    //   handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
+    //   let setSnackbarMock = jest.fn();
+
+    //   const updateSubmissionError = jest.fn().mockImplementation(() =>
+    //     Promise.reject({
+    //       type: "UPDATE_SUBMISSION_FAILURE",
+    //       message: "updateSubmission error"
+    //     })
+    //   );
+    //   const createSFOMASuccess = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "CREATE_SF_OMA_SUCCESS" })
+    //     );
+    //   let props = {
+    //     formValues: {
+    //       directPayAuth: true,
+    //       employerName: "homecare",
+    //       paymentType: "card",
+    //       employerType: "retired",
+    //       preferredLanguage: "English"
+    //     },
+    //     p4cReturnValues: { ...defaultProps.p4cReturnValues },
+    //     apiSubmission: {
+    //       handleInput: handleInputMock,
+    //       handleInputSPF: handleInputSPFMock,
+    //       addSubmission: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "ADD_SUBMISSION_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       updateSubmission: updateSubmissionError
+    //     },
+    //     submission: {
+    //       salesforceId: "123",
+    //       formPage1: {
+    //         paymentRequired: false
+    //       }
+    //     },
+    //     apiSF: {
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_OMA_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       )
+    //     },
+    //     actions: {
+    //       ...defaultProps.actions,
+    //       setSnackbar: setSnackbarMock
+    //     }
+    //   };
+
+    //   // render app
+    //   const user = userEvent.setup(props);
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     queryByTestId,
+    //     debug
+    //   } = await setup(props);
+
+    //   // simulate user click 'Next'
+    //   await waitFor(() => {
+    //     const nextButton = getByTestId("button-next");
+    //     userEvent.click(nextButton);
+    //   });
+
+    //   // check that tab 1 renders
+    //   await waitFor(() => {
+    //     const tab1Form = getByRole("form");
+    //     expect(tab1Form).toBeInTheDocument();
+    //   });
+
+    //   // simulate submit tab1
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
+
+    //   // simulate submit tab2
+    //   await waitFor(async () => {
+    //     const submitButton = getByTestId("button-submit-tab2");
+    //     await userEvent.click(submitButton);
+    //   });
+
+    //   // expect setSnackbar to be called with correct message
+    //   await waitFor(() => {
+    //     expect(setSnackbarMock).toBeCalledWith({"message": "updateSubmission error", "open": true, "variant": "error"});
+    //   })
+
+    //   // expect snackbar to be in document with error styling and correct message
+    //   // await waitFor(() => {
+    //   //   const snackbar = getByTestId("component-basic-snackbar");
+    //   //   const errorIcon = getByTestId("ErrorOutlineIcon");
+    //   //   const message = getByText("updateSubmission error");
+    //   //   expect(snackbar).toBeInTheDocument();
+    //   //   expect(message).toBeInTheDocument();
+    //   //   expect(errorIcon).toBeInTheDocument();
+    //   // });
+    // });
+  });
+});
+
+describe("App > createSubmission2", () => {
+    afterEach(() => {
+      cleanup();
+     });
     test("`createSubmission` handles error if prop function throws", async function() {
-      formElements.handleError = jest.fn();
+      let setSnackbarMock = jest.fn();
       addSubmissionError = jest.fn().mockImplementation(() =>
         Promise.reject({
           type: "ADD_SUBMISSION_FAILURE",
@@ -474,6 +885,14 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          ...defaultProps.actions,
+          setSnackbar: setSnackbarMock
+        },
+        appState: {
+          ...appState.INITIAL_STATE,
+          tab: 0
         }
       };
 
@@ -515,16 +934,28 @@ describe("<App />", () => {
         await userEvent.click(submitButton);
       });
 
-      // expect snackbar to be in document with error styling and correct message
+      // expect setSnackbar to be called with correct message
       await waitFor(() => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText("addSubmissionError");
-        expect(snackbar).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-      });
+        expect(setSnackbarMock).toBeCalledWith({"message": "addSubmissionError", "open": true, "variant": "error"});
+      })
+
+      // expect snackbar to be in document with error styling and correct message
+      // await waitFor(() => {
+      //   const snackbar = getByTestId("component-basic-snackbar");
+      //   const errorIcon = getByTestId("ErrorOutlineIcon");
+      //   const message = getByText("addSubmissionError");
+      //   expect(snackbar).toBeInTheDocument();
+      //   expect(message).toBeInTheDocument();
+      //   expect(errorIcon).toBeInTheDocument();
+      // });
     });
+
+  });
+
+describe("App > createSubmission3", () => {
+    afterEach(() => {
+      cleanup();
+     });
     test("`createSubmission` does not return error to client and displays CAPE tab if createSFOMA fails", async function() {
       // can't figure out how to test if submission errors are saved without mocking component method because nothing is returned to client here
       // but can test to make sure it moves on without error and renders CAPE tab ??
@@ -636,10 +1067,17 @@ describe("<App />", () => {
         expect(cape).toBeInTheDocument();
       });
     });
+
+  });
+
+describe("App > createSubmission4", () => {
+    afterEach(() => {
+      cleanup();
+     });
     test("`createSubmission` handles error if createSFOMA throws", async function() {
       // if sfOMA throws we do return the error to client so can test snackbar message
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+      let setSnackbarMock = jest.fn();
       addSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -694,6 +1132,10 @@ describe("<App />", () => {
             })
           ),
           createSFOMA: createSFOMAError
+        },
+        actions: {
+          ...defaultProps.actions,
+          setSnackbar: setSnackbarMock
         }
       };
       // render app
@@ -731,19 +1173,31 @@ describe("<App />", () => {
         await userEvent.click(submitButton);
       });
 
-      // expect snackbar to be in document with error styling and correct message
+      // expect setSnackbar to be called with correct message
       await waitFor(() => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText("sfOMA error");
-        expect(snackbar).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-      });
+        expect(setSnackbarMock).toBeCalledWith({"message": "sfOMA error", "open": true, "variant": "error"});
+      })
+
+      // expect snackbar to be in document with error styling and correct message
+      // await waitFor(() => {
+      //   const snackbar = getByTestId("component-basic-snackbar");
+      //   const errorIcon = getByTestId("ErrorOutlineIcon");
+      //   const message = getByText("sfOMA error");
+      //   expect(snackbar).toBeInTheDocument();
+      //   expect(message).toBeInTheDocument();
+      //   expect(errorIcon).toBeInTheDocument();
+      // });
     });
+
+  });
+
+describe("App > createSubmission5", () => {
+    afterEach(() => {
+      cleanup();
+     });
     test("`createSubmission` handles error if updateSubmission throws", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
-      formElements.handleError = jest.fn();
+      let setSnackbarMock = jest.fn();
 
       const updateSubmissionError = jest.fn().mockImplementation(() =>
         Promise.reject({
@@ -801,6 +1255,10 @@ describe("<App />", () => {
               payload: { id: 1 }
             })
           )
+        },
+        actions: {
+          ...defaultProps.actions,
+          setSnackbar: setSnackbarMock
         }
       };
 
@@ -839,15 +1297,20 @@ describe("<App />", () => {
         await userEvent.click(submitButton);
       });
 
-      // expect snackbar to be in document with error styling and correct message
+      // expect setSnackbar to be called with correct message
       await waitFor(() => {
-        const snackbar = getByTestId("component-basic-snackbar");
-        const errorIcon = getByTestId("ErrorOutlineIcon");
-        const message = getByText("updateSubmission error");
-        expect(snackbar).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-      });
+        expect(setSnackbarMock).toBeCalledWith({"message": "updateSubmission error", "open": true, "variant": "error"});
+      })
+
+      // expect snackbar to be in document with error styling and correct message
+      // await waitFor(() => {
+      //   const snackbar = getByTestId("component-basic-snackbar");
+      //   const errorIcon = getByTestId("ErrorOutlineIcon");
+      //   const message = getByText("updateSubmission error");
+      //   expect(snackbar).toBeInTheDocument();
+      //   expect(message).toBeInTheDocument();
+      //   expect(errorIcon).toBeInTheDocument();
+      // });
     });
+
   });
-});

@@ -120,7 +120,7 @@ export const AppUnconnected = (props) => {
   }, [props.tab]);
 
   const openSnackbar = async (variant, message) => {
-    console.log('openSnackbar');
+    console.log('openSnackbar (App.jsx 123 method)');
     console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     props.actions.setSnackbar({
       open: true,
