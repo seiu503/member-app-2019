@@ -109,25 +109,25 @@ function appState(state = INITIAL_STATE, action) {
 
     case SET_TAB: {
       return update(state, {
-        tab: { $set: action.payload.value }
+        tab: { $set: action.payload }
       })
     }
 
     case SET_SPF: {
       return update(state, {
-        spf: { $set: action.payload.value }
+        spf: { $set: action.payload }
       })
     }
 
     case SET_EMBED: {
       return update(state, {
-        embed: { $set: action.payload.value }
+        embed: { $set: action.payload }
       })
     }
 
     case SET_USER_SELECTED_LANGUAGE: {
       return update(state, {
-        userSelectedLanguage: { $set: action.payload.value }
+        userSelectedLanguage: { $set: action.payload }
       })
     }
 
@@ -161,7 +161,7 @@ function appState(state = INITIAL_STATE, action) {
 
     case SET_IMAGE: {
         return update(state, {
-          image: { $set: { ...action.payload.value } }
+          image: { $set: action.payload }
         })
       }
 
@@ -183,13 +183,13 @@ function appState(state = INITIAL_STATE, action) {
 
     case SET_DISPLAY_CAPE_PAYMENT_FIELDS: {
         return update(state, {
-          displayCapePaymentFields: { $set: { ...action.payload.value } }
+          displayCapePaymentFields: { $set: action.payload }
         })
       }
 
     case SET_LEGAL_LANGUAGE: {
         return update(state, {
-          legalLanguage: { $set: { ...action.payload.value } }
+          legalLanguage: { $set: action.payload }
         })
       }
 
