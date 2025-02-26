@@ -42,6 +42,7 @@ let wrapper;
 
 const oldWindowLocation = window.location;
 const server = setupServer(...handlers);
+window.scrollTo = jest.fn();
 
 const handleInputMock = jest.fn();
 const handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({}));
@@ -235,7 +236,7 @@ const connectedSetup = async (props = {}, route = "/") => {
     ...defaultProps,
     ...props
   };
-  return render(
+  return await render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
@@ -247,20 +248,28 @@ const connectedSetup = async (props = {}, route = "/") => {
 };
 
 describe("<App />", () => {
+  afterAll(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
   it("renders unconnected component", async () => {
     const { getByTestId } = await setup();
-    const component = getByTestId("component-app");
-    expect(component).toBeInTheDocument();
+    const component = await getByTestId("component-app");
+    waitFor(() => {
+      expect(component).toBeInTheDocument();
+    });
   });
 
   it("renders connected component", async () => {
     const { getByTestId } = await connectedSetup();
-    const component = getByTestId("component-app");
-    expect(component).toBeInTheDocument();
+    const component = await getByTestId("component-app");
+    waitFor(() => {
+      expect(component).toBeInTheDocument();
+    });
   });
 
-  describe("componentDidMount", () => {
-    it("componentDidMount checks for browser language", async () => {
+  describe("useEffect (formerly componentDidMount)", () => {
+    it("useEffect checks for browser language", async () => {
       // add mock function to props
       utils.detectDefaultLanguage = jest.fn().mockImplementation(() => {
         return {lang: "en", other: false}
@@ -270,12 +279,14 @@ describe("<App />", () => {
       const { getByTestId } = await setup();
 
       // expect the mock to have been called once
-      expect(setActiveLanguageMock).toHaveBeenCalled();
+      waitFor(() => {
+        expect(setActiveLanguageMock).toHaveBeenCalled();
+      });
 
       // restore mock
       setActiveLanguageMock.mockRestore();
     });
-    it("componentDidMount checks for language in query string", async () => {
+    it("useEffect checks for language in query string", async () => {
       // add mock function to props
       utils.detectDefaultLanguage = jest.fn().mockImplementation(() => {
         return {lang: "en", other: false}
@@ -311,9 +322,13 @@ describe("<App />", () => {
     it("renderBodyCopy renders paragraphs matching provided body id (default copy)", async () => {
       const { getByTestId } = await setup();
       const component = getByTestId("body");
-      expect(component.children.length).toBe(3);
+      await waitFor(() =>
+        expect(component.children.length).toBe(3)
+        );
       const par0 = getByTestId("bodyCopy0_1");
-      expect(par0).toBeInTheDocument();
+      await waitFor(() =>
+        expect(par0).toBeInTheDocument()
+        );
     });
   });
 
