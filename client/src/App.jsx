@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import { renderToStaticMarkup } from "react-dom/server";
-import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
 import detector from "i18next-browser-languagedetector";
@@ -63,14 +62,14 @@ export const AppUnconnected = (props) => {
   let _isMounted = useMountedState();
 
   // refs
-  const refCaptcha = useRef();
+  // const refCaptcha = useRef();
   let language_picker = useRef();
   let main_ref = useRef();
   let legal_language = useRef();
   let cape_legal = useRef();
   let sigBox = useRef();
 
-  const recaptcha = refCaptcha;
+  // const recaptcha = refCaptcha;
   // console.log(`APP.JSX 74 APPSTATE`);
   // console.dir(props.appState);
 
@@ -108,6 +107,11 @@ export const AppUnconnected = (props) => {
     if (values.spf) {
       props.actions.setSPF(false);
     }
+
+    // append and load gRecaptcha script
+    const script = document.createElement("script")
+    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
+    document.body.appendChild(script)
 
     return () => {
         console.log("Component will unmount");
@@ -268,7 +272,9 @@ export const AppUnconnected = (props) => {
   };
 
   const onResolved = async () => {
+    console.log(`App.jsx: 271 onResolved`);
     const token = await recaptcha.current.getResponse();
+    console.log(`token: ${token}`);
     props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
@@ -908,10 +914,10 @@ export const AppUnconnected = (props) => {
       }}
     >
       <CssBaseline />
-      <Recaptcha
-        ref={refCaptcha}
-        sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-        onResolved={onResolved}
+      <div
+        className="g-recaptcha"
+        data-size="invisible"
+        data-sitekey='6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW'
       />
       {!embed && (
         <NavBar
@@ -948,7 +954,7 @@ export const AppUnconnected = (props) => {
                   legal_language={legal_language}
                   cape_legal={cape_legal}
                   sigBox={sigBox}
-                  recaptcha={refCaptcha}
+                  // recaptcha={refCaptcha}
                   onResolved={onResolved}
                   renderBodyCopy={renderBodyCopy}
                   renderHeadline={renderHeadline}

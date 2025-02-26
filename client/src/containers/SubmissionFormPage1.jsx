@@ -140,43 +140,71 @@ export const SubmissionFormPage1Container = (props) => {
   }
 
   const verifyRecaptchaScore = async () => {
-    console.log("SFP1 160 verifyRecaptchaScore");
+    console.log("SFP1 143 verifyRecaptchaScore");
 
     // set loading
     console.log("setting spinner");
     props.actions.setSpinner();
 
     // fetch token
-    await props.recaptcha.current.execute();
+    window.grecaptcha.enterprise.ready(_ => {
+      window.grecaptcha.enterprise 
+        .execute("6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW", { action: "homepage" })
+        .then(async token => {
+          console.log(`SPF1 154 token: ${token.length}`);
+          await props.apiSubmission.handleInput({
+            target: { name: "reCaptchaValue", value: token }
+          });
+          console.log(props.submission.formPage1.reCaptchaValue);
 
-    // then verify
-    const token = props.submission.formPage1.reCaptchaValue;
-    // console.log(`token: ${token}`);
-
-    // check for token every 200ms until returned to avoid race condition
-    (async () => {
-      while (!token) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-    })();
-    if (token) {
-      console.log("SFP1 175 verifyRecaptchaScore");
-      props.apiSubmission
-        .verify(token)
-        .then(result => {
-          console.log("SFP1 179 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
-          return result.payload.score;
+          if (token) {
+            console.log("SFP1 158 verifyRecaptchaScore");
+            props.apiSubmission
+              .verify(token)
+              .then(result => {
+                console.log("SFP1 162 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
+                return result.payload.score;
+              })
+              .catch(err => {
+                console.log("SPF1 166 verifyRecaptchaScore verify catch err");
+                console.error(err);
+                const rcErr = props.t("reCaptchaError");
+                return props.handleError(rcErr);
+              });
+          } else {
+            console.log("SFP1 172 verifyRecaptchaScore no token err");
+            const rcErr = props.t("reCaptchaError");
+            return props.handleError(rcErr);
+          }
         })
         .catch(err => {
-          console.error(err);
-          const rcErr = props.t("reCaptchaError");
-          return props.handleError(rcErr);
-        });
-    } else {
-      console.log("SFP1 188 verifyRecaptchaScore");
-      const rcErr = props.t("reCaptchaError");
-      return props.handleError(rcErr);
-    }
+          console.log("SFP1 178 verifyRecaptchaScore grecaptcha execute error")
+          console.log(err)
+        })
+    });
+    
+    //
+    // console.log(props.recaptcha.current);
+    // console.log(props.recaptcha.current.executeAsync);
+    // let token
+    // try {
+    //   token = await props.recaptcha.current.executeAsync();
+    // } catch(err) {
+    //   console.log(`sfp1 155: ${err}`);
+    // }
+    // await props.recaptcha.current.execute();
+
+    // then verify
+    // const token = props.submission.formPage1.reCaptchaValue;
+    // console.log(`SPF1 154 token: ${token}`);
+
+    // check for token every 200ms until returned to avoid race condition
+    // (async () => {
+    //   while (!token) {
+    //     await new Promise(resolve => setTimeout(resolve, 200));
+    //   }
+    // })();
+    
   }
 
   const saveLegalLanguage = async () => {
