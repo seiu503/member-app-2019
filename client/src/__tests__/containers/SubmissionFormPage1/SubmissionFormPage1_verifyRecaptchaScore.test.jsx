@@ -107,6 +107,8 @@ let verifyRecaptchaScoreMock = jest
 
 global.scrollTo = jest.fn();
 
+let windowSpy;
+
 const changeTabMock = jest.fn();
 
 const formValues = {
@@ -258,19 +260,18 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeAll(() => server.listen());
 
   // Reset any runtime request handlers we may add during the tests.
-  afterEach(() => server.resetHandlers());
+  afterEach(() => {
+    server.resetHandlers();
+    jest.resetAllMocks();
+    cleanup();
+  });
 
   // Disable API mocking after the tests are done.
   afterAll(() => server.close());
 
   describe("verifyRecaptchaScore", () => {
-    test("verifyRecaptchaScore calls `recaptcha.current.execute()`", async function() {
+    test("verifyRecaptchaScore calls `window.grecaptcha.enterprise.execute()`", async function() {
       const props = {
-        recaptcha: {
-          current: {
-            execute: executeMock
-          }
-        },
         appState: {
           ...defaultProps.appState,
           tab: 0
@@ -289,16 +290,32 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab1Form = getByTestId("form-tab1");
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        await fireEvent.submit(tab1Form);
+      // mock recaptcha
+      const executeMock = jest.fn().mockImplementation(() => {
+        Promise.resolve("token")
       });
+      document.addEventListener("DOMContentLoaded", async () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: executeMock
+          },
+        }));
+      
 
-      // expect handleInputMock to have been called setting `howManyTabs` to 3
-      await waitFor(() => {
-        expect(executeMock).toHaveBeenCalled();
+        const tab1Form = getByTestId("form-tab1");
+
+        // simulate submit tab1
+        await waitFor(async () => {
+          await fireEvent.submit(tab1Form);
+        });
+
+        // expect executeMock to have been called
+        await waitFor(() => {
+          expect(executeMock).toHaveBeenCalled();
+        });
+
       });
     });
     test("verifyRecaptchaScore calls `apiSubmission.verify`", async function() {
@@ -308,11 +325,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
         );
       const props = {
-        recaptcha: {
-          current: {
-            execute: executeMock
-          }
-        },
         submission: {
           formPage1: {
             reCaptchaValue: 123
@@ -339,16 +351,31 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab1Form = getByTestId("form-tab1");
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        await fireEvent.submit(tab1Form);
+      // mock recaptcha
+      const executeMock = jest.fn().mockImplementation(() => {
+        Promise.resolve("token")
       });
+      document.addEventListener("DOMContentLoaded", async () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: executeMock
+          },
+        }));
+      
+        const tab1Form = getByTestId("form-tab1");
 
-      // expect handleInputMock to have been called setting `howManyTabs` to 3
-      await waitFor(() => {
-        expect(verifySuccess).toHaveBeenCalled();
+        // simulate submit tab1
+        await waitFor(async () => {
+          await fireEvent.submit(tab1Form);
+        });
+
+        // expect handleInputMock to have been called setting `howManyTabs` to 3
+        await waitFor(() => {
+          expect(verifySuccess).toHaveBeenCalled();
+        });
+
       });
     });
     test("verifyRecaptchaScore handles error if `apiSubmission.verify` throws", async function() {
@@ -358,11 +385,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
       const props = {
         t: text => text,
         handleError: handleErrorMock,
-        recaptcha: {
-          current: {
-            execute: executeMock
-          }
-        },
         submission: {
           formPage1: {
             reCaptchaValue: 123
@@ -389,16 +411,31 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab1Form = getByTestId("form-tab1");
-
-      // simulate submit tab1
-      await waitFor(async () => {
-        await fireEvent.submit(tab1Form);
+      // mock recaptcha
+      const executeMock = jest.fn().mockImplementation(() => {
+        Promise.resolve("token")
       });
+      document.addEventListener("DOMContentLoaded", async () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: executeMock
+          },
+        }));
+      
+        const tab1Form = getByTestId("form-tab1");
 
-      // expect hadleError to have been called with 'reCaptchaError'
-      await waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
+        // simulate submit tab1
+        await waitFor(async () => {
+          await fireEvent.submit(tab1Form);
+        });
+
+        // expect hadleError to have been called with 'reCaptchaError'
+        await waitFor(() => {
+          expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
+        });
+
       });
     });
   });

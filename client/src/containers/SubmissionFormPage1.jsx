@@ -40,6 +40,11 @@ export const SubmissionFormPage1Container = (props) => {
     // console.log(`SubmFormP1Container props.history`);
     // console.log(props.history);
 
+    // append and load gRecaptcha script
+    const script = document.createElement("script")
+    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
+    document.body.appendChild(script)
+
     // check for contact & account ids in query string
     const params = queryString.parse(props.location.search);
     // console.log('**************   PARAMS   ************');
@@ -147,7 +152,8 @@ export const SubmissionFormPage1Container = (props) => {
     props.actions.setSpinner();
 
     // fetch token
-    window.grecaptcha.enterprise.ready(_ => {
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log('DOMContentLoaded');
       window.grecaptcha.enterprise 
         .execute("6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW", { action: "homepage" })
         .then(async token => {
@@ -368,21 +374,22 @@ export const SubmissionFormPage1Container = (props) => {
       try {
         await verifyRecaptchaScore()
           .then(score => {
-            // console.log(`score: ${score}`);
-            if (score <= 0.3) {
+            console.log('SFP1 handleCAPESubmit 377')
+            console.log(`score: ${score}`);
+            if (!score || score <= 0.3) {
               console.log(`recaptcha failed: ${score}`);
-              // don't return to client here, because of race condition this fails initially
-              // then passes after error is returned
-              // return props.handleError(
-              //   props.t("reCaptchaError")
-              // );
+              return props.handleError(
+                props.t("reCaptchaError")
+              );
               return;
             }
           })
           .catch(err => {
+            console.log('SFP1 handleCAPESubmit 390');
             console.error(err);
           });
       } catch (err) {
+        console.log('SFP1 handleCAPESubmit 394');
         console.error(err);
       }
     }

@@ -108,11 +108,6 @@ export const AppUnconnected = (props) => {
       props.actions.setSPF(false);
     }
 
-    // append and load gRecaptcha script
-    const script = document.createElement("script")
-    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
-    document.body.appendChild(script)
-
     return () => {
         console.log("Component will unmount");
       };
@@ -271,14 +266,14 @@ export const AppUnconnected = (props) => {
     );
   };
 
-  const onResolved = async () => {
-    console.log(`App.jsx: 271 onResolved`);
-    const token = await recaptcha.current.getResponse();
-    console.log(`token: ${token}`);
-    props.apiSubmission.handleInput({
-      target: { name: "reCaptchaValue", value: token }
-    });
-  }
+  // const onResolved = async () => {
+  //   console.log(`App.jsx: 271 onResolved`);
+  //   const token = await recaptcha.current.getResponse();
+  //   console.log(`token: ${token}`);
+  //   props.apiSubmission.handleInput({
+  //     target: { name: "reCaptchaValue", value: token }
+  //   });
+  // }
 
   const updateSubmission = async (passedId, passedUpdates, formValues) => {
     console.log("App 293 updateSubmission");
@@ -955,7 +950,7 @@ export const AppUnconnected = (props) => {
                   cape_legal={cape_legal}
                   sigBox={sigBox}
                   // recaptcha={refCaptcha}
-                  onResolved={onResolved}
+                  // onResolved={onResolved}
                   renderBodyCopy={renderBodyCopy}
                   renderHeadline={renderHeadline}
                   createSubmission={createSubmission}
