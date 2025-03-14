@@ -261,21 +261,21 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
           <CAPEForm
             {...props}
             standAlone={true}
-            newCardNeeded={true}
-            // verifyCallback={verifyCallback}
             employerTypesList={employerTypesList}
             employerList={employerList}
             updateEmployersPicklist={updateEmployersPicklist}
             classes={classes}
             loading={props.submission.loading}
             formPage1={props.submission.formPage1}
-            handleInput={props.apiSubmission.handleInput}
+            handleInput={props.submission.handleInput}
             payment={props.submission.payment}
             renderSelect={renderSelect}
             renderTextField={renderTextField}
             renderCheckbox={renderCheckbox}
             checkoff={checkoff}
             capeObject={props.submission.cape}
+            handleError={props.handleError}
+            openSnackbar={props.openSnackbar}
           />
         ) : 
 

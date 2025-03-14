@@ -437,6 +437,7 @@ export const CAPE = props => {
                 component={renderSelect}
                 style={{ width: "100%" }}
                 options={formElements.monthList}
+                short
               />
 
               <Field
@@ -449,6 +450,7 @@ export const CAPE = props => {
                 component={renderSelect}
                 style={{ width: "100%" }}
                 options={formElements.dateOptions(props)}
+                short
               />
 
               <Field
@@ -461,6 +463,7 @@ export const CAPE = props => {
                 component={renderSelect}
                 style={{ width: "100%" }}
                 options={formElements.yearOptions()}
+                short
               />
             </FormGroup>
 
@@ -604,9 +607,8 @@ export const CAPE = props => {
               sx={{
                 display: "block",
                 flexWrap: "wrap",
-                margin: "0 -1.666666666666667% 13px",
-                paddingTop: "20px",
-                marginTop: "15px",
+                margin: "0 13px 0 -1px",
+                padding: "10px 0 0 15px",
                 backgroundColor: "#FBE796"
               }}
             >
@@ -628,7 +630,10 @@ export const CAPE = props => {
                   // className={classes.horizRadio}
                   sx={{
                     display: "flex",
-                    flexDirection: "row"
+                    flexDirection: "row",
+                    textAlign: "center",
+                    width: "100%",
+                    margin: "auto"
                   }}
                   classes={classes}
                   component={formElements.renderCAPERadioGroup}
