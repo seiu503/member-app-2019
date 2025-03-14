@@ -360,6 +360,8 @@ function Submission(state = INITIAL_STATE, action) {
       }
 
     case ADD_SUBMISSION_SUCCESS:
+      // console.log(`*************`);
+      // console.log(action.payload);
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         submissionId: { $set: action.payload.submission_id },

@@ -192,6 +192,7 @@ export function createCAPE(body) {
 
 export function updateCAPE(id, body) {
   console.log("updateCAPE");
+  console.log(id);
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/cape/${id}`,

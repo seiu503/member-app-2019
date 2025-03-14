@@ -126,6 +126,7 @@ export const detectDefaultLanguage = () => {
 };
 
 export const scrollToFirstError = errors => {
+  console.log('scrollToFirstError');
   // search through errors object to find only those currently mounted in DOM
   // (some errors will be on future tabs and can't be scrolled to yet)
   if (errors) {

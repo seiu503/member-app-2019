@@ -670,7 +670,7 @@ export const SubmissionFormPage2CompFunction = props => {
                 margin: "0 0 40px"
               }}
               variant="contained"
-              loading={props.submission.loading}
+              loading={props.appState.loading.toString()}
             >
               <Trans i18nKey="submit" />
             </ButtonWithSpinner>

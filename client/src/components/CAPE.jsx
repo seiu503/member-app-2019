@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Trans } from "react-i18next";
 
 import AlertDialog from "./AlertDialog";
-import ButtonWithSpinner from "./ButtonWithSpinner";
+// import ButtonWithSpinner from "./ButtonWithSpinner";
 import * as formElements from "./SubmissionFormElements";
 import withRouter from "./ComponentWithRouterProp";
 
@@ -57,6 +57,9 @@ export const CAPE = props => {
     checkoff
   } = props;
 
+  // console.log(`loading: ${loading}`);
+  // console.log(props.handleSubmit(handleCAPESubmit));
+
   const classes = formElements.classesPage1;
   const input2col = {
     width: {
@@ -103,8 +106,14 @@ export const CAPE = props => {
         />
       )}
       <form
-        onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
+        onSubmit={props.handleSubmit(handleCAPESubmit)}
+        // onSubmit={(e) => {
+        //   e.preventDefault();
+        //   console.log('CAPE onSubmit > 111');
+        //   return props.handleSubmit(handleCAPESubmit)
+        // }}
         id="CAPE"
+        role="form"
         // className={classes.form}
         data-testid="cape-form"
       >
@@ -691,9 +700,10 @@ export const CAPE = props => {
               <Trans i18nKey="capeNewLegal8" />
             </p>
           </div>
-          <ButtonWithSpinner
+          <Button
             type="submit"
             color="primary"
+            // onClick={() => { console.log('CAPESubmitClick'); }}
             className={standAlone ? "g-recaptcha" : ""}
             sx={{
               width: "100%",
@@ -701,14 +711,14 @@ export const CAPE = props => {
               margin: "25px 0 40px"
             }}
             variant="contained"
-            loading={loading}
+            // loading={loading}
             data-sitekey="6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
             // data-callback={verifyCallback}
             data-testid="button-submit"
             aria-label="Submit"
           >
             <Trans i18nKey="submitButton">Submit</Trans>
-          </ButtonWithSpinner>
+          </Button>
         </div>
         {!standAlone && (
           <Box
@@ -769,7 +779,7 @@ CAPE.propTypes = {
   onSubmit: PropTypes.func,
   classes: PropTypes.object,
   // verifyCallback: PropTypes.func,
-  loading: PropTypes.bool,
+  // loading: PropTypes.bool, // getting an error when this is bool instead of string??
   pristine: PropTypes.bool,
   invalid: PropTypes.bool
 };

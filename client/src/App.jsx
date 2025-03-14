@@ -293,7 +293,7 @@ export const AppUnconnected = (props) => {
     // const updates = passedUpdates ? passedUpdates : pmtUpdates;
 
     if (passedUpdates.hire_date) {
-      let hireDate = moment(new Date(updates.hire_date));
+      let hireDate = moment(new Date(passedUpdates.hire_date));
       if (hireDate.isValid()) {
         passedUpdates.hire_date = formatSFDate(hireDate);
         console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
@@ -665,24 +665,27 @@ export const AppUnconnected = (props) => {
     // console.log(body);
     const cleanBody = removeFalsy(body);
     // console.log(cleanBody);
-    await props.apiSubmission
-      .addSubmission(cleanBody)
-      .then(result => {
-        if (
-          result.type !== "ADD_SUBMISSION_SUCCESS" ||
-          props.submission.error
-        ) {
-          const err =
-            props.submission.error ||
-            "An error occurred while saving your Submission";
-          console.error(err);
-          return handleError(err);
-        }
-      })
-      .catch(err => {
+    const result = await props.apiSubmission
+      .addSubmission(cleanBody);
+
+    // console.log("App 671 createSubmission > apiSubmission.addSubmission");
+    // console.log(result.type);
+    // console.log(result.payload);
+
+    // not sure why this isn't writing to redux, storing it temporarily here instead?
+    const submissionId = result.payload.submission_id;
+    console.log(`submissionId: ${submissionId}`);
+
+    if (
+      !result || result.type !== "ADD_SUBMISSION_SUCCESS" ||
+      props.submission.error
+      ) {
+        const err =
+          props.submission.error ||
+          "An error occurred while saving your Submission";
         console.error(err);
         return handleError(err);
-      });
+      }
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
@@ -706,7 +709,7 @@ export const AppUnconnected = (props) => {
     return props.apiSF
       .createSFOMA(body)
       .then(async result => {
-        console.log("App 728 createSubmission");
+        console.log("App 728 createSubmission > apiSF.createSFOMA");
         console.log(result.type);
         console.log(`submission errors: ${props.submission.error}`);
         if (
@@ -714,7 +717,7 @@ export const AppUnconnected = (props) => {
           props.submission.error
         ) {
           saveSubmissionErrors(
-            props.submission.submissionId,
+            submissionId,
             "createSFOMA",
             props.submission.error
           );
@@ -729,11 +732,14 @@ export const AppUnconnected = (props) => {
 
           // update submission status and redirect to CAPE tab
           console.log("updating submission status");
+          console.log(`submissionId: ${submissionId}`);
           props.apiSubmission
-            .updateSubmission(props.submission.submissionId, {
+            .updateSubmission(submissionId, {
               submission_status: "Success"
             })
             .then(async result => {
+              console.log("App 737 createSubmission > apiSubmission.updateSubmission");
+              console.log(result.type);
               if (
                 result.type === "UPDATE_SUBMISSION_FAILURE" ||
                 props.submission.error
@@ -754,7 +760,7 @@ export const AppUnconnected = (props) => {
       })
       .catch(err => {
         saveSubmissionErrors(
-          props.submission.submissionId,
+          submissionId,
           "createSFOMA",
           err
         );

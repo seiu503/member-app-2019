@@ -256,29 +256,28 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
         data-testid="component-submissionformpage1"
         sx={props.appState.embed ? formContainerEmbed : formContainer}
       >
-        {values.cape ? (
+        {values.cape || tab === 2 ? (
           <CAPEForm
             {...props}
-            standAlone={true}
-            newCardNeeded={true}
-            // verifyCallback={verifyCallback}
+            standAlone={values.cape}
             employerTypesList={employerTypesList}
             employerList={employerList}
             updateEmployersPicklist={updateEmployersPicklist}
             classes={classes}
-            loading={props.submission.loading}
+            loading={props.appState.loading.toString()}
             formPage1={props.submission.formPage1}
-            handleInput={props.apiSubmission.handleInput}
+            handleInput={props.submission.handleInput}
             payment={props.submission.payment}
             renderSelect={renderSelect}
             renderTextField={renderTextField}
             renderCheckbox={renderCheckbox}
             checkoff={checkoff}
             capeObject={props.submission.cape}
+            handleError={props.handleError}
+            openSnackbar={props.openSnackbar}
           />
-        ) : 
-
-        spf && tab !== 2 ? (
+          ) :
+        (
           <SinglePageForm
             {...props}
             onSubmit={() => {
@@ -298,88 +297,6 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
             openSnackbar={props.openSnackbar}
             prefillValues={props.submission.prefillValues}
           />
-        ) :
-        (
-          <>
-            {typeof tab !== "number" && (
-              <WelcomeInfo
-                location={props.location}
-                history={props.history}
-                handleTab={props.handleTab}
-                renderBodyCopy={props.renderBodyCopy}
-                renderHeadline={props.renderHeadline}
-                handleError={props.handleError}
-                openSnackbar={props.openSnackbar}
-                style={
-                  typeof tab !== "number"
-                    ? { display: "block" }
-                    : { display: "none" }
-                }
-              />
-            )}
-
-            {tab >= 0 && (
-              <div
-                style={
-                  tab >= 0
-                    ? { display: "block" }
-                    : { display: "none" }
-                }
-              >
-              {/*  <NavTabs {...props} /> */}
-                {tab === 0 && (
-                  <Tab1Form
-                    {...props}
-                    onSubmit={() => {
-                      props.handleTab(1);
-                      return false;
-                    }}
-                    // verifyCallback={verifyCallback}
-                    classes={classes}
-                    employerTypesList={employerTypesList}
-                    employerList={employerList}
-                    handleInput={props.apiSubmission.handleInput}
-                    updateEmployersPicklist={updateEmployersPicklist}
-                    renderSelect={renderSelect}
-                    renderTextField={renderTextField}
-                    renderCheckbox={renderCheckbox}
-                    handleError={props.handleError}
-                    openSnackbar={props.openSnackbar}
-                  />
-                )}
-                {tab === 1 && !spf && (
-                  <Tab2Form
-                    {...props}
-                    onSubmit={() => props.handleTab(2)}
-                    classes={classes}
-                    handleInput={props.apiSubmission.handleInput}
-                    renderSelect={renderSelect}
-                    renderTextField={renderTextField}
-                    renderCheckbox={renderCheckbox}
-                    handleError={props.handleError}
-                    openSnackbar={props.openSnackbar}
-                  />
-                )}
-                {tab === 2 && (
-                  <CAPEForm
-                    {...props}
-                    classes={classes}
-                    loading={props.submission.loading}
-                    formPage1={props.submission.formPage1}
-                    handleInput={props.submission.handleInput}
-                    payment={props.submission.payment}
-                    renderSelect={renderSelect}
-                    renderTextField={renderTextField}
-                    renderCheckbox={renderCheckbox}
-                    checkoff={checkoff}
-                    capeObject={props.submission.cape}
-                    handleError={props.handleError}
-                    openSnackbar={props.openSnackbar}
-                  />
-                )}
-              </div>
-            )}
-          </>
         )}
       </Box>
     );

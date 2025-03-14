@@ -360,21 +360,29 @@ export const SubmissionFormPage1Container = (props) => {
         console.log(props.submission.error);
         return props.handleError(props.submission.error);
       }
+
+      return capeResult;
     } else {
       console.log("no CAPE body generated");
     }
   }
 
-  const handleCAPESubmit = async (standAlone) => {
+  const handleCAPESubmit = async () => {
+    console.log("setting spinner");
+    props.actions.setSpinner();
+    const params = queryString.parse(props.location.search);
+    console.log(params);
+    const standAlone = params.cape;
     console.log("handleCAPESubmit", standAlone);
     const { formValues } = props;
     console.dir(formValues);
     if (standAlone) {
+      console.log(`standAlone, verifying recaptcha`);
       // verify recaptcha score
       try {
         await verifyRecaptchaScore()
           .then(score => {
-            console.log('SFP1 handleCAPESubmit 377')
+            console.log('SFP1 handleCAPESubmit 385')
             console.log(`score: ${score}`);
             if (!score || score <= 0.3) {
               console.log(`recaptcha failed: ${score}`);
@@ -385,11 +393,11 @@ export const SubmissionFormPage1Container = (props) => {
             }
           })
           .catch(err => {
-            console.log('SFP1 handleCAPESubmit 390');
+            console.log('SFP1 handleCAPESubmit 396');
             console.error(err);
           });
       } catch (err) {
-        console.log('SFP1 handleCAPESubmit 394');
+        console.log('SFP1 handleCAPESubmit 400');
         console.error(err);
       }
     }
@@ -397,7 +405,7 @@ export const SubmissionFormPage1Container = (props) => {
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
     if (!formValues.capeAmount && !formValues.capeAmountOther) {
-      // console.log("no donation amount chosen: 360");
+      // console.log("no donation amount chosen: 408");
       props.actions.setDisplayCapePaymentFields(true);
       return props.handleError(props.t("donationAmountError"));
         console.log(props.appState.displayCAPEPaymentFields);
@@ -450,17 +458,23 @@ export const SubmissionFormPage1Container = (props) => {
       cape_status = "Error";
     }
 
+    // capeId not writing to redux either??? not sure why but storing it temporarily here until it's fixed
+    let capeId;
+
     await createCAPE(formValues.capeAmount, formValues.capeAmountOther)
       .then(result => {
         console.log("421");
         console.log(result);
+        capeId = result.payload.cape_id;
+        console.log(`capeId: ${capeId}`);
       })
       .catch(err => {
         console.error(err);
         return props.handleError(err);
       });
 
-    const { id } = props.submission.cape;
+    // this isn't working??  
+    // const { id } = props.submission.cape;
 
     // collect updates to cape record (values returned from other API calls,
     // amount and frequency)
@@ -477,7 +491,7 @@ export const SubmissionFormPage1Container = (props) => {
     console.log(updates);
     // update CAPE record in postgres
     await props.apiSubmission
-      .updateCAPE(id, updates)
+      .updateCAPE(capeId, updates)
       .then(result => {
         console.log(result);
       })
