@@ -359,6 +359,8 @@ export const SubmissionFormPage1Container = (props) => {
       ) {
         console.log(props.submission.error);
         return props.handleError(props.submission.error);
+      } else {
+        return capeResult;
       }
     } else {
       console.log("no CAPE body generated");
@@ -450,17 +452,19 @@ export const SubmissionFormPage1Container = (props) => {
       cape_status = "Error";
     }
 
+    let capeId;
     await createCAPE(formValues.capeAmount, formValues.capeAmountOther)
       .then(result => {
         console.log("421");
         console.log(result);
+        capeId = result.payload.cape_id;
       })
       .catch(err => {
         console.error(err);
         return props.handleError(err);
       });
 
-    const { id } = props.submission.cape;
+    // const { id } = props.submission.cape;
 
     // collect updates to cape record (values returned from other API calls,
     // amount and frequency)
@@ -477,7 +481,7 @@ export const SubmissionFormPage1Container = (props) => {
     console.log(updates);
     // update CAPE record in postgres
     await props.apiSubmission
-      .updateCAPE(id, updates)
+      .updateCAPE(capeId, updates)
       .then(result => {
         console.log(result);
       })

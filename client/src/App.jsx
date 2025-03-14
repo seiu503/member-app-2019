@@ -293,7 +293,7 @@ export const AppUnconnected = (props) => {
     // const updates = passedUpdates ? passedUpdates : pmtUpdates;
 
     if (passedUpdates.hire_date) {
-      let hireDate = moment(new Date(updates.hire_date));
+      let hireDate = moment(new Date(passedUpdates.hire_date));
       if (hireDate.isValid()) {
         passedUpdates.hire_date = formatSFDate(hireDate);
         console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
@@ -665,6 +665,9 @@ export const AppUnconnected = (props) => {
     // console.log(body);
     const cleanBody = removeFalsy(body);
     // console.log(cleanBody);
+
+    let submissionId;
+
     await props.apiSubmission
       .addSubmission(cleanBody)
       .then(result => {
@@ -677,6 +680,9 @@ export const AppUnconnected = (props) => {
             "An error occurred while saving your Submission";
           console.error(err);
           return handleError(err);
+        } else {
+          submissionId = result.payload.submission_id;
+          console.log(`submissionId: ${submissionId}`);
         }
       })
       .catch(err => {
@@ -714,7 +720,7 @@ export const AppUnconnected = (props) => {
           props.submission.error
         ) {
           saveSubmissionErrors(
-            props.submission.submissionId,
+            submissionId,
             "createSFOMA",
             props.submission.error
           );
@@ -730,7 +736,7 @@ export const AppUnconnected = (props) => {
           // update submission status and redirect to CAPE tab
           console.log("updating submission status");
           props.apiSubmission
-            .updateSubmission(props.submission.submissionId, {
+            .updateSubmission(submissionId, {
               submission_status: "Success"
             })
             .then(async result => {
@@ -754,7 +760,7 @@ export const AppUnconnected = (props) => {
       })
       .catch(err => {
         saveSubmissionErrors(
-          props.submission.submissionId,
+          submissionId,
           "createSFOMA",
           err
         );

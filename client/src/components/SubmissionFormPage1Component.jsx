@@ -153,40 +153,41 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
 
   // called from createSubmission in App.jsx > 726
   // ^^ createSubmission is called from handleTab2 in SubmissionFormPage1.jsx > 511
-  const createSFOMA = async () => {
-    console.log("createSFOMA");
-    props.actions.setSpinner();
-    const { formValues } = props;
-    const body = await props.generateSubmissionBody(formValues);
-    body.Worker__c = props.submission.salesforceId;
-    props.apiSF
-      .createSFOMA(body)
-      .then(result => {
-        // console.log(result.type);
-        if (
-          result.type === "CREATE_SF_OMA_FAILURE" ||
-          props.submission.error
-        ) {
-          // console.log(props.submission.error);
-          props.saveSubmissionErrors(
-            props.submission.submissionId,
-            "createSFOMA",
-            props.submission.error
-          );
-          console.error(props.submission.error);
-          return props.handleError(props.submission.error);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        props.saveSubmissionErrors(
-          props.submission.submissionId,
-          "createSFOMA",
-          err
-        );
-        return props.handleError(err);
-      });
-  }
+  // don't think this method is ever called, App.jsx calls apiSF action directly
+  // const createSFOMA = async (submissionId) => {
+  //   console.log("createSFOMA");
+  //   props.actions.setSpinner();
+  //   const { formValues } = props;
+  //   const body = await props.generateSubmissionBody(formValues);
+  //   body.Worker__c = props.submission.salesforceId;
+  //   props.apiSF
+  //     .createSFOMA(body)
+  //     .then(result => {
+  //       // console.log(result.type);
+  //       if (
+  //         result.type === "CREATE_SF_OMA_FAILURE" ||
+  //         props.submission.error
+  //       ) {
+  //         // console.log(props.submission.error);
+  //         props.saveSubmissionErrors(
+  //           submissionId,
+  //           "createSFOMA",
+  //           props.submission.error
+  //         );
+  //         console.error(props.submission.error);
+  //         return props.handleError(props.submission.error);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //       props.saveSubmissionErrors(
+  //         submissionId,
+  //         "createSFOMA",
+  //         err
+  //       );
+  //       return props.handleError(err);
+  //     });
+  // }
 
     // render variables 
     const { classes } = props;
