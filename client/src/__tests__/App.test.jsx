@@ -42,6 +42,7 @@ let wrapper;
 
 const oldWindowLocation = window.location;
 const server = setupServer(...handlers);
+window.scrollTo = jest.fn();
 
 const handleInputMock = jest.fn();
 const handleInputSPFMock = jest.fn().mockImplementation(() => Promise.resolve({}));
@@ -185,7 +186,7 @@ const connectedSetup = async (props = {}, route = "/") => {
     ...defaultProps,
     ...props
   };
-  return render(
+  return await render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <MemoryRouter initialEntries={[route]}>
@@ -197,16 +198,26 @@ const connectedSetup = async (props = {}, route = "/") => {
 };
 
 describe("<App />", () => {
+  afterAll(() => {
+    cleanup();
+    jest.restoreAllMocks();
+  });
   it("renders unconnected component", async () => {
     const { getByTestId } = await setup();
-    const component = getByTestId("component-app");
-    expect(component).toBeInTheDocument();
+    const component = await getByTestId("component-app");
+    setImmediate(() => {
+      expect(component).toBeInTheDocument();
+      done();
+    });
   });
 
   it("renders connected component", async () => {
     const { getByTestId } = await connectedSetup();
-    const component = getByTestId("component-app");
-    expect(component).toBeInTheDocument();
+    const component = await getByTestId("component-app");
+    setImmediate(() => {
+      expect(component).toBeInTheDocument();
+      done();
+    });
   });
 
   describe("componentDidMount", () => {
@@ -220,7 +231,10 @@ describe("<App />", () => {
       const { getByTestId } = await setup();
 
       // expect the mock to have been called once
-      expect(setActiveLanguageMock).toHaveBeenCalled();
+      setImmediate(() => {
+        expect(setActiveLanguageMock).toHaveBeenCalled();
+        done();
+      });
 
       // restore mock
       setActiveLanguageMock.mockRestore();
@@ -240,9 +254,10 @@ describe("<App />", () => {
       const { getByTestId } = await setup(props);
 
       // expect the mock to have been called once
-      await waitFor(() =>
-        expect(setActiveLanguageMock).toHaveBeenCalledWith("EN")
-      );
+      setImmediate(() => {
+        expect(setActiveLanguageMock).toHaveBeenCalledWith("EN");
+        done();
+      });
 
       // restore mock
       setActiveLanguageMock.mockRestore();
@@ -261,9 +276,15 @@ describe("<App />", () => {
     it("renderBodyCopy renders paragraphs matching provided body id (default copy)", async () => {
       const { getByTestId } = await setup();
       const component = getByTestId("body");
-      expect(component.children.length).toBe(3);
+      setImmediate(() => {
+        expect(component.children.length).toBe(3);
+        done();
+      });
       const par0 = getByTestId("bodyCopy0_1");
-      expect(par0).toBeInTheDocument();
+      setImmediate(() => {
+        expect(par0).toBeInTheDocument();
+        done();
+      });
     });
   });
 

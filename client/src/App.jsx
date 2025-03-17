@@ -73,7 +73,6 @@ export class AppUnconnected extends Component {
         message: null
       }
     };
-    this.onResolved = this.onResolved.bind(this);
     this.createSubmission = this.createSubmission.bind(this);
     this.updateSubmission = this.updateSubmission.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
@@ -87,16 +86,11 @@ export class AppUnconnected extends Component {
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
     this.setSPF = this.setSPF.bind(this);
-    // this.recaptcha = refCaptcha;
   }
 
   async componentDidMount() {
     // console.log(`APP this.props.classes`);
     // console.log(this.props);
-
-    const script = document.createElement("script")
-    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
-    document.body.appendChild(script)
 
     this._isMounted = true;
 
@@ -292,14 +286,14 @@ export class AppUnconnected extends Component {
     );
   };
 
-  async onResolved() {
-    console.log(`App.jsx: 296 onResolved`);
-    const token = await this.recaptcha.current.getResponse();
-    console.log(`token: ${token}`);
-    this.props.apiSubmission.handleInput({
-      target: { name: "reCaptchaValue", value: token }
-    });
-  }
+  // async onResolved() {
+  //   console.log(`App.jsx: 296 onResolved`);
+  //   const token = await this.recaptcha.current.getResponse();
+  //   console.log(`token: ${token}`);
+  //   this.props.apiSubmission.handleInput({
+  //     target: { name: "reCaptchaValue", value: token }
+  //   });
+  // }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
     console.log("App 293 updateSubmission");
@@ -988,7 +982,7 @@ export class AppUnconnected extends Component {
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}
                     // recaptcha={refCaptcha}
-                    onResolved={this.onResolved}
+                    // onResolved={this.onResolved}
                     headline={this.state.headline}
                     body={this.state.body}
                     image={this.state.image}

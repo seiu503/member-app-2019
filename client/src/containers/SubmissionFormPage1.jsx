@@ -50,6 +50,12 @@ export class SubmissionFormPage1Container extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
+
+    // append and load gRecaptcha script
+    const script = document.createElement("script")
+    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
+    document.body.appendChild(script)
+
     // console.log(`SubmFormP1Container this.props.location`);
     // console.log(this.props.location);
     // console.log(`SubmFormP1Container this.props.history`);
@@ -185,7 +191,8 @@ export class SubmissionFormPage1Container extends React.Component {
     this.props.actions.setSpinner();
 
     // fetch token
-     window.grecaptcha.enterprise.ready(_ => {
+     document.addEventListener("DOMContentLoaded", () => {
+      console.log('DOMContentLoaded');
        window.grecaptcha.enterprise 
         .execute("6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW", { action: "homepage" })
         .then(async token => {
@@ -384,11 +391,12 @@ export class SubmissionFormPage1Container extends React.Component {
       try {
         await this.verifyRecaptchaScore()
           .then(score => {
-            // console.log(`score: ${score}`);
-            if (score <= 0.3) {
-              console.log(`recaptcha failed: ${score}`);
+            console.log('SFP1 handleCAPESubmit 396')
+            console.log(`score: ${score}`);
+            if (!score || score <= 0.3) {
+              console.error(`recaptcha failed: ${score}`);
               // don't return to client here, because of race condition this fails initially
-              // then passes after error is returned
+              // then passes after error is returned -- just log to console
               // return this.props.handleError(
               //   this.props.t("reCaptchaError")
               // );
@@ -396,9 +404,11 @@ export class SubmissionFormPage1Container extends React.Component {
             }
           })
           .catch(err => {
+            console.log('SFP1 handleCAPESubmit 407');
             console.error(err);
           });
       } catch (err) {
+        console.log('SFP1 handleCAPESubmit 411');
         console.error(err);
       }
     }
