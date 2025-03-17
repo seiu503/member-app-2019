@@ -314,7 +314,7 @@ export class AppUnconnected extends Component {
     // const updates = passedUpdates ? passedUpdates : pmtUpdates;
 
     if (passedUpdates.hire_date) {
-      let hireDate = moment(new Date(updates.hire_date));
+      let hireDate = moment(new Date(passedUpdates.hire_date));
       if (hireDate.isValid()) {
         passedUpdates.hire_date = formatSFDate(hireDate);
         console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);

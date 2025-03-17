@@ -440,6 +440,7 @@ export const CAPE = props => {
                 component={renderSelect}
                 style={{ width: "100%" }}
                 options={formElements.monthList}
+                short
               />
 
               <Field
@@ -452,6 +453,7 @@ export const CAPE = props => {
                 component={renderSelect}
                 style={{ width: "100%" }}
                 options={formElements.dateOptions(props)}
+                short
               />
 
               <Field
@@ -464,6 +466,7 @@ export const CAPE = props => {
                 component={renderSelect}
                 style={{ width: "100%" }}
                 options={formElements.yearOptions()}
+                short
               />
             </FormGroup>
 
