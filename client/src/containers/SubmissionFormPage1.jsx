@@ -178,44 +178,50 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("SFP1 160 verifyRecaptchaScore");
+    console.log("SFP1 181 verifyRecaptchaScore");
 
     // set loading
     console.log("setting spinner");
     this.props.actions.setSpinner();
 
     // fetch token
-    await this.props.recaptcha.current.execute();
+     window.grecaptcha.enterprise.ready(_ => {
+       window.grecaptcha.enterprise 
+        .execute("6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW", { action: "homepage" })
+        .then(async token => {
+          console.log(`SPF1 192 token: ${token.length}`);
+          await this.props.apiSubmission.handleInput({
+            target: { name: "reCaptchaValue", value: token }
+          });
+          console.log(this.props.submission.formPage1.reCaptchaValue.length);
 
-    // then verify
-    const token = this.props.submission.formPage1.reCaptchaValue;
-    // console.log(`token: ${token}`);
-
-    // check for token every 200ms until returned to avoid race condition
-    (async () => {
-      while (!token) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-    })();
-    if (token) {
-      console.log("SFP1 175 verifyRecaptchaScore");
-      this.props.apiSubmission
-        .verify(token)
-        .then(result => {
-          console.log("SFP1 179 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
-          return result.payload.score;
+          // then verify
+          if (token) {
+            console.log("SFP1 198 verifyRecaptchaScore");
+            this.props.apiSubmission
+              .verify(token)
+              .then(result => {
+                console.log("SFP1 202 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
+                return result.payload.score;
+              })
+              .catch(err => {
+                console.log("SPF1 206 verifyRecaptchaScore verify catch err");
+                console.error(err);
+                const rcErr = this.props.t("reCaptchaError");
+                return this.props.handleError(rcErr);
+               });
+           } else {
+            console.log("SFP1 212 verifyRecaptchaScore no token err");
+            const rcErr = this.props.t("reCaptchaError");
+            return this.props.handleError(rcErr);
+          }
         })
         .catch(err => {
-          console.error(err);
-          const rcErr = this.props.t("reCaptchaError");
-          return this.props.handleError(rcErr);
-        });
-    } else {
-      console.log("SFP1 188 verifyRecaptchaScore");
-      const rcErr = this.props.t("reCaptchaError");
-      return this.props.handleError(rcErr);
-    }
-  }
+          console.log("SFP1 218 verifyRecaptchaScore grecaptcha execute error")
+          console.log(err)
+        })
+    });
+   };
 
   async saveLegalLanguage() {
     console.log('SFP1 195 saveLegalLanguage start');

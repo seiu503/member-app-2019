@@ -700,7 +700,7 @@ export const CAPE = props => {
           <ButtonWithSpinner
             type="submit"
             color="primary"
-            className={standAlone ? "g-recaptcha" : ""}
+            // className={standAlone ? "g-recaptcha" : ""}
             sx={{
               width: "100%",
               padding: "20px",
@@ -708,7 +708,7 @@ export const CAPE = props => {
             }}
             variant="contained"
             loading={loading}
-            data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+            data-sitekey="6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
             // data-callback={verifyCallback}
             data-testid="button-submit"
             aria-label="Submit"

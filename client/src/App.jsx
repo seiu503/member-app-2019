@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import { renderToStaticMarkup } from "react-dom/server";
-import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
 import detector from "i18next-browser-languagedetector";
@@ -40,7 +39,7 @@ import SamplePhoto from "./img/sample-form-photo.jpg";
 
 import welcomeInfo from "./translations/welcomeInfo.json";
 
-const refCaptcha = React.createRef();
+// const refCaptcha = React.createRef();
 
 const styles = {};
 
@@ -88,12 +87,16 @@ export class AppUnconnected extends Component {
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
     this.setSPF = this.setSPF.bind(this);
-    this.recaptcha = refCaptcha;
+    // this.recaptcha = refCaptcha;
   }
 
   async componentDidMount() {
     // console.log(`APP this.props.classes`);
     // console.log(this.props);
+
+    const script = document.createElement("script")
+    script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
+    document.body.appendChild(script)
 
     this._isMounted = true;
 
@@ -290,7 +293,9 @@ export class AppUnconnected extends Component {
   };
 
   async onResolved() {
+    console.log(`App.jsx: 296 onResolved`);
     const token = await this.recaptcha.current.getResponse();
+    console.log(`token: ${token}`);
     this.props.apiSubmission.handleInput({
       target: { name: "reCaptchaValue", value: token }
     });
@@ -937,10 +942,10 @@ export class AppUnconnected extends Component {
         }}
       >
         <CssBaseline />
-        <Recaptcha
-          ref={refCaptcha}
-          sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-          onResolved={this.onResolved}
+        <div
+          className="g-recaptcha"
+          data-size="invisible"
+          data-sitekey='6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW'
         />
         {!embed && (
           <NavBar
@@ -982,7 +987,7 @@ export class AppUnconnected extends Component {
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}
-                    recaptcha={refCaptcha}
+                    // recaptcha={refCaptcha}
                     onResolved={this.onResolved}
                     headline={this.state.headline}
                     body={this.state.body}
