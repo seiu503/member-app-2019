@@ -390,6 +390,8 @@ function Submission(state = INITIAL_STATE, action) {
 
     case CREATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_SUCCESS:
+      console.log('CREATE or UPATE SF CONTACT submission.js 393');
+      console.log(action.payload.salesforce_id);
       return update(state, {
         salesforceId: { $set: action.payload.salesforce_id },
         error: { $set: null }

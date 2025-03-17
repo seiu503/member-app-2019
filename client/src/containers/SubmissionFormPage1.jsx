@@ -29,6 +29,7 @@ import Modal from "../components/Modal";
 export const SubmissionFormPage1Container = (props) => {
 
   let _isMounted = false;
+  let _DOMLoaded = false;
 
   useEffect(() => {
     // previously componentDidMount
@@ -44,6 +45,11 @@ export const SubmissionFormPage1Container = (props) => {
     const script = document.createElement("script")
     script.src = "https://www.google.com/recaptcha/enterprise.js?render=6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
     document.body.appendChild(script)
+
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log('DOMContentLoaded');
+      _DOMLoaded = true;
+    });
 
     // check for contact & account ids in query string
     const params = queryString.parse(props.location.search);
@@ -153,7 +159,8 @@ export const SubmissionFormPage1Container = (props) => {
 
     // fetch token
     document.addEventListener("DOMContentLoaded", () => {
-      console.log('DOMContentLoaded');
+    // if (_DOMLoaded) {
+      console.log('DOMContentLoaded ');
       window.grecaptcha.enterprise 
         .execute("6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW", { action: "homepage" })
         .then(async token => {
@@ -187,6 +194,10 @@ export const SubmissionFormPage1Container = (props) => {
           console.log("SFP1 178 verifyRecaptchaScore grecaptcha execute error")
           console.log(err)
         })
+      // } else {
+      //   console.log('DOM not loaded, cant run grecaptcha verify script');
+      // }
+      
     });
     
     //
@@ -367,8 +378,10 @@ export const SubmissionFormPage1Container = (props) => {
     }
   }
 
-  const handleCAPESubmit = async (standAlone) => {
-    console.log("handleCAPESubmit", standAlone);
+  const handleCAPESubmit = async () => {
+    console.log("handleCAPESubmit");
+    const standAlone = props.appState.standAloneCAPE;
+    console.log(`standAlone: ${standAlone}`);
     const { formValues } = props;
     console.dir(formValues);
     if (standAlone) {

@@ -20,9 +20,21 @@ const { employerTypeMap, getKeyByValue } = formElements;
 
 export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
 
+  let params;
+
   useEffect(() => {
     // previously componentDidMount
     // console.log("Component is mounted");
+
+    params = queryString.parse(props.location.search);
+    // console.log(`################# query params #################`)
+    // console.log(values);
+    // console.log(props);
+    if (params.cape) {
+      props.actions.setStandAloneCAPE();
+      props.actions.setTab(2);
+    }
+
     // API call to SF to populate employers picklist
     async function fetchData() {
       props.apiSF
@@ -151,58 +163,17 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
     }
   };
 
-  // called from createSubmission in App.jsx > 726
-  // ^^ createSubmission is called from handleTab2 in SubmissionFormPage1.jsx > 511
-  // don't think this method is ever called, App.jsx calls apiSF action directly
-  // const createSFOMA = async (submissionId) => {
-  //   console.log("createSFOMA");
-  //   props.actions.setSpinner();
-  //   const { formValues } = props;
-  //   const body = await props.generateSubmissionBody(formValues);
-  //   body.Worker__c = props.submission.salesforceId;
-  //   props.apiSF
-  //     .createSFOMA(body)
-  //     .then(result => {
-  //       // console.log(result.type);
-  //       if (
-  //         result.type === "CREATE_SF_OMA_FAILURE" ||
-  //         props.submission.error
-  //       ) {
-  //         // console.log(props.submission.error);
-  //         props.saveSubmissionErrors(
-  //           submissionId,
-  //           "createSFOMA",
-  //           props.submission.error
-  //         );
-  //         console.error(props.submission.error);
-  //         return props.handleError(props.submission.error);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       console.error(err);
-  //       props.saveSubmissionErrors(
-  //         submissionId,
-  //         "createSFOMA",
-  //         err
-  //       );
-  //       return props.handleError(err);
-  //     });
-  // }
-
     // render variables 
     const { classes } = props;
     const employerTypesList = loadEmployersPicklist() || [
       { Name: "", Sub_Division__c: "" }
     ];
     const employerList = updateEmployersPicklist() || [""];
-    const values = queryString.parse(props.location.search);
-    // console.log(`################# query params #################`)
-    // console.log(values);
-    // console.log(props);
+    
     const checkoff = props.submission.formPage1.checkoff;
     const { spf, tab } = props.appState;
 
-    // console.log(`tab SFP1C 203: ${tab}`);
+    // console.log(`tab SFP1C 209: ${tab}`);
     // console.dir(props.appState);
     const formContainer = {
       display: "flex",
@@ -257,34 +228,35 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
         data-testid="component-submissionformpage1"
         sx={props.appState.embed ? formContainerEmbed : formContainer}
       >
-        {values.cape ? (
-          <CAPEForm
-            {...props}
-            standAlone={true}
-            employerTypesList={employerTypesList}
-            employerList={employerList}
-            updateEmployersPicklist={updateEmployersPicklist}
-            classes={classes}
-            loading={props.submission.loading}
-            formPage1={props.submission.formPage1}
-            handleInput={props.submission.handleInput}
-            payment={props.submission.payment}
-            renderSelect={renderSelect}
-            renderTextField={renderTextField}
-            renderCheckbox={renderCheckbox}
-            checkoff={checkoff}
-            capeObject={props.submission.cape}
-            handleError={props.handleError}
-            openSnackbar={props.openSnackbar}
-          />
-        ) : 
+        {// params.cape ? (
+          // <CAPEForm
+          //   {...props}
+          //   standAlone={true}
+          //   employerTypesList={employerTypesList}
+          //   employerList={employerList}
+          //   updateEmployersPicklist={updateEmployersPicklist}
+          //   classes={classes}
+          //   loading={props.submission.loading}
+          //   formPage1={props.submission.formPage1}
+          //   handleInput={props.submission.handleInput}
+          //   payment={props.submission.payment}
+          //   renderSelect={renderSelect}
+          //   renderTextField={renderTextField}
+          //   renderCheckbox={renderCheckbox}
+          //   checkoff={checkoff}
+          //   capeObject={props.submission.cape}
+          //   handleError={props.handleError}
+          //   openSnackbar={props.openSnackbar}
+          // />
+        // ) : 
 
         spf && tab !== 2 ? (
           <SinglePageForm
             {...props}
-            onSubmit={() => {
+            onSubmit={(e) => {
+              // e.preventDefault();
               props.handleTab(1);
-              return false;
+              return false; /// ?????
             }}
             // verifyCallback={verifyCallback}
             classes={classes}
@@ -364,6 +336,11 @@ export const SubmissionFormPage1Component = React.forwardRef((props, ref) => {
                 {tab === 2 && (
                   <CAPEForm
                     {...props}
+                    handleCAPESubmit={props.handleCAPESubmit}
+                    standAlone={props.appState.standAloneCAPE}
+                    employerTypesList={employerTypesList}
+                    employerList={employerList}
+                    updateEmployersPicklist={updateEmployersPicklist}
                     classes={classes}
                     loading={props.submission.loading}
                     formPage1={props.submission.formPage1}

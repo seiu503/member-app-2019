@@ -243,7 +243,8 @@ const defaultProps = {
     setOpen: jest.fn(),
     setCapeOpen: jest.fn(),
     setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
+    setDisplayCapePaymentFields: jest.fn(),
+    setStandAloneCAPE: jest.fn()
   },
   t: jest.fn(),
   cape_legal: {
@@ -473,8 +474,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         displayCAPEPaymentFields: true,
         verifyRecaptchaScore: verifyRecaptchaScoreMock,
         history: {},
-        navigate,
-        
+        navigate
       };
 
       // setup

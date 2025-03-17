@@ -15,7 +15,8 @@ import {
   SET_OPEN,
   SET_CAPE_OPEN,
   SET_LEGAL_LANGUAGE,
-  SET_DISPLAY_CAPE_PAYMENT_FIELDS
+  SET_DISPLAY_CAPE_PAYMENT_FIELDS,
+  SET_STANDALONE_CAPE
 } from "../actions";
 
 import {
@@ -73,6 +74,7 @@ export const INITIAL_STATE = {
   loading: false,
   userType: "",
   tab: undefined,
+  standAloneCAPE: false,
   spf: false,
   userSelectedLanguage: "",
   embed: false,
@@ -93,7 +95,9 @@ export const INITIAL_STATE = {
   open: false,
   capeOpen: false,
   legalLanguage: "",
-  displayCapePaymentFields: false
+  displayCapePaymentFields: false,
+  salesforceId: null,
+  submissionId: null
 };
 
 function appState(state = INITIAL_STATE, action) {
@@ -104,6 +108,12 @@ function appState(state = INITIAL_STATE, action) {
     case SET_SPINNER: {
       return update(state, {
         loading: { $set: true }
+      });
+    }
+
+    case SET_STANDALONE_CAPE: {
+      return update(state, {
+        standAloneCAPE: { $set: true }
       });
     }
 
@@ -216,21 +226,17 @@ function appState(state = INITIAL_STATE, action) {
         loading: { $set: true }
       });
 
-    case ADD_SUBMISSION_SUCCESS:
+
     case ADD_SUBMISSION_FAILURE:
-    case UPDATE_SUBMISSION_SUCCESS:
     case UPDATE_SUBMISSION_FAILURE:
     case GET_SF_CONTACT_SUCCESS:
     case GET_SF_CONTACT_FAILURE:
     case GET_SF_EMPLOYERS_SUCCESS:
     case GET_SF_EMPLOYERS_FAILURE:
-    case LOOKUP_SF_CONTACT_SUCCESS:
     case LOOKUP_SF_CONTACT_FAILURE:
-    case CREATE_SF_CONTACT_SUCCESS:
     case CREATE_SF_CONTACT_FAILURE:
     case CREATE_SF_OMA_SUCCESS:
     case CREATE_SF_OMA_FAILURE:
-    case UPDATE_SF_CONTACT_SUCCESS:
     case UPDATE_SF_CONTACT_FAILURE:
     case VERIFY_SUCCESS:
     case VERIFY_FAILURE:
@@ -243,6 +249,24 @@ function appState(state = INITIAL_STATE, action) {
     case GET_SF_CONTACT_DID_SUCCESS:
     case GET_SF_CONTACT_DID_FAILURE:
       return update(state, {
+        loading: { $set: false }
+      });
+
+
+    case UPDATE_SF_CONTACT_SUCCESS:  
+    case CREATE_SF_CONTACT_SUCCESS:
+    case LOOKUP_SF_CONTACT_SUCCESS:
+      return update(state, {
+        salesforceId: { $set: action.payload.salesforce_id },
+        loading: { $set: false }
+      });
+
+
+    case ADD_SUBMISSION_SUCCESS:
+    case UPDATE_SUBMISSION_SUCCESS:
+      return update(state, {
+        salesforceId: { $set: action.payload.salesforce_id },
+        submissionId: { $set: action.payload.submission_id },
         loading: { $set: false }
       });
 

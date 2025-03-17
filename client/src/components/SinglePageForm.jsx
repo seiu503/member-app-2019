@@ -64,6 +64,9 @@ export const SinglePageForm = props => {
     legal_language
   } = props;
 
+  console.log(`props.submission.salesforceId: ${props.submission.salesforceId}`);
+  console.log(`props.appState.salesforceId: ${props.appState.salesforceId}`);
+
   // console.log(employerTypesList);
   // console.log(employerTypesList.length);
 
@@ -541,7 +544,7 @@ export const SinglePageForm = props => {
               type="submit"
               color="primary"
               data-testid="button-submit"
-              className={`g-recaptcha`}
+              // className={`g-recaptcha`}
               sx={{
                 textTransform: "none",
                 fontSize: "1.3rem",

@@ -12,6 +12,7 @@ export const SET_OPEN = "SET_OPEN";
 export const SET_CAPE_OPEN = "SET_CAPE_OPEN";
 export const SET_LEGAL_LANGUAGE = "SET_LEGAL_LANGUAGE";
 export const SET_DISPLAY_CAPE_PAYMENT_FIELDS = "SET_DISPLAY_CAPE_PAYMENT_FIELDS";
+export const SET_STANDALONE_CAPE = "SET_STANDALONE_CAPE";
 
 export function setSpinner() {
   return {
@@ -22,6 +23,12 @@ export function setSpinner() {
 export function spinnerOff() {
   return {
     type: SPINNER_OFF
+  };
+}
+
+export function setStandAloneCAPE() {
+  return {
+    type: SET_STANDALONE_CAPE
   };
 }
 

@@ -195,7 +195,8 @@ const defaultProps = {
     setOpen: jest.fn(),
     setCapeOpen: jest.fn(),
     setLegalLanguage: jest.fn(),
-    setDisplayCapePaymentFields: jest.fn()
+    setDisplayCapePaymentFields: jest.fn(),
+    setStandAloneCAPE: jest.fn()
   },
   appState: {
     loggedIn: false,

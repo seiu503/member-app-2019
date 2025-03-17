@@ -44,7 +44,6 @@ export const CAPE = props => {
     renderTextField,
     renderCheckbox,
     standAlone,
-    // verifyCallback,
     employerTypesList,
     updateEmployersPicklist,
     employerList,
@@ -56,6 +55,10 @@ export const CAPE = props => {
     mobilePhoneOnBlur,
     checkoff
   } = props;
+
+  console.log(`standAlone: ${standAlone}`);
+  // console.log('handleCAPESubmit');
+  // console.log(handleCAPESubmit);
 
   const classes = formElements.classesPage1;
   const input2col = {
@@ -74,6 +77,8 @@ export const CAPE = props => {
   const matches = useMediaQuery("(min-width:450px)");
   // console.log("@@@@@@@@@@@@@@@@@@@");
   // console.log(props.handleSubmit);
+
+  // const testSubmit = () => console.log('testSubmit');
 
   return (
     <Box
@@ -103,7 +108,8 @@ export const CAPE = props => {
         />
       )}
       <form
-        onSubmit={props.handleSubmit(() => handleCAPESubmit(standAlone))}
+        onSubmit={props.handleSubmit(handleCAPESubmit)}
+        // onSubmit={props.handleSubmit(testSubmit)}
         id="CAPE"
         // className={classes.form}
         data-testid="cape-form"

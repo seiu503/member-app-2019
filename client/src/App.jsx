@@ -105,7 +105,7 @@ export const AppUnconnected = (props) => {
 
     // check for spf status
     if (values.spf) {
-      props.actions.setSPF(false);
+      props.actions.setSPF(true);
     }
 
     return () => {
@@ -120,7 +120,6 @@ export const AppUnconnected = (props) => {
 
   const openSnackbar = async (variant, message) => {
     console.log('openSnackbar (App.jsx 123 method)');
-    console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
     props.actions.setSnackbar({
       open: true,
       variant,
@@ -140,7 +139,6 @@ export const AppUnconnected = (props) => {
 
   const handleError = err => {
     console.log('handleError');
-    console.log(`#####################################`);
     // console.log(err);
     return openSnackbar(
       "error",
@@ -348,7 +346,8 @@ export const AppUnconnected = (props) => {
         console.dir(formValues);
         await createSFContact(formValues)
           .then(() => {
-            // console.log(props.submission.salesforceId);
+            console.log(`props.submission.salesforceId: ${props.submission.salesforceId}`);
+            console.log(`props.submission.p4cReturnValues.salesforceId: ${props.submission.p4cReturnValues.salesforceId}`);
           })
           .catch(err => {
             console.error(err);
@@ -499,8 +498,10 @@ export const AppUnconnected = (props) => {
     });
   }
 
+  // called from generateSubmissionBody, App.jsx > 539
   const prepForSubmission = (values, partial) => {
     console.log("App 515 prepForSubmission start");
+    console.log(`values.salesforceId: ${values.salesforceId}`);
     return new Promise(resolve => {
       let returnValues = { ...values };
 
@@ -519,13 +520,30 @@ export const AppUnconnected = (props) => {
       returnValues.campaignSource = campaignSource;
       // set salesforce id
       if (!values.salesforceId) {
+        console.log(`@@@@@@@`);
+        console.log(`!values.salesforceId`);
+        console.log(`props.submission.salesforceId: ${props.submission.salesforceId}`);
+        console.log(`props.submission.p4cReturnValues.salesforceId: ${props.submission.p4cReturnValues.salesforceId}`);
+        console.log(`props.appState.salesforceId: ${props.appState.salesforceId}`);
+        console.dir(props.submission);
+        console.dir(props.appState);
         if (q && q.cId) {
+          console.log('pulling sfid from q.cId');
           returnValues.salesforceId = q.cId;
-        }
-        if (props.submission.salesforce_id) {
-          returnValues.salesforceId = props.submission.salesforce_id;
+        } else if (props.submission.salesforceId) {
+          console.log('pulling sfid from props.submission.salesforceId');
+          returnValues.salesforceId = props.submission.salesforceId;
+        } else if (props.submission.p4cReturnValues.salesforceId) {
+          console.log('pulling sfid from props.submission.p4cReturnValues.salesforceId');
+          returnValues.salesforceId = props.submission.p4cReturnValues.salesforceId
+        } else if (props.appState.salesforceId) {
+          console.log('pulling sfid from props.appState.salesforceId');
+          returnValues.salesforceId = props.appState.salesforceId
+        } else {
+          console.log(`no sf id ANYWHERE wtf @@@@@@@@@@@@@@@@@`);
         }
       }
+      console.log(`returnValues.salesforceId: ${returnValues.salesforceId}`);
       console.log("App 541 prepForSubmission resolve");
       resolve(returnValues);
     });
@@ -587,6 +605,11 @@ export const AppUnconnected = (props) => {
       hire_date
     } = secondValues;
     // console.log(`hire_date: ${hire_date}`);
+    if (!salesforceId) {
+      salesforceId = props.submission.salesforceId || props.appState.salesforceId;
+    }
+    console.log(`L@@K vvvvv`);
+    console.log(`salesforceId: ${salesforceId}` );
 
     if (hire_date) {
       let hireDate = moment(new Date(hire_date));
@@ -631,7 +654,7 @@ export const AppUnconnected = (props) => {
       maintenance_of_effort,
       seiu503_cba_app_date,
       immediate_past_member_status: immediatePastMemberStatus,
-      salesforce_id: salesforceId || props.submission.salesforceId,
+      salesforce_id: salesforceId,
       reCaptchaValue,
       mail_to_city,
       mail_to_state,
@@ -712,7 +735,7 @@ export const AppUnconnected = (props) => {
     return props.apiSF
       .createSFOMA(body)
       .then(async result => {
-        console.log("App 728 createSubmission");
+        console.log("App 715 createSubmission > createSFOMA");
         console.log(result.type);
         console.log(`submission errors: ${props.submission.error}`);
         if (
@@ -780,7 +803,7 @@ export const AppUnconnected = (props) => {
       values = await prepForContact(formValues);
     }
     console.log("App 774 createSFContact");
-    console.log(values);
+    console.dir(values);
     let {
       firstName,
       lastName,
@@ -818,7 +841,12 @@ export const AppUnconnected = (props) => {
     };
 
     await props.apiSF.createSFContact(body)
-    .then(result => console.log(`App 813 createSFContact result: ${result}`))
+    .then(result => {
+      console.log(`App 813 createSFContact`)
+      console.log(result);
+      console.dir(result.payload);
+      console.dir(props.submission);
+    })
     .catch(err => {
       console.error(err);
       return handleError(err);
@@ -965,7 +993,6 @@ export const AppUnconnected = (props) => {
                   saveSubmissionErrors={saveSubmissionErrors}
                   generateSubmissionBody={generateSubmissionBody}
                   prepForContact={prepForContact}
-                  prepForSubmission={prepForSubmission}
                   createSFContact={createSFContact}
                   updateSFContact={updateSFContact}
                   handleError={handleError}
@@ -992,11 +1019,6 @@ export const AppUnconnected = (props) => {
                 <SubmissionFormPage2Function
                   createSubmission={createSubmission}
                   updateSubmission={updateSubmission}
-                  lookupSFContact={lookupSFContact}
-                  saveSubmissionErrors={saveSubmissionErrors}
-                  prepForContact={prepForContact}
-                  prepForSubmission={prepForSubmission}
-                  createSFContact={createSFContact}
                   updateSFContact={updateSFContact}
                   handleError={handleError}
                   openSnackbar={openSnackbar}
