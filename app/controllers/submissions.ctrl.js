@@ -349,7 +349,8 @@ exports.getSubmissionById = (req, res, next) => {
 exports.verifyHumanity = async (req, res) => {
   console.log("submissions.ctrl.js > 364");
   const projectID = "seiu503-online-membership-form";
-  const recaptchaKey = "6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW";
+  // this gRecaptcha key is attached to the seiu503@gmail.com account
+  const recaptchaKey = process.env.GRECAPTCHA_SITEKEY;
   const recaptchaAction = "homepage";
   const { token } = req.body;
   // Create the reCAPTCHA client.

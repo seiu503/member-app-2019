@@ -286,31 +286,11 @@ export class AppUnconnected extends Component {
     );
   };
 
-  // async onResolved() {
-  //   console.log(`App.jsx: 296 onResolved`);
-  //   const token = await this.recaptcha.current.getResponse();
-  //   console.log(`token: ${token}`);
-  //   this.props.apiSubmission.handleInput({
-  //     target: { name: "reCaptchaValue", value: token }
-  //   });
-  // }
-
   async updateSubmission(passedId, passedUpdates, formValues) {
     console.log("App 293 updateSubmission");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
-    // const medicaidResidents =
-    //   formValues && formValues.medicaidResidents
-    //     ? formValues.medicaidResidents
-    //     : passedUpdates && passedUpdates.medicaidResidents
-    //     ? passedUpdates.medicaidResidents
-    //     : 0;
-    // const pmtUpdates = {
-    //   payment_type: this.props.submission.formPage1.paymentType,
-    //   // medicaid_residents: medicaidResidents
-    // };
-    // const updates = passedUpdates ? passedUpdates : pmtUpdates;
 
     if (passedUpdates.hire_date) {
       let hireDate = moment(new Date(passedUpdates.hire_date));
@@ -936,11 +916,6 @@ export class AppUnconnected extends Component {
         }}
       >
         <CssBaseline />
-        <div
-          className="g-recaptcha"
-          data-size="invisible"
-          data-sitekey='6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW'
-        />
         {!embed && (
           <NavBar
             main_ref={this.main_ref}
@@ -981,8 +956,6 @@ export class AppUnconnected extends Component {
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}
-                    // recaptcha={refCaptcha}
-                    // onResolved={this.onResolved}
                     headline={this.state.headline}
                     body={this.state.body}
                     image={this.state.image}

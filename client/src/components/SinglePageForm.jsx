@@ -553,7 +553,7 @@ export const SinglePageForm = props => {
                 // classes.next
               }}
               variant="contained"
-              data-sitekey="6LcIuOIqAAAAALoIbgk8ij8a_wggmfj8cQDyD_iW"
+              data-sitekey={process.env.REACT_APP_GRECAPTCHA_SITEKEY}
               // data-callback={verifyCallback}
             >
               <Trans i18nKey="next">Next</Trans>
