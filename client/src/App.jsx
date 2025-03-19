@@ -97,7 +97,7 @@ export class AppUnconnected extends Component {
 
     // check and log environment
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
-    console.log("### 20240223 prod 12:49PM ###");
+    console.log("### 20250319 prod 04:17PM ###");
 
     await this.detectLanguage();
     
