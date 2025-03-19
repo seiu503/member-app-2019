@@ -80,19 +80,17 @@ export class SubmissionFormPage1Container extends React.Component {
             this.handleOpen();
             console.log('prefill values');
             console.log(this.props.submission.prefillValues);
-            // check for complete prefill for spf only
-            if (params.spf) {
-              console.log(Object.keys(prefillValidate(this.props.submission.prefillValues)));
-              if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
-                console.log(`completePrefill: true`);
-                this.props.apiSubmission.handleInput({
-                  target: { name: "completePrefill", value: true }
-                });
-              } else {
-                console.log('completePrefill: false');
-              }
+
+            // check for complete prefill
+            console.log(Object.keys(prefillValidate(this.props.submission.prefillValues)));
+            if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
+              console.log(`completePrefill: true`);
+              this.props.apiSubmission.handleInput({
+                target: { name: "completePrefill", value: true }
+              });
+            } else {
+              console.log('completePrefill: false');
             }
-            // this.props.setCAPEOptions();
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
@@ -143,16 +141,11 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this._isMounted && this.setState({ ...newState });
-    if (this.props.spf) {
-      // reset to blank multi-page form
-      this.props.setSPF(false); 
-    }
     this.props.apiSubmission.clearForm();
     // remove cId & aId from route params if no match,
     // but preserve other params
     const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
     const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-    const cleanUrl3 = utils.removeURLParam(cleanUrl2, "spf");
     console.log(`cleanUrl3: ${cleanUrl3}`);
     window.history.replaceState(null, null, cleanUrl3);
     window.location.reload(true);
@@ -575,17 +568,13 @@ export class SubmissionFormPage1Container extends React.Component {
           return this.props.handleError(err);
         });
       console.log('SFP1 545 handleTab1 updateContactAndMoveToNextTab');
-      if (this.props.spf) {
-        console.log('single page form: calling handleTab2 after updating contact');
-        return this.handleTab2()
-          .catch(err => {
-            console.error(err);
-            return this.props.handleError(err);
-          });
-      } else {
-        console.log('not spf: moving to tab 2');
-        return this.props.changeTab(1);
-      }
+      console.log('single page form: calling handleTab2 after updating contact');
+      return this.handleTab2()
+        .catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
+
     };
 
     console.log("SFP1 557 handleTab1");
@@ -615,13 +604,10 @@ export class SubmissionFormPage1Container extends React.Component {
           console.error(err);
           return this.props.handleError(err);
         });
-        if (this.props.spf) {
-          console.log('single page form: calling handleTab2 after creating new contact');
-          return this.handleTab2();
-        } else {
-          console.log('not spf: moving to tab 2');
-          return this.props.changeTab(1);
-        }
+
+        console.log('single page form: calling handleTab2 after creating new contact');
+        return this.handleTab2();
+
       } 
     }
   }
@@ -694,7 +680,6 @@ export class SubmissionFormPage1Container extends React.Component {
           {...this.props}
           change={change}
           tab={this.props.tab}
-          spf={this.props.spf}
           handleTab={this.handleTab}
           back={this.props.changeTab}
           handleUpload={this.handleUpload}

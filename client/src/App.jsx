@@ -112,15 +112,6 @@ export class AppUnconnected extends Component {
       console.log(`NEW changeLanguage: ${values.lang}`);
       this.changeLanguage(values.lang);
     }
-
-    // check for spf status
-    if (values.spf) {
-      const newState = { ...this.state };
-      newState.spf = true;
-      this._isMounted && this.setState({ ...newState });
-      // set language for spf
-
-    }
   }
 
   componentWillUnmount() {
@@ -173,12 +164,6 @@ export class AppUnconnected extends Component {
           open: false
         }
       });
-  };
-
-  setSPF(bool) {
-    const newState = { ...this.state };
-    newState.spf = bool;
-    this._isMounted && this.setState({ ...newState });
   };
 
   handleError = err => {
@@ -789,16 +774,16 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    console.log("App 785 createSFContact");
+    console.log("App 777 createSFContact");
     let values;
-    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
-      console.log('spf true AND completePrefill = true; skipping p4c');
+    if (this.props.submission.formPage1.completePrefill) {
+      console.log('completePrefill = true; skipping p4c');
       values = { ...this.props.submission.p4cReturnValues };
     } else {
-      console.log('spf OR completePrefill = false; running p4c');
+      console.log('completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
-    console.log("App 793 createSFContact");
+    console.log("App 786 createSFContact");
     console.log(values);
     let {
       firstName,
@@ -844,17 +829,17 @@ export class AppUnconnected extends Component {
 
   // called from SFP1 > 570 handleTab1 / updateContactAndMoveToNextTab
   async updateSFContact(formValues) {
-    console.log("App 846 updateSFContact");
+    console.log("App 835 updateSFContact");
     let values;
-    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
-      console.log('spf true AND completePrefill = true; skipping p4c');
+    if (this.props.submission.formPage1.completePrefill) {
+      console.log('completePrefill = true; skipping p4c');
       values = { ...this.props.submission.p4cReturnValues };
     } else {
-      console.log('spf OR completePrefill = false; running p4c');
+      console.log('completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    console.log(values);
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    // console.log(values);
 
     let {
       firstName,
@@ -980,8 +965,6 @@ export class AppUnconnected extends Component {
                 element={
                   <SubmissionFormPage1
                     tab={this.state.tab}
-                    spf={this.state.spf}
-                    setSPF={this.setSPF}
                     embed={embed}
                     userSelectedLanguage={this.state.userSelectedLanguage}
                     legal_language={this.legal_language}
