@@ -4,7 +4,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PropTypes from "prop-types";
 import { renderToStaticMarkup } from "react-dom/server";
-import Recaptcha from "react-google-invisible-recaptcha";
 import queryString from "query-string";
 import moment from "moment";
 import detector from "i18next-browser-languagedetector";
@@ -15,7 +14,7 @@ import { Typography, CssBaseline, Box } from "@mui/material";
 import * as Actions from "./store/actions";
 import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
-import { defaultWelcomeInfo, detectDefaultLanguage } from "./utils/index";
+import { defaultWelcomeInfo, detectDefaultLanguage, languageTransform } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -40,7 +39,7 @@ import SamplePhoto from "./img/sample-form-photo.jpg";
 
 import welcomeInfo from "./translations/welcomeInfo.json";
 
-const refCaptcha = React.createRef();
+// const refCaptcha = React.createRef();
 
 const styles = {};
 
@@ -74,7 +73,6 @@ export class AppUnconnected extends Component {
         message: null
       }
     };
-    this.onResolved = this.onResolved.bind(this);
     this.createSubmission = this.createSubmission.bind(this);
     this.updateSubmission = this.updateSubmission.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
@@ -87,8 +85,8 @@ export class AppUnconnected extends Component {
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
-    this.setSPF = this.setSPF.bind(this);
-    this.recaptcha = refCaptcha;
+    this.changeLanguage = this.changeLanguage.bind(this);
+    this.detectLanguage = this.detectLanguage.bind(this);
   }
 
   async componentDidMount() {
@@ -101,36 +99,59 @@ export class AppUnconnected extends Component {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
     console.log("### 20240223 prod 12:49PM ###");
 
-    // detect default language from browser
-    const defaultLanguage = detectDefaultLanguage().lang;
-    console.log(`defaultLanguage: ${defaultLanguage}`);
-
-    const changeLanguage = lng => {
-      // console.log(`NEW changeLanguage: ${lng}`);
-      this.props.i18n.changeLanguage(lng);
-    };
-
-    // set form language based on detected default language
-    changeLanguage(defaultLanguage);
-
-    // check if language was set in query string
-    const values = queryString.parse(this.props.location.search);
-    if (values.lang) {
-      console.log(`NEW changeLanguage: ${values.lang}`);
-      changeLanguage(values.lang);
-    }
-
-    // check for spf status
-    if (values.spf) {
-      const newState = { ...this.state };
-      newState.spf = true;
-      this._isMounted && this.setState({ ...newState });
-    }
+    await this.detectLanguage();
+    
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
+
+  async detectLanguage() {
+    // detect default language from browser
+    const defaultLanguage = detectDefaultLanguage().lang;
+    console.log(`defaultLanguage: ${defaultLanguage}`);
+
+    // set form language based on detected default language
+    await this.changeLanguage(defaultLanguage);
+
+    // check if language was set in query string
+    const values = queryString.parse(this.props.location.search);
+    if (values.lang) {
+      await this.changeLanguage(values.lang);
+    }
+  }
+
+  async changeLanguage(lng) {
+    // lng = code
+    // console.log(`NEW changeLanguage: ${lng} #######################`);
+    // console.dir(lng);
+    let code = lng;
+    if (typeof lng === "object") {
+      code = lng.lang;
+    } 
+    // console.log(`code: ${code}`);
+    this.props.i18n.changeLanguage(code || "en");
+    const preferredLanguage = languageTransform(code)['engName'];
+    // console.log(`preferredLanguage: ${preferredLanguage}`);
+    await this.props.apiSubmission.handleInputSPF({
+     target: { 
+        name: "p4cReturnValues", 
+        value: {
+         ...this.props.submission.p4cReturnValues, 
+         preferredLanguage: preferredLanguage
+        }
+      }
+    });
+    await this.props.apiSubmission.handleInput({
+       target: { name: "preferredLanguage", value: preferredLanguage }
+    });
+
+    // console.log(`this.props.submission.formPage1.preferredLanguage: ${this.props.submission.formPage1.preferredLanguage }`);
+    // console.log(`this.props.submission.p4cReturnValues:`);
+    // console.dir(this.props.submission.p4cReturnValues);
+    // console.log(`this.props.submission.p4cReturnValues.preferredLanguage: ${this.props.submission.p4cReturnValues.preferredLanguage}`);
+  };
 
   openSnackbar = async (variant, message) => {
     const newState = { ...this.state };
@@ -154,12 +175,6 @@ export class AppUnconnected extends Component {
           open: false
         }
       });
-  };
-
-  setSPF(bool) {
-    const newState = { ...this.state };
-    newState.spf = bool;
-    this._isMounted && this.setState({ ...newState });
   };
 
   handleError = err => {
@@ -190,131 +205,18 @@ export class AppUnconnected extends Component {
     // console.log(languageCode);
     const language = languageCode ? languageCode : defaultLanguage;
     // set form language based on detected default language
-    const changeLanguage = lng => {
-      // console.log(`NEW changeLanguage: ${lng}`);
-      this.props.i18n.changeLanguage(lng);
-    };
 
-    changeLanguage(language);
+    this.changeLanguage(language);
   };
-
-  renderBodyCopy = id => {
-    let paragraphIds = [];
-    // find all paragraphs belonging to this bodyCopy id
-    Object.keys(welcomeInfo).forEach(key => {
-      if (key.includes(`bodyCopy${id}`)) {
-        paragraphIds.push(key);
-      }
-    });
-    // for each paragraph selected, generate translated text
-    // in appropriate language rendered inside a <p> tag
-    let paragraphs = (
-      <Translation>
-        {(t, { i18n }) =>
-          paragraphIds.map((id, index) => (
-            <p key={id} data-testid={id}>
-              {t(id)}
-            </p>
-          ))
-        }
-      </Translation>
-    );
-    // wrap in MUI typography element and return
-    return (
-      <Box
-        sx={{
-          // className={this.props.classes.body}
-          color: "black"
-        }}
-      >
-        <Typography
-          variant="body1"
-          component="div"
-          align="left"
-          gutterBottom
-          data-testid="body"
-        >
-          {paragraphs}
-        </Typography>
-      </Box>
-    );
-  };
-
-  renderHeadline = id => {
-    // console.log(`renderHeadline: ${id}`);
-    let headlineIds = [];
-    // check translation file for headlines belonging to this headline id
-    Object.keys(welcomeInfo).forEach(key => {
-      if (key.includes(`headline${id}`)) {
-        headlineIds.push(key);
-      }
-    });
-    // console.log(`headlineIds ${headlineIds}`);
-    // generate translated text in appropriate language rendered in a <h3> tag
-    let headline = (
-      <Translation>
-        {(t, { i18n }) => (
-          <span data-testid="headline-translate"> {t(`headline${id}`)} </span>
-        )}
-      </Translation>
-    );
-    // console.log(`this.state.headline.text: ${this.state.headline.text}`);
-    // if this headline has not yet been translated there will be no
-    // translation ids in the welcomeInfo JSON object
-    // just render the raw copy in English
-    if (!headlineIds.length) {
-      headline = <React.Fragment>{this.state.headline.text}</React.Fragment>;
-    }
-    // console.log(headline);
-    // wrap in MUI typography element and return
-    return (
-      <Box
-        sx={{
-          fontSize: {
-            xs: "1.7rem",
-            sm: "1.7rem"
-          }
-        }}
-      >
-        <Typography
-          variant="h3"
-          align="left"
-          gutterBottom
-          style={{ paddingTop: 20, fontSize: "2.4rem" }}
-          data-testid="headline"
-        >
-          {headline}
-        </Typography>
-      </Box>
-    );
-  };
-
-  async onResolved() {
-    const token = await this.recaptcha.current.getResponse();
-    this.props.apiSubmission.handleInput({
-      target: { name: "reCaptchaValue", value: token }
-    });
-  }
 
   async updateSubmission(passedId, passedUpdates, formValues) {
     console.log("App 293 updateSubmission");
     console.log(passedId);
     this.props.actions.setSpinner();
     const id = passedId ? passedId : this.props.submission.submissionId;
-    // const medicaidResidents =
-    //   formValues && formValues.medicaidResidents
-    //     ? formValues.medicaidResidents
-    //     : passedUpdates && passedUpdates.medicaidResidents
-    //     ? passedUpdates.medicaidResidents
-    //     : 0;
-    // const pmtUpdates = {
-    //   payment_type: this.props.submission.formPage1.paymentType,
-    //   // medicaid_residents: medicaidResidents
-    // };
-    // const updates = passedUpdates ? passedUpdates : pmtUpdates;
 
     if (passedUpdates.hire_date) {
-      let hireDate = moment(new Date(updates.hire_date));
+      let hireDate = moment(new Date(passedUpdates.hire_date));
       if (hireDate.isValid()) {
         passedUpdates.hire_date = formatSFDate(hireDate);
         console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
@@ -510,8 +412,8 @@ export class AppUnconnected extends Component {
         target: { name: "p4cReturnValues", value: {... returnValues } }
       });
 
-      // console.log(`checking redux store for returnValues`);
-      // console.log(this.props.submission);
+      console.log(`checking redux store for returnValues ####################`);
+      console.log(this.props.submission.p4cReturnValues);
 
       console.log("App 509 prepForContact resolve");
       resolve(returnValues);
@@ -605,7 +507,11 @@ export class AppUnconnected extends Component {
       work_phone,
       hire_date
     } = secondValues;
-    // console.log(`hire_date: ${hire_date}`);
+    console.log(`preferredLanguage: ${preferredLanguage}`);
+
+    // if(!preferredLanguage) {
+    //   preferredLanguage = this.state.userSelectedLanguage ? this.state.userSelectedLanguage : ""
+    // }
 
     if (hire_date) {
       let hireDate = moment(new Date(hire_date));
@@ -681,7 +587,10 @@ export class AppUnconnected extends Component {
     // create initial submission using data in tabs 1 & 2
     console.log("App 682 createSubmission start");
     const body = await this.generateSubmissionBody(formValues, partial);
-    // console.log(body);
+    // console.log(`@@@@@@@@@@  SUBMISSIONBODY  @@@@@@@@@`);
+    // console.log(formValues);
+    // console.log(`body.preferredLanguage: ${body.preferredLanguage}`);
+    // console.log(`body.preferred_language: ${body.preferred_language}`);
     const cleanBody = removeFalsy(body);
     // console.log(cleanBody);
     await this.props.apiSubmission
@@ -720,6 +629,8 @@ export class AppUnconnected extends Component {
 
     body.Worker__c = this.props.submission.salesforceId;
     body.tmp_1 = tmp1;
+    // console.log(`##########   OMABODY   ###########`);
+    // console.log(body);
 
     // create Online Member App record
     return this.props.apiSF
@@ -783,16 +694,16 @@ export class AppUnconnected extends Component {
   }
 
   async createSFContact(formValues) {
-    console.log("App 785 createSFContact");
+    console.log("App 777 createSFContact");
     let values;
-    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
-      console.log('spf true AND completePrefill = true; skipping p4c');
+    if (this.props.submission.formPage1.completePrefill) {
+      console.log('completePrefill = true; skipping p4c');
       values = { ...this.props.submission.p4cReturnValues };
     } else {
-      console.log('spf OR completePrefill = false; running p4c');
+      console.log('completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
-    console.log("App 793 createSFContact");
+    console.log("App 786 createSFContact");
     console.log(values);
     let {
       firstName,
@@ -836,16 +747,19 @@ export class AppUnconnected extends Component {
     });
   }
 
+  // called from SFP1 > 570 handleTab1 / updateContactAndMoveToNextTab
   async updateSFContact(formValues) {
-    console.log("App 846 updateSFContact");
+    console.log("App 835 updateSFContact");
     let values;
-    if (this.state.spf && this.props.submission.formPage1.completePrefill) {
-      console.log('spf true AND completePrefill = true; skipping p4c');
+    if (this.props.submission.formPage1.completePrefill) {
+      console.log('completePrefill = true; skipping p4c');
       values = { ...this.props.submission.p4cReturnValues };
     } else {
-      console.log('spf OR completePrefill = false; running p4c');
+      console.log('completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
+    // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    // console.log(values);
 
     let {
       firstName,
@@ -937,11 +851,6 @@ export class AppUnconnected extends Component {
         }}
       >
         <CssBaseline />
-        <Recaptcha
-          ref={refCaptcha}
-          sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
-          onResolved={this.onResolved}
-        />
         {!embed && (
           <NavBar
             main_ref={this.main_ref}
@@ -976,19 +885,16 @@ export class AppUnconnected extends Component {
                 element={
                   <SubmissionFormPage1
                     tab={this.state.tab}
-                    spf={this.state.spf}
-                    setSPF={this.setSPF}
                     embed={embed}
+                    userSelectedLanguage={this.state.userSelectedLanguage}
+                    detectLanguage={this.detectLanguage}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}
-                    recaptcha={refCaptcha}
-                    onResolved={this.onResolved}
                     headline={this.state.headline}
                     body={this.state.body}
                     image={this.state.image}
                     renderBodyCopy={this.renderBodyCopy}
-                    renderHeadline={this.renderHeadline}
                     createSubmission={this.createSubmission}
                     updateSubmission={this.updateSubmission}
                     lookupSFContact={this.lookupSFContact}

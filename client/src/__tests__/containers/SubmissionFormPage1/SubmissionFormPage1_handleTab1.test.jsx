@@ -135,6 +135,9 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -321,16 +324,16 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab1Form = getByTestId("form-tab1");
+      const spf = getByTestId("form-spf");
 
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(async () => {
-        await fireEvent.submit(tab1Form);
+        await fireEvent.submit(spf);
       });
 
-      // expect changeTabMock to have been called to navigate to tab 1
+      // expect changeTabMock to have been called
       await waitFor(() => {
-        expect(changeTabMock).toHaveBeenCalledWith(1);
+        expect(changeTabMock).toHaveBeenCalledWith(2);
       });
     });
 
@@ -395,11 +398,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab1Form = getByTestId("form-tab1");
+      const spf = getByTestId("form-spf");
 
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(async () => {
-        await fireEvent.submit(tab1Form);
+        await fireEvent.submit(spf);
       });
 
       // expect handleErrorMock to have been called with updateSFContactError
@@ -462,11 +465,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab1Form = getByTestId("form-tab1");
+      const spf = getByTestId("form-spf");
 
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(async () => {
-        await fireEvent.submit(tab1Form);
+        await fireEvent.submit(spf);
       });
 
       // expect handleErrorMock to have been called with lookupSFContactError

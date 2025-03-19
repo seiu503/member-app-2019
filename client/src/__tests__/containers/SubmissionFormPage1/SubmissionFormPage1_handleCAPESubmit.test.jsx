@@ -163,6 +163,9 @@ const defaultProps = {
       monthlyOptions: []
     },
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -273,6 +276,7 @@ const initialState = {
 store = storeFactory(initialState);
 let handleSubmit = fn => fn;
 let onSubmit = jest.fn();
+let windowSpy;
 
 const setup = async (props = {}, route = "/") => {
   const setupProps = {
@@ -300,6 +304,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
   afterEach(() => {
     jest.restoreAllMocks();
   });
+  afterAll(() => {
+    jest.restoreAllMocks();
+    cleanup();
+  })
 
   describe("handleCAPESubmit", () => {
     beforeEach(() => {
@@ -406,6 +414,20 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       // setup
       // const user = await userEvent.setup();
       const { getByTestId } = await setup(props);
+
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
+
       const cape = await getByTestId("cape-form");
 
       // simulate submit
@@ -454,13 +476,38 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
+      // mock console err to see if error is logged to console
+      const consoleErrorMock = jest
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.reject(new Error("reCaptchaError"))
+            })
+          },
+        }));
+      });
+
       // simulate submit
       await fireEvent.submit(cape);
 
-      // expect handleError to have been called
+      // error is not returned to client here, so just check if it is logged to console instead
       await waitFor(() => {
-        expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
+        // console.log('handleErrorMockLastCall');
+        // console.log(handleErrorMock.mock.lastCall)
+        // expect(handleErrorMock).not.toHaveBeenCalled();
+        expect(consoleErrorMock).toHaveBeenCalledWith("recaptcha failed: undefined");
       });
+
+      // restore mock
+      consoleErrorMock.mockRestore();
+
     });
 
     test("`handleCAPESubmit` handles error if lookupSFContact prop throws", async () => {
@@ -526,6 +573,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
+
       // simulate submit
       await fireEvent.submit(cape);
 
@@ -587,6 +647,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
       const user = await userEvent.setup();
       const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
+
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
 
       // simulate submit
       await fireEvent.submit(cape);
@@ -672,6 +745,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
 
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
+
       // simulate submit
       await fireEvent.submit(cape);
 
@@ -743,6 +829,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       const { queryByTestId, getByTestId } = await setup(props);
       const cape = await getByTestId("cape-form");
 
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
+
       // simulate submit
       await fireEvent.submit(cape);
 
@@ -813,6 +912,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       const user = await userEvent.setup();
       const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
+
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
 
       // simulate submit
       await fireEvent.submit(cape);
@@ -889,11 +1001,6 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         updateCAPE: updateCAPEError,
         history: {},
         navigate,
-        recaptcha: {
-          current: {
-            execute: executeMock
-          }
-        },
         verifyRecaptchaScore: verifyRecaptchaScoreMock
       };
 
@@ -907,20 +1014,33 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
         .spyOn(console, "error")
         .mockImplementation(() => {});
 
-      // simulate submit
-      await fireEvent.submit(cape);
-
-      // expect handleError NOT to have been called, only logged to console
-      await waitFor(() => {
-        // console.log('handleErrorMockLastCall');
-        // console.log(handleErrorMock.mock.lastCall)
-        expect(handleErrorMock).not.toHaveBeenCalled();
-        expect(consoleErrorMock).toHaveBeenCalledWith("updateCAPEError");
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
       });
 
-      // restore mock
-      consoleErrorMock.mockRestore();
-    });
+      // simulate submit
+        await fireEvent.submit(cape);
+
+        // expect handleError NOT to have been called, only logged to console
+        await waitFor(() => {
+          // console.log('handleErrorMockLastCall');
+          // console.log(handleErrorMock.mock.lastCall)
+          expect(handleErrorMock).not.toHaveBeenCalled();
+          expect(consoleErrorMock).toHaveBeenCalledWith("updateCAPEError");
+        });
+
+        // restore mock
+        consoleErrorMock.mockRestore();
+      });
 
     test("`handleCAPESubmit` redirects to thankyou page if standalone", async () => {
       let props = {
@@ -975,6 +1095,19 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
       const user = await userEvent.setup();
       const { queryByTestId, getByTestId } = await setup(props, "/?cape=true");
       const cape = await getByTestId("cape-form");
+
+      // mock recaptcha
+      document.addEventListener("DOMContentLoaded", () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: jest.fn().mockImplementation(() => {
+              Promise.resolve("token")
+            })
+          },
+        }));
+      });
 
       // simulate submit
       await fireEvent.submit(cape);

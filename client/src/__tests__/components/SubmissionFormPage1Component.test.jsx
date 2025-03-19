@@ -103,6 +103,9 @@ const defaultProps = {
     payment: {
       cardAddingUrl: ""
     },
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -122,7 +125,9 @@ const defaultProps = {
       textAuthOptOut: false,
       legalLanguage: ""
     },
-    prefillValues: {}
+    prefillValues: {
+      preferredLanguage: ""
+    }
   },
   initialValues: {
     mm: "",
