@@ -175,6 +175,9 @@ const defaultProps = {
       legalLanguage: ""
     }
   },
+  prefillValues: {
+      preferredLanguage: ""
+    },
   appState: {},
   initialize: jest.fn(),
   addTranslation: jest.fn(),
@@ -340,16 +343,10 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
-      });
-
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
       // change employer type
@@ -444,20 +441,6 @@ describe("<App />", () => {
       });
     });
 
-    test("`renderHeadline` renders headline", async () => {
-      // render app
-      const {
-        getByTestId,
-        queryByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup();
-      const headline = getByTestId("headline");
-      expect(headline).toBeInTheDocument();
-    });
-
     test("`prepForSubmission` sets salesforceId conditionally based on query string, redux store, and passed values", async () => {
       const props = {
         submission: {
@@ -516,28 +499,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(() => {
         const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
       });
 
       // just test that with these props there are no errors and it moves to tab 3

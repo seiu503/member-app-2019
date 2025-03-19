@@ -9,10 +9,7 @@ import * as utils from "../utils";
 
 import NavTabs from "./NavTabs";
 import SinglePageForm from "./SinglePageForm";
-import Tab1Form from "./Tab1";
-import Tab2Form from "./Tab2";
 import CAPEForm from "./CAPE";
-import WelcomeInfo from "./WelcomeInfo";
 import withRouter from "./ComponentWithRouterProp";
 
 // helper functions
@@ -260,7 +257,6 @@ export class SubmissionFormPage1Component extends React.Component {
             renderTextField={this.renderTextField}
             renderCheckbox={this.renderCheckbox}
             checkoff={checkoff}
-            capeObject={this.props.submission.cape}
           />
         ) : (
           <SinglePageForm
@@ -280,7 +276,6 @@ export class SubmissionFormPage1Component extends React.Component {
             renderCheckbox={this.renderCheckbox}
             handleError={this.props.handleError}
             openSnackbar={this.props.openSnackbar}
-            prefillValues={this.props.submission.prefillValues}
           />
         )}
       </Box> 

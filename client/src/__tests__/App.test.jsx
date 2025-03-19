@@ -90,6 +90,7 @@ const initialState = {
       ...formValues,
       reCaptchaValue: ""
     },
+    prefillValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
   }
@@ -106,6 +107,7 @@ const defaultProps = {
     },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
+    prefillValues: {},
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -261,30 +263,6 @@ describe("<App />", () => {
 
       // restore mock
       setActiveLanguageMock.mockRestore();
-    });
-  });
-  describe("Misc methods", () => {
-    // Enable API mocking before tests.
-    beforeAll(() => server.listen());
-
-    // Reset any runtime request handlers we may add during the tests.
-    afterEach(() => server.resetHandlers());
-
-    // Disable API mocking after the tests are done.
-    afterAll(() => server.close());
-
-    it("renderBodyCopy renders paragraphs matching provided body id (default copy)", async () => {
-      const { getByTestId } = await setup();
-      const component = getByTestId("body");
-      setImmediate(() => {
-        expect(component.children.length).toBe(3);
-        done();
-      });
-      const par0 = getByTestId("bodyCopy0_1");
-      setImmediate(() => {
-        expect(par0).toBeInTheDocument();
-        done();
-      });
     });
   });
 

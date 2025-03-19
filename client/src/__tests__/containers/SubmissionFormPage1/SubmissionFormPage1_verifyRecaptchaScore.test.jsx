@@ -135,6 +135,9 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -299,11 +302,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           },
         }));
 
-        const tab1Form = getByTestId("form-tab1");
+        const spf = getByTestId("form-spf");
  
         // simulate submit tab1
         await waitFor(async () => {
-          await fireEvent.submit(tab1Form);
+          await fireEvent.submit(spf);
         });
 
         // expect executeMock to have been called
@@ -323,6 +326,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             reCaptchaValue: 123
+          },
+          prefillValues: {
+            preferredLanguage: ""
           }
         },
         apiSubmission: {
@@ -357,11 +363,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           },
         }));
 
-        const tab1Form = getByTestId("form-tab1");
+        const spf = getByTestId("form-spf");
  
         // simulate submit tab1
         await waitFor(async () => {
-          await fireEvent.submit(tab1Form);
+          await fireEvent.submit(spf);
         });
 
         // expect verifySuccess to have been called
@@ -380,6 +386,9 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         submission: {
           formPage1: {
             reCaptchaValue: 123
+          },
+          prefillValues: {
+            preferredLanguage: ""
           }
         },
         apiSubmission: {
@@ -414,11 +423,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           },
         }));
 
-        const tab1Form = getByTestId("form-tab1");
+        const spf = getByTestId("form-spf");
  
         // simulate submit tab1
         await waitFor(async () => {
-          await fireEvent.submit(tab1Form);
+          await fireEvent.submit(spf);
         });
 
         // expect handleError to have been called with 'reCaptchaError'

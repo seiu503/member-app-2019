@@ -85,6 +85,9 @@ const defaultProps = {
       ...generatePage2Validate,
       hireDate: "2000-10-01"
     },
+    prefillValues: {
+      preferredLanguage: ""
+    },
     salesforceId: "123",
     submissionId: "345"
   },

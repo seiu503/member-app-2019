@@ -51,7 +51,6 @@ export const CAPE = props => {
     cape_legal,
     change,
     lookupSFContact,
-    capeObject,
     handleCAPEOpen,
     handleCAPEClose,
     capeOpen,
@@ -638,7 +637,7 @@ export const CAPE = props => {
                   }}
                   classes={classes}
                   component={formElements.renderCAPERadioGroup}
-                  options={props.submission.cape.monthlyOptions}
+                  options={[10, 13, 15, "Other"]}
                   onChange={(event, value) => {
                     change("capeAmount", value);
                   }}

@@ -132,6 +132,9 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload]
@@ -152,7 +155,8 @@ const defaultProps = {
     handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    updateSubmission: () => Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
   },
   submission: {
     error: null,
@@ -162,6 +166,9 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -309,32 +316,41 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
-      await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+      // mock recaptcha
+      const executeMock = jest.fn().mockImplementation(() => {
+        Promise.resolve("token")
       });
+ 
+      document.addEventListener("DOMContentLoaded", async () => {
+        console.log('DOMContentLoaded');
+        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
+        windowSpy.mockImplementation(() => ({
+          enterprise: {
+            execute: executeMock
+          },
+        }));
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
+        // check that spf renders
+        await waitFor(() => {
+          const spf = getByRole("form");
+          expect(spf).toBeInTheDocument();
+        });
 
-      // simulate submit tab1
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
+        // simulate submit spf
+        await waitFor(() => {
+          const submitButton = getByTestId("button-submit");
+          userEvent.click(submitButton);
+        });
 
-      // expect snackbar to be in the document with correct error message
-      await waitFor( async () => {
-        const snackbar = await getByTestId("component-basic-snackbar");
-        const errorIcon = await getByTestId("ErrorOutlineIcon");
-        const message = await getByText("createSFContactError");
-        expect(snackbar).toBeInTheDocument();
-        expect(errorIcon).toBeInTheDocument();
-        expect(message).toBeInTheDocument();
+        // expect snackbar to be in the document with correct error message
+        await waitFor( async () => {
+          const snackbar = await getByTestId("component-basic-snackbar");
+          const errorIcon = await getByTestId("ErrorOutlineIcon");
+          const message = await getByText("createSFContactError");
+          expect(snackbar).toBeInTheDocument();
+          expect(errorIcon).toBeInTheDocument();
+          expect(message).toBeInTheDocument();
+        });
       });
     });
   });

@@ -116,6 +116,9 @@ const defaultProps = {
       signature: ""
     },
     cape: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",

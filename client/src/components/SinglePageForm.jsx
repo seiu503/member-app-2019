@@ -59,12 +59,13 @@ export const SinglePageForm = props => {
     renderSelect,
     renderTextField,
     renderCheckbox,
-    prefillValues,
     formValues,
     width,
     // verifyCallback,
     legal_language
   } = props;
+
+  const prefillValues = props.submission.prefillValues;
 
   // console.log(employerTypesList);
   // console.log(employerTypesList.length);

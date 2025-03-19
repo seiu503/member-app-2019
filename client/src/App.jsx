@@ -124,13 +124,13 @@ export class AppUnconnected extends Component {
 
   async changeLanguage(lng) {
     // lng = code
-    console.log(`NEW changeLanguage: ${lng} #######################`);
-    console.dir(lng);
+    // console.log(`NEW changeLanguage: ${lng} #######################`);
+    // console.dir(lng);
     let code = lng;
     if (typeof lng === "object") {
       code = lng.lang;
     } 
-    console.log(`code: ${code}`);
+    // console.log(`code: ${code}`);
     this.props.i18n.changeLanguage(code || "en");
     const preferredLanguage = languageTransform(code)['engName'];
     // console.log(`preferredLanguage: ${preferredLanguage}`);
@@ -207,97 +207,6 @@ export class AppUnconnected extends Component {
     // set form language based on detected default language
 
     this.changeLanguage(language);
-  };
-
-  renderBodyCopy = id => {
-    let paragraphIds = [];
-    // find all paragraphs belonging to this bodyCopy id
-    Object.keys(welcomeInfo).forEach(key => {
-      if (key.includes(`bodyCopy${id}`)) {
-        paragraphIds.push(key);
-      }
-    });
-    // for each paragraph selected, generate translated text
-    // in appropriate language rendered inside a <p> tag
-    let paragraphs = (
-      <Translation>
-        {(t, { i18n }) =>
-          paragraphIds.map((id, index) => (
-            <p key={id} data-testid={id}>
-              {t(id)}
-            </p>
-          ))
-        }
-      </Translation>
-    );
-    // wrap in MUI typography element and return
-    return (
-      <Box
-        sx={{
-          // className={this.props.classes.body}
-          color: "black"
-        }}
-      >
-        <Typography
-          variant="body1"
-          component="div"
-          align="left"
-          gutterBottom
-          data-testid="body"
-        >
-          {paragraphs}
-        </Typography>
-      </Box>
-    );
-  };
-
-  renderHeadline = id => {
-    // console.log(`renderHeadline: ${id}`);
-    let headlineIds = [];
-    // check translation file for headlines belonging to this headline id
-    Object.keys(welcomeInfo).forEach(key => {
-      if (key.includes(`headline${id}`)) {
-        headlineIds.push(key);
-      }
-    });
-    // console.log(`headlineIds ${headlineIds}`);
-    // generate translated text in appropriate language rendered in a <h3> tag
-    let headline = (
-      <Translation>
-        {(t, { i18n }) => (
-          <span data-testid="headline-translate"> {t(`headline${id}`)} </span>
-        )}
-      </Translation>
-    );
-    // console.log(`this.state.headline.text: ${this.state.headline.text}`);
-    // if this headline has not yet been translated there will be no
-    // translation ids in the welcomeInfo JSON object
-    // just render the raw copy in English
-    if (!headlineIds.length) {
-      headline = <React.Fragment>{this.state.headline.text}</React.Fragment>;
-    }
-    // console.log(headline);
-    // wrap in MUI typography element and return
-    return (
-      <Box
-        sx={{
-          fontSize: {
-            xs: "1.7rem",
-            sm: "1.7rem"
-          }
-        }}
-      >
-        <Typography
-          variant="h3"
-          align="left"
-          gutterBottom
-          style={{ paddingTop: 20, fontSize: "2.4rem" }}
-          data-testid="headline"
-        >
-          {headline}
-        </Typography>
-      </Box>
-    );
   };
 
   async updateSubmission(passedId, passedUpdates, formValues) {
@@ -986,7 +895,6 @@ export class AppUnconnected extends Component {
                     body={this.state.body}
                     image={this.state.image}
                     renderBodyCopy={this.renderBodyCopy}
-                    renderHeadline={this.renderHeadline}
                     createSubmission={this.createSubmission}
                     updateSubmission={this.updateSubmission}
                     lookupSFContact={this.lookupSFContact}

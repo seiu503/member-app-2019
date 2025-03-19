@@ -135,6 +135,9 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -228,6 +231,9 @@ const initialState = {
       ...formValues
     },
     p4cReturnValues: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
     cape: {
@@ -336,28 +342,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(() => {
         const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = await getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -430,28 +424,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(() => {
         const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -538,28 +520,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(() => {
         const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -646,28 +616,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(() => {
         const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message
@@ -754,28 +712,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // check that tab 1 renders
-      await waitFor(() => {
-        const tab1Form = getByRole("form");
-        expect(tab1Form).toBeInTheDocument();
-      });
-
-      // simulate submit tab1
+      // simulate submit spf
       await waitFor(() => {
         const submitButton = getByTestId("button-submit");
         userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
       });
 
       // expect snackbar to be in document with error styling and correct message

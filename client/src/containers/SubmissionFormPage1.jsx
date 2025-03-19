@@ -192,8 +192,13 @@ export class SubmissionFormPage1Container extends React.Component {
     // fetch token
     // this gRecaptcha key is attached to the seiu503@gmail.com account
     try { 
-      const token = await window.grecaptcha.enterprise 
+      let token;
+      if (process.env.REACT_APP_ENV_TEXT !== "test") {
+        token = await window.grecaptcha.enterprise 
         .execute(process.env.REACT_APP_GRECAPTCHA_SITEKEY, { action: "homepage" })
+      } else {
+        token = 'test'
+      } 
 
       console.log(`SPF1 198 token: ${token.length}`);
       await this.props.apiSubmission.handleInput({
@@ -222,7 +227,7 @@ export class SubmissionFormPage1Container extends React.Component {
         }
       } catch(err) {
         console.log("SFP1 218 verifyRecaptchaScore grecaptcha execute error")
-        console.log(err)
+        console.error(err)
       }
 
    };

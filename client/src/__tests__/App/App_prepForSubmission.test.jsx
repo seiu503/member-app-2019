@@ -123,6 +123,9 @@ const initialState = {
       reCaptchaValue: "token",
       ...formValues
     },
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {},
     allSubmissions: [{ key: "value" }],
     employerObjects: [...employersPayload],
@@ -145,6 +148,9 @@ const defaultProps = {
       monthlyOptions: []
     },
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -304,22 +310,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // simulate submit tab1
-      await waitFor(async () => {
+      // simulate submit spf
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -375,22 +375,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // simulate submit tab1
-      await waitFor(async () => {
+      // simulate submit spf
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -448,22 +442,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // simulate submit tab1
-      await waitFor(async () => {
+      // simulate submit spf
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
@@ -517,22 +505,16 @@ describe("<App />", () => {
         debug
       } = await setup(props);
 
-      // simulate user click 'Next'
+      // check that spf renders
       await waitFor(() => {
-        const nextButton = getByTestId("button-next");
-        userEvent.click(nextButton);
+        const spf = getByRole("form");
+        expect(spf).toBeInTheDocument();
       });
 
-      // simulate submit tab1
-      await waitFor(async () => {
+      // simulate submit spf
+      await waitFor(() => {
         const submitButton = getByTestId("button-submit");
-        await userEvent.click(submitButton);
-      });
-
-      // simulate submit tab2
-      await waitFor(async () => {
-        const submitButton = getByTestId("button-submit-tab2");
-        await userEvent.click(submitButton);
+        userEvent.click(submitButton);
       });
 
       // expect snackbar NOT to be in document
