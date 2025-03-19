@@ -48,7 +48,7 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleTab = this.handleTab.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
 
     // append and load gRecaptcha script
@@ -81,8 +81,15 @@ export class SubmissionFormPage1Container extends React.Component {
             console.log('prefill values');
             console.log(this.props.submission.prefillValues);
 
+            // add in language from browser, params, or redux store if we have it
+            await this.props.detectLanguage();
+            await this.props.apiSubmission.overridePrefillLang(this.props.submission.formPage1.preferredLanguage)
+
+            console.log('prefill values after language override');
+            console.log(this.props.submission.prefillValues);
+
             // check for complete prefill
-            console.log(Object.keys(prefillValidate(this.props.submission.prefillValues)));
+            console.log(Object.keys(prefillValidate({ ...this.props.submission.prefillValues, preferredLanguage: this.props.submission.formPage1.preferredLanguage })));
             if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
               console.log(`completePrefill: true`);
               this.props.apiSubmission.handleInput({
@@ -146,8 +153,8 @@ export class SubmissionFormPage1Container extends React.Component {
     // but preserve other params
     const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
     const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-    console.log(`cleanUrl3: ${cleanUrl3}`);
-    window.history.replaceState(null, null, cleanUrl3);
+    console.log(`cleanUrl2: ${cleanUrl2}`);
+    window.history.replaceState(null, null, cleanUrl2);
     window.location.reload(true);
   }
 

@@ -19,7 +19,8 @@ import {
   HANDLE_INPUT,
   HANDLE_INPUT_SPF,
   CLEAR_FORM,
-  SET_CAPE_OPTIONS
+  SET_CAPE_OPTIONS,
+  OVERRIDE_PREFILL_LANG
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -136,10 +137,24 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case HANDLE_INPUT_SPF:
-      console.log('HANDLE_INPUT_SPF');
       return update(state, {
           [action.payload.name]: { $set: action.payload.value }
       });   
+
+    case OVERRIDE_PREFILL_LANG:
+      console.log('OVERRIDE_PREFILL_LANG');
+      console.log(action.payload.value);
+      return update(state, {
+        // formPage1: {
+        //   preferredLanguage: { $set: action.payload.value }
+        // },
+        // p4cReturnValues: {
+        //   preferredLanguage: { $set: action.payload.value }
+        // },
+        prefillValues: {
+          preferredLanguage: { $set: action.payload.value }
+        }
+      });
 
     case CLEAR_FORM:
       return INITIAL_STATE;

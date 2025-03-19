@@ -85,8 +85,8 @@ export class AppUnconnected extends Component {
     this.generateSubmissionBody = this.generateSubmissionBody.bind(this);
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
-    this.setSPF = this.setSPF.bind(this);
     this.changeLanguage = this.changeLanguage.bind(this);
+    this.detectLanguage = this.detectLanguage.bind(this);
   }
 
   async componentDidMount() {
@@ -99,30 +99,40 @@ export class AppUnconnected extends Component {
     console.log(`NODE_ENV front end: ${process.env.REACT_APP_ENV_TEXT}`);
     console.log("### 20240223 prod 12:49PM ###");
 
-    // detect default language from browser
-    const defaultLanguage = detectDefaultLanguage().lang;
-    console.log(`defaultLanguage: ${defaultLanguage}`);
-
-    // set form language based on detected default language
-    this.changeLanguage(defaultLanguage);
-
-    // check if language was set in query string
-    const values = queryString.parse(this.props.location.search);
-    if (values.lang) {
-      console.log(`NEW changeLanguage: ${values.lang}`);
-      this.changeLanguage(values.lang);
-    }
+    await this.detectLanguage();
+    
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
+  async detectLanguage() {
+    // detect default language from browser
+    const defaultLanguage = detectDefaultLanguage().lang;
+    console.log(`defaultLanguage: ${defaultLanguage}`);
+
+    // set form language based on detected default language
+    await this.changeLanguage(defaultLanguage);
+
+    // check if language was set in query string
+    const values = queryString.parse(this.props.location.search);
+    if (values.lang) {
+      await this.changeLanguage(values.lang);
+    }
+  }
+
   async changeLanguage(lng) {
     // lng = code
-    // console.log(`NEW changeLanguage: ${lng} #######################`);
-    this.props.i18n.changeLanguage(lng);
-    const preferredLanguage = languageTransform(lng)['engName'];
+    console.log(`NEW changeLanguage: ${lng} #######################`);
+    console.dir(lng);
+    let code = lng;
+    if (typeof lng === "object") {
+      code = lng.lang;
+    } 
+    console.log(`code: ${code}`);
+    this.props.i18n.changeLanguage(code || "en");
+    const preferredLanguage = languageTransform(code)['engName'];
     // console.log(`preferredLanguage: ${preferredLanguage}`);
     await this.props.apiSubmission.handleInputSPF({
      target: { 
@@ -136,6 +146,7 @@ export class AppUnconnected extends Component {
     await this.props.apiSubmission.handleInput({
        target: { name: "preferredLanguage", value: preferredLanguage }
     });
+
     // console.log(`this.props.submission.formPage1.preferredLanguage: ${this.props.submission.formPage1.preferredLanguage }`);
     // console.log(`this.props.submission.p4cReturnValues:`);
     // console.dir(this.props.submission.p4cReturnValues);
@@ -967,6 +978,7 @@ export class AppUnconnected extends Component {
                     tab={this.state.tab}
                     embed={embed}
                     userSelectedLanguage={this.state.userSelectedLanguage}
+                    detectLanguage={this.detectLanguage}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}

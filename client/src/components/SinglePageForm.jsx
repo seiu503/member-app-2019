@@ -100,9 +100,11 @@ export const SinglePageForm = props => {
   let preferredLanguage;
   if (langOther) {
     preferredLanguage = "";
-  } else {
+  } else if (userSelectedLanguage) {
     preferredLanguage = userSelectedLanguage;
-  }
+  } else if (props.submission.formPage1.preferredLanguage) {
+    preferredLanguage = props.submission.formPage1.preferredLanguage
+  } 
 
   prefillValues.preferredLanguage = preferredLanguage;
 
