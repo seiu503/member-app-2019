@@ -347,10 +347,11 @@ exports.getSubmissionById = (req, res, next) => {
 */
 
 exports.verifyHumanity = async (req, res) => {
-  console.log("submissions.ctrl.js > 364");
+  console.log("submissions.ctrl.js > 364 @@@@@@@@@@@@@@@@ verifyHumanity");
   const projectID = "seiu503-online-membership-form";
   // this gRecaptcha key is attached to the seiu503@gmail.com account
   const recaptchaKey = process.env.GRECAPTCHA_SITEKEY;
+  console.log(`submissions.ctrl.js > 354: recaptchaKey: ${recaptchaKey}`);
   const recaptchaAction = "homepage";
   const { token } = req.body;
   // Create the reCAPTCHA client.
@@ -369,9 +370,9 @@ exports.verifyHumanity = async (req, res) => {
     parent: projectPath,
   });
   const [ response ] = await client.createAssessment(request);
-  // console.log('test response data @@@@@@@@@@@@@@@@ submissions.ctrl.js > 371');
-  // console.log(response.riskAnalysis);
-  // console.log(response.tokenProperties);
+  console.log('test response data @@@@@@@@@@@@@@@@ submissions.ctrl.js > 373');
+  console.log(response.riskAnalysis);
+  console.log(response.tokenProperties);
  
   // Check if the token is valid.
   if (!response.tokenProperties.valid) {
