@@ -136,6 +136,7 @@ function Submission(state = INITIAL_STATE, action) {
       });
 
     case HANDLE_INPUT_SPF:
+      console.log('HANDLE_INPUT_SPF');
       return update(state, {
           [action.payload.name]: { $set: action.payload.value }
       });   

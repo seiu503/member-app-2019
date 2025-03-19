@@ -1,4 +1,5 @@
 const options = { year: "numeric", month: "short", day: "numeric" };
+import { languageMap, languageMapEnglish, getKeyByValue } from "../../src/components/SubmissionFormElements";
 
 export const formatDate = date =>
   new Date(date).toLocaleDateString("en-US", options);
@@ -124,6 +125,27 @@ export const detectDefaultLanguage = () => {
   }
   return {lang: "en", other: true};
 };
+
+export const languageTransform = (code, engName, endonym) => {
+  if (code) {
+    return {
+      engName: getKeyByValue(languageMapEnglish,code),
+      endonym: getKeyByValue(languageMap,code)
+    }
+  }
+  if (engName) {
+    return {
+      code: languageMapEnglish[engName],
+      endonym: languageMap[languageMapEnglish[engName]]
+    }
+  }
+  if (endonym) {
+    return {
+      code: languageMap[endonym],
+      engName: languageMapEnglish[languageMap[endonym]]
+    }
+  }
+}
 
 export const scrollToFirstError = errors => {
   // search through errors object to find only those currently mounted in DOM

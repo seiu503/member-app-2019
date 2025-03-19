@@ -14,7 +14,7 @@ import { Typography, CssBaseline, Box } from "@mui/material";
 import * as Actions from "./store/actions";
 import * as apiSFActions from "./store/actions/apiSFActions";
 import * as apiSubmissionActions from "./store/actions/apiSubmissionActions";
-import { defaultWelcomeInfo, detectDefaultLanguage } from "./utils/index";
+import { defaultWelcomeInfo, detectDefaultLanguage, languageTransform } from "./utils/index";
 
 import NavBar from "./containers/NavBar";
 import Footer from "./components/Footer";
@@ -86,6 +86,7 @@ export class AppUnconnected extends Component {
     this.openSnackbar = this.openSnackbar.bind(this);
     this.handleError = this.handleError.bind(this);
     this.setSPF = this.setSPF.bind(this);
+    this.changeLanguage = this.changeLanguage.bind(this);
   }
 
   async componentDidMount() {
@@ -102,19 +103,14 @@ export class AppUnconnected extends Component {
     const defaultLanguage = detectDefaultLanguage().lang;
     console.log(`defaultLanguage: ${defaultLanguage}`);
 
-    const changeLanguage = lng => {
-      // console.log(`NEW changeLanguage: ${lng}`);
-      this.props.i18n.changeLanguage(lng);
-    };
-
     // set form language based on detected default language
-    changeLanguage(defaultLanguage);
+    this.changeLanguage(defaultLanguage);
 
     // check if language was set in query string
     const values = queryString.parse(this.props.location.search);
     if (values.lang) {
       console.log(`NEW changeLanguage: ${values.lang}`);
-      changeLanguage(values.lang);
+      this.changeLanguage(values.lang);
     }
 
     // check for spf status
@@ -122,12 +118,38 @@ export class AppUnconnected extends Component {
       const newState = { ...this.state };
       newState.spf = true;
       this._isMounted && this.setState({ ...newState });
+      // set language for spf
+
     }
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
+
+  async changeLanguage(lng) {
+    // lng = code
+    // console.log(`NEW changeLanguage: ${lng} #######################`);
+    this.props.i18n.changeLanguage(lng);
+    const preferredLanguage = languageTransform(lng)['engName'];
+    // console.log(`preferredLanguage: ${preferredLanguage}`);
+    await this.props.apiSubmission.handleInputSPF({
+     target: { 
+        name: "p4cReturnValues", 
+        value: {
+         ...this.props.submission.p4cReturnValues, 
+         preferredLanguage: preferredLanguage
+        }
+      }
+    });
+    await this.props.apiSubmission.handleInput({
+       target: { name: "preferredLanguage", value: preferredLanguage }
+    });
+    // console.log(`this.props.submission.formPage1.preferredLanguage: ${this.props.submission.formPage1.preferredLanguage }`);
+    // console.log(`this.props.submission.p4cReturnValues:`);
+    // console.dir(this.props.submission.p4cReturnValues);
+    // console.log(`this.props.submission.p4cReturnValues.preferredLanguage: ${this.props.submission.p4cReturnValues.preferredLanguage}`);
+  };
 
   openSnackbar = async (variant, message) => {
     const newState = { ...this.state };
@@ -187,12 +209,8 @@ export class AppUnconnected extends Component {
     // console.log(languageCode);
     const language = languageCode ? languageCode : defaultLanguage;
     // set form language based on detected default language
-    const changeLanguage = lng => {
-      // console.log(`NEW changeLanguage: ${lng}`);
-      this.props.i18n.changeLanguage(lng);
-    };
 
-    changeLanguage(language);
+    this.changeLanguage(language);
   };
 
   renderBodyCopy = id => {
@@ -489,8 +507,8 @@ export class AppUnconnected extends Component {
         target: { name: "p4cReturnValues", value: {... returnValues } }
       });
 
-      // console.log(`checking redux store for returnValues`);
-      // console.log(this.props.submission);
+      console.log(`checking redux store for returnValues ####################`);
+      console.log(this.props.submission.p4cReturnValues);
 
       console.log("App 509 prepForContact resolve");
       resolve(returnValues);
@@ -584,7 +602,11 @@ export class AppUnconnected extends Component {
       work_phone,
       hire_date
     } = secondValues;
-    // console.log(`hire_date: ${hire_date}`);
+    console.log(`preferredLanguage: ${preferredLanguage}`);
+
+    // if(!preferredLanguage) {
+    //   preferredLanguage = this.state.userSelectedLanguage ? this.state.userSelectedLanguage : ""
+    // }
 
     if (hire_date) {
       let hireDate = moment(new Date(hire_date));
@@ -660,7 +682,10 @@ export class AppUnconnected extends Component {
     // create initial submission using data in tabs 1 & 2
     console.log("App 682 createSubmission start");
     const body = await this.generateSubmissionBody(formValues, partial);
-    // console.log(body);
+    // console.log(`@@@@@@@@@@  SUBMISSIONBODY  @@@@@@@@@`);
+    // console.log(formValues);
+    // console.log(`body.preferredLanguage: ${body.preferredLanguage}`);
+    // console.log(`body.preferred_language: ${body.preferred_language}`);
     const cleanBody = removeFalsy(body);
     // console.log(cleanBody);
     await this.props.apiSubmission
@@ -699,6 +724,8 @@ export class AppUnconnected extends Component {
 
     body.Worker__c = this.props.submission.salesforceId;
     body.tmp_1 = tmp1;
+    // console.log(`##########   OMABODY   ###########`);
+    // console.log(body);
 
     // create Online Member App record
     return this.props.apiSF
@@ -815,6 +842,7 @@ export class AppUnconnected extends Component {
     });
   }
 
+  // called from SFP1 > 570 handleTab1 / updateContactAndMoveToNextTab
   async updateSFContact(formValues) {
     console.log("App 846 updateSFContact");
     let values;
@@ -825,6 +853,8 @@ export class AppUnconnected extends Component {
       console.log('spf OR completePrefill = false; running p4c');
       values = await this.prepForContact(formValues);
     }
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    console.log(values);
 
     let {
       firstName,
@@ -953,6 +983,7 @@ export class AppUnconnected extends Component {
                     spf={this.state.spf}
                     setSPF={this.setSPF}
                     embed={embed}
+                    userSelectedLanguage={this.state.userSelectedLanguage}
                     legal_language={this.legal_language}
                     cape_legal={this.cape_legal}
                     sigBox={this.sigBox}

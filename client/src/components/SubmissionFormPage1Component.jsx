@@ -5,6 +5,8 @@ import { Box } from "@mui/material";
 
 import { withTranslation } from "react-i18next";
 import * as formElements from "./SubmissionFormElements";
+import * as utils from "../utils";
+
 import NavTabs from "./NavTabs";
 import SinglePageForm from "./SinglePageForm";
 import Tab1Form from "./Tab1";
@@ -20,7 +22,8 @@ export class SubmissionFormPage1Component extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      signatureType: "draw"
+      signatureType: "draw",
+      defaultLanguage: "English"
     };
   }
   sigBox = {};
@@ -273,7 +276,7 @@ export class SubmissionFormPage1Component extends React.Component {
             classes={classes}
             employerTypesList={employerTypesList}
             employerList={employerList}
-            handleInput={this.props.apiSubmission.handleInput}
+            handleInput={this.props.apiSubmission.handleInputSPF}
             updateEmployersPicklist={this.updateEmployersPicklist}
             renderSelect={this.renderSelect}
             renderTextField={this.renderTextField}
