@@ -143,6 +143,43 @@ export const SinglePageForm = props => {
         borderRadius: "0 0 4px 4px"
       }}
     >
+    {process.env.REACT_APP_ENV_TEXT !== "production" && (
+      <Box
+        sx={{
+          padding: "20px",
+          backgroundColor: "danger.main", // orange[500], // #b71c1c
+          margin: {
+            xs: "auto -20px",
+            sm: "-20px -20px 0px -20px",
+            // md: "10px",
+            // lg: "10px",
+            xl: "0px"
+          }
+        }}
+      >
+        <div>
+          <Typography
+            variant="body1"
+            gutterBottom
+            data-testid="testWarning"
+            style={{ display: "inline" }}
+          >
+            This form is for testing only. Membership data submitted
+            through this form will not be processed. If you landed on the
+            test page by mistake and want to become a member of SEIU Local
+            503, please click here:&nbsp;
+          </Typography>
+          <strong>
+            <a
+              style={{ fontWeight: "bold", fontSize: "1.2em" }}
+              href="https://seiu503signup.org"
+            >
+              seiu503signup.org
+            </a>
+          </strong>
+        </div>
+      </Box>
+    )}
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         role="form"
