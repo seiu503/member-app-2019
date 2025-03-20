@@ -45,7 +45,9 @@ const defaultProps = {
   width: "lg",
   handleTab: jest.fn(),
   handleInput: jest.fn(),
-  prefillValues: {}
+  submission: {
+    prefillValues: {}
+  }
 };
 
 const theme = createTheme(adaptV4Theme);

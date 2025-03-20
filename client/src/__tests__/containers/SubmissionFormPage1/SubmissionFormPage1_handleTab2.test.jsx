@@ -135,6 +135,9 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",
@@ -322,11 +325,11 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         debug
       } = await setup(props);
 
-      const tab2Form = getByTestId("form-tab2");
+      const spf = getByTestId("form-spf");
 
       // simulate submit tab1
       await waitFor(async () => {
-        await fireEvent.submit(tab2Form);
+        await fireEvent.submit(spf);
       });
 
       // expect handleInputMock to have been called setting `howManyTabs` to 3

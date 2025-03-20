@@ -19,7 +19,8 @@ import {
   HANDLE_INPUT,
   HANDLE_INPUT_SPF,
   CLEAR_FORM,
-  SET_CAPE_OPTIONS
+  SET_CAPE_OPTIONS,
+  OVERRIDE_PREFILL_LANG
 } from "../actions/apiSubmissionActions";
 
 import {
@@ -140,6 +141,21 @@ function Submission(state = INITIAL_STATE, action) {
           [action.payload.name]: { $set: action.payload.value }
       });   
 
+    case OVERRIDE_PREFILL_LANG:
+      console.log('OVERRIDE_PREFILL_LANG');
+      console.log(action.payload.value);
+      return update(state, {
+        // formPage1: {
+        //   preferredLanguage: { $set: action.payload.value }
+        // },
+        // p4cReturnValues: {
+        //   preferredLanguage: { $set: action.payload.value }
+        // },
+        prefillValues: {
+          preferredLanguage: { $set: action.payload.value }
+        }
+      });
+
     case CLEAR_FORM:
       return INITIAL_STATE;
 
@@ -238,8 +254,12 @@ function Submission(state = INITIAL_STATE, action) {
         // split ethinicity string, provide true value for each ethnicity returned
         let ethnicities = [""];
         if (action.payload.Ethnicity__c) {
-          ethnicities = action.payload.Ethnicity__c.split(", ");
+          ethnicities = action.payload.Ethnicity__c.split(";");
         }
+        ethnicities = ethnicities.map(item => formElements.getKeyByValue(formElements.ethnicitiesMap, item.trim()));
+        console.log(`submission.js > GET_SF_CONTACT_DID_SUCCESS`);
+        console.log('^^^^^^^^^^^^^^^^^^^^^');
+        console.log(ethnicities);
         const ethnicitiesObj = {};
         ethnicities.map(item => {
           if (item === "Declined") {
@@ -249,6 +269,7 @@ function Submission(state = INITIAL_STATE, action) {
           }
           return null;
         });
+        console.dir(ethnicitiesObj);
         const zip = action.payload.MailingPostalCode
           ? action.payload.MailingPostalCode.slice(0, 5)
           : "";

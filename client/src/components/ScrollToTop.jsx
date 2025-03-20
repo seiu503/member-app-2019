@@ -7,7 +7,6 @@ export class UnwrappedScrollToTop extends React.Component {
       this.props.location !== prevProps.location &&
       !this.props.location.hash
     ) {
-      console.log("10");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }

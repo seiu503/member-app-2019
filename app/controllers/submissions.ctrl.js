@@ -1,5 +1,6 @@
-const axios = require("axios");
+// const axios = require("axios");
 const url = require("url");
+const {RecaptchaEnterpriseServiceClient} = require('@google-cloud/recaptcha-enterprise');
 
 /*
    Route handlers for fetching and updating submissions.
@@ -335,45 +336,67 @@ exports.getSubmissionById = (req, res, next) => {
       res.status(500).json({ message: err.message });
     });
 };
-
 /**
- *
- * @param {String} token captcha token returned to form from google
- * @param {String} ip_address users ipAdress
- * @returns {Bool} returns true for human, false for bot
- */
+* Create an assessment to analyze the risk of a UI action.
+  *
+  * projectID: Your Google Cloud Project ID.
+  * recaptchaSiteKey: The reCAPTCHA key associated with the site/app
+  * token: The generated token obtained from the client.
+  * recaptchaAction: Action name corresponding to the token.
+  *
+*/
+
 exports.verifyHumanity = async (req, res) => {
-  console.log("submissions.ctrl.js > 346");
-  const ip = this.getClientIp(req);
-  console.log(`verifyHumanity: ${ip}`);
+  console.log("submissions.ctrl.js > 364 @@@@@@@@@@@@@@@@ verifyHumanity");
+  const projectID = "seiu503-online-membership-form";
+  // this gRecaptcha key is attached to the seiu503@gmail.com account
+  const recaptchaKey = process.env.GRECAPTCHA_SITEKEY;
+  console.log(`submissions.ctrl.js > 354: recaptchaKey: ${recaptchaKey}`);
+  const recaptchaAction = "homepage";
   const { token } = req.body;
-  const key = process.env.RECAPTCHA_V3_SECRET_KEY;
+  // Create the reCAPTCHA client.
+  // TODO: Cache the client generation code (recommended) or call client.close() before exiting the method.
+  const client = new RecaptchaEnterpriseServiceClient();
+  const projectPath = client.projectPath(projectID);
 
-  const { err, data } = await axios.post(
-    "https://www.google.com/recaptcha/api/siteverify",
-    {
-      secret: key,
-      response: token,
-      remoteip: ip
+// Build the assessment request.
+  const request = ({
+    assessment: {
+      event: {
+        token: token,
+        siteKey: recaptchaKey,
+      },
     },
-    {
-      headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    }
-  );
+    parent: projectPath,
+  });
+  const [ response ] = await client.createAssessment(request);
+  console.log('test response data @@@@@@@@@@@@@@@@ submissions.ctrl.js > 373');
+  console.log(response.riskAnalysis);
+  console.log(response.tokenProperties);
+ 
+  // Check if the token is valid.
+  if (!response.tokenProperties.valid) {
+    console.error(`submissions.ctrl.js > 367`);
+    console.log(response.tokenProperties);
+    console.log(`The CreateAssessment call failed because the token was: ${response.tokenProperties.invalidReason}`);
 
-  if (err) {
-    console.error(`submissions.ctrl.js > 370: ${err}`);
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({ message: response.tokenProperties.invalidReason });
+  }
+
+  // Check if the expected action was executed.
+  // The `action` property is set by user client in the grecaptcha.enterprise.execute() method.
+ 
+  if (response.tokenProperties.action === recaptchaAction) {
+    // Get the risk score and the reason(s).
+    // For more information on interpreting the assessment, see:
+    // https://cloud.google.com/recaptcha-enterprise/docs/interpret-assessment
+    console.log(`The reCAPTCHA score is: ${response.riskAnalysis.score}`);
+    response.riskAnalysis.reasons.forEach((reason) => {
+      console.log(reason);
+    });
+    return res.status(200).json({ score: response.riskAnalysis.score });
   } else {
-    if (data.success) {
-      console.log(`submissions.ctrl.js > 375: recaptcha score: ${data.score}`);
-      return res.status(200).json({ score: data.score });
-    } else {
-      console.error(`submissions.ctrl.js > 378: recaptcha failure`);
-      console.error(data["error-codes"][0]);
-      return res.status(500).json({ message: data["error-codes"][0] });
-    }
+    console.log("The action attribute in your reCAPTCHA tag does not match the action you are expecting to score");
+    return res.status(500).json({ message: "ReCAPTCHA failure, action attribute in reCAPTCHA tag does not match the action" });
   }
 };

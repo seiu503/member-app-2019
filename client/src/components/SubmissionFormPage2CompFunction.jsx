@@ -62,7 +62,8 @@ export const SubmissionFormPage2CompFunction = props => {
       Wyyyy
     } = props.formValues;
     const ethnicity = formElements.calcEthnicity(props.formValues);
-    // console.log(ethnicity);
+    console.log(`@@@@@@@@@ SFP2 @@@@@@@@@@@`);
+    console.log(props.formValues);
     const genderCleaned = formElements.calcGenderOrPronoun(gender);
     const genderPronounCleaned = formElements.calcGenderOrPronoun(
       genderPronoun
@@ -98,6 +99,8 @@ export const SubmissionFormPage2CompFunction = props => {
     };
     console.log(body);
     const cleanBody = formElements.removeFalsy(body);
+    console.log(`####### page 2 body submit to update SF contact check demo ids #####`);
+    console.log(cleanBody);
     let salesforceId = props.submission.salesforceId;
     if (!salesforceId) {
       const params = queryString.parse(props.location.search);

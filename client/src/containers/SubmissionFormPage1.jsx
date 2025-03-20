@@ -48,8 +48,14 @@ export class SubmissionFormPage1Container extends React.Component {
     this.handleTab = this.handleTab.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this._isMounted = true;
+
+    // append and load gRecaptcha script
+    const script = document.createElement("script")
+    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${process.env.REACT_APP_GRECAPTCHA_SITEKEY}`
+    document.body.appendChild(script)
+
     // console.log(`SubmFormP1Container this.props.location`);
     // console.log(this.props.location);
     // console.log(`SubmFormP1Container this.props.history`);
@@ -74,19 +80,24 @@ export class SubmissionFormPage1Container extends React.Component {
             this.handleOpen();
             console.log('prefill values');
             console.log(this.props.submission.prefillValues);
-            // check for complete prefill for spf only
-            if (params.spf) {
-              console.log(Object.keys(prefillValidate(this.props.submission.prefillValues)));
-              if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
-                console.log(`completePrefill: true`);
-                this.props.apiSubmission.handleInput({
-                  target: { name: "completePrefill", value: true }
-                });
-              } else {
-                console.log('completePrefill: false');
-              }
+
+            // add in language from browser, params, or redux store if we have it
+            await this.props.detectLanguage();
+            await this.props.apiSubmission.overridePrefillLang(this.props.submission.formPage1.preferredLanguage)
+
+            console.log('prefill values after language override');
+            console.log(this.props.submission.prefillValues);
+
+            // check for complete prefill
+            console.log(Object.keys(prefillValidate({ ...this.props.submission.prefillValues, preferredLanguage: this.props.submission.formPage1.preferredLanguage })));
+            if (!Object.keys(prefillValidate(this.props.submission.prefillValues)).length) {
+              console.log(`completePrefill: true`);
+              this.props.apiSubmission.handleInput({
+                target: { name: "completePrefill", value: true }
+              });
+            } else {
+              console.log('completePrefill: false');
             }
-            // this.props.setCAPEOptions();
           } else {
             // if prefill lookup fails, remove ids from query params
             // and reset to blank form
@@ -137,18 +148,13 @@ export class SubmissionFormPage1Container extends React.Component {
     const newState = { ...this.state };
     newState.open = false;
     this._isMounted && this.setState({ ...newState });
-    if (this.props.spf) {
-      // reset to blank multi-page form
-      this.props.setSPF(false); 
-    }
     this.props.apiSubmission.clearForm();
     // remove cId & aId from route params if no match,
     // but preserve other params
     const cleanUrl1 = utils.removeURLParam(window.location.href, "cId");
     const cleanUrl2 = utils.removeURLParam(cleanUrl1, "aId");
-    const cleanUrl3 = utils.removeURLParam(cleanUrl2, "spf");
-    console.log(`cleanUrl3: ${cleanUrl3}`);
-    window.history.replaceState(null, null, cleanUrl3);
+    console.log(`cleanUrl2: ${cleanUrl2}`);
+    window.history.replaceState(null, null, cleanUrl2);
     window.location.reload(true);
   }
 
@@ -178,44 +184,53 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("SFP1 160 verifyRecaptchaScore");
-
+    console.log("SFP1 187 verifyRecaptchaScore");
     // set loading
     console.log("setting spinner");
     this.props.actions.setSpinner();
 
     // fetch token
-    await this.props.recaptcha.current.execute();
+    // this gRecaptcha key is attached to the seiu503@gmail.com account
+    try { 
+      let token;
+      if (process.env.REACT_APP_ENV_TEXT !== "test") {
+        token = await window.grecaptcha.enterprise 
+        .execute(process.env.REACT_APP_GRECAPTCHA_SITEKEY, { action: "homepage" })
+      } else {
+        token = 'test'
+      } 
 
-    // then verify
-    const token = this.props.submission.formPage1.reCaptchaValue;
-    // console.log(`token: ${token}`);
+      console.log(`SPF1 198 token: ${token.length}`);
+      await this.props.apiSubmission.handleInput({
+        target: { name: "reCaptchaValue", value: token }
+      });
+      console.log(this.props.submission.formPage1.reCaptchaValue.length);
 
-    // check for token every 200ms until returned to avoid race condition
-    (async () => {
-      while (!token) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-      }
-    })();
-    if (token) {
-      console.log("SFP1 175 verifyRecaptchaScore");
-      this.props.apiSubmission
-        .verify(token)
-        .then(result => {
-          console.log("SFP1 179 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
-          return result.payload.score;
-        })
-        .catch(err => {
-          console.error(err);
+        // then verify
+        if (token) {
+          console.log("SFP1 198 verifyRecaptchaScore");
+          try {
+            const result = await this.props.apiSubmission.verify(token);
+            console.log("SFP1 202 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
+            return result.payload.score;
+            }
+          catch(err) {
+            console.log("SPF1 206 verifyRecaptchaScore verify catch err");
+            console.error(err);
+            const rcErr = this.props.t("reCaptchaError");
+            return this.props.handleError(rcErr);
+           };
+         } else {
+          console.log("SFP1 212 verifyRecaptchaScore no token err");
           const rcErr = this.props.t("reCaptchaError");
           return this.props.handleError(rcErr);
-        });
-    } else {
-      console.log("SFP1 188 verifyRecaptchaScore");
-      const rcErr = this.props.t("reCaptchaError");
-      return this.props.handleError(rcErr);
-    }
-  }
+        }
+      } catch(err) {
+        console.log("SFP1 218 verifyRecaptchaScore grecaptcha execute error")
+        console.error(err)
+      }
+
+   };
 
   async saveLegalLanguage() {
     console.log('SFP1 195 saveLegalLanguage start');
@@ -375,26 +390,24 @@ export class SubmissionFormPage1Container extends React.Component {
     console.dir(formValues);
     if (standAlone) {
       // verify recaptcha score
-      try {
-        await this.verifyRecaptchaScore()
-          .then(score => {
-            // console.log(`score: ${score}`);
-            if (score <= 0.3) {
-              console.log(`recaptcha failed: ${score}`);
-              // don't return to client here, because of race condition this fails initially
-              // then passes after error is returned
-              // return this.props.handleError(
-              //   this.props.t("reCaptchaError")
-              // );
-              return;
-            }
-          })
-          .catch(err => {
-            console.error(err);
-          });
-      } catch (err) {
-        console.error(err);
-      }
+      await this.verifyRecaptchaScore()
+        .then(score => {
+          console.log('SFP1 handleCAPESubmit 396')
+          console.log(`score: ${score}`);
+          if (!score || score <= 0.3) {
+            console.error(`recaptcha failed: ${score}`);
+            // don't return to client here, because of race condition this fails initially
+            // then passes after error is returned -- just log to console
+            // return this.props.handleError(
+            //   this.props.t("reCaptchaError")
+            // );
+            return;
+          }
+        })
+        .catch(err => {
+          console.log('SFP1 handleCAPESubmit 407');
+          console.error(err);
+        });
     }
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
@@ -567,17 +580,13 @@ export class SubmissionFormPage1Container extends React.Component {
           return this.props.handleError(err);
         });
       console.log('SFP1 545 handleTab1 updateContactAndMoveToNextTab');
-      if (this.props.spf) {
-        console.log('single page form: calling handleTab2 after updating contact');
-        return this.handleTab2()
-          .catch(err => {
-            console.error(err);
-            return this.props.handleError(err);
-          });
-      } else {
-        console.log('not spf: moving to tab 2');
-        return this.props.changeTab(1);
-      }
+      console.log('single page form: calling handleTab2 after updating contact');
+      return this.handleTab2()
+        .catch(err => {
+          console.error(err);
+          return this.props.handleError(err);
+        });
+
     };
 
     console.log("SFP1 557 handleTab1");
@@ -607,13 +616,10 @@ export class SubmissionFormPage1Container extends React.Component {
           console.error(err);
           return this.props.handleError(err);
         });
-        if (this.props.spf) {
-          console.log('single page form: calling handleTab2 after creating new contact');
-          return this.handleTab2();
-        } else {
-          console.log('not spf: moving to tab 2');
-          return this.props.changeTab(1);
-        }
+
+        console.log('single page form: calling handleTab2 after creating new contact');
+        return this.handleTab2();
+
       } 
     }
   }
@@ -686,7 +692,6 @@ export class SubmissionFormPage1Container extends React.Component {
           {...this.props}
           change={change}
           tab={this.props.tab}
-          spf={this.props.spf}
           handleTab={this.handleTab}
           back={this.props.changeTab}
           handleUpload={this.handleUpload}

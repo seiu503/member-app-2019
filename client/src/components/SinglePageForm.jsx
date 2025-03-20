@@ -1,3 +1,4 @@
+import React, { useEffect, useRef } from "react";
 import {
   Field,
   reduxForm,
@@ -30,6 +31,7 @@ const {
   dateOptions,
   yearOptions,
   classesPage1,
+  languageMap,
   languageMapEnglish,
   getKeyByValue
 } = formElements;
@@ -57,12 +59,13 @@ export const SinglePageForm = props => {
     renderSelect,
     renderTextField,
     renderCheckbox,
-    prefillValues,
     formValues,
     width,
     // verifyCallback,
     legal_language
   } = props;
+
+  const prefillValues = props.submission.prefillValues;
 
   // console.log(employerTypesList);
   // console.log(employerTypesList.length);
@@ -73,27 +76,47 @@ export const SinglePageForm = props => {
   // console.log("SinglePageFormRender prefillValues");
   // console.log(prefillValues);
 
-  const classes = classesPage1;
-
+  // detect user language, set preferred language for spf
+  // this determines whether language field is displayed and sets value for submission and 
+  // OMA but NOT for updating SF contact (that happens in App cDM and changeLanguage)
+  
   const defaultLanguage = utils.detectDefaultLanguage().lang;
   // console.log(`defaultLanguage: ${defaultLanguage}`);
+  // console.log(`userSelectedLanguage: ${props.userSelectedLanguage}`);
+
   const langOther = utils.detectDefaultLanguage().other;
   // console.log(`langOther: ${langOther}`);
-  const currentLanguage = getKeyByValue(languageMapEnglish,defaultLanguage);
-  // console.log(`language for preferred language field: ${currentLanguage}`);
-  if (langOther) {
-    prefillValues.preferredLanguage = "";
+
+  let languageCode;
+  if (props.userSelectedLanguage) {
+    languageCode = languageMap[props.userSelectedLanguage]
   } else {
-    prefillValues.preferredLanguage = currentLanguage;
+    languageCode = defaultLanguage
   }
-  // console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-  // console.log(prefillValues.preferredLanguage);
+  // console.log(`languageCode: ${languageCode}`);
+  const userSelectedLanguage = getKeyByValue(languageMapEnglish,languageCode);
+  // console.log(`userSelectedLanguage: ${userSelectedLanguage}`);
+  // console.log(`language for preferred language field: ${currentLanguage}`);
+
+  let preferredLanguage;
+  if (langOther) {
+    preferredLanguage = "";
+  } else if (userSelectedLanguage) {
+    preferredLanguage = userSelectedLanguage;
+  } else if (props.submission.formPage1.preferredLanguage) {
+    preferredLanguage = props.submission.formPage1.preferredLanguage
+  } 
+
+  prefillValues.preferredLanguage = preferredLanguage;
+
   const prefillErrors = prefillValidate(prefillValues);
 
   const completeAddress = !prefillErrors.homeStreet && !prefillErrors.homeCity && !prefillErrors.homeZip;
   // console.log(`completeAddress: ${completeAddress}`);
   // console.log(`prefillErrors`);
   // console.log(prefillErrors);
+
+  const classes = classesPage1;
 
   const employerNameOnChange = () => {
     handleEmployerChange();
@@ -120,11 +143,51 @@ export const SinglePageForm = props => {
         borderRadius: "0 0 4px 4px"
       }}
     >
+    {process.env.REACT_APP_ENV_TEXT !== "production" && (
+      <Box
+        sx={{
+          padding: "20px",
+          backgroundColor: "danger.main", // orange[500], // #b71c1c
+          margin: {
+            xs: "0px -20px 20px -20px",
+            sm: "-20px -20px 20px -20px",
+            md: "-20px -20px 20px -20px",
+            lg: "-20px -20px 20px -20px",
+            xl: "0px 0px 20px 0px"
+          }
+        }}
+      >
+        <div>
+          <Typography
+            variant="body1"
+            gutterBottom
+            data-testid="testWarning"
+            style={{ display: "inline" }}
+          >
+            This form is for testing only. Membership data submitted
+            through this form will not be processed. If you landed on the
+            test page by mistake and want to become a member of SEIU Local
+            503, please click here:&nbsp;
+          </Typography>
+          <strong>
+            <a
+              style={{ fontWeight: "bold", fontSize: "1.2em" }}
+              href="https://seiu503signup.org"
+            >
+              seiu503signup.org
+            </a>
+          </strong>
+        </div>
+      </Box>
+    )}
       <form
         onSubmit={props.handleSubmit(onSubmit)}
         role="form"
         id="singlePageForm"
         data-testid="form-spf"
+        sx={{
+          marginTop: "20px !important"
+        }}
       >
         {prefillErrors.employerName &&
           <>
@@ -135,9 +198,9 @@ export const SinglePageForm = props => {
                   backgroundColor: "danger.main", // orange[500], // #b71c1c
                   margin: {
                     xs: "auto -20px",
-                    sm: "-20px -20px 0px -20px",
-                    md: "10px 0px",
-                    lg: "10px 0px",
+                    sm: "0px -20px 0px -20px",
+                    md: "20px 0px",
+                    lg: "20px 0px",
                     xl: "0px"
                   }
                 }}
@@ -541,7 +604,7 @@ export const SinglePageForm = props => {
               type="submit"
               color="primary"
               data-testid="button-submit"
-              className={`g-recaptcha`}
+              // className={`g-recaptcha`}
               sx={{
                 textTransform: "none",
                 fontSize: "1.3rem",
@@ -553,7 +616,7 @@ export const SinglePageForm = props => {
                 // classes.next
               }}
               variant="contained"
-              data-sitekey="6LdzULcUAAAAAJ37JEr5WQDpAj6dCcPUn1bIXq2O"
+              data-sitekey={process.env.REACT_APP_GRECAPTCHA_SITEKEY}
               // data-callback={verifyCallback}
             >
               <Trans i18nKey="next">Next</Trans>

@@ -114,6 +114,9 @@ const defaultProps = {
     },
     cape: {},
     payment: {},
+    prefillValues: {
+      preferredLanguage: ""
+    },
     p4cReturnValues: {
       firstName: "firstName",
       lastName: "lastName",

@@ -193,7 +193,7 @@ describe("<CAPE />", () => {
       );
       await waitFor(async() => {
         const component = getByTestId("cape-form");
-        const radio = getByLabelText("$4");
+        const radio = getByLabelText("$10");
         const user = userEvent.setup();
         await user.click(component);
         await fireEvent.submit(component);
@@ -302,12 +302,12 @@ describe("<CAPE />", () => {
         { ...testProps },
         "/?cape=true"
       );
-      const component = getByLabelText("$4");
+      const component = getByLabelText("$10");
       expect(component).toBeInTheDocument();
       const user = userEvent.setup();
       await waitFor(async() => {
         await user.click(component);
-        expect(component.value).toBe('4');
+        expect(component.value).toBe('10');
       });
     });
 

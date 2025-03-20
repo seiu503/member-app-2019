@@ -20,6 +20,7 @@ export const UPDATE_SUBMISSION_SUCCESS = "UPDATE_SUBMISSION_SUCCESS";
 export const UPDATE_SUBMISSION_FAILURE = "UPDATE_SUBMISSION_FAILURE";
 export const HANDLE_INPUT = "HANDLE_INPUT";
 export const HANDLE_INPUT_SPF = "HANDLE_INPUT_SPF";
+export const OVERRIDE_PREFILL_LANG = "OVERRIDE_PREFILL_LANG";
 export const CLEAR_FORM = "CLEAR_FORM";
 export const SET_CAPE_OPTIONS = "SET_CAPE_OPTIONS";
 export const VERIFY_REQUEST = "VERIFY_REQUEST";
@@ -40,6 +41,13 @@ export function handleInputSPF({ target: { name, value } }) {
   return {
     type: HANDLE_INPUT_SPF,
     payload: { name, value }
+  };
+}
+
+export function overridePrefillLang(value) {
+  return {
+    type: OVERRIDE_PREFILL_LANG,
+    payload: { value }
   };
 }
 
