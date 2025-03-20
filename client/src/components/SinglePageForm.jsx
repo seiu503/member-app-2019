@@ -149,11 +149,11 @@ export const SinglePageForm = props => {
           padding: "20px",
           backgroundColor: "danger.main", // orange[500], // #b71c1c
           margin: {
-            xs: "auto -20px",
-            sm: "-20px -20px 0px -20px",
-            // md: "10px",
-            // lg: "10px",
-            xl: "0px"
+            xs: "0px -20px 20px -20px",
+            sm: "-20px -20px 20px -20px",
+            md: "-20px -20px 20px -20px",
+            lg: "-20px -20px 20px -20px",
+            xl: "0px 0px 20px 0px"
           }
         }}
       >
@@ -185,6 +185,9 @@ export const SinglePageForm = props => {
         role="form"
         id="singlePageForm"
         data-testid="form-spf"
+        sx={{
+          marginTop: "20px !important"
+        }}
       >
         {prefillErrors.employerName &&
           <>
@@ -195,9 +198,9 @@ export const SinglePageForm = props => {
                   backgroundColor: "danger.main", // orange[500], // #b71c1c
                   margin: {
                     xs: "auto -20px",
-                    sm: "-20px -20px 0px -20px",
-                    md: "10px 0px",
-                    lg: "10px 0px",
+                    sm: "0px -20px 0px -20px",
+                    md: "20px 0px",
+                    lg: "20px 0px",
                     xl: "0px"
                   }
                 }}

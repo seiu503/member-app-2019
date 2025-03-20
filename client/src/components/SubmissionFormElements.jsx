@@ -285,7 +285,7 @@ export const ethnicitiesMap = {
   declined: "Declined"
 };
 
-export const calcEthnicity = values => {
+export const calcEthnicity = (values) => {
   const {
     africanOrAfricanAmerican,
     arabAmericanMiddleEasternOrNorthAfrican,
@@ -317,11 +317,11 @@ export const calcEthnicity = values => {
       if (combinedEthnicities === "") {
         combinedEthnicities = ethnicitiesMap[i[0]] || i[0];
       } else {
-        combinedEthnicities += `, ${ethnicitiesMap[i[0]] || i[0]}`;
+          combinedEthnicities += `; ${ethnicitiesMap[i[0]] || i[0]}`;        
       }
     }
   });
-  // console.log(combinedEthnicities);
+  console.log(combinedEthnicities);
   return combinedEthnicities;
 };
 

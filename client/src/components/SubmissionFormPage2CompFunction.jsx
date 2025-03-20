@@ -62,7 +62,8 @@ export const SubmissionFormPage2CompFunction = props => {
       Wyyyy
     } = props.formValues;
     const ethnicity = formElements.calcEthnicity(props.formValues);
-    // console.log(ethnicity);
+    console.log(`@@@@@@@@@ SFP2 @@@@@@@@@@@`);
+    console.log(ethnicity);
     const genderCleaned = formElements.calcGenderOrPronoun(gender);
     const genderPronounCleaned = formElements.calcGenderOrPronoun(
       genderPronoun

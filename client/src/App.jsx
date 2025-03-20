@@ -528,6 +528,8 @@ export class AppUnconnected extends Component {
     }
 
     const ethnicity = calcEthnicity(values);
+    console.log(`############ APP ###########`);
+    console.log(`ethnicity: ${ethnicity}`);
     const maintenance_of_effort = partial ? null : new Date();
     const seiu503_cba_app_date = partial ? null : new Date();
 
