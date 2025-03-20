@@ -28,7 +28,7 @@ import { forwardRef } from "react";
 export const removeFalsy = obj => {
   let newObj = {};
   Object.keys(obj).forEach(prop => {
-    if (obj[prop]) {
+    if (obj[prop] !== undefined ) {
       newObj[prop] = obj[prop];
     }
   });
