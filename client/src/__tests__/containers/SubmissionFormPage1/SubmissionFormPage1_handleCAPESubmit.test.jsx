@@ -395,8 +395,10 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPESuccess
+          updateCAPE: updateCAPESuccess,
+          handleInput: handleInputMock
         },
         cape_legal: {
           current: {
@@ -465,6 +467,9 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         },
         apiSubmission: {
           ...defaultProps.apiSubmission,
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess,
+          handleInput: handleInputMock,
           verify: verifyRecaptchaScoreMock
         },
         handleError: handleErrorMock,
@@ -553,6 +558,7 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
           updateCAPE: updateCAPESuccess,
+          handleInput: handleInputMock,
           verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
@@ -630,7 +636,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
           createSFCAPE: createSFCAPEError
         },
         apiSubmission: {
-          createCAPE: createCAPESuccess
+          ...defaultProps.apiSubmission,
+          createCAPE: createCAPESuccess,
+          updateCAPE: updateCAPESuccess,
+          handleInput: handleInputMock,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
@@ -726,8 +736,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           createSFCAPE: createSFCAPEError
         },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
-          updateCAPE: updateCAPESuccess
+          updateCAPE: updateCAPESuccess,
+          handleInput: handleInputMock,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
@@ -807,9 +820,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           createCAPE: createCAPEError,
           updateCAPE: updateCAPESuccess,
-          verifyRecaptchaScore: verifyRecaptchaScoreMock,
+          handleInput: handleInputMock,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
@@ -892,9 +907,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           createCAPE: createCAPEError,
           updateCAPE: updateCAPESuccess,
-          verifyRecaptchaScore: verifyRecaptchaScoreMock,
+          handleInput: handleInputMock,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
@@ -987,9 +1004,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
           updateCAPE: updateCAPEError,
-          verifyRecaptchaScore: verifyRecaptchaScoreMock,
+          handleInput: handleInputMock,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {
@@ -1066,9 +1085,11 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit2", () => {
           createSFCAPE: createSFCAPESuccess
         },
         apiSubmission: {
+          ...defaultProps.apiSubmission,
           createCAPE: createCAPESuccess,
           updateCAPE: updateCAPESuccess,
-          verifyRecaptchaScore: verifyRecaptchaScoreMock
+          handleInput: handleInputMock,
+          verify: verifyRecaptchaScoreMock
         },
         cape_legal: {
           current: {

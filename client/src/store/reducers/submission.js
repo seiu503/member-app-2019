@@ -254,8 +254,12 @@ function Submission(state = INITIAL_STATE, action) {
         // split ethinicity string, provide true value for each ethnicity returned
         let ethnicities = [""];
         if (action.payload.Ethnicity__c) {
-          ethnicities = action.payload.Ethnicity__c.split(", ");
+          ethnicities = action.payload.Ethnicity__c.split(";");
         }
+        ethnicities = ethnicities.map(item => formElements.getKeyByValue(formElements.ethnicitiesMap, item.trim()));
+        console.log(`submission.js > GET_SF_CONTACT_DID_SUCCESS`);
+        console.log('^^^^^^^^^^^^^^^^^^^^^');
+        console.log(ethnicities);
         const ethnicitiesObj = {};
         ethnicities.map(item => {
           if (item === "Declined") {
@@ -265,6 +269,7 @@ function Submission(state = INITIAL_STATE, action) {
           }
           return null;
         });
+        console.dir(ethnicitiesObj);
         const zip = action.payload.MailingPostalCode
           ? action.payload.MailingPostalCode.slice(0, 5)
           : "";
