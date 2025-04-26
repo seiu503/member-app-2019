@@ -114,10 +114,10 @@
   dependencies:
     "@babel/types" "^7.26.0"
 
-"@babel/runtime-corejs3@^7.23.1":
-  version "7.25.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.25.6.tgz#5e3facf42775cc95bcde95746e940061931286e4"
-  integrity sha512-Gz0Nrobx8szge6kQQ5Z5MX9L3ObqNwCQY1PSwSNzreFL7aHGxv8Fp2j3ETV6/wWdbiV+mW6OSm8oQhg3Tcsniw==
+"@babel/runtime-corejs3@^7.27.0":
+  version "7.27.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.27.0.tgz#c766df350ec7a2caf3ed64e3659b100954589413"
+  integrity sha512-UWjX6t+v+0ckwZ50Y5ShZLnlk95pP5MyW/pon9tiYzl3+18pkTHTFNTKr7rQbfRXPkowt2QAn30o1b6oswszew==
   dependencies:
     core-js-pure "^3.30.2"
     regenerator-runtime "^0.14.0"
@@ -129,10 +129,10 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@babel/runtime@^7.23.1":
-  version "7.25.6"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.25.6.tgz#9afc3289f7184d8d7f98b099884c26317b9264d2"
-  integrity sha512-VBj9MYyDb9tuLq7yzqjgzt6Q+IBQLrGZfdjOekyEirZPHxXWoTSGUTMrpsfi58Up73d13NfYLv8HT9vmznjzhQ==
+"@babel/runtime@^7.27.0":
+  version "7.27.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.27.0.tgz#fbee7cf97c709518ecc1f590984481d5460d4762"
+  integrity sha512-VtPOkrdPHZsKc/clNqyi9WUA8TINkZ4cGk63UUE3u4pmB2k+ZMQRDuIOagv8UVd6j7k0T3+RRIb7beKTebNbcw==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -2606,15 +2606,14 @@ jsesc@^3.0.2:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-3.0.2.tgz#bb8b09a6597ba426425f2e4a07245c3d00b9343e"
   integrity sha512-xKqzzWXDttJuOcawBt4KnKHHIf5oQ/Cxax+0PWFG+DFDgHNAdi+TXECADI+RYiFUMmx8792xsMbbgXj4CwnP4g==
 
-jsforce@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-3.4.1.tgz#f1fb6a6795ce23bf4de94b26edf387d81b2bf5ca"
-  integrity sha512-GXZhHuZVnGQKBKCwM5LvBLbr+7tfL1wdbrnCN1ICLPTPMlS3A5/K5VE/tdei3G0yimebrpYsfBXZh7AD+GzR4A==
+jsforce@^3.8.1:
+  version "3.8.1"
+  resolved "https://registry.yarnpkg.com/jsforce/-/jsforce-3.8.1.tgz#bd3f4d110667464290537c9bd72da1dafe99d8ce"
+  integrity sha512-amqDCn1LDqXqWZNvkwIoYW4UGehVEhLJmEUav4T9UcxIkpbneCAaPj4DklQKy5ZGaXqVRQAtBxqCMLG1HfNvMw==
   dependencies:
-    "@babel/runtime" "^7.23.1"
-    "@babel/runtime-corejs3" "^7.23.1"
+    "@babel/runtime" "^7.27.0"
+    "@babel/runtime-corejs3" "^7.27.0"
     "@sindresorhus/is" "^4"
-    abort-controller "^3.0.0"
     base64url "^3.0.1"
     commander "^4.0.1"
     core-js "^3.33.0"
@@ -2627,7 +2626,6 @@ jsforce@^3.4.1:
     multistream "^3.1.0"
     node-fetch "^2.6.1"
     open "^7.0.0"
-    strip-ansi "^6.0.0"
     xml2js "^0.6.2"
 
 json-bigint@^1.0.0:
