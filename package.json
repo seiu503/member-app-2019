@@ -46,7 +46,7 @@
     "sass": "^1.88.0",
     "serve-favicon": "^2.5.0",
     "uuid": "^3.3.2",
-    "vite": "^5.4.7"
+    "vite": "^6.3.5"
   },
   "devDependencies": {
     "chai": "^4.2.0",
