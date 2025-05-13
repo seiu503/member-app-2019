@@ -25,10 +25,10 @@ const styles = theme => ({
     backgroundColor: green[600]
   },
   error: {
-    backgroundColor: theme.palette.error.dark
+    backgroundColor: '#b71c1c' // theme.palette.error.dark -- no error key in theme?? used danger key here
   },
   info: {
-    backgroundColor: theme.palette.primary.dark
+    backgroundColor: '#2c0940' // theme.palette.primary.dark
   },
   warning: {
     backgroundColor: amber[700]
