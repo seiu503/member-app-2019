@@ -32,7 +32,7 @@
     "redux": "^4.2.1",
     "redux-api-middleware": "^3.2.1",
     "redux-form": "^8.3.8",
-    "shortid": "^2.2.14",
+    "shortid": "^2.2.17",
     "typescript": "^3.5.1"
   },
   "devDependencies": {
@@ -72,7 +72,7 @@
     "build": "vite build",
     "build:dev": "env-path -p .env.development REACT_APP_ENV_TEXT=development vite build",
     "build:staging": "env-path -p .env.staging REACT_APP_ENV_TEXT=staging vite build",
-    "test": "DEBUG_PRINT_LIMIT=100000 REACT_APP_ENV_TEXT=test node --experimental-vm-modules node_modules/jest/bin/jest.js --maxWorkers=50% --env=jsdom --watchAll --workerIdleMemoryLimit=512MB",
+    "test": "DEBUG_PRINT_LIMIT=100000 REACT_APP_ENV_TEXT=test jest --maxWorkers=50% --env=jsdom --watchAll --workerIdleMemoryLimit=512MB",
     "test-cov": "DEBUG_PRINT_LIMIT=100000 REACT_APP_ENV_TEXT=test jest --maxWorkers=50% --coverage --env=jsdom --watchAll --coverageDirectory=output/coverage/jest --workerIdleMemoryLimit=512MB",
     "build-task:scss-compile": "sass src/styles/scss/:public/css",
     "build-task:autoprefixer": "postcss public/css/*.css --use autoprefixer -d public/css",
