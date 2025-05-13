@@ -28,7 +28,7 @@
   "dependencies": {
     "@google-cloud/recaptcha-enterprise": "^5.13.0",
     "@snyk/protect": "^1.1296.2",
-    "axios": "^1.7.8",
+    "axios": "^1.9.0",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^8.0.0",
