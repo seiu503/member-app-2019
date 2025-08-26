@@ -510,6 +510,8 @@ exports.getAllEmployers = async (req, res, next) => {
   let conn = new jsforce.Connection({ loginUrl });
   try {
     console.log(`sf.ctrl.js > getAllEmployers > conn.login try block 507`);
+    console.log(user);
+    console.log(password);
     await conn.login(user, password);
   } catch (err) {
     console.log(`sf.ctrl.js > getAllEmployers > conn.login catch block 510`);
