@@ -399,241 +399,241 @@ describe("<App />", () => {
       });
     });
 
-    test("`saveSubmissionErrors` calls updateSubmission prop", async function() {
-      const updateSubmissionSuccess = jest.fn().mockImplementation(() =>
-        Promise.resolve({
-          type: "UPDATE_SUBMISSION_SUCCESS",
-          payload: { id: 1 }
-        })
-      );
-      let props = {
-        ...defaultProps,
-        submission: {
-          ...defaultProps.submission,
-          salesforceId: 1,
-          currentSubmission: {
-            submission_errors: "blah"
-          }
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          lookupSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "LOOKUP_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "CREATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          updateSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "UPDATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFOMA: jest.fn().mockImplementation(() =>
-            Promise.reject({
-              message: "createSFOMAError"
-            })
-          )
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          updateSubmission: updateSubmissionSuccess
-        }
-      };
-      // render app
-      const user = userEvent.setup();
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        queryByTestId,
-        debug
-      } = await setup(props);
+    // test("`saveSubmissionErrors` calls updateSubmission prop", async function() {
+    //   const updateSubmissionSuccess = jest.fn().mockImplementation(() =>
+    //     Promise.resolve({
+    //       type: "UPDATE_SUBMISSION_SUCCESS",
+    //       payload: { id: 1 }
+    //     })
+    //   );
+    //   let props = {
+    //     ...defaultProps,
+    //     submission: {
+    //       ...defaultProps.submission,
+    //       salesforceId: 1,
+    //       currentSubmission: {
+    //         submission_errors: "blah"
+    //       }
+    //     },
+    //     apiSF: {
+    //       ...defaultProps.apiSF,
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       updateSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "UPDATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: jest.fn().mockImplementation(() =>
+    //         Promise.reject({
+    //           message: "createSFOMAError"
+    //         })
+    //       )
+    //     },
+    //     apiSubmission: {
+    //       ...defaultProps.apiSubmission,
+    //       updateSubmission: updateSubmissionSuccess
+    //     }
+    //   };
+    //   // render app
+    //   const user = userEvent.setup();
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     queryByTestId,
+    //     debug
+    //   } = await setup(props);
 
-      // check that spf renders
-      await waitFor(() => {
-        const spf = getByRole("form");
-        expect(spf).toBeInTheDocument();
-      });
+    //   // check that spf renders
+    //   await waitFor(() => {
+    //     const spf = getByRole("form");
+    //     expect(spf).toBeInTheDocument();
+    //   });
 
-      // simulate submit spf
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
+    //   // simulate submit spf
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
 
-      // expect updateSubmissionSuccess to have been called
-      await waitFor(async () => {
-        await expect(updateSubmissionSuccess).toHaveBeenCalled();
-      });
-    });
+    //   // expect updateSubmissionSuccess to have been called
+    //   await waitFor(async () => {
+    //     await expect(updateSubmissionSuccess).toHaveBeenCalled();
+    //   });
+    // });
 
-    test("`saveSubmissionErrors` handles error if updateSubmission fails", async function() {
-      let updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
-        );
-      let props = {
-        ...defaultProps,
-        submission: {
-          ...defaultProps.submission,
-          salesforceId: 1,
-          currentSubmission: {
-            submission_errors: null
-          }
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          lookupSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "LOOKUP_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "CREATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          updateSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "UPDATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFOMA: jest.fn().mockImplementation(() =>
-            Promise.reject({
-              message: "createSFOMAError"
-            })
-          )
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          updateSubmission: updateSubmissionError
-        }
-      };
-      // render app
-      const user = userEvent.setup();
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        queryByText,
-        queryByTestId,
-        debug
-      } = await setup(props);
+    // test("`saveSubmissionErrors` handles error if updateSubmission fails", async function() {
+    //   let updateSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.resolve({ type: "UPDATE_SUBMISSION_FAILURE" })
+    //     );
+    //   let props = {
+    //     ...defaultProps,
+    //     submission: {
+    //       ...defaultProps.submission,
+    //       salesforceId: 1,
+    //       currentSubmission: {
+    //         submission_errors: null
+    //       }
+    //     },
+    //     apiSF: {
+    //       ...defaultProps.apiSF,
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       updateSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "UPDATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: jest.fn().mockImplementation(() =>
+    //         Promise.reject({
+    //           message: "createSFOMAError"
+    //         })
+    //       )
+    //     },
+    //     apiSubmission: {
+    //       ...defaultProps.apiSubmission,
+    //       updateSubmission: updateSubmissionError
+    //     }
+    //   };
+    //   // render app
+    //   const user = userEvent.setup();
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     queryByText,
+    //     queryByTestId,
+    //     debug
+    //   } = await setup(props);
 
-      // check that spf renders
-      await waitFor(() => {
-        const spf = getByRole("form");
-        expect(spf).toBeInTheDocument();
-      });
+    //   // check that spf renders
+    //   await waitFor(() => {
+    //     const spf = getByRole("form");
+    //     expect(spf).toBeInTheDocument();
+    //   });
 
-      // simulate submit spf
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
+    //   // simulate submit spf
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
 
-      // expect correct snackbar error
-      await waitFor(async () => {
-        const snackbar = await queryByTestId("component-basic-snackbar");
-        await expect(snackbar).toBeInTheDocument();
-        const message = await getByText(
-          "Sorry, something went wrong. Please try again."
-        );
-        await expect(message).toBeInTheDocument();
-      });
-    });
+    //   // expect correct snackbar error
+    //   await waitFor(async () => {
+    //     const snackbar = await queryByTestId("component-basic-snackbar");
+    //     await expect(snackbar).toBeInTheDocument();
+    //     const message = await getByText(
+    //       "Sorry, something went wrong. Please try again."
+    //     );
+    //     await expect(message).toBeInTheDocument();
+    //   });
+    // });
 
-    test("`saveSubmissionErrors` handles error if updateSubmission throws", async function() {
-      let updateSubmissionError = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.reject({ message: "updateSubmissionError" })
-        );
-      let props = {
-        ...defaultProps,
-        submission: {
-          ...defaultProps.submission,
-          salesforceId: 1,
-          currentSubmission: {
-            submission_errors: null
-          }
-        },
-        apiSF: {
-          ...defaultProps.apiSF,
-          lookupSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "LOOKUP_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "CREATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          updateSFContact: jest.fn().mockImplementation(() =>
-            Promise.resolve({
-              type: "UPDATE_SF_CONTACT_SUCCESS",
-              payload: { id: 1 }
-            })
-          ),
-          createSFOMA: jest.fn().mockImplementation(() =>
-            Promise.reject({
-              message: "createSFOMAError"
-            })
-          )
-        },
-        apiSubmission: {
-          ...defaultProps.apiSubmission,
-          updateSubmission: updateSubmissionError
-        }
-      };
-      // render app
-      const user = userEvent.setup();
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        queryByText,
-        queryByTestId,
-        debug
-      } = await setup(props);
+    // test("`saveSubmissionErrors` handles error if updateSubmission throws", async function() {
+    //   let updateSubmissionError = jest
+    //     .fn()
+    //     .mockImplementation(() =>
+    //       Promise.reject({ message: "updateSubmissionError" })
+    //     );
+    //   let props = {
+    //     ...defaultProps,
+    //     submission: {
+    //       ...defaultProps.submission,
+    //       salesforceId: 1,
+    //       currentSubmission: {
+    //         submission_errors: null
+    //       }
+    //     },
+    //     apiSF: {
+    //       ...defaultProps.apiSF,
+    //       lookupSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "LOOKUP_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "CREATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       updateSFContact: jest.fn().mockImplementation(() =>
+    //         Promise.resolve({
+    //           type: "UPDATE_SF_CONTACT_SUCCESS",
+    //           payload: { id: 1 }
+    //         })
+    //       ),
+    //       createSFOMA: jest.fn().mockImplementation(() =>
+    //         Promise.reject({
+    //           message: "createSFOMAError"
+    //         })
+    //       )
+    //     },
+    //     apiSubmission: {
+    //       ...defaultProps.apiSubmission,
+    //       updateSubmission: updateSubmissionError
+    //     }
+    //   };
+    //   // render app
+    //   const user = userEvent.setup();
+    //   const {
+    //     getByTestId,
+    //     getByRole,
+    //     getByLabelText,
+    //     getByText,
+    //     queryByText,
+    //     queryByTestId,
+    //     debug
+    //   } = await setup(props);
 
-      // check that spf renders
-      await waitFor(() => {
-        const spf = getByRole("form");
-        expect(spf).toBeInTheDocument();
-      });
+    //   // check that spf renders
+    //   await waitFor(() => {
+    //     const spf = getByRole("form");
+    //     expect(spf).toBeInTheDocument();
+    //   });
 
-      // simulate submit spf
-      await waitFor(() => {
-        const submitButton = getByTestId("button-submit");
-        userEvent.click(submitButton);
-      });
+    //   // simulate submit spf
+    //   await waitFor(() => {
+    //     const submitButton = getByTestId("button-submit");
+    //     userEvent.click(submitButton);
+    //   });
 
-      // expect correct snackbar error
-      await waitFor(async () => {
-        await expect(
-          queryByTestId("component-basic-snackbar")
-        ).toBeInTheDocument();
-        const message = await getByText("updateSubmissionError");
-        await expect(message).toBeInTheDocument();
-      });
-    });
+    //   // expect correct snackbar error
+    //   await waitFor(async () => {
+    //     await expect(
+    //       queryByTestId("component-basic-snackbar")
+    //     ).toBeInTheDocument();
+    //     const message = await getByText("updateSubmissionError");
+    //     await expect(message).toBeInTheDocument();
+    //   });
+    // });
   });
 });

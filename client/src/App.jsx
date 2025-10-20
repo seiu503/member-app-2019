@@ -73,10 +73,10 @@ export class AppUnconnected extends Component {
         message: null
       }
     };
-    this.createSubmission = this.createSubmission.bind(this);
-    this.updateSubmission = this.updateSubmission.bind(this);
+    // this.createSubmission = this.createSubmission.bind(this);
+    // this.updateSubmission = this.updateSubmission.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
-    this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
+    // this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
     this.prepForContact = this.prepForContact.bind(this);
     this.prepForSubmission = this.prepForSubmission.bind(this);
     this.createSFContact = this.createSFContact.bind(this);
@@ -209,36 +209,36 @@ export class AppUnconnected extends Component {
     this.changeLanguage(language);
   };
 
-  async updateSubmission(passedId, passedUpdates, formValues) {
-    console.log("App 293 updateSubmission");
-    console.log(passedId);
-    this.props.actions.setSpinner();
-    const id = passedId ? passedId : this.props.submission.submissionId;
+  // async updateSubmission(passedId, passedUpdates, formValues) {
+  //   console.log("App 293 updateSubmission");
+  //   console.log(passedId);
+  //   this.props.actions.setSpinner();
+  //   const id = passedId ? passedId : this.props.submission.submissionId;
 
-    if (passedUpdates.hire_date) {
-      let hireDate = moment(new Date(passedUpdates.hire_date));
-      if (hireDate.isValid()) {
-        passedUpdates.hire_date = formatSFDate(hireDate);
-        console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
-      }
-    }
-    this.props.apiSubmission
-      .updateSubmission(id, passedUpdates)
-      .then(result => {
-        console.log(result);
-        if (
-          result.type === "UPDATE_SUBMISSION_FAILURE" ||
-          this.props.submission.error
-        ) {
-          console.log(this.props.submission.error);
-          return this.handleError(this.props.submission.error);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        return this.handleError(err);
-      });
-  }
+  //   if (passedUpdates.hire_date) {
+  //     let hireDate = moment(new Date(passedUpdates.hire_date));
+  //     if (hireDate.isValid()) {
+  //       passedUpdates.hire_date = formatSFDate(hireDate);
+  //       console.log(`passedUpdates.hire_date: ${passedUpdates.hire_date}`);
+  //     }
+  //   }
+  //   this.props.apiSubmission
+  //     .updateSubmission(id, passedUpdates)
+  //     .then(result => {
+  //       console.log(result);
+  //       if (
+  //         result.type === "UPDATE_SUBMISSION_FAILURE" ||
+  //         this.props.submission.error
+  //       ) {
+  //         console.log(this.props.submission.error);
+  //         return this.handleError(this.props.submission.error);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error(err);
+  //       return this.handleError(err);
+  //     });
+  // }
 
   // lookup SF Contact by first, last, email; if none found then create new
   // called from SubmissionFormPage1.jsx > 229 (GenerateCAPEBody), 565 (handleTab1)
@@ -279,25 +279,25 @@ export class AppUnconnected extends Component {
     }
   }
 
-  async saveSubmissionErrors(submission_id, method, error) {
-    // 1. retrieve existing errors array from current submission
-    let { submission_errors } = this.props.submission.currentSubmission;
-    if (submission_errors === null || submission_errors === undefined) {
-      submission_errors = "";
-    }
-    // 2. add new data to string
-    submission_errors += `Attempted method: ${method}, Error: ${error}. `;
-    // 3. update submission_errors and submission_status on submission by id
-    const updates = {
-      submission_errors,
-      submission_status: "error"
-    };
-    console.log("372", submission_id);
-    this.updateSubmission(submission_id, updates).catch(err => {
-      console.error(err);
-      return this.handleError(err);
-    });
-  }
+  // async saveSubmissionErrors(submission_id, method, error) {
+  //   // 1. retrieve existing errors array from current submission
+  //   let { submission_errors } = this.props.submission.currentSubmission;
+  //   if (submission_errors === null || submission_errors === undefined) {
+  //     submission_errors = "";
+  //   }
+  //   // 2. add new data to string
+  //   submission_errors += `Attempted method: ${method}, Error: ${error}. `;
+  //   // 3. update submission_errors and submission_status on submission by id
+  //   const updates = {
+  //     submission_errors,
+  //     submission_status: "error"
+  //   };
+  //   console.log("372", submission_id);
+  //   this.updateSubmission(submission_id, updates).catch(err => {
+  //     console.error(err);
+  //     return this.handleError(err);
+  //   });
+  // }
 
   async prepForContact(values) {
     console.log("App 394 prepForContact start");
@@ -595,24 +595,29 @@ export class AppUnconnected extends Component {
     // console.log(`body.preferred_language: ${body.preferred_language}`);
     const cleanBody = removeFalsy(body);
     // console.log(cleanBody);
-    await this.props.apiSubmission
-      .addSubmission(cleanBody)
-      .then(result => {
-        if (
-          result.type !== "ADD_SUBMISSION_SUCCESS" ||
-          this.props.submission.error
-        ) {
-          const err =
-            this.props.submission.error ||
-            "An error occurred while saving your Submission";
-          console.error(err);
-          return this.handleError(err);
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        return this.handleError(err);
-      });
+
+
+    // 20251020: commenting out the submission creation temporarily because it's causing the server to hang
+
+
+    // await this.props.apiSubmission
+    //   .addSubmission(cleanBody)
+    //   .then(result => {
+    //     if (
+    //       result.type !== "ADD_SUBMISSION_SUCCESS" ||
+    //       this.props.submission.error
+    //     ) {
+    //       const err =
+    //         this.props.submission.error ||
+    //         "An error occurred while saving your Submission";
+    //       console.error(err);
+    //       return this.handleError(err);
+    //     }
+    //   })
+    //   .catch(err => {
+    //     console.error(err);
+    //     return this.handleError(err);
+    //   });
 
     // if no payment is required, we're done with saving the submission
     // we can write the OMA to SF and then move on to the CAPE ask
@@ -645,11 +650,11 @@ export class AppUnconnected extends Component {
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
         ) {
-          this.saveSubmissionErrors(
-            this.props.submission.submissionId,
-            "createSFOMA",
-            this.props.submission.error
-          );
+          // this.saveSubmissionErrors(
+          //   this.props.submission.submissionId,
+          //   "createSFOMA",
+          //   this.props.submission.error
+          // );
           // goto CAPE tab
           console.log('moving to CAPE Tab');
           this.changeTab(2);
@@ -660,36 +665,36 @@ export class AppUnconnected extends Component {
 
 
           // update submission status and redirect to CAPE tab
-          console.log("updating submission status");
-          this.props.apiSubmission
-            .updateSubmission(this.props.submission.submissionId, {
-              submission_status: "Success"
-            })
-            .then(result => {
-              if (
-                result.type === "UPDATE_SUBMISSION_FAILURE" ||
-                this.props.submission.error
-              ) {
-                console.log(this.props.submission.error);
-                return this.handleError(this.props.submission.error);
-              } else {
-                console.log("createSubmission resolve");
-                return null;
-                // this.changeTab(2);
-              }
-            })
-            .catch(err => {
-              console.error(err);
-              return this.handleError(err);
-            });
+          // console.log("updating submission status");
+          // this.props.apiSubmission
+          //   .updateSubmission(this.props.submission.submissionId, {
+          //     submission_status: "Success"
+          //   })
+          //   .then(result => {
+          //     if (
+          //       result.type === "UPDATE_SUBMISSION_FAILURE" ||
+          //       this.props.submission.error
+          //     ) {
+          //       console.log(this.props.submission.error);
+          //       return this.handleError(this.props.submission.error);
+          //     } else {
+          //       console.log("createSubmission resolve");
+          //       return null;
+          //       // this.changeTab(2);
+          //     }
+          //   })
+          //   .catch(err => {
+          //     console.error(err);
+          //     return this.handleError(err);
+          //   });
         }
       })
       .catch(err => {
-        this.saveSubmissionErrors(
-          this.props.submission.submissionId,
-          "createSFOMA",
-          err
-        );
+        // this.saveSubmissionErrors(
+        //   this.props.submission.submissionId,
+        //   "createSFOMA",
+        //   err
+        // );
         console.error(err);
         return this.handleError(err);
       });

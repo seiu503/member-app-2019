@@ -542,10 +542,10 @@ export class SubmissionFormPage1Container extends React.Component {
     await this.saveLegalLanguage();
 
     // save partial submission (update later with demographics from p2)
-    await this.props.createSubmission(formValues).catch(err => {
-      console.error(err);
-      return this.props.handleError(err);
-    });
+    // await this.props.createSubmission(formValues).catch(err => {
+    //   console.error(err);
+    //   return this.props.handleError(err);
+    // });
 
     // move to next tab
     return this.props.changeTab(2);
