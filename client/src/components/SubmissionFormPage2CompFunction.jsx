@@ -117,30 +117,33 @@ export const SubmissionFormPage2CompFunction = props => {
       }
     }
 
-    let id = props.submission.submissionId;
-    console.log(`SUBMISSION ID: ${id}`);
+    /**** removing the whole submission create/update call 20251027 because it's
+    // causing the server to hang ****/
 
-    if (!id) {
-      // console.log(`!id: ############################`);
-      cleanBody.first_name = firstName;
-      cleanBody.last_name = lastName;
-      cleanBody.home_email = homeEmail;
+    // let id = props.submission.submissionId;
+    // console.log(`SUBMISSION ID: ${id}`);
 
-      await props
-        .createSubmission(cleanBody, true) // partial submission = true
-        .catch(err => {
-          console.error(err);
-          return props.handleError(err);
-        });
-    } else {
-      await props
-        .updateSubmission(id, cleanBody)
-        // no then block here bc nothing is returned (this is an app method not an API Call)
-        .catch(err => {
-          console.error(err);
-          return props.handleError(err);
-        });
-    }
+    // if (!id) {
+    //   // console.log(`!id: ############################`);
+    //   cleanBody.first_name = firstName;
+    //   cleanBody.last_name = lastName;
+    //   cleanBody.home_email = homeEmail;
+
+    //   await props
+    //     .createSubmission(cleanBody, true) // partial submission = true
+    //     .catch(err => {
+    //       console.error(err);
+    //       return props.handleError(err);
+    //     });
+    // } else {
+    //   await props
+    //     .updateSubmission(id, cleanBody)
+    //     // no then block here bc nothing is returned (this is an app method not an API Call)
+    //     .catch(err => {
+    //       console.error(err);
+    //       return props.handleError(err);
+    //     });
+    // }
     props.apiSF
       .updateSFContact(salesforceId, cleanBody)
       .then(() => {
@@ -154,8 +157,8 @@ export const SubmissionFormPage2CompFunction = props => {
       });
   };
 
-  const id = props.submission.submissionId;
-  const paymentRequired = props.submission.formPage1.paymentRequired;
+  // const id = props.submission.submissionId;
+  // const paymentRequired = props.submission.formPage1.paymentRequired;
   const formContainer = {
     display: "flex",
     padding: {
@@ -265,59 +268,55 @@ export const SubmissionFormPage2CompFunction = props => {
             <Trans i18nKey="introParagraph" />
           </p>
           <Divider style={{ margin: 20 }} />
-          {!id && (
-            <React.Fragment>
-              <FormGroup
-                // className={classes.formGroup}
-                // sx={{
-                //   display: "flex",
-                //   flexDirection: "column",
-                //   justifyContent: "flex-start",
-                //   margin: "0 0 20px"
-                // }}
-                row
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  flexWrap: {
-                    xs: "wrap",
-                    sm: "nowrap"
-                  },
-                  justifyContent: "space-between"
-                  // classes.formGroup2Col
-                }}
-              >
-                <Field
-                  twocol
-                  mobile={!matches}
-                  label="First Name"
-                  name="firstName"
-                  id="firstName"
-                  type="text"
-                  classes={{ input2col }}
-                  component={renderTextField}
-                />
+          <FormGroup
+            // className={classes.formGroup}
+            // sx={{
+            //   display: "flex",
+            //   flexDirection: "column",
+            //   justifyContent: "flex-start",
+            //   margin: "0 0 20px"
+            // }}
+            row
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: {
+                xs: "wrap",
+                sm: "nowrap"
+              },
+              justifyContent: "space-between"
+              // classes.formGroup2Col
+            }}
+          >
+            <Field
+              twocol
+              mobile={!matches}
+              label="First Name"
+              name="firstName"
+              id="firstName"
+              type="text"
+              classes={{ input2col }}
+              component={renderTextField}
+            />
 
-                <Field
-                  twocol
-                  mobile={!matches}
-                  name="lastName"
-                  id="lastName"
-                  label="Last Name"
-                  classes={{ input2col }}
-                  component={renderTextField}
-                  type="text"
-                />
-              </FormGroup>
-              <Field
-                label="Home Email"
-                name="homeEmail"
-                id="homeEmail"
-                type="email"
-                component={renderTextField}
-              />
-            </React.Fragment>
-          )}
+            <Field
+              twocol
+              mobile={!matches}
+              name="lastName"
+              id="lastName"
+              label="Last Name"
+              classes={{ input2col }}
+              component={renderTextField}
+              type="text"
+            />
+          </FormGroup>
+          <Field
+            label="Home Email"
+            name="homeEmail"
+            id="homeEmail"
+            type="email"
+            component={renderTextField}
+          />
           <FormLabel
             // className={classes.formLabel}
             sx={{
