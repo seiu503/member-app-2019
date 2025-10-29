@@ -73,7 +73,7 @@ export class AppUnconnected extends Component {
         message: null
       }
     };
-    // this.createSubmission = this.createSubmission.bind(this);
+    this.createSubmission = this.createSubmission.bind(this);
     // this.updateSubmission = this.updateSubmission.bind(this);
     this.lookupSFContact = this.lookupSFContact.bind(this);
     // this.saveSubmissionErrors = this.saveSubmissionErrors.bind(this);
@@ -586,6 +586,8 @@ export class AppUnconnected extends Component {
 
   // called from handleTab2 in SubmissionFormPage1.jsx
   async createSubmission(formValues, partial) {
+    console.log(`createSubmission`);
+    console.log(this.props);
     // create initial submission using data in tabs 1 & 2
     console.log("App 682 createSubmission start");
     const body = await this.generateSubmissionBody(formValues, partial);
