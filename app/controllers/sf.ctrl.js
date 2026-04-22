@@ -91,7 +91,7 @@ exports.getSFContactById = async (req, res, next) => {
   let conn = new jsforce.Connection({ loginUrl });
   console.log(`**************************************`);
   console.log(user);
-  console.log(password);
+  // console.log(password);
   console.log(loginUrl);
   try {
     await conn.login(user, password);
@@ -176,7 +176,7 @@ exports.createSFContact = async (req, res, next) => {
   delete body["Account.WS_Subdivision_from_Agency__c"];
   body.AccountId = bodyRaw.employer_id;
   // console.log("sf.ctrl.js > 168, body");
-  // console.log(body);
+  console.log(body);
   let conn = new jsforce.Connection({ loginUrl });
   try {
     await conn.login(user, password);

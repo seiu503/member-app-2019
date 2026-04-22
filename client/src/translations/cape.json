@@ -103,6 +103,13 @@
     "Câu trả lời khác",
     "其他"
   ],
+  "capeOtherHint": [
+    "Must be between $1 and $20, whole dollar amounts only",
+    "Debe estar entre $1 y $20; solo montos en dólares enteros.",
+    "Сумма должна быть от $1 до $20, только целые доллары.",
+    "Phải nằm trong khoảng từ $1 đến $20, chỉ chấp nhận các số nguyên đô la.",
+    "金额必须介于 $1 至 $20 之间，且仅限整数。"
+  ],
  "donationFrequency": [
     "Monthly or one-time donation?",
     "¿Donación mensual o única?",
