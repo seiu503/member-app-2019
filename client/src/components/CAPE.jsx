@@ -645,19 +645,30 @@ export const CAPE = props => {
               </Box>
             </Box>
             {formValues.capeAmount === "Other" && (
-              <Field
-                dataTestId="field-other-amount"
-                label="Monthly Donation Amount"
-                name="capeAmountOther"
-                id="capeAmountOther"
-                type="number"
-                inputProps={{ min: 1 }}
-                classes={classes}
-                component={renderTextField}
-                onChange={(event, value) => {
-                  change("capeAmountOther", value);
-                }}
-              />
+              <>
+                <Field
+                  dataTestId="field-other-amount"
+                  label="Monthly Donation Amount"
+                  name="capeAmountOther"
+                  id="capeAmountOther"
+                  type="number"
+                  inputProps={{ min: 1, max: 20 }}
+                  classes={classes}
+                  component={renderTextField}
+                  onChange={(event, value) => {
+                    change("capeAmountOther", value);
+                  }}
+                />
+                <FormHelperText
+                  // className={classes.formHelperText}
+                  sx={{
+                    margin: "-30px 0 40px",
+                    fontSize: ".75rem"
+                  }}
+                >
+                  <Trans i18nKey="capeOtherHint" />
+                </FormHelperText>
+              </>
             )}
           </Box>
           <div
