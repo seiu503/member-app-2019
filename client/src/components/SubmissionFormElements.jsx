@@ -228,6 +228,7 @@ export const employerTypeMap = {
   "Higher Ed": "Higher Education",
   "Local Gov": "Local Government (City, County, School District)",
   "Private Homecare": "Private Homecare Agency",
+  "Child Care": "Child Care",
   "SEIU LOCAL 503 OPEU": "",
   // "SEIU LOCAL 503 OPEU": "SEIU 503 Staff"
   // removing staff from picklist options

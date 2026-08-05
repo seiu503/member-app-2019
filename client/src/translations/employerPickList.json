@@ -27,6 +27,20 @@
     "Chăm sóc nuôi dưỡng người lớn",
     "成人寄养护理"
   ],
+  "familyChildCare": [
+    "Family Child Care",
+    "Cuidado infantil familiar",
+    "Учреждение по уходу за детьми семейного типа",
+    "Chăm sóc trẻ em gia đình",
+    "家庭托儿服务"
+  ],
+  "childCare": [
+    "Child Care",
+    "Cuidado infantil",
+    "Учреждение по уходу за детьми семейного типа",
+    "Chăm sóc trẻ em gia đình",
+    "家庭托儿服务"
+  ],
   "homecareOrPersonalSupportWorker": [
     "Homecare or Personal Support Worker",
     "Trabajador de atención domiciliaria o de apoyo personal",
@@ -65,7 +79,6 @@
   "higherEducation": [
     "Higher Education",
     "Educación superior",
-    "Sistema universitario de Oregon",
     "Высшее образование",
     "Giáo dục đại học",
     "高等教育"
