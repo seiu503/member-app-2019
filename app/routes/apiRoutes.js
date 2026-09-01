@@ -11,7 +11,7 @@ const passport = require("passport");
 
 const userCtrl = require("../controllers/users.ctrl");
 const authCtrl = require("../controllers/auth.ctrl");
-const contentCtrl = require("../controllers/content.ctrl");
+// const contentCtrl = require("../controllers/content.ctrl");
 const submissionCtrl = require("../controllers/submissions.ctrl");
 const sfCtrl = require("../controllers/sf.ctrl");
 const capeCtrl = require("../controllers/cape.ctrl");
@@ -161,7 +161,7 @@ router.delete("/user/:id", authCtrl.requireAuth, userCtrl.deleteUser);
 //        }
 //   Returns: JSON content object on success.
 //
-router.post("/content", authCtrl.requireAuth, contentCtrl.createContent);
+// router.post("/content", authCtrl.requireAuth, contentCtrl.createContent);
 
 // UPDATE A CONTENT RECORD
 //   Example: PUT >> /api/content/:id
@@ -179,7 +179,7 @@ router.post("/content", authCtrl.requireAuth, contentCtrl.createContent);
 //   Returns: JSON updated content object on success.
 //
 
-router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
+// router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 
 // GET ONE CONTENT RECORD BY ID
 //   Example: GET >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -190,7 +190,7 @@ router.put("/content/:id", authCtrl.requireAuth, contentCtrl.updateContent);
 //        }
 //   Returns: JSON content object on success.
 //
-router.get("/content/:id", contentCtrl.getContentById);
+// router.get("/content/:id", contentCtrl.getContentById);
 
 // GET CONTENT BY TYPE
 //   Example: GET >> /api/contenttype/headline
@@ -201,11 +201,11 @@ router.get("/content/:id", contentCtrl.getContentById);
 //        }
 //   Returns: Array of content objects on success.
 //
-router.get(
-  "/contenttype/:content_type",
-  authCtrl.requireAuth,
-  contentCtrl.getContentByType
-);
+// router.get(
+//   "/contenttype/:content_type",
+//   authCtrl.requireAuth,
+//   contentCtrl.getContentByType
+// );
 
 // GET ALL CONTENT
 //   Example: GET >> /api/content/
@@ -213,7 +213,7 @@ router.get(
 //   Expects: null
 //   Returns: Array of content objects on success.
 //
-router.get("/content", authCtrl.requireAuth, contentCtrl.getContent);
+// router.get("/content", authCtrl.requireAuth, contentCtrl.getContent);
 
 // DELETE CONTENT
 //   Example: DELETE >> /api/content/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -224,7 +224,7 @@ router.get("/content", authCtrl.requireAuth, contentCtrl.getContent);
 //        }
 //   Returns: success message on success.
 //
-router.delete("/content/:id", authCtrl.requireAuth, contentCtrl.deleteContent);
+// router.delete("/content/:id", authCtrl.requireAuth, contentCtrl.deleteContent);
 
 /* =========================== SUBMISSION ROUTES =========================== */
 

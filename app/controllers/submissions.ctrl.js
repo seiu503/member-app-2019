@@ -16,6 +16,20 @@ const utils = require("../utils/index.js");
 exports.getClientIp = req =>
   req.headers["x-real-ip"] || req.connection.remoteAddress;
 
+// gRecaptcha client
+
+const RECAPTCHA_PROJECT_ID =
+  "seiu503-online-membership-form";
+
+const RECAPTCHA_ACTION = "homepage";
+const RECAPTCHA_TIMEOUT_MS = 8000;
+
+const recaptchaClient =
+  new RecaptchaEnterpriseServiceClient();
+
+const recaptchaProjectPath =
+  recaptchaClient.projectPath(RECAPTCHA_PROJECT_ID);
+
 /* ============================ ROUTE HANDLERS ============================= */
 
 /** Create a Submission
@@ -347,56 +361,129 @@ exports.getSubmissionById = (req, res, next) => {
 */
 
 exports.verifyHumanity = async (req, res) => {
-  console.log("submissions.ctrl.js > 364 @@@@@@@@@@@@@@@@ verifyHumanity");
-  const projectID = "seiu503-online-membership-form";
-  // this gRecaptcha key is attached to the seiu503@gmail.com account
-  const recaptchaKey = process.env.GRECAPTCHA_SITEKEY;
-  console.log(`submissions.ctrl.js > 354: recaptchaKey: ${recaptchaKey}`);
-  const recaptchaAction = "homepage";
+  const startedAt = Date.now();
+  const requestId =
+    req.get("x-request-id") ||
+    `recaptcha-${Date.now()}-${Math.random()
+      .toString(36)
+      .slice(2, 8)}`;
+
   const { token } = req.body;
-  // Create the reCAPTCHA client.
-  // TODO: Cache the client generation code (recommended) or call client.close() before exiting the method.
-  const client = new RecaptchaEnterpriseServiceClient();
-  const projectPath = client.projectPath(projectID);
+  const recaptchaKey = process.env.GRECAPTCHA_SITEKEY;
 
-// Build the assessment request.
-  const request = ({
-    assessment: {
-      event: {
-        token: token,
-        siteKey: recaptchaKey,
-      },
-    },
-    parent: projectPath,
-  });
-  const [ response ] = await client.createAssessment(request);
-  console.log('test response data @@@@@@@@@@@@@@@@ submissions.ctrl.js > 373');
-  console.log(response.riskAnalysis);
-  console.log(response.tokenProperties);
- 
-  // Check if the token is valid.
-  if (!response.tokenProperties.valid) {
-    console.error(`submissions.ctrl.js > 367`);
-    console.log(response.tokenProperties);
-    console.log(`The CreateAssessment call failed because the token was: ${response.tokenProperties.invalidReason}`);
+  const log = (event, details = {}) => {
+    console.info(
+      JSON.stringify({
+        controller: "verifyHumanity",
+        event,
+        requestId,
+        elapsedMs: Date.now() - startedAt,
+        ...details
+      })
+    );
+  };
 
-    return res.status(500).json({ message: response.tokenProperties.invalidReason });
+  log("request_started");
+
+  if (!token) {
+    log("token_missing");
+
+    return res.status(400).json({
+      message: "ReCAPTCHA token is missing.",
+      requestId
+    });
   }
 
-  // Check if the expected action was executed.
-  // The `action` property is set by user client in the grecaptcha.enterprise.execute() method.
- 
-  if (response.tokenProperties.action === recaptchaAction) {
-    // Get the risk score and the reason(s).
-    // For more information on interpreting the assessment, see:
-    // https://cloud.google.com/recaptcha-enterprise/docs/interpret-assessment
-    console.log(`The reCAPTCHA score is: ${response.riskAnalysis.score}`);
-    response.riskAnalysis.reasons.forEach((reason) => {
-      console.log(reason);
+  if (!recaptchaKey) {
+    log("site_key_missing");
+
+    return res.status(500).json({
+      message: "ReCAPTCHA is not configured.",
+      requestId
     });
-    return res.status(200).json({ score: response.riskAnalysis.score });
-  } else {
-    console.log("The action attribute in your reCAPTCHA tag does not match the action you are expecting to score");
-    return res.status(500).json({ message: "ReCAPTCHA failure, action attribute in reCAPTCHA tag does not match the action" });
+  }
+
+  const request = {
+    assessment: {
+      event: {
+        token,
+        siteKey: recaptchaKey
+      }
+    },
+    parent: recaptchaProjectPath
+  };
+
+  try {
+    log("assessment_started");
+
+    const [response] =
+      await recaptchaClient.createAssessment(
+        request,
+        {
+          timeout: RECAPTCHA_TIMEOUT_MS
+        }
+      );
+
+    log("assessment_finished", {
+      valid: response.tokenProperties?.valid,
+      action: response.tokenProperties?.action,
+      score: response.riskAnalysis?.score
+    });
+
+    if (!response.tokenProperties?.valid) {
+      const invalidReason =
+        response.tokenProperties?.invalidReason ||
+        "INVALID_TOKEN";
+
+      log("token_invalid", {
+        invalidReason
+      });
+
+      return res.status(400).json({
+        message: invalidReason,
+        requestId
+      });
+    }
+
+    if (
+      response.tokenProperties.action !==
+      RECAPTCHA_ACTION
+    ) {
+      log("action_mismatch", {
+        expectedAction: RECAPTCHA_ACTION,
+        receivedAction:
+          response.tokenProperties.action
+      });
+
+      return res.status(400).json({
+        message:
+          "ReCAPTCHA action did not match the expected action.",
+        requestId
+      });
+    }
+
+    return res.status(200).json({
+      score: response.riskAnalysis?.score,
+      requestId
+    });
+  } catch (err) {
+    const timedOut =
+      err.code === 4 ||
+      err.name === "DeadlineExceededError" ||
+      /deadline|timeout/i.test(err.message || "");
+
+    log("assessment_failed", {
+      timedOut,
+      errorCode: err.code,
+      errorName: err.name,
+      errorMessage: err.message
+    });
+
+    return res.status(timedOut ? 504 : 503).json({
+      message: timedOut
+        ? "ReCAPTCHA verification timed out. Please try again."
+        : "ReCAPTCHA verification is temporarily unavailable. Please try again.",
+      requestId
+    });
   }
 };

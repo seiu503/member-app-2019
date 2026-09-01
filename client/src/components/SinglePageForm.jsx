@@ -12,7 +12,6 @@ import {
   FormLabel,
   FormHelperText,
   FormGroup,
-  Button,
   Typography,
   Box
 } from "@mui/material";
@@ -20,6 +19,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import PropTypes from "prop-types";
 
 import * as formElements from "./SubmissionFormElements";
+import ButtonWithSpinner from "./ButtonWithSpinner";
 import { validate, prefillValidate } from "../utils/validators";
 import * as utils from "../utils";
 
@@ -600,27 +600,30 @@ export const SinglePageForm = props => {
               marginTop: "20px"
             }}
           >
-            <Button
+            <ButtonWithSpinner
               type="submit"
               color="primary"
+              loading={props.submitting}
+              disabled={props.submitting}
               data-testid="button-submit"
-              // className={`g-recaptcha`}
               sx={{
                 textTransform: "none",
                 fontSize: "1.3rem",
                 padding: "6px 20px",
-                color: "#ffce04", // yellow/gold // theme.palette.secondary.main,
+                color: "#ffce04",
                 "&:hover": {
-                  backgroundColor: "#531078" // medium purple // theme.palette.primary.light
+                  backgroundColor: "#531078"
                 }
-                // classes.next
               }}
               variant="contained"
               data-sitekey={process.env.REACT_APP_GRECAPTCHA_SITEKEY}
-              // data-callback={verifyCallback}
             >
-              <Trans i18nKey="next">Next</Trans>
-            </Button>
+              {props.submitting ? (
+                <Trans i18nKey="submitting">Submitting…</Trans>
+              ) : (
+                <Trans i18nKey="next">Next</Trans>
+              )}
+            </ButtonWithSpinner>
           </Box>
       </form>
 

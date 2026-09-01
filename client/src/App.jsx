@@ -808,11 +808,22 @@ export class AppUnconnected extends Component {
       reCaptchaValue
     };
 
-    await this.props.apiSF.updateSFContact(id, body).catch(err => {
-      console.error(err);
-      return this.handleError(err);
-    });
-  }
+    const result = await this.props.apiSF.updateSFContact(id, body);
+
+      if (result.type === "UPDATE_SF_CONTACT_FAILURE") {
+        const error =
+          result.payload ||
+          new Error("We couldn’t save your information.");
+
+        this.handleError(
+          "We couldn’t submit your form. Your information is still on this page. Please try again."
+        );
+
+        throw error;
+      }
+
+      return result;
+    }
 
   // just navigate to tab, don't run validation on current tab
   changeTab = newValue => {

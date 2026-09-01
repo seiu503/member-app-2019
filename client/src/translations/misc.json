@@ -81,6 +81,45 @@
 ],
 "back": ["Back", "Atrás", "Назад", "Quay lại", "上一步"],
 "next": ["Next", "Siguiente", "Далее", "Tiếp tục", "下一步"],
+"submitting": [
+  "Submitting…",
+  "Enviando…",
+  "Отправка…",
+  "Đang gửi…",
+  "正在提交……"
+],
+
+"pleaseWait": [
+  "Please wait…",
+  "Espere…",
+  "Пожалуйста, подождите…",
+  "Vui lòng chờ…",
+  "请稍候……"
+],
+
+"savingInformation": [
+  "We’re securely saving your information. This can sometimes take up to 30 seconds. Please don’t close this page or submit the form again.",
+  "Estamos guardando su información de forma segura. A veces, esto puede tardar hasta 30 segundos. No cierre esta página ni vuelva a enviar el formulario.",
+  "Мы безопасно сохраняем ваши данные. Иногда это может занять до 30 секунд. Не закрывайте эту страницу и не отправляйте форму повторно.",
+  "Chúng tôi đang lưu thông tin của bạn một cách an toàn. Quá trình này đôi khi có thể mất tới 30 giây. Vui lòng không đóng trang này hoặc gửi lại biểu mẫu.",
+  "我们正在安全地保存您的信息。这有时可能需要最多 30 秒。请勿关闭此页面或再次提交表单。"
+],
+
+"stillWorking": [
+  "Still working…",
+  "Seguimos procesando…",
+  "Всё ещё обрабатываем…",
+  "Vẫn đang xử lý…",
+  "仍在处理中……"
+],
+
+"stillWorkingMessage": [
+  "This is taking longer than usual, but we’re still securely saving your information. Please don’t close this page or submit the form again.",
+  "Esto está tardando más de lo habitual, pero seguimos guardando su información de forma segura. No cierre esta página ni vuelva a enviar el formulario.",
+  "Это занимает больше времени, чем обычно, но мы всё ещё безопасно сохраняем ваши данные. Не закрывайте эту страницу и не отправляйте форму повторно.",
+  "Quá trình này mất nhiều thời gian hơn bình thường, nhưng chúng tôi vẫn đang lưu thông tin của bạn một cách an toàn. Vui lòng không đóng trang này hoặc gửi lại biểu mẫu.",
+  "这比平时需要更长时间，但我们仍在安全地保存您的信息。请勿关闭此页面或再次提交表单。"
+],
 "pageNotFound": [
   	"404 error. Sorry, page not found.",
   	"Error 404. Lo sentimos, página no encontrada.",
