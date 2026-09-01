@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { Trans } from "react-i18next";
 
@@ -32,32 +33,57 @@ const message = {
   lineHeight: 1.5
 };
 
-const Spinner = () => (
-  <div
-    style={wrap}
-    role="status"
-    aria-live="polite"
-    aria-busy="true"
-  >
-    <div style={status}>
-      <CircularProgress
-        color="inherit"
-        size={50}
-        data-testid="component-spinner"
-      />
+const Spinner = () => {
+  const [isTakingLonger, setIsTakingLonger] = useState(false);
 
-      <p style={heading}>
-        <Trans i18nKey="pleaseWait">Please wait…</Trans>
-      </p>
+  useEffect(() => {
+    const slowTimer = setTimeout(() => {
+      setIsTakingLonger(true);
+    }, 30000);
 
-      <p style={message}>
-        <Trans i18nKey="savingInformation">
-          We’re securely saving your information. This can sometimes take up to
-          30 seconds. Please don’t close this page or submit the form again.
-        </Trans>
-      </p>
+    return () => clearTimeout(slowTimer);
+  }, []);
+
+  return (
+    <div
+      style={wrap}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div style={status}>
+        <CircularProgress
+          color="inherit"
+          size={50}
+          data-testid="component-spinner"
+        />
+
+        <p style={heading}>
+          {isTakingLonger ? (
+            <Trans i18nKey="stillWorking">Still working…</Trans>
+          ) : (
+            <Trans i18nKey="pleaseWait">Please wait…</Trans>
+          )}
+        </p>
+
+        <p style={message}>
+          {isTakingLonger ? (
+            <Trans i18nKey="stillWorkingMessage">
+              This is taking longer than usual, but we’re still securely saving
+              your information. Please don’t close this page or submit the form
+              again.
+            </Trans>
+          ) : (
+            <Trans i18nKey="savingInformation">
+              We’re securely saving your information. This can sometimes take
+              up to 30 seconds. Please don’t close this page or submit the form
+              again.
+            </Trans>
+          )}
+        </p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Spinner;
