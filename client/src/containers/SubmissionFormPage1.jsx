@@ -572,21 +572,8 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log("SFP1 533 handleTab1");
 
     const updateContactAndMoveToNextTab = async () => {
-      console.log("SFP1 538 handleTab1 updateContactAndMoveToNextTab");
-      // update existing contact, move to next tab
-      await this.props.updateSFContact(formValues)
-        .catch(err => {
-          console.error(err);
-          return this.props.handleError(err);
-        });
-      console.log('SFP1 545 handleTab1 updateContactAndMoveToNextTab');
-      console.log('single page form: calling handleTab2 after updating contact');
-      return this.handleTab2()
-        .catch(err => {
-          console.error(err);
-          return this.props.handleError(err);
-        });
-
+      await this.props.updateSFContact(formValues);
+      return this.handleTab2();
     };
 
     console.log("SFP1 557 handleTab1");
