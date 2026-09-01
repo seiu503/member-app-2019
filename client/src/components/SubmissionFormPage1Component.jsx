@@ -261,10 +261,7 @@ export class SubmissionFormPage1Component extends React.Component {
         ) : (
           <SinglePageForm
             {...this.props}
-            onSubmit={() => {
-              this.props.handleTab(1);
-              return false;
-            }}
+            onSubmit={() => this.props.handleTab(1)}
             // verifyCallback={this.verifyCallback}
             classes={classes}
             employerTypesList={employerTypesList}

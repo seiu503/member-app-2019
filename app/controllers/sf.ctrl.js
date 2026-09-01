@@ -283,62 +283,179 @@ exports.lookupSFContactByFLE = async (req, res, next) => {
  *  @returns  {Object}        Salesforce Contact id OR error message.
  */
 exports.updateSFContact = async (req, res, next) => {
-  // console.log(`sf.ctrl.js > 270: updateSFContact`);
+  const totalStart = process.hrtime.bigint();
+  const elapsedMs = start =>
+    Number(process.hrtime.bigint() - start) / 1e6;
+
+  const requestId =
+    req.get("x-request-id") ||
+    `sf-contact-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
   const { id } = req.params;
+  const contactIdSuffix =
+    typeof id === "string" ? id.slice(-6) : "unknown";
+
+  let mappingMs = 0;
+  let loginMs = 0;
+  let updateMs = 0;
+
+  const log = (event, details = {}) => {
+    console.info(
+      JSON.stringify({
+        controller: "updateSFContact",
+        event,
+        requestId,
+        contactIdSuffix,
+        elapsedMs: Math.round(elapsedMs(totalStart)),
+        ...details
+      })
+    );
+  };
+
+  // This records when Express actually finishes sending the response.
+  res.once("finish", () => {
+    log("response_finished", {
+      statusCode: res.statusCode,
+      totalMs: Math.round(elapsedMs(totalStart))
+    });
+  });
+
+  log("request_started");
+
+  const mappingStart = process.hrtime.bigint();
 
   const updatesRaw = { ...req.body };
-  // console.log(`sf.ctrl.js > 286: updates`);
-  // console.log(updatesRaw);
   const updates = {};
-  // convert updates object to key/value pairs using
-  // SF API field names
+
   Object.keys(updatesRaw).forEach(key => {
     if (contactsTableFields[key]) {
       const sfFieldName = contactsTableFields[key].SFAPIName;
       updates[sfFieldName] = updatesRaw[key];
     }
   });
+
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
-  if (updates.Birthdate__c) {
-    updates.Birthdate__c = this.formatSFDate(updates.birthdate);
-  }
-  // don't make any changes to contact account/employer
-  // updates.AccountId = updatesRaw.employer_id;
-  // console.log(`sf.ctrl.js > 276: UPDATE SFCONTACT updates`);
-  // console.log(updates);
 
-  let conn = new jsforce.Connection({ loginUrl });
-  try {
-    await conn.login(user, password);
-  } catch (err) {
-    console.error(`sf.ctrl.js > 276: ${err}`);
-    return res.status(500).json({ message: err.message });
+
+  if (updates.Birthdate) {
+    updates.Birthdate = this.formatSFDate(updatesRaw.birthdate);
   }
-  let contact;
+
+  mappingMs = elapsedMs(mappingStart);
+
+  // Log names only, never the submitted values.
+  log("updates_prepared", {
+    mappingMs: Math.round(mappingMs),
+    fieldCount: Object.keys(updates).length,
+    fieldNames: Object.keys(updates)
+  });
+
+  const conn = new jsforce.Connection({ loginUrl });
+
   try {
-    contact = await conn.sobject("Contact").update({
+    const loginStart = process.hrtime.bigint();
+
+    log("salesforce_login_started");
+    await conn.login(user, password);
+
+    loginMs = elapsedMs(loginStart);
+
+    log("salesforce_login_finished", {
+      loginMs: Math.round(loginMs)
+    });
+  } catch (err) {
+    loginMs = loginMs || elapsedMs(totalStart);
+
+    log("salesforce_login_failed", {
+      loginMs: Math.round(loginMs),
+      errorCode: err.errorCode,
+      errorName: err.name,
+      errorMessage: err.message
+    });
+
+    res.setHeader(
+      "Server-Timing",
+      `sf-login;dur=${loginMs.toFixed(1)}`
+    );
+
+    return res.status(500).json({
+      message: err.message,
+      requestId
+    });
+  }
+
+  try {
+    const updateStart = process.hrtime.bigint();
+
+    log("salesforce_update_started");
+
+    const contact = await conn.sobject("Contact").update({
       Id: id,
       ...updates
     });
+
+    updateMs = elapsedMs(updateStart);
+
+    log("salesforce_update_finished", {
+      updateMs: Math.round(updateMs),
+      success: contact && contact.success
+    });
+
+    res.setHeader(
+      "Server-Timing",
+      [
+        `prepare;dur=${mappingMs.toFixed(1)}`,
+        `sf-login;dur=${loginMs.toFixed(1)}`,
+        `sf-update;dur=${updateMs.toFixed(1)}`
+      ].join(", ")
+    );
+
     if (req.locals && req.locals.next) {
-      console.log(`sf.ctrl.js > 313: returning next`);
+      log("controller_finished_for_next", {
+        controllerMs: Math.round(elapsedMs(totalStart))
+      });
       return id;
     }
 
-    let response = {
-      salesforce_id: id
+    const response = {
+      salesforce_id: id,
+      request_id: requestId
     };
+
     if (res.locals.submission_id) {
       response.submission_id = res.locals.submission_id;
     }
-    // console.log(response);
+
+    log("controller_finished", {
+      controllerMs: Math.round(elapsedMs(totalStart))
+    });
 
     return res.status(200).json(response);
   } catch (err) {
-    console.error(`sf.ctrl.js > 300: ${err}`);
-    return res.status(500).json({ message: err.message });
+    updateMs = updateMs || elapsedMs(totalStart) - loginMs;
+
+    log("salesforce_update_failed", {
+      updateMs: Math.round(updateMs),
+      errorCode: err.errorCode,
+      errorName: err.name,
+      errorMessage: err.message
+    });
+
+    res.setHeader(
+      "Server-Timing",
+      [
+        `prepare;dur=${mappingMs.toFixed(1)}`,
+        `sf-login;dur=${loginMs.toFixed(1)}`,
+        `sf-update;dur=${updateMs.toFixed(1)}`
+      ].join(", ")
+    );
+
+    return res.status(500).json({
+      message: err.message,
+      requestId
+    });
   }
 };
 
