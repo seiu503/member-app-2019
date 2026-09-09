@@ -89,6 +89,10 @@ export class AppUnconnected extends Component {
     this.detectLanguage = this.detectLanguage.bind(this);
   }
 
+  setRecaptchaProof = proof => {
+    this.recaptchaProof = proof;
+  };
+
   async componentDidMount() {
     // console.log(`APP this.props.classes`);
     // console.log(this.props);
@@ -641,10 +645,23 @@ export class AppUnconnected extends Component {
     // console.log(`##########   OMABODY   ###########`);
     // console.log(body);
 
+    if (!this.recaptchaProof) {
+      const error = new Error(
+        "ReCAPTCHA verification is required."
+      );
+
+      this.handleError(
+        this.props.t("reCaptchaError")
+      );
+
+      throw error;
+    }
+
     // create Online Member App record
-    return this.props.apiSF
-      .createSFOMA(body)
-      .then(result => {
+    return this.props.apiSF.createSFOMA(
+        body,
+        this.recaptchaProof
+      ).then(result => {
         console.log("App 728 createSubmission");
         console.log(result.type);
         console.log(`submission errors: ${this.props.submission.error}`);
@@ -652,14 +669,12 @@ export class AppUnconnected extends Component {
           result.type !== "CREATE_SF_OMA_SUCCESS" ||
           this.props.submission.error
         ) {
-          // this.saveSubmissionErrors(
-          //   this.props.submission.submissionId,
-          //   "createSFOMA",
-          //   this.props.submission.error
-          // );
-          // goto CAPE tab
-          console.log('moving to CAPE Tab');
-          this.changeTab(2);
+          throw new Error(
+            result?.payload?.message ||
+              "The submission could not be saved."
+          );
+          // console.log('moving to CAPE Tab');
+          // this.changeTab(2);
         } else if (!this.props.submission.error) {
 
           // // what if we don't update submission status after creating OMA? does that fix the endless loop?
@@ -750,7 +765,10 @@ export class AppUnconnected extends Component {
       reCaptchaValue
     };
 
-    await this.props.apiSF.createSFContact(body).catch(err => {
+    await this.props.apiSF.createSFContact(
+      body,
+      this.recaptchaProof
+    ).catch(err => {
       console.error(err);
       return this.handleError(err);
     });
@@ -808,7 +826,11 @@ export class AppUnconnected extends Component {
       reCaptchaValue
     };
 
-    const result = await this.props.apiSF.updateSFContact(id, body);
+    const result = await this.props.apiSF.updateSFContact(
+      id,
+      body,
+      this.recaptchaProof
+    );
 
       if (result.type === "UPDATE_SF_CONTACT_FAILURE") {
         const error =
@@ -928,6 +950,7 @@ export class AppUnconnected extends Component {
                     handleError={this.handleError}
                     openSnackbar={this.openSnackbar}
                     apiSubmission={this.props.apiSubmission}
+                    setRecaptchaProof={this.setRecaptchaProof}
                   />
                 }
               />

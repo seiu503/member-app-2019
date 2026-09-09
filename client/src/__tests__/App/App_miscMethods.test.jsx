@@ -41,8 +41,10 @@ let verifyMock = jest.fn().mockImplementation(() =>
   Promise.resolve({
     type: "VERIFY_SUCCESS",
     payload: {
-      score: 0.9
-    }
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
   })
 );
 
@@ -248,16 +250,31 @@ const store = storeFactory(initialState);
 const setup = async (props = {}, route = "/") => {
   const setupProps = {
     ...defaultProps,
-    ...props
+    ...props,
+
+    apiSubmission: {
+      ...defaultProps.apiSubmission,
+      ...(props.apiSubmission || {})
+    },
+
+    apiSF: {
+      ...defaultProps.apiSF,
+      ...(props.apiSF || {})
+    },
+
+    actions: {
+      ...defaultProps.actions,
+      ...(props.actions || {})
+    }
   };
-  // console.log(setupProps.submission.employerObjects);
+
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
         <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <MemoryRouter initialEntries={[route]}>
+          <BrowserRouter>
             <AppUnconnected {...setupProps} />
-          </MemoryRouter>
+          </BrowserRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>

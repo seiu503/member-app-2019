@@ -1,6 +1,7 @@
 // const axios = require("axios");
 const url = require("url");
 const {RecaptchaEnterpriseServiceClient} = require('@google-cloud/recaptcha-enterprise');
+const jwt = require("jsonwebtoken");
 
 /*
    Route handlers for fetching and updating submissions.
@@ -29,6 +30,10 @@ const recaptchaClient =
 
 const recaptchaProjectPath =
   recaptchaClient.projectPath(RECAPTCHA_PROJECT_ID);
+
+const RECAPTCHA_MINIMUM_SCORE = Number(
+  process.env.RECAPTCHA_MINIMUM_SCORE || 0.5
+);
 
 /* ============================ ROUTE HANDLERS ============================= */
 
@@ -362,44 +367,27 @@ exports.getSubmissionById = (req, res, next) => {
 
 exports.verifyHumanity = async (req, res) => {
   const startedAt = Date.now();
-  const requestId =
-    req.get("x-request-id") ||
-    `recaptcha-${Date.now()}-${Math.random()
-      .toString(36)
-      .slice(2, 8)}`;
-
   const { token } = req.body;
-  const recaptchaKey = process.env.GRECAPTCHA_SITEKEY;
 
-  const log = (event, details = {}) => {
-    console.info(
-      JSON.stringify({
-        controller: "verifyHumanity",
-        event,
-        requestId,
-        elapsedMs: Date.now() - startedAt,
-        ...details
-      })
-    );
-  };
+  const recaptchaKey =
+    process.env.GRECAPTCHA_SITEKEY;
 
-  log("request_started");
+  const proofSecret =
+    process.env.RECAPTCHA_PROOF_SECRET;
 
   if (!token) {
-    log("token_missing");
-
     return res.status(400).json({
-      message: "ReCAPTCHA token is missing.",
-      requestId
+      message: "ReCAPTCHA token is missing."
     });
   }
 
-  if (!recaptchaKey) {
-    log("site_key_missing");
+  if (!recaptchaKey || !proofSecret) {
+    console.error(
+      "ReCAPTCHA site key or proof secret is missing."
+    );
 
     return res.status(500).json({
-      message: "ReCAPTCHA is not configured.",
-      requestId
+      message: "ReCAPTCHA is not configured."
     });
   }
 
@@ -407,15 +395,18 @@ exports.verifyHumanity = async (req, res) => {
     assessment: {
       event: {
         token,
-        siteKey: recaptchaKey
+        siteKey: recaptchaKey,
+        expectedAction: RECAPTCHA_ACTION,
+        userAgent: req.get("user-agent"),
+        userIpAddress:
+          req.headers["x-real-ip"] ||
+          req.ip
       }
     },
     parent: recaptchaProjectPath
   };
 
   try {
-    log("assessment_started");
-
     const [response] =
       await recaptchaClient.createAssessment(
         request,
@@ -424,66 +415,164 @@ exports.verifyHumanity = async (req, res) => {
         }
       );
 
-    log("assessment_finished", {
-      valid: response.tokenProperties?.valid,
-      action: response.tokenProperties?.action,
-      score: response.riskAnalysis?.score
-    });
+    const tokenProperties =
+      response.tokenProperties;
 
-    if (!response.tokenProperties?.valid) {
-      const invalidReason =
-        response.tokenProperties?.invalidReason ||
-        "INVALID_TOKEN";
+    const score = Number(
+      response.riskAnalysis?.score
+    );
 
-      log("token_invalid", {
-        invalidReason
+    if (!tokenProperties?.valid) {
+      console.warn("ReCAPTCHA token rejected", {
+        invalidReason:
+          tokenProperties?.invalidReason
       });
 
-      return res.status(400).json({
-        message: invalidReason,
-        requestId
+      return res.status(403).json({
+        message: "ReCAPTCHA verification failed."
       });
     }
 
     if (
-      response.tokenProperties.action !==
-      RECAPTCHA_ACTION
+      tokenProperties.action !== RECAPTCHA_ACTION
     ) {
-      log("action_mismatch", {
-        expectedAction: RECAPTCHA_ACTION,
-        receivedAction:
-          response.tokenProperties.action
+      console.warn("ReCAPTCHA action mismatch", {
+        expected: RECAPTCHA_ACTION,
+        received: tokenProperties.action
       });
 
-      return res.status(400).json({
-        message:
-          "ReCAPTCHA action did not match the expected action.",
-        requestId
+      return res.status(403).json({
+        message: "ReCAPTCHA verification failed."
       });
     }
 
+    if (!Number.isFinite(score)) {
+      console.warn(
+        "ReCAPTCHA returned an invalid score."
+      );
+
+      return res.status(403).json({
+        message: "ReCAPTCHA verification failed."
+      });
+    }
+
+    if (score < RECAPTCHA_MINIMUM_SCORE) {
+      console.warn("ReCAPTCHA score rejected", {
+        score,
+        minimumScore:
+          RECAPTCHA_MINIMUM_SCORE
+      });
+
+      return res.status(403).json({
+        message: "ReCAPTCHA verification failed."
+      });
+    }
+
+    /*
+     * This proof can only be created by the backend because
+     * RECAPTCHA_PROOF_SECRET is not available to the browser.
+     */
+    const proof = jwt.sign(
+      {
+        purpose: "recaptcha-verification",
+        action: RECAPTCHA_ACTION
+      },
+      proofSecret,
+      {
+        algorithm: "HS256",
+        expiresIn: "10m",
+        issuer: "seiu503-membership-api",
+        audience: "salesforce-oma"
+      }
+    );
+
+    console.info("ReCAPTCHA verification passed", {
+      score,
+      elapsedMs: Date.now() - startedAt
+    });
+
     return res.status(200).json({
-      score: response.riskAnalysis?.score,
-      requestId
+      verified: true,
+      score,
+      proof
     });
   } catch (err) {
     const timedOut =
       err.code === 4 ||
-      err.name === "DeadlineExceededError" ||
-      /deadline|timeout/i.test(err.message || "");
+      /deadline|timeout/i.test(
+        err.message || ""
+      );
 
-    log("assessment_failed", {
+    console.error("ReCAPTCHA assessment failed", {
       timedOut,
       errorCode: err.code,
-      errorName: err.name,
-      errorMessage: err.message
+      errorMessage: err.message,
+      elapsedMs: Date.now() - startedAt
     });
 
-    return res.status(timedOut ? 504 : 503).json({
+    /*
+     * Critically: do not return HTTP 200, verified:true,
+     * a proof, or a fake passing score here.
+     */
+    return res.status(503).json({
       message: timedOut
         ? "ReCAPTCHA verification timed out. Please try again."
-        : "ReCAPTCHA verification is temporarily unavailable. Please try again.",
-      requestId
+        : "ReCAPTCHA verification is temporarily unavailable. Please try again."
+    });
+  }
+};
+
+exports.requireRecaptchaProof = (
+  req,
+  res,
+  next
+) => {
+  const proof =
+    req.get("x-recaptcha-proof");
+
+  if (!proof) {
+    return res.status(403).json({
+      message:
+        "Successful reCAPTCHA verification is required."
+    });
+  }
+
+  try {
+    const payload = jwt.verify(
+      proof,
+      process.env.RECAPTCHA_PROOF_SECRET,
+      {
+        algorithms: ["HS256"],
+        issuer: "seiu503-membership-api",
+        audience: "salesforce-oma"
+      }
+    );
+
+    if (
+      payload.purpose !==
+        "recaptcha-verification" ||
+      payload.action !== RECAPTCHA_ACTION
+    ) {
+      return res.status(403).json({
+        message:
+          "ReCAPTCHA verification is invalid."
+      });
+    }
+
+    req.recaptchaVerification = payload;
+
+    return next();
+  } catch (err) {
+    console.warn(
+      "Missing, invalid, or expired reCAPTCHA proof",
+      {
+        errorName: err.name
+      }
+    );
+
+    return res.status(403).json({
+      message:
+        "ReCAPTCHA verification is invalid or expired."
     });
   }
 };

@@ -36,6 +36,24 @@ const server = setupServer(...handlers);
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
 
+const successfulVerifyAction = {
+  type: "VERIFY_SUCCESS",
+  payload: {
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
+};
+
+const successfulRecaptchaVerification = {
+  score: 0.9,
+  proof: "test-recaptcha-proof"
+};
+
+const verifySuccessMock = jest
+  .fn()
+  .mockResolvedValue(successfulVerifyAction);
+
 let updateSFContactSuccess = jest
   .fn()
   .mockImplementation(() =>
@@ -160,8 +178,14 @@ const defaultProps = {
     handleInputSPF: handleInputSPFMock,
     clearForm: clearFormMock,
     setCAPEOptions: jest.fn(),
-    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" })
+    addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
+    verify: verifySuccessMock
   },
+  actions: {
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
+  },
+  setRecaptchaProof: jest.fn(),
   history: {},
   navigate,
   recaptcha: {
@@ -273,8 +297,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
               type: "UPDATE_CAPE_SUCCESS",
               payload: { salesforce_id: "123" }
             })
-          )
-        },
+          ),
+    verify: verifySuccessMock
+  },
+  actions: {
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
+  },
+  setRecaptchaProof: jest.fn(),
         submission: {
           salesforceId: "123",
           formPage1: {
@@ -340,8 +370,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
               type: "UPDATE_CAPE_SUCCESS",
               payload: { salesforce_id: "123" }
             })
-          )
-        },
+          ),
+    verify: verifySuccessMock
+  },
+  actions: {
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
+  },
+  setRecaptchaProof: jest.fn(),
         submission: {
           salesforceId: "123",
           formPage1: {
@@ -408,8 +444,14 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
               type: "UPDATE_CAPE_SUCCESS",
               payload: { salesforce_id: "123" }
             })
-          )
-        },
+          ),
+    verify: verifySuccessMock
+  },
+  actions: {
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
+  },
+  setRecaptchaProof: jest.fn(),
         submission: {
           salesforceId: "123",
           formPage1: {

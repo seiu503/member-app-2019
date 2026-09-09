@@ -55,7 +55,11 @@ let getResponseMock = jest
 
 const verifySuccess = jest.fn().mockImplementation(() => {
   conosle.log("verifySuccess Mock");
-  return Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } });
+  return Promise.resolve({ type: "VERIFY_SUCCESS", payload: {
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  } });
 });
 
 const navigate = jest.fn();
