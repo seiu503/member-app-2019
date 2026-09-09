@@ -16,6 +16,10 @@ process.env.RECAPTCHA_PROOF_SECRET =
   process.env.RECAPTCHA_PROOF_SECRET ||
   "test-recaptcha-proof-secret-at-least-32-characters";
 
+process.env.GRECAPTCHA_SITEKEY =
+  process.env.GRECAPTCHA_SITEKEY ||
+  "test-recaptcha-site-key";
+
 const sfCtrl = require("../app/controllers/sf.ctrl.js");
 const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
 const submissions = require("../db/models/submissions");
