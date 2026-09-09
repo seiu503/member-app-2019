@@ -419,6 +419,16 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         .mockImplementation(() =>
           Promise.resolve({ type: "UPDATE_CAPE_SUCCESS" })
         );
+
+      const verifyRecaptchaScoreMockCAPE = jest
+        .spyOn(
+          SubmissionFormPage1Container.prototype,
+          "verifyRecaptchaScore"
+        )
+        .mockResolvedValue({
+          score: 0.9,
+          proof: "fresh-cape-proof"
+        });
       let props = {
         formValues: {
           ...formValues,
@@ -469,7 +479,6 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
         reset: jest.fn(),
         tab: 2,
         displayCAPEPaymentFields: true,
-        verifyRecaptchaScore: verifySuccess,
         history: {},
         navigate
       };
@@ -498,12 +507,25 @@ describe("<SubmissionFormPage1Container /> handleCAPESubmit1", () => {
 
       // expect redirect to page 2
       await waitFor(() => {
-        expect(createSFCAPESuccess).toHaveBeenCalledTimes(1);
-        expect(navigate).toHaveBeenCalledWith("/page2/?cId=123");
+        expect(verifyRecaptchaScoreMockCAPE)
+          .toHaveBeenCalledTimes(1);
+
+        expect(createSFCAPESuccess)
+          .toHaveBeenCalledWith(
+            expect.any(Object),
+            "fresh-cape-proof"
+          );
+
+        expect(navigate)
+          .toHaveBeenCalledWith("/page2/?cId=123");
       });
 
       expect(createCAPESuccess).not.toHaveBeenCalled();
       expect(updateCAPESuccess).not.toHaveBeenCalled();
+
+      
+
+
   });
 
     test("`handleCAPESubmit` handles error if recaptcha verification fails", async () => {

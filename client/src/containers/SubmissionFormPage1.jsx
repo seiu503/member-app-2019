@@ -403,18 +403,32 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
     console.dir(formValues);
-    if (standAlone) {
-      const recaptchaVerification =
+
+    // Always obtain a fresh proof for this CAPE submission.
+    let recaptchaVerification;
+    
+    try {
+      recaptchaVerification =
         await this.verifyRecaptchaScore();
-
-      if (!recaptchaVerification) {
-        this.props.actions.spinnerOff();
-        return false;
-      }
-
-      this.recaptchaProof =
-        recaptchaVerification.proof;
+    } catch (err) {
+      console.error(
+        "CAPE reCAPTCHA verification failed",
+        err
+      );
+      this.props.handleError(err);
+      return;
     }
+
+    if (!recaptchaVerification?.proof) {
+      this.props.handleError(
+        this.props.t("reCaptchaError")
+      );
+      return;
+    }
+
+    const capeRecaptchaProof =
+      recaptchaVerification.proof;
+
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
@@ -457,7 +471,11 @@ export class SubmissionFormPage1Container extends React.Component {
     let sfCapeResult;
 
     try {
-      sfCapeResult = await this.props.apiSF.createSFCAPE(body);
+      sfCapeResult =
+        await this.props.apiSF.createSFCAPE(
+          body,
+          recaptchaVerification.proof
+        );
     } catch (err) {
       console.error("Salesforce CAPE creation failed", err);
       this.props.handleError(err);
@@ -468,15 +486,10 @@ export class SubmissionFormPage1Container extends React.Component {
       !sfCapeResult ||
       sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS"
     ) {
-      const message =
-        sfCapeResult &&
-        sfCapeResult.payload &&
-        sfCapeResult.payload.message
-          ? sfCapeResult.payload.message
-          : "The CAPE submission could not be saved.";
-
-      console.error(message);
-      this.props.handleError(message);
+      this.props.handleError(
+        sfCapeResult?.payload?.message ||
+          "The CAPE submission could not be saved."
+      );
       return;
     }
 
