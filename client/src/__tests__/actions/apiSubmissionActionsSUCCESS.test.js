@@ -88,7 +88,11 @@ describe("apiSubmissionActions SUCCESS", () => {
       it("VERIFY: Dispatches success action after successful POST", async () => {
         server.resetHandlers();
         const expectedResult = {
-          payload: { score: 0.9 },
+          payload: {
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  },
           type: "VERIFY_SUCCESS",
           meta: undefined
         };

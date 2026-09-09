@@ -206,8 +206,10 @@ const defaultProps = {
       Promise.resolve({
         type: "VERIFY_SUCCESS",
         payload: {
-          score: 0.9
-        }
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
       })
     )
   },

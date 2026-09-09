@@ -184,53 +184,67 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("SFP1 187 verifyRecaptchaScore");
-    // set loading
-    console.log("setting spinner");
-    this.props.actions.setSpinner();
-
-    // fetch token
-    // this gRecaptcha key is attached to the seiu503@gmail.com account
-    try { 
-      let token;
-      if (process.env.REACT_APP_ENV_TEXT !== "test") {
-        token = await window.grecaptcha.enterprise 
-        .execute(process.env.REACT_APP_GRECAPTCHA_SITEKEY, { action: "homepage" })
-      } else {
-        token = 'test'
-      } 
-
-      console.log(`SPF1 198 token: ${token.length}`);
-      await this.props.apiSubmission.handleInput({
-        target: { name: "reCaptchaValue", value: token }
-      });
-      console.log(this.props.submission.formPage1.reCaptchaValue.length);
-
-        // then verify
-        if (token) {
-          console.log("SFP1 198 verifyRecaptchaScore");
-          try {
-            const result = await this.props.apiSubmission.verify(token);
-            console.log("SFP1 202 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
-            return result.payload.score;
-            }
-          catch(err) {
-            console.log("SPF1 206 verifyRecaptchaScore verify catch err");
-            console.error(err);
-            const rcErr = this.props.t("reCaptchaError");
-            return this.props.handleError(rcErr);
-           };
-         } else {
-          console.log("SFP1 212 verifyRecaptchaScore no token err");
-          const rcErr = this.props.t("reCaptchaError");
-          return this.props.handleError(rcErr);
+  try {
+    const token =
+      await window.grecaptcha.enterprise.execute(
+        process.env.REACT_APP_GRECAPTCHA_SITEKEY,
+        {
+          action: "homepage"
         }
-      } catch(err) {
-        console.log("SFP1 218 verifyRecaptchaScore grecaptcha execute error")
-        console.error(err)
-      }
+      );
 
-   };
+    if (!token) {
+      throw new Error(
+        "No reCAPTCHA token was generated."
+      );
+    }
+
+    const result =
+      await this.props.apiSubmission.verify(token);
+
+    if (
+      !result ||
+      result.type !== "VERIFY_SUCCESS"
+    ) {
+      throw new Error(
+        result?.payload?.message ||
+          "ReCAPTCHA verification failed."
+      );
+    }
+
+    const score = Number(
+      result.payload?.score
+    );
+
+    const proof = result.payload?.proof;
+
+    if (
+      result.payload?.verified !== true ||
+      !Number.isFinite(score) ||
+      !proof
+    ) {
+      throw new Error(
+        "ReCAPTCHA verification failed."
+      );
+    }
+
+    return {
+      score,
+      proof
+    };
+  } catch (err) {
+    console.error(
+      "ReCAPTCHA verification failed",
+      err
+    );
+
+    this.props.handleError(
+      this.props.t("reCaptchaError")
+    );
+
+    return null;
+  }
+}
 
   async saveLegalLanguage() {
     console.log('SFP1 195 saveLegalLanguage start');
@@ -389,25 +403,16 @@ export class SubmissionFormPage1Container extends React.Component {
     const { formValues } = this.props;
     console.dir(formValues);
     if (standAlone) {
-      // verify recaptcha score
-      await this.verifyRecaptchaScore()
-        .then(score => {
-          console.log('SFP1 handleCAPESubmit 396')
-          console.log(`score: ${score}`);
-          if (!score || score <= 0.3) {
-            console.error(`recaptcha failed: ${score}`);
-            // don't return to client here, because of race condition this fails initially
-            // then passes after error is returned -- just log to console
-            // return this.props.handleError(
-            //   this.props.t("reCaptchaError")
-            // );
-            return;
-          }
-        })
-        .catch(err => {
-          console.log('SFP1 handleCAPESubmit 407');
-          console.error(err);
-        });
+      const recaptchaVerification =
+        await this.verifyRecaptchaScore();
+
+      if (!recaptchaVerification) {
+        this.props.actions.spinnerOff();
+        return false;
+      }
+
+      this.recaptchaProof =
+        recaptchaVerification.proof;
     }
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
@@ -447,7 +452,8 @@ export class SubmissionFormPage1Container extends React.Component {
 
     // write CAPE contribution to SF
     const sfCapeResult = await this.props.apiSF
-      .createSFCAPE(body)
+      .createSFCAPE(body,
+      this.recaptchaProof)
       .catch(err => {
         cape_errors += err;
         cape_status = "Error";
@@ -558,16 +564,29 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log(formValues);
  
     // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    setTimeout(() => {
-      if (score <= 0.3) {
-        console.log(`recaptcha failed: ${score}`);
-        // don't return error to client here because the error is returned even if recaptcha is still waiting for result
-        // const reCaptchaError = this.props.t("reCaptchaError");
-        // return this.props.handleError(reCaptchaError);
-        return;
-      }
-    }, 0);
+    const recaptchaVerification =
+      await this.verifyRecaptchaScore();
+
+    // Stop before reading proof or performing any writes.
+    if (!recaptchaVerification) {
+      this.props.actions.spinnerOff();
+      return false;
+    }
+
+    this.recaptchaProof =
+      recaptchaVerification.proof;
+
+    if (!this.props.setRecaptchaProof) {
+      throw new Error(
+        "setRecaptchaProof prop is missing."
+      );
+    }
+
+    this.props.setRecaptchaProof(
+      recaptchaVerification.proof
+    );
+
+    // Only begin Contact lookup/update/create below this point.
 
     console.log("SFP1 533 handleTab1");
 
