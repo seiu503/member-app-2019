@@ -117,44 +117,62 @@ export const SubmissionFormPage2CompFunction = props => {
       }
     }
 
-    /**** removing the whole submission create/update call 20251027 because it's
-    // causing the server to hang ****/
+    try {
+      const token = await window.grecaptcha.enterprise.execute(
+        process.env.REACT_APP_GRECAPTCHA_SITEKEY,
+        { action: "homepage" }
+      );
 
-    // let id = props.submission.submissionId;
-    // console.log(`SUBMISSION ID: ${id}`);
+      const verificationResult =
+        await props.apiSubmission.verify(token);
 
-    // if (!id) {
-    //   // console.log(`!id: ############################`);
-    //   cleanBody.first_name = firstName;
-    //   cleanBody.last_name = lastName;
-    //   cleanBody.home_email = homeEmail;
+      const recaptchaProof =
+        verificationResult &&
+        verificationResult.type === "VERIFY_SUCCESS" &&
+        verificationResult.payload &&
+        verificationResult.payload.proof;
 
-    //   await props
-    //     .createSubmission(cleanBody, true) // partial submission = true
-    //     .catch(err => {
-    //       console.error(err);
-    //       return props.handleError(err);
-    //     });
-    // } else {
-    //   await props
-    //     .updateSubmission(id, cleanBody)
-    //     // no then block here bc nothing is returned (this is an app method not an API Call)
-    //     .catch(err => {
-    //       console.error(err);
-    //       return props.handleError(err);
-    //     });
-    // }
-    props.apiSF
-      .updateSFContact(salesforceId, cleanBody)
-      .then(() => {
-        console.log("updated SF contact");
-        props.openSnackbar("success", props.t("snackBarSuccess"));
-        navigate(`/thankyou`);
-      })
-      .catch(err => {
-        console.error(err);
-        return props.handleError(err);
-      });
+      if (!recaptchaProof) {
+        throw new Error(
+          verificationResult?.payload?.message ||
+            "ReCAPTCHA verification failed."
+        );
+      }
+
+      const updateResult =
+        await props.apiSF.updateSFContact(
+          salesforceId,
+          cleanBody,
+          recaptchaProof
+        );
+
+      if (
+        !updateResult ||
+        updateResult.type !== "UPDATE_SF_CONTACT_SUCCESS"
+      ) {
+        throw new Error(
+          updateResult?.payload?.message ||
+            "Your information could not be saved."
+        );
+      }
+
+      console.log("updated SF contact");
+
+      props.openSnackbar(
+        "success",
+        props.t("snackBarSuccess")
+      );
+
+      navigate("/thankyou");
+    } catch (err) {
+      console.error("Page 2 submission failed", err);
+
+      props.handleError(
+        err?.message || err
+      );
+
+      return;
+    }
   };
 
   // const id = props.submission.submissionId;
