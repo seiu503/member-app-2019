@@ -69,7 +69,11 @@ const verifyRecaptchaSuccess = jest
 verifySuccess = jest
   .fn()
   .mockImplementation(() =>
-    Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
+    Promise.resolve({ type: "VERIFY_SUCCESS", payload: {
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  } })
   );
 
 updateSubmissionSuccess = jest

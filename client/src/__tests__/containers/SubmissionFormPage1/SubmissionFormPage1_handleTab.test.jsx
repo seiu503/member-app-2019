@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, MemoryRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
@@ -87,6 +87,15 @@ let createSubmissionSuccess = jest
     Promise.resolve({ type: "CREATE_SUBMISSION_SUCCESS" })
   );
 
+const verifySuccess = jest.fn().mockResolvedValue({
+  type: "VERIFY_SUCCESS",
+  payload: {
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
+});  
+
 global.scrollTo = jest.fn();
 
 const formValues = {
@@ -167,7 +176,13 @@ const defaultProps = {
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
     updateSubmission: () =>
-      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
+    verify: verifySuccess
+  },
+  setRecaptchaProof: jest.fn(),
+  actions: {
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
   },
   history: {},
   navigate,
@@ -219,15 +234,41 @@ const defaultProps = {
 let handleSubmit;
 const initialState = {};
 const store = storeFactory(initialState);
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props, handleSubmit };
+const setup = async (props = {}, route = "/") => {
+  const setupProps = {
+    ...defaultProps,
+    ...props,
+
+    apiSubmission: {
+      ...defaultProps.apiSubmission,
+      ...(props.apiSubmission || {})
+    },
+
+    apiSF: {
+      ...defaultProps.apiSF,
+      ...(props.apiSF || {})
+    },
+
+    actions: {
+      ...defaultProps.actions,
+      ...(props.actions || {})
+    },
+
+    handleSubmit
+  };
+
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
-          <BrowserRouter>
-            <SubmissionFormPage1Container {...setupProps} />
-          </BrowserRouter>
+        <I18nextProvider
+          i18n={i18n}
+          defaultNS="translation"
+        >
+          <MemoryRouter initialEntries={[route]}>
+            <SubmissionFormPage1Container
+              {...setupProps}
+            />
+          </MemoryRouter>
         </I18nextProvider>
       </Provider>
     </ThemeProvider>
@@ -250,7 +291,6 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
 
   describe("handleTab", () => {
     test("`handleTab` calls saveLegalLanguage if newValue === 2", async function() {
-      let saveLegalLanguageMock = jest.fn();
       createSubmissionSuccess = jest
         .fn()
         .mockImplementation(() =>
@@ -338,8 +378,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             Promise.resolve({
               type: "VERIFY_SUCCESS",
               payload: {
-                score: 0.9
-              }
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
             })
           )
         }

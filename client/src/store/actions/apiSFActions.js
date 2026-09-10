@@ -110,7 +110,7 @@ export const CREATE_SF_CONTACT_FAILURE = "CREATE_SF_CONTACT_FAILURE";
  *   CREATE_SF_CONTACT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function createSFContact(body) {
+export function createSFContact(body, recaptchaProof) {
   // console.log(body);
   // console.log(JSON.stringify(body));
   return {
@@ -134,7 +134,8 @@ export function createSFContact(body) {
         }
       ],
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Recaptcha-Proof": recaptchaProof
       },
       body: JSON.stringify(body)
     }
@@ -158,7 +159,7 @@ export const UPDATE_SF_CONTACT_FAILURE = "UPDATE_SF_CONTACT_FAILURE";
  *   UPDATE_SF_CONTACT_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function updateSFContact(id, body) {
+export function updateSFContact(id, body, recaptchaProof) {
   // console.log('updateSFContact');
   // console.log(body);
   return {
@@ -182,7 +183,8 @@ export function updateSFContact(id, body) {
         }
       ],
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Recaptcha-Proof": recaptchaProof
       },
       body: JSON.stringify(body)
     }
@@ -254,7 +256,10 @@ export const CREATE_SF_OMA_FAILURE = "CREATE_SF_OMA_FAILURE";
  *   CREATE_SF_OMA_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function createSFOMA(body) {
+export function createSFOMA(
+  body,
+  recaptchaProof
+) {
   return {
     [RSAA]: {
       endpoint: `${BASE_URL}/api/sfOMA`,
@@ -264,19 +269,22 @@ export function createSFOMA(body) {
         CREATE_SF_OMA_SUCCESS,
         {
           type: CREATE_SF_OMA_FAILURE,
-          payload: (action, state, res) => {
-            return res.json().then(data => {
-              let message = "Sorry, something went wrong :(";
-              if (data && data.message) {
-                message = data.message;
-              }
-              return { message };
-            });
-          }
+          payload: (
+            action,
+            state,
+            res
+          ) =>
+            res.json().then(data => ({
+              message:
+                data?.message ||
+                "Sorry, something went wrong :("
+            }))
         }
       ],
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Recaptcha-Proof":
+          recaptchaProof
       },
       body: JSON.stringify(body)
     }
@@ -302,7 +310,7 @@ export const CREATE_SF_CAPE_FAILURE = "CREATE_SF_CAPE_FAILURE";
  *   CREATE_SF_CAPE_FAILURE:
  *     If database error, hides spinner, displays error toastr
  */
-export function createSFCAPE(body) {
+export function createSFCAPE(body, recaptchaProof) {
   // console.log(body);
   // console.log(JSON.stringify(body));
   return {
@@ -326,7 +334,8 @@ export function createSFCAPE(body) {
         }
       ],
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "X-Recaptcha-Proof": recaptchaProof
       },
       body: JSON.stringify(body)
     }

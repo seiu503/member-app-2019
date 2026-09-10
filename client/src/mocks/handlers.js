@@ -5,7 +5,11 @@ import { employersPayload } from "../utils/testUtils";
 const handlers = [
   http.post("http://localhost:8080/api/verify", () => {
     console.log("this.props.apiSubmission.verify mock");
-    return HttpResponse.json({ score: 0.9 });
+    return HttpResponse.json({
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  });
   }),
 
   http.get("http://localhost:8080/api/sfaccts", () => {
@@ -82,7 +86,11 @@ const handlers = [
 
     http.post("http://localhost/undefined/api/verify", () => {
     console.log("this.props.apiSubmission.verify mock");
-    return HttpResponse.json({ score: 0.9 });
+    return HttpResponse.json({
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  });
   }),
 
   http.get("http://localhost/undefined/api/sfaccts", () => {

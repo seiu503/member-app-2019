@@ -184,7 +184,15 @@ const defaultProps = {
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
     updateSubmission: () =>
-      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
+    verify: jest.fn().mockResolvedValue({
+      type: "VERIFY_SUCCESS",
+      payload: {
+        verified: true,
+        score: 0.9,
+        proof: "test-recaptcha-proof"
+      }
+    })
   },
   history: {},
   navigate,
@@ -210,8 +218,10 @@ const defaultProps = {
   createSubmission: createSubmissionSuccess,
   changeTab: changeTabMock,
   actions: {
-    setSpinner: jest.fn()
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
   },
+  setRecaptchaProof: jest.fn(),
   headline: {
     id: 1,
     text: ""
@@ -262,7 +272,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   // Reset any runtime request handlers we may add during the tests.
   afterEach(() => {
     server.resetHandlers();
-    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
     cleanup();
   });
 
@@ -270,172 +281,179 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
   afterAll(() => server.close());
 
   describe("verifyRecaptchaScore", () => {
-    test("verifyRecaptchaScore calls `window.grecaptcha.enterprise.execute()`", async function() {
-      const props = {
-        tab: 0,
-        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
-        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
-      };
+  test("calls window.grecaptcha.enterprise.execute", async () => {
+    expect.hasAssertions();
 
-      // render form
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
+    const executeMock = jest
+      .fn()
+      .mockResolvedValue("test-recaptcha-token");
 
-      // mock recaptcha
-      const executeMock = jest.fn().mockImplementation(() => {
-        Promise.resolve("token")
-      });
- 
+    window.grecaptcha.enterprise.execute =
+      executeMock;
 
-      document.addEventListener("DOMContentLoaded", async () => {
-        console.log('DOMContentLoaded');
-        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
-        windowSpy.mockImplementation(() => ({
-          enterprise: {
-            execute: executeMock
-          },
-        }));
-
-        const spf = getByTestId("form-spf");
- 
-        // simulate submit tab1
-        await waitFor(async () => {
-          await fireEvent.submit(spf);
-        });
-
-        // expect executeMock to have been called
-        await waitFor(() => {
-          expect(executeMock).toHaveBeenCalled();
-        });
-
-      });
-    });
-    test("verifyRecaptchaScore calls `apiSubmission.verify`", async function() {
-      const verifySuccess = jest
-        .fn()
-        .mockImplementation(() =>
-          Promise.resolve({ type: "VERIFY_SUCCESS", payload: { score: 0.9 } })
-        );
-      const props = {
-        submission: {
-          formPage1: {
-            reCaptchaValue: 123
-          },
-          prefillValues: {
-            preferredLanguage: ""
-          }
-        },
-        apiSubmission: {
-          verify: verifySuccess,
-          handleInput: handleInputMock
-        },
-        tab: 0,
-        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
-        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
-      };
-      // render form
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
-
-      // mock recaptcha
-      const executeMock = jest.fn().mockImplementation(() => {
-        Promise.resolve("token")
-      });
- 
-      document.addEventListener("DOMContentLoaded", async () => {
-        console.log('DOMContentLoaded');
-        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
-        windowSpy.mockImplementation(() => ({
-          enterprise: {
-            execute: executeMock
-          },
-        }));
-
-        const spf = getByTestId("form-spf");
- 
-        // simulate submit tab1
-        await waitFor(async () => {
-          await fireEvent.submit(spf);
-        });
-
-        // expect verifySuccess to have been called
-        await waitFor(() => {
-          expect(verifySuccess).toHaveBeenCalled();
-        });
-      });
-    });
-    test("verifyRecaptchaScore handles error if `apiSubmission.verify` throws", async function() {
-      const verifyError = jest
-        .fn()
-        .mockImplementation(() => Promise.reject("reCaptchaError"));
-      const props = {
-        t: text => text,
-        handleError: handleErrorMock,
-        submission: {
-          formPage1: {
-            reCaptchaValue: 123
-          },
-          prefillValues: {
-            preferredLanguage: ""
-          }
-        },
-        apiSubmission: {
-          verify: verifyError,
-          handleInput: handleInputMock
-        },
-        tab: 0,
-        lookupSFContact: jest.fn().mockImplementation(() => Promise.resolve()),
-        createSFContact: jest.fn().mockImplementation(() => Promise.resolve())
-      };
-      // render form
-      const user = userEvent.setup(props);
-      const {
-        getByTestId,
-        getByRole,
-        getByLabelText,
-        getByText,
-        debug
-      } = await setup(props);
-
-      // mock recaptcha
-      const executeMock = jest.fn().mockImplementation(() => {
-        Promise.resolve("token")
-      });
- 
-      document.addEventListener("DOMContentLoaded", async () => {
-        console.log('DOMContentLoaded');
-        windowSpy = jest.spyOn(globalThis, "window", "grecaptcha");
-        windowSpy.mockImplementation(() => ({
-          enterprise: {
-            execute: executeMock
-          },
-        }));
-
-        const spf = getByTestId("form-spf");
- 
-        // simulate submit tab1
-        await waitFor(async () => {
-          await fireEvent.submit(spf);
-        });
-
-        // expect handleError to have been called with 'reCaptchaError'
-        await waitFor(() => {
-          expect(handleErrorMock).toHaveBeenCalledWith("reCaptchaError");
-        });
-      });
+    const verifyMock = jest.fn().mockResolvedValue({
+      type: "VERIFY_SUCCESS",
+      payload: {
+        verified: true,
+        score: 0.9,
+        proof: "test-recaptcha-proof"
+      }
     });
 
+    setup({
+      tab: 0,
+      apiSubmission: {
+        ...defaultProps.apiSubmission,
+        verify: verifyMock
+      },
+      setRecaptchaProof: jest.fn(),
+      lookupSFContact: jest.fn().mockResolvedValue({}),
+      createSFContact: jest.fn().mockResolvedValue({})
+    });
+
+    fireEvent.submit(
+      screen.getByTestId("form-spf")
+    );
+
+    await waitFor(() => {
+      expect(executeMock).toHaveBeenCalledWith(
+        process.env.REACT_APP_GRECAPTCHA_SITEKEY,
+        {
+          action: "homepage"
+        }
+      );
+    });
   });
+
+  test("sends the generated token to apiSubmission.verify", async () => {
+    expect.hasAssertions();
+
+    window.grecaptcha.enterprise.execute =
+      jest
+        .fn()
+        .mockResolvedValue("test-recaptcha-token");
+
+    const verifyMock = jest.fn().mockResolvedValue({
+      type: "VERIFY_SUCCESS",
+      payload: {
+        verified: true,
+        score: 0.9,
+        proof: "test-recaptcha-proof"
+      }
+    });
+
+    setup({
+      tab: 0,
+      apiSubmission: {
+        ...defaultProps.apiSubmission,
+        verify: verifyMock
+      },
+      setRecaptchaProof: jest.fn(),
+      lookupSFContact: jest.fn().mockResolvedValue({}),
+      createSFContact: jest.fn().mockResolvedValue({})
+    });
+
+    fireEvent.submit(
+      screen.getByTestId("form-spf")
+    );
+
+    await waitFor(() => {
+      expect(verifyMock).toHaveBeenCalledWith(
+        "test-recaptcha-token"
+      );
+    });
+  });
+
+  test("handles a VERIFY_FAILURE response", async () => {
+    expect.hasAssertions();
+
+    const handleError = jest.fn();
+    const spinnerOff = jest.fn();
+
+    window.grecaptcha.enterprise.execute =
+      jest
+        .fn()
+        .mockResolvedValue("test-recaptcha-token");
+
+    const verifyMock = jest.fn().mockResolvedValue({
+      type: "VERIFY_FAILURE",
+      payload: {
+        message: "ReCAPTCHA verification failed."
+      }
+    });
+
+    const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    setup({
+      tab: 0,
+      t: key => key,
+      handleError,
+      apiSubmission: {
+        ...defaultProps.apiSubmission,
+        verify: verifyMock
+      },
+      actions: {
+        ...defaultProps.actions,
+        spinnerOff
+      },
+      setRecaptchaProof: jest.fn()
+    });
+
+    fireEvent.submit(
+      screen.getByTestId("form-spf")
+    );
+
+    await waitFor(() => {
+      expect(handleError).toHaveBeenCalledWith(
+        "reCaptchaError"
+      );
+    });
+  });
+
+  test("handles an exception from the verification request", async () => {
+    const handleError = jest.fn();
+
+    window.grecaptcha.enterprise.execute =
+      jest
+        .fn()
+        .mockResolvedValue("test-recaptcha-token");
+
+    const verifyMock = jest
+      .fn()
+      .mockRejectedValue(
+        new Error("Verification timed out")
+      );
+
+      const consoleErrorSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
+    setup({
+      tab: 0,
+      t: key => key,
+      handleError,
+      apiSubmission: {
+        ...defaultProps.apiSubmission,
+        verify: verifyMock
+      },
+      actions: {
+        ...defaultProps.actions,
+        spinnerOff: jest.fn()
+      },
+      setRecaptchaProof: jest.fn()
+    });
+
+    fireEvent.submit(
+      screen.getByTestId("form-spf")
+    );
+
+    await waitFor(() => {
+      expect(handleError).toHaveBeenCalledWith(
+        "reCaptchaError"
+      );
+    });
+  });
+});
 });

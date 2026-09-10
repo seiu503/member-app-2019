@@ -169,7 +169,7 @@ export class SubmissionFormPage1Container extends React.Component {
     const params = queryString.parse(this.props.location.search);
     const embed = params.embed ? "&embed=true" : "";
     this.props.navigate(
-      `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
+      `/page2/?cId=${this.props.submission.salesforceId}${embed}`
     );
     this.handleCAPEClose();
   }
@@ -184,53 +184,67 @@ export class SubmissionFormPage1Container extends React.Component {
   }
 
   async verifyRecaptchaScore() {
-    console.log("SFP1 187 verifyRecaptchaScore");
-    // set loading
-    console.log("setting spinner");
-    this.props.actions.setSpinner();
-
-    // fetch token
-    // this gRecaptcha key is attached to the seiu503@gmail.com account
-    try { 
-      let token;
-      if (process.env.REACT_APP_ENV_TEXT !== "test") {
-        token = await window.grecaptcha.enterprise 
-        .execute(process.env.REACT_APP_GRECAPTCHA_SITEKEY, { action: "homepage" })
-      } else {
-        token = 'test'
-      } 
-
-      console.log(`SPF1 198 token: ${token.length}`);
-      await this.props.apiSubmission.handleInput({
-        target: { name: "reCaptchaValue", value: token }
-      });
-      console.log(this.props.submission.formPage1.reCaptchaValue.length);
-
-        // then verify
-        if (token) {
-          console.log("SFP1 198 verifyRecaptchaScore");
-          try {
-            const result = await this.props.apiSubmission.verify(token);
-            console.log("SFP1 202 verifyRecaptchaScore", result.payload ? result.payload.score : 'no result payload');
-            return result.payload.score;
-            }
-          catch(err) {
-            console.log("SPF1 206 verifyRecaptchaScore verify catch err");
-            console.error(err);
-            const rcErr = this.props.t("reCaptchaError");
-            return this.props.handleError(rcErr);
-           };
-         } else {
-          console.log("SFP1 212 verifyRecaptchaScore no token err");
-          const rcErr = this.props.t("reCaptchaError");
-          return this.props.handleError(rcErr);
+  try {
+    const token =
+      await window.grecaptcha.enterprise.execute(
+        process.env.REACT_APP_GRECAPTCHA_SITEKEY,
+        {
+          action: "homepage"
         }
-      } catch(err) {
-        console.log("SFP1 218 verifyRecaptchaScore grecaptcha execute error")
-        console.error(err)
-      }
+      );
 
-   };
+    if (!token) {
+      throw new Error(
+        "No reCAPTCHA token was generated."
+      );
+    }
+
+    const result =
+      await this.props.apiSubmission.verify(token);
+
+    if (
+      !result ||
+      result.type !== "VERIFY_SUCCESS"
+    ) {
+      throw new Error(
+        result?.payload?.message ||
+          "ReCAPTCHA verification failed."
+      );
+    }
+
+    const score = Number(
+      result.payload?.score
+    );
+
+    const proof = result.payload?.proof;
+
+    if (
+      result.payload?.verified !== true ||
+      !Number.isFinite(score) ||
+      !proof
+    ) {
+      throw new Error(
+        "ReCAPTCHA verification failed."
+      );
+    }
+
+    return {
+      score,
+      proof
+    };
+  } catch (err) {
+    console.error(
+      "ReCAPTCHA verification failed",
+      err
+    );
+
+    this.props.handleError(
+      this.props.t("reCaptchaError")
+    );
+
+    return null;
+  }
+}
 
   async saveLegalLanguage() {
     console.log('SFP1 195 saveLegalLanguage start');
@@ -358,57 +372,63 @@ export class SubmissionFormPage1Container extends React.Component {
     return body;
   }
 
+  // OBSOLETE postgreSQL call, removed 9/2026
   // create an initial CAPE record in postgres to get returned ID
-  // not finalized until payment method added and SFCAPE status updated
-  async createCAPE(capeAmount, capeAmountOther) {
-    console.log("createCAPE");
-    const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
-    console.log(body);
-    if (body) {
-      const capeResult = await this.props.apiSubmission
-        .createCAPE(body)
-        .catch(err => {
-          console.error(err);
-          return this.props.handleError(err);
-        });
+  // // not finalized until payment method added and SFCAPE status updated
+  // async createCAPE(capeAmount, capeAmountOther) {
+  //   console.log("createCAPE");
+  //   const body = await this.generateCAPEBody(capeAmount, capeAmountOther);
+  //   console.log(body);
+  //   if (body) {
+  //     const capeResult = await this.props.apiSubmission
+  //       .createCAPE(body)
+  //       .catch(err => {
+  //         console.error(err);
+  //         return this.props.handleError(err);
+  //       });
 
-      if (
-        (capeResult && capeResult.type !== "CREATE_CAPE_SUCCESS") ||
-        this.props.submission.error
-      ) {
-        console.log(this.props.submission.error);
-        return this.props.handleError(this.props.submission.error);
-      }
-    } else {
-      console.log("no CAPE body generated");
-    }
-  }
+  //     if (
+  //       (capeResult && capeResult.type !== "CREATE_CAPE_SUCCESS") ||
+  //       this.props.submission.error
+  //     ) {
+  //       console.log(this.props.submission.error);
+  //       return this.props.handleError(this.props.submission.error);
+  //     }
+  //   } else {
+  //     console.log("no CAPE body generated");
+  //   }
+  // }
 
   async handleCAPESubmit(standAlone) {
     console.log("handleCAPESubmit", standAlone);
     const { formValues } = this.props;
     console.dir(formValues);
-    if (standAlone) {
-      // verify recaptcha score
-      await this.verifyRecaptchaScore()
-        .then(score => {
-          console.log('SFP1 handleCAPESubmit 396')
-          console.log(`score: ${score}`);
-          if (!score || score <= 0.3) {
-            console.error(`recaptcha failed: ${score}`);
-            // don't return to client here, because of race condition this fails initially
-            // then passes after error is returned -- just log to console
-            // return this.props.handleError(
-            //   this.props.t("reCaptchaError")
-            // );
-            return;
-          }
-        })
-        .catch(err => {
-          console.log('SFP1 handleCAPESubmit 407');
-          console.error(err);
-        });
+
+    // Always obtain a fresh proof for this CAPE submission.
+    let recaptchaVerification;
+    
+    try {
+      recaptchaVerification =
+        await this.verifyRecaptchaScore();
+    } catch (err) {
+      console.error(
+        "CAPE reCAPTCHA verification failed",
+        err
+      );
+      this.props.handleError(err);
+      return;
     }
+
+    if (!recaptchaVerification?.proof) {
+      this.props.handleError(
+        this.props.t("reCaptchaError")
+      );
+      return;
+    }
+
+    const capeRecaptchaProof =
+      recaptchaVerification.proof;
+
     // if user clicks submit before the payment logic finishes loading,
     // they may not have donation amount fields visible
     // but will still get an error that the field is missing
@@ -422,88 +442,56 @@ export class SubmissionFormPage1Container extends React.Component {
       });
     }
 
-    let cape_errors = "",
-      cape_status = "Pending";
-    const body = await this.generateCAPEBody(
-      formValues.capeAmount,
-      formValues.capeAmountOther
-    ).catch(err => {
-      cape_errors += err;
-      cape_status = "Error";
-      console.error(err);
+    let body;
+
+    try {
+      body = await this.generateCAPEBody(
+        formValues.capeAmount,
+        formValues.capeAmountOther
+      );
+    } catch (err) {
+      console.error("Unable to generate Salesforce CAPE body", err);
       this.props.handleError(err);
-    });
-    if (body) {
-      delete body.cape_status;
-    } else {
-      const err = "There was a problem with the CAPE Submission";
-      cape_errors += err;
-      cape_status = "Error";
-      console.error(err);
-      this.props.handleError(err);
+      return;
     }
 
-    // console.log(body);
+    if (!body) {
+      const err = new Error(
+        "There was a problem preparing the CAPE submission."
+      );
 
-    // write CAPE contribution to SF
-    const sfCapeResult = await this.props.apiSF
-      .createSFCAPE(body)
-      .catch(err => {
-        cape_errors += err;
-        cape_status = "Error";
-        console.error(err);
-        this.props.handleError(err);
-      });
+      console.error(err);
+      this.props.handleError(err);
+      return;
+    }
+
+    // This was only used by the PostgreSQL CAPE record.
+    delete body.cape_status;
+
+    let sfCapeResult;
+
+    try {
+      sfCapeResult =
+        await this.props.apiSF.createSFCAPE(
+          body,
+          recaptchaVerification.proof
+        );
+    } catch (err) {
+      console.error("Salesforce CAPE creation failed", err);
+      this.props.handleError(err);
+      return;
+    }
 
     if (
-      (sfCapeResult && sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS") ||
-      this.props.submission.error
+      !sfCapeResult ||
+      sfCapeResult.type !== "CREATE_SF_CAPE_SUCCESS"
     ) {
-      cape_errors += this.props.submission.error;
-      cape_status = "Error";
-      // console.log(this.props.submission.error);
-      return this.props.handleError(this.props.submission.error);
-    } else if (sfCapeResult && sfCapeResult.type === "CREATE_SF_CAPE_SUCCESS") {
-      cape_status = "Success";
-    } else {
-      cape_status = "Error";
+      this.props.handleError(
+        sfCapeResult?.payload?.message ||
+          "The CAPE submission could not be saved."
+      );
+      return;
     }
-
-    await this.createCAPE(formValues.capeAmount, formValues.capeAmountOther)
-      .then(result => {
-        console.log("421");
-        console.log(result);
-      })
-      .catch(err => {
-        console.error(err);
-        return this.props.handleError(err);
-      });
-
-    const { id } = this.props.submission.cape;
-
-    // collect updates to cape record (values returned from other API calls,
-    // amount and frequency)
-    const donationAmount =
-      formValues.capeAmount === "Other"
-        ? parseFloat(formValues.capeAmountOther)
-        : parseFloat(formValues.capeAmount);
-    const updates = {
-      cape_status,
-      cape_errors,
-      cape_amount: donationAmount,
-      donation_frequency: formValues.donationFrequency
-    };
-    console.log(updates);
-    // update CAPE record in postgres
-    await this.props.apiSubmission
-      .updateCAPE(id, updates)
-      .then(result => {
-        console.log(result);
-      })
-      .catch(err => {
-        console.error(err);
-        // return this.props.handleError(err); // don't return to client here
-      });
 
     if (!standAlone) {
       console.log("455");
@@ -512,12 +500,11 @@ export class SubmissionFormPage1Container extends React.Component {
       console.log(params);
       const embed = params.embed ? "&embed=true" : "";
       console.log(
-        `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
+        `/page2/?cId=${this.props.submission.salesforceId}${embed}`
       );
       this.props.navigate(
-        `/page2/?cId=${this.props.submission.salesforceId}&sId=${this.props.submission.submissionId}${embed}`
-      );
-    } else {
+        `/page2/?cId=${this.props.submission.salesforceId}${embed}`
+      );    } else {
       console.log("462");
       this.props.openSnackbar(
         "success",
@@ -558,16 +545,29 @@ export class SubmissionFormPage1Container extends React.Component {
     console.log(formValues);
  
     // verify recaptcha score
-    const score = await this.verifyRecaptchaScore();
-    setTimeout(() => {
-      if (score <= 0.3) {
-        console.log(`recaptcha failed: ${score}`);
-        // don't return error to client here because the error is returned even if recaptcha is still waiting for result
-        // const reCaptchaError = this.props.t("reCaptchaError");
-        // return this.props.handleError(reCaptchaError);
-        return;
-      }
-    }, 0);
+    const recaptchaVerification =
+      await this.verifyRecaptchaScore();
+
+    // Stop before reading proof or performing any writes.
+    if (!recaptchaVerification) {
+      this.props.actions.spinnerOff();
+      return false;
+    }
+
+    this.recaptchaProof =
+      recaptchaVerification.proof;
+
+    if (!this.props.setRecaptchaProof) {
+      throw new Error(
+        "setRecaptchaProof prop is missing."
+      );
+    }
+
+    this.props.setRecaptchaProof(
+      recaptchaVerification.proof
+    );
+
+    // Only begin Contact lookup/update/create below this point.
 
     console.log("SFP1 533 handleTab1");
 

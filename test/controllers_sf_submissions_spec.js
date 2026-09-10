@@ -12,6 +12,14 @@ const passport = require("passport");
 require("../app/config/passport")(passport);
 chai.use(chaiHttp);
 
+process.env.RECAPTCHA_PROOF_SECRET =
+  process.env.RECAPTCHA_PROOF_SECRET ||
+  "test-recaptcha-proof-secret-at-least-32-characters";
+
+process.env.GRECAPTCHA_SITEKEY =
+  process.env.GRECAPTCHA_SITEKEY ||
+  "test-recaptcha-site-key";
+
 const sfCtrl = require("../app/controllers/sf.ctrl.js");
 const submissionCtrl = require("../app/controllers/submissions.ctrl.js");
 const submissions = require("../db/models/submissions");
@@ -1468,117 +1476,278 @@ suite("sumissions.ctrl.js", function() {
   });
 
   suite("submissionCtrl > verifyHumanity", function() {
-    beforeEach(function() {
-      // token = "faketoken";
+  afterEach(function() {
+    sinon.restore();
+    res = mockRes();
+  });
+
+  function assessment({
+    valid = true,
+    action = "homepage",
+    score = 0.9,
+    invalidReason = ""
+  } = {}) {
+    return {
+      riskAnalysis: {
+        score,
+        reasons: []
+      },
+      tokenProperties: {
+        valid,
+        action,
+        invalidReason
+      }
+    };
+  }
+
+  test("returns a signed proof for a valid human assessment", async function() {
+    req = mockReq({
+      body: {
+        token: "valid-test-token"
+      },
+      headers: {
+        "x-real-ip": "1.1.1.1"
+      }
     });
 
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    test("when called with valid token, verifyHumanity returns success", async function() {
-      this.timeout(3000);
-      const app = require("../server");
-      const req = mockReq({
-        body: { token },
-        headers: {
-          "x-real-ip": "1.1.1.1"
-        }
-      });
-      let recaptchaResponseStub;
-
-      token = "faketoken";
-      return new Promise(resolve => {
-        recaptchaResponseStub = {
-            riskAnalysis: {
-              score: 0.9,
-              reasons: []
-            },
-            tokenProperties: {
-              valid: true,
-              action: 'homepage',
-              invalidReason: '',
-            }
-        }
-        RecaptchaEnterpriseServiceClientStub = sinon
-          .stub(RecaptchaEnterpriseServiceClient.prototype, "createAssessment")
-          .returns([ recaptchaResponseStub ]);
-        resolve();
-      });
-
-      await submissionCtrl.verifyHumanity(req, res, next)
-        .then(result => {
-          console.log(`controllers_sf_submissions_spec.js > 1550`)
+    sinon
+      .stub(
+        RecaptchaEnterpriseServiceClient.prototype,
+        "createAssessment"
+      )
+      .resolves([
+        assessment({
+          valid: true,
+          action: "homepage",
+          score: 0.9
         })
-        .catch(err => {
-          console.log(`controllers_sf_submissions_spec.js > 1554`)
-          console.log(err);
-        });
-      assert.calledWith(res.status, 200);
-      assert.calledWith(res.json, {
-        score: 0.9
-      });
+      ]);
 
+    await submissionCtrl.verifyHumanity(
+      req,
+      res,
+      next
+    );
+
+    assert.calledWith(res.status, 200);
+
+    const responseBody =
+      res.json.firstCall.args[0];
+
+    expect(responseBody.verified).to.equal(true);
+    expect(responseBody.score).to.equal(0.9);
+    expect(responseBody.proof).to.be.a("string");
+    expect(responseBody.proof.length).to.be.greaterThan(0);
+  });
+
+  test("rejects a valid token with a bot-like low score", async function() {
+    req = mockReq({
+      body: {
+        token: "low-score-token"
+      },
+      headers: {
+        "x-real-ip": "1.1.1.1"
+      }
     });
-    test("verifyHumanity returns error to client if recaptcha siteverify throws", async function() {
-      this.timeout(3000);
-      const app = require("../server");
-      const req = mockReq({
-        body: { token },
-        headers: {
-          "x-real-ip": "1.1.1.1"
-        }
-      });
-      let recaptchaResponseStub;
-      token = "faketoken";
-      return new Promise(resolve => {
-        recaptchaResponseStub = new Error;
-        RecaptchaEnterpriseServiceClientStub = sinon
-          .stub(RecaptchaEnterpriseServiceClient.prototype, "createAssessment")
-          .returns([ recaptchaResponseStub ]);
-        resolve();
-      });
-      await submissionCtrl.verifyHumanity(req, res, next).catch(err => {
-        console.log(err);
-      });
-      assert.calledWith(res.status, 500);
-      assert.calledWith(res.json, {
-        message: "recaptcha error"
-      });
+
+    sinon
+      .stub(
+        RecaptchaEnterpriseServiceClient.prototype,
+        "createAssessment"
+      )
+      .resolves([
+        assessment({
+          valid: true,
+          action: "homepage",
+          score: 0.1
+        })
+      ]);
+
+    await submissionCtrl.verifyHumanity(
+      req,
+      res,
+      next
+    );
+
+    assert.calledWith(res.status, 403);
+
+    const responseBody =
+      res.json.firstCall.args[0];
+
+    expect(responseBody).not.to.have.property(
+      "proof"
+    );
+  });
+
+  test("rejects an invalid reCAPTCHA token", async function() {
+    req = mockReq({
+      body: {
+        token: "invalid-token"
+      },
+      headers: {
+        "x-real-ip": "1.1.1.1"
+      }
     });
-    test("verifyHumanity returns error to client if recaptcha siteverify returns error code", async function() {
-      this.timeout(3000);
-      const app = require("../server");
-      const req = mockReq({
-        body: { token },
-        headers: {
-          "x-real-ip": "1.1.1.1"
-        }
-      });
-      let recaptchaResponseStub;
-      token = "faketoken";
-      return new Promise(resolve => {
-        recaptchaResponseStub = {
-            riskAnalysis: {
-              score: 0.1,
-              reasons: ['INVALID_REASON']
-            },
-            tokenProperties: {
-              valid: false,
-              action: 'homepage',
-              invalidReason: 'INVALID_REASON_UNSPECIFIED',
-            }
-        }
-        RecaptchaEnterpriseServiceClientStub = sinon
-          .stub(RecaptchaEnterpriseServiceClient.prototype, "createAssessment")
-          .returns([ recaptchaResponseStub ]);
-        resolve();
-      });
-      assert.calledWith(res.status, 500);
-      assert.calledWith(res.json, {
-        message: 'INVALID_REASON_UNSPECIFIED'
-      });
+
+    sinon
+      .stub(
+        RecaptchaEnterpriseServiceClient.prototype,
+        "createAssessment"
+      )
+      .resolves([
+        assessment({
+          valid: false,
+          score: 0,
+          invalidReason: "INVALID_REASON"
+        })
+      ]);
+
+    await submissionCtrl.verifyHumanity(
+      req,
+      res,
+      next
+    );
+
+    assert.calledWith(res.status, 403);
+
+    const responseBody =
+      res.json.firstCall.args[0];
+
+    expect(responseBody).not.to.have.property(
+      "proof"
+    );
+  });
+
+  test("rejects a token created for the wrong action", async function() {
+    req = mockReq({
+      body: {
+        token: "wrong-action-token"
+      },
+      headers: {
+        "x-real-ip": "1.1.1.1"
+      }
     });
+
+    sinon
+      .stub(
+        RecaptchaEnterpriseServiceClient.prototype,
+        "createAssessment"
+      )
+      .resolves([
+        assessment({
+          valid: true,
+          action: "different-action",
+          score: 0.9
+        })
+      ]);
+
+    await submissionCtrl.verifyHumanity(
+      req,
+      res,
+      next
+    );
+
+    assert.calledWith(res.status, 403);
+
+    const responseBody =
+      res.json.firstCall.args[0];
+
+    expect(responseBody).not.to.have.property(
+      "proof"
+    );
+  });
+
+  test("fails closed when Google reCAPTCHA throws", async function() {
+    req = mockReq({
+      body: {
+        token: "test-token"
+      },
+      headers: {
+        "x-real-ip": "1.1.1.1"
+      }
+    });
+
+    sinon
+      .stub(
+        RecaptchaEnterpriseServiceClient.prototype,
+        "createAssessment"
+      )
+      .rejects(
+        new Error("Google reCAPTCHA unavailable")
+      );
+
+    await submissionCtrl.verifyHumanity(
+      req,
+      res,
+      next
+    );
+
+    assert.calledWith(res.status, 503);
+
+    const responseBody =
+      res.json.firstCall.args[0];
+
+    expect(responseBody).not.to.have.property(
+      "proof"
+    );
+  });
+});
+});
+
+suite("reCAPTCHA proof route protection", function() {
+  let app;
+
+  before(function() {
+    app = require("../server");
+  });
+
+  test("POST /api/sfOMA rejects a missing proof", async function() {
+    const response = await chai
+      .request(app)
+      .post("/api/sfOMA")
+      .send({});
+
+    expect(response).to.have.status(403);
+  });
+
+  test("POST /api/sfOMA rejects a tampered proof", async function() {
+    const response = await chai
+      .request(app)
+      .post("/api/sfOMA")
+      .set(
+        "X-Recaptcha-Proof",
+        "not-a-valid-signed-proof"
+      )
+      .send({});
+
+    expect(response).to.have.status(403);
+  });
+
+  test("POST /api/sfCAPE rejects a missing proof", async function() {
+    const response = await chai
+      .request(app)
+      .post("/api/sfCAPE")
+      .send({});
+
+    expect(response).to.have.status(403);
+  });
+
+  test("POST /api/sf rejects a missing proof", async function() {
+    const response = await chai
+      .request(app)
+      .post("/api/sf")
+      .send({});
+
+    expect(response).to.have.status(403);
+  });
+
+  test("PUT /api/sf/:id rejects a missing proof", async function() {
+    const response = await chai
+      .request(app)
+      .put("/api/sf/003000000000000AAA")
+      .send({});
+
+    expect(response).to.have.status(403);
   });
 });
 
@@ -1981,3 +2150,4 @@ suite("noscript > handleTab2", () => {
     }
   });
 });
+

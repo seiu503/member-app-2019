@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import "@testing-library/jest-dom";
 import { within } from "@testing-library/dom";
 import {
+  act,
   fireEvent,
   render,
   screen,
@@ -35,6 +36,24 @@ const testData = generatePage2Validate();
 const server = setupServer(...handlers);
 
 import { SubmissionFormPage1Container } from "../../../containers/SubmissionFormPage1";
+
+const successfulVerifyAction = {
+  type: "VERIFY_SUCCESS",
+  payload: {
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
+};
+
+const successfulRecaptchaVerification = {
+  score: 0.9,
+  proof: "test-recaptcha-proof"
+};
+
+const verifySuccessMock = jest
+  .fn()
+  .mockResolvedValue(successfulVerifyAction);
 
 let updateSFContactSuccess = jest
   .fn()
@@ -183,8 +202,14 @@ const defaultProps = {
     setCAPEOptions: jest.fn(),
     addSubmission: () => Promise.resolve({ type: "ADD_SUBMISSION_SUCCESS" }),
     updateSubmission: () =>
-      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" })
+      Promise.resolve({ type: "UPDATE_SUBMISSION_SUCCESS" }),
+    verify: verifySuccessMock
   },
+  actions: {
+    setSpinner: jest.fn(),
+    spinnerOff: jest.fn()
+  },
+  setRecaptchaProof: jest.fn(),
   history: {},
   navigate,
   recaptcha: {
@@ -208,9 +233,6 @@ const defaultProps = {
   },
   createSubmission: createSubmissionSuccess,
   changeTab: changeTabMock,
-  actions: {
-    setSpinner: jest.fn()
-  },
   headline: {
     id: 1,
     text: ""
@@ -233,14 +255,25 @@ const defaultProps = {
 let handleSubmit;
 const initialState = {};
 const store = storeFactory(initialState);
-const setup = (props = {}) => {
-  const setupProps = { ...defaultProps, ...props, handleSubmit };
+const setup = (props = {}, componentRef = null) => {
+  const setupProps = {
+    ...defaultProps,
+    ...props,
+    handleSubmit
+  };
+
   return render(
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+        <I18nextProvider
+          i18n={i18n}
+          defaultNS="translation"
+        >
           <BrowserRouter>
-            <SubmissionFormPage1Container {...setupProps} />
+            <SubmissionFormPage1Container
+              ref={componentRef}
+              {...setupProps}
+            />
           </BrowserRouter>
         </I18nextProvider>
       </Provider>
@@ -249,6 +282,7 @@ const setup = (props = {}) => {
 };
 describe("<SubmissionFormPage1Container /> unconnected", () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     handleSubmit = fn => fn;
   });
 
@@ -307,8 +341,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             Promise.resolve({
               type: "VERIFY_SUCCESS",
               payload: {
-                score: 0.9
-              }
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
             })
           ),
           handleInput: handleInputMock
@@ -336,6 +372,116 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
         expect(changeTabMock).toHaveBeenCalledWith(2);
       });
     });
+
+    const blockedRecaptchaResponses = [
+  [
+    "low bot score",
+    {
+      type: "VERIFY_SUCCESS",
+      payload: {
+        verified: false,
+        score: 0.1
+      }
+    }
+  ],
+  [
+    "missing signed proof",
+    {
+      type: "VERIFY_SUCCESS",
+      payload: {
+        verified: true,
+        score: 0.9,
+        proof: null
+      }
+    }
+  ],
+  [
+    "verification API failure",
+    {
+      type: "VERIFY_FAILURE",
+      payload: {
+        message: "Verification unavailable"
+      }
+    }
+  ]
+];
+
+test.each(blockedRecaptchaResponses)(
+  "blocks all writes when reCAPTCHA returns %s",
+  async (description, verifyResult) => {
+    const lookupSFContact = jest.fn();
+    const updateSFContact = jest.fn();
+    const createSFContact = jest.fn();
+    const createSubmission = jest.fn();
+    const changeTab = jest.fn();
+    const setRecaptchaProof = jest.fn();
+    const handleError = jest.fn();
+    const spinnerOff = jest.fn();
+
+    const componentRef = React.createRef();
+
+    window.grecaptcha.enterprise.execute =
+      jest
+        .fn()
+        .mockResolvedValue("test-recaptcha-token");
+
+    setup({
+      tab: 0,
+      t: key => key,
+      handleError,
+      formValues: {
+        signature: "test",
+        directPayAuth: true,
+        employerName: "homecare",
+        paymentType: "card",
+        employerType: "retired",
+        preferredLanguage: "English"
+      },
+      submission: {
+        ...defaultProps.submission,
+        salesforceId: null,
+        formPage1: {
+          ...defaultProps.submission.formPage1,
+          reCaptchaValue: "test-recaptcha-token"
+        }
+      },
+      apiSubmission: {
+        ...defaultProps.apiSubmission,
+        verify: jest
+          .fn()
+          .mockResolvedValue(verifyResult)
+      },
+      actions: {
+        setSpinner: jest.fn(),
+        spinnerOff
+      },
+      lookupSFContact,
+      updateSFContact,
+      createSFContact,
+      createSubmission,
+      changeTab,
+      setRecaptchaProof
+    },
+    componentRef);
+
+    await act(async () => {
+      await componentRef.current.handleTab1();
+    });
+
+    expect(handleError).toHaveBeenCalledWith(
+      "reCaptchaError"
+    );
+    expect(spinnerOff).toHaveBeenCalled();
+
+    
+    expect(setRecaptchaProof).not.toHaveBeenCalled();
+    expect(lookupSFContact).not.toHaveBeenCalled();
+    expect(updateSFContact).not.toHaveBeenCalled();
+    expect(createSFContact).not.toHaveBeenCalled();
+    expect(createSubmission).not.toHaveBeenCalled();
+    expect(changeTab).not.toHaveBeenCalled();
+  }
+);
 
     test("`handleTab1` handles error if updateSFContact throws", async function() {
       handleInputMock = jest.fn().mockImplementation(() => Promise.resolve({}));
@@ -380,8 +526,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             Promise.resolve({
               type: "VERIFY_SUCCESS",
               payload: {
-                score: 0.9
-              }
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
             })
           ),
           handleInput: handleInputMock
@@ -447,8 +595,10 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
             Promise.resolve({
               type: "VERIFY_SUCCESS",
               payload: {
-                score: 0.9
-              }
+    verified: true,
+    score: 0.9,
+    proof: "test-recaptcha-proof"
+  }
             })
           ),
           handleInput: handleInputMock

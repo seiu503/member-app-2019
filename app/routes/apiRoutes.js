@@ -264,7 +264,7 @@ router.delete("/user/:id", authCtrl.requireAuth, userCtrl.deleteUser);
 //        }
 //   Returns: JSON created submission object on success.
 //
-router.post("/submission", submissionCtrl.createSubmission);
+// router.post("/submission", submissionCtrl.createSubmission);
 
 // UPDATE A SUBMISSION
 //   Example: PUT >> /api/submission/:id
@@ -283,7 +283,7 @@ router.post("/submission", submissionCtrl.createSubmission);
 //      }
 //   Returns: JSON updated submission object on success.
 //
-router.put("/submission/:id", submissionCtrl.updateSubmission);
+// router.put("/submission/:id", submissionCtrl.updateSubmission);
 
 // GET ONE SUBMISSION
 //   Example: GET >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -295,11 +295,11 @@ router.put("/submission/:id", submissionCtrl.updateSubmission);
 //   Returns: JSON submission object on success.
 //
 // router.get("/submission/:id", submissionCtrl.getSubmissionById);
-router.get(
-  "/submission/:id",
-  authCtrl.requireAuth,
-  submissionCtrl.getSubmissionById
-);
+// router.get(
+//   "/submission/:id",
+//   authCtrl.requireAuth,
+//   submissionCtrl.getSubmissionById
+// );
 
 // GET ALL SUBMISSIONS
 //   Example: GET >> /api/submission/
@@ -307,7 +307,7 @@ router.get(
 //   Expects: null
 //   Returns: Array of submission objects on success.
 //
-router.get("/submission", authCtrl.requireAuth, submissionCtrl.getSubmissions);
+// router.get("/submission", authCtrl.requireAuth, submissionCtrl.getSubmissions);
 
 // DELETE SUBMISSION
 //   Example: DELETE >> /api/submission/80f5ad9a-9c1f-4df0-813b-c7bdc339d7b3
@@ -319,13 +319,24 @@ router.get("/submission", authCtrl.requireAuth, submissionCtrl.getSubmissions);
 //   Returns: success message on success.
 //
 // router.delete("/submission/:id", submissionCtrl.deleteSubmission);
-router.delete(
-  "/submission/:id",
-  authCtrl.requireAuth,
-  submissionCtrl.deleteSubmission
-);
+// router.delete(
+//   "/submission/:id",
+//   authCtrl.requireAuth,
+//   submissionCtrl.deleteSubmission
+// );
 
 /* ============================== CAPE ROUTES =========================== */
+
+const retiredPostgresRoute = (req, res) =>
+  res.status(410).json({
+    message: "This endpoint has been retired."
+  });
+
+router.post("/cape", retiredPostgresRoute);
+router.put("/cape/:id", retiredPostgresRoute);
+router.post("/submission", submissionCtrl.createSubmission);
+router.put("/submission/:id", submissionCtrl.updateSubmission);
+
 
 // CREATE A CAPE RECORD
 //   Example: POST >> /api/cape
@@ -354,7 +365,7 @@ router.delete(
 //        }
 //   Returns: JSON new CAPE object on success.
 //
-router.post("/cape", capeCtrl.createCAPE);
+// router.post("/cape", capeCtrl.createCAPE);
 
 // UPDATE A CAPE RECORD
 //   Example: PUT >> /api/cape/:id
@@ -370,7 +381,7 @@ router.post("/cape", capeCtrl.createCAPE);
 //        }
 //   Returns: JSON new CAPE object on success.
 //
-router.put("/cape/:id", capeCtrl.updateCAPE);
+// router.put("/cape/:id", capeCtrl.updateCAPE);
 
 // GET A CAPE RECORD BY SF CONTACT ID
 //   Example: GET >> /api/capeBySF/0036100001gYL0HAAW
@@ -448,7 +459,11 @@ router.put("/sflookup", sfCtrl.lookupSFContactByFLE);
 //             }
 //   Returns: Contact Id or error message.
 //
-router.post("/sf", sfCtrl.createSFContact);
+router.post(
+  "/sf",
+  submissionCtrl.requireRecaptchaProof,
+  sfCtrl.createSFContact
+);
 
 // UPDATE A SALESFORCE CONTACT RECORD
 //   Example: PUT >> /api/sf/0035500000VFAE9AAP
@@ -486,7 +501,11 @@ router.post("/sf", sfCtrl.createSFContact);
 //   Returns: Salesforce contact id (if called as standalone)
 //   OR passes contact ID to next middleware.
 //
-router.put("/sf/:id", sfCtrl.updateSFContact);
+router.put(
+  "/sf/:id",
+  submissionCtrl.requireRecaptchaProof,
+  sfCtrl.updateSFContact
+);
 
 /* ========================== ONLINE MEMBER APPS =========================== */
 
@@ -500,7 +519,11 @@ router.put("/sf/:id", sfCtrl.updateSFContact);
 //        }
 //   Returns: OMA object or error message.
 //
-router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
+router.post(
+  "/sfOMA",
+  submissionCtrl.requireRecaptchaProof,
+  sfCtrl.createSFOnlineMemberApp
+);
 
 /* ============================== CAPE ROUTES =========================== */
 
@@ -531,7 +554,11 @@ router.post("/sfOMA", sfCtrl.createSFOnlineMemberApp);
 //        }
 //   Returns: JSON new CAPE object on success.
 //
-router.post("/sfCAPE", sfCtrl.createSFCAPE);
+router.post(
+  "/sfCAPE",
+  submissionCtrl.requireRecaptchaProof,
+  sfCtrl.createSFCAPE
+);
 
 /* =============================== ACCOUNTS ================================ */
 
