@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import { reduxForm, Field } from "redux-form";
 import { withTranslation, Trans } from "react-i18next";
 import queryString from "query-string";
-import moment from "moment";
 
 import {
   FormLabel,
@@ -72,8 +71,20 @@ export const SubmissionFormPage2CompFunction = props => {
     // console.log(`genderPronounCleaned: ${genderPronounCleaned}`);
     // format hireDate
     let hireDate;
-    if (Wmm && Wdd && Wyyyy) {
-      hireDate = formElements.formatHireDate(props.formValues);
+
+    const hasCompleteHireDate =
+      Wmm &&
+      Wdd &&
+      Wyyyy &&
+      Wmm !== "undefined" &&
+      Wdd !== "undefined" &&
+      Wyyyy !== "undefined";
+
+    if (hasCompleteHireDate) {
+      hireDate =
+        `${String(Wyyyy)}-` +
+        `${String(Wmm).padStart(2, "0")}-` +
+        `${String(Wdd).padStart(2, "0")}`;
     }
     // console.log(`################################`);
     // console.log(hireDate);
@@ -109,12 +120,13 @@ export const SubmissionFormPage2CompFunction = props => {
       }
     }
     cleanBody.salesforce_id = salesforceId;
-    if (cleanBody.hire_date) {
-      let hireDate = moment(new Date(cleanBody.hire_date));
-      if (hireDate.isValid()) {
-        cleanBody.hire_date = formElements.formatSFDate(hireDate);
-        // console.log(`cleanBody.hire_date: ${cleanBody.hire_date}`);
-      }
+
+    if (
+      !cleanBody.hire_date ||
+      cleanBody.hire_date === "undefined" ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(cleanBody.hire_date)
+    ) {
+      delete cleanBody.hire_date;
     }
 
     try {
