@@ -51,16 +51,20 @@ const prefillFieldList = fieldList.filter(field => field !== "Birthdate");
 exports.getClientIp = req =>
   req.headers["x-real-ip"] || req.connection.remoteAddress;
 
-exports.formatSFDate = date => {
-  let d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear();
+exports.formatSFDate = value => {
+  if (
+    typeof value === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    return value;
+  }
 
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
+  const d = new Date(value);
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const year = d.getFullYear();
 
-  return [year, month, day].join("-");
+  return `${year}-${month}-${day}`;
 };
 
 // find matching employer object from SF Employers array returned from API
@@ -339,8 +343,15 @@ exports.updateSFContact = async (req, res, next) => {
   delete updates["Account.WS_Subdivision_from_Agency__c"];
 
 
-  if (updates.Birthdate) {
-    updates.Birthdate = this.formatSFDate(updatesRaw.birthdate);
+  if (
+    updates.Birthdate &&
+    !/^\d{4}-\d{2}-\d{2}$/.test(updates.Birthdate)
+  ) {
+    return res.status(400).json({
+      message: "Invalid birthdate format."
+    });
+  } else {
+    updates.Birthdate = String(updates.Birthdate);
   }
 
   mappingMs = elapsedMs(mappingStart);
@@ -507,7 +518,7 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["agencyNumber__c"];
     // console.log(`sf.ctrl.js: 390: bodyRaw.birthdate: ${bodyRaw.birthdate}`);
     // body.Birthdate__c = this.formatSFDate(bodyRaw.birthdate);
-    body.Birthdate__c = new Date(bodyRaw.birthdate).toISOString();
+    body.Birthdate__c = bodyRaw.birthdate;
     // console.log(`sf.ctrl.js: 394: body.Birthdate__c: ${body.Birthdate__c}`);
     body.Submission_Date__c = new Date(); // this one can be a datetime
     body.Worker__c = bodyRaw.Worker__c

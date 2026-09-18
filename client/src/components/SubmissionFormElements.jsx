@@ -243,25 +243,29 @@ export const getKeyByValue = (object, value) => {
 };
 
 // date formatter for submitting to Salesforce
-export const formatSFDate = date => {
-  let d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear();
+export const formatSFDate = value => {
+  if (
+    typeof value === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    return value;
+  }
 
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
+  const d = new Date(value);
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const year = d.getFullYear();
 
-  return [year, month, day].join("-");
+  return `${year}-${month}-${day}`;
 };
 
 // convert MM DD YYYY to SF-formatted birthdate
 export const formatBirthdate = formValues => {
-  console.log("formatBirthdate");
-  console.log(formValues);
-  const dobRaw = `${formValues.mm}/${formValues.dd}/${formValues.yyyy}`;
-  console.log(dobRaw);
-  return formatSFDate(dobRaw);
+  const month = String(formValues.mm).padStart(2, "0");
+  const day = String(formValues.dd).padStart(2, "0");
+  const year = String(formValues.yyyy);
+
+  return `${year}-${month}-${day}`;
 };
 
 // convert MM DD YYYY to SF-formatted hireDate
