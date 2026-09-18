@@ -287,7 +287,8 @@ describe("<SubmissionFormPage1Container /> unconnected", () => {
           capeAmount: 1
         },
         apiSubmission: {
-          handleInput: handleInputMock
+          handleInput: handleInputMock,
+          verify: verifySuccessMock
         },
         submission: {
           salesforceId: "123",
