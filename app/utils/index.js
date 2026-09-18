@@ -52,16 +52,20 @@ generateToken = user => {
 getClientIp = req => req.headers["x-real-ip"] || req.connection.remoteAddress;
 
 // format date for submission to SF
-formatSFDate = date => {
-  let d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear();
+const formatSFDate = value => {
+  if (
+    typeof value === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(value)
+  ) {
+    return value;
+  }
 
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
+  const d = new Date(value);
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const year = d.getFullYear();
 
-  return [year, month, day].join("-");
+  return `${year}-${month}-${day}`;
 };
 
 module.exports = {

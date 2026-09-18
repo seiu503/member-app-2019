@@ -162,6 +162,22 @@ describe("Helper Functions", () => {
       expect(result).toBe("2000-01-01");
     });
 
+    it("formats a birthdate without timezone conversion", () => {
+      expect(
+        formElements.formatBirthdate({
+          mm: "12",
+          dd: "18",
+          yyyy: "2008"
+        })
+      ).toBe("2008-12-18");
+    });
+
+    it("does not shift an existing date-only string", () => {
+      expect(
+        formElements.formatSFDate("2008-12-18")
+      ).toBe("2008-12-18");
+    });
+
     it("calcEthnicity handles 'declined' edge case", () => {
       const result = formElements.calcEthnicity({
         declined: true
