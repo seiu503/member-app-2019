@@ -94,7 +94,7 @@ exports.getSFContactById = async (req, res, next) => {
   )}, Id FROM Contact WHERE Id = \'${id}\'`;
   let conn = new jsforce.Connection({ loginUrl });
   console.log(`**************************************`);
-  console.log(user);
+  // console.log(user);
   // console.log(password);
   console.log(loginUrl);
   try {
@@ -338,6 +338,15 @@ exports.updateSFContact = async (req, res, next) => {
     }
   });
 
+ if (
+  typeof updatesRaw.birthdate === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(updatesRaw.birthdate)
+  ) {
+    updates.Birthdate = updatesRaw.birthdate;
+  } else {
+    delete updates.Birthdate;
+  }
+
   delete updates["Account.Id"];
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
@@ -373,17 +382,18 @@ exports.updateSFContact = async (req, res, next) => {
     });
   }
 
+  Object.keys(updates).forEach(fieldName => {
+    const value = updates[fieldName];
 
-  if (
-    updates.Birthdate &&
-    !/^\d{4}-\d{2}-\d{2}$/.test(updates.Birthdate)
-  ) {
-    return res.status(400).json({
-      message: "Invalid birthdate format."
-    });
-  } else {
-    updates.Birthdate = String(updates.Birthdate);
-  }
+    if (
+      value === undefined ||
+      value === "undefined" ||
+      value === "null"
+    ) {
+      delete updates[fieldName];
+    }
+  });
+
 
   mappingMs = elapsedMs(mappingStart);
 
@@ -549,7 +559,17 @@ exports.createSFOnlineMemberApp = async (req, res, next) => {
     delete body["agencyNumber__c"];
     // console.log(`sf.ctrl.js: 390: bodyRaw.birthdate: ${bodyRaw.birthdate}`);
     // body.Birthdate__c = this.formatSFDate(bodyRaw.birthdate);
-    body.Birthdate__c = bodyRaw.birthdate;
+    
+
+    if (
+      typeof bodyRaw.birthdate === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(bodyRaw.birthdate)
+    ) {
+      body.Birthdate__c = bodyRaw.birthdate;
+    } else {
+      delete body.Birthdate__c;
+    }
+    
     // console.log(`sf.ctrl.js: 394: body.Birthdate__c: ${body.Birthdate__c}`);
     body.Submission_Date__c = new Date(); // this one can be a datetime
     body.Worker__c = bodyRaw.Worker__c
@@ -669,8 +689,8 @@ exports.getAllEmployers = async (req, res, next) => {
   let conn = new jsforce.Connection({ loginUrl });
   try {
     console.log(`sf.ctrl.js > getAllEmployers > conn.login try block 507`);
-    console.log(user);
-    console.log(password);
+    // console.log(user);
+    // console.log(password);
     await conn.login(user, password);
   } catch (err) {
     console.log(`sf.ctrl.js > getAllEmployers > conn.login catch block 510`);
