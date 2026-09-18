@@ -342,6 +342,37 @@ exports.updateSFContact = async (req, res, next) => {
   delete updates["Account.Agency_Number__c"];
   delete updates["Account.WS_Subdivision_from_Agency__c"];
 
+  const rawHireDate = updatesRaw.hire_date;
+
+  console.log({
+    event: "hire_date_debug",
+    rawHireDate,
+    rawHireDateType: typeof rawHireDate,
+    mappedHireDate: updates.Hire_Date__c,
+    mappedHireDateType:
+      typeof updates.Hire_Date__c
+  });
+
+  const missingHireDate =
+    rawHireDate === undefined ||
+    rawHireDate === null ||
+    rawHireDate === "" ||
+    rawHireDate === "undefined" ||
+    rawHireDate === "null";
+
+  if (missingHireDate) {
+    delete updates.Hire_Date__c;
+  } else if (
+    typeof rawHireDate === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(rawHireDate)
+  ) {
+    updates.Hire_Date__c = rawHireDate;
+  } else {
+    return res.status(400).json({
+      message: "Invalid hire date."
+    });
+  }
+
 
   if (
     updates.Birthdate &&

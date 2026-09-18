@@ -26,12 +26,22 @@ import { camelCaseConverter, formatDate, formatDateTime } from "../utils";
 import { forwardRef } from "react";
 
 export const removeFalsy = obj => {
-  let newObj = {};
+  const newObj = {};
+
   Object.keys(obj).forEach(prop => {
-    if (obj[prop] !== undefined ) {
-      newObj[prop] = obj[prop];
+    const value = obj[prop];
+
+    if (
+      value !== undefined &&
+      value !== null &&
+      value !== "undefined" &&
+      value !== "null" &&
+      value !== ""
+    ) {
+      newObj[prop] = value;
     }
   });
+
   return newObj;
 };
 
